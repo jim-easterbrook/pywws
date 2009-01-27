@@ -1,0 +1,26 @@
+#hourly#
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos##">
+  <channel>
+    <title>Stoneleigh Weather - Hourly Reports</title>
+    <link>http://www.jim-easterbrook.me.uk/weather/</link>
+    <atom:link href="http://www.jim-easterbrook.me.uk/weather/data/feed_hourly.xml" rel="self" type="application/rss+xml" />
+    <description>Hourly reports from an amateur weather station in Stoneleigh, Surrey, UK</description>
+    <ttl>60</ttl>
+    <item>
+      <title>#idx "%A %H:%M UTC"##temp_out ": %.1f°C"#</title>
+      <geo:lat>51.36</geo:lat>
+      <geo:long>-.25</geo:long>
+      <link>http://www.jim-easterbrook.me.uk/weather/24hrs/</link>
+      <description>Temperature: #temp_out "%.1f°C" "-"#
+, Wind direction: #wind_dir "%s" "-" "wind_dir_text[x]"#
+, Wind speed: #wind_ave "%.0f mph" "-" "x * 3.6 / 1.609344"#
+ (ave), #wind_gust "%.0f mph" "-" "x * 3.6 / 1.609344"#
+ (gust), Relative humidity: #hum_out "%d%%"#
+, Rainfall (hourly) #rain "%.1f mm"#
+, Pressure: #pressure "%.0f hPa"#
+, #pressure_trend "%s" "" "pressure_trend_text(x)"#</description>
+      <guid isPermaLink="false">#idx "hourly_%Y_%m_%d_%H_%M"#</guid>
+    </item>
+  </channel>
+</rss>

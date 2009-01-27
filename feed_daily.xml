@@ -1,0 +1,25 @@
+#daily#
+#jump -1#
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos##">
+  <channel>
+    <title>Stoneleigh Weather - Daily Reports</title>
+    <link>http://www.jim-easterbrook.me.uk/weather/</link>
+    <atom:link href="http://www.jim-easterbrook.me.uk/weather/data/feed_daily.xml" rel="self" type="application/rss+xml" />
+    <description>Daily reports from an amateur weather station in Stoneleigh, Surrey, UK</description>
+    <ttl>360</ttl>
+    <item>
+      <title>#idx "%A %d %B"##temp_out_min ": %.1f°C"##temp_out_max " - %.1f°C"#</title>
+      <geo:lat>51.36</geo:lat>
+      <geo:long>-.25</geo:long>
+      <link>http://www.jim-easterbrook.me.uk/weather/7days/</link>
+      <description>Temperature: #temp_out_min "%.1f°C (min)" "-"#
+#temp_out_max ", %.1f°C (max)"#
+, Wind direction: #wind_dir "%s" "-" "wind_dir_text[x]"#
+, Wind speed: #wind_ave "%.0f mph" "-" "x * 3.6 / 1.609344"#
+ (ave), #wind_gust "%.0f mph" "-" "x * 3.6 / 1.609344"#
+ (gust), Rainfall #rain "%.1f mm"#</description>
+      <guid isPermaLink="false">#idx "daily_%Y_%m_%d"#</guid>
+    </item>
+  </channel>
+</rss>
