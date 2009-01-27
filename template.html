@@ -1,0 +1,61 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+  <head>
+    <title>
+      Software for WeatherStations: Template.py
+    </title>
+  </head>
+  <body>
+    <h1>
+      <a href="index.html">Python software for USB Wireless WeatherStations</a>
+    </h1>
+    <h2>
+      <a href="../Template.py">Template.py</a> -- creates text data file based on a template
+    </h2>
+    <p>
+	This is probably the most difficult to use module in the weather station software collection. It generates text files based on a "template" file plus the hourly &amp; daily weather station data. The template processing goes beyond simple substitution of values to include loops, jumps forwards or backwards in the data, processing of the data and substitution of missing values.
+    </p>
+    <p>
+	A template file can be any sort of text file (plain text, xml, html, etc.) to which "processing instructions" have been added. These processing instructions are delimited by hash ('#') characters. They are not copied to the output, but cause something else to happen: either a data value is inserted or one of a limited number of other actions is carried out.
+    </p>
+    <p>
+	Before writing your own template files, it might be useful to look at some of the examples in the <a href="../templates/">templates directory</a>.
+    </p>
+	<h2>Processing instructions</h2>
+	<ul>
+	<li>
+	<b><tt>##</tt></b>: output a single '#' character.
+	</li>
+	<li>
+	<b><tt>#daily#</tt></b>: switch to "daily" summary data. The index is reset to the most recent value.
+	</li>
+	<li>
+	<b><tt>#hourly#</tt></b>: switch to "hourly" summary data. The index is reset to the most recent value.
+	</li>
+	<li>
+	<b><tt>#jump count#</tt></b>: jump <tt>count</tt> values. The data index is adjusted by <tt>count</tt> hours or days. Negative values jump back in time.
+	</li>
+	<li>
+	<b><tt>#loop count#</tt></b>: start a loop that will repeat <tt>count</tt> times. <tt>Count</tt> must be one or more.
+	</li>
+	<li>
+	<b><tt>#endloop#</tt></b>: end a loop started by <tt>#loop count#</tt>. The template processing will go back to the line containing the <tt>#loop count#</tt> instruction. Don't try to nest loops.
+	</li>
+	<li>
+	<b><tt>#key fmt_string no_value_string conversion#</tt></b>: output a data value. <tt>key</tt> is the data key, e.g. '<tt>temp_out</tt>' for outdoor temperature. <tt>fmt_string</tt> is a printf-like format string (actually Python's % operator) except for datetime values, when it is input to <a href="http://docs.python.org/library/datetime.html#datetime-objects">datetime</a>'s strftime() method. <tt>no_value_string</tt> is output instead of <tt>fmt_string</tt> when the data value is absent, e.g. if the station lost contact with the outside sensor. <tt>conversion</tt> is a Python expression to convert the data, e.g. to convert wind speed from m/s to mph you could use <tt>"x * 3.6 / 1.609344"</tt>.<br>All these values need double quotes " if they contain spaces or other potentially difficult characters. All except <tt>key</tt> are optional, but note that if you want to specify a <tt>conversion</tt>, you also need to specify <tt>key</tt>, <tt>fmt_string</tt> and <tt>no_value_string</tt>.
+	</li>
+	</ul>
+    <p>
+    </p>
+    <p>
+    </p>
+    <p>
+    </p>
+    <p>
+    </p>
+	<hr>
+	<p>
+	&copy; <a href="http://www.jim-easterbrook.me.uk/">Jim Easterbrook</a>. Please email <a href="mailto:jim@jim-easterbrook.me.uk">jim@jim-easterbrook.me.uk</a> with any questions.
+	</p>
+  </body>
+</html>
