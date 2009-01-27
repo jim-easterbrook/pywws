@@ -1,0 +1,124 @@
+Python software for USB Wireless WeatherStations.
+(C) 2008-9 Jim Easterbrook (jim@jim-easterbrook.me.uk)
+derived from previous work by
+Michael Pendec (michael.pendec@gmail.com) and
+Svend Skafte (svend@skafte.net)
+
+This software is not released through any official channels, and
+therefore do not expect any support.
+
+This software is in no way affiliated or related to
+	 www.foshk.com,
+Fine Offset Electronics Co.,LTD.
+
+Licence terms:
+    This softare is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This softare is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License along
+    with this softare; if not, write to the Free Software Foundation, Inc.,
+    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+Dependencies:
+	libusb (http://libusb.sf.net)
+	Python (http://www.python.org/) version 2.4 or higher
+	PyUSB (http://pyusb.berlios.de/)
+	gnuplot (http://www.gnuplot.info/)
+
+This software collection currently contains the following files:
+	README.txt		-- you are reading it!
+	LICENCE.txt		-- GNU General Public License
+
+	WeatherStation.py	-- gets data from the weather station
+	TestWeatherStation.py	-- test communication with weather station
+	DataStore.py		-- stores readings in easy to access files
+	LogData.py		-- saves recent readings to file
+	Hourly.py		-- run from cron
+	Process.py		-- generates hourly and daily summary data
+	Plot_24Hrs.py		-- creates a png image of 24 hours' data
+	Plot_7Days.py		-- creates a png image of 7 days' data
+	Plot_28Days.py		-- creates a png image of 28 days' data
+	Template.py		-- creates text data file based on a template
+	Upload.py		-- uploads files to a web site by ftp
+	EWtoPy.py		-- converts EasyWeather.dat to DataStore format
+	UpgradeFrom0.1.py	-- converts v0.1 datastore to v0.3
+	UpgradeFrom0.2.py	-- converts v0.2 datastore to v0.3
+
+	templates/*		-- the templates I use for my website data
+	doc/*			-- HTML documentation of most of the above
+
+Upgrading from earlier versions:
+	The data file format has changed slightly since v0.1 and v0.2
+	Before running any other part of this version, run UpgradeFrom0.1.py
+	or UpgradeFrom0.2.py as appropriate.
+
+Getting started:
+	1/ Unzip / untar all the files to a convenient directory
+	2/ Install Python, if not already installed
+	3/ Install libusb, if not already installed
+	4/ Install PyUSB, if not already installed
+	5/ Install gnuplot, if not already installed
+	Note: steps 2..5 may require installation of other software on some
+	platforms, and you might have to compile / build some packages.
+	6/ Run "python TestWeatherStation.py" - it should complain about not
+	   being able to connect to a weather station
+	7/ Connect weather station's USB port to computer
+	8/ Run TestWeatherStation.py again - you should get a load of data
+	   8a/ Try options to decode data and show history:
+	       "python TestWeatherStation.py -d -h 5"
+	9/ Choose somewhere to store readings, e.g. /data/weather
+	10/ Get some data from the weather station:
+	    "python LogData.py /data/weather"
+	    This will take a while the first time you run it, as it fetches
+	    all the data stored in the weather station.
+	11/ If you have an EasyWeather.dat file, now is the time to convert it:
+	    "python EWtoPy.py EasyWeather.dat /data/weather"
+	    Note that EasyWeather does not handle DST changes very well. My
+	    Python software uses UTC throughout to get round the problem. If
+	    DST was not in effect at the start of your EasyWeather.dat file,
+	    edit EWtoPy.py to set the dst variable to False near the start.
+	12/ Process the raw data to make hourly and daily summaries:
+	    "python Process.py /data/weather"
+	13/ Generate some graphs and tables:
+	    "python Plot_24Hrs.py /data/weather /tmp 24hrs.png"
+	    "python Template.py /data/weather templates/24hrs.txt 24hrs.txt"
+	    "python Template.py /data/weather templates/6hrs.txt 6hrs.txt"
+	14/ Have a look at the files you've just made, then write a web page
+	    that incorporates them. (Use server side includes for the .txt
+	    files).
+	15/ Edit /data/weather/weather.ini and add details of your website
+	    for example:
+		[ftp]
+		site = ftp.username.isp.co.uk
+		user = username
+		password = secret
+		directory = /public_html/weather/data
+	16/ Try uploading the files:
+	    "python Upload.py /data/weather 24hrs.png 24hrs.txt 6hrs.txt"
+	17/ Edit Hourly.py to use the directories and file names you've chosen
+	    then test it and add it to crontab. I suggest running it every
+	    hour at 1 or 2 minutes past.
+
+Changes in v0.3:
+	1/ Now uses templates to generate text data
+	2/ Added 28 day plot
+	3/ Minor efficiency improvements
+
+Changes in v0.2:
+	1/ Now uses Python csv library to read and write data
+	2/ Creates hourly and daily summary files
+	3/ Includes rain data in graphs
+
+Still to come:
+	1/ Monthly and yearly graphs and tables?
+	2/ Better documentation (but don't hold your breath)
+
+If you've got this software up and running, do let me know what you think.
+Email jim@jim-easterbrook.me.uk
