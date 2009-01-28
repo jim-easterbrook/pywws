@@ -40,12 +40,12 @@ for n in range(3):
         Plot_28Days.Plot_28Days(params, daily_data, hourly_data, work_dir, png28_file)
         uploads.append(png28_file)
         for template in os.listdir(template_dir):
+            input_file = os.path.join(template_dir, template)
+            if not os.path.isfile(input_file):
+                continue
             print "Templating", template
             output_file = os.path.join(work_dir, os.path.basename(template))
-            Template.Template(
-                hourly_data, daily_data,
-                os.path.join(template_dir, template),
-                output_file)
+            Template.Template(hourly_data, daily_data, input_file, output_file)
             uploads.append(output_file)
         print "Uploading to web site"
         Upload.Upload(params, uploads)
