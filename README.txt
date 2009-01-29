@@ -1,4 +1,5 @@
 Python software for USB Wireless WeatherStations.
+
 (C) 2008-9 Jim Easterbrook (jim@jim-easterbrook.me.uk)
 derived from previous work by
 Michael Pendec (michael.pendec@gmail.com) and
@@ -51,13 +52,27 @@ This software collection currently contains the following files:
 	UpgradeFrom0.1.py	-- converts v0.1 datastore to v0.3
 	UpgradeFrom0.2.py	-- converts v0.2 datastore to v0.3
 
-	templates/*		-- the templates I use for my website data
+	example_templates/*	-- the templates I use for my website data
 	doc/*			-- HTML documentation of most of the above
 
 Upgrading from earlier versions:
 	The data file format has changed slightly since v0.1 and v0.2
 	Before running any other part of this version, run UpgradeFrom0.1.py
 	or UpgradeFrom0.2.py as appropriate.
+
+Preparation:
+	Unlike some other weather station software, this software relies on
+	the weather station base unit's stored readings. New weather stations
+	have the logging interval set to 30 minutes, which allows about 11
+	weeks data to be stored. Before using this software I think it is
+	worth changing the logging interval to 5 minutes, which will still
+	allow for nearly 2 weeks to be stored.
+
+	Unfortunately, you need the EasyWeather software (Windows only) to set
+	the logging interval. Luckily you only need to do it once.
+
+	The second weather station adjustment to make is the offset between
+	absolute and relative pressure. See the instruction book for details.
 
 Getting started:
 	1/ Unzip / untar all the files to a convenient directory
