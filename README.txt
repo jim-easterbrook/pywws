@@ -131,9 +131,12 @@ Changes in v0.2:
 	2/ Creates hourly and daily summary files
 	3/ Includes rain data in graphs
 
-Still to come:
+Still to come, possibly:
 	1/ Monthly and yearly graphs and tables?
 	2/ Better documentation (but don't hold your breath)
+	3/ Use local time for graphs and text data output
+	4/ Select units (e.g. mph - km/h - m/s) in config file
 
 If you've got this software up and running, do let me know what you think.
 Email jim@jim-easterbrook.me.uk
+http://code.google.com/p/pywws/
