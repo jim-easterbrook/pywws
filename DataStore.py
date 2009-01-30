@@ -1,7 +1,23 @@
-"""DataStore.py - store weather station data.
-A separate file is used for each day's data, to keep memory load reasonable.
-One day at a time is held in memory, and saved to disc when another day
-needs to be accessed.
+"""
+DataStore.py - stores readings in easy to access files
+
+This module is at the core of the weather station software. It stores
+data on disc, but without the overhead of a full scale database
+system. It is designed to run on a small memory machine such as a
+router. To minimise memory usage it only loads one day's worth of data
+at a time into memory.
+
+From a "user" point of view, the data is accessed as a cross between a
+list and a dictionary. Each data record is indexed by a <a
+href="http://docs.python.org/library/datetime.html#datetime-objects">datetime</a>
+object (dictionary behaviour), but records are stored in order and can
+be accessed as slices (list behaviour).
+
+
+A separate file is used for each day's data, to keep memory load
+reasonable. One day at a time is held in memory, and saved to disc
+when another day needs to be accessed.
+
 Data is accessed in a cross between dictionary and list behaviour.
 """
 
@@ -13,6 +29,7 @@ import sys
 
 class params():
     def __init__(self, root_dir):
+        """Parameters are stored in a file "weather.ini" in root_dir."""
         self._path = os.path.join(root_dir, 'weather.ini')
         self._dirty = False
         # open config file
@@ -24,10 +41,18 @@ class params():
             self._config.write(of)
             of.close()
     def get(self, section, option, default=None):
+        """
+        Get a parameter value and return a string.
+
+        If default is specified and section or option are not defined
+        in the weather.ini file, they are created and set to default,
+        which is then the return value.
+        """
         if default and not self._config.has_option(section, option):
             self.set(section, option, default)
         return self._config.get(section, option)
     def set(self, section, option, value):
+        """Set option in section to string value."""
         if not self._config.has_section(section):
             self._config.add_section(section)
         self._config.set(section, option, value)
