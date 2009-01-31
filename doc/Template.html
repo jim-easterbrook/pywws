@@ -10,7 +10,7 @@
       <a href="index.html">Python software for USB Wireless WeatherStations</a>
     </h1>
     <h2>
-      <a href="../Template.py">Template.py</a> -- creates text data file based on a template
+      <a href="auto/Template.html">Template.py</a> -- creates text data file based on a template
     </h2>
     <p>
 	This is probably the most difficult to use module in the weather station software collection. It generates text files based on a "template" file plus the hourly &amp; daily weather station data. The template processing goes beyond simple substitution of values to include loops, jumps forwards or backwards in the data, processing of the data and substitution of missing values.
@@ -78,9 +78,9 @@ some of the examples in the <a href="../example_templates/">example_templates di
     <p>
 	Finally we get to <a href="http://docs.python.org/library/datetime.html#datetime-objects">datetime</a> values. The <code>#idx "%H%M"#</code> instruction simply outputs the time (in HHMM format) of the data's index. The <code>#idx "%Y/%m/%d" "" "[None, x][x.hour == 0 or loop_count == 7]"#</code> instruction is a bit more complicated. It outputs the date, but only on the first line or if the date has changed. It does this by indexing the array <code>[None, x]</code> with a boolean expression that is true when <code>loop_count</code> is 7 (i.e. on the first pass through the loop) or <code>x.hour</code> is zero (i.e. this is the first hour of the day).
     </p>
-	<hr>
-	<p>
-	&copy; <a href="http://www.jim-easterbrook.me.uk/">Jim Easterbrook</a>. Please email <a href="mailto:jim@jim-easterbrook.me.uk">jim@jim-easterbrook.me.uk</a> with any questions.
-	</p>
+    <hr>
+    <p>
+      <a href="http://code.google.com/p/pywws/"><i>Python software for USB Wireless WeatherStations</i></a> &copy; <a href="http://www.jim-easterbrook.me.uk/">Jim Easterbrook</a>.
+    </p>
   </body>
 </html>
