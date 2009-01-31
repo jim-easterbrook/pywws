@@ -1,6 +1,18 @@
 #!/usr/bin/env python
 # -*- coding: ISO-8859-1 -*-
 
+"""
+Plot graphs of temperature, wind speed, rainfall & pressure over the
+last 24 hours.
+
+usage: python Plot_24Hrs.py [options] data_dir temp_dir output_file
+options are:
+\t-h or --help\t\tdisplay this help
+data_dir is the root directory of the weather data
+temp_dir is a workspace for temporary files e.g. /tmp
+output_file is the name of the image file to be created e.g. 24hrs.png
+"""
+
 from datetime import datetime, timedelta
 import getopt
 import os
@@ -100,29 +112,25 @@ def Plot_24Hrs(params, raw_data, hourly_data, work_dir, output_file):
     # run gnuplot on file
     os.system('gnuplot %s' % cmd_file)
     return 0
-def usage():
-    print >>sys.stderr, 'usage: %s [options] data_directory temp_directory output_file' % sys.argv[0]
-    print >>sys.stderr, '''\toptions are:
-    \t--help\t\t\tdisplay this help'''
 def main(argv=None):
     if argv is None:
         argv = sys.argv
     try:
-        opts, args = getopt.getopt(argv[1:], "", ['help'])
+        opts, args = getopt.getopt(argv[1:], "h", ['help'])
     except getopt.error, msg:
-        print >>sys.stderr, msg
-        usage()
+        print >>sys.stderr, 'Error: %s\n' % msg
+        print >>sys.stderr, __doc__.strip()
         return 1
+    # check arguments
+    if len(args) != 3:
+        print >>sys.stderr, 'Error: 3 arguments required\n'
+        print >>sys.stderr, __doc__.strip()
+        return 2
     # process options
     for o, a in opts:
-        if o == '--help':
-            usage()
+        if o == '-h' or o == '--help':
+            print __doc__.strip()
             return 0
-    # process arguments
-    if len(args) != 3:
-        print >>sys.stderr, "3 arguments required"
-        usage()
-        return 2
     return Plot_24Hrs(DataStore.params(args[0]), DataStore.data_store(args[0]),
                       DataStore.hourly_store(args[0]), args[1], args[2])
 if __name__ == "__main__":

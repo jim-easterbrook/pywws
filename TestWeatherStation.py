@@ -1,5 +1,15 @@
 #!/usr/bin/env python
 
+"""
+Test connection to weather station.
+
+usage: python TestWeatherStation.py [options]
+options are:
+\t-d | --decode\t\tdisplay meaningful values instead of raw data
+\t-h | --history count\tdisplay the last "count" readings
+\t--help\t\t\tdisplay this help
+"""
+
 import datetime
 import getopt
 import WeatherStation
@@ -10,21 +20,20 @@ def raw_dump(pos, data):
     for item in data:
         print "%02x" % item,
     print
-def usage():
-    print >>sys.stderr, 'usage: %s [options]' % sys.argv[0]
-    print >>sys.stderr, '''\toptions are:
-    \t-d | --decode\t\tdisplay meaningful values instead of raw data
-    \t-h | --history count\tdisplay the last "count" readings
-    \t--help\t\t\tdisplay this help'''
 def main(argv=None):
     if argv is None:
         argv = sys.argv
     try:
         opts, args = getopt.getopt(argv[1:], "dh:", ['decode', 'history=', 'help'])
     except getopt.error, msg:
-        print >>sys.stderr, msg
-        usage()
+        print >>sys.stderr, 'Error: %s\n' % msg
+        print >>sys.stderr, __doc__.strip()
         return 1
+    # check arguments
+    if len(args) != 0:
+        print >>sys.stderr, 'Error: no arguments allowed\n'
+        print >>sys.stderr, __doc__.strip()
+        return 2
     # process options
     history_count = 0
     decode = False
@@ -34,13 +43,8 @@ def main(argv=None):
         if o == '-h' or o == '--history':
             history_count = int(a)
         if o == '--help':
-            usage()
+            print __doc__.strip()
             return 0
-    # process arguments
-    if len(args) != 0:
-        print >>sys.stderr, "no arguments allowed"
-        usage()
-        return 2
     # do it!
     ws = WeatherStation.weather_station()
     raw_fixed = ws.get_raw_fixed_block()

@@ -57,8 +57,8 @@ This software collection currently contains the following files:
 
 Upgrading from earlier versions:
 	The data file format has changed slightly since v0.1 and v0.2
-	Before running any other part of this version, run UpgradeFrom0.1.py
-	or UpgradeFrom0.2.py as appropriate.
+	Before running any other part of this version, backup your data then
+	run UpgradeFrom0.1.py or UpgradeFrom0.2.py as appropriate.
 
 Preparation:
 	Unlike some other weather station software, this software relies on

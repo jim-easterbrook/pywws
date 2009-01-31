@@ -7,8 +7,9 @@ wwsrdump.c by Svend Skafte (svend@skafte.net), modified by Dave Wells.
 import math
 import usb
 
-# calculate dew point
 def dew_point(temp, hum):
+    """Compute dew point, using formula from
+    http://en.wikipedia.org/wiki/Dew_point."""
     a = 17.27
     b = 237.7
     gamma = ((a * temp) / (b + temp)) + math.log(float(hum) / 100.0)
@@ -22,8 +23,9 @@ wind_dir_text = [
     'W', 'WNW', 'NW', 'NNW',
     ]
 
-# convert pressure trend to a string
 def pressure_trend_text(trend):
+    """Convert pressure trend to a string, see
+    http://www.reedsonline.com/weather/weather-terms.htm."""
     if trend >= 0.1:
         result = 'rising'
     elif trend <= -0.1:
@@ -43,13 +45,13 @@ unknown         = 0x80
 lost_connection = 0x40
 unknown         = 0x20
 unknown         = 0x10
-unknown         = 0x80
-unknown         = 0x40
-unknown         = 0x20
-unknown         = 0x10
+unknown         = 0x08
+unknown         = 0x04
+unknown         = 0x02
+unknown         = 0x01
 
 # decode weather station raw data formats
-def _decode(raw, offset):
+def _decode(raw, format):
     def _signed_short(raw, offset):
         lo = raw[offset]
         hi = raw[offset+1]
@@ -79,12 +81,12 @@ def _decode(raw, offset):
         return '%4d-%02d-%02d %02d:%02d' % (year + 2000, month, day, hour, minute)
     if not raw:
         return None
-    if isinstance(offset, dict):
+    if isinstance(format, dict):
         result = {}
-        for key, value in offset.items():
+        for key, value in format.items():
             result[key] = _decode(raw, value)
     else:
-        pos, type, scale = offset
+        pos, type, scale = format
         if type == 'ub':
             result = raw[pos]
             if result == 0xFF:
@@ -105,16 +107,17 @@ def _decode(raw, offset):
         if scale:
             result = float(result) * scale
     return result
-# find a USB device by product and vendor id
 def findDevice(idVendor, idProduct):
+    """Find a USB device by product and vendor id."""
     for bus in usb.busses():
         for device in bus.devices:
             if device.idVendor == idVendor and device.idProduct == idProduct:
                 return device
     return None
-# class that represents the weather station to user program
 class weather_station():
+    """Class that represents the weather station to user program."""
     def __init__(self):
+        """Connect to weather station and prepare to read data."""
         self.devh = None
         # _open_readw
         dev = findDevice(0x1941, 0x8021)
@@ -146,6 +149,7 @@ class weather_station():
         self._data_block = None
         self._data_pos = None
     def __del__(self):
+        """Disconnect from weather station."""
         if self.devh:
             try:
                 self.devh.releaseInterface()
@@ -154,40 +158,56 @@ class weather_station():
                 pass
         self.devh = None
     def inc_ptr(self, ptr):
+        """Get next circular buffer data pointer."""
         result = ptr + 0x10
         if result > 0xFFF0:
             result = 0x0100
         return result
     def dec_ptr(self, ptr):
+        """Get previous circular buffer data pointer."""
         result = ptr - 0x10
         if result < 0x0100:
             result = 0xFFF0
         return result
     def get_raw_data(self, ptr, unbuffered=False):
+        """Get raw data from circular buffer.
+
+        If unbuffered is false then a cached value that was obtained
+        earlier may be returned."""
         idx = ptr - (ptr % 0x20)
         if unbuffered or self._data_pos != idx:
             self._data_pos = idx
             self._data_block = self._read_block(idx)
         return self._data_block[ptr-idx:0x10+ptr-idx]
     def get_data(self, ptr, unbuffered=False):
-        return _decode(self.get_raw_data(ptr, unbuffered), self.reading_offset)
+        """Get decoded data from circular buffer.
+
+        If unbuffered is false then a cached value that was obtained
+        earlier may be returned."""
+        return _decode(self.get_raw_data(ptr, unbuffered), self.reading_format)
     def current_pos(self):
-        return _decode(self._read_block(0x0000), self.lo_fix_offset['current_pos'])
+        """Get circular buffer location where current data is being written."""
+        return _decode(self._read_block(0x0000), self.lo_fix_format['current_pos'])
     def get_raw_fixed_block(self):
+        """Get the raw "fixed block" of setting and min/max data."""
         if not self._fixed_block:
             self._read_fixed_block()
         return self._fixed_block
     def get_fixed_block(self, keys=[]):
+        """Get the decoded "fixed block" of setting and min/max data.
+
+        A subset of the entire block can be selected by keys."""
         if not self._fixed_block:
             self._read_fixed_block()
-        offset = self.fixed_offset
+        format = self.fixed_format
         # navigate down list of keys to get to wanted data
         for key in keys:
-            offset = offset[key]
-        return _decode(self._fixed_block, offset)
+            format = format[key]
+        return _decode(self._fixed_block, format)
     def get_lo_fix_block(self):
+        """Get the first 64 bytes of the raw "fixed block"."""
         return _decode(self._read_block(0x0000) +
-                       self._read_block(0x0020), self.lo_fix_offset)
+                       self._read_block(0x0020), self.lo_fix_format)
     def _read_block(self, ptr):
         buf_1 = (ptr / 256) & 0xFF
         buf_2 = ptr & 0xFF;
@@ -206,8 +226,10 @@ class weather_station():
                 self._fixed_block = self._fixed_block + self._read_block(mempos_curr)
         else:
             self._fixed_block = None
-    # tables of "meanings" for raw weather station data
-    reading_offset = {
+    # Tables of "meanings" for raw weather station data. Each key
+    # specifies an (offset, type, multiplier) tuple that is understood
+    # by _decode.
+    reading_format = {
         'delay'     : (0, 'ub', None),
         'hum_in'    : (1, 'ub', None),
         'temp_in'   : (2, 'ss', 0.1),
@@ -220,14 +242,14 @@ class weather_station():
         'rain'      : (13, 'us', 0.3),
         'status'    : (15, 'pb', None),
         }
-    lo_fix_offset = {
+    lo_fix_format = {
         'read_period'   : (16, 'ub', None),
         'current_pos'   : (30, 'us', None),
         'rel_pressure'  : (32, 'us', 0.1),
         'abs_pressure'  : (34, 'us', 0.1),
         'date_time'     : (43, 'dt', None),
         }
-    fixed_offset = {
+    fixed_format = {
         'read_period'   : (16, 'ub', None),
         'current_pos'   : (30, 'us', None),
         'rel_pressure'  : (32, 'us', 0.1),

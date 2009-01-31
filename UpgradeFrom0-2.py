@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 
+"""
+Upgrade stored weather data from v0.2 to v0.3.
+"""
+
 import csv
 from datetime import datetime
 import getopt
