@@ -49,8 +49,8 @@ This software collection currently contains the following files:
 	Template.py		-- creates text data file based on a template
 	Upload.py		-- uploads files to a web site by ftp
 	EWtoPy.py		-- converts EasyWeather.dat to DataStore format
-	UpgradeFrom0.1.py	-- converts v0.1 datastore to v0.3
-	UpgradeFrom0.2.py	-- converts v0.2 datastore to v0.3
+	UpgradeFrom0-1.py	-- converts v0.1 datastore to v0.3
+	UpgradeFrom0-2.py	-- converts v0.2 datastore to v0.3
 
 	example_templates/*	-- the templates I use for my website data
 	doc/*			-- HTML documentation of most of the above
