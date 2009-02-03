@@ -1,4 +1,4 @@
-Python software for USB Wireless WeatherStations.
+Python software for USB Wireless WeatherStations (pywws).
 
 (C) 2008-9 Jim Easterbrook (jim@jim-easterbrook.me.uk)
 derived from previous work by
@@ -9,8 +9,7 @@ This software is not released through any official channels, and
 therefore do not expect any support.
 
 This software is in no way affiliated or related to
-	 www.foshk.com,
-Fine Offset Electronics Co.,LTD.
+	 www.foshk.com, Fine Offset Electronics Co.,LTD.
 
 Licence terms:
     This softare is free software; you can redistribute it and/or modify
@@ -51,6 +50,7 @@ This software collection currently contains the following files:
 	EWtoPy.py		-- converts EasyWeather.dat to DataStore format
 	UpgradeFrom0-1.py	-- converts v0.1 datastore to v0.3
 	UpgradeFrom0-2.py	-- converts v0.2 datastore to v0.3
+	AutoDoc.py		-- generates extra HTML documentation
 
 	example_templates/*	-- the templates I use for my website data
 	doc/*			-- HTML documentation of most of the above
@@ -58,7 +58,7 @@ This software collection currently contains the following files:
 Upgrading from earlier versions:
 	The data file format has changed slightly since v0.1 and v0.2
 	Before running any other part of this version, backup your data then
-	run UpgradeFrom0.1.py or UpgradeFrom0.2.py as appropriate.
+	run UpgradeFrom0-1.py or UpgradeFrom0-2.py as appropriate.
 
 Preparation:
 	Unlike some other weather station software, this software relies on
@@ -66,7 +66,7 @@ Preparation:
 	have the logging interval set to 30 minutes, which allows about 11
 	weeks data to be stored. Before using this software I think it is
 	worth changing the logging interval to 5 minutes, which will still
-	allow for nearly 2 weeks to be stored.
+	allow for 2 weeks to be stored.
 
 	Unfortunately, you need the EasyWeather software (Windows only) to set
 	the logging interval. Luckily you only need to do it once.
@@ -88,36 +88,39 @@ Getting started:
 	8/ Run TestWeatherStation.py again - you should get a load of data
 	   8a/ Try options to decode data and show history:
 	       "python TestWeatherStation.py -d -h 5"
-	9/ Choose somewhere to store readings, e.g. /data/weather
-	10/ Get some data from the weather station:
+	9/ Run "python AutoDoc.py" to create extra documentation of the
+	   software.
+	10/ Choose somewhere to store readings, e.g. /data/weather
+	11/ Get some data from the weather station:
 	    "python LogData.py /data/weather"
 	    This will take a while the first time you run it, as it fetches
 	    all the data stored in the weather station.
-	11/ If you have an EasyWeather.dat file, now is the time to convert it:
+	12/ If you have an EasyWeather.dat file, now is the time to convert it:
 	    "python EWtoPy.py EasyWeather.dat /data/weather"
 	    Note that EasyWeather does not handle DST changes very well. My
 	    Python software uses UTC throughout to get round the problem. If
 	    DST was not in effect at the start of your EasyWeather.dat file,
 	    edit EWtoPy.py to set the dst variable to False near the start.
-	12/ Process the raw data to make hourly and daily summaries:
+	13/ Process the raw data to make hourly and daily summaries:
 	    "python Process.py /data/weather"
-	13/ Generate some graphs and tables:
+	14/ Generate some graphs and tables:
 	    "python Plot_24Hrs.py /data/weather /tmp 24hrs.png"
-	    "python Template.py /data/weather templates/24hrs.txt 24hrs.txt"
-	    "python Template.py /data/weather templates/6hrs.txt 6hrs.txt"
-	14/ Have a look at the files you've just made, then write a web page
+	    "python Template.py /data/weather example_templates/24hrs.txt 24hrs.txt"
+	    "python Template.py /data/weather example_templates/6hrs.txt 6hrs.txt"
+	15/ Have a look at the files you've just made, then write a web page
 	    that incorporates them. (Use server side includes for the .txt
-	    files).
-	15/ Edit /data/weather/weather.ini and add details of your website
+	    files). Copy the templates you want from the example_templates
+	    directory to the templates directory.
+	16/ Edit /data/weather/weather.ini and add details of your website
 	    for example:
 		[ftp]
 		site = ftp.username.isp.co.uk
 		user = username
 		password = secret
 		directory = /public_html/weather/data
-	16/ Try uploading the files:
+	17/ Try uploading the files:
 	    "python Upload.py /data/weather 24hrs.png 24hrs.txt 6hrs.txt"
-	17/ Edit Hourly.py to use the directories and file names you've chosen
+	18/ Edit Hourly.py to use the directories and file names you've chosen
 	    then test it and add it to crontab. I suggest running it every
 	    hour at 1 or 2 minutes past.
 
