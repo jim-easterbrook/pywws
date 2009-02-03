@@ -13,12 +13,17 @@
       <a href="auto/Upload.html">Upload.py</a> -- uploads files to a web site by ftp
     </h2>
     <p>
+      This module uploads files to (typically) a website <i>via</i> ftp. Details of the upload destination are stored in the file <code>weather.ini</code> in your data directory. The only way to set these details is to edit the file. Run <code>Upload.py</code> once to set the default values, which you can then change. Here is what you're likely to find when you edit <code>weather.ini</code>.
     </p>
+<pre>
+[ftp]
+directory = /public_html/weather/data
+password = secret
+site = ftp.username.your_isp.co.uk
+user = username
+</pre>
     <p>
-    </p>
-    <p>
-    </p>
-    <p>
+      These are, I hope, fairly obvious. <code>directory</code> is the name of a directory on the ftp site in which all the uploaded files will be put. This will depend on the structure of your web site and the sort of host you use. Your hosting provider should be able to tell you what <code>site</code> and <code>user</code> details to use. You should have already chosen a <code>password</code>.
     </p>
     <hr>
     <p>

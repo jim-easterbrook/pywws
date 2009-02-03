@@ -13,12 +13,13 @@
       <a href="auto/EWtoPy.html">EWtoPy.py</a> -- converts EasyWeather.dat to DataStore format
     </h2>
     <p>
+      This program converts data from the format used by the EasyWeather program supplied with the weather station to the format used by this Python software. It is useful if you've been using EasyWeather for a while before discovering this software.
     </p>
     <p>
+      The EasyWeather.dat file is only used to provide data from before the start of the pywws data. As your weather station has its own memory, you should run LogData.py before EWtoPy.py to minimise use of the EasyWeather.dat file.
     </p>
     <p>
-    </p>
-    <p>
+      There is one thing to be aware of before running EWtoPy.py: it makes assumptions about daylight saving time (DST). The EasyWeather.dat file does not record if DST is in effect, but it does jump forwards or backwards an hour when it changes. EWtoPy.py needs to know if DST is in effect or not at the start of the EasyWeather.dat file. Look at the first line of this file (any text editor or the Unix command <code>more</code> will do) and note the date of the third column. If DST was not in effect on this date, edit EWtoPy.py and change the first line of the <code>main</code> procedure from <code>dst = True</code> to <code>dst = False</code>.
     </p>
     <hr>
     <p>
