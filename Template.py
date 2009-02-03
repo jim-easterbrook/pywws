@@ -1,4 +1,14 @@
 #!/usr/bin/env python
+"""
+Create text data file based on a template.
+
+usage: python Template.py [options] data_dir template_file output_file
+options are:
+\t--help\t\tdisplay this help
+data_dir is the root directory of the weather data
+template_file is the template text source file
+output_file is the name of the text file to be created
+"""
 
 from datetime import datetime, timedelta
 import getopt
@@ -91,29 +101,25 @@ def Template(hourly_data, daily_data, template_file, output_file):
     of.close()
     tmplt.close()
     return 0
-def usage():
-    print >>sys.stderr, 'usage: %s [options] data_directory template_file output_file' % sys.argv[0]
-    print >>sys.stderr, '''\toptions are:
-    \t--help\t\t\tdisplay this help'''
 def main(argv=None):
     if argv is None:
         argv = sys.argv
     try:
         opts, args = getopt.getopt(argv[1:], "", ['help'])
     except getopt.error, msg:
-        print >>sys.stderr, msg
-        usage()
+        print >>sys.stderr, 'Error: %s\n' % msg
+        print >>sys.stderr, __doc__.strip()
         return 1
+    # check arguments
+    if len(args) != 3:
+        print >>sys.stderr, 'Error: 3 arguments required\n'
+        print >>sys.stderr, __doc__.strip()
+        return 2
     # process options
     for o, a in opts:
         if o == '--help':
-            usage()
+            print __doc__.strip()
             return 0
-    # process arguments
-    if len(args) != 3:
-        print >>sys.stderr, "3 arguments required"
-        usage()
-        return 2
     return Template(DataStore.hourly_store(args[0]),
                     DataStore.daily_store(args[0]), args[1], args[2])
 if __name__ == "__main__":

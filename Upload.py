@@ -1,4 +1,16 @@
 #!/usr/bin/env python
+"""
+Upload files to a directory by ftp.
+
+usage: python Upload.py [options] data_dir file [file...]
+options are:
+\t-h or --help\t\tdisplay this help
+data_dir is the root directory of the weather data
+file is a file to be uploaded
+
+Login and ftp site details are read from the weather.ini file in
+data_dir.
+"""
 
 import ftplib
 import getopt
@@ -26,31 +38,25 @@ def Upload(params, files):
         f.close()
     ftp.close()
     return 0
-def usage():
-    print >>sys.stderr, 'usage: %s [options] data_dir file [file...]' % sys.argv[0]
-    print >>sys.stderr, '''\toptions are:
-    \t--help\t\t\tdisplay this help'''
 def main(argv=None):
     if argv is None:
         argv = sys.argv
     try:
         opts, args = getopt.getopt(argv[1:], "", ['help'])
     except getopt.error, msg:
-        print >>sys.stderr, msg
-        usage()
+        print >>sys.stderr, 'Error: %s\n' % msg
+        print >>sys.stderr, __doc__.strip()
         return 1
+    # check arguments
+    if len(args) < 2:
+        print >>sys.stderr, "Error: at least 2 arguments required"
+        print >>sys.stderr, __doc__.strip()
+        return 2
     # process options
-    start = None
-    stop = None
     for o, a in opts:
         if o == '--help':
-            usage()
+            print __doc__.strip()
             return 0
-    # process arguments
-    if len(args) < 2:
-        print >>sys.stderr, "at least 2 arguments required"
-        usage()
-        return 2
     return Upload(DataStore.params(args[0]), args[1:])
 if __name__ == "__main__":
     sys.exit(main())

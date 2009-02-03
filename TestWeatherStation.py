@@ -52,9 +52,8 @@ def main(argv=None):
         print "No valid data block found"
         return 3
     if decode:
-        decoded_fixed = ws.get_fixed_block()
         # dump entire fixed block
-        print decoded_fixed
+        print ws.get_fixed_block()
         # dump a few selected items
         print "min -> temp_out ->", ws.get_fixed_block(['min', 'temp_out'])
         print "alarm -> hum_out ->", ws.get_fixed_block(['alarm', 'hum_out'])

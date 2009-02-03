@@ -1,4 +1,12 @@
 #!/usr/bin/env python
+"""
+Generate hourly and daily summaries of raw weather station data.
+
+usage: python Process.py [options] data_dir
+options are:
+\t-h or --help\t\tdisplay this help
+data_dir is the root directory of the weather data
+"""
 
 from collections import defaultdict, deque
 from datetime import date, datetime, timedelta
@@ -10,6 +18,11 @@ import DataStore
 import WeatherStation
 
 class Acc():
+    """'Accumulate' raw weather data to produce a summary.
+
+    Compute average wind speed, log maximum wind gust, find dominant
+    wind direction and compute total rainfall."""
+
     def __init__(self):
         self.wind_ave = 0.0
         self.wind_gust = (0.0, None)
@@ -18,6 +31,9 @@ class Acc():
         self.count = 0
         self.valid = False
     def add(self, raw, last_raw):
+        """Add a raw data reading.
+
+        last_raw is used to get the rainfall in this period."""
         if raw['wind_ave'] != None:
             if raw['wind_dir'] != None:
                 self.wind_dir[raw['wind_dir']] += raw['wind_ave']
@@ -33,6 +49,7 @@ class Acc():
             self.rain += raw['rain'] - last_raw['rain']
         self.valid = True
     def result(self, idx):
+        """Get the result of the data accumulation."""
         retval = {}
         retval['idx'] = idx
         if self.count > 0:
@@ -61,6 +78,10 @@ class Hour_Acc(Acc):
             retval[key] = raw[key]
         return retval
 class Day_Acc(Acc):
+    """Similar to Acc(), but also logs daytime max and nighttime min
+    temperatures.
+
+    Daytime is assumed to be 0900-2100 and nighttime to be 2100-0900."""
     def __init__(self):
         Acc.__init__(self)
         self.temp_out_min = (1000.0, None)
@@ -90,6 +111,19 @@ class Day_Acc(Acc):
         retval['temp_out_max_t'] = self.temp_out_max[1]
         return retval
 def Process(params, raw_data, hourly_data, daily_data):
+    """Generate hourly and daily summaries from raw weather station
+    data.
+
+    Starts from the last hourly or daily summary (whichever is
+    earlier) and continues to end of the raw data.
+
+    A day is assumed to end at 2100, following the historical
+    convention for weather station readings.
+
+    Atmospheric pressure is converted from relative to absolute, using
+    the weather station's offset as recorded by LogData.py. The
+    pressure trend (change over three hours) is also computed.
+    """
     pressure_offset = eval(params.get('fixed', 'pressure offset'))
     # get time of last existing records
     last_raw = raw_data.before(datetime.max)
@@ -157,29 +191,25 @@ def Process(params, raw_data, hourly_data, daily_data):
             new_data = day_acc.result(prev['idx'])
             daily_data[new_data['idx']] = new_data
     return 0
-def usage():
-    print >>sys.stderr, 'usage: %s [options] data_directory' % sys.argv[0]
-    print >>sys.stderr, '''\toptions are:
-    \t--help\t\t\tdisplay this help'''
 def main(argv=None):
     if argv is None:
         argv = sys.argv
     try:
         opts, args = getopt.getopt(argv[1:], "", ['help'])
     except getopt.error, msg:
-        print >>sys.stderr, msg
-        usage()
+        print >>sys.stderr, 'Error: %s\n' % msg
+        print >>sys.stderr, __doc__.strip()
         return 1
+    # check arguments
+    if len(args) != 1:
+        print >>sys.stderr, 'Error: 1 argument required\n'
+        print >>sys.stderr, __doc__.strip()
+        return 2
     # process options
     for o, a in opts:
         if o == '--help':
-            usage()
+            print __doc__.strip()
             return 0
-    # process arguments
-    if len(args) != 1:
-        print >>sys.stderr, "1 argument required"
-        usage()
-        return 2
     data_dir = args[0]
     return Process(DataStore.params(data_dir),
                    DataStore.data_store(data_dir),

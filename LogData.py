@@ -1,5 +1,14 @@
 #!/usr/bin/env python
 
+"""
+Save weather station history to file.
+
+usage: python LogData.py [options] data_dir
+options are:
+\t--help\t\t\tdisplay this help
+data_dir is the root directory of the weather data
+"""
+
 from datetime import datetime, timedelta
 import getopt
 import os
@@ -51,29 +60,25 @@ def LogData(params, raw_data):
         last_date = last_date - timedelta(minutes=data['delay'])
         last_ptr = ws.dec_ptr(last_ptr)
     print "%d records written" % count
-def usage():
-    print >>sys.stderr, 'usage: %s [options] data_directory' % sys.argv[0]
-    print >>sys.stderr, '''\toptions are:
-    \t--help\t\t\tdisplay this help'''
 def main(argv=None):
     if argv is None:
         argv = sys.argv
     try:
         opts, args = getopt.getopt(argv[1:], "", ['help'])
     except getopt.error, msg:
-        print >>sys.stderr, msg
-        usage()
+        print >>sys.stderr, 'Error: %s\n' % msg
+        print >>sys.stderr, __doc__.strip()
         return 1
+    # check arguments
+    if len(args) != 1:
+        print >>sys.stderr, 'Error: 1 argument required\n'
+        print >>sys.stderr, __doc__.strip()
+        return 2
     # process options
     for o, a in opts:
         if o == '--help':
-            usage()
+            print __doc__.strip()
             return 0
-    # process arguments
-    if len(args) != 1:
-        print >>sys.stderr, "must specify data directory"
-        usage()
-        return 2
     root_dir = args[0]
     return LogData(DataStore.params(root_dir),
                    DataStore.data_store(root_dir))

@@ -1,24 +1,18 @@
 """
 DataStore.py - stores readings in easy to access files
 
-This module is at the core of the weather station software. It stores
-data on disc, but without the overhead of a full scale database
-system. It is designed to run on a small memory machine such as a
-router. To minimise memory usage it only loads one day's worth of data
-at a time into memory.
-
-From a "user" point of view, the data is accessed as a cross between a
-list and a dictionary. Each data record is indexed by a <a
-href="http://docs.python.org/library/datetime.html#datetime-objects">datetime</a>
-object (dictionary behaviour), but records are stored in order and can
-be accessed as slices (list behaviour).
-
-
 A separate file is used for each day's data, to keep memory load
 reasonable. One day at a time is held in memory, and saved to disc
 when another day needs to be accessed.
 
 Data is accessed in a cross between dictionary and list behaviour.
+The following are all valid:
+# get value nearest 9:30 on Christmas day
+data[data.nearest(datetime(2008, 12, 25, 9, 30))]
+# get entire array, equivalent to data[:] or just data
+data[datetime.min:datetime.max]
+# get last 12 hours of data
+data[datetime.utcnow() - timedelta(hours=12):]
 """
 
 from ConfigParser import SafeConfigParser
@@ -115,6 +109,10 @@ class core_store():
                 self._cache_ptr += 1
             day += 1
     def __getitem__(self, i):
+        """Return the data item or items with index i.
+
+        i must be a datetime object or a slice.
+        If i is a single datetime then a value with that index must exist."""
         if isinstance(i, slice):
             return self._get_slice(i)
         if not isinstance(i, datetime):
@@ -129,6 +127,11 @@ class core_store():
             raise KeyError(i)
         return self._cache[self._cache_ptr]
     def __setitem__(self, i, x):
+        """Store a value x with index i.
+
+        i must be a datetime object.
+        If there is already a value with index i, it is overwritten.
+        """
         if not isinstance(i, datetime):
             raise TypeError("index '%s' is not %s" % (i, datetime))
         x['idx'] = i
@@ -144,6 +147,11 @@ class core_store():
             self._cache.insert(self._cache_ptr, x)
         self._cache_dirty = True
     def __delitem__(self, i):
+        """Delete the value with index i.
+
+        i must be a datetime object.
+        A value with that index must exist.
+        """
         if not isinstance(i, datetime):
             raise TypeError("list indices must be %s" % (datetime))
         day = i.toordinal()
@@ -157,9 +165,11 @@ class core_store():
         del self._cache[self._cache_ptr]
         self._cache_dirty = True
     def before(self, idx):
-        # returns datetime of newest existing data record whose datetime
-        # is < idx. Might not even be in the same year!
-        # If no such record exists, returns None
+        """Return datetime of newest existing data record whose
+        datetime is < idx.
+
+        Might not even be in the same year! If no such record exists,
+        return None."""
         if not isinstance(idx, datetime):
             raise TypeError("'%s' is not %s" % (idx, datetime))
         target = idx.toordinal()
@@ -177,9 +187,11 @@ class core_store():
             day -= 1
         return None
     def after(self, idx):
-        # returns datetime of oldest existing data record whose datetime
-        # is >= idx. Might not even be in the same year!
-        # If no such record exists, returns None
+        """Return datetime of oldest existing data record whose
+        datetime is >= idx.
+
+        Might not even be in the same year! If no such record exists,
+        return None."""
         if not isinstance(idx, datetime):
             raise TypeError("'%s' is not %s" % (idx, datetime))
         target = idx.toordinal()
@@ -197,7 +209,7 @@ class core_store():
             day += 1
         return None
     def nearest(self, idx):
-        # returns datetime of record whose datetime is nearest idx
+        """Return datetime of record whose datetime is nearest idx."""
         hi = self.after(idx)
         lo = self.before(idx)
         if hi == None:
@@ -264,6 +276,7 @@ class core_store():
                             target_date.strftime("%Y-%m"),
                             target_date.strftime("%Y-%m-%d.txt"))
 class data_store(core_store):
+    """Stores raw weather station data."""
     def __init__(self, root_dir):
         core_store.__init__(self, os.path.join(root_dir, 'raw'))
     key_list = ['idx', 'delay', 'hum_in', 'temp_in', 'hum_out', 'temp_out',
@@ -283,6 +296,7 @@ class data_store(core_store):
         'status'    : 'int',
         }
 class hourly_store(core_store):
+    """Stores hourly summary weather station data."""
     def __init__(self, root_dir):
         core_store.__init__(self, os.path.join(root_dir, 'hourly'))
     key_list = ['idx', 'hum_in', 'temp_in', 'hum_out', 'temp_out',
@@ -302,6 +316,7 @@ class hourly_store(core_store):
         'rain'              : 'float',
         }
 class daily_store(core_store):
+    """Stores daily summary weather station data."""
     def __init__(self, root_dir):
         core_store.__init__(self, os.path.join(root_dir, 'daily'))
     key_list = ['idx', 'temp_out_min_t', 'temp_out_min',

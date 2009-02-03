@@ -1,4 +1,13 @@
 #!/usr/bin/env python
+"""
+Convert EasyWeather.dat data to pywws format.
+
+usage: python EWtoPy.py [options] EasyWeather_file data_dir
+options are:
+\t-h or --help\t\tdisplay this help
+EasyWeather_file is the input data file, e.g. EasyWeather.dat
+data_dir is the root directory of the weather data
+"""
 
 import datetime
 import getopt
@@ -7,10 +16,6 @@ import sys
 
 import DataStore
 
-def usage():
-    print >>sys.stderr, 'usage: %s [options] EasyWeather_file directory' % sys.argv[0]
-    print >>sys.stderr, '''\toptions are:
-    \t--help\t\t\tdisplay this help'''
 def main(argv=None):
     dst = True  # known state at start of my Easyweather.dat file
     if argv is None:
@@ -18,19 +23,20 @@ def main(argv=None):
     try:
         opts, args = getopt.getopt(argv[1:], "", ['help'])
     except getopt.error, msg:
-        print >>sys.stderr, msg
-        usage()
+        print >>sys.stderr, 'Error: %s\n' % msg
+        print >>sys.stderr, __doc__.strip()
         return 1
+    # check arguments
+    if len(args) != 2:
+        print >>sys.stderr, 'Error: 2 arguments required\n'
+        print >>sys.stderr, __doc__.strip()
+        return 2
     # process options
     for o, a in opts:
         if o == '--help':
             usage()
             return 0
     # process arguments
-    if len(args) != 2:
-        print >>sys.stderr, "2 arguments required"
-        usage()
-        return 2
     in_name = args[0]
     out_name = args[1]
     # open input
