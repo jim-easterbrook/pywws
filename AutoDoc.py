@@ -7,10 +7,9 @@ import sys
 from urlparse import urlparse
 
 class CorrectLinks(HTMLParser):
-    def process(self, in_file, out_file, name):
+    def process(self, in_file, out_file):
         self.reset()
         self._out = out_file
-        self._name = name
         self._subst = None
         self.feed(in_file.read())
         self.close()
@@ -30,18 +29,10 @@ class CorrectLinks(HTMLParser):
                     if url.scheme == 'file':
                         # probably a link to full path of Python module
                         # convert to relative path, and change text link as well
-                        self._subst = os.path.basename(url.path)
-                        if self._subst.lower() == self._name.lower():
-                            attrs[idx] = ('href', '../../%s' % self._name)
-                        else:
-                            self._subst = None
-                    else:
-                        base, ext = os.path.splitext(url.path)
-                        if ext == '.html' and not os.path.exists(base + '.py'):
-                            # most likely a standard Python module
-                            attrs[idx] = (
-                                'href',
-                                'http://docs.python.org/library/%s' % value.lower())
+                        base = os.path.basename(url.path)
+                        if os.path.exists(base):
+                            self._subst = base
+                            attrs[idx] = ('href', '../../%s' % base)
         self._out.write('<%s' % tag)
         for key, value in attrs:
             self._out.write(' %s="%s"' % (key, value))
@@ -56,7 +47,7 @@ class CorrectLinks(HTMLParser):
         self._out.write('</%s>' % tag)
     def handle_data(self, data):
         if self._subst:
-            data = self._name
+            data = self._subst
         self._out.write(data)
     def handle_charref(self, name):
         raise Exception("unhandled charref")
@@ -70,26 +61,32 @@ class CorrectLinks(HTMLParser):
         raise Exception("unhandled pi")
 def AutoDoc():
     doc_dir = 'doc/auto'
+    link_corrector = CorrectLinks()
+    def PostProcess(module):
+        # post-process pydoc output to clean up some of its eccentricities
+        # and move to doc_dir
+        src_file = module + '.html'
+        if not os.path.exists(src_file):
+            return
+        dest_file = os.path.join(doc_dir, src_file)
+        src = open(src_file, 'r')
+        dest = open(dest_file, 'w')
+        link_corrector.process(src, dest)
+        dest.close()
+        src.close()
+        os.unlink(src_file)
     if not os.path.isdir(doc_dir):
         os.mkdir(doc_dir)
-    wd = os.getcwd()
-    link_corrector = CorrectLinks()
+    for module in ['math', 'usb', 'datetime', 'getopt', 'sys', 'csv', 'os',
+                   'time', 'shlex', 'ftplib', 'shutil', 're']:
+        pydoc.writedoc(module)
+        PostProcess(module)
     for file in os.listdir('./'):
         base, ext = os.path.splitext(file)
         if ext != '.py':
             continue
         pydoc.writedoc(base)
-        src_file = base + '.html'
-        if not os.path.exists(src_file):
-            continue
-        # post-process pydoc output to clean up some of its eccentricities
-        dest_file = os.path.join(doc_dir, src_file)
-        src = open(src_file, 'r')
-        dest = open(dest_file, 'w')
-        link_corrector.process(src, dest, file)
-        dest.close()
-        src.close()
-        os.unlink(src_file)
+        PostProcess(base)
     return 0
 if __name__ == "__main__":
     sys.exit(AutoDoc())
