@@ -1,5 +1,13 @@
 #!/usr/bin/env python
 
+"""Get weather data, process it, prepare graphs & text files and
+upload to a web site.
+
+Typically run every hour from cron.
+
+Comment out or remove the bits you don't need.
+"""
+
 import os
 import sys
 
@@ -10,6 +18,7 @@ import Plot_7Days
 import Plot_28Days
 import Process
 import Template
+import ToTwitter
 import Upload
 
 def Hourly():
@@ -43,7 +52,11 @@ def Hourly():
         print "Templating", template
         output_file = os.path.join(work_dir, os.path.basename(template))
         Template.Template(hourly_data, daily_data, input_file, output_file)
-        uploads.append(output_file)
+        if 'tweet' in template:
+            print "Tweeting"
+            ToTwitter.ToTwitter(params, output_file)
+        else:
+            uploads.append(output_file)
     print "Uploading to web site"
     Upload.Upload(params, uploads)
     return 0
