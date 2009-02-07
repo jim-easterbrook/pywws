@@ -102,10 +102,6 @@ Getting started:
 	    all the data stored in the weather station.
 	12/ If you have an EasyWeather.dat file, now is the time to convert it:
 	    "python EWtoPy.py EasyWeather.dat /data/weather"
-	    Note that EasyWeather does not handle DST changes very well. My
-	    Python software uses UTC throughout to get round the problem. If
-	    DST was not in effect at the start of your EasyWeather.dat file,
-	    edit EWtoPy.py to set the dst variable to False near the start.
 	13/ Process the raw data to make hourly and daily summaries:
 	    "python Process.py /data/weather"
 	14/ Generate some graphs and tables:
