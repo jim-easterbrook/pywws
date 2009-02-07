@@ -19,7 +19,7 @@
       The EasyWeather.dat file is only used to provide data from before the start of the pywws data. As your weather station has its own memory, you should run LogData.py before EWtoPy.py to minimise use of the EasyWeather.dat file.
     </p>
     <p>
-      There is one thing to be aware of before running EWtoPy.py: it makes assumptions about daylight saving time (DST). The EasyWeather.dat file does not record if DST is in effect, but it does jump forwards or backwards an hour when it changes. EWtoPy.py needs to know if DST is in effect or not at the start of the EasyWeather.dat file. Look at the first line of this file (any text editor or the Unix command <code>more</code> will do) and note the date of the third column. If DST was not in effect on this date, edit EWtoPy.py and change the first line of the <code>main</code> procedure from <code>dst = True</code> to <code>dst = False</code>.
+      EWtoPy.py converts the time stamps in EasyWeather.dat from local time to UTC. This can cause problems when daylight savings time ends, as local time appears to jump back one hour. The program attempts to detect this and correct the affected time stamps, but I have not been able to test this on a variety of time zones.
     </p>
     <hr>
     <p>
