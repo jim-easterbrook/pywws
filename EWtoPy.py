@@ -7,17 +7,22 @@ options are:
 \t-h or --help\t\tdisplay this help
 EasyWeather_file is the input data file, e.g. EasyWeather.dat
 data_dir is the root directory of the weather data
+
+This program assumes that EasyWeather used your local time, and
+converts time stamps to UTC. This can create ambiguities when the
+clocks go back in October, which the program attempts to detect and
+correct.
 """
 
-import datetime
+from datetime import datetime, timedelta
 import getopt
 import os
 import sys
 
 import DataStore
+import TimeZone
 
 def main(argv=None):
-    dst = True  # known state at start of my Easyweather.dat file
     if argv is None:
         argv = sys.argv
     try:
@@ -26,16 +31,16 @@ def main(argv=None):
         print >>sys.stderr, 'Error: %s\n' % msg
         print >>sys.stderr, __doc__.strip()
         return 1
-    # check arguments
-    if len(args) != 2:
-        print >>sys.stderr, 'Error: 2 arguments required\n'
-        print >>sys.stderr, __doc__.strip()
-        return 2
     # process options
     for o, a in opts:
         if o == '--help':
             usage()
             return 0
+    # check arguments
+    if len(args) != 2:
+        print >>sys.stderr, 'Error: 2 arguments required\n'
+        print >>sys.stderr, __doc__.strip()
+        return 2
     # process arguments
     in_name = args[0]
     out_name = args[1]
@@ -44,15 +49,23 @@ def main(argv=None):
     # open data file store
     ds = DataStore.data_store(out_name)
     # get time to go forward to
-    first_stored = ds.after(datetime.datetime.min)
+    first_stored = ds.after(datetime.min)
     if first_stored == None:
-        first_stored = datetime.datetime.max
+        first_stored = datetime.max
     # copy any missing data
     last_date = None
     count = 0
     for line in in_file:
         items = line.split(',')
-        date = datetime.datetime.strptime(items[2].strip(), '%Y-%m-%d %H:%M:%S')
+        local_date = datetime.strptime(items[2].strip(), '%Y-%m-%d %H:%M:%S')
+        local_date = local_date.replace(tzinfo=TimeZone.Local)
+        date = local_date.astimezone(TimeZone.utc)
+        if last_date and date < last_date:
+            date = date + timedelta(hours=1)
+            print "Corrected DST ambiguity %s %s -> %s" % (
+                local_date, local_date.tzname(), date)
+        last_date = date
+        date = date.replace(tzinfo=None)
         # get data
         data = {}
         data['delay'] = int(items[3])
@@ -81,21 +94,8 @@ def main(argv=None):
             data['wind_dir'] = None
         data['rain'] = int(items[18]) * 0.3
         data['status'] = int(items[35].split()[15], 16)
-        # detect change in DST
-        if last_date:
-            diff = (date - last_date) - datetime.timedelta(minutes=data['delay'])
-            if dst and diff < datetime.timedelta(minutes=-55):
-                print "DST -> off", date
-                dst = False
-            if not dst and diff > datetime.timedelta(minutes=55):
-                print "DST -> on", date
-                dst = True
-        last_date = date
-        # adjust date for DST
-        if dst:
-            date = date - datetime.timedelta(hours=1)
         # check against first_stored
-        if first_stored - date < datetime.timedelta(minutes=data['delay'] / 2):
+        if first_stored - date < timedelta(minutes=data['delay'] / 2):
             break
         ds[date] = data
         count += 1
