@@ -30,7 +30,11 @@ Dependencies:
 	libusb (http://libusb.sf.net)
 	Python (http://www.python.org/) version 2.4 or higher
 	PyUSB (http://pyusb.berlios.de/)
-	gnuplot (http://www.gnuplot.info/)
+	For graph drawing:
+		gnuplot (http://www.gnuplot.info/)
+	For Twitter updates:
+		python-twitter (http://code.google.com/p/python-twitter/)
+		simplejson (http://pypi.python.org/pypi/simplejson)
 
 This software collection currently contains the following files:
 	README.txt		-- you are reading it!
@@ -47,9 +51,10 @@ This software collection currently contains the following files:
 	Plot_28Days.py		-- creates a png image of 28 days' data
 	Template.py		-- creates text data file based on a template
 	Upload.py		-- uploads files to a web site by ftp
+	ToTwitter.py		-- posts a message to a Twitter account
 	EWtoPy.py		-- converts EasyWeather.dat to DataStore format
-	UpgradeFrom0-1.py	-- converts v0.1 datastore to v0.3
-	UpgradeFrom0-2.py	-- converts v0.2 datastore to v0.3
+	UpgradeFrom0-1.py	-- converts v0.1 datastore to v0.3 on
+	UpgradeFrom0-2.py	-- converts v0.2 datastore to v0.3 on
 	AutoDoc.py		-- generates extra HTML documentation
 
 	example_templates/*	-- the templates I use for my website data
