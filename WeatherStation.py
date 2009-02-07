@@ -52,6 +52,15 @@ unknown         = 0x01
 
 # decode weather station raw data formats
 def _decode(raw, format):
+    def _signed_byte(raw, offset):
+        res = raw[offset]
+        if res == 0xFF:
+            return None
+        sign = 1
+        if res >= 128:
+            sign = -1
+            res = res - 128
+        return sign * res
     def _signed_short(raw, offset):
         lo = raw[offset]
         hi = raw[offset+1]
@@ -91,6 +100,8 @@ def _decode(raw, format):
             result = raw[pos]
             if result == 0xFF:
                 result = None
+        elif type == 'sb':
+            result = _signed_byte(raw, pos)
         elif type == 'us':
             result = _unsigned_short(raw, pos)
         elif type == 'ss':
@@ -244,6 +255,7 @@ class weather_station():
         }
     lo_fix_format = {
         'read_period'   : (16, 'ub', None),
+        'timezone'      : (24, 'sb', None),
         'current_pos'   : (30, 'us', None),
         'rel_pressure'  : (32, 'us', 0.1),
         'abs_pressure'  : (34, 'us', 0.1),
@@ -251,6 +263,7 @@ class weather_station():
         }
     fixed_format = {
         'read_period'   : (16, 'ub', None),
+        'timezone'      : (24, 'sb', None),
         'current_pos'   : (30, 'us', None),
         'rel_pressure'  : (32, 'us', 0.1),
         'abs_pressure'  : (34, 'us', 0.1),
