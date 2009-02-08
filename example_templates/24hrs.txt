@@ -1,23 +1,24 @@
 #daily#
+#timezone local#
 <table border="1" rules="all">
 #jump -2#
 #loop 2#
   <tr>
-    <th colspan="2" class="left">#idx "From 2100 (UTC) on %d %b to" "24 hours ending" "[x, None][loop_count == 2]"#
+    <th colspan="2" class="left">#idx "From %H%M %Z on %d %b to" "24 hours ending" "[x, None][loop_count == 2]"#
 #jump 1#
-#idx " %H%M (UTC) on %d %b %Y"#
+#idx " %H%M %Z on %d %b %Y"#
 </th>
-    <th colspan="2">Date &amp; time (UTC)</th>
+    <th colspan="2">Date &amp; time</th>
   </tr>
   <tr>
     <th class="right">Daytime max temp</th>
     <td>#temp_out_max "%.1f &deg;C"#</td>
-    <td>#temp_out_max_t "%Y/%m/%d</td><td>%H%M"#</td>
+    <td>#temp_out_max_t "%Y/%m/%d</td><td>%H%M %Z"#</td>
   </tr>
   <tr>
     <th class="right">Night min temp</th>
     <td>#temp_out_min "%.1f &deg;C"#</td>
-    <td>#temp_out_min_t "%Y/%m/%d</td><td>%H%M"#</td>
+    <td>#temp_out_min_t "%Y/%m/%d</td><td>%H%M %Z"#</td>
   </tr>
   <tr>
     <th class="right">Total rainfall</th>
@@ -32,7 +33,7 @@
   <tr>
     <th class="right">Highest gust speed</th>
     <td>#wind_gust "%.0f mph" "-" "x * 3.6 / 1.609344"#</td>
-    <td>#wind_gust_t "%Y/%m/%d</td><td>%H%M"#</td>
+    <td>#wind_gust_t "%Y/%m/%d</td><td>%H%M %Z"#</td>
   </tr>
 #idx "  <tr><th colspan=\"4\">&nbsp;</th></tr>" "" "[x, None][loop_count==1]"#
 #endloop#

@@ -1,3 +1,4 @@
+#timezone local#
 #daily#
 #jump -1#
 <?xml version="1.0" encoding="ISO-8859-1" ?>
@@ -20,7 +21,7 @@
 #wind_gust "%.0f mph (gust), " "" "x * 3.6 / 1.609344"#
 Rainfall #rain "%.1f mm"#</description>
       <guid isPermaLink="false">#idx "daily_%Y_%m_%d"#</guid>
-      <pubDate>#idx "%a, %d %b %Y %H:%M:%S +0000"#</pubDate>
+      <pubDate>#idx "%a, %d %b %Y %H:%M:%S %z"#</pubDate>
     </item>
   </channel>
 </rss>

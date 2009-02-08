@@ -1,3 +1,4 @@
+#timezone local#
 #hourly#
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos##">
@@ -8,7 +9,7 @@
     <description>Hourly reports from an amateur weather station in Stoneleigh, Surrey, UK</description>
     <ttl>60</ttl>
     <item>
-      <title>#idx "%A %H:%M UTC"#</title>
+      <title>#idx "%A %H:%M %Z"#</title>
       <geo:lat>51.36</geo:lat>
       <geo:long>-.25</geo:long>
       <link>http://www.jim-easterbrook.me.uk/weather/24hrs/</link>
@@ -20,8 +21,8 @@
 , Rainfall (hourly) #rain "%.1f mm"#
 , Pressure: #pressure "%.0f hPa, "#
 #pressure_trend "%s" "" "pressure_trend_text(x)"#</description>
-      <guid isPermaLink="false">#idx "hourly_%Y_%m_%d_%H_%M"#</guid>
-      <pubDate>#idx "%a, %d %b %Y %H:%M:%S +0000"#</pubDate>
+      <guid isPermaLink="false">#idx "hourly_%Y_%m_%d_%H_%M_%Z"#</guid>
+      <pubDate>#idx "%a, %d %b %Y %H:%M:%S %z"#</pubDate>
     </item>
   </channel>
 </rss>

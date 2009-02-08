@@ -1,6 +1,6 @@
 <table border="1" rules="all">
   <tr>
-    <th rowspan="2">Date<br />(ending 2100 UTC)</th>
+    <th rowspan="2">24 hours ending</th>
     <th colspan="2">Temperature</th>
     <th colspan="3">Wind</th>
     <th rowspan="2">Rainfall</th>
@@ -12,12 +12,13 @@
     <th>average</th>
     <th>max gust</th>
   </tr>
+#timezone local#
 #daily#
 #jump -8#
 #loop 7#
 #jump 1#
   <tr>
-    <td>#idx "%Y/%m/%d"#</td>
+    <td>#idx "%Y/%m/%d %H:%M %Z"#</td>
     <td>#temp_out_max "%.1f &deg;C"#</td>
     <td>#temp_out_min "%.1f &deg;C"#</td>
     <td>#wind_dir "%s" "-" "wind_dir_text[x]"#</td>

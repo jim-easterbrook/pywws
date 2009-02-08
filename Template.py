@@ -17,6 +17,7 @@ import shlex
 import sys
 
 import DataStore
+from TimeZone import Local, utc
 from WeatherStation import pressure_trend_text, wind_dir_text
 
 def Template(hourly_data, daily_data, template_file, output_file):
@@ -30,6 +31,8 @@ def Template(hourly_data, daily_data, template_file, output_file):
         return idx
     # start off in hourly data mode
     data_set = hourly_data
+    # start off in utc
+    time_zone = utc
     # jump to last item
     idx = jump(datetime.max, -1)
     if idx == None:
@@ -74,6 +77,8 @@ def Template(hourly_data, daily_data, template_file, output_file):
                     if len(command) > 2:
                         of.write(command[2])
                 elif isinstance(x, datetime):
+                    x = x.replace(tzinfo=utc)
+                    x = x.astimezone(time_zone)
                     of.write(x.strftime(fmt))
                 else:
                     of.write(fmt % (x))
@@ -85,6 +90,14 @@ def Template(hourly_data, daily_data, template_file, output_file):
                 data_set = hourly_data
                 idx = jump(datetime.max, -1)
                 data = data_set[idx]
+            elif command[0] == 'timezone':
+                if command[1] == 'utc':
+                    time_zone = utc
+                elif command[1] == 'local':
+                    time_zone = Local
+                else:
+                    print >>sys.stderr, "Unknown time zone: %s" % command[1]
+                    return 6
             elif command[0] == 'jump':
                 idx = jump(idx, int(command[1]))
                 data = data_set[idx]
