@@ -4,7 +4,7 @@ Generate hourly and daily summaries of raw weather station data.
 
 usage: python Process.py [options] data_dir
 options are:
-\t-h or --help\t\tdisplay this help
+\t--help\t\tdisplay this help
 data_dir is the root directory of the weather data
 """
 
@@ -15,6 +15,7 @@ import os
 import sys
 
 import DataStore
+from TimeZone import Local, utc
 import WeatherStation
 
 class Acc():
@@ -48,10 +49,9 @@ class Acc():
         else:
             self.rain += raw['rain'] - last_raw['rain']
         self.valid = True
-    def result(self, idx):
+    def result(self):
         """Get the result of the data accumulation."""
         retval = {}
-        retval['idx'] = idx
         if self.count > 0:
             self.wind_ave = self.wind_ave / self.count
             self.wind_ave = float(int(self.wind_ave * 100)) / 100.0
@@ -72,23 +72,26 @@ class Acc():
         return retval
 class Hour_Acc(Acc):
     def result(self, raw):
-        retval = Acc.result(self, raw['idx'])
+        retval = Acc.result(self)
         del retval['wind_gust_t']
-        for key in ['hum_in', 'temp_in', 'hum_out', 'temp_out', 'pressure']:
+        for key in ['idx', 'hum_in', 'temp_in', 'hum_out', 'temp_out', 'pressure']:
             retval[key] = raw[key]
         return retval
 class Day_Acc(Acc):
     """Similar to Acc(), but also logs daytime max and nighttime min
     temperatures.
 
-    Daytime is assumed to be 0900-2100 and nighttime to be 2100-0900."""
-    def __init__(self):
+    Daytime is assumed to be 0900-2100 and nighttime to be 2100-0900,
+    local time (1000-2200 and 2200-1000 during DST)."""
+    def __init__(self, day_end):
         Acc.__init__(self)
+        self._day_end = day_end
         self.temp_out_min = (1000.0, None)
         self.temp_out_max = (-1000.0, None)
     def add(self, raw, last_raw):
         if raw['temp_out'] != None:
-            if raw['idx'].hour >= 9 and raw['idx'].hour < 21:
+            if raw['idx'].hour >= self._day_end - 12 and \
+               raw['idx'].hour < self._day_end:
                 # daytime max temperature
                 if raw['temp_out'] > self.temp_out_max[0]:
                     self.temp_out_max = (raw['temp_out'], raw['idx'])
@@ -97,8 +100,8 @@ class Day_Acc(Acc):
                 if raw['temp_out'] <= self.temp_out_min[0]:
                     self.temp_out_min = (raw['temp_out'], raw['idx'])
         Acc.add(self, raw, last_raw)
-    def result(self, idx):
-        retval = Acc.result(self, idx)
+    def result(self):
+        retval = Acc.result(self)
         if self.temp_out_min[1] != None:
             retval['temp_out_min'] = self.temp_out_min[0]
         else:
@@ -117,13 +120,15 @@ def Process(params, raw_data, hourly_data, daily_data):
     Starts from the last hourly or daily summary (whichever is
     earlier) and continues to end of the raw data.
 
-    A day is assumed to end at 2100, following the historical
-    convention for weather station readings.
+    A day is assumed to end at 2100 local time (2200 during DST),
+    following the historical convention for weather station readings.
 
     Atmospheric pressure is converted from relative to absolute, using
     the weather station's offset as recorded by LogData.py. The
     pressure trend (change over three hours) is also computed.
     """
+    HOUR = timedelta(hours=1)
+    HOURx3 = timedelta(hours=3)
     pressure_offset = eval(params.get('fixed', 'pressure offset'))
     # get time of last existing records
     last_raw = raw_data.before(datetime.max)
@@ -136,10 +141,14 @@ def Process(params, raw_data, hourly_data, daily_data):
         start = raw_data.after(last_hour)
     else:
         start = raw_data.after(last_day)
+    # get local time's offset from UTC, without DST
+    time_offset = Local.utcoffset(last_raw) - Local.dst(last_raw)
+    # set daytime end hour, in UTC
+    day_end = 21 - (time_offset.seconds / 3600)
     # round to start of this day
-    if start.hour < 21:
+    if start.hour < day_end:
         start = start - timedelta(hours=24)
-    start = start.replace(hour=21, minute=0, second=0)
+    start = start.replace(hour=day_end, minute=0, second=0)
     # delete any existing records after start, as they may be incomplete
     while last_hour != None and hourly_data[last_hour]['idx'] > start:
         del hourly_data[last_hour]
@@ -149,7 +158,7 @@ def Process(params, raw_data, hourly_data, daily_data):
         last_day = daily_data.before(datetime.max)
     # preload pressure history
     pressure_history = deque()
-    for raw in raw_data[start - timedelta(hours=3):start]:
+    for raw in raw_data[start - HOURx3:start]:
         pressure_history.append((raw['idx'], raw['pressure']))
     # get last raw data before we start
     prev = raw_data.before(start)
@@ -160,12 +169,12 @@ def Process(params, raw_data, hourly_data, daily_data):
     # process the data in day chunks
     while start <= last_raw:
         print start.isoformat()
-        day_acc = Day_Acc()
+        day_acc = Day_Acc(day_end)
         # process each hour
         for hour in range(24):
             hour_acc = Hour_Acc()
             # process each data item in the hour
-            stop = start + timedelta(hours=1)
+            stop = start + HOUR
             for raw in raw_data[start:stop]:
                 pressure_history.append((raw['idx'], raw['pressure']))
                 hour_acc.add(raw, prev)
@@ -176,7 +185,7 @@ def Process(params, raw_data, hourly_data, daily_data):
                 # store summary of hour
                 new_data = hour_acc.result(prev)
                 # compute pressure trend
-                target = new_data['idx'] - timedelta(hours=3)
+                target = new_data['idx'] - HOURx3
                 while abs(pressure_history[0][0] - target) > \
                       abs(pressure_history[1][0] - target):
                     pressure_history.popleft()
@@ -188,7 +197,8 @@ def Process(params, raw_data, hourly_data, daily_data):
             start = stop
         if day_acc.valid:
             # store summary of day
-            new_data = day_acc.result(prev['idx'])
+            new_data = day_acc.result()
+            new_data['idx'] = min(stop, last_raw)
             daily_data[new_data['idx']] = new_data
     return 0
 def main(argv=None):
@@ -200,16 +210,16 @@ def main(argv=None):
         print >>sys.stderr, 'Error: %s\n' % msg
         print >>sys.stderr, __doc__.strip()
         return 1
-    # check arguments
-    if len(args) != 1:
-        print >>sys.stderr, 'Error: 1 argument required\n'
-        print >>sys.stderr, __doc__.strip()
-        return 2
     # process options
     for o, a in opts:
         if o == '--help':
             print __doc__.strip()
             return 0
+    # check arguments
+    if len(args) != 1:
+        print >>sys.stderr, 'Error: 1 argument required\n'
+        print >>sys.stderr, __doc__.strip()
+        return 2
     data_dir = args[0]
     return Process(DataStore.params(data_dir),
                    DataStore.data_store(data_dir),
