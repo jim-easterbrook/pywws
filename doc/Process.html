@@ -13,16 +13,19 @@
       <a href="auto/Process.html">Process.py</a> -- generates hourly and daily summary data
     </h2>
     <p>
-	This module takes raw weather station data (typically sampled every five or ten minutes) and generates hourly and daily summary data, which is useful when creating tables and graphs. The hourly data is derived from all the records in one hour, e.g. from 18:00:00 to 18:59:59, and is given the index of the last record in that hour. The daily data follows the British weather station convention of 9am and 9pm readings, and is given the index of the last record before 9pm.
+      This module takes raw weather station data (typically sampled every five or ten minutes) and generates hourly and daily summary data, which is useful when creating tables and graphs. The hourly data is derived from all the records in one hour, e.g. from 18:00:00 to 18:59:59, and is given the index of the last record in that hour. The daily data follows the British weather station convention of 9am and 9pm readings, and summarises data from 2100 the previous day to 2100 on the "index" day, or 2200 to 2200 when DST is in effect.
     </p>
     <p>
-	Pressure is converted from absolute to relative, using an offset taken from the weather station, so make sure you set this up correctly before processing data. It also computes the pressure trend - how it has varied over the previous three hours.
+      Daytime and nightime are assumed to start at 0900 and 2100 local time, or 1000 and 2200 when DST is in effect. However, all data is indexed in UTC.
     </p>
     <p>
-	Wind speed data is averaged over the hour (or day) and the maximum gust speed during the hour (or day) is recorded. The predominant wind direction is also calculated.
+      Pressure is converted from absolute to relative, using an offset taken from the weather station, so make sure you set this up correctly before processing data. It also computes the pressure trend - how it has varied over the previous three hours.
     </p>
     <p>
-	Rainfall is converted from the raw "total since last reset" figure to a more useful total in the last hour / day.
+      Wind speed data is averaged over the hour (or day) and the maximum gust speed during the hour (or day) is recorded. The predominant wind direction is also calculated.
+    </p>
+    <p>
+      Rainfall is converted from the raw "total since last reset" figure to a more useful total in the last hour / day.
     </p>
     <hr>
     <p>

@@ -35,6 +35,9 @@
         <b><code>#hourly#</code></b>: switch to "hourly" summary data. The index is reset to the most recent value.
       </li>
       <li>
+        <b><code>#timezone name#</code></b>: convert all datetime values to time zone <code>name</code> before output. Permitted values for <code>name</code> are <code>utc</code> or <code>local</code>.
+      </li>
+      <li>
         <b><code>#jump count#</code></b>: jump <code>count</code> values. The data index is adjusted by <code>count</code> hours or days. Negative values jump back in time.
       </li>
       <li>
@@ -61,7 +64,7 @@
 #jump 1#
   &lt;tr&gt;
     &lt;td&gt;#idx "%Y/%m/%d" "" "[None, x][x.hour == 0 or loop_count == 7]"#&lt;/td&gt;
-    &lt;td&gt;#idx "%H%M"#&lt;/td&gt;
+    &lt;td&gt;#idx "%H%M %Z"#&lt;/td&gt;
     &lt;td&gt;#temp_out "%.1f &deg;C"#&lt;/td&gt;
     &lt;td&gt;#hum_out "%d%%"#&lt;/td&gt;
     &lt;td&gt;#wind_dir "%s" "-" "wind_dir_text[x]"#&lt;/td&gt;
