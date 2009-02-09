@@ -19,17 +19,20 @@ import os
 import sys
 
 import DataStore
+from TimeZone import Local
 from WeatherStation import dew_point
 
 def Plot_7Days(params, hourly_data, work_dir, output_file):
-    # set start of graph to 28 quarter-days before last record
-    x_lo = hourly_data.before(datetime.max)
-    if x_lo == None:
+    # set end of graph to quarter-day of last record
+    x_hi = hourly_data.before(datetime.max)
+    if x_hi == None:
         print >>sys.stderr, "No hourly summary data - run Process.py first"
         return 4
-    x_lo = x_lo + timedelta(hours=5, minutes=55)
-    x_lo = x_lo.replace(minute=0, second=0) - timedelta(hours=x_lo.hour % 6)
-    x_lo = x_lo - timedelta(days=7)
+    utcoffset = Local.utcoffset(x_hi)
+    x_hi = x_hi + utcoffset + timedelta(hours=5, minutes=55)
+    x_hi = x_hi.replace(minute=0, second=0) - timedelta(hours=x_hi.hour % 6)
+    # set start of graph to 7 days earlier
+    x_lo = x_hi - timedelta(days=7)
     # open temporary data files
     if not os.path.isdir(work_dir):
         os.makedirs(work_dir)
@@ -42,26 +45,30 @@ def Plot_7Days(params, hourly_data, work_dir, output_file):
     rain = open(rain_file, 'w')
     pressure = open(pressure_file, 'w')
     # iterate over 6-hour chunks, starting off edge of graph
-    start = x_lo - timedelta(hours=6)
+    HOURx6 = timedelta(hours=6)
+    start = x_lo - HOURx6
+    centre = start + timedelta(hours=3)
+    start = start - utcoffset
     for quarter in range(29):
         rain_total = 0.0
-        stop = start + timedelta(hours=6)
+        stop = start + HOURx6
         for data in hourly_data[start:stop]:
+            idx = data['idx'] + utcoffset
             if data['temp_out'] != None and data['hum_out'] != None:
                 temp.write('%s %.1f %.2f\n' % (
-                    data['idx'].isoformat(), data['temp_out'],
+                    idx.isoformat(), data['temp_out'],
                     dew_point(data['temp_out'], data['hum_out'])))
             if data['wind_ave'] != None and data['wind_gust'] != None:
                 wind.write('%s %.2f %.2f\n' % (
-                    data['idx'].isoformat(),
+                    idx.isoformat(),
                     data['wind_ave'] * 3.6 / 1.609344,
                     data['wind_gust'] * 3.6 / 1.609344))
             pressure.write('%s %.1f\n' % (
-                data['idx'].isoformat(), data['pressure']))
+                idx.isoformat(), data['pressure']))
             rain_total += data['rain']
         # output rain data
-        centre = start + timedelta(hours=3)
         rain.write('%s %.1f\n' % (centre.isoformat(), rain_total))
+        centre = centre + HOURx6
         start = stop
     temp.close()
     wind.close()
@@ -74,7 +81,7 @@ def Plot_7Days(params, hourly_data, work_dir, output_file):
     of.write('set output "%s"\n' % output_file)
     of.write('set xdata time\n')
     of.write('set timefmt "%Y-%m-%dT%H:%M:%S"\n')
-    of.write('set xrange ["%s":"%s"]\n' % (x_lo.isoformat(), stop.isoformat()))
+    of.write('set xrange ["%s":"%s"]\n' % (x_lo.isoformat(), x_hi.isoformat()))
     of.write('set xtics offset 4.3,0 %d\n' % (3600 * 24))
     of.write('set lmargin 3\n')
     of.write('set bmargin 0.9\n')

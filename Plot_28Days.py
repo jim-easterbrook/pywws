@@ -19,15 +19,18 @@ import os
 import sys
 
 import DataStore
+from TimeZone import Local
 
 def Plot_28Days(params, daily_data, hourly_data, work_dir, output_file):
-    # set start of graph to 28 days before last data item
+    # set end of graph to last data item
     x_hi = daily_data.before(datetime.max)
     if x_hi == None:
         print >>sys.stderr, "No daily summary data - run Process.py first"
         return 4
-    x_hi = x_hi + timedelta(hours=3)    # ensure we get to right day
-    x_hi = x_hi.replace(hour=21, minute=0, second=0)
+    x_hi = daily_data.before(x_hi) + timedelta(hours=24)    # round up last (possibly incomplete) day
+    utcoffset = Local.utcoffset(x_hi)
+    x_hi = x_hi + utcoffset
+    # set start of graph to 28 days earlier
     x_lo = x_hi - timedelta(days=28)
     # open temporary data files
     if not os.path.isdir(work_dir):
@@ -43,30 +46,27 @@ def Plot_28Days(params, daily_data, hourly_data, work_dir, output_file):
     rain = open(rain_file, 'w')
     pressure = open(pressure_file, 'w')
     # iterate over data
-    for data in daily_data[x_lo:]:
-        centre = data['idx']
-        if centre.hour >= 21:
-            # got an incomplete record, so need to get to next day
-            centre = centre + timedelta(hours=3)
-        # centre rain on 9 am
-        centre = centre.replace(hour=9, minute=0, second=0)
-        rain.write('%s %.1f\n' % (centre.isoformat(), data['rain']))
-        if data['temp_out_min'] != None:
-            # centre nighttime min on 3 am
-            centre = centre.replace(hour=3)
-            tmin.write('%s %.1f\n' % (centre.isoformat(), data['temp_out_min']))
-        if data['temp_out_max'] != None:
-            # centre daytime max on 3 pm
-            centre = centre.replace(hour=15)
-            tmax.write('%s %.1f\n' % (centre.isoformat(), data['temp_out_max']))
-    for data in hourly_data[x_lo:]:
+    start = x_lo - utcoffset - timedelta(hours=1)   # start off edge of graph
+    for data in hourly_data[start:]:
+        idx = data['idx'] + utcoffset
         if data['wind_ave'] != None and data['wind_gust'] != None:
             wind.write('%s %.2f %.2f\n' % (
-                data['idx'].isoformat(),
+                idx.isoformat(),
                 data['wind_ave'] * 3.6 / 1.609344,
                 data['wind_gust'] * 3.6 / 1.609344))
-        pressure.write('%s %.1f\n' % (
-            data['idx'].isoformat(), data['pressure']))
+        pressure.write('%s %.1f\n' % (idx.isoformat(), data['pressure']))
+    start = x_lo - utcoffset + timedelta(hours=6)   # avoid previous day's data
+    centre_rain = x_lo + timedelta(hours=12)
+    centre_temp = x_lo + timedelta(hours=6)
+    for data in daily_data[start:]:
+        rain.write('%s %.1f\n' % (centre_rain.isoformat(), data['rain']))
+        centre_rain = centre_rain + timedelta(hours=24)
+        if data['temp_out_min'] != None:
+            tmin.write('%s %.1f\n' % (centre_temp.isoformat(), data['temp_out_min']))
+        centre_temp = centre_temp + timedelta(hours=12)
+        if data['temp_out_max'] != None:
+            tmax.write('%s %.1f\n' % (centre_temp.isoformat(), data['temp_out_max']))
+        centre_temp = centre_temp + timedelta(hours=12)
     tmax.close()
     tmin.close()
     wind.close()

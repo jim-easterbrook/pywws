@@ -19,18 +19,21 @@ import os
 import sys
 
 import DataStore
+from TimeZone import Local
 from WeatherStation import dew_point
 
 def Plot_24Hrs(params, raw_data, hourly_data, work_dir, output_file):
     pressure_offset = eval(params.get('fixed', 'pressure offset'))
-    # set start of graph to 24 hours before last data item
-    x_lo = raw_data.before(datetime.max)
-    if x_lo == None:
-        print >>sys.stderr, "No data - run LogData.py or EWtoPy.py first"
+    # set end of graph to start of the next hour after last item
+    x_hi = hourly_data.before(datetime.max)
+    if x_hi == None:
+        print >>sys.stderr, "No hourly summary data - run Process.py first"
         return 4
-    x_lo = x_lo + timedelta(minutes=55)
-    x_lo = x_lo.replace(minute=0, second=0) - timedelta(hours=24)
-    x_hi = x_lo + timedelta(hours=24)
+    utcoffset = Local.utcoffset(x_hi)
+    x_hi = x_hi + utcoffset + timedelta(minutes=55)
+    x_hi = x_hi.replace(minute=0, second=0)
+    # set start of graph to 24 hours earlier
+    x_lo = x_hi - timedelta(hours=24)
     # open temporary data files
     if not os.path.isdir(work_dir):
         os.makedirs(work_dir)
@@ -43,27 +46,29 @@ def Plot_24Hrs(params, raw_data, hourly_data, work_dir, output_file):
     pressure = open(pressure_file, 'w')
     rain = open(rain_file, 'w')
     # iterate over hours, starting and ending off edge of graph
-    got_rain = False
-    start = x_lo - timedelta(hours=1)
+    HOUR = timedelta(hours=1)
+    start = x_lo - HOUR
+    centre = start + timedelta(minutes=30)
+    start = start - utcoffset
     for hour in range(26):
-        stop = start + timedelta(hours=1)
+        stop = start + HOUR
         for data in raw_data[start:stop]:
+            idx = data['idx'] + utcoffset
             if data['temp_out'] != None and data['hum_out'] != None:
                 temp.write('%s %.1f %.2f\n' % (
-                    data['idx'].isoformat(), data['temp_out'],
+                    idx.isoformat(), data['temp_out'],
                     dew_point(data['temp_out'], data['hum_out'])))
             if data['wind_ave'] != None and data['wind_gust'] != None:
                 wind.write('%s %.2f %.2f\n' % (
-                    data['idx'].isoformat(),
+                    idx.isoformat(),
                     data['wind_ave'] * 3.6 / 1.609344,
                     data['wind_gust'] * 3.6 / 1.609344))
             pressure.write('%s %.1f\n' % (
-                data['idx'].isoformat(), data['pressure'] + pressure_offset))
+                idx.isoformat(), data['pressure'] + pressure_offset))
         for data in hourly_data[start:stop]:
             # output rain data
-            centre = start + timedelta(minutes=30)
             rain.write('%s %.1f\n' % (centre.isoformat(), data['rain']))
-            got_rain = True
+        centre = centre + HOUR
         start = stop
     temp.close()
     wind.close()
@@ -93,16 +98,13 @@ def Plot_24Hrs(params, raw_data, hourly_data, work_dir, output_file):
     of.write('plot "%s" using 1:3 title "Wind speed: gust (mph)" smooth unique lc 4, \\\n' % wind_file)
     of.write('     "%s" using 1:2 title "average (mph)" smooth unique lc 3\n' % wind_file)
     # plot rain
-    if got_rain:
-        lo, hi = eval(params.get('plot range', 'rain hour', '0, 4'))
-        of.write('set yrange [%d:%d]\n' % (lo, hi))
-        of.write('set style fill solid\n')
-        of.write('set boxwidth 2800\n')
-        of.write('plot "%s" using 1:2 title "Hourly rainfall (mm)" lc 5 lw 0 with boxes\n' % rain_file)
-    else:
-        print >>sys.stderr, "No hourly summary data - run Process.py first"
+    lo, hi = eval(params.get('plot range', 'rain hour', '0, 4'))
+    of.write('set yrange [%d:%d]\n' % (lo, hi))
+    of.write('set style fill solid\n')
+    of.write('set boxwidth 2800\n')
+    of.write('plot "%s" using 1:2 title "Hourly rainfall (mm)" lc 5 lw 0 with boxes\n' % rain_file)
     # label x axis of last plot
-    of.write('set xlabel "Time(UTC)"\n')
+    of.write('set xlabel "Time (%s)"\n' % Local.tzname(x_hi))
     of.write('set bmargin\n')
     # plot pressure
     lo, hi = eval(params.get('plot range', 'pressure', '980, 1050'))
