@@ -54,16 +54,17 @@ This software collection currently contains the following files:
 	ToTwitter.py		-- posts a message to a Twitter account
 	EWtoPy.py		-- converts EasyWeather.dat to DataStore format
 	UpgradeFrom0-1.py	-- converts v0.1 datastore to v0.3 on
-	UpgradeFrom0-2.py	-- converts v0.2 datastore to v0.3 on
+	Reprocess.py		-- upgrade v0.2 or later datastore
 	AutoDoc.py		-- generates extra HTML documentation
 
 	example_templates/*	-- the templates I use for my website data
 	doc/*			-- HTML documentation of most of the above
 
 Upgrading from earlier versions:
-	The data file format has changed slightly since v0.1 and v0.2
-	Before running any other part of this version, backup your data then
-	run UpgradeFrom0-1.py or UpgradeFrom0-2.py as appropriate.
+	Back up your data, then run one of the following, depending on
+	which version of pywws you have been using:
+	v0.1 : run UpgradeFrom0-1.py to translate data file format
+	v0.2 or later : run Reprocess.py to regenerate summary data
 
 Preparation:
 	Unlike some other weather station software, this software relies on
@@ -80,55 +81,69 @@ Preparation:
 	absolute and relative pressure. See the instruction book for details.
 
 Getting started:
-	1/ Unzip / untar all the files to a convenient directory
-	2/ Install Python, if not already installed
-	3/ Install libusb, if not already installed
-	4/ Install PyUSB, if not already installed
-	5/ Install gnuplot, if not already installed
-	Note: steps 2..5 may require installation of other software on some
-	platforms, and you might have to compile / build some packages.
-	6/ Run "python TestWeatherStation.py" - it should complain about not
-	   being able to connect to a weather station
-	7/ Connect weather station's USB port to computer
-	8/ Run TestWeatherStation.py again - you should get a load of data
-	   8a/ Try options to decode data and show history:
-	       "python TestWeatherStation.py -d -h 5"
-	9/ Run "python AutoDoc.py" to create extra documentation of the
-	   software.
-	10/ Choose somewhere to store readings, e.g. /data/weather
-	11/ Get some data from the weather station:
-	    "python LogData.py /data/weather"
-	    This will take a while the first time you run it, as it fetches
-	    all the data stored in the weather station.
-	12/ If you have an EasyWeather.dat file, now is the time to convert it:
-	    "python EWtoPy.py EasyWeather.dat /data/weather"
-	13/ Process the raw data to make hourly and daily summaries:
-	    "python Process.py /data/weather"
-	14/ Generate some graphs and tables:
-	    "python Plot_24Hrs.py /data/weather /tmp 24hrs.png"
-	    "python Template.py /data/weather example_templates/24hrs.txt 24hrs.txt"
-	    "python Template.py /data/weather example_templates/6hrs.txt 6hrs.txt"
-	15/ Have a look at the files you've just made, then write a web page
-	    that incorporates them. (Use server side includes for the .txt
-	    files). Copy the templates you want from the example_templates
-	    directory to the templates directory.
-	16/ Edit /data/weather/weather.ini and add details of your website
-	    for example:
-		[ftp]
-		site = ftp.username.isp.co.uk
-		user = username
-		password = secret
-		directory = /public_html/weather/data
-	17/ Try uploading the files:
-	    "python Upload.py /data/weather 24hrs.png 24hrs.txt 6hrs.txt"
-	18/ Edit Hourly.py to use the directories and file names you've chosen
-	    then test it and add it to crontab. I suggest running it every
-	    hour at 1 or 2 minutes past.
+  1/ Unzip / untar all the files to a convenient directory
+  2/ Install Python, if not already installed
+  3/ Install libusb, if not already installed
+  4/ Install PyUSB, if not already installed
+  Note: steps 2..4 may require installation of other software on some
+  platforms, and you might have to compile / build some packages.
+  5/ Run "python TestWeatherStation.py" - it should complain about not
+     being able to connect to a weather station
+  6/ Connect weather station's USB port to computer
+  7/ Run TestWeatherStation.py again - you should get a load of data
+     7a/ Try options to decode data and show history:
+         "python TestWeatherStation.py -d -h 5"
+  8/ Run "python AutoDoc.py" to create extra documentation of the
+     software.
+  9/ Choose somewhere to store readings, e.g. /data/weather
+  10/ Get some data from the weather station:
+      "python LogData.py /data/weather"
+      This will take a while the first time you run it, as it fetches
+      all the data stored in the weather station.
+  11/ If you have an EasyWeather.dat file, now is the time to convert it:
+      "python EWtoPy.py EasyWeather.dat /data/weather"
+  12/ Process the raw data to make hourly and daily summaries:
+      "python Process.py /data/weather"
+  13/ Generate some tables:
+      "python Template.py /data/weather example_templates/24hrs.txt 24hrs.txt"
+      "python Template.py /data/weather example_templates/6hrs.txt 6hrs.txt"
+  14/ If you want to create graphs, install gnuplot then:
+      "python Plot_24Hrs.py /data/weather /tmp 24hrs.png"
+      "python Plot_7days.py /data/weather /tmp 7days.png"
+  15/ Have a look at the files you've just made, then write a web page
+      that incorporates them. (Use server side includes for the .txt
+      files). Copy the templates you want from the example_templates
+      directory to the templates directory.
+  16/ Edit /data/weather/weather.ini and add details of your website
+      for example:
+  	[ftp]
+  	site = ftp.username.isp.co.uk
+  	user = username
+  	password = secret
+  	directory = /public_html/weather/data
+  17/ Try uploading the files:
+      "python Upload.py /data/weather 24hrs.txt 6hrs.txt 24hrs.png 7days.png"
+  18/ If you want to upload to Twitter, install python-twitter then:
+      "python Template.py /data/weather example_templates/tweet.txt tweet.txt"
+      "python ToTwitter.py /data/weather tweet.txt"
+      You'll need to edit /data/weather/weather.ini with your Twitter
+      account details.
+  19/ Edit Hourly.py to use the directories and file names you've chosen
+      then test it and add it to crontab. I suggest running it every
+      hour at 1 or 2 minutes past.
+  20/ Edit templates, Plot_xx.py, Hourly.py and other files to adjust
+      everything to your taste.
+
+Changes in v0.4:
+	1/ Can post brief messages to Twitter.
+	2/ Now time zone aware. Uses UTC for data indexing and local time
+	   for graphs and text data files.
 
 Changes in v0.3:
 	1/ Now uses templates to generate text data
 	2/ Added 28 day plot
 	3/ Minor efficiency improvements
+	4/ Improved documentation
 
 Changes in v0.2:
 	1/ Now uses Python csv library to read and write data
@@ -138,8 +153,7 @@ Changes in v0.2:
 Still to come, possibly:
 	1/ Monthly and yearly graphs and tables?
 	2/ Better documentation (but don't hold your breath)
-	3/ Use local time for graphs and text data output
-	4/ Select units (e.g. mph - km/h - m/s) in config file
+	3/ Select units (e.g. mph - km/h - m/s) in config file
 
 If you've got this software up and running, do let me know what you think.
 Email jim@jim-easterbrook.me.uk

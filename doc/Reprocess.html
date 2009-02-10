@@ -2,7 +2,7 @@
 <html>
   <head>
     <title>
-      Software for WeatherStations: UpgradeFrom0-2.py
+      Software for WeatherStations: Reprocess.py
     </title>
   </head>
   <body>
@@ -10,16 +10,16 @@
       <a href="index.html">Python software for USB Wireless WeatherStations</a>
     </h1>
     <h2>
-      <a href="auto/UpgradeFrom0-2.html">UpgradeFrom0-2.py</a> -- converts v0.2 datastore to v0.3
+      <a href="auto/Reprocess.html">Reprocess.py</a> -- regenerates hourly and daily summary data
     </h2>
     <p>
-      This program converts weather data from the format used by v0.2 of the Python weather station software to that used by v0.3. It is a good idea to back up your data before running UpgradeFrom0-2.py.
+      This program recreates the hourly and daily summary data that is created by the Process.py program. It should be run whenever you upgrade to a newer version of pywws.
     </p>
     <p>
       The program is very simple to use:
     </p>
 <pre>
-python UpgradeFrom0-2.py data_directory
+python Reprocess.py data_directory
 </pre>
     <p>
       where <code>data_directory</code> is the location of your stored data.
