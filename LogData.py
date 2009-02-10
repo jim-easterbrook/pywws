@@ -16,6 +16,7 @@ import sys
 import time
 
 import DataStore
+from TimeZone import Local
 import WeatherStation
 
 def LogData(params, raw_data):
@@ -25,6 +26,20 @@ def LogData(params, raw_data):
     if not fixed_block:
         print >>sys.stderr, "Invalid data from weather station"
         return 3
+    # check clocks
+    s_time = datetime.strptime(fixed_block['date_time'], '%Y-%m-%d %H:%M') + \
+             timedelta(seconds=30)
+    c_time = datetime.now()
+    diff = abs(s_time - c_time)
+    offset = (Local.utcoffset(c_time) - Local.dst(c_time)).seconds / 3600
+    offset = offset - 1	# weather station is based on German time
+    if offset != fixed_block['timezone']:
+        print >>sys.stderr, """WARNING: computer and weather station are in different timezones.
+Set the weather station "timezone" to %d hours.""" % offset
+    elif diff > timedelta(minutes=1):
+        print >>sys.stderr, """WARNING: computer and weather station clocks disagree.
+Check that the computer is synchronised to a network time server and
+that the weather station is receiving the DCF time signal."""
     # store info from fixed block
     params.set('fixed', 'pressure offset', '%g' % (
         fixed_block['rel_pressure'] - fixed_block['abs_pressure']))
