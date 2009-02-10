@@ -79,7 +79,7 @@ def AutoDoc():
         os.mkdir(doc_dir)
     for module in ['math', 'usb', 'datetime', 'getopt', 'sys', 'csv', 'os',
                    'time', 'shlex', 'ftplib', 'shutil', 're', 'codecs',
-                   'twitter']:
+                   'twitter', 'pydoc']:
         pydoc.writedoc(module)
         PostProcess(module)
     for file in os.listdir('./'):
