@@ -138,11 +138,11 @@ class weather_station():
         if not self.devh:
             raise IOError("Open device failed")
         try:
-            self.devh.detachKernelDriver(0)
+            self.devh.claimInterface(0)
         except usb.USBError:
-            # kernel driver is already detached. No problem
-            pass
-        self.devh.claimInterface(0)
+            # claim interface failed, try detaching kernel driver first
+            self.devh.detachKernelDriver(0)
+            self.devh.claimInterface(0)
         self.devh.setAltInterface(0)
         # _init_wread
         tbuf = self.devh.getDescriptor(1, 0, 0x12)
