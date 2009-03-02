@@ -12,7 +12,6 @@ file is the text file to be uploaded
 Username and password are read from the weather.ini file in data_dir.
 """
 
-import codecs
 import getopt
 import os
 import sys
@@ -27,9 +26,11 @@ def ToTwitter(params, file):
     tweet = tweet_file.read(140)
     tweet_file.close()
     if len(tweet) > 0:
-        api = twitter.Api(username=username, password=password)
-        api.SetSource('pywws')
-        status = api.PostUpdate(codecs.decode(tweet, 'iso-8859-1'))
+        api = twitter.Api(username=username, password=password,
+                          input_encoding='iso-8859-1')
+        if hasattr(api, 'SetSource'):
+            api.SetSource('pywws')
+        status = api.PostUpdate(tweet)
     return 0
 def main(argv=None):
     if argv is None:
