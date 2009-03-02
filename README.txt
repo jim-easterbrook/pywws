@@ -9,7 +9,7 @@ This software is not released through any official channels, and
 therefore do not expect any support.
 
 This software is in no way affiliated or related to
-	 www.foshk.com, Fine Offset Electronics Co.,LTD.
+	www.foshk.com, Fine Offset Electronics Co.,LTD.
 
 Licence terms:
     This softare is free software; you can redistribute it and/or modify
@@ -107,7 +107,7 @@ Getting started:
   13/ Generate some tables:
       "python Template.py /data/weather example_templates/24hrs.txt 24hrs.txt"
       "python Template.py /data/weather example_templates/6hrs.txt 6hrs.txt"
-  14/ If you want to create graphs, install gnuplot then:
+  14/ If you want to create graphs, install gnuplot, then:
       "python Plot_24Hrs.py /data/weather /tmp 24hrs.png"
       "python Plot_7days.py /data/weather /tmp 7days.png"
   15/ Have a look at the files you've just made, then write a web page
@@ -127,12 +127,18 @@ Getting started:
       "python Template.py /data/weather example_templates/tweet.txt tweet.txt"
       "python ToTwitter.py /data/weather tweet.txt"
       You'll need to edit /data/weather/weather.ini with your Twitter
-      account details.
+      account details, for example:
+        [twitter]
+        username = twitterusername
+        password = twitterpassword
   19/ Edit Hourly.py to use the directories and file names you've chosen
       then test it and add it to crontab. I suggest running it every
       hour at 1 or 2 minutes past.
   20/ Edit templates, Plot_xx.py, Hourly.py and other files to adjust
       everything to your taste.
+
+Changes in v0.5:
+	1/ Small bug fixes.
 
 Changes in v0.4:
 	1/ Can post brief messages to Twitter.
@@ -158,3 +164,4 @@ Still to come, possibly:
 If you've got this software up and running, do let me know what you think.
 Email jim@jim-easterbrook.me.uk
 http://code.google.com/p/pywws/
+
