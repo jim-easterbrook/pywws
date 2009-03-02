@@ -186,11 +186,17 @@ def Process(params, raw_data, hourly_data, daily_data):
                 new_data = hour_acc.result(prev)
                 # compute pressure trend
                 target = new_data['idx'] - HOURx3
-                while abs(pressure_history[0][0] - target) > \
+                while len(pressure_history) >= 2 and \
+                      abs(pressure_history[0][0] - target) > \
                       abs(pressure_history[1][0] - target):
                     pressure_history.popleft()
+                if len(pressure_history) >= 1 and \
+                   abs(pressure_history[0][0] - target) < \
+                   timedelta(minutes=prev['delay']):
                     new_data['pressure_trend'] = new_data['pressure'] - \
                                                  pressure_history[0][1]
+                else:
+                    new_data['pressure_trend'] = None
                 # convert pressure from absolute to relative
                 new_data['pressure'] += pressure_offset
                 hourly_data[new_data['idx']] = new_data
