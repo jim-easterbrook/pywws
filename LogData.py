@@ -31,15 +31,18 @@ def LogData(params, raw_data):
              timedelta(seconds=30)
     c_time = datetime.now()
     diff = abs(s_time - c_time)
-    offset = (Local.utcoffset(c_time) - Local.dst(c_time)).seconds / 3600
-    offset = offset - 1	# weather station is based on German time
-    if offset != fixed_block['timezone']:
-        print >>sys.stderr, """WARNING: computer and weather station are in different timezones.
-Set the weather station "timezone" to %d hours.""" % offset
-    elif diff > timedelta(minutes=1):
-        print >>sys.stderr, """WARNING: computer and weather station clocks disagree.
+#    offset = (Local.utcoffset(c_time) - Local.dst(c_time)).seconds / 3600
+#    offset = offset - 1	# weather station is based on German time
+#    if offset != fixed_block['timezone']:
+#        print >>sys.stderr, \
+#              """WARNING: computer and weather station are in different timezones.
+#Set the weather station "timezone" to %d hours.""" % offset
+    if diff > timedelta(minutes=1):
+        print >>sys.stderr, \
+              """WARNING: computer and weather station clocks disagree by %d minutes.
 Check that the computer is synchronised to a network time server and
-that the weather station is receiving the DCF time signal."""
+that the weather station clock is correct. If the station has a radio
+controlled clock, it may have lost its signal.""" % (diff.seconds / 60)
     # store info from fixed block
     params.set('fixed', 'pressure offset', '%g' % (
         fixed_block['rel_pressure'] - fixed_block['abs_pressure']))
@@ -84,16 +87,16 @@ def main(argv=None):
         print >>sys.stderr, 'Error: %s\n' % msg
         print >>sys.stderr, __doc__.strip()
         return 1
-    # check arguments
-    if len(args) != 1:
-        print >>sys.stderr, 'Error: 1 argument required\n'
-        print >>sys.stderr, __doc__.strip()
-        return 2
     # process options
     for o, a in opts:
         if o == '--help':
             print __doc__.strip()
             return 0
+    # check arguments
+    if len(args) != 1:
+        print >>sys.stderr, 'Error: 1 argument required\n'
+        print >>sys.stderr, __doc__.strip()
+        return 2
     root_dir = args[0]
     return LogData(DataStore.params(root_dir),
                    DataStore.data_store(root_dir))
