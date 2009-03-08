@@ -139,6 +139,7 @@ Getting started:
 
 Changes in v0.5:
 	1/ Small bug fixes.
+	2/ Added start time to daily data
 
 Changes in v0.4:
 	1/ Can post brief messages to Twitter.

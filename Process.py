@@ -83,15 +83,15 @@ class Day_Acc(Acc):
 
     Daytime is assumed to be 0900-2100 and nighttime to be 2100-0900,
     local time (1000-2200 and 2200-1000 during DST)."""
-    def __init__(self, day_end):
+    def __init__(self, day_end_hour):
         Acc.__init__(self)
-        self._day_end = day_end
+        self._day_end_hour = day_end_hour
         self.temp_out_min = (1000.0, None)
         self.temp_out_max = (-1000.0, None)
     def add(self, raw, last_raw):
         if raw['temp_out'] != None:
-            if raw['idx'].hour >= self._day_end - 12 and \
-               raw['idx'].hour < self._day_end:
+            if raw['idx'].hour >= (self._day_end_hour + 12) % 24 and \
+               raw['idx'].hour < self._day_end_hour:
                 # daytime max temperature
                 if raw['temp_out'] > self.temp_out_max[0]:
                     self.temp_out_max = (raw['temp_out'], raw['idx'])
@@ -144,11 +144,11 @@ def Process(params, raw_data, hourly_data, daily_data):
     # get local time's offset from UTC, without DST
     time_offset = Local.utcoffset(last_raw) - Local.dst(last_raw)
     # set daytime end hour, in UTC
-    day_end = 21 - (time_offset.seconds / 3600)
+    day_end_hour = 21 - (time_offset.seconds / 3600)
     # round to start of this day
-    if start.hour < day_end:
+    if start.hour < day_end_hour:
         start = start - timedelta(hours=24)
-    start = start.replace(hour=day_end, minute=0, second=0)
+    start = start.replace(hour=day_end_hour, minute=0, second=0)
     # delete any existing records after start, as they may be incomplete
     while last_hour != None and hourly_data[last_hour]['idx'] > start:
         del hourly_data[last_hour]
@@ -169,7 +169,8 @@ def Process(params, raw_data, hourly_data, daily_data):
     # process the data in day chunks
     while start <= last_raw:
         print start.isoformat()
-        day_acc = Day_Acc(day_end)
+        day_start = start
+        day_acc = Day_Acc(day_end_hour)
         # process each hour
         for hour in range(24):
             hour_acc = Hour_Acc()
@@ -205,6 +206,7 @@ def Process(params, raw_data, hourly_data, daily_data):
             # store summary of day
             new_data = day_acc.result()
             new_data['idx'] = min(stop, last_raw)
+            new_data['start'] = day_start
             daily_data[new_data['idx']] = new_data
     return 0
 def main(argv=None):

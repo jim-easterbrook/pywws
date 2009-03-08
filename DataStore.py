@@ -319,11 +319,12 @@ class daily_store(core_store):
     """Stores daily summary weather station data."""
     def __init__(self, root_dir):
         core_store.__init__(self, os.path.join(root_dir, 'daily'))
-    key_list = ['idx', 'temp_out_min_t', 'temp_out_min',
+    key_list = ['idx', 'start', 'temp_out_min_t', 'temp_out_min',
                 'temp_out_max_t', 'temp_out_max',
                 'wind_ave', 'wind_gust_t', 'wind_gust', 'wind_dir', 'rain']
     types = {
         'idx'               : 'time',
+        'start'             : 'time',
         'temp_out_min_t'    : 'time',
         'temp_out_min'      : 'float',
         'temp_out_max_t'    : 'time',
