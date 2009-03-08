@@ -3,11 +3,12 @@
 <table border="1" rules="all">
 #jump -2#
 #loop 2#
-  <tr>
-    <th colspan="2" class="left">#idx "From %H%M %Z on %d %b to" "24 hours ending" "[x, None][loop_count == 2]"#
 #jump 1#
-#idx " %H%M %Z on %d %b %Y"#
-</th>
+  <tr>
+    <th colspan="2" class="left">
+      #start "From %H%M %Z on %d %b to" "24 hours ending" "[x, None][loop_count == 2]"#
+#idx " %H%M %Z on %d %b %Y"# 
+    </th>
     <th colspan="2">Date &amp; time</th>
   </tr>
   <tr>
