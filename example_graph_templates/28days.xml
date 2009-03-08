@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<graph>
+  <size>600, 800</size>
+  <duration>weeks=4</duration>
+  <xformat>%d/%m</xformat>
+  <plot>
+    <yrange>-10, 30</yrange>
+    <source>daily</source>
+    <boxwidth>boxwidth / 2</boxwidth>
+    <subplot>
+      <style>box</style>
+      <colour>1</colour>
+      <title>Daytime max temp (°C)</title>
+      <xcalc>data['start'] + timedelta(hours=18)</xcalc>
+      <ycalc>data['temp_out_max']</ycalc>
+    </subplot>
+    <subplot>
+      <style>box</style>
+      <colour>3</colour>
+      <title>Nighttime min temp (°C)</title>
+      <xcalc>data['start'] + timedelta(hours=6)</xcalc>
+      <ycalc>data['temp_out_min']</ycalc>
+    </subplot>
+  </plot>
+  <plot>
+    <yrange>0, 30</yrange>
+    <source>hourly</source>
+    <subplot>
+      <colour>4</colour>
+      <ycalc>data['wind_gust'] * 3.6 / 1.609344</ycalc>
+      <title>Wind speed: gust (mph)</title>
+    </subplot>
+    <subplot>
+      <colour>3</colour>
+      <ycalc>data['wind_ave'] * 3.6 / 1.609344</ycalc>
+      <title>average (mph)</title>
+    </subplot>
+  </plot>
+  <plot>
+    <yrange>0, 32</yrange>
+    <source>daily</source>
+    <subplot>
+      <colour>5</colour>
+      <style>box</style>
+      <xcalc>data['start'] + timedelta(hours=12)</xcalc>
+      <ycalc>data['rain']</ycalc>
+      <title>Daily rainfall (mm)</title>
+    </subplot>
+  </plot>
+  <plot>
+    <source>hourly</source>
+    <subplot>
+      <colour>2</colour>
+      <ycalc>data['pressure']</ycalc>
+      <title>Pressure (hPa)</title>
+    </subplot>
+    <yrange>960, 1050</yrange>
+  </plot>
+</graph>

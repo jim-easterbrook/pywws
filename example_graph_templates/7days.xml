@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<graph>
+  <size>600, 800</size>
+  <duration>weeks=1</duration>
+  <xformat>%a %d</xformat>
+  <plot>
+    <yrange>-10, 30</yrange>
+    <source>hourly</source>
+    <subplot>
+      <colour>1</colour>
+      <title>Temperature (°C)</title>
+      <ycalc>data['temp_out']</ycalc>
+    </subplot>
+    <subplot>
+      <colour>3</colour>
+      <ycalc>dew_point(data['temp_out'], data['hum_out'])</ycalc>
+      <title>Dew point (°C)</title>
+    </subplot>
+  </plot>
+  <plot>
+    <yrange>0, 30</yrange>
+    <source>hourly</source>
+    <subplot>
+      <colour>4</colour>
+      <ycalc>data['wind_gust'] * 3.6 / 1.609344</ycalc>
+      <title>Wind speed: gust (mph)</title>
+    </subplot>
+    <subplot>
+      <colour>3</colour>
+      <ycalc>data['wind_ave'] * 3.6 / 1.609344</ycalc>
+      <title>average (mph)</title>
+    </subplot>
+  </plot>
+  <plot>
+    <yrange>0, 5</yrange>
+    <source>hourly</source>
+    <subplot>
+      <colour>5</colour>
+      <style>box</style>
+      <xcalc>data['idx'].replace(minute=30, second=0)</xcalc>
+      <ycalc>data['rain']</ycalc>
+      <title>Hourly rainfall (mm)</title>
+    </subplot>
+  </plot>
+  <plot>
+    <source>hourly</source>
+    <subplot>
+      <colour>2</colour>
+      <ycalc>data['pressure']</ycalc>
+      <title>Pressure (hPa)</title>
+    </subplot>
+    <yrange>960, 1050</yrange>
+  </plot>
+</graph>
