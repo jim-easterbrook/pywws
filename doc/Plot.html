@@ -1,0 +1,88 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+  <head>
+    <title>
+      Software for WeatherStations: Plot.py
+    </title>
+  </head>
+  <body>
+    <h1>
+      <a href="index.html">Python software for USB Wireless WeatherStations</a>
+    </h1>
+    <h2>
+      <a href="auto/Plot.html">Plot.py</a> -- plots graph using an XML template
+    </h2>
+    <p>
+	  Like <a href="file:///f|/weather/doc/Template.html">Template.py</a> this is one of the more difficult to use modules in the weather station software collection. It plots a graph (or set of graphs) of weather data. Almost everything about the graph is controlled by an XML file. I refer to these files as templates, but they aren't templates in the same sense as Template.py uses to create text files.
+    </p>
+    <p>
+      Before writing your own graph template files, it might be useful to look at some of the examples in the <a href="../example_graph_templates/">example_graph_templates directory</a>. If (like I was) you are unfamiliar with XML, I suggest reading the <a href="http://www.w3schools.com/xml/">W3 Schools XML tutorial</a>.
+    </p>
+    <h2>
+      XML graph file syntax
+    </h2>
+    <p>
+	  Here is the simplest useful graph template. It plots the external temperature for the last 24 hours.
+    </p>
+<pre>
+&lt;graph&gt;
+  &lt;plot&gt;
+    &lt;subplot&gt;
+      &lt;title&gt;Temperature (&deg;C)&lt;/title&gt;
+      &lt;ycalc&gt;data['temp_out']&lt;/ycalc&gt;
+    &lt;/subplot&gt;
+  &lt;/plot&gt;
+&lt;/graph&gt;
+</pre>
+    <p>
+	In this example, the root element <code>graph</code> has one <code>plot</code> element, which has one <code>subplot</code> element. The <code>subplot</code> element contains a <code>title</code> element and a <code>ycalc</code> element. To plot more data on the same set of axes (for example dew point and temperature), we can add more <code>subplot</code> elements. To plot more than one set of axes (for example wind speed is measured in different units from temperature) in the same file we can add more <code>plot</code> elements.
+    </p>
+	<h3><a name="graph">The graph element</a></h3>
+    <p>
+	This is the root element of the graph XML file. It does not have to be called "graph", but there must be exactly one root element. The following child elements are recognised:
+    </p>
+	<ul>
+	  <li><a href="#plot">plot</a></li>
+	  <li><a href="#start">start</a></li>
+	  <li><a href="#stop">stop</a></li>
+	  <li><a href="#duration">duration</a></li>
+	  <li><a href="#size">size</a></li>
+	  <li><a href="#xformat">xformat</a></li>
+	  <li><a href="#xtics">xtics</a></li>
+	</ul>
+	<h3><a href="#graph" name="plot">The plot element</a></h3>
+    <p>
+	Every graph should have at least one plot element. There is one plot element for each graph to be drawn. The following child elements are recognised:
+    </p>
+	<ul>
+	  <li><a href="#subplot">subplot</a></li>
+	  <li><a href="#yrange">yrange</a></li>
+	  <li><a href="#source">source</a></li>
+	  <li><a href="#boxwidth">boxwidth</a></li>
+	</ul>
+	<h3><a href="#graph" name="start">The start element</a></h3>
+    <p>
+    </p>
+	<h3><a href="#graph" name="stop">The stop element</a></h3>
+    <p>
+    </p>
+	<h3><a href="#graph" name="duration">The duration element</a></h3>
+    <p>
+    </p>
+	<h3><a href="#graph" name="size">The size element</a></h3>
+    <p>
+    </p>
+	<h3><a href="#graph" name="xformat">The xformat element</a></h3>
+    <p>
+    </p>
+	<h3><a href="#graph" name="xtics">The xtics element</a></h3>
+    <p>
+    </p>
+    <p>
+    </p>
+    <hr>
+    <p>
+      <a href="http://code.google.com/p/pywws/"><i>Python software for USB Wireless WeatherStations</i></a> &copy; <a href="http://www.jim-easterbrook.me.uk/">Jim Easterbrook</a>.
+    </p>
+  </body>
+</html>
