@@ -116,13 +116,13 @@
       <a href="#list" name="start">start</a>
     </h3>
     <p>
-	This element sets the date &amp; time of the left hand side of the graph. It is used in the constructor of a Python <a href="auto/datetime.html#datetime">datetime</a> object. For example, to start the graph at noon (local time) on Christmas day: <code>&lt;start&gt;year=2008, month=12, day=25, hour=12&lt;/start&gt;</code>. The default value is <code>(stop - duration)</code>.
+	This element sets the date &amp; time of the start of the X axis. It is used in the constructor of a Python <a href="auto/datetime.html#datetime">datetime</a> object. For example, to start the graph at noon (local time) on Christmas day: <code>&lt;start&gt;year=2008, month=12, day=25, hour=12&lt;/start&gt;</code>. The default value is <code>(stop - duration)</code>.
     </p>
     <h3>
       <a href="#list" name="stop">stop</a>
     </h3>
     <p>
-	This element sets the date &amp; time of the right hand side of the graph. It is used in the constructor of a Python <a href="auto/datetime.html#datetime">datetime</a> object. For example, to end the graph at 10 am (local time) on new year's day: <code>&lt;stop&gt;year=2009, month=1, day=1, hour=10&lt;/stop&gt;</code>. The default value is <code>(start + duration)</code>, unless <code>start</code> is not defined in which case the timestamp of the latest weather station hourly reading is used.
+	This element sets the date &amp; time of the end of the X axis. It is used in the constructor of a Python <a href="auto/datetime.html#datetime">datetime</a> object. For example, to end the graph at 10 am (local time) on new year's day: <code>&lt;stop&gt;year=2009, month=1, day=1, hour=10&lt;/stop&gt;</code>. The default value is <code>(start + duration)</code>, unless <code>start</code> is not defined in which case the timestamp of the latest weather station hourly reading is used.
     </p>
     <h3>
       <a href="#list" name="duration">duration</a>
@@ -133,12 +133,19 @@
     <h3>
       <a href="#list" name="size">size</a>
     </h3>
+	<p>
+	Sets the overall dimensions of the image file containing the graph. Default is a width of 600 pixels and height of 200 pixels for each plot, so a graph with four plot elements would be 600 x 800 pixels. Any <code>size</code> element must include both width and height. For example: <code>&lt;size&gt;800, 600&lt;/size&gt;</code> will produce an image 800 pixels wide and 600 pixels high.
+    </p>
     <h3>
       <a href="#list" name="xformat">xformat</a>
     </h3>
+    <p>
+    </p>
     <h3>
       <a href="#list" name="xtics">xtics</a>
     </h3>
+    <p>
+    </p>
     <h3>
       <a href="#list" name="subplot">subplot</a>
     </h3>
@@ -148,27 +155,47 @@
     <h3>
       <a href="#list" name="yrange">yrange</a>
     </h3>
+    <p>
+    </p>
     <h3>
       <a href="#list" name="source">source</a>
     </h3>
+    <p>
+    </p>
     <h3>
       <a href="#list" name="boxwidth">boxwidth</a>
     </h3>
+    <p>
+    </p>
     <h3>
       <a href="#list" name="xcalc">xcalc</a>
     </h3>
+    <p>
+	Controls the X axis positioning of plotted data values. The default value of <code>data['idx']</code> is correct for most data, but there are some exceptions. For example, when plotting bar charts of hourly rainfall, it's nice to centre the bars on 30 minutes past the hour: <code>&lt;xcalc&gt;data['idx'].replace(minute=30, second=0)&lt;/xcalc&gt;</code>.
+    </p>
     <h3>
       <a href="#list" name="ycalc">ycalc</a>
     </h3>
+    <p>
+	Selects the data to be plotted. Any one line Python expression that returns a single float value can be used. At its simplest this just selects one value from the "data" dictionary, for example: <code>&lt;ycalc&gt;data['temp_out']&lt;/ycalc&gt;</code> plots the external temperature. More complex expressions are possible, and some helper functions are provided. For example: <code>&lt;ycalc&gt;dew_point(data['temp_out'], data['hum_out'])&lt;/ycalc&gt;</code> plots the external dew point, and <code>&lt;ycalc&gt;data['wind_ave'] * 3.6 / 1.609344&lt;/ycalc&gt;</code> plots the average wind speed in miles per hour.
+    </p>
     <h3>
       <a href="#list" name="style">style</a>
     </h3>
+    <p>
+    </p>
     <h3>
       <a href="#list" name="colour">colour</a>
     </h3>
+    <p>
+	Sets the colour of the subplot line or boxes. Any integer value is accepted. The mapping of colours to numbers is set by <a href="http://www.gnuplot.info/">gnuplot</a>. Default value is the previous colour plus one.
+    </p>
     <h3>
       <a href="#list" name="title">title</a>
     </h3>
+    <p>
+	Sets the title of the subplot. A single line of text, for example: <code>&lt;title&gt;Temperature (&deg;C)&lt;/title&gt;</code>. This title appears within the plot area, next to a short segment of the line colour used for the subplot.
+    </p>
     <hr>
     <p>
       <a href="http://code.google.com/p/pywws/"><i>Python software for USB Wireless WeatherStations</i></a> &copy; <a href="http://www.jim-easterbrook.me.uk/">Jim Easterbrook</a>.
