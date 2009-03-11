@@ -18,7 +18,7 @@ import DataStore
 from TimeZone import Local, utc
 import WeatherStation
 
-class Acc():
+class Acc:
     """'Accumulate' raw weather data to produce a summary.
 
     Compute average wind speed, log maximum wind gust, find dominant
@@ -144,7 +144,7 @@ def Process(params, raw_data, hourly_data, daily_data):
     # get local time's offset from UTC, without DST
     time_offset = Local.utcoffset(last_raw) - Local.dst(last_raw)
     # set daytime end hour, in UTC
-    day_end_hour = 21 - (time_offset.seconds / 3600)
+    day_end_hour = (21 - (time_offset.seconds / 3600)) % 24
     # round to start of this day
     if start.hour < day_end_hour:
         start = start - timedelta(hours=24)
@@ -165,7 +165,6 @@ def Process(params, raw_data, hourly_data, daily_data):
     if prev == None:
         prev = raw_data.after(start)
     prev = raw_data[prev]
-    prev['rain'] = float(prev['rain'])
     # process the data in day chunks
     while start <= last_raw:
         print start.isoformat()

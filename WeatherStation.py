@@ -125,7 +125,7 @@ def findDevice(idVendor, idProduct):
             if device.idVendor == idVendor and device.idProduct == idProduct:
                 return device
     return None
-class weather_station():
+class weather_station:
     """Class that represents the weather station to user program."""
     def __init__(self):
         """Connect to weather station and prepare to read data."""
@@ -256,6 +256,7 @@ class weather_station():
     lo_fix_format = {
         'read_period'   : (16, 'ub', None),
         'timezone'      : (24, 'sb', None),
+        'data_count'    : (27, 'us', None),
         'current_pos'   : (30, 'us', None),
         'rel_pressure'  : (32, 'us', 0.1),
         'abs_pressure'  : (34, 'us', 0.1),
@@ -264,6 +265,7 @@ class weather_station():
     fixed_format = {
         'read_period'   : (16, 'ub', None),
         'timezone'      : (24, 'sb', None),
+        'data_count'    : (27, 'us', None),
         'current_pos'   : (30, 'us', None),
         'rel_pressure'  : (32, 'us', 0.1),
         'abs_pressure'  : (34, 'us', 0.1),

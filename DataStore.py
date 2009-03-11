@@ -21,7 +21,7 @@ from datetime import date, datetime
 import os
 import sys
 
-class params():
+class params:
     def __init__(self, root_dir):
         """Parameters are stored in a file "weather.ini" in root_dir."""
         self._path = os.path.join(root_dir, 'weather.ini')
@@ -51,7 +51,7 @@ class params():
             self._config.add_section(section)
         self._config.set(section, option, value)
         self._dirty = True
-class core_store():
+class core_store:
     def __init__(self, root_dir):
         self._root_dir = root_dir
         # get first and last day for which data exists
