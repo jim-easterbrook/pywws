@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: ISO-8859-1 -*-
 
 """
 Plot graphs of weather data according to an XML recipe.
@@ -25,10 +24,13 @@ from TimeZone import Local
 from WeatherStation import dew_point
 
 def GetValue(node, name, default):
-    items = node.getElementsByTagName(name)
-    if len(items) < 1:
+    result = node.getElementsByTagName(name)
+    if len(result) < 1:
         return default
-    return items[0].childNodes[0].data.strip()
+    result = result[0].childNodes
+    if len(result) < 1:
+        return ''
+    return result[0].data.strip()
 def Plot(params, raw_data, hourly_data, daily_data, work_dir, input_file, output_file):
     pressure_offset = eval(params.get('fixed', 'pressure offset'))
     # create work directory
@@ -69,7 +71,11 @@ def Plot(params, raw_data, hourly_data, daily_data, work_dir, input_file, output
     # open gnuplot command file
     cmd_file = os.path.join(work_dir, 'plot.cmd')
     of = open(cmd_file, 'w')
-    size = eval(GetValue(graph, 'size', (600, 800)))
+    # get list of plots
+    plot_list = graph.getElementsByTagName('plot')
+    plot_count = len(plot_list)
+    # write gnuplot set up
+    size = eval(GetValue(graph, 'size', '(600, %d)' % (plot_count * 200)))
     of.write('set terminal png large size %d,%d\n' % size)
     of.write('set output "%s"\n' % output_file)
     of.write('set style fill solid\n')
@@ -80,7 +86,7 @@ def Plot(params, raw_data, hourly_data, daily_data, work_dir, input_file, output
     of.write('set bmargin 0.9\n')
     if duration <= timedelta(hours=24):
         xformat = '%H%M'
-        xlabel = 'Time (%s)' % Local.tzname(x_hi)
+        xlabel = 'Time (%Z)'
     elif duration <= timedelta(days=7):
         xformat = '%a %d'
         xlabel = 'Day'
@@ -88,13 +94,17 @@ def Plot(params, raw_data, hourly_data, daily_data, work_dir, input_file, output
         xformat = '%Y/%m/%d'
         xlabel = 'Date'
     xformat = GetValue(graph, 'xformat', xformat)
+    xformat = codecs.encode(xformat, graph.encoding)
     of.write('set format x "%s"\n' % xformat)
+    xlabel = GetValue(graph, 'xlabel', xlabel)
+    xlabel = codecs.encode(xlabel, graph.encoding)
+    dateformat = '%Y/%m/%d'
+    dateformat = GetValue(graph, 'dateformat', dateformat)
+    dateformat = codecs.encode(dateformat, graph.encoding)
     xtics = GetValue(graph, 'xtics', None)
     if xtics:
         of.write('set xtics %d\n' % (eval(xtics) * 3600))
     # do the plots
-    plot_list = graph.getElementsByTagName('plot')
-    plot_count = len(plot_list)
     of.write('set multiplot layout %d,1\n' % plot_count)
     colour = 0
     for plot_no in range(plot_count):
@@ -105,8 +115,17 @@ def Plot(params, raw_data, hourly_data, daily_data, work_dir, input_file, output
             continue
         # label x axis of last plot
         if plot_no == plot_count - 1:
-            of.write('set xlabel "%s"\n' % xlabel)
             of.write('set bmargin\n')
+            of.write('set xlabel "%s"\n' % (
+                x_lo.replace(tzinfo=Local).strftime(xlabel)))
+            ldat = x_lo.replace(tzinfo=Local).strftime(dateformat)
+            rdat = x_hi.replace(tzinfo=Local).strftime(dateformat)
+            if ldat != '':
+                of.write('set label "%s" at "%s", graph -0.3 left\n' % (
+                    ldat, x_lo.isoformat()))
+            if rdat != ldat:
+                of.write('set label "%s" at "%s", graph -0.3 right\n' % (
+                    rdat, x_hi.isoformat()))
         # set y range
         yrange = GetValue(plot, 'yrange', None)
         if yrange:
@@ -156,7 +175,7 @@ def Plot(params, raw_data, hourly_data, daily_data, work_dir, input_file, output
             else:
                 style = 'smooth unique lc %d' % (colour)
             title = GetValue(subplot, 'title', '')
-            title = codecs.encode(title, 'iso-8859-1')
+            title = codecs.encode(title, graph.encoding)
             of.write(' "%s" using 1:2 title "%s" %s' % (dat_file, title, style))
             if subplot_no != subplot_count - 1:
                 of.write(', \\')

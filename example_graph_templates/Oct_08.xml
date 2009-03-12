@@ -3,6 +3,9 @@
   <size>600, 800</size>
   <start>year=2008, month=10, day=1</start>
   <stop>year=2008, month=11, day=1</stop>
+  <dateformat></dateformat>
+  <xlabel>%B %Y</xlabel>
+  <xformat>%d</xformat>
   <plot>
     <yrange>-10, 30</yrange>
     <source>daily</source>
