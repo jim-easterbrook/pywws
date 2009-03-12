@@ -2,7 +2,8 @@
 <graph>
   <size>600, 800</size>
   <duration>weeks=4</duration>
-  <xformat>%d/%m</xformat>
+  <xformat>%Y/%m/%d</xformat>
+  <dateformat></dateformat>
   <plot>
     <yrange>-10, 30</yrange>
     <source>daily</source>

@@ -3,6 +3,7 @@
   <size>600, 800</size>
   <duration>weeks=1</duration>
   <xformat>%a %d</xformat>
+  <dateformat></dateformat>
   <plot>
     <yrange>-10, 30</yrange>
     <source>hourly</source>

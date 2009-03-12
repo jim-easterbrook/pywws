@@ -4,6 +4,7 @@
   <duration>hours=24</duration>
   <xtics>2</xtics>
   <xformat>%H%M</xformat>
+  <dateformat></dateformat>
   <plot>
     <yrange>-10, 30</yrange>
     <source>raw</source>

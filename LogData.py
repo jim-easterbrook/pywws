@@ -37,7 +37,7 @@ def LogData(params, raw_data):
 #        print >>sys.stderr, \
 #              """WARNING: computer and weather station are in different timezones.
 #Set the weather station "timezone" to %d hours.""" % offset
-    if diff > timedelta(minutes=1):
+    if diff > timedelta(minutes=2):
         print >>sys.stderr, \
               """WARNING: computer and weather station clocks disagree by %d minutes.
 Check that the computer is synchronised to a network time server and
