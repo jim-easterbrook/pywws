@@ -46,9 +46,7 @@ This software collection currently contains the following files:
 	LogData.py		-- saves recent readings to file
 	Hourly.py		-- run from cron
 	Process.py		-- generates hourly and daily summary data
-	Plot_24Hrs.py		-- creates a png image of 24 hours' data
-	Plot_7Days.py		-- creates a png image of 7 days' data
-	Plot_28Days.py		-- creates a png image of 28 days' data
+	Plot.py			-- plots weather data using an XML recipe
 	Template.py		-- creates text data file based on a template
 	Upload.py		-- uploads files to a web site by ftp
 	ToTwitter.py		-- posts a message to a Twitter account
@@ -57,7 +55,9 @@ This software collection currently contains the following files:
 	Reprocess.py		-- upgrade v0.2 or later datastore
 	AutoDoc.py		-- generates extra HTML documentation
 
-	example_templates/*	-- the templates I use for my website data
+	example_graph_templates/*
+				-- example graph XML "recipes"
+	example_templates/*	-- example text templates
 	doc/*			-- HTML documentation of most of the above
 
 Upgrading from earlier versions:
@@ -108,12 +108,16 @@ Getting started:
       "python Template.py /data/weather example_templates/24hrs.txt 24hrs.txt"
       "python Template.py /data/weather example_templates/6hrs.txt 6hrs.txt"
   14/ If you want to create graphs, install gnuplot, then:
-      "python Plot_24Hrs.py /data/weather /tmp 24hrs.png"
-      "python Plot_7days.py /data/weather /tmp 7days.png"
+      "python Plot.py /data/weather /tmp \
+		example_graph_templates/24hrs.png.xml 24hrs.png"
+      "python Plot.py /data/weather /tmp \
+		example_graph_templates/7days.png.xml 7days.png"
   15/ Have a look at the files you've just made, then write a web page
       that incorporates them. (Use server side includes for the .txt
-      files). Copy the templates you want from the example_templates
-      directory to the templates directory.
+      files). Copy the text templates you want from the example_templates
+      directory to the templates directory. Copy the graph templates you want
+      from the example_graph_templates directory to the graph_templates
+      directory.
   16/ Edit /data/weather/weather.ini and add details of your website
       for example:
   	[ftp]
@@ -134,12 +138,13 @@ Getting started:
   19/ Edit Hourly.py to use the directories and file names you've chosen
       then test it and add it to crontab. I suggest running it every
       hour at 1 or 2 minutes past.
-  20/ Edit templates, Plot_xx.py, Hourly.py and other files to adjust
-      everything to your taste.
+  20/ Edit templates, Hourly.py and other files to adjust everything to your
+      taste.
 
 Changes in v0.5:
 	1/ Small bug fixes.
 	2/ Added start time to daily data
+	3/ Replaced individual plot programs with XML "recipe" system
 
 Changes in v0.4:
 	1/ Can post brief messages to Twitter.

@@ -41,9 +41,9 @@
     <p>
 	The complete element hierarchy is shown below. Each element name links to a full description of that element.
     </p>
-    <a name="list"><ul></a>
+    <ul>
       <li>
-        <a href="#graph">graph</a>
+        <a name="list"></a><a href="#graph">graph</a>
         <ul>
           <li>
             <a href="#plot">plot</a>
@@ -95,6 +95,12 @@
             <a href="#xformat">xformat</a>
           </li>
           <li>
+            <a href="#xlabel">xlabel</a>
+          </li>
+          <li>
+            <a href="#dateformat">dateformat</a>
+          </li>
+          <li>
             <a href="#xtics">xtics</a>
           </li>
         </ul>
@@ -140,11 +146,25 @@
       <a href="#list" name="xformat">xformat</a>
     </h3>
     <p>
+	Sets the format of the time / date xtic labels. The value is a <code>strftime</code> style format string. Default depends on the graph <code>duration</code>: 24 hours or less is <code>"%H%M"</code>, 24 hours to 7 days is <code>"%a %d"</code> and 7 days or more is <code>"%Y/%m/%d"</code>.
+    </p>
+    <h3>
+      <a href="#list" name="xlabel">xlabel</a>
+    </h3>
+    <p>
+	Sets the X axis label. The value is a <code>strftime</code> style format string. Default depends on the graph <code>duration</code>: 24 hours or less is <code>"Time (%Z)"</code>, 24 hours to 7 days is <code>"Day"</code> and 7 days or more is <code>"Date"</code>. The <a href="auto/datetime.html#datetime">datetime</a> used to compute this is <code>start</code>, which may produce unexpected results when a graph spans DST start or end.
+    </p>
+    <h3>
+      <a href="#list" name="dateformat">dateformat</a>
+    </h3>
+    <p>
+	Sets the format of the date labels at each end of X axis. The value is a <code>strftime</code> style format string. Default is <code>"%Y/%m/%d"</code>. The right hand label is only drawn if it differs from the left. To have no labels, set an empty format: <code>&lt;dateformat&gt;&lt;/dateformat&gt;</code>
     </p>
     <h3>
       <a href="#list" name="xtics">xtics</a>
     </h3>
     <p>
+	Sets the spacing of the "tic" marks on the X axis. The value is an integer number of hours. The default is to allow gnuplot to set an appropriate interval.
     </p>
     <h3>
       <a href="#list" name="subplot">subplot</a>
@@ -156,16 +176,19 @@
       <a href="#list" name="yrange">yrange</a>
     </h3>
     <p>
+	Sets the lower and upper limits of the Y axis. The value is a pair of numbers. The default is to allow gnuplot to set appropriate values, which is unlikely to be what you want. For example, to plot typical UK temperatures with no value going off the graph: <code>&lt;yrange&gt;-10, 30&lt;/yrange&gt;</code>.
     </p>
     <h3>
       <a href="#list" name="source">source</a>
     </h3>
     <p>
+	Select the weather data to be plotted. Permitted values are <code>&lt;source&gt;raw&lt;/source&gt;</code>, <code>&lt;source&gt;hourly&lt;/source&gt;</code> and <code>&lt;source&gt;daily&lt;/source&gt;</code>. Default is <code>raw</code>. Note that the different sources have different data dictionaries, so this choice affects <code>ycalc</code>.
     </p>
     <h3>
       <a href="#list" name="boxwidth">boxwidth</a>
     </h3>
     <p>
+	Sets the width of the "boxes" used when drawing bar graphs. The value is an integer expression yielding a number of seconds. Default depends on <code>source</code>: raw is 240, hourly is 2800 and daily is 2800 * 24.
     </p>
     <h3>
       <a href="#list" name="xcalc">xcalc</a>
@@ -183,6 +206,7 @@
       <a href="#list" name="style">style</a>
     </h3>
     <p>
+	Sets the line style for the graph. Default is a smooth continuous line. To select a bar graph use: <code>&lt;style&gt;box&lt;/style&gt;</code>.
     </p>
     <h3>
       <a href="#list" name="colour">colour</a>
