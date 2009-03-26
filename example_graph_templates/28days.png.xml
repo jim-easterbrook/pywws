@@ -38,7 +38,7 @@
     </subplot>
   </plot>
   <plot>
-    <yrange>0, 32</yrange>
+    <yrange>0, 30</yrange>
     <source>daily</source>
     <subplot>
       <colour>5</colour>

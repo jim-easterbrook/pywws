@@ -6,6 +6,7 @@
   <dateformat></dateformat>
   <plot>
     <yrange>-10, 30</yrange>
+    <grid>xtics mxtics ytics</grid>
     <source>hourly</source>
     <subplot>
       <colour>1</colour>
@@ -19,6 +20,7 @@
     </subplot>
   </plot>
   <plot>
+    <grid>ytics</grid>
     <yrange>0, 30</yrange>
     <source>hourly</source>
     <subplot>
@@ -35,6 +37,7 @@
   <plot>
     <yrange>0, 5</yrange>
     <source>hourly</source>
+    <grid></grid>
     <subplot>
       <colour>5</colour>
       <style>box</style>

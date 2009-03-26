@@ -72,6 +72,9 @@
                 <a href="#yrange">yrange</a>
 			  </li>
 			  <li>
+                <a href="#grid">grid</a>
+			  </li>
+			  <li>
                 <a href="#source">source</a>
 			  </li>
 			  <li>
@@ -177,6 +180,12 @@
     </h3>
     <p>
 	Sets the lower and upper limits of the Y axis. The value is a pair of numbers. The default is to allow gnuplot to set appropriate values, which is unlikely to be what you want. For example, to plot typical UK temperatures with no value going off the graph: <code>&lt;yrange&gt;-10, 30&lt;/yrange&gt;</code>.
+    </p>
+    <h3>
+      <a href="#list" name="grid">grid</a>
+    </h3>
+    <p>
+	Adds a grid to the plot. In most situations gnuplot's default grid is suitable, so no value is needed: <code>&lt;grid&gt;&lt;/grid&gt;</code>. More control is possible using any of the options understood by <a href="http://www.gnuplot.info/docs/node188.html">gnuplot's <code>set grid</code> command</a>. For example, to have horizontal grid lines only: <code>&lt;grid&gt;ytics&lt;/grid&gt;</code>.
     </p>
     <h3>
       <a href="#list" name="source">source</a>

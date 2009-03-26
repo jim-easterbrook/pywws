@@ -53,21 +53,19 @@ def Plot(params, raw_data, hourly_data, daily_data, work_dir, input_file, output
             duration = x_hi - x_lo
         else:
             x_hi = x_lo + duration
-        utcoffset = Local.utcoffset(x_hi)
     elif x_hi != None:
         x_hi = eval('datetime(%s)' % x_hi)
         x_lo = x_hi - duration
-        utcoffset = Local.utcoffset(x_hi)
     else:
         x_hi = hourly_data.before(datetime.max)
         if x_hi == None:
             x_hi = datetime.utcnow()    # only if no hourly data
+        x_hi = x_hi + Local.utcoffset(x_hi)
         # set end of graph to start of the next hour after last item
         x_hi = x_hi + timedelta(minutes=55)
         x_hi = x_hi.replace(minute=0, second=0)
-        utcoffset = Local.utcoffset(x_hi)
-        x_hi = x_hi + utcoffset
         x_lo = x_hi - duration
+    utcoffset = Local.utcoffset(x_lo)
     # open gnuplot command file
     cmd_file = os.path.join(work_dir, 'plot.cmd')
     of = open(cmd_file, 'w')
@@ -132,6 +130,11 @@ def Plot(params, raw_data, hourly_data, daily_data, work_dir, input_file, output
             of.write('set yrange [%d:%d]\n' % eval(yrange))
         else:
             of.write('set yrange [*:*]\n')
+        # set grid
+        of.write('unset grid\n')
+        grid = GetValue(plot, 'grid', None)
+        if grid != None:
+            of.write('set grid %s\n' % grid)
         source = GetValue(plot, 'source', 'raw')
         # x_lo & x_hi are in local time, data is indexed in UTC
         start = x_lo - utcoffset
