@@ -165,6 +165,8 @@ def Plot(params, raw_data, hourly_data, daily_data, work_dir, input_file, output
             dat = open(dat_file, 'w')
             xcalc = GetValue(subplot, 'xcalc', "data['idx']")
             ycalc = GetValue(subplot, 'ycalc', None)
+            xcalc = compile(xcalc, '<string>', 'eval')
+            ycalc = compile(ycalc, '<string>', 'eval')
             for data in source[start:stop]:
                 idx = eval(xcalc) + utcoffset
                 value = eval(ycalc)
