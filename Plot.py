@@ -36,6 +36,7 @@ def Plot(params, raw_data, hourly_data, daily_data, work_dir, input_file, output
     # create work directory
     if not os.path.isdir(work_dir):
         os.makedirs(work_dir)
+    tmp_files = []
     # read XML graph description
     graph = xml.dom.minidom.parse(input_file)
     # get start and end of graph
@@ -69,6 +70,7 @@ def Plot(params, raw_data, hourly_data, daily_data, work_dir, input_file, output
     utcoffset = Local.utcoffset(x_lo)
     # open gnuplot command file
     cmd_file = os.path.join(work_dir, 'plot.cmd')
+    tmp_files.append(cmd_file)
     of = open(cmd_file, 'w')
     # get list of plots
     plot_list = graph.getElementsByTagName('plot')
@@ -81,7 +83,8 @@ def Plot(params, raw_data, hourly_data, daily_data, work_dir, input_file, output
     of.write('set xdata time\n')
     of.write('set timefmt "%Y-%m-%dT%H:%M:%S"\n')
     of.write('set xrange ["%s":"%s"]\n' % (x_lo.isoformat(), x_hi.isoformat()))
-    of.write('set lmargin 3\n')
+    lmargin = eval(GetValue(graph, 'lmargin', '5'))
+    of.write('set lmargin %d\n' % lmargin)
     of.write('set bmargin 0.9\n')
     if duration <= timedelta(hours=24):
         xformat = '%H%M'
@@ -162,6 +165,7 @@ def Plot(params, raw_data, hourly_data, daily_data, work_dir, input_file, output
             # write data file
             dat_file = os.path.join(work_dir, 'plot_%d_%d.dat' % (
                 plot_no, subplot_no))
+            tmp_files.append(dat_file)
             dat = open(dat_file, 'w')
             xcalc = GetValue(subplot, 'xcalc', "data['idx']")
             ycalc = GetValue(subplot, 'ycalc', None)
@@ -190,6 +194,8 @@ def Plot(params, raw_data, hourly_data, daily_data, work_dir, input_file, output
     graph.unlink()
     # run gnuplot on file
     os.system('gnuplot %s' % cmd_file)
+    for file in tmp_files:
+        os.unlink(file)
     return 0
 def main(argv=None):
     if argv is None:

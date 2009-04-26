@@ -95,6 +95,9 @@
             <a href="#size">size</a>
           </li>
           <li>
+            <a href="#lmargin">lmargin</a>
+          </li>
+          <li>
             <a href="#xformat">xformat</a>
           </li>
           <li>
@@ -144,6 +147,12 @@
     </h3>
 	<p>
 	Sets the overall dimensions of the image file containing the graph. Default is a width of 600 pixels and height of 200 pixels for each plot, so a graph with four plot elements would be 600 x 800 pixels. Any <code>size</code> element must include both width and height. For example: <code>&lt;size&gt;800, 600&lt;/size&gt;</code> will produce an image 800 pixels wide and 600 pixels high.
+    </p>
+    <h3>
+      <a href="#list" name="lmargin">lmargin</a>
+    </h3>
+    <p>
+	Sets the left margin of the plots, i.e. the distance from the left hand axis to the left hand edge of the image area. According to the gnuplot documentation the units of <code>lmargin</code> are character widths. The default value is 5, which should look OK in most circumstances.
     </p>
     <h3>
       <a href="#list" name="xformat">xformat</a>
