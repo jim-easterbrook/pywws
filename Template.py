@@ -65,6 +65,10 @@ def Template(hourly_data, daily_data, template_file, output_file):
                 x = data[command[0]]
                 if command[0] == 'wind_dir' and data['wind_ave'] < 0.3:
                     x = None
+                # adjust time
+                if isinstance(x, datetime):
+                    x = x.replace(tzinfo=utc)
+                    x = x.astimezone(time_zone)
                 # get format
                 fmt = '%s'
                 if len(command) > 1:
@@ -77,8 +81,6 @@ def Template(hourly_data, daily_data, template_file, output_file):
                     if len(command) > 2:
                         of.write(command[2])
                 elif isinstance(x, datetime):
-                    x = x.replace(tzinfo=utc)
-                    x = x.astimezone(time_zone)
                     of.write(x.strftime(fmt))
                 else:
                     of.write(fmt % (x))
