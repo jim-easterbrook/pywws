@@ -20,10 +20,10 @@ import ToTwitter
 import Upload
 
 def Hourly():
-    data_dir = '/home/jim/weather/data'
+    data_dir = '/data/weather'
     template_dir = '/home/jim/weather/templates/'
     graph_template_dir = '/home/jim/weather/graph_templates/'
-    work_dir = '/tmp/data/tmp/weather'
+    work_dir = '/data/tmp/weather'
     uploads = []
     # open data file stores
     params = DataStore.params(data_dir)
@@ -57,6 +57,8 @@ def Hourly():
             uploads.append(output_file)
     print "Uploading to web site"
     Upload.Upload(params, uploads)
+    for file in uploads:
+        os.unlink(file)
     return 0
 if __name__ == "__main__":
     # have three tries before giving up
