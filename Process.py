@@ -74,7 +74,8 @@ class Hour_Acc(Acc):
     def result(self, raw):
         retval = Acc.result(self)
         del retval['wind_gust_t']
-        for key in ['idx', 'hum_in', 'temp_in', 'hum_out', 'temp_out', 'pressure']:
+        for key in ['idx', 'hum_in', 'temp_in', 'hum_out', 'temp_out',
+                    'abs_pressure']:
             retval[key] = raw[key]
         return retval
 class Day_Acc(Acc):
@@ -123,7 +124,7 @@ def Process(params, raw_data, hourly_data, daily_data):
     A day is assumed to end at 2100 local time (2200 during DST),
     following the historical convention for weather station readings.
 
-    Atmospheric pressure is converted from relative to absolute, using
+    Atmospheric pressure is converted from absolute to relative, using
     the weather station's offset as recorded by LogData.py. The
     pressure trend (change over three hours) is also computed.
     """
@@ -159,7 +160,7 @@ def Process(params, raw_data, hourly_data, daily_data):
     # preload pressure history
     pressure_history = deque()
     for raw in raw_data[start - HOURx3:start]:
-        pressure_history.append((raw['idx'], raw['pressure']))
+        pressure_history.append((raw['idx'], raw['abs_pressure']))
     # get last raw data before we start
     prev = raw_data.before(start)
     if prev == None:
@@ -176,7 +177,7 @@ def Process(params, raw_data, hourly_data, daily_data):
             # process each data item in the hour
             stop = start + HOUR
             for raw in raw_data[start:stop]:
-                pressure_history.append((raw['idx'], raw['pressure']))
+                pressure_history.append((raw['idx'], raw['abs_pressure']))
                 hour_acc.add(raw, prev)
                 day_acc.add(raw, prev)
                 prev = raw
@@ -193,12 +194,13 @@ def Process(params, raw_data, hourly_data, daily_data):
                 if len(pressure_history) >= 1 and \
                    abs(pressure_history[0][0] - target) < \
                    timedelta(minutes=prev['delay']):
-                    new_data['pressure_trend'] = new_data['pressure'] - \
+                    new_data['pressure_trend'] = new_data['abs_pressure'] - \
                                                  pressure_history[0][1]
                 else:
                     new_data['pressure_trend'] = None
                 # convert pressure from absolute to relative
-                new_data['pressure'] += pressure_offset
+                new_data['rel_pressure'] = \
+                    new_data['abs_pressure'] + pressure_offset
                 hourly_data[new_data['idx']] = new_data
             start = stop
         if day_acc.valid:

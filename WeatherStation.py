@@ -241,17 +241,17 @@ class weather_station:
     # specifies an (offset, type, multiplier) tuple that is understood
     # by _decode.
     reading_format = {
-        'delay'     : (0, 'ub', None),
-        'hum_in'    : (1, 'ub', None),
-        'temp_in'   : (2, 'ss', 0.1),
-        'hum_out'   : (4, 'ub', None),
-        'temp_out'  : (5, 'ss', 0.1),
-        'pressure'  : (7, 'us', 0.1),
-        'wind_ave'  : (9, 'ub', 0.1),
-        'wind_gust' : (10, 'us', 0.1),
-        'wind_dir'  : (12, 'ub', None),
-        'rain'      : (13, 'us', 0.3),
-        'status'    : (15, 'pb', None),
+        'delay'        : (0, 'ub', None),
+        'hum_in'       : (1, 'ub', None),
+        'temp_in'      : (2, 'ss', 0.1),
+        'hum_out'      : (4, 'ub', None),
+        'temp_out'     : (5, 'ss', 0.1),
+        'abs_pressure' : (7, 'us', 0.1),
+        'wind_ave'     : (9, 'ub', 0.1),
+        'wind_gust'    : (10, 'us', 0.1),
+        'wind_dir'     : (12, 'ub', None),
+        'rain'         : (13, 'us', 0.3),
+        'status'       : (15, 'pb', None),
         }
     lo_fix_format = {
         'read_period'   : (16, 'ub', None),

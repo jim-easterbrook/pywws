@@ -54,7 +54,7 @@
     <source>hourly</source>
     <subplot>
       <colour>2</colour>
-      <ycalc>data['pressure']</ycalc>
+      <ycalc>data['rel_pressure']</ycalc>
       <title>Pressure (hPa)</title>
     </subplot>
     <yrange>960, 1050</yrange>

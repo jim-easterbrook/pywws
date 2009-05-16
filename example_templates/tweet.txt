@@ -5,5 +5,5 @@ Temperature: #temp_out "%.1f°C" "-"#
 #wind_gust "%.0f mph (gust)" "" "x * 3.6 / 1.609344"#
 , Humidity: #hum_out "%d%%"#
 , Rainfall (hourly) #rain "%.1f mm"#
-, Pressure: #pressure "%.0f hPa, "#
+, Pressure: #rel_pressure "%.0f hPa, "#
 #pressure_trend "%s" "" "pressure_trend_text(x)"#

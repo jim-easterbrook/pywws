@@ -35,7 +35,7 @@
     <td>#wind_ave "%.0f mph" "" "x * 3.6 / 1.609344"#</td>
     <td>#wind_gust "%.0f mph" "" "x * 3.6 / 1.609344"#</td>
     <td>#rain "%0.1f mm"#</td>
-    <td>#pressure "%.0f hPa"#, #pressure_trend "%s" "" "pressure_trend_text(x)"#</td>
+    <td>#rel_pressure "%.0f hPa"#, #pressure_trend "%s" "" "pressure_trend_text(x)"#</td>
   </tr>
 #endloop#
 </table>

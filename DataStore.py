@@ -280,35 +280,36 @@ class data_store(core_store):
     def __init__(self, root_dir):
         core_store.__init__(self, os.path.join(root_dir, 'raw'))
     key_list = ['idx', 'delay', 'hum_in', 'temp_in', 'hum_out', 'temp_out',
-                'pressure', 'wind_ave', 'wind_gust', 'wind_dir', 'rain', 'status']
+                'abs_pressure', 'wind_ave', 'wind_gust', 'wind_dir', 'rain', 'status']
     types = {
-        'idx'       : 'time',
-        'delay'     : 'int',
-        'hum_in'    : 'int',
-        'temp_in'   : 'float',
-        'hum_out'   : 'int',
-        'temp_out'  : 'float',
-        'pressure'  : 'float',
-        'wind_ave'  : 'float',
-        'wind_gust' : 'float',
-        'wind_dir'  : 'int',
-        'rain'      : 'float',
-        'status'    : 'int',
+        'idx'          : 'time',
+        'delay'        : 'int',
+        'hum_in'       : 'int',
+        'temp_in'      : 'float',
+        'hum_out'      : 'int',
+        'temp_out'     : 'float',
+        'abs_pressure' : 'float',
+        'wind_ave'     : 'float',
+        'wind_gust'    : 'float',
+        'wind_dir'     : 'int',
+        'rain'         : 'float',
+        'status'       : 'int',
         }
 class hourly_store(core_store):
     """Stores hourly summary weather station data."""
     def __init__(self, root_dir):
         core_store.__init__(self, os.path.join(root_dir, 'hourly'))
     key_list = ['idx', 'hum_in', 'temp_in', 'hum_out', 'temp_out',
-                'pressure', 'pressure_trend', 'wind_ave', 'wind_gust', 'wind_dir',
-                'rain']
+                'abs_pressure', 'rel_pressure', 'pressure_trend',
+                'wind_ave', 'wind_gust', 'wind_dir', 'rain']
     types = {
         'idx'               : 'time',
         'hum_in'            : 'int',
         'temp_in'           : 'float',
         'hum_out'           : 'int',
         'temp_out'          : 'float',
-        'pressure'          : 'float',
+        'abs_pressure'      : 'float',
+        'rel_pressure'      : 'float',
         'pressure_trend'    : 'float',
         'wind_ave'          : 'float',
         'wind_gust'         : 'float',

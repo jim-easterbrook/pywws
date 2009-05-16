@@ -79,7 +79,7 @@ def main(argv=None):
             data['temp_out'] = float(items[7])
         except:
             data['temp_out'] = None
-        data['pressure'] = float(items[10])
+        data['abs_pressure'] = float(items[10])
         try:
             data['wind_ave'] = float(items[12])
         except:
