@@ -22,11 +22,17 @@ from WeatherStation import pressure_trend_text, wind_dir_text
 
 def Template(hourly_data, daily_data, template_file, output_file):
     def jump(idx, count):
-        while idx != None and count > 0:
-            idx = data_set.after(idx + timedelta(seconds=1))
+        while count > 0:
+            new_idx = data_set.after(idx + timedelta(seconds=1))
+            if new_idx == None:
+                break
+            idx = new_idx
             count -= 1
-        while idx != None and count < 0:
-            idx = data_set.before(idx)
+        while count < 0:
+            new_idx = data_set.before(idx)
+            if new_idx == None:
+                break
+            idx = new_idx
             count += 1
         return idx
     # start off in hourly data mode
