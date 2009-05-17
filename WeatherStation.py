@@ -115,7 +115,7 @@ def _decode(raw, format):
             result = raw[pos]
         else:
             raise IOError('unknown type %s' % type)
-        if scale:
+        if scale and result:
             result = float(result) * scale
     return result
 def findDevice(idVendor, idProduct):
