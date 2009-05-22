@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<graph>
+  <size>600, 400</size>
+  <start>year=2009, month=1, day=1, hour=0</start>
+  <stop>year=2009, month=12, day=31, hour=0</stop>
+  <xformat>%b</xformat>
+  <xlabel>%Y</xlabel>
+  <dateformat></dateformat>
+  <plot>
+    <yrange>-5, 30</yrange>
+    <source>monthly</source>
+    <boxwidth>boxwidth / 2</boxwidth>
+    <subplot>
+      <style>box</style>
+      <colour>1</colour>
+      <title>Average daytime max temp (°C)</title>
+      <xcalc>data['start'] + timedelta(days=20)</xcalc>
+      <ycalc>data['temp_out_max_ave']</ycalc>
+    </subplot>
+    <subplot>
+      <style>box</style>
+      <colour>3</colour>
+      <title>Average nighttime min temp (°C)</title>
+      <xcalc>data['start'] + timedelta(days=7)</xcalc>
+      <ycalc>data['temp_out_min_ave']</ycalc>
+    </subplot>
+  </plot>
+  <plot>
+    <yrange>0, 70</yrange>
+    <source>monthly</source>
+    <subplot>
+      <colour>5</colour>
+      <style>box</style>
+      <xcalc>data['start'] + timedelta(days=14)</xcalc>
+      <ycalc>data['rain']</ycalc>
+      <title>Monthly rainfall (mm)</title>
+    </subplot>
+  </plot>
+</graph>

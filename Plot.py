@@ -31,7 +31,8 @@ def GetValue(node, name, default):
     if len(result) < 1:
         return ''
     return result[0].data.strip()
-def Plot(params, raw_data, hourly_data, daily_data, work_dir, input_file, output_file):
+def Plot(params, raw_data, hourly_data, daily_data, monthly_data,
+         work_dir, input_file, output_file):
     pressure_offset = eval(params.get('fixed', 'pressure offset'))
     # create work directory
     if not os.path.isdir(work_dir):
@@ -151,6 +152,9 @@ def Plot(params, raw_data, hourly_data, daily_data, work_dir, input_file, output
             source = hourly_data
             boxwidth = 2800
             start = source.before(start)
+        elif source == 'monthly':
+            source = monthly_data
+            boxwidth = 2800 * 24 * 30
         else:
             source = daily_data
             boxwidth = 2800 * 24
@@ -218,6 +222,6 @@ def main(argv=None):
         return 2
     return Plot(DataStore.params(args[0]), DataStore.data_store(args[0]),
                 DataStore.hourly_store(args[0]), DataStore.daily_store(args[0]),
-                args[1], args[2], args[3])
+                DataStore.monthly_store(args[0]), args[1], args[2], args[3])
 if __name__ == "__main__":
     sys.exit(main())

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-Generate hourly and daily summaries of raw weather station data.
+Generate hourly, daily & monthly summaries of raw weather station data.
 
 usage: python Process.py [options] data_dir
 options are:
@@ -114,9 +114,8 @@ class Day_Acc(Acc):
             retval['temp_out_max'] = None
         retval['temp_out_max_t'] = self.temp_out_max[1]
         return retval
-def Process(params, raw_data, hourly_data, daily_data):
-    """Generate hourly and daily summaries from raw weather station
-    data.
+def Process(params, raw_data, hourly_data, daily_data, monthly_data):
+    """Generate summaries from raw weather station data.
 
     Starts from the last hourly or daily summary (whichever is
     earlier) and continues to end of the raw data.
@@ -135,13 +134,14 @@ def Process(params, raw_data, hourly_data, daily_data):
     last_raw = raw_data.before(datetime.max)
     last_hour = hourly_data.before(datetime.max)
     last_day = daily_data.before(datetime.max)
+    last_month = monthly_data.before(datetime.max)
     # get earlier of last daily or hourly, and start from there
     if last_day == None or last_hour == None:
         start = raw_data.after(datetime.min)
     elif last_hour < last_day:
-        start = raw_data.after(last_hour)
+        start = raw_data.after(last_hour + timedelta(minutes=1))
     else:
-        start = raw_data.after(last_day)
+        start = raw_data.after(last_day + timedelta(minutes=1))
     # get local time's offset from UTC, without DST
     time_offset = Local.utcoffset(last_raw) - Local.dst(last_raw)
     # set daytime end hour, in UTC
@@ -157,6 +157,9 @@ def Process(params, raw_data, hourly_data, daily_data):
     while last_day != None and daily_data[last_day]['idx'] > start:
         del daily_data[last_day]
         last_day = daily_data.before(datetime.max)
+    while last_month != None and monthly_data[last_month]['idx'] > start:
+        del monthly_data[last_month]
+        last_month = monthly_data.before(datetime.max)
     # preload pressure history
     pressure_history = deque()
     for raw in raw_data[start - HOURx3:start]:
@@ -168,7 +171,7 @@ def Process(params, raw_data, hourly_data, daily_data):
     prev = raw_data[prev]
     # process the data in day chunks
     while start <= last_raw:
-        print start.isoformat()
+        print "day:", start.isoformat()
         day_start = start
         day_acc = Day_Acc(day_end_hour)
         # process each hour
@@ -209,6 +212,45 @@ def Process(params, raw_data, hourly_data, daily_data):
             new_data['idx'] = min(stop, last_raw)
             new_data['start'] = day_start
             daily_data[new_data['idx']] = new_data
+    # compute monthly data from daily data
+    if last_month == None:
+        start = daily_data.after(datetime.min)
+    else:
+        start = daily_data.after(last_month + timedelta(minutes=1))
+    if (time_offset.seconds / 3600) > -3:
+        start = start.replace(day=1, hour=day_end_hour, minute=0, second=0)
+    else:
+        start = start.replace(day=2, hour=day_end_hour, minute=0, second=0)
+    while start <= last_raw:
+        if start.month < 12:
+            stop = start.replace(month=start.month+1)
+        else:
+            stop = start.replace(year=start.year+1, month=1)
+        print "month:", start.isoformat()
+        new_data = {}
+        new_data['start'] = daily_data[daily_data.after(start)]['start']
+        new_data['temp_out_min_ave'] = 0.0
+        new_data['temp_out_max_ave'] = 0.0
+        new_data['rain'] = 0.0
+        min_cnt = 0
+        max_cnt = 0
+        for data in daily_data[start:stop]:
+            new_data['idx'] = data['idx']
+            if data['temp_out_min'] != None:
+                new_data['temp_out_min_ave'] += data['temp_out_min']
+                min_cnt += 1
+            if data['temp_out_max'] != None:
+                new_data['temp_out_max_ave'] += data['temp_out_max']
+                max_cnt += 1
+            new_data['rain'] += data['rain']
+        if min_cnt > 0:
+            new_data['temp_out_min_ave'] = new_data['temp_out_min_ave'] / \
+                                           float(min_cnt)
+        if max_cnt > 0:
+            new_data['temp_out_max_ave'] = new_data['temp_out_max_ave'] / \
+                                           float(max_cnt)
+        monthly_data[new_data['idx']] = new_data
+        start = stop
     return 0
 def main(argv=None):
     if argv is None:
@@ -233,6 +275,7 @@ def main(argv=None):
     return Process(DataStore.params(data_dir),
                    DataStore.data_store(data_dir),
                    DataStore.hourly_store(data_dir),
-                   DataStore.daily_store(data_dir))
+                   DataStore.daily_store(data_dir),
+                   DataStore.monthly_store(data_dir))
 if __name__ == "__main__":
     sys.exit(main())

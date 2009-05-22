@@ -20,7 +20,7 @@ import DataStore
 from TimeZone import Local, utc
 from WeatherStation import pressure_trend_text, wind_dir_text
 
-def Template(hourly_data, daily_data, template_file, output_file):
+def Template(hourly_data, daily_data, monthly_data, template_file, output_file):
     def jump(idx, count):
         while count > 0:
             new_idx = data_set.after(idx + timedelta(seconds=1))
@@ -90,6 +90,10 @@ def Template(hourly_data, daily_data, template_file, output_file):
                     of.write(x.strftime(fmt))
                 else:
                     of.write(fmt % (x))
+            elif command[0] == 'monthly':
+                data_set = monthly_data
+                idx = jump(datetime.max, -1)
+                data = data_set[idx]
             elif command[0] == 'daily':
                 data_set = daily_data
                 idx = jump(datetime.max, -1)
@@ -141,7 +145,7 @@ def main(argv=None):
         if o == '--help':
             print __doc__.strip()
             return 0
-    return Template(DataStore.hourly_store(args[0]),
-                    DataStore.daily_store(args[0]), args[1], args[2])
+    return Template(DataStore.hourly_store(args[0]), DataStore.daily_store(args[0]),
+                    DataStore.monthly_store(args[0]), args[1], args[2])
 if __name__ == "__main__":
     sys.exit(main())

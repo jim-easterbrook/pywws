@@ -30,18 +30,19 @@ def Hourly():
     raw_data = DataStore.data_store(data_dir)
     hourly_data = DataStore.hourly_store(data_dir)
     daily_data = DataStore.daily_store(data_dir)
+    monthly_data = DataStore.monthly_store(data_dir)
     # do the processing
     LogData.LogData(params, raw_data)
-    print 'Generating hourly and daily summaries'
-    Process.Process(params, raw_data, hourly_data, daily_data)
+    print 'Generating summary data'
+    Process.Process(params, raw_data, hourly_data, daily_data, monthly_data)
     for template in os.listdir(graph_template_dir):
         input_file = os.path.join(graph_template_dir, template)
         if not os.path.isfile(input_file):
             continue
         print "Graphing", template
         output_file = os.path.join(work_dir, os.path.splitext(template)[0])
-        Plot.Plot(params, raw_data, hourly_data, daily_data, work_dir,
-                  input_file, output_file)
+        Plot.Plot(params, raw_data, hourly_data, daily_data, monthly_data,
+                  work_dir, input_file, output_file)
         uploads.append(output_file)
     for template in os.listdir(template_dir):
         input_file = os.path.join(template_dir, template)
@@ -49,7 +50,8 @@ def Hourly():
             continue
         print "Templating", template
         output_file = os.path.join(work_dir, template)
-        Template.Template(hourly_data, daily_data, input_file, output_file)
+        Template.Template(
+            hourly_data, daily_data, monthly_data, input_file, output_file)
         if 'tweet' in template:
             print "Tweeting"
             ToTwitter.ToTwitter(params, output_file)

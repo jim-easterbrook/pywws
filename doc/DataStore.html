@@ -29,7 +29,7 @@ for data in hourly[datetime(2008, 12, 25):datetime(2008, 12, 26)]:
     print data['idx'], data['temp_out']
 </pre>
     <p>
-      The module provides three classes to store different data. <code>data_store</code> takes "raw" data from the weather station, <code>hourly_store</code> and <code>daily_store</code> store processed data (see <a href="process.html">Process.py</a>). All three are derived from the same <code>core_store</code> class, they only differ in the keys and types of data stored in each record.
+      The module provides three classes to store different data. <code>data_store</code> takes "raw" data from the weather station, <code>hourly_store</code>, <code>daily_store</code> and <code>monthly_store</code> store processed data (see <a href="process.html">Process.py</a>). All three are derived from the same <code>core_store</code> class, they only differ in the keys and types of data stored in each record.
     </p>
     <hr>
     <p>

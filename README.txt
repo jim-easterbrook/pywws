@@ -141,6 +141,10 @@ Getting started:
   20/ Edit templates, Hourly.py and other files to adjust everything to your
       taste.
 
+Changes in v0.6:
+	1/ Added monthly data
+	2/ Changed 'pressure' to 'abs_pressure' or 'rel_pressure'
+
 Changes in v0.5:
 	1/ Small bug fixes.
 	2/ Added start time to daily data

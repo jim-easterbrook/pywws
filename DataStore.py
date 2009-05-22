@@ -336,3 +336,15 @@ class daily_store(core_store):
         'wind_dir'          : 'int',
         'rain'              : 'float',
         }
+class monthly_store(core_store):
+    """Stores monthly summary weather station data."""
+    def __init__(self, root_dir):
+        core_store.__init__(self, os.path.join(root_dir, 'monthly'))
+    key_list = ['idx', 'start', 'temp_out_min_ave', 'temp_out_max_ave', 'rain']
+    types = {
+        'idx'               : 'time',
+        'start'             : 'time',
+        'temp_out_min_ave'  : 'float',
+        'temp_out_max_ave'  : 'float',
+        'rain'              : 'float',
+        }
