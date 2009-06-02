@@ -177,7 +177,10 @@ def Plot(params, raw_data, hourly_data, daily_data, monthly_data,
             ycalc = compile(ycalc, '<string>', 'eval')
             for data in source[start:stop]:
                 idx = eval(xcalc) + utcoffset
-                value = eval(ycalc)
+                try:
+                    value = eval(ycalc)
+                except TypeError:
+                    value = None
                 if value != None:
                     dat.write('%s %g\n' % (idx.isoformat(), value))
             dat.close()
