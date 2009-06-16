@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<graph>
+  <title>24Hrs wind rose</title>
+  <size>800, 800</size>
+  <duration>hours=24</duration>
+  <source>raw</source>
+</graph>
