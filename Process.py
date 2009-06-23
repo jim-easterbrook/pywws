@@ -43,11 +43,12 @@ class Acc:
         if raw['wind_gust'] != None:
             if raw['wind_gust'] > self.wind_gust[0]:
                 self.wind_gust = (raw['wind_gust'], raw['idx'])
-        if raw['rain'] < last_raw['rain'] - 0.001:
-            print '%s rain reset %.1f -> %.1f' % (
-                raw['idx'], last_raw['rain'], raw['rain'])
-        else:
-            self.rain += raw['rain'] - last_raw['rain']
+        if raw['rain'] != None and last_raw['rain'] != None:
+            if raw['rain'] < last_raw['rain'] - 0.001:
+                print '%s rain reset %.1f -> %.1f' % (
+                    raw['idx'], last_raw['rain'], raw['rain'])
+            else:
+                self.rain += raw['rain'] - last_raw['rain']
         self.valid = True
     def result(self):
         """Get the result of the data accumulation."""
