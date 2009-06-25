@@ -20,7 +20,12 @@ import csv
 from datetime import date, datetime
 import os
 import sys
+import time
 
+def safestrptime(date_string, format):
+    if hasattr(datetime, 'strptime'):
+        return datetime.strptime(date_string, format)
+    return datetime(*(time.strptime(date_string, format)[0:6]))
 class params:
     def __init__(self, root_dir):
         """Parameters are stored in a file "weather.ini" in root_dir."""
@@ -61,14 +66,14 @@ class core_store:
             dirs.sort()
             files.sort()
             if len(files) > 0:
-                self._fst_day = datetime.strptime(files[0], "%Y-%m-%d.txt").toordinal()
+                self._fst_day = safestrptime(files[0], "%Y-%m-%d.txt").toordinal()
                 break
         for root, dirs, files in os.walk(self._root_dir):
             dirs.sort()
             dirs.reverse()
             files.sort()
             if len(files) > 0:
-                self._lst_day = datetime.strptime(files[-1], "%Y-%m-%d.txt").toordinal()
+                self._lst_day = safestrptime(files[-1], "%Y-%m-%d.txt").toordinal()
                 break
         # initialise cache
         self._cache = []
@@ -248,7 +253,7 @@ class core_store:
                     elif type == 'int':
                         row[key] = int(row[key])
                     elif type == 'time':
-                        row[key] = datetime.strptime(row[key], "%Y-%m-%d %H:%M:%S")
+                        row[key] = safestrptime(row[key], "%Y-%m-%d %H:%M:%S")
                     else:
                         raise TypeError('Type not recognised for %s', key)
                 self._cache.append(row)

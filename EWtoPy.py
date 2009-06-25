@@ -57,7 +57,7 @@ def main(argv=None):
     count = 0
     for line in in_file:
         items = line.split(',')
-        local_date = datetime.strptime(items[2].strip(), '%Y-%m-%d %H:%M:%S')
+        local_date = DataStore.safestrptime(items[2].strip(), '%Y-%m-%d %H:%M:%S')
         local_date = local_date.replace(tzinfo=TimeZone.Local)
         date = local_date.astimezone(TimeZone.utc)
         if last_date and date < last_date:

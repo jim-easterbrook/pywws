@@ -27,22 +27,16 @@ def LogData(params, raw_data):
         print >>sys.stderr, "Invalid data from weather station"
         return 3
     # check clocks
-    s_time = datetime.strptime(fixed_block['date_time'], '%Y-%m-%d %H:%M') + \
-             timedelta(seconds=30)
+    s_time = DataStore.safestrptime(
+        fixed_block['date_time'], '%Y-%m-%d %H:%M') + timedelta(seconds=30)
     c_time = datetime.now()
     diff = abs(s_time - c_time)
-#    offset = (Local.utcoffset(c_time) - Local.dst(c_time)).seconds / 3600
-#    offset = offset - 1	# weather station is based on German time
-#    if offset != fixed_block['timezone']:
-#        print >>sys.stderr, \
-#              """WARNING: computer and weather station are in different timezones.
-#Set the weather station "timezone" to %d hours.""" % offset
     if diff > timedelta(minutes=2):
         print >>sys.stderr, \
-              """WARNING: computer and weather station clocks disagree by %d minutes.
+              """WARNING: computer and weather station clocks disagree by %s (H:M:S).
 Check that the computer is synchronised to a network time server and
 that the weather station clock is correct. If the station has a radio
-controlled clock, it may have lost its signal.""" % (diff.seconds / 60)
+controlled clock, it may have lost its signal.""" % (str(diff))
     # store info from fixed block
     params.set('fixed', 'pressure offset', '%g' % (
         fixed_block['rel_pressure'] - fixed_block['abs_pressure']))

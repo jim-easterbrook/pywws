@@ -31,7 +31,7 @@ def Upgrade(data_dir):
                 writer = csv.writer(open(file2, 'wb'))
                 for line in reader:
                     # convert date string
-                    line[0] = datetime.strptime(line[0], "%Y-%m-%dT%H:%M:%S")
+                    line[0] = DataStore.safestrptime(line[0], "%Y-%m-%dT%H:%M:%S")
                     # interpret other data
                     for n in range(1, len(line) - 1):
                         line[n] = eval(line[n])

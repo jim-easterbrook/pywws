@@ -11,6 +11,7 @@ options are:
 """
 
 import datetime
+from DataStore import safestrptime
 import getopt
 import WeatherStation
 import sys
@@ -66,7 +67,7 @@ def main(argv=None):
         lo_fix = ws.get_lo_fix_block()
         print "Recent history", lo_fix
         ptr = lo_fix['current_pos']
-        date = datetime.datetime.strptime(lo_fix['date_time'], '%Y-%m-%d %H:%M')
+        date = safestrptime(lo_fix['date_time'], '%Y-%m-%d %H:%M')
         for i in range(history_count):
             if decode:
                 data = ws.get_data(ptr)
