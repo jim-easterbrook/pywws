@@ -67,6 +67,8 @@ controlled clock, it may have lost its signal.""" % (str(diff))
     count = 0
     while last_ptr != current_ptr and last_date > last_stored:
         data = ws.get_data(last_ptr)
+        if data['delay'] == None:
+            break
         raw_data[last_date] = data
         count += 1
         last_date = last_date - timedelta(minutes=data['delay'])
