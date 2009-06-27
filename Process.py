@@ -8,7 +8,7 @@ options are:
 data_dir is the root directory of the weather data
 """
 
-from collections import defaultdict, deque
+from collections import deque
 from datetime import date, datetime, timedelta
 import getopt
 import os
@@ -27,7 +27,9 @@ class Acc:
     def __init__(self):
         self.wind_ave = 0.0
         self.wind_gust = (0.0, None)
-        self.wind_dir = defaultdict(float)
+        self.wind_dir = {}
+        for i in range(16):
+            self.wind_dir[i] = 0.0
         self.rain = 0.0
         self.count = 0
         self.valid = False
@@ -36,7 +38,7 @@ class Acc:
 
         last_raw is used to get the rainfall in this period."""
         if raw['wind_ave'] != None:
-            if raw['wind_dir'] != None:
+            if raw['wind_dir'] not in (None, 128):
                 self.wind_dir[raw['wind_dir']] += raw['wind_ave']
             self.wind_ave += raw['wind_ave']
             self.count += 1
@@ -59,7 +61,7 @@ class Acc:
             retval['wind_ave'] = self.wind_ave
             retval['wind_gust_t'] = self.wind_gust[1]
             retval['wind_gust'] = self.wind_gust[0]
-            best = self.wind_dir.keys()[0]
+            best = 0
             for dir, val in self.wind_dir.items():
                 if val > self.wind_dir[best]:
                     best = dir
@@ -143,6 +145,8 @@ def Process(params, raw_data, hourly_data, daily_data, monthly_data):
         start = raw_data.after(last_hour + timedelta(minutes=1))
     else:
         start = raw_data.after(last_day + timedelta(minutes=1))
+    if start == None:
+        start = raw_data.before(datetime.max)
     # get local time's offset from UTC, without DST
     time_offset = Local.utcoffset(last_raw) - Local.dst(last_raw)
     # set daytime end hour, in UTC
