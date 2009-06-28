@@ -345,11 +345,18 @@ class monthly_store(core_store):
     """Stores monthly summary weather station data."""
     def __init__(self, root_dir):
         core_store.__init__(self, os.path.join(root_dir, 'monthly'))
-    key_list = ['idx', 'start', 'temp_out_min_ave', 'temp_out_max_ave', 'rain']
+    key_list = ['idx', 'start',
+                'temp_out_min_t', 'temp_out_min', 'temp_out_min_ave',
+                'temp_out_max_t', 'temp_out_max', 'temp_out_max_ave',
+                'rain']
     types = {
         'idx'               : 'time',
         'start'             : 'time',
+        'temp_out_min_t'    : 'time',
+        'temp_out_min'      : 'float',
         'temp_out_min_ave'  : 'float',
+        'temp_out_max_t'    : 'time',
+        'temp_out_max'      : 'float',
         'temp_out_max_ave'  : 'float',
         'rain'              : 'float',
         }

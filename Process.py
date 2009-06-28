@@ -234,7 +234,11 @@ def Process(params, raw_data, hourly_data, daily_data, monthly_data):
         print "month:", start.isoformat()
         new_data = {}
         new_data['start'] = daily_data[daily_data.after(start)]['start']
+        new_data['temp_out_min_t'] = None
+        new_data['temp_out_min'] = 1000.0
         new_data['temp_out_min_ave'] = 0.0
+        new_data['temp_out_max_t'] = None
+        new_data['temp_out_max'] = -1000.0
         new_data['temp_out_max_ave'] = 0.0
         new_data['rain'] = 0.0
         min_cnt = 0
@@ -242,9 +246,15 @@ def Process(params, raw_data, hourly_data, daily_data, monthly_data):
         for data in daily_data[start:stop]:
             new_data['idx'] = data['idx']
             if data['temp_out_min'] != None:
+                if new_data['temp_out_min'] > data['temp_out_min']:
+                    new_data['temp_out_min'] = data['temp_out_min']
+                    new_data['temp_out_min_t'] = data['temp_out_min_t']
                 new_data['temp_out_min_ave'] += data['temp_out_min']
                 min_cnt += 1
             if data['temp_out_max'] != None:
+                if new_data['temp_out_max'] < data['temp_out_max']:
+                    new_data['temp_out_max'] = data['temp_out_max']
+                    new_data['temp_out_max_t'] = data['temp_out_max_t']
                 new_data['temp_out_max_ave'] += data['temp_out_max']
                 max_cnt += 1
             new_data['rain'] += data['rain']
