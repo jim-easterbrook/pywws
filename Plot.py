@@ -189,6 +189,10 @@ def Plot(params, raw_data, hourly_data, daily_data, monthly_data,
             colour = eval(GetValue(subplot, 'colour', str(colour+1)))
             if style == 'box':
                 style = 'lc %d lw 0 with boxes' % (colour)
+            elif style == '+':
+                style = 'lc %d pt 1 with points' % (colour)
+            elif style == 'x':
+                style = 'lc %d pt 2 with points' % (colour)
             else:
                 style = 'smooth unique lc %d' % (colour)
             title = GetValue(subplot, 'title', '')
