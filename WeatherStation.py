@@ -199,16 +199,16 @@ class weather_station:
     def current_pos(self):
         """Get circular buffer location where current data is being written."""
         return _decode(self._read_block(0x0000), self.lo_fix_format['current_pos'])
-    def get_raw_fixed_block(self):
+    def get_raw_fixed_block(self, unbuffered=False):
         """Get the raw "fixed block" of setting and min/max data."""
-        if not self._fixed_block:
+        if unbuffered or not self._fixed_block:
             self._read_fixed_block()
         return self._fixed_block
-    def get_fixed_block(self, keys=[]):
+    def get_fixed_block(self, keys=[], unbuffered=False):
         """Get the decoded "fixed block" of setting and min/max data.
 
         A subset of the entire block can be selected by keys."""
-        if not self._fixed_block:
+        if unbuffered or not self._fixed_block:
             self._read_fixed_block()
         format = self.fixed_format
         # navigate down list of keys to get to wanted data

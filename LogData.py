@@ -37,17 +37,6 @@ def LogData(params, raw_data):
 Check that the computer is synchronised to a network time server and
 that the weather station clock is correct. If the station has a radio
 controlled clock, it may have lost its signal.""" % (str(diff))
-    # store info from fixed block
-    params.set('fixed', 'pressure offset', '%g' % (
-        fixed_block['rel_pressure'] - fixed_block['abs_pressure']))
-    params.set('fixed', 'read period', '%d' % (fixed_block['read_period']))
-    # get time to go back to
-    last_stored = raw_data.before(datetime.max)
-    if last_stored == None:
-        last_stored = datetime.min
-    else:
-        last_stored = last_stored + \
-                      timedelta(minutes=fixed_block['read_period'] / 2)
     # synchronise with weather station's logging time
     print 'Synchronising with weather station'
     next_delay = -2
@@ -62,6 +51,19 @@ controlled clock, it may have lost its signal.""" % (str(diff))
     last_date = datetime.utcnow().replace(microsecond=0) - \
                 timedelta(minutes=next_delay)
     last_ptr = ws.dec_ptr(current_ptr)
+    # re-read fixed block, just in case we read it at an unstable time
+    fixed_block = ws.get_fixed_block(unbuffered=True)
+    # store info from fixed block
+    pressure_offset = fixed_block['rel_pressure'] - fixed_block['abs_pressure']
+    params.set('fixed', 'pressure offset', '%g' % (pressure_offset))
+    params.set('fixed', 'read period', '%d' % (fixed_block['read_period']))
+    # get time to go back to
+    last_stored = raw_data.before(datetime.max)
+    if last_stored == None:
+        last_stored = datetime.min
+    else:
+        last_stored = last_stored + \
+                      timedelta(minutes=fixed_block['read_period'] / 2)
     # go back through stored data, until we catch up with what we've already got
     print 'Fetching data'
     count = 0
