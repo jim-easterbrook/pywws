@@ -45,14 +45,14 @@ This software collection currently contains the following files:
 	DataStore.py		-- stores readings in easy to access files
 	LogData.py		-- saves recent readings to file
 	Hourly.py		-- run from cron
-	Process.py		-- generates hourly and daily summary data
+	Process.py		-- summarises raw data
 	Plot.py			-- plots weather data using an XML recipe
 	Template.py		-- creates text data file based on a template
 	Upload.py		-- uploads files to a web site by ftp
 	ToTwitter.py		-- posts a message to a Twitter account
 	EWtoPy.py		-- converts EasyWeather.dat to DataStore format
-	UpgradeFrom0-1.py	-- converts v0.1 datastore to v0.3 on
-	Reprocess.py		-- upgrade v0.2 or later datastore
+	UpgradeFrom0-1.py	-- converts v0.1 datastore to v0.3
+	Reprocess.py		-- regenerates summary data
 	AutoDoc.py		-- generates extra HTML documentation
 
 	example_graph_templates/*

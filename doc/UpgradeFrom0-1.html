@@ -13,13 +13,14 @@
       <a href="auto/UpgradeFrom0-1.html">UpgradeFrom0-1.py</a> -- converts v0.1 datastore to v0.3
     </h2>
     <p>
-      This program converts weather data from the format used by v0.1 of the Python weather station software to that used by v0.3. It is a good idea to back up your data before running UpgradeFrom0-1.py.
+      This program converts weather data from the format used by v0.1 of the Python weather station software to that used by v0.3. It is a good idea to back up your data before running UpgradeFrom0-1.py. After conversion to v0.3, use <a href="Reprocess.html">Reprocess.py</a> to update the data from v0.3 to the current version.
     </p>
     <p>
       The program is very simple to use:
     </p>
 <pre>
 python UpgradeFrom0-1.py data_directory
+python Reprocess.py data_directory
 </pre>
     <p>
       where <code>data_directory</code> is the location of your stored data.

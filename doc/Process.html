@@ -10,7 +10,7 @@
       <a href="index.html">Python software for USB Wireless WeatherStations</a>
     </h1>
     <h2>
-      <a href="auto/Process.html">Process.py</a> -- generates hourly and daily summary data
+      <a href="auto/Process.html">Process.py</a> -- summarises raw data
     </h2>
     <p>
       This module takes raw weather station data (typically sampled every five or ten minutes) and generates hourly, daily and monthly summary data, which is useful when creating tables and graphs. The hourly data is derived from all the records in one hour, e.g. from 18:00:00 to 18:59:59, and is given the index of the last record in that hour. The daily data follows the British weather station convention of 9am and 9pm readings, and summarises data from 2100 the previous day to 2100 on the "index" day, or 2200 to 2200 when DST is in effect. The monthly data runs from 2100 on the last day of the previous month to 2100 on the last day of the month.
