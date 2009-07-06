@@ -137,16 +137,13 @@ def Process(params, raw_data, hourly_data, daily_data, monthly_data):
     last_raw = raw_data.before(datetime.max)
     last_hour = hourly_data.before(datetime.max)
     last_day = daily_data.before(datetime.max)
-    last_month = monthly_data.before(datetime.max)
     # get earlier of last daily or hourly, and start from there
     if last_day == None or last_hour == None:
         start = raw_data.after(datetime.min)
     elif last_hour < last_day:
-        start = raw_data.after(last_hour + timedelta(minutes=1))
+        start = last_hour
     else:
-        start = raw_data.after(last_day + timedelta(minutes=1))
-    if start == None:
-        start = raw_data.before(datetime.max)
+        start = last_day
     # get local time's offset from UTC, without DST
     time_offset = Local.utcoffset(last_raw) - Local.dst(last_raw)
     # set daytime end hour, in UTC
@@ -162,9 +159,6 @@ def Process(params, raw_data, hourly_data, daily_data, monthly_data):
     while last_day != None and daily_data[last_day]['idx'] > start:
         del daily_data[last_day]
         last_day = daily_data.before(datetime.max)
-    while last_month != None and monthly_data[last_month]['idx'] > start:
-        del monthly_data[last_month]
-        last_month = monthly_data.before(datetime.max)
     # preload pressure history
     pressure_history = deque()
     for raw in raw_data[start - HOURx3:start]:
@@ -218,22 +212,31 @@ def Process(params, raw_data, hourly_data, daily_data, monthly_data):
             new_data['start'] = day_start
             daily_data[new_data['idx']] = new_data
     # compute monthly data from daily data
+    last_month = monthly_data.before(datetime.max)
     if last_month == None:
         start = daily_data.after(datetime.min)
     else:
-        start = daily_data.after(last_month + timedelta(minutes=1))
+        start = last_month
     if (time_offset.seconds / 3600) > -3:
         start = start.replace(day=1, hour=day_end_hour, minute=0, second=0)
     else:
         start = start.replace(day=2, hour=day_end_hour, minute=0, second=0)
+    # delete any existing records after start, as they may be incomplete
+    while last_month != None and monthly_data[last_month]['idx'] >= start:
+        del monthly_data[last_month]
+        last_month = monthly_data.before(datetime.max)
+    # process data
     while start <= last_raw:
         if start.month < 12:
             stop = start.replace(month=start.month+1)
         else:
             stop = start.replace(year=start.year+1, month=1)
         print "month:", start.isoformat()
+        # avoid any boundary problems around day start / end
+        t0 = start - timedelta(hours=12)
+        t1 = stop - timedelta(hours=12)
         new_data = {}
-        new_data['start'] = daily_data[daily_data.after(start)]['start']
+        new_data['start'] = daily_data[daily_data.after(t0)]['start']
         new_data['temp_out_min_t'] = None
         new_data['temp_out_min'] = 1000.0
         new_data['temp_out_min_ave'] = 0.0
@@ -243,7 +246,7 @@ def Process(params, raw_data, hourly_data, daily_data, monthly_data):
         new_data['rain'] = 0.0
         min_cnt = 0
         max_cnt = 0
-        for data in daily_data[start:stop]:
+        for data in daily_data[t0:t1]:
             new_data['idx'] = data['idx']
             if data['temp_out_min'] != None:
                 if new_data['temp_out_min'] > data['temp_out_min']:
