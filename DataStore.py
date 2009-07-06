@@ -29,6 +29,8 @@ def safestrptime(date_string, format):
 class params:
     def __init__(self, root_dir):
         """Parameters are stored in a file "weather.ini" in root_dir."""
+        if not os.path.isdir(root_dir):
+            os.makedirs(root_dir)
         self._path = os.path.join(root_dir, 'weather.ini')
         self._dirty = False
         # open config file
