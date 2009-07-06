@@ -135,11 +135,22 @@ Getting started:
         [twitter]
         username = twitterusername
         password = twitterpassword
-  19/ Edit Hourly.py to use the directories and file names you've chosen
-      then test it and add it to crontab. I suggest running it every
-      hour at 1 or 2 minutes past.
-  20/ Edit templates, Hourly.py and other files to adjust everything to your
+  19/ Create directories for your graph templates and text templates, e.g.
+      '~/weather/graph_templates/' and '~/weather/templates/', copy the
+      templates you like to them, and run Hourly.py manually:
+      "python Hourly.py /data/weather"
+      You can now edit /data/weather/weather.ini to point to your template
+      directories if Hourly.py didn't find them.
+  20/ Set up a cron job to run Hourly.py every hour or every few hours or
+      every day, according to your needs, at a minute or two past the hour.
+  21/ Edit templates, Hourly.py and other files to adjust everything to your
       taste.
+
+Changes in v0.7:
+	1/ Several bug fixes, mostly around new weather stations with not
+	   much data
+	2/ Added min & max temperature extremes to monthly data
+	3/ Added template and workspace directory locations to weather.ini
 
 Changes in v0.6:
 	1/ Added monthly data
