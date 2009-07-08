@@ -64,7 +64,7 @@
                     <a href="#colour">colour</a>
 				  </li>
 				  <li>
-                    <a href="#title">title</a>
+                    <a href="#title3">title</a>
 				  </li>
 				</ul>
 			  </li>
@@ -80,6 +80,9 @@
 			  <li>
                 <a href="#boxwidth">boxwidth</a>
 			  </li>
+			  <li>
+                <a href="#title2">title</a>
+			  </li>
 			</ul>
           </li>
           <li>
@@ -92,7 +95,13 @@
             <a href="#duration">duration</a>
           </li>
           <li>
+            <a href="#layout">layout</a>
+          </li>
+          <li>
             <a href="#size">size</a>
+          </li>
+          <li>
+            <a href="#fileformat">fileformat</a>
           </li>
           <li>
             <a href="#lmargin">lmargin</a>
@@ -109,6 +118,9 @@
           <li>
             <a href="#xtics">xtics</a>
           </li>
+		  <li>
+            <a href="#title1">title</a>
+		  </li>
         </ul>
       </li>
     </ul>
@@ -143,10 +155,22 @@
 	This element sets the extent of the X axis of the graph, unless both <code>start</code> and <code>stop</code> are defined. It is used in the constructor of a Python <a href="auto/datetime.html#timedelta">timedelta</a> object. For example, to plot one week: <code>&lt;duration&gt;weeks=1&lt;/duration&gt;</code>. The default value is <code>hours=24</code>.
     </p>
     <h3>
+      <a href="#list" name="layout">layout</a>
+    </h3>
+	<p>
+	Controls the layout of the plots. Default is a single column. The <code>layout</code> element specifies rows and columns. For example: <code>&lt;layout&gt;4, 2&lt;/layout&gt;</code> will use a grid of 4 rows and 2 columns.
+    </p>
+    <h3>
       <a href="#list" name="size">size</a>
     </h3>
 	<p>
-	Sets the overall dimensions of the image file containing the graph. Default is a width of 600 pixels and height of 200 pixels for each plot, so a graph with four plot elements would be 600 x 800 pixels. Any <code>size</code> element must include both width and height. For example: <code>&lt;size&gt;800, 600&lt;/size&gt;</code> will produce an image 800 pixels wide and 600 pixels high.
+	Sets the overall dimensions of the image file containing the graph. Default (in a single column layout) is a width of 600 pixels and height of 200 pixels for each plot, so a graph with four plot elements would be 600 x 800 pixels. Any <code>size</code> element must include both width and height. For example: <code>&lt;size&gt;800, 600&lt;/size&gt;</code> will produce an image 800 pixels wide and 600 pixels high.
+    </p>
+    <h3>
+      <a href="#list" name="fileformat">fileformat</a>
+    </h3>
+	<p>
+	Sets the image format of the file containing the graph. Default is png. Any string recognised by your installation of gnuplot should do. For example: <code>&lt;fileformat&gt;gif&lt;/fileformat&gt;</code> will produce a GIF image.
     </p>
     <h3>
       <a href="#list" name="lmargin">lmargin</a>
@@ -179,6 +203,12 @@
 	Sets the spacing of the "tic" marks on the X axis. The value is an integer number of hours. The default is to allow gnuplot to set an appropriate interval.
     </p>
     <h3>
+      <a href="#list" name="title1">title</a>
+    </h3>
+    <p>
+	Sets the title of the graph. A single line of text, for example: <code>&lt;title&gt;Today's weather&lt;/title&gt;</code>. This title appears at the very top of the graph, outside any plot area.
+    </p>
+    <h3>
       <a href="#list" name="subplot">subplot</a>
     </h3>
     <p>
@@ -209,6 +239,12 @@
 	Sets the width of the "boxes" used when drawing bar graphs. The value is an integer expression yielding a number of seconds. Default depends on <code>source</code>: raw is 240, hourly is 2800 and daily is 2800 * 24.
     </p>
     <h3>
+      <a href="#list" name="title2">title</a>
+    </h3>
+    <p>
+	Sets the title of the plot. A single line of text, for example: <code>&lt;title&gt;Temperature (&deg;C)&lt;/title&gt;</code>. This title appears within the plot area, above any subplot titles.
+    </p>
+    <h3>
       <a href="#list" name="xcalc">xcalc</a>
     </h3>
     <p>
@@ -233,7 +269,7 @@
 	Sets the colour of the subplot line or boxes. Any integer value is accepted. The mapping of colours to numbers is set by <a href="http://www.gnuplot.info/">gnuplot</a>. Default value is the previous colour plus one.
     </p>
     <h3>
-      <a href="#list" name="title">title</a>
+      <a href="#list" name="title3">title</a>
     </h3>
     <p>
 	Sets the title of the subplot. A single line of text, for example: <code>&lt;title&gt;Temperature (&deg;C)&lt;/title&gt;</code>. This title appears within the plot area, next to a short segment of the line colour used for the subplot.

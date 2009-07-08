@@ -23,14 +23,20 @@ import DataStore
 from TimeZone import Local
 from WeatherStation import dew_point
 
+def GetChildren(node, name):
+    result = []
+    for child in node.childNodes:
+        if child.localName == name:
+            result.append(child)
+    return result
 def GetValue(node, name, default):
-    result = node.getElementsByTagName(name)
-    if len(result) < 1:
-        return default
-    result = result[0].childNodes
-    if len(result) < 1:
-        return ''
-    return result[0].data.strip()
+    for child in node.childNodes:
+        if child.localName == name:
+            if child.childNodes:
+                return child.childNodes[0].data.strip()
+            else:
+                return ''
+    return default
 def Plot(params, raw_data, hourly_data, daily_data, monthly_data,
          work_dir, input_file, output_file):
     pressure_offset = eval(params.get('fixed', 'pressure offset'))
@@ -39,7 +45,8 @@ def Plot(params, raw_data, hourly_data, daily_data, monthly_data,
         os.makedirs(work_dir)
     tmp_files = []
     # read XML graph description
-    graph = xml.dom.minidom.parse(input_file)
+    doc = xml.dom.minidom.parse(input_file)
+    graph = doc.childNodes[0]
     # get start and end of graph
     x_lo = GetValue(graph, 'start', None)
     x_hi = GetValue(graph, 'stop', None)
@@ -74,12 +81,19 @@ def Plot(params, raw_data, hourly_data, daily_data, monthly_data,
     tmp_files.append(cmd_file)
     of = open(cmd_file, 'w')
     # get list of plots
-    plot_list = graph.getElementsByTagName('plot')
+    plot_list = GetChildren(graph, 'plot')
     plot_count = len(plot_list)
     # write gnuplot set up
-    size = eval(GetValue(graph, 'size', '(600, %d)' % (plot_count * 200)))
-    of.write('set terminal png large size %d,%d\n' % size)
+    rows = plot_count
+    cols = (plot_count + rows - 1) / rows
+    rows, cols = eval(GetValue(graph, 'layout', '%d, %d' % (rows, cols)))
+    w = 600
+    h = w * rows / (cols * 3)
+    w, h = eval(GetValue(graph, 'size', '(%d, %d)' % (w, h)))
+    fileformat = GetValue(graph, 'fileformat', 'png')
+    of.write('set terminal %s large size %d,%d\n' % (fileformat, w, h))
     of.write('set output "%s"\n' % output_file)
+    # write preamble
     of.write('set style fill solid\n')
     of.write('set xdata time\n')
     of.write('set timefmt "%Y-%m-%dT%H:%M:%S"\n')
@@ -97,22 +111,27 @@ def Plot(params, raw_data, hourly_data, daily_data, monthly_data,
         xformat = '%Y/%m/%d'
         xlabel = 'Date'
     xformat = GetValue(graph, 'xformat', xformat)
-    xformat = codecs.encode(xformat, graph.encoding)
+    xformat = codecs.encode(xformat, doc.encoding)
     of.write('set format x "%s"\n' % xformat)
     xlabel = GetValue(graph, 'xlabel', xlabel)
-    xlabel = codecs.encode(xlabel, graph.encoding)
+    xlabel = codecs.encode(xlabel, doc.encoding)
     dateformat = '%Y/%m/%d'
     dateformat = GetValue(graph, 'dateformat', dateformat)
-    dateformat = codecs.encode(dateformat, graph.encoding)
+    dateformat = codecs.encode(dateformat, doc.encoding)
     xtics = GetValue(graph, 'xtics', None)
     if xtics:
         of.write('set xtics %d\n' % (eval(xtics) * 3600))
     # do the plots
-    of.write('set multiplot layout %d,1\n' % plot_count)
+    # set overall title
+    title = GetValue(graph, 'title', '')
+    if title:
+        title = codecs.encode(title, doc.encoding)
+        title = 'title "%s"' % title
+    of.write('set multiplot layout %d, %d %s\n' % (rows, cols, title))
     colour = 0
     for plot_no in range(plot_count):
         plot = plot_list[plot_no]
-        subplot_list = plot.getElementsByTagName('subplot')
+        subplot_list = GetChildren(plot, 'subplot')
         subplot_count = len(subplot_list)
         if subplot_count < 1:
             continue
@@ -135,6 +154,10 @@ def Plot(params, raw_data, hourly_data, daily_data, monthly_data,
             of.write('set yrange [%d:%d]\n' % eval(yrange))
         else:
             of.write('set yrange [*:*]\n')
+        # set key / title location
+        title = GetValue(plot, 'title', '')
+        title = codecs.encode(title, doc.encoding)
+        of.write('set key horizontal title "%s"\n' % title)
         # set grid
         of.write('unset grid\n')
         grid = GetValue(plot, 'grid', None)
@@ -176,7 +199,10 @@ def Plot(params, raw_data, hourly_data, daily_data, monthly_data,
             xcalc = compile(xcalc, '<string>', 'eval')
             ycalc = compile(ycalc, '<string>', 'eval')
             for data in source[start:stop]:
-                idx = eval(xcalc) + utcoffset
+                idx = eval(xcalc)
+                if idx == None:
+                    continue
+                idx += utcoffset
                 try:
                     value = eval(ycalc)
                 except TypeError:
@@ -196,13 +222,13 @@ def Plot(params, raw_data, hourly_data, daily_data, monthly_data,
             else:
                 style = 'smooth unique lc %d' % (colour)
             title = GetValue(subplot, 'title', '')
-            title = codecs.encode(title, graph.encoding)
+            title = codecs.encode(title, doc.encoding)
             of.write(' "%s" using 1:2 title "%s" %s' % (dat_file, title, style))
             if subplot_no != subplot_count - 1:
                 of.write(', \\')
             of.write('\n')
     of.close()
-    graph.unlink()
+    doc.unlink()
     # run gnuplot on file
     os.system('gnuplot %s' % cmd_file)
     for file in tmp_files:
