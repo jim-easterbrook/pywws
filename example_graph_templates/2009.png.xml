@@ -7,34 +7,35 @@
   <xlabel>%Y</xlabel>
   <dateformat></dateformat>
   <plot>
-    <yrange>-10, 40</yrange>
+    <title>Temperature (°C)</title>
+    <yrange>-10, 55</yrange>
     <source>monthly</source>
     <boxwidth>boxwidth / 2</boxwidth>
     <subplot>
       <style>box</style>
       <colour>1</colour>
-      <title>Mean daytime max temp (°C)</title>
+      <title>Mean daytime max</title>
       <xcalc>data['start'] + timedelta(days=20)</xcalc>
       <ycalc>data['temp_out_max_ave']</ycalc>
     </subplot>
     <subplot>
       <style>+</style>
       <colour>6</colour>
-      <title>Extreme daytime max temp (°C)</title>
+      <title>Extreme daytime max</title>
       <xcalc>data['temp_out_max_t']</xcalc>
       <ycalc>data['temp_out_max']</ycalc>
     </subplot>
     <subplot>
       <style>box</style>
       <colour>3</colour>
-      <title>Mean nighttime min temp (°C)</title>
+      <title>Mean nighttime min</title>
       <xcalc>data['start'] + timedelta(days=7)</xcalc>
       <ycalc>data['temp_out_min_ave']</ycalc>
     </subplot>
     <subplot>
       <style>+</style>
       <colour>5</colour>
-      <title>Extreme daytime min temp (°C)</title>
+      <title>Extreme nighttime min</title>
       <xcalc>data['temp_out_min_t']</xcalc>
       <ycalc>data['temp_out_min']</ycalc>
     </subplot>

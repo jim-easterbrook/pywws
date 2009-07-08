@@ -5,36 +5,38 @@
   <xformat>%Y/%m/%d</xformat>
   <dateformat></dateformat>
   <plot>
-    <yrange>-10, 30</yrange>
+    <title>Temperature (°C)</title>
+    <yrange>-10, 45</yrange>
     <source>daily</source>
     <boxwidth>boxwidth / 2</boxwidth>
     <subplot>
       <style>box</style>
       <colour>1</colour>
-      <title>Daytime max temp (°C)</title>
+      <title>Daytime max</title>
       <xcalc>data['start'] + timedelta(hours=18)</xcalc>
       <ycalc>data['temp_out_max']</ycalc>
     </subplot>
     <subplot>
       <style>box</style>
       <colour>3</colour>
-      <title>Nighttime min temp (°C)</title>
+      <title>Nighttime min</title>
       <xcalc>data['start'] + timedelta(hours=6)</xcalc>
       <ycalc>data['temp_out_min']</ycalc>
     </subplot>
   </plot>
   <plot>
+    <title>Wind speed (mph)</title>
     <yrange>0, 30</yrange>
     <source>hourly</source>
     <subplot>
       <colour>4</colour>
       <ycalc>data['wind_gust'] * 3.6 / 1.609344</ycalc>
-      <title>Wind speed: gust (mph)</title>
+      <title>gust</title>
     </subplot>
     <subplot>
       <colour>3</colour>
       <ycalc>data['wind_ave'] * 3.6 / 1.609344</ycalc>
-      <title>average (mph)</title>
+      <title>average</title>
     </subplot>
   </plot>
   <plot>

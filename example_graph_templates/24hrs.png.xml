@@ -6,7 +6,7 @@
   <xformat>%H%M</xformat>
   <dateformat></dateformat>
   <plot>
-    <yrange>-10, 30</yrange>
+    <yrange>-10, 35</yrange>
     <source>raw</source>
     <subplot>
       <colour>1</colour>
@@ -20,17 +20,18 @@
     </subplot>
   </plot>
   <plot>
+    <title>Wind speed (mph)</title>
     <yrange>0, 30</yrange>
     <source>raw</source>
     <subplot>
       <colour>4</colour>
       <ycalc>data['wind_gust'] * 3.6 / 1.609344</ycalc>
-      <title>Wind speed: gust (mph)</title>
+      <title>gust</title>
     </subplot>
     <subplot>
       <colour>3</colour>
       <ycalc>data['wind_ave'] * 3.6 / 1.609344</ycalc>
-      <title>average (mph)</title>
+      <title>average</title>
     </subplot>
   </plot>
   <plot>
