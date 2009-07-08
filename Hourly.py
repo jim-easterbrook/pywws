@@ -18,7 +18,7 @@ import sys
 
 import DataStore
 import LogData
-import Plot
+from Plot import GraphPlotter
 import Process
 import Template
 import ToTwitter
@@ -49,15 +49,15 @@ def Hourly(data_dir):
     # do the processing
     print 'Generating summary data'
     Process.Process(params, raw_data, hourly_data, daily_data, monthly_data)
+    plotter = GraphPlotter(raw_data, hourly_data, daily_data, monthly_data, work_dir)
     for template in os.listdir(graph_template_dir):
         input_file = os.path.join(graph_template_dir, template)
         if not os.path.isfile(input_file):
             continue
         print "Graphing", template
         output_file = os.path.join(work_dir, os.path.splitext(template)[0])
-        Plot.Plot(params, raw_data, hourly_data, daily_data, monthly_data,
-                  work_dir, input_file, output_file)
-        uploads.append(output_file)
+        if plotter.DoPlot(input_file, output_file) == 0:
+            uploads.append(output_file)
     for template in os.listdir(template_dir):
         input_file = os.path.join(template_dir, template)
         if not os.path.isfile(input_file):
