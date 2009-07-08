@@ -151,6 +151,7 @@ Changes in v0.7:
 	   much data
 	2/ Added min & max temperature extremes to monthly data
 	3/ Added template and workspace directory locations to weather.ini
+	4/ Increased versatility of Plot.py with layout and title elements
 
 Changes in v0.6:
 	1/ Added monthly data
