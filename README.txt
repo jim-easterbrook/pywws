@@ -47,6 +47,7 @@ This software collection currently contains the following files:
 	Hourly.py		-- run from cron
 	Process.py		-- summarises raw data
 	Plot.py			-- plots weather data using an XML recipe
+	WindRose.py		-- draw a "wind rose" using an XML recipe
 	Template.py		-- creates text data file based on a template
 	Upload.py		-- uploads files to a web site by ftp
 	ToTwitter.py		-- posts a message to a Twitter account
