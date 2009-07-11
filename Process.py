@@ -86,16 +86,23 @@ class Day_Acc(Acc):
     temperatures.
 
     Daytime is assumed to be 0900-2100 and nighttime to be 2100-0900,
-    local time (1000-2200 and 2200-1000 during DST)."""
-    def __init__(self, day_end_hour):
+    local time (1000-2200 and 2200-1000 during DST), regardless of the
+    "day end hour" setting."""
+    def __init__(self, time_offset):
         Acc.__init__(self)
-        self._day_end_hour = day_end_hour
         self.temp_out_min = (1000.0, None)
         self.temp_out_max = (-1000.0, None)
+        # divide 24 hours of UTC day into day and night
+        self._daytime = []
+        for i in range(24):
+            self._daytime.append(True)
+        night_hour = (21 - (time_offset.seconds / 3600)) % 24
+        for i in range(12):
+            self._daytime[night_hour] = False
+            night_hour = (night_hour + 1) % 24
     def add(self, raw, last_raw):
         if raw['temp_out'] != None:
-            if raw['idx'].hour >= (self._day_end_hour + 12) % 24 and \
-               raw['idx'].hour < self._day_end_hour:
+            if self._daytime[raw['idx'].hour]:
                 # daytime max temperature
                 if raw['temp_out'] > self.temp_out_max[0]:
                     self.temp_out_max = (raw['temp_out'], raw['idx'])
@@ -123,8 +130,10 @@ def Process(params, raw_data, hourly_data, daily_data, monthly_data):
     Starts from the last hourly or daily summary (whichever is
     earlier) and continues to end of the raw data.
 
-    A day is assumed to end at 2100 local time (2200 during DST),
-    following the historical convention for weather station readings.
+    The meteorological day end (typically 2100 or 0900 local time) is set
+    in the preferences file "weather.ini". The default value is 2100
+    (2200 during DST), following the historical convention for weather
+    station readings.
 
     Atmospheric pressure is converted from absolute to relative, using
     the weather station's offset as recorded by LogData.py. The
@@ -147,7 +156,8 @@ def Process(params, raw_data, hourly_data, daily_data, monthly_data):
     # get local time's offset from UTC, without DST
     time_offset = Local.utcoffset(last_raw) - Local.dst(last_raw)
     # set daytime end hour, in UTC
-    day_end_hour = (21 - (time_offset.seconds / 3600)) % 24
+    day_end_hour = eval(params.get('fixed', 'day end hour', '21'))
+    day_end_hour = (day_end_hour - (time_offset.seconds / 3600)) % 24
     # round to start of this day
     if start.hour < day_end_hour:
         start = start - timedelta(hours=24)
@@ -172,7 +182,7 @@ def Process(params, raw_data, hourly_data, daily_data, monthly_data):
     while start <= last_raw:
         print "day:", start.isoformat()
         day_start = start
-        day_acc = Day_Acc(day_end_hour)
+        day_acc = Day_Acc(time_offset)
         # process each hour
         for hour in range(24):
             hour_acc = Hour_Acc()
@@ -217,10 +227,20 @@ def Process(params, raw_data, hourly_data, daily_data, monthly_data):
         start = daily_data.after(datetime.min)
     else:
         start = last_month
-    if (time_offset.seconds / 3600) > -3:
-        start = start.replace(day=1, hour=day_end_hour, minute=0, second=0)
+    # set start to end of first day of month
+    start = start.replace(day=1, hour=day_end_hour, minute=0, second=0)
+    local_start = start + time_offset
+    if local_start.day == 2:
+        if local_start.hour >= 12:
+            # missing most of first day of month
+            start = start - timedelta(hours=24)
+    elif local_start.day == 1:
+        if local_start.hour < 12:
+            # most of day is in last month
+            start = start + timedelta(hours=24)
     else:
-        start = start.replace(day=2, hour=day_end_hour, minute=0, second=0)
+        # all of day is in last month
+        start = start + timedelta(hours=24)
     # delete any existing records after start, as they may be incomplete
     while last_month != None and monthly_data[last_month]['idx'] >= start:
         del monthly_data[last_month]
