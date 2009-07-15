@@ -14,9 +14,8 @@
   </tr>
 #timezone local#
 #daily#
-#jump -8#
+#jump -7#
 #loop 7#
-#jump 1#
   <tr>
     <td>#idx "%Y/%m/%d %H:%M %Z"#</td>
     <td>#temp_out_max "%.1f &deg;C"#</td>
@@ -26,5 +25,6 @@
     <td>#wind_gust "%.0f mph" "" "x * 3.6 / 1.609344"#</td>
     <td>#rain "%0.1f mm"#</td>
   </tr>
+#jump 1#
 #endloop#
 </table>

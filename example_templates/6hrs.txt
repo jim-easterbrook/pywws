@@ -23,9 +23,8 @@
   </tr>
 #timezone local#
 #hourly#
-#jump -7#
+#jump -6#
 #loop 7#
-#jump 1#
   <tr>
     <td>#idx "%Y/%m/%d" "" "[None, x][x.hour == 0 or loop_count == 7]"#</td>
     <td>#idx "%H%M %Z"#</td>
@@ -37,5 +36,6 @@
     <td>#rain "%0.1f mm"#</td>
     <td>#rel_pressure "%.0f hPa"#, #pressure_trend "%s" "" "pressure_trend_text(x)"#</td>
   </tr>
+#jump 1#
 #endloop#
 </table>

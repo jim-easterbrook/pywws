@@ -1,0 +1,26 @@
+<table border="1" rules="all">
+  <tr>
+    <th rowspan="2">Month</th>
+    <th colspan="4">Temperature</th>
+    <th rowspan="2">Rainfall</th>
+  </tr>
+  <tr>
+    <th>maximum</th>
+    <th>mean day max</th>
+    <th>mean night min</th>
+    <th>minimum</th>
+  </tr>
+#timezone local#
+#monthly#
+#loop 10000#
+  <tr>
+    <td class="right">#idx "%B %Y"#</td>
+    <td>#temp_out_max "%.1f &deg;C"#</td>
+    <td>#temp_out_max_ave "%.1f &deg;C"#</td>
+    <td>#temp_out_min_ave "%.1f &deg;C"#</td>
+    <td>#temp_out_min "%.1f &deg;C"#</td>
+    <td>#rain "%0.1f mm"#</td>
+  </tr>
+#jump -1#
+#endloop#
+</table>

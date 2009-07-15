@@ -1,9 +1,8 @@
 #daily#
 #timezone local#
 <table border="1" rules="all">
-#jump -2#
+#jump -1#
 #loop 2#
-#jump 1#
   <tr>
     <th colspan="2" class="left">
       #start "From %H%M %Z on %d %b to" "24 hours ending" "[x, None][loop_count == 2]"#
@@ -37,5 +36,6 @@
     <td>#wind_gust_t "%Y/%m/%d</td><td>%H%M %Z"#</td>
   </tr>
 #idx "  <tr><th colspan=\"4\">&nbsp;</th></tr>" "" "[x, None][loop_count==1]"#
+#jump 1#
 #endloop#
 </table>
