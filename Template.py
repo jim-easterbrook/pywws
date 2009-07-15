@@ -34,14 +34,14 @@ def Template(hourly_data, daily_data, monthly_data, template_file, output_file):
                 break
             idx = new_idx
             count += 1
-        return idx
+        return idx, count == 0
     # start off in hourly data mode
     data_set = hourly_data
     # start off in utc
     time_zone = utc
     # jump to last item
-    idx = jump(datetime.max, -1)
-    if idx == None:
+    idx, valid_data = jump(datetime.max, -1)
+    if not valid_data:
         print >>sys.stderr, "No summary data - run Process.py first"
         return 4
     data = data_set[idx]
@@ -92,15 +92,15 @@ def Template(hourly_data, daily_data, monthly_data, template_file, output_file):
                     of.write(fmt % (x))
             elif command[0] == 'monthly':
                 data_set = monthly_data
-                idx = jump(datetime.max, -1)
+                idx, valid_data = jump(datetime.max, -1)
                 data = data_set[idx]
             elif command[0] == 'daily':
                 data_set = daily_data
-                idx = jump(datetime.max, -1)
+                idx, valid_data = jump(datetime.max, -1)
                 data = data_set[idx]
             elif command[0] == 'hourly':
                 data_set = hourly_data
-                idx = jump(datetime.max, -1)
+                idx, valid_data = jump(datetime.max, -1)
                 data = data_set[idx]
             elif command[0] == 'timezone':
                 if command[1] == 'utc':
@@ -111,14 +111,14 @@ def Template(hourly_data, daily_data, monthly_data, template_file, output_file):
                     print >>sys.stderr, "Unknown time zone: %s" % command[1]
                     return 6
             elif command[0] == 'jump':
-                idx = jump(idx, int(command[1]))
+                idx, valid_data = jump(idx, int(command[1]))
                 data = data_set[idx]
             elif command[0] == 'loop':
                 loop_count = int(command[1])
                 loop_start = tmplt.tell()
             elif command[0] == 'endloop':
                 loop_count -= 1
-                if loop_count > 0:
+                if valid_data and loop_count > 0:
                     tmplt.seek(loop_start, 0)
             else:
                 print >>sys.stderr, "Unknown processing directive:", line
