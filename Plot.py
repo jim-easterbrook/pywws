@@ -182,10 +182,12 @@ set bmargin 0.9
             else:
                 xlabel = 'Date'
             xlabel = self.GetValue(self.graph, 'xlabel', xlabel)
+            xlabel = codecs.encode(xlabel, self.doc.encoding)
             result += 'set xlabel "%s"\n' % (
                 self.x_lo.replace(tzinfo=Local).strftime(xlabel))
             dateformat = '%Y/%m/%d'
             dateformat = self.GetValue(self.graph, 'dateformat', dateformat)
+            dateformat = codecs.encode(dateformat, self.doc.encoding)
             ldat = self.x_lo.replace(tzinfo=Local).strftime(dateformat)
             rdat = self.x_hi.replace(tzinfo=Local).strftime(dateformat)
             if ldat != '':
