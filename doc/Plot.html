@@ -218,7 +218,10 @@
       <a href="#list" name="yrange">yrange</a>
     </h3>
     <p>
-	Sets the lower and upper limits of the Y axis. The value is a pair of numbers. The default is to allow gnuplot to set appropriate values, which is unlikely to be what you want. For example, to plot typical UK temperatures with no value going off the graph: <code>&lt;yrange&gt;-10, 30&lt;/yrange&gt;</code>.
+	Sets the lower and upper limits of the Y axis. The value is anything understood by gnuplot, typically a pair of numbers. The default is to allow gnuplot to set appropriate values, which is unlikely to be what you want. For example, to plot typical UK temperatures with no value going off the graph: <code>&lt;yrange&gt;-10, 30&lt;/yrange&gt;</code>. Note that commas are converted to colons, so <code>&lt;yrange&gt;-10:30&lt;/yrange&gt;</code> would be equivalent.
+    </p>
+    <p>
+	You can use an asterisk to have gnuplot choose a suitable value. For example, to have the upper value auto scale whilst fixing the lower value at zero, use <code>&lt;yrange&gt;0:*&lt;/yrange&gt;</code>.
     </p>
     <h3>
       <a href="#list" name="grid">grid</a>

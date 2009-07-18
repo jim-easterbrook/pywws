@@ -160,11 +160,11 @@ set bmargin 0.9
         else:
             xformat = '%Y/%m/%d'
         xformat = self.GetValue(self.graph, 'xformat', xformat)
-        xformat = codecs.encode(xformat, self.doc.encoding)
         result += 'set format x "%s"\n' % xformat
         xtics = self.GetValue(self.graph, 'xtics', None)
         if xtics:
             result += 'set xtics %d\n' % (eval(xtics) * 3600)
+        result = codecs.encode(result, self.doc.encoding)
         return result
     def PlotData(self, plot_no, plot, source):
         subplot_list = self.GetChildren(plot, 'subplot')
@@ -182,12 +182,10 @@ set bmargin 0.9
             else:
                 xlabel = 'Date'
             xlabel = self.GetValue(self.graph, 'xlabel', xlabel)
-            xlabel = codecs.encode(xlabel, self.doc.encoding)
             result += 'set xlabel "%s"\n' % (
                 self.x_lo.replace(tzinfo=Local).strftime(xlabel))
             dateformat = '%Y/%m/%d'
             dateformat = self.GetValue(self.graph, 'dateformat', dateformat)
-            dateformat = codecs.encode(dateformat, self.doc.encoding)
             ldat = self.x_lo.replace(tzinfo=Local).strftime(dateformat)
             rdat = self.x_hi.replace(tzinfo=Local).strftime(dateformat)
             if ldat != '':
@@ -199,7 +197,7 @@ set bmargin 0.9
         # set y range
         yrange = self.GetValue(plot, 'yrange', None)
         if yrange:
-            result += 'set yrange [%d:%d]\n' % eval(yrange)
+            result += 'set yrange [%s]\n' % (yrange.replace(',', ':'))
         else:
             result += 'set yrange [*:*]\n'
         # set grid
@@ -262,11 +260,11 @@ set bmargin 0.9
             else:
                 style = 'smooth unique lc %d' % (colour)
             title = self.GetValue(subplot, 'title', '')
-            title = codecs.encode(title, self.doc.encoding)
             result += ' "%s" using 1:2 title "%s" %s' % (dat_file, title, style)
             if subplot_no != subplot_count - 1:
                 result += ', \\'
             result += '\n'
+        result = codecs.encode(result, self.doc.encoding)
         return result
 def main(argv=None):
     if argv is None:
