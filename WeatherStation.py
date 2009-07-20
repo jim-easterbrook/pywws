@@ -137,6 +137,7 @@ class weather_station:
         self.devh = dev.open()
         if not self.devh:
             raise IOError("Open device failed")
+        self.devh.setConfiguration(1)
         try:
             self.devh.claimInterface(0)
         except usb.USBError:
