@@ -114,6 +114,16 @@ def _decode(raw, format):
                                     _bcd_decode(raw[pos+1]))
         elif type == 'pb':
             result = raw[pos]
+        elif type == 'wa':
+            # wind average - 12 bits split across a byte and a nibble
+            result = raw[pos] + ((raw[pos+2] & 0x0F) << 8)
+            if result == 0xFFF:
+                result = None
+        elif type == 'wg':
+            # wind gust - 12 bits split across a byte and a nibble
+            result = raw[pos] + ((raw[pos+1] & 0xF0) << 4)
+            if result == 0xFFF:
+                result = None
         else:
             raise IOError('unknown type %s' % type)
         if scale and result:
@@ -250,8 +260,8 @@ class weather_station:
         'hum_out'      : (4, 'ub', None),
         'temp_out'     : (5, 'ss', 0.1),
         'abs_pressure' : (7, 'us', 0.1),
-        'wind_ave'     : (9, 'ub', 0.1),
-        'wind_gust'    : (10, 'us', 0.1),
+        'wind_ave'     : (9, 'wa', 0.1),
+        'wind_gust'    : (10, 'wg', 0.1),
         'wind_dir'     : (12, 'ub', None),
         'rain'         : (13, 'us', 0.3),
         'status'       : (15, 'pb', None),
