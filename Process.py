@@ -228,6 +228,7 @@ def Process(params, raw_data, hourly_data, daily_data, monthly_data):
     else:
         start = last_month
     # set start to end of first day of month
+    start = start - timedelta(hours=24)
     start = start.replace(day=1, hour=day_end_hour, minute=0, second=0)
     local_start = start + time_offset
     if local_start.day == 2:
@@ -253,8 +254,8 @@ def Process(params, raw_data, hourly_data, daily_data, monthly_data):
             stop = start.replace(year=start.year+1, month=1)
         print "month:", start.isoformat()
         # avoid any boundary problems around day start / end
-        t0 = start - timedelta(hours=12)
-        t1 = stop - timedelta(hours=12)
+        t0 = start - timedelta(minutes=30)
+        t1 = stop - timedelta(hours=23, minutes=30)
         new_data = {}
         new_data['start'] = daily_data[daily_data.after(t0)]['start']
         new_data['temp_out_min_t'] = None
