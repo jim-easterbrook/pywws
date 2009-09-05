@@ -31,10 +31,11 @@ Dependencies:
 	Python (http://www.python.org/) version 2.4 or higher
 	PyUSB (http://pyusb.berlios.de/)
 	For graph drawing:
-		gnuplot (http://www.gnuplot.info/)
+	  gnuplot (http://www.gnuplot.info/) v4.2 or higher
 	For Twitter updates:
-		python-twitter (http://code.google.com/p/python-twitter/)
-		simplejson (http://pypi.python.org/pypi/simplejson)
+	  python-twitter
+	    (http://code.google.com/p/python-twitter/) v0.6 or higher
+	  simplejson (http://pypi.python.org/pypi/simplejson)
 
 This software collection currently contains the following files:
 	README.txt		-- you are reading it!
@@ -128,7 +129,8 @@ Getting started:
   	directory = /public_html/weather/data
   17/ Try uploading the files:
       "python Upload.py /data/weather 24hrs.txt 6hrs.txt 24hrs.png 7days.png"
-  18/ If you want to upload to Twitter, install python-twitter then:
+  18/ If you want to upload to Twitter, install python-twitter and simplejson
+      then:
       "python Template.py /data/weather example_templates/tweet.txt tweet.txt"
       "python ToTwitter.py /data/weather tweet.txt"
       You'll need to edit /data/weather/weather.ini with your Twitter
@@ -146,6 +148,14 @@ Getting started:
       every day, according to your needs, at a minute or two past the hour.
   21/ Edit templates, Hourly.py and other files to adjust everything to your
       taste.
+
+Comments or questions? Please subscribe to the pywws Google group
+http://groups.google.com/group/pywws and let us know.
+
+Changes in v0.8:
+	1/ Added meteorological day end hour user preference
+	2/ Attempts at Windows compatibility
+	3/ Corrected decoding of wind data at speeds over 25.5 m/s
 
 Changes in v0.7:
 	1/ Several bug fixes, mostly around new weather stations with not
