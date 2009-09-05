@@ -14,6 +14,7 @@ Username and password are read from the weather.ini file in data_dir.
 
 import getopt
 import os
+import socket
 import sys
 import twitter
 
@@ -26,6 +27,7 @@ def ToTwitter(params, file):
     tweet = tweet_file.read(140)
     tweet_file.close()
     if len(tweet) > 0:
+        socket.setdefaulttimeout(60)
         api = twitter.Api(username=username, password=password,
                           input_encoding='iso-8859-1')
         if hasattr(api, 'SetSource'):
