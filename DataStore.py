@@ -17,14 +17,12 @@ data[datetime.utcnow() - timedelta(hours=12):]
 
 from ConfigParser import SafeConfigParser
 import csv
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 import os
 import sys
 import time
 
-def safestrptime(date_string, format):
-    if hasattr(datetime, 'strptime'):
-        return datetime.strptime(date_string, format)
+def safestrptime(date_string, format="%Y-%m-%d %H:%M:%S"):
     return datetime(*(time.strptime(date_string, format)[0:6]))
 class params:
     def __init__(self, root_dir):
@@ -61,26 +59,32 @@ class params:
 class core_store:
     def __init__(self, root_dir):
         self._root_dir = root_dir
-        # get first and last day for which data exists
-        self._fst_day = datetime.max.toordinal()
-        self._lst_day = datetime.min.toordinal()
+        self._one_day = timedelta(days=1)
+        # get conservative first and last days for which data (might) exist
+        self._fst_day = date.max - self._one_day
+        self._lst_day = date.min + self._one_day
         for root, dirs, files in os.walk(self._root_dir):
             dirs.sort()
             files.sort()
             if len(files) > 0:
-                self._fst_day = safestrptime(files[0], "%Y-%m-%d.txt").toordinal()
+                path, lo, hi = self._get_cache_path(
+                    safestrptime(files[0], "%Y-%m-%d.txt").date())
+                self._fst_day = lo
                 break
         for root, dirs, files in os.walk(self._root_dir):
             dirs.sort()
             dirs.reverse()
             files.sort()
             if len(files) > 0:
-                self._lst_day = safestrptime(files[-1], "%Y-%m-%d.txt").toordinal()
+                path, lo, hi = self._get_cache_path(
+                    safestrptime(files[-1], "%Y-%m-%d.txt").date())
+                self._lst_day = hi
                 break
         # initialise cache
         self._cache = []
         self._cache_ptr = 0
-        self._cache_day = None
+        self._cache_lo = date.max
+        self._cache_hi = date.min
         self._cache_dirty = False
     def __del__(self):
         self._save()
@@ -95,26 +99,28 @@ class core_store:
             b = datetime.max
         if not isinstance(a, datetime) or not isinstance(b, datetime):
             raise TypeError("slice indices must be %s or None" % (datetime))
-        start_day = max(a.toordinal(), self._fst_day)
-        stop_day = min(b.toordinal(), self._lst_day)
-        day = start_day
-        while day <= stop_day:
-            self._set_cache(day)
-            if day == start_day:
-                self._set_cache_ptr(a)
-            else:
-                self._cache_ptr = 0
-            if day == stop_day:
-                while self._cache_ptr < len(self._cache):
-                    if self._cache[self._cache_ptr]['idx'] >= b:
-                        return
-                    yield self._cache[self._cache_ptr]
-                    self._cache_ptr += 1
-                return
+        # go to start of slice
+        if a.date() >= self._fst_day:
+            self._set_cache_ptr(a)
+        else:
+            self._save()
+            self._load(self._fst_day)
+            self._cache_ptr = 0
+        # iterate over complete caches
+        lst_day = min(b.date(), self._lst_day - self._one_day)
+        while self._cache_hi <= lst_day:
             while self._cache_ptr < len(self._cache):
                 yield self._cache[self._cache_ptr]
                 self._cache_ptr += 1
-            day += 1
+            self._load(self._cache_hi)
+            self._cache_ptr = 0
+        # iterate over part of cache
+        while self._cache_ptr < len(self._cache):
+            if self._cache[self._cache_ptr]['idx'] >= b:
+                return
+            yield self._cache[self._cache_ptr]
+            self._cache_ptr += 1
+        return
     def __getitem__(self, i):
         """Return the data item or items with index i.
 
@@ -124,10 +130,6 @@ class core_store:
             return self._get_slice(i)
         if not isinstance(i, datetime):
             raise TypeError("list indices must be %s" % (datetime))
-        day = i.toordinal()
-        if day < self._fst_day or day > self._lst_day:
-            raise KeyError(i)
-        self._set_cache(day)
         self._set_cache_ptr(i)
         if self._cache_ptr >= len(self._cache) or \
            self._cache[self._cache_ptr]['idx'] != i:
@@ -142,10 +144,10 @@ class core_store:
         if not isinstance(i, datetime):
             raise TypeError("index '%s' is not %s" % (i, datetime))
         x['idx'] = i
-        day = i.toordinal()
-        self._fst_day = min(self._fst_day, day)
-        self._lst_day = max(self._lst_day, day)
-        self._set_cache(day)
+        day = i.date()
+        path, lo, hi = self._get_cache_path(day)
+        self._fst_day = min(self._fst_day, lo)
+        self._lst_day = max(self._lst_day, hi)
         self._set_cache_ptr(i)
         if self._cache_ptr < len(self._cache) and \
            self._cache[self._cache_ptr]['idx'] == i:
@@ -161,10 +163,6 @@ class core_store:
         """
         if not isinstance(i, datetime):
             raise TypeError("list indices must be %s" % (datetime))
-        day = i.toordinal()
-        if day < self._fst_day or day > self._lst_day:
-            raise KeyError(i)
-        self._set_cache(day)
         self._set_cache_ptr(i)
         if self._cache_ptr >= len(self._cache) or \
            self._cache[self._cache_ptr]['idx'] != i:
@@ -179,19 +177,18 @@ class core_store:
         return None."""
         if not isinstance(idx, datetime):
             raise TypeError("'%s' is not %s" % (idx, datetime))
-        target = idx.toordinal()
-        day = min(target, self._lst_day)
+        day = min(idx.date(), self._lst_day - self._one_day)
         while day >= self._fst_day:
-            self._set_cache(day)
-            if len(self._cache) > 0:
-                if day < target:
-                    return self._cache[-1]['idx']
-                ptr = len(self._cache)
-                while ptr > 0:
-                    ptr -= 1
-                    if self._cache[ptr]['idx'] < idx:
-                        return self._cache[ptr]['idx']
-            day -= 1
+            if day < self._cache_lo or day >= self._cache_hi:
+                self._save()
+                self._load(day)
+            self._cache_ptr = len(self._cache)
+            while self._cache_ptr > 0:
+                self._cache_ptr -= 1
+                result = self._cache[self._cache_ptr]['idx']
+                if result < idx:
+                    return result
+            day = self._cache_lo - self._one_day
         return None
     def after(self, idx):
         """Return datetime of oldest existing data record whose
@@ -201,19 +198,18 @@ class core_store:
         return None."""
         if not isinstance(idx, datetime):
             raise TypeError("'%s' is not %s" % (idx, datetime))
-        target = idx.toordinal()
-        day = max(target, self._fst_day)
-        while day <= self._lst_day:
-            self._set_cache(day)
-            if len(self._cache) > 0:
-                if day > target:
-                    return self._cache[0]['idx']
-                ptr = 0
-                while ptr < len(self._cache):
-                    if self._cache[ptr]['idx'] >= idx:
-                        return self._cache[ptr]['idx']
-                    ptr += 1
-            day += 1
+        day = max(idx.date(), self._fst_day)
+        while day < self._lst_day:
+            if day < self._cache_lo or day >= self._cache_hi:
+                self._save()
+                self._load(day)
+            self._cache_ptr = 0
+            while self._cache_ptr < len(self._cache):
+                result = self._cache[self._cache_ptr]['idx']
+                if result >= idx:
+                    return result
+                self._cache_ptr += 1
+            day = self._cache_hi
         return None
     def nearest(self, idx):
         """Return datetime of record whose datetime is nearest idx."""
@@ -227,80 +223,73 @@ class core_store:
             return hi
         return lo
     def _set_cache_ptr(self, i):
+        day = i.date()
+        if day < self._cache_lo or day >= self._cache_hi:
+            self._save()
+            self._load(day)
         while self._cache_ptr > 0 and self._cache[self._cache_ptr-1]['idx'] >= i:
             self._cache_ptr -= 1
         while self._cache_ptr < len(self._cache) and \
               self._cache[self._cache_ptr]['idx'] < i:
             self._cache_ptr += 1
-    def _set_cache(self, target_day):
-        if target_day == self._cache_day:
-            return
-        self._save()
+    def _load(self, target_day):
         self._cache = []
-        self._cache_day = target_day
         self._cache_ptr = 0
-        self._load()
-    def _load(self):
-#        print "load cache", self._cache_day, date.fromordinal(self._cache_day)
-        path = self._path(self._cache_day)
+        path, self._cache_lo, self._cache_hi = self._get_cache_path(target_day)
         if os.path.exists(path):
-            reader = csv.DictReader(open(path, 'rb'), self.key_list,
-                                    quoting=csv.QUOTE_NONE)
+            reader = csv.DictReader(
+                open(path, 'rb'), self.key_list, quoting=csv.QUOTE_NONE)
             for row in reader:
-                for key, type in self.types.items():
+                for key in self.key_list:
                     if row[key] == '':
                         row[key] = None
-                    elif type == 'float':
-                        row[key] = float(row[key])
-                    elif type == 'int':
-                        row[key] = int(row[key])
-                    elif type == 'time':
-                        row[key] = safestrptime(row[key], "%Y-%m-%d %H:%M:%S")
                     else:
-                        raise TypeError('Type not recognised for %s', key)
+                        row[key] = self.conv[key](row[key])
                 self._cache.append(row)
     def _save(self):
         if not self._cache_dirty:
             return
-#        print "save cache", self._cache_day, date.fromordinal(self._cache_day)
         self._cache_dirty = False
-        path = self._path(self._cache_day)
+        path, lo, hi = self._get_cache_path(self._cache_lo)
         if len(self._cache) == 0:
             if os.path.exists(path):
                 # existing data has been wiped, so delete file
                 os.unlink(path)
             return
-        if not os.path.isdir(os.path.dirname(path)):
-            os.makedirs(os.path.dirname(path))
-        writer = csv.DictWriter(open(path, 'wb'), self.key_list,
-                                quoting=csv.QUOTE_NONE)
+        dir = os.path.dirname(path)
+        if not os.path.isdir(dir):
+            os.makedirs(dir)
+        writer = csv.DictWriter(
+            open(path, 'wb'), self.key_list, quoting=csv.QUOTE_NONE)
         writer.writerows(self._cache)
-    def _path(self, day):
-        # returns file name for given day
-        target_date = date.fromordinal(day)
-        return os.path.join(self._root_dir,
+    def _get_cache_path(self, target_date):
+        # default implementation - one file per day
+        path = os.path.join(self._root_dir,
                             target_date.strftime("%Y"),
                             target_date.strftime("%Y-%m"),
                             target_date.strftime("%Y-%m-%d.txt"))
+        lo = target_date
+        hi = target_date + self._one_day
+        return path, lo, hi
 class data_store(core_store):
     """Stores raw weather station data."""
     def __init__(self, root_dir):
         core_store.__init__(self, os.path.join(root_dir, 'raw'))
     key_list = ['idx', 'delay', 'hum_in', 'temp_in', 'hum_out', 'temp_out',
                 'abs_pressure', 'wind_ave', 'wind_gust', 'wind_dir', 'rain', 'status']
-    types = {
-        'idx'          : 'time',
-        'delay'        : 'int',
-        'hum_in'       : 'int',
-        'temp_in'      : 'float',
-        'hum_out'      : 'int',
-        'temp_out'     : 'float',
-        'abs_pressure' : 'float',
-        'wind_ave'     : 'float',
-        'wind_gust'    : 'float',
-        'wind_dir'     : 'int',
-        'rain'         : 'float',
-        'status'       : 'int',
+    conv = {
+        'idx'          : safestrptime,
+        'delay'        : int,
+        'hum_in'       : int,
+        'temp_in'      : float,
+        'hum_out'      : int,
+        'temp_out'     : float,
+        'abs_pressure' : float,
+        'wind_ave'     : float,
+        'wind_gust'    : float,
+        'wind_dir'     : int,
+        'rain'         : float,
+        'status'       : int,
         }
 class hourly_store(core_store):
     """Stores hourly summary weather station data."""
@@ -309,19 +298,19 @@ class hourly_store(core_store):
     key_list = ['idx', 'hum_in', 'temp_in', 'hum_out', 'temp_out',
                 'abs_pressure', 'rel_pressure', 'pressure_trend',
                 'wind_ave', 'wind_gust', 'wind_dir', 'rain']
-    types = {
-        'idx'               : 'time',
-        'hum_in'            : 'int',
-        'temp_in'           : 'float',
-        'hum_out'           : 'int',
-        'temp_out'          : 'float',
-        'abs_pressure'      : 'float',
-        'rel_pressure'      : 'float',
-        'pressure_trend'    : 'float',
-        'wind_ave'          : 'float',
-        'wind_gust'         : 'float',
-        'wind_dir'          : 'int',
-        'rain'              : 'float',
+    conv = {
+        'idx'               : safestrptime,
+        'hum_in'            : int,
+        'temp_in'           : float,
+        'hum_out'           : int,
+        'temp_out'          : float,
+        'abs_pressure'      : float,
+        'rel_pressure'      : float,
+        'pressure_trend'    : float,
+        'wind_ave'          : float,
+        'wind_gust'         : float,
+        'wind_dir'          : int,
+        'rain'              : float,
         }
 class daily_store(core_store):
     """Stores daily summary weather station data."""
@@ -330,19 +319,30 @@ class daily_store(core_store):
     key_list = ['idx', 'start', 'temp_out_min_t', 'temp_out_min',
                 'temp_out_max_t', 'temp_out_max',
                 'wind_ave', 'wind_gust_t', 'wind_gust', 'wind_dir', 'rain']
-    types = {
-        'idx'               : 'time',
-        'start'             : 'time',
-        'temp_out_min_t'    : 'time',
-        'temp_out_min'      : 'float',
-        'temp_out_max_t'    : 'time',
-        'temp_out_max'      : 'float',
-        'wind_ave'          : 'float',
-        'wind_gust_t'       : 'time',
-        'wind_gust'         : 'float',
-        'wind_dir'          : 'int',
-        'rain'              : 'float',
+    conv = {
+        'idx'               : safestrptime,
+        'start'             : safestrptime,
+        'temp_out_min_t'    : safestrptime,
+        'temp_out_min'      : float,
+        'temp_out_max_t'    : safestrptime,
+        'temp_out_max'      : float,
+        'wind_ave'          : float,
+        'wind_gust_t'       : safestrptime,
+        'wind_gust'         : float,
+        'wind_dir'          : int,
+        'rain'              : float,
         }
+    def _get_cache_path(self, target_date):
+        # one file per month
+        path = os.path.join(self._root_dir,
+                            target_date.strftime("%Y"),
+                            target_date.strftime("%Y-%m-01.txt"))
+        lo = target_date.replace(day=1)
+        if lo.month < 12:
+            hi = lo.replace(month=lo.month+1)
+        else:
+            hi = lo.replace(year=lo.year+1, month=1)
+        return path, lo, hi
 class monthly_store(core_store):
     """Stores monthly summary weather station data."""
     def __init__(self, root_dir):
@@ -351,14 +351,21 @@ class monthly_store(core_store):
                 'temp_out_min_t', 'temp_out_min', 'temp_out_min_ave',
                 'temp_out_max_t', 'temp_out_max', 'temp_out_max_ave',
                 'rain']
-    types = {
-        'idx'               : 'time',
-        'start'             : 'time',
-        'temp_out_min_t'    : 'time',
-        'temp_out_min'      : 'float',
-        'temp_out_min_ave'  : 'float',
-        'temp_out_max_t'    : 'time',
-        'temp_out_max'      : 'float',
-        'temp_out_max_ave'  : 'float',
-        'rain'              : 'float',
+    conv = {
+        'idx'               : safestrptime,
+        'start'             : safestrptime,
+        'temp_out_min_t'    : safestrptime,
+        'temp_out_min'      : float,
+        'temp_out_min_ave'  : float,
+        'temp_out_max_t'    : safestrptime,
+        'temp_out_max'      : float,
+        'temp_out_max_ave'  : float,
+        'rain'              : float,
         }
+    def _get_cache_path(self, target_date):
+        # one file per year
+        path = os.path.join(self._root_dir,
+                            target_date.strftime("%Y-01-01.txt"))
+        lo = target_date.replace(month=1, day=1)
+        hi = lo.replace(year=lo.year+1)
+        return path, lo, hi
