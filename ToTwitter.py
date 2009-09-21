@@ -14,7 +14,6 @@ Username and password are read from the weather.ini file in data_dir.
 
 import getopt
 import os
-import socket
 import sys
 import twitter
 
@@ -27,12 +26,16 @@ def ToTwitter(params, file):
     tweet = tweet_file.read(140)
     tweet_file.close()
     if len(tweet) > 0:
-        socket.setdefaulttimeout(60)
         api = twitter.Api(username=username, password=password,
                           input_encoding='iso-8859-1')
         if hasattr(api, 'SetSource'):
             api.SetSource('pywws')
-        status = api.PostUpdate(tweet)
+        for i in range(3):
+            try:
+                status = api.PostUpdate(tweet)
+                break
+            except Exception, ex:
+                print ex
     return 0
 def main(argv=None):
     if argv is None:
