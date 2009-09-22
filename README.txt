@@ -149,13 +149,14 @@ Getting started:
   21/ Edit templates, Hourly.py and other files to adjust everything to your
       taste.
 
-Comments or questions? Please subscribe to the pywws Google group
+Comments or questions? Please subscribe to the pywws mailing list
 http://groups.google.com/group/pywws and let us know.
 
 Changes in v0.8:
 	1/ Added meteorological day end hour user preference
 	2/ Attempts at Windows compatibility
 	3/ Corrected decoding of wind data at speeds over 25.5 m/s
+	4/ Improved speed with new data caching strategy
 
 Changes in v0.7:
 	1/ Several bug fixes, mostly around new weather stations with not
