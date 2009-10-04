@@ -38,7 +38,7 @@ class Acc:
 
         last_raw is used to get the rainfall in this period."""
         if raw['wind_ave'] != None:
-            if raw['wind_dir'] not in (None, 128):
+            if raw['wind_dir'] != None and raw['wind_dir'] < 16:
                 self.wind_dir[raw['wind_dir']] += raw['wind_ave']
             self.wind_ave += raw['wind_ave']
             self.count += 1
