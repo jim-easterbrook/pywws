@@ -152,6 +152,10 @@ Getting started:
 Comments or questions? Please subscribe to the pywws mailing list
 http://groups.google.com/group/pywws and let us know.
 
+Changes in v0.9:
+	1/ Added lowest daytime max and highest nighttime min temperatures
+	   to monthly data.
+
 Changes in v0.8:
 	1/ Added meteorological day end hour user preference
 	2/ Attempts at Windows compatibility

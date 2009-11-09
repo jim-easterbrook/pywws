@@ -21,9 +21,9 @@
     <subplot>
       <style>+</style>
       <colour>6</colour>
-      <title>Extreme daytime max</title>
-      <xcalc>data['temp_out_max_t']</xcalc>
-      <ycalc>data['temp_out_max']</ycalc>
+      <title>Highest daytime max</title>
+      <xcalc>data['temp_out_max_hi_t']</xcalc>
+      <ycalc>data['temp_out_max_hi']</ycalc>
     </subplot>
     <subplot>
       <style>box</style>
@@ -35,9 +35,9 @@
     <subplot>
       <style>+</style>
       <colour>5</colour>
-      <title>Extreme nighttime min</title>
-      <xcalc>data['temp_out_min_t']</xcalc>
-      <ycalc>data['temp_out_min']</ycalc>
+      <title>Lowest nighttime min</title>
+      <xcalc>data['temp_out_min_lo_t']</xcalc>
+      <ycalc>data['temp_out_min_lo']</ycalc>
     </subplot>
   </plot>
   <plot>

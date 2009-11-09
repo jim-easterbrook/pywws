@@ -258,11 +258,15 @@ def Process(params, raw_data, hourly_data, daily_data, monthly_data):
         t1 = stop - timedelta(hours=23, minutes=30)
         new_data = {}
         new_data['start'] = daily_data[daily_data.after(t0)]['start']
-        new_data['temp_out_min_t'] = None
-        new_data['temp_out_min'] = 1000.0
+        new_data['temp_out_min_lo_t'] = None
+        new_data['temp_out_min_lo'] = 1000.0
+        new_data['temp_out_min_hi_t'] = None
+        new_data['temp_out_min_hi'] = -1000.0
         new_data['temp_out_min_ave'] = 0.0
-        new_data['temp_out_max_t'] = None
-        new_data['temp_out_max'] = -1000.0
+        new_data['temp_out_max_lo_t'] = None
+        new_data['temp_out_max_lo'] = 1000.0
+        new_data['temp_out_max_hi_t'] = None
+        new_data['temp_out_max_hi'] = -1000.0
         new_data['temp_out_max_ave'] = 0.0
         new_data['rain'] = 0.0
         min_cnt = 0
@@ -270,15 +274,21 @@ def Process(params, raw_data, hourly_data, daily_data, monthly_data):
         for data in daily_data[t0:t1]:
             new_data['idx'] = data['idx']
             if data['temp_out_min'] != None:
-                if new_data['temp_out_min'] > data['temp_out_min']:
-                    new_data['temp_out_min'] = data['temp_out_min']
-                    new_data['temp_out_min_t'] = data['temp_out_min_t']
+                if new_data['temp_out_min_lo'] > data['temp_out_min']:
+                    new_data['temp_out_min_lo'] = data['temp_out_min']
+                    new_data['temp_out_min_lo_t'] = data['temp_out_min_t']
+                if new_data['temp_out_min_hi'] < data['temp_out_min']:
+                    new_data['temp_out_min_hi'] = data['temp_out_min']
+                    new_data['temp_out_min_hi_t'] = data['temp_out_min_t']
                 new_data['temp_out_min_ave'] += data['temp_out_min']
                 min_cnt += 1
             if data['temp_out_max'] != None:
-                if new_data['temp_out_max'] < data['temp_out_max']:
-                    new_data['temp_out_max'] = data['temp_out_max']
-                    new_data['temp_out_max_t'] = data['temp_out_max_t']
+                if new_data['temp_out_max_lo'] > data['temp_out_max']:
+                    new_data['temp_out_max_lo'] = data['temp_out_max']
+                    new_data['temp_out_max_lo_t'] = data['temp_out_max_t']
+                if new_data['temp_out_max_hi'] < data['temp_out_max']:
+                    new_data['temp_out_max_hi'] = data['temp_out_max']
+                    new_data['temp_out_max_hi_t'] = data['temp_out_max_t']
                 new_data['temp_out_max_ave'] += data['temp_out_max']
                 max_cnt += 1
             new_data['rain'] += data['rain']
@@ -288,7 +298,8 @@ def Process(params, raw_data, hourly_data, daily_data, monthly_data):
         if max_cnt > 0:
             new_data['temp_out_max_ave'] = new_data['temp_out_max_ave'] / \
                                            float(max_cnt)
-        monthly_data[new_data['idx']] = new_data
+        if new_data.has_key('idx'):
+            monthly_data[new_data['idx']] = new_data
         start = stop
     return 0
 def main(argv=None):
