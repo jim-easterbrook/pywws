@@ -88,7 +88,14 @@ class GraphPlotter:
         h = h * self.rows
         w, h = eval(self.GetValue(self.graph, 'size', '(%d, %d)' % (w, h)))
         fileformat = self.GetValue(self.graph, 'fileformat', 'png')
-        of.write('set terminal %s large size %d,%d\n' % (fileformat, w, h))
+        if fileformat == 'svg':
+            terminal = '%s enhanced font "arial,9" size %d,%d dynamic rounded' % (
+                fileformat, w, h)
+        else:
+            terminal = '%s large size %d,%d' % (fileformat, w, h)
+        terminal = self.GetValue(self.graph, 'terminal', terminal)
+        of.write('set terminal %s\n' % (terminal))
+        of.write('set encoding iso_8859_1\n')
         of.write('set output "%s"\n' % output_file)
         # set overall title
         title = self.GetValue(self.graph, 'title', '')

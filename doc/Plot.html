@@ -104,6 +104,9 @@
             <a href="#fileformat">fileformat</a>
           </li>
           <li>
+            <a href="#terminal">terminal</a>
+          </li>
+          <li>
             <a href="#lmargin">lmargin</a>
           </li>
           <li>
@@ -171,6 +174,12 @@
     </h3>
 	<p>
 	Sets the image format of the file containing the graph. Default is png. Any string recognised by your installation of gnuplot should do. For example: <code>&lt;fileformat&gt;gif&lt;/fileformat&gt;</code> will produce a GIF image.
+    </p>
+    <h3>
+      <a href="#list" name="terminal">terminal</a>
+    </h3>
+	<p>
+	Allows complete control of gnuplot's 'terminal' settings. You may want to use this if you are plotting to an unusual image format. Any string recognised by your installation of gnuplot's 'set terminal' command should do. For example: <code>&lt;terminal&gt;svg enhanced font "arial,9" size 600,800 dynamic rounded&lt;/terminal&gt;</code>. This setting overwrites both <code>size</code> and <code>fileformat</code>.
     </p>
     <h3>
       <a href="#list" name="lmargin">lmargin</a>
