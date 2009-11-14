@@ -26,6 +26,21 @@ def LogData(params, raw_data):
     if not fixed_block:
         print >>sys.stderr, "Invalid data from weather station"
         return 3
+    # synchronise with weather station's logging time
+    print 'Synchronising with weather station'
+    current_ptr = ws.current_pos()
+    data = ws.get_data(current_ptr, unbuffered=True)
+    last_delay = data['delay']
+    while data['delay'] == last_delay:
+        last_delay = data['delay']
+        time.sleep(5)
+        current_ptr = ws.current_pos()
+        data = ws.get_data(current_ptr, unbuffered=True)
+    last_date = datetime.utcnow().replace(microsecond=0) - \
+                timedelta(minutes=data['delay'])
+    last_ptr = ws.dec_ptr(current_ptr)
+    # re-read fixed block, just in case we read it at an unstable time
+    fixed_block = ws.get_fixed_block(unbuffered=True)
     # check clocks
     s_time = DataStore.safestrptime(
         fixed_block['date_time'], '%Y-%m-%d %H:%M') + timedelta(seconds=30)
@@ -37,22 +52,6 @@ def LogData(params, raw_data):
 Check that the computer is synchronised to a network time server and
 that the weather station clock is correct. If the station has a radio
 controlled clock, it may have lost its signal.""" % (str(diff))
-    # synchronise with weather station's logging time
-    print 'Synchronising with weather station'
-    next_delay = -2
-    while True:
-        current_ptr = ws.current_pos()
-        data = ws.get_data(current_ptr, unbuffered=True)
-        if data['delay'] == next_delay:
-            # just had an increase in delay
-            break
-        next_delay = (data['delay'] + 1) % fixed_block['read_period']
-        time.sleep(5)
-    last_date = datetime.utcnow().replace(microsecond=0) - \
-                timedelta(minutes=next_delay)
-    last_ptr = ws.dec_ptr(current_ptr)
-    # re-read fixed block, just in case we read it at an unstable time
-    fixed_block = ws.get_fixed_block(unbuffered=True)
     # store info from fixed block
     pressure_offset = fixed_block['rel_pressure'] - fixed_block['abs_pressure']
     params.set('fixed', 'pressure offset', '%g' % (pressure_offset))
