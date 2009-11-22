@@ -155,12 +155,46 @@ class core_store:
         else:
             self._cache.insert(self._cache_ptr, x)
         self._cache_dirty = True
+    def _del_slice(self, i):
+        a = i.start
+        b = i.stop
+        if i.step != None:
+            raise TypeError("slice step not permitted")
+        if a == None:
+            a = datetime.min
+        if b == None:
+            b = datetime.max
+        if not isinstance(a, datetime) or not isinstance(b, datetime):
+            raise TypeError("slice indices must be %s or None" % (datetime))
+        # go to start of slice
+        if a.toordinal() >= self._fst_day:
+            self._set_cache_ptr(a)
+        else:
+            if self._fst_day < self._cache_lo or self._fst_day >= self._cache_hi:
+                self._save()
+                self._load(date.fromordinal(self._fst_day))
+            self._cache_ptr = 0
+        # delete to end of cache
+        lst_day = min(b.toordinal(), self._lst_day - 1)
+        while self._cache_hi <= lst_day:
+            del self._cache[self._cache_ptr:]
+            self._cache_dirty = True
+            self._save()
+            self._load(date.fromordinal(self._cache_hi))
+            self._cache_ptr = 0
+        # delete part of cache
+        while self._cache_ptr < len(self._cache) and \
+              self._cache[self._cache_ptr]['idx'] < b:
+            del self._cache[self._cache_ptr]
+            self._cache_dirty = True
+        return
     def __delitem__(self, i):
-        """Delete the value with index i.
+        """Delete the data item or items with index i.
 
-        i must be a datetime object.
-        A value with that index must exist.
-        """
+        i must be a datetime object or a slice.
+        If i is a single datetime then a value with that index must exist."""
+        if isinstance(i, slice):
+            return self._del_slice(i)
         if not isinstance(i, datetime):
             raise TypeError("list indices must be %s" % (datetime))
         self._set_cache_ptr(i)
