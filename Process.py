@@ -51,7 +51,7 @@ class Acc:
             if wind_dir != None and wind_dir < 16:
                 self.h_wind_dir[wind_dir] += wind_ave
             self.h_wind_acc += wind_ave
-            self.h_count += 1
+            self.h_wind_count += 1
         wind_gust = raw['wind_gust']
         if wind_gust != None and \
            wind_gust > self.h_wind_gust[0]:
@@ -68,6 +68,8 @@ class Acc:
             self.last_rain = rain
         temp_out = raw['temp_out']
         if temp_out != None:
+            self.d_temp_acc += temp_out
+            self.d_temp_count += 1
             if self._daytime[idx.hour]:
                 # daytime max temperature
                 if temp_out > self.d_temp_max[0]:
@@ -83,7 +85,7 @@ class Acc:
         self.h_wind_acc = 0.0
         self.h_wind_gust = (-2.0, None)
         self.h_rain = 0.0
-        self.h_count = 0
+        self.h_wind_count = 0
         self.h_valid = False
     def get_hourly(self):
         """Get the hourly result of the data accumulation."""
@@ -91,13 +93,13 @@ class Acc:
             self.reset_hourly()
             return None
         retval = {}
-        if self.h_count > 0:
+        if self.h_wind_count > 0:
             best = 0
             for dir, val in self.h_wind_dir.items():
                 if val > self.h_wind_dir[best]:
                     best = dir
             retval['wind_dir'] = best
-            wind_ave = self.h_wind_acc / self.h_count
+            wind_ave = self.h_wind_acc / self.h_wind_count
             wind_ave = float(int(wind_ave * 100)) / 100.0
             retval['wind_ave'] = wind_ave
         else:
@@ -109,11 +111,11 @@ class Acc:
             retval['wind_gust'] = None
         retval['rain'] = self.h_rain
         # update daily data before resetting hourly data
-        if self.h_count > 0:
+        if self.h_wind_count > 0:
             for i in range(16):
                 self.d_wind_dir[i] += self.h_wind_dir[i]
             self.d_wind_acc += self.h_wind_acc
-            self.d_count += self.h_count
+            self.d_wind_count += self.h_wind_count
         if self.h_wind_gust[0] > self.d_wind_gust[0]:
             self.d_wind_gust = self.h_wind_gust
         self.d_rain += self.h_rain
@@ -124,9 +126,11 @@ class Acc:
         for i in range(16):
             self.d_wind_dir[i] = 0.0
         self.d_wind_acc = 0.0
-        self.d_count = 0
+        self.d_wind_count = 0
         self.d_wind_gust = (-1.0, None)
         self.d_rain = 0.0
+        self.d_temp_acc = 0.0
+        self.d_temp_count = 0
         self.d_temp_max = (-1000.0, None)
         self.d_temp_min = (1000.0, None)
         self.d_valid = False
@@ -135,13 +139,13 @@ class Acc:
             self.reset_daily()
             return None
         retval = {}
-        if self.d_count > 0:
+        if self.d_wind_count > 0:
             best = 0
             for dir, val in self.d_wind_dir.items():
                 if val > self.d_wind_dir[best]:
                     best = dir
             retval['wind_dir'] = best
-            wind_ave = self.d_wind_acc / self.d_count
+            wind_ave = self.d_wind_acc / self.d_wind_count
             wind_ave = float(int(wind_ave * 100)) / 100.0
             retval['wind_ave'] = wind_ave
         else:
@@ -153,6 +157,10 @@ class Acc:
             retval['wind_gust'] = None
         retval['wind_gust_t'] = self.d_wind_gust[1]
         retval['rain'] = self.d_rain
+        if self.d_temp_count > 0:
+            retval['temp_out_ave'] = self.d_temp_acc / float(self.d_temp_count)
+        else:
+            retval['temp_out_ave'] = None
         if self.d_temp_max[1]:
             retval['temp_out_max'] = self.d_temp_max[0]
         else:
@@ -169,6 +177,8 @@ class MonthAcc:
     """Derive monthly summary data from daily data."""
     def __init__(self, start):
         self.m_start = start
+        self.m_temp_acc = 0.0
+        self.m_temp_count = 0
         self.m_temp_out_min_lo = (1000.0, None)
         self.m_temp_out_min_hi = (-1000.0, None)
         self.m_temp_out_min_acc = 0.0
@@ -181,6 +191,10 @@ class MonthAcc:
         self.m_valid = False
     def add(self, daily):
         self.m_idx = daily['idx']
+        temp_out_ave = daily['temp_out_ave']
+        if temp_out_ave != None:
+            self.m_temp_acc += temp_out_ave
+            self.m_temp_count += 1
         temp_out_min = daily['temp_out_min']
         if temp_out_min != None:
             if self.m_temp_out_min_lo[0] > temp_out_min:
@@ -205,6 +219,10 @@ class MonthAcc:
         result = {}
         result['idx'] = self.m_idx
         result['start'] = self.m_start
+        if self.m_temp_count > 0:
+            result['temp_out_ave'] = self.m_temp_acc / float(self.m_temp_count)
+        else:
+            result['temp_out_ave'] = None
         if self.m_temp_out_min_lo[1]:
             result['temp_out_min_lo'] = self.m_temp_out_min_lo[0]
         else:

@@ -346,19 +346,20 @@ class daily_store(core_store):
     """Stores daily summary weather station data."""
     def __init__(self, root_dir):
         core_store.__init__(self, os.path.join(root_dir, 'daily'))
-    key_list = ['idx', 'start', 'temp_out_min_t', 'temp_out_min',
-                'temp_out_max_t', 'temp_out_max',
-                'wind_ave', 'wind_gust_t', 'wind_gust', 'wind_dir', 'rain']
+    key_list = ['idx', 'start', 'temp_out_ave',
+                'temp_out_min', 'temp_out_min_t', 'temp_out_max', 'temp_out_max_t',
+                'wind_ave', 'wind_gust', 'wind_gust_t', 'wind_dir', 'rain']
     conv = {
         'idx'               : safestrptime,
         'start'             : safestrptime,
-        'temp_out_min_t'    : safestrptime,
+        'temp_out_ave'      : float,
         'temp_out_min'      : float,
-        'temp_out_max_t'    : safestrptime,
+        'temp_out_min_t'    : safestrptime,
         'temp_out_max'      : float,
+        'temp_out_max_t'    : safestrptime,
         'wind_ave'          : float,
-        'wind_gust_t'       : safestrptime,
         'wind_gust'         : float,
+        'wind_gust_t'       : safestrptime,
         'wind_dir'          : int,
         'rain'              : float,
         }
@@ -377,24 +378,25 @@ class monthly_store(core_store):
     """Stores monthly summary weather station data."""
     def __init__(self, root_dir):
         core_store.__init__(self, os.path.join(root_dir, 'monthly'))
-    key_list = ['idx', 'start',
-                'temp_out_min_lo_t', 'temp_out_min_lo',
-                'temp_out_min_hi_t', 'temp_out_min_hi', 'temp_out_min_ave',
-                'temp_out_max_lo_t', 'temp_out_max_lo',
-                'temp_out_max_hi_t', 'temp_out_max_hi', 'temp_out_max_ave',
+    key_list = ['idx', 'start', 'temp_out_ave',
+                'temp_out_min_lo', 'temp_out_min_lo_t',
+                'temp_out_min_hi', 'temp_out_min_hi_t', 'temp_out_min_ave',
+                'temp_out_max_lo', 'temp_out_max_lo_t',
+                'temp_out_max_hi', 'temp_out_max_hi_t', 'temp_out_max_ave',
                 'rain']
     conv = {
         'idx'               : safestrptime,
         'start'             : safestrptime,
-        'temp_out_min_lo_t' : safestrptime,
+        'temp_out_ave'      : float,
         'temp_out_min_lo'   : float,
-        'temp_out_min_hi_t' : safestrptime,
+        'temp_out_min_lo_t' : safestrptime,
         'temp_out_min_hi'   : float,
+        'temp_out_min_hi_t' : safestrptime,
         'temp_out_min_ave'  : float,
-        'temp_out_max_lo_t' : safestrptime,
         'temp_out_max_lo'   : float,
-        'temp_out_max_hi_t' : safestrptime,
+        'temp_out_max_lo_t' : safestrptime,
         'temp_out_max_hi'   : float,
+        'temp_out_max_hi_t' : safestrptime,
         'temp_out_max_ave'  : float,
         'rain'              : float,
         }
