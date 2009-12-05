@@ -277,9 +277,9 @@ def Process(params, raw_data, hourly_data, daily_data, monthly_data):
         start = start - DAY
     start = start.replace(hour=day_end_hour, minute=0, second=0)
     # get start of monthly data to be updated
-    month_start = monthly_data.before(start + SECOND)
-#    if month_start != None:
-#        month_start = min(month_start, start)
+    month_start = monthly_data.before(datetime.max)
+    if month_start != None:
+        month_start = min(month_start, start)
     # delete any existing records after start, as they may be incomplete
     del hourly_data[start + SECOND:]
     del daily_data[start + SECOND:]
