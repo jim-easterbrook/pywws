@@ -83,6 +83,9 @@
 			  <li>
                 <a href="#title2">title</a>
 			  </li>
+			  <li>
+                <a href="#command">command</a>
+			  </li>
 			</ul>
           </li>
           <li>
@@ -255,6 +258,13 @@
     </h3>
     <p>
 	Sets the title of the plot. A single line of text, for example: <code>&lt;title&gt;Temperature (&deg;C)&lt;/title&gt;</code>. This title appears within the plot area, above any subplot titles.
+    </p>
+    <h3>
+      <a href="#list" name="command">command</a>
+    </h3>
+    <p>
+	Execute any gnuplot command, just before the main "plot" command. This option allows advanced users to have greater control over the graph appearance. The value is any valid gnuplot command, typically beginning with the word set. For example: <code>&lt;command&gt;set key tmargin center horizontal width 1 noreverse enhanced
+autotitles box linetype -1 linewidth 1&lt;/command&gt;</code>. (Don't ask me what this example does &mdash; I'm not an advanced user).
     </p>
     <h3>
       <a href="#list" name="xcalc">xcalc</a>

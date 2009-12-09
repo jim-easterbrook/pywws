@@ -229,6 +229,9 @@ set bmargin 0.9
             boxwidth = 2800 * 24
         boxwidth = eval(self.GetValue(plot, 'boxwidth', str(boxwidth)))
         result += 'set boxwidth %d\n' % boxwidth
+        command = self.GetValue(plot, 'command', None)
+        if command:
+            result += '%s\n' % command
         stop = source.after(stop)
         if stop:
             stop = stop + timedelta(minutes=1)
