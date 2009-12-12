@@ -261,16 +261,22 @@ set bmargin 0.9
                     dat.write('%s %g\n' % (idx.isoformat(), value))
             dat.close()
             # plot data
-            style = self.GetValue(subplot, 'style', None)
             colour = eval(self.GetValue(subplot, 'colour', str(colour+1)))
+            style = self.GetValue(
+                subplot, 'style', 'smooth unique lc %d lw 1' % (colour))
+            words = style.split()
+            if len(words) > 1 and words[0] in ('+', 'x', 'line'):
+                width = int(words[1])
+            else:
+                width = 1
             if style == 'box':
                 style = 'lc %d lw 0 with boxes' % (colour)
-            elif style == '+':
-                style = 'lc %d pt 1 with points' % (colour)
-            elif style == 'x':
-                style = 'lc %d pt 2 with points' % (colour)
-            else:
-                style = 'smooth unique lc %d' % (colour)
+            elif words[0] == '+':
+                style = 'lc %d lw %d pt 1 with points' % (colour, width)
+            elif words[0] == 'x':
+                style = 'lc %d lw %d pt 2 with points' % (colour, width)
+            elif words[0] == 'line':
+                style = 'smooth unique lc %d lw %d' % (colour, width)
             title = self.GetValue(subplot, 'title', '')
             result += ' "%s" using 1:2 title "%s" %s' % (dat_file, title, style)
             if subplot_no != subplot_count - 1:
