@@ -235,32 +235,43 @@ set bmargin 0.9
         stop = source.after(stop)
         if stop:
             stop = stop + timedelta(minutes=1)
+        # write data files
+        dat_file = []
+        dat = []
+        xcalc = []
+        ycalc = []
+        for subplot_no in range(subplot_count):
+            subplot = subplot_list[subplot_no]
+            dat_file.append(os.path.join(self.work_dir, 'plot_%d_%d.dat' % (
+                plot_no, subplot_no)))
+            self.tmp_files.append(dat_file[subplot_no])
+            dat.append(open(dat_file[subplot_no], 'w'))
+            xcalc.append(self.GetValue(subplot, 'xcalc', None))
+            ycalc.append(self.GetValue(subplot, 'ycalc', None))
+            if xcalc[subplot_no]:
+                xcalc[subplot_no] = compile(xcalc[subplot_no], '<string>', 'eval')
+            ycalc[subplot_no] = compile(ycalc[subplot_no], '<string>', 'eval')
+        for data in source[start:stop]:
+            for subplot_no in range(subplot_count):
+                if xcalc[subplot_no]:
+                    idx = eval(xcalc[subplot_no])
+                    if idx == None:
+                        continue
+                else:
+                    idx = data['idx']
+                idx += self.utcoffset
+                try:
+                    value = eval(ycalc[subplot_no])
+                    dat[subplot_no].write('%s %g\n' % (idx.isoformat(), value))
+                except TypeError:
+                    pass
+        for subplot_no in range(subplot_count):
+            dat[subplot_no].close()
+        # plot data
         result += 'plot '
         colour = 0
         for subplot_no in range(subplot_count):
             subplot = subplot_list[subplot_no]
-            # write data file
-            dat_file = os.path.join(self.work_dir, 'plot_%d_%d.dat' % (
-                plot_no, subplot_no))
-            self.tmp_files.append(dat_file)
-            dat = open(dat_file, 'w')
-            xcalc = self.GetValue(subplot, 'xcalc', "data['idx']")
-            ycalc = self.GetValue(subplot, 'ycalc', None)
-            xcalc = compile(xcalc, '<string>', 'eval')
-            ycalc = compile(ycalc, '<string>', 'eval')
-            for data in source[start:stop]:
-                idx = eval(xcalc)
-                if idx == None:
-                    continue
-                idx += self.utcoffset
-                try:
-                    value = eval(ycalc)
-                except TypeError:
-                    value = None
-                if value != None:
-                    dat.write('%s %g\n' % (idx.isoformat(), value))
-            dat.close()
-            # plot data
             colour = eval(self.GetValue(subplot, 'colour', str(colour+1)))
             style = self.GetValue(
                 subplot, 'style', 'smooth unique lc %d lw 1' % (colour))
@@ -278,7 +289,7 @@ set bmargin 0.9
             elif words[0] == 'line':
                 style = 'smooth unique lc %d lw %d' % (colour, width)
             title = self.GetValue(subplot, 'title', '')
-            result += ' "%s" using 1:2 title "%s" %s' % (dat_file, title, style)
+            result += ' "%s" using 1:2 title "%s" %s' % (dat_file[subplot_no], title, style)
             if subplot_no != subplot_count - 1:
                 result += ', \\'
             result += '\n'
