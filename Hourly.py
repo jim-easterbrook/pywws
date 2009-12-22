@@ -19,6 +19,7 @@ import sys
 import DataStore
 import LogData
 from Plot import GraphPlotter
+from WindRose import RosePlotter
 import Process
 import Template
 import ToTwitter
@@ -50,6 +51,8 @@ def Hourly(data_dir):
     print 'Generating summary data'
     Process.Process(params, raw_data, hourly_data, daily_data, monthly_data)
     plotter = GraphPlotter(raw_data, hourly_data, daily_data, monthly_data, work_dir)
+    roseplotter = RosePlotter(
+        raw_data, hourly_data, daily_data, monthly_data, work_dir)
     for template in os.listdir(graph_template_dir):
         input_file = os.path.join(graph_template_dir, template)
         if not os.path.isfile(input_file):
@@ -57,6 +60,8 @@ def Hourly(data_dir):
         print "Graphing", template
         output_file = os.path.join(work_dir, os.path.splitext(template)[0])
         if plotter.DoPlot(input_file, output_file) == 0:
+            uploads.append(output_file)
+        elif roseplotter.DoPlot(input_file, output_file) == 0:
             uploads.append(output_file)
     for template in os.listdir(template_dir):
         input_file = os.path.join(template_dir, template)
