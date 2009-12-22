@@ -63,14 +63,15 @@ unset border
         stop = self.x_hi - self.utcoffset
         stop = stop + timedelta(minutes=1)
         for data in source[start:stop]:
-            if data['wind_dir'] in (None, 128):
+            wind_dir = data['wind_dir']
+            if wind_dir == None or wind_dir >= 16:
                 continue
             if not eval(xcalc):
                 continue
             value = eval(ycalc)
             for t in range(len(thresh)):
                 if value <= thresh[t]:
-                    histograms[t][data['wind_dir']] += 1
+                    histograms[t][wind_dir] += 1
                     break
         # evenly distribute zero speed
         total = 0
@@ -106,7 +107,10 @@ unset border
                 sub_total += histograms[i][n]
                 if i > 0:
                     sub_total -= histograms[i-1][n]
-                value = 100.0 * float(histograms[i][n]) / float(total)
+                if total > 0:
+                    value = 100.0 * float(histograms[i][n]) / float(total)
+                else:
+                    value = 0.0
                 if i == 0:
                     dat.write('%g %g\n' % (angle - 11.24, value * 0.994))
                 else:
@@ -121,7 +125,10 @@ unset border
                     dat.write('%g %g\n' % (angle + 8.1, 0))
             dat.close()
             # plot data
-            value = 100.0 * float(sub_total) / float(total)
+            if total > 0:
+                value = 100.0 * float(sub_total) / float(total)
+            else:
+                value = 0.0
             if i == 0:
                 title = '0 .. %g (%.3g%%)' % (thresh[i], value)
             elif i == len(thresh) - 1:
