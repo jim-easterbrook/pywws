@@ -154,8 +154,11 @@ class weather_station:
             self.devh.claimInterface(0)
         except usb.USBError:
             # claim interface failed, try detaching kernel driver first
-            self.devh.detachKernelDriver(0)
-            self.devh.claimInterface(0)
+            try:
+                self.devh.detachKernelDriver(0)
+                self.devh.claimInterface(0)
+            except usb.USBError:
+                raise IOError("Claim interface failed")
         self.devh.setAltInterface(0)
         # _init_wread
         tbuf = self.devh.getDescriptor(1, 0, 0x12)
