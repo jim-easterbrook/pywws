@@ -29,13 +29,20 @@ Licence terms:
 Dependencies:
 	libusb (http://libusb.sf.net)
 	Python (http://www.python.org/) version 2.4 or higher
-	PyUSB (http://pyusb.berlios.de/)
+	PyUSB (http://pyusb.berlios.de/) version 0.4 or higher
 	For graph drawing:
 	  gnuplot (http://www.gnuplot.info/) v4.2 or higher
+	For secure website uploading (sftp)
+	  paramiko (http://www.lag.net/paramiko/)
+	  pycrypto (http://www.dlitz.net/software/pycrypto/)
 	For Twitter updates:
 	  python-twitter
 	    (http://code.google.com/p/python-twitter/) v0.6 or higher
 	  simplejson (http://pypi.python.org/pypi/simplejson)
+
+	Many of these dependencies are available as packages for most Linux
+	distributions. This provides an easier way to install them than
+	downloading source from the project websites.
 
 This software collection currently contains the following files:
 	README.txt		-- you are reading it!
@@ -50,7 +57,7 @@ This software collection currently contains the following files:
 	Plot.py			-- plots weather data using an XML recipe
 	WindRose.py		-- draw a "wind rose" using an XML recipe
 	Template.py		-- creates text data file based on a template
-	Upload.py		-- uploads files to a web site by ftp
+	Upload.py		-- uploads files to a web site by ftp or sftp
 	ToTwitter.py		-- posts a message to a Twitter account
 	EWtoPy.py		-- converts EasyWeather.dat to DataStore format
 	UpgradeFrom0-1.py	-- converts v0.1 datastore to v0.3
@@ -123,10 +130,11 @@ Getting started:
   16/ Edit /data/weather/weather.ini and add details of your website
       for example:
   	[ftp]
+  	secure = False
   	site = ftp.username.isp.co.uk
   	user = username
   	password = secret
-  	directory = /public_html/weather/data
+  	directory = public_html/weather/data/
   17/ Try uploading the files:
       "python Upload.py /data/weather 24hrs.txt 6hrs.txt 24hrs.png 7days.png"
   18/ If you want to upload to Twitter, install python-twitter and simplejson
@@ -155,6 +163,13 @@ http://groups.google.com/group/pywws and let us know.
 Changes in v0.9:
 	1/ Added lowest daytime max and highest nighttime min temperatures
 	   to monthly data.
+	2/ Added average temperature to daily and monthly data.
+	3/ Added 'terminal' element to Plot.py templates for greater control
+	   over output appearance.
+	4/ Added 'command' element to Plot.py templates for even more
+	   control, for advanced users.
+	5/ Added secure upload option.
+	6/ Minor speed improvements.
 
 Changes in v0.8:
 	1/ Added meteorological day end hour user preference
