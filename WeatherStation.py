@@ -154,6 +154,9 @@ class weather_station:
             self.devh.claimInterface(0)
         except usb.USBError:
             # claim interface failed, try detaching kernel driver first
+            if not hasattr(self.devh, 'detachKernelDriver'):
+                raise RuntimeError(
+                    "Please upgrade pyusb (or python-usb) to 0.4 or higher")
             try:
                 self.devh.detachKernelDriver(0)
                 self.devh.claimInterface(0)
