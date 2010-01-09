@@ -14,11 +14,21 @@ data_dir.
 
 import getopt
 import os
+import shutil
 import sys
 
 import DataStore
 
 def Upload(params, files):
+    if eval(params.get('ftp', 'local site', 'False')):
+        # copy to local directory
+        directory = params.get(
+            'ftp', 'directory', os.path.expanduser('~/public_html/weather/data/'))
+        if not os.path.isdir(directory):
+            os.makedirs(directory)
+        for file in files:
+            shutil.copy2(file, directory)
+        return 0
     # get remote site details
     secure = eval(params.get('ftp', 'secure', 'False'))
     site = params.get('ftp', 'site', 'ftp.username.your_isp.co.uk')
