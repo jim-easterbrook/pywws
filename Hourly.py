@@ -22,7 +22,6 @@ from Plot import GraphPlotter
 from WindRose import RosePlotter
 import Process
 import Template
-import ToTwitter
 import Upload
 
 def Hourly(data_dir):
@@ -73,6 +72,7 @@ def Hourly(data_dir):
             hourly_data, daily_data, monthly_data, input_file, output_file)
         if 'tweet' in template:
             print "Tweeting"
+            import ToTwitter
             # have three tries before giving up
             for n in range(3):
                 try:
