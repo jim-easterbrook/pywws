@@ -50,8 +50,11 @@
         <b><code>#endloop#</code></b>: end a loop started by <code>#loop count#</code>. The template processing will go back to the line containing the <code>#loop count#</code> instruction. Don't try to nest loops.
       </li>
       <li>
-        <b><code>#key fmt_string no_value_string conversion#</code></b>: output a data value. <code>key</code> is the data key, e.g. '<code>temp_out</code>' for outdoor temperature. <code>fmt_string</code> is a printf-like format string (actually Python's % operator) except for datetime values, when it is input to <a href="auto/datetime.html#datetime">datetime</a>'s strftime() method. <code>no_value_string</code> is output instead of <code>fmt_string</code> when the data value is absent, e.g. if the station lost contact with the outside sensor. <code>conversion</code> is a Python expression to convert the data, e.g. to convert wind speed from m/s to mph you could use <code>"x * 3.6 / 1.609344"</code>.<br>
+        <b><code>#key fmt_string no_value_string conversion#</code></b>: output a data value. <code>key</code> is the data key, e.g. <code>temp_out</code> for outdoor temperature. <code>fmt_string</code> is a printf-like format string (actually Python's % operator) except for datetime values, when it is input to <a href="auto/datetime.html#datetime">datetime</a>'s strftime() method. <code>no_value_string</code> is output instead of <code>fmt_string</code> when the data value is absent, e.g. if the station lost contact with the outside sensor. <code>conversion</code> is a Python expression to convert the data, e.g. to convert wind speed from m/s to mph you could use <code>"x * 3.6 / 1.609344"</code>.<br>
         All these values need double quotes " if they contain spaces or other potentially difficult characters. All except <code>key</code> are optional, but note that if you want to specify a <code>conversion</code>, you also need to specify <code>key</code>, <code>fmt_string</code> and <code>no_value_string</code>.
+      </li>
+      <li>
+        <b><code>#calc expression fmt_string no_value_string conversion#</code></b>: output a value computed from one or more data items. <code>expression</code> is any valid Python expression, e.g. <code>"dew_point(data['temp_out'], data['hum_out'])"</code> to compute the outdoor dew point. <code>fmt_string</code>, <code>no_value_string</code> and <code>conversion</code> are as described above. Note that it is probably more efficient to incorporate any <code>conversion</code> into <code>expression</code>.
       </li>
     </ul>
     <h2>
@@ -73,7 +76,7 @@
     &lt;td&gt;#wind_ave "%.0f mph" "" "x * 3.6 / 1.609344"#&lt;/td&gt;
     &lt;td&gt;#wind_gust "%.0f mph" "" "x * 3.6 / 1.609344"#&lt;/td&gt;
     &lt;td&gt;#rain "%0.1f mm"#&lt;/td&gt;
-    &lt;td&gt;#pressure "%.0f hPa"#, #pressure_trend "%s" "" "pressure_trend_text(x)"#&lt;/td&gt;
+    &lt;td&gt;#rel_pressure "%.0f hPa"#, #pressure_trend "%s" "" "pressure_trend_text(x)"#&lt;/td&gt;
   &lt;/tr&gt;
 #jump 1#
 #endloop#
@@ -82,7 +85,7 @@
       The first three lines of this snippet do the following: select hourly data, jump back 6 hours, start a loop with a count of 7. A jump forward of one hour appears just before the end of the repeated segment. As this last jump (of one hour) happens each time round the loop, a sequence of 7 data readings will be output. The last line marks the end of the loop &mdash; everything between the <code>#loop 7#</code> and <code>#endloop#</code> lines is output 7 times.
     </p>
     <p>
-      The <code>#temp_out ...#</code>, <code>#hum_out ...#</code>, <code>#rain ...#</code> and <code>#pressure ...#</code> instructions show basic data output. They each use a <code>fmt_string</code> to format the data appropriately. The <code>#wind_ave ...#</code> and <code>#wind_gust ...#</code> instructions show how to use a <code>conversion</code> expression to convert m/s to mph.
+      The <code>#temp_out ...#</code>, <code>#hum_out ...#</code>, <code>#rain ...#</code> and <code>#rel_pressure ...#</code> instructions show basic data output. They each use a <code>fmt_string</code> to format the data appropriately. The <code>#wind_ave ...#</code> and <code>#wind_gust ...#</code> instructions show how to use a <code>conversion</code> expression to convert m/s to mph.
     </p>
     <p>
       The <code>#wind_dir ...#</code> and <code>#pressure_trend ...#</code> instructions show use of the built-in array <code>wind_dir_text</code> and function <code>pressure_trend_text</code> to convert numerical values into English text.
