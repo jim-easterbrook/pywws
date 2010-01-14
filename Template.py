@@ -18,7 +18,7 @@ import sys
 
 import DataStore
 from TimeZone import Local, utc
-from WeatherStation import pressure_trend_text, wind_dir_text
+from WeatherStation import pressure_trend_text, wind_dir_text, dew_point
 
 def Template(hourly_data, daily_data, monthly_data, template_file, output_file):
     def jump(idx, count):
@@ -64,24 +64,28 @@ def Template(hourly_data, daily_data, monthly_data, template_file, output_file):
             if command == []:
                 # empty command == print a single '#'
                 of.write('#')
-            elif command[0] in data.keys():
+            elif command[0] in data.keys() + ['calc']:
                 # output a value
                 # format is: key fmt_string no_value_string conversion
                 # get value
-                x = data[command[0]]
+                if command[0] == 'calc':
+                    x = eval(command[1])
+                    del command[1]
+                else:
+                    x = data[command[0]]
                 if command[0] == 'wind_dir' and data['wind_ave'] < 0.3:
                     x = None
                 # adjust time
                 if isinstance(x, datetime):
                     x = x.replace(tzinfo=utc)
                     x = x.astimezone(time_zone)
+                # convert data
+                if x != None and len(command) > 3:
+                    x = eval(command[3])
                 # get format
                 fmt = '%s'
                 if len(command) > 1:
                     fmt = command[1]
-                # convert data
-                if x != None and len(command) > 3:
-                    x = eval(command[3])
                 # write output
                 if x == None:
                     if len(command) > 2:

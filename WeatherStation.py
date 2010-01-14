@@ -11,6 +11,8 @@ import usb
 def dew_point(temp, hum):
     """Compute dew point, using formula from
     http://en.wikipedia.org/wiki/Dew_point."""
+    if temp == None or hum == None:
+        return None
     a = 17.27
     b = 237.7
     gamma = ((a * temp) / (b + temp)) + math.log(float(hum) / 100.0)
@@ -296,8 +298,8 @@ class weather_station:
             'temp_out'      : {'hi' : (56, 'ss', 0.1), 'lo'  : (58, 'ss', 0.1)},
             'windchill'     : {'hi' : (60, 'ss', 0.1), 'lo'  : (62, 'ss', 0.1)},
             'dewpoint'      : {'hi' : (64, 'ss', 0.1), 'lo'  : (66, 'ss', 0.1)},
-            'abs_pressure'  : {'hi' : (68, 'ss', 0.1), 'lo'  : (70, 'ss', 0.1)},
-            'rel_pressure'  : {'hi' : (72, 'ss', 0.1), 'lo'  : (74, 'ss', 0.1)},
+            'abs_pressure'  : {'hi' : (68, 'us', 0.1), 'lo'  : (70, 'us', 0.1)},
+            'rel_pressure'  : {'hi' : (72, 'us', 0.1), 'lo'  : (74, 'us', 0.1)},
             'wind_ave'      : {'bft' : (76, 'ub', None), 'ms' : (77, 'ub', 0.1)},
             'wind_gust'     : {'bft' : (79, 'ub', None), 'ms' : (80, 'ub', 0.1)},
             'wind_dir'      : (82, 'ub', None),
