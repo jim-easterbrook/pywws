@@ -35,7 +35,7 @@ def ToTwitter(params, file):
                 status = api.PostUpdate(tweet)
                 break
             except Exception, ex:
-                print ex
+                print >>sys.stderr, ex
     return 0
 def main(argv=None):
     if argv is None:
