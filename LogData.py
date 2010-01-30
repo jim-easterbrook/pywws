@@ -19,7 +19,7 @@ import DataStore
 from TimeZone import Local
 import WeatherStation
 
-def LogData(params, raw_data):
+def LogData(params, raw_data, verbose=1):
     # connect to weather station
     ws = WeatherStation.weather_station()
     fixed_block = ws.get_fixed_block()
@@ -27,7 +27,8 @@ def LogData(params, raw_data):
         print >>sys.stderr, "Invalid data from weather station"
         return 3
     # synchronise with weather station's logging time
-    print 'Synchronising with weather station'
+    if verbose > 0:
+        print 'Synchronising with weather station'
     current_ptr = ws.current_pos()
     data = ws.get_data(current_ptr, unbuffered=True)
     last_delay = data['delay']
@@ -64,7 +65,8 @@ controlled clock, it may have lost its signal.""" % (str(diff))
         last_stored = last_stored + \
                       timedelta(minutes=fixed_block['read_period'] / 2)
     # go back through stored data, until we catch up with what we've already got
-    print 'Fetching data'
+    if verbose > 0:
+        print 'Fetching data'
     count = 0
     while last_ptr != current_ptr and last_date > last_stored:
         data = ws.get_data(last_ptr)
@@ -74,7 +76,8 @@ controlled clock, it may have lost its signal.""" % (str(diff))
         count += 1
         last_date = last_date - timedelta(minutes=data['delay'])
         last_ptr = ws.dec_ptr(last_ptr)
-    print "%d records written" % count
+    if verbose > 0:
+        print "%d records written" % count
 def main(argv=None):
     if argv is None:
         argv = sys.argv

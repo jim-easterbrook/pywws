@@ -9,6 +9,7 @@ Comment out or remove the bits you don't need.
 usage: python Hourly.py [options] [data_dir]
 options are:
 \t-h or --help\t\tdisplay this help
+\t-v or --verbose\t\tincrease amount of reassuring messages
 data_dir is the root directory of the weather data (default /data/weather)
 """
 
@@ -24,7 +25,7 @@ import Process
 import Template
 import Upload
 
-def Hourly(data_dir):
+def Hourly(data_dir, verbose=1):
     # get file locations
     params = DataStore.params(data_dir)
     template_dir = params.get(
@@ -42,13 +43,14 @@ def Hourly(data_dir):
     # have three tries before giving up
     for n in range(3):
         try:
-            LogData.LogData(params, raw_data)
+            LogData.LogData(params, raw_data, verbose)
             break
         except Exception, ex:
-            print ex
+            print >>sys.stderr, ex
     # do the processing
-    print 'Generating summary data'
-    Process.Process(params, raw_data, hourly_data, daily_data, monthly_data)
+    if verbose > 0:
+        print 'Generating summary data'
+    Process.Process(params, raw_data, hourly_data, daily_data, monthly_data, verbose)
     plotter = GraphPlotter(raw_data, hourly_data, daily_data, monthly_data, work_dir)
     roseplotter = RosePlotter(
         raw_data, hourly_data, daily_data, monthly_data, work_dir)
@@ -56,7 +58,8 @@ def Hourly(data_dir):
         input_file = os.path.join(graph_template_dir, template)
         if template[-1] == '~' or not os.path.isfile(input_file):
             continue
-        print "Graphing", template
+        if verbose > 0:
+            print "Graphing", template
         output_file = os.path.join(work_dir, os.path.splitext(template)[0])
         if plotter.DoPlot(input_file, output_file) == 0:
             uploads.append(output_file)
@@ -66,12 +69,14 @@ def Hourly(data_dir):
         input_file = os.path.join(template_dir, template)
         if template[-1] == '~' or not os.path.isfile(input_file):
             continue
-        print "Templating", template
+        if verbose > 0:
+            print "Templating", template
         output_file = os.path.join(work_dir, template)
         Template.Template(
             hourly_data, daily_data, monthly_data, input_file, output_file)
         if 'tweet' in template:
-            print "Tweeting"
+            if verbose > 0:
+                print "Tweeting"
             import ToTwitter
             # have three tries before giving up
             for n in range(3):
@@ -79,18 +84,19 @@ def Hourly(data_dir):
                     ToTwitter.ToTwitter(params, output_file)
                     break
                 except Exception, ex:
-                    print ex
+                    print >>sys.stderr, ex
             os.unlink(output_file)
         else:
             uploads.append(output_file)
-    print "Uploading to web site"
+    if verbose > 0:
+        print "Uploading to web site"
     # have three tries before giving up
     for n in range(3):
         try:
             Upload.Upload(params, uploads)
             break
         except Exception, ex:
-            print ex
+            print >>sys.stderr, ex
     for file in uploads:
         os.unlink(file)
     return 0
@@ -99,16 +105,19 @@ def main(argv=None):
     if argv is None:
         argv = sys.argv
     try:
-        opts, args = getopt.getopt(argv[1:], "h", ['help'])
+        opts, args = getopt.getopt(argv[1:], "hv", ['help', 'verbose'])
     except getopt.error, msg:
         print >>sys.stderr, 'Error: %s\n' % msg
         print >>sys.stderr, __doc__.strip()
         return 1
     # process options
+    verbose = 0
     for o, a in opts:
         if o == '-h' or o == '--help':
             print __doc__.strip()
             return 0
+        elif o == '-v' or o == '--verbose':
+            verbose += 1
     # check arguments
     if len(args) > 1:
         print >>sys.stderr, 'Error: 0 or 1 arguments required\n'
@@ -118,6 +127,6 @@ def main(argv=None):
         data_dir = args[0]
     else:
         data_dir = '/data/weather'
-    return Hourly(data_dir)
+    return Hourly(data_dir, verbose)
 if __name__ == "__main__":
     sys.exit(main())

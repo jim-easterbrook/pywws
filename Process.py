@@ -257,7 +257,7 @@ class MonthAcc:
         else:
             result['temp_out_max_ave'] = None
         return result
-def Process(params, raw_data, hourly_data, daily_data, monthly_data):
+def Process(params, raw_data, hourly_data, daily_data, monthly_data, verbose=1):
     """Generate summaries from raw weather station data.
 
     Starts from the last hourly or daily summary (whichever is
@@ -311,7 +311,8 @@ def Process(params, raw_data, hourly_data, daily_data, monthly_data):
     acc = Acc(time_offset, last_rain)
     # process the data in day chunks
     while start <= last_raw:
-        print "day:", start.isoformat()
+        if verbose > 0:
+            print "day:", start.isoformat()
         day_start = start
         # process each hour
         for hour in range(24):
@@ -325,7 +326,8 @@ def Process(params, raw_data, hourly_data, daily_data, monthly_data):
                 prev = raw
             # get hourly result
             new_data = acc.get_hourly()
-            if new_data and prev['idx'] + timedelta(minutes=1+prev['delay']) >= stop:
+#            if new_data and prev['idx'] + timedelta(minutes=1+prev['delay']) >= stop:
+            if new_data and prev['idx'].minute >= 9:
                 # store summary of hour
                 # copy some current readings
                 for key in ['idx', 'hum_in', 'temp_in', 'hum_out', 'temp_out',
@@ -380,7 +382,8 @@ def Process(params, raw_data, hourly_data, daily_data, monthly_data):
             stop = start.replace(month=start.month+1)
         else:
             stop = start.replace(year=start.year+1, month=1)
-        print "month:", start.isoformat()
+        if verbose > 0:
+            print "month:", start.isoformat()
         # avoid any boundary problems around day start / end
         t0 = start - timedelta(minutes=30)
         t1 = stop - timedelta(hours=23, minutes=30)
