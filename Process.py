@@ -366,27 +366,31 @@ def Process(params, raw_data, hourly_data, daily_data, monthly_data, verbose=1):
     if start.hour < day_end_hour:
         start = start - DAY
     start = start.replace(day=1, hour=day_end_hour, minute=0, second=0)
+    # calculate offset to just after start of day
+    month_offset = timedelta(hours=23, minutes=55)
+    # adjust offset for extreme time zones / day end hours
     local_start = start + time_offset
     if local_start.day == 2:
         if local_start.hour >= 12:
             # missing most of first day of month
-            start = start - DAY
+            month_offset = month_offset + DAY
     elif local_start.day != 1 or local_start.hour < 12:
         # most or all of day is in last month
-        start = start + DAY
+        month_offset = month_offset - DAY
+    # get start of actual data to be processed
+    t0 = start - month_offset
     # delete any existing records after start, as they may be incomplete
-    del monthly_data[start + SECOND:]
+    del monthly_data[t0:]
     # process data
-    while start <= last_raw:
+    while t0 <= last_raw:
         if start.month < 12:
             stop = start.replace(month=start.month+1)
         else:
             stop = start.replace(year=start.year+1, month=1)
+        # get month limits
+        t1 = stop - month_offset
         if verbose > 0:
             print "month:", start.isoformat()
-        # avoid any boundary problems around day start / end
-        t0 = start - timedelta(minutes=30)
-        t1 = stop - timedelta(hours=23, minutes=30)
         acc = MonthAcc(daily_data[daily_data.after(t0)]['start'])
         for data in daily_data[t0:t1]:
             acc.add(data)
@@ -394,6 +398,7 @@ def Process(params, raw_data, hourly_data, daily_data, monthly_data, verbose=1):
         if new_data:
             monthly_data[new_data['idx']] = new_data
         start = stop
+        t0 = t1
     return 0
 def main(argv=None):
     if argv is None:
