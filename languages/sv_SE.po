@@ -1,0 +1,118 @@
+# Swedish translations for PACKAGE package
+# Svenska översättningar för paket PACKAGE.
+# Copyright (C) 2010 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Pyttsen <weather@spacelab.se>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-02-03 22:10+0100\n"
+"PO-Revision-Date: 2010-02-03 22:11+0100\n"
+"Last-Translator: Pyttsen <weather@spacelab.se>\n"
+"Language-Team: Swedish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=ISO-8859-1\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: ../WeatherStation.py:25 ../WindRose.py:94
+msgid "N"
+msgstr "N"
+
+#: ../WeatherStation.py:25
+msgid "NNE"
+msgstr "NNV"
+
+#: ../WeatherStation.py:25
+msgid "NE"
+msgstr "NO"
+
+#: ../WeatherStation.py:25
+msgid "ENE"
+msgstr "ONO"
+
+#: ../WeatherStation.py:26 ../WindRose.py:94
+msgid "E"
+msgstr "O"
+
+#: ../WeatherStation.py:26
+msgid "ESE"
+msgstr "OSO"
+
+#: ../WeatherStation.py:26
+msgid "SE"
+msgstr "SO"
+
+#: ../WeatherStation.py:26
+msgid "SSE"
+msgstr "SSO"
+
+#: ../WeatherStation.py:27 ../WindRose.py:94
+msgid "S"
+msgstr "S"
+
+#: ../WeatherStation.py:27
+msgid "SSW"
+msgstr "SSV"
+
+#: ../WeatherStation.py:27
+msgid "SW"
+msgstr "SV"
+
+#: ../WeatherStation.py:27
+msgid "WSW"
+msgstr "VSV"
+
+#: ../WeatherStation.py:28 ../WindRose.py:94
+msgid "W"
+msgstr "V"
+
+#: ../WeatherStation.py:28
+msgid "WNW"
+msgstr "VNV"
+
+#: ../WeatherStation.py:28
+msgid "NW"
+msgstr "NV"
+
+#: ../WeatherStation.py:28
+msgid "NNW"
+msgstr "NNV"
+
+#: ../WeatherStation.py:35
+msgid "rising very rapidly"
+msgstr "väldigt hastigt ökande"
+
+#: ../WeatherStation.py:37
+msgid "rising quickly"
+msgstr "hastigt ökande"
+
+#: ../WeatherStation.py:39
+msgid "rising"
+msgstr "ökande"
+
+#: ../WeatherStation.py:41
+msgid "rising slowly"
+msgstr "långsamt ökande"
+
+#: ../WeatherStation.py:43
+msgid "falling very rapidly"
+msgstr "väldigt hastigt fallande"
+
+#: ../WeatherStation.py:45
+msgid "falling quickly"
+msgstr "hastigt fallande"
+
+#: ../WeatherStation.py:47
+msgid "falling"
+msgstr "fallande"
+
+#: ../WeatherStation.py:49
+msgid "falling slowly"
+msgstr "långsamt fallande"
+
+#: ../WeatherStation.py:50
+msgid "steady"
+msgstr "stadigt"
