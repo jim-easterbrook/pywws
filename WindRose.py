@@ -91,10 +91,10 @@ unset border
         result += 'set xrange [-%d:%d]\n' % (yrange, yrange)
         result += 'set yrange [-%d:%d]\n' % (yrange, yrange)
         points = eval(self.GetValue(plot, 'points', "'N', 'S', 'E', 'W'"))
-        result += 'set label "%s" at 0, %d center front\n' % (points[0], yrange)
-        result += 'set label "%s" at 0, -%d center front\n' % (points[1], yrange)
-        result += 'set label "%s" at %d, 0 center front\n' % (points[2], yrange)
-        result += 'set label "%s" at -%d, 0 center front\n' % (points[3], yrange)
+        result += 'set label 1000 "%s" at 0, %d center front\n' % (points[0], yrange)
+        result += 'set label 1001 "%s" at 0, -%d center front\n' % (points[1], yrange)
+        result += 'set label 1002 "%s" at %d, 0 center front\n' % (points[2], yrange)
+        result += 'set label 1003 "%s" at -%d, 0 center front\n' % (points[3], yrange)
         # plot segments for each speed-direction
         result += 'plot '
         for i in range(len(thresh)-1, -1, -1):
