@@ -21,6 +21,7 @@ import sys
 import xml.dom.minidom
 
 import DataStore
+from Localisation import _
 from Plot import GraphPlotter
 from TimeZone import Local
 from WeatherStation import dew_point
@@ -90,7 +91,8 @@ unset border
         yrange = eval(self.GetValue(plot, 'yrange', '31'))
         result += 'set xrange [-%d:%d]\n' % (yrange, yrange)
         result += 'set yrange [-%d:%d]\n' % (yrange, yrange)
-        points = eval(self.GetValue(plot, 'points', "'N', 'S', 'E', 'W'"))
+        points = [_('N'), _('S'), _('E'), _('W')]
+        points = eval(self.GetValue(plot, 'points', str(points)))
         result += 'set label 1000 "%s" at 0, %d center front\n' % (points[0], yrange)
         result += 'set label 1001 "%s" at 0, -%d center front\n' % (points[1], yrange)
         result += 'set label 1002 "%s" at %d, 0 center front\n' % (points[2], yrange)

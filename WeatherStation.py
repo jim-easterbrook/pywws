@@ -8,6 +8,8 @@ import math
 import platform
 import usb
 
+from Localisation import _
+
 def dew_point(temp, hum):
     """Compute dew point, using formula from
     http://en.wikipedia.org/wiki/Dew_point."""
@@ -20,28 +22,32 @@ def dew_point(temp, hum):
 
 # convert wind direction integer to string
 wind_dir_text = [
-    'N', 'NNE', 'NE', 'ENE',
-    'E', 'ESE', 'SE', 'SSE',
-    'S', 'SSW', 'SW', 'WSW',
-    'W', 'WNW', 'NW', 'NNW',
+    _('N'), _('NNE'), _('NE'), _('ENE'),
+    _('E'), _('ESE'), _('SE'), _('SSE'),
+    _('S'), _('SSW'), _('SW'), _('WSW'),
+    _('W'), _('WNW'), _('NW'), _('NNW'),
     ]
 
 def pressure_trend_text(trend):
     """Convert pressure trend to a string, see
     http://www.reedsonline.com/weather/weather-terms.htm."""
-    if trend >= 0.1:
-        result = 'rising'
+    if trend > 6.0:
+        return _('rising very rapidly')
+    elif trend > 3.5:
+        return _('rising quickly')
+    elif trend > 1.5:
+        return _('rising')
+    elif trend >= 0.1:
+        return _('rising slowly')
+    elif trend < -6.0:
+        return _('falling very rapidly')
+    elif trend < -3.5:
+        return _('falling quickly')
+    elif trend < -1.5:
+        return _('falling')
     elif trend <= -0.1:
-        result = 'falling'
-    else:
-        return 'steady'
-    if abs(trend) > 6.0:
-        return result + ' very rapidly'
-    if abs(trend) > 3.5:
-        return result + ' quickly'
-    if abs(trend) <= 1.5:
-        return result + ' slowly'
-    return result
+        return _('falling slowly')
+    return _('steady')
 
 # get meaning for status integer
 unknown         = 0x80

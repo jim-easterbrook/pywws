@@ -1,0 +1,117 @@
+# English translations for PACKAGE package.
+# Copyright (C) 2010 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Linux User <jim@jim-easterbrook.me.uk>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-02-03 20:16+0000\n"
+"PO-Revision-Date: 2010-02-03 20:26+0000\n"
+"Last-Translator: Linux User <jim@jim-easterbrook.me.uk>\n"
+"Language-Team: English\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=ASCII\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: ../WeatherStation.py:25 ../WindRose.py:94
+msgid "N"
+msgstr "N"
+
+#: ../WeatherStation.py:25
+msgid "NNE"
+msgstr "NNE"
+
+#: ../WeatherStation.py:25
+msgid "NE"
+msgstr "NE"
+
+#: ../WeatherStation.py:25
+msgid "ENE"
+msgstr "ENE"
+
+#: ../WeatherStation.py:26 ../WindRose.py:94
+msgid "E"
+msgstr "E"
+
+#: ../WeatherStation.py:26
+msgid "ESE"
+msgstr "ESE"
+
+#: ../WeatherStation.py:26
+msgid "SE"
+msgstr "SE"
+
+#: ../WeatherStation.py:26
+msgid "SSE"
+msgstr "SSE"
+
+#: ../WeatherStation.py:27 ../WindRose.py:94
+msgid "S"
+msgstr "S"
+
+#: ../WeatherStation.py:27
+msgid "SSW"
+msgstr "SSW"
+
+#: ../WeatherStation.py:27
+msgid "SW"
+msgstr "SW"
+
+#: ../WeatherStation.py:27
+msgid "WSW"
+msgstr "WSW"
+
+#: ../WeatherStation.py:28 ../WindRose.py:94
+msgid "W"
+msgstr "W"
+
+#: ../WeatherStation.py:28
+msgid "WNW"
+msgstr "WNW"
+
+#: ../WeatherStation.py:28
+msgid "NW"
+msgstr "NW"
+
+#: ../WeatherStation.py:28
+msgid "NNW"
+msgstr "NNW"
+
+#: ../WeatherStation.py:35
+msgid "rising very rapidly"
+msgstr "rising very rapidly"
+
+#: ../WeatherStation.py:37
+msgid "rising quickly"
+msgstr "rising quickly"
+
+#: ../WeatherStation.py:39
+msgid "rising"
+msgstr "rising"
+
+#: ../WeatherStation.py:41
+msgid "rising slowly"
+msgstr "rising slowly"
+
+#: ../WeatherStation.py:43
+msgid "falling very rapidly"
+msgstr "falling very rapidly"
+
+#: ../WeatherStation.py:45
+msgid "falling quickly"
+msgstr "falling quickly"
+
+#: ../WeatherStation.py:47
+msgid "falling"
+msgstr "falling"
+
+#: ../WeatherStation.py:49
+msgid "falling slowly"
+msgstr "falling slowly"
+
+#: ../WeatherStation.py:50
+msgid "steady"
+msgstr "steady"
