@@ -34,7 +34,7 @@ class RosePlotter(GraphPlotter):
     def GetDefaultPlotSize(self):
         return 600 / self.rows, 600 / self.rows
     def GetPreamble(self):
-        return """set polar
+        result = """set polar
 set angles degrees
 set xtics axis nomirror
 set ytics axis nomirror
@@ -43,6 +43,15 @@ set grid polar 22.5
 set size square
 unset border
 """
+        lmargin = eval(self.GetValue(self.graph, 'lmargin', '-1'))
+        result += 'set lmargin %g\n' % (lmargin)
+        lmargin = eval(self.GetValue(self.graph, 'rmargin', '-1'))
+        result += 'set rmargin %g\n' % (lmargin)
+        lmargin = eval(self.GetValue(self.graph, 'tmargin', '-1'))
+        result += 'set tmargin %g\n' % (lmargin)
+        lmargin = eval(self.GetValue(self.graph, 'bmargin', '-1'))
+        result += 'set bmargin %g\n' % (lmargin)
+        return result
     def PlotData(self, plot_no, plot, source):
         # get statistics
         thresh = eval(self.GetValue(
