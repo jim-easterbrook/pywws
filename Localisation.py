@@ -8,12 +8,11 @@ langs = []
 #Check the default locale
 lc, encoding = locale.getdefaultlocale()
 if lc:
-    langs = [lc]
-# Next get all of the supported languages on the system
-language = os.environ.get('LANG', None)
-if language:
-	langs += map(lambda x: x.split('.')[0], language.split(":"))
-# Finally, add one we know to be there
-langs += ["en_GB"]
-trans = gettext.translation('pywws', './locale', languages=langs)
-_ = trans.lgettext
+    langs = [lc, lc[:2]]
+# Add one we know to be there
+langs += ["en_GB", "en"]
+trans = gettext.translation('pywws', languages=langs)
+_ = trans.gettext
+charset = trans._charset
+if charset in (None, 'ASCII'):
+    charset = 'iso-8859-1'

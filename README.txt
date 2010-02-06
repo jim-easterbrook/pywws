@@ -1,6 +1,6 @@
 Python software for USB Wireless WeatherStations (pywws).
 
-(C) 2008-9 Jim Easterbrook (jim@jim-easterbrook.me.uk)
+(C) 2008-10 Jim Easterbrook (jim@jim-easterbrook.me.uk)
 derived from previous work by
 Michael Pendec (michael.pendec@gmail.com) and
 Svend Skafte (svend@skafte.net)
@@ -48,10 +48,12 @@ This software collection currently contains the following files:
 	README.txt		-- you are reading it!
 	LICENCE.txt		-- GNU General Public License
 
+	setup.py		-- installs translation files
 	WeatherStation.py	-- gets data from the weather station
 	TestWeatherStation.py	-- test communication with weather station
 	DataStore.py		-- stores readings in easy to access files
 	LogData.py		-- saves recent readings to file
+	Localisation.py		-- provides local language translations
 	Hourly.py		-- run from cron
 	Process.py		-- summarises raw data
 	Plot.py			-- plots weather data using an XML recipe
@@ -68,6 +70,7 @@ This software collection currently contains the following files:
 				-- example graph XML "recipes"
 	example_templates/*	-- example text templates
 	doc/*			-- HTML documentation of most of the above
+	languages/*		-- language source files and utility scripts
 
 Upgrading from earlier versions:
 	Back up your data, then run one of the following, depending on
@@ -96,38 +99,39 @@ Getting started:
   4/ Install PyUSB, if not already installed
   Note: steps 2..4 may require installation of other software on some
   platforms, and you might have to compile / build some packages.
-  5/ Run "python TestWeatherStation.py" - it should complain about not
+  5/ Run "python setup.py install" to install language files.
+  6/ Run "python TestWeatherStation.py" - it should complain about not
      being able to connect to a weather station
-  6/ Connect weather station's USB port to computer
-  7/ Run TestWeatherStation.py again - you should get a load of data
-     7a/ Try options to decode data and show history:
+  7/ Connect weather station's USB port to computer
+  8/ Run TestWeatherStation.py again - you should get a load of data
+     8a/ Try options to decode data and show history:
          "python TestWeatherStation.py -d -h 5"
-  8/ Run "python AutoDoc.py" to create extra documentation of the
+  9/ Run "python AutoDoc.py" to create extra documentation of the
      software.
-  9/ Choose somewhere to store readings, e.g. /data/weather
-  10/ Get some data from the weather station:
+  10/ Choose somewhere to store readings, e.g. /data/weather
+  11/ Get some data from the weather station:
       "python LogData.py /data/weather"
       This will take a while the first time you run it, as it fetches
       all the data stored in the weather station.
-  11/ If you have an EasyWeather.dat file, now is the time to convert it:
+  12/ If you have an EasyWeather.dat file, now is the time to convert it:
       "python EWtoPy.py EasyWeather.dat /data/weather"
-  12/ Process the raw data to make hourly and daily summaries:
+  13/ Process the raw data to make hourly and daily summaries:
       "python Process.py /data/weather"
-  13/ Generate some tables:
+  14/ Generate some tables:
       "python Template.py /data/weather example_templates/24hrs.txt 24hrs.txt"
       "python Template.py /data/weather example_templates/6hrs.txt 6hrs.txt"
-  14/ If you want to create graphs, install gnuplot, then:
+  15/ If you want to create graphs, install gnuplot, then:
       "python Plot.py /data/weather /tmp \
 		example_graph_templates/24hrs.png.xml 24hrs.png"
       "python Plot.py /data/weather /tmp \
 		example_graph_templates/7days.png.xml 7days.png"
-  15/ Have a look at the files you've just made, then write a web page
+  16/ Have a look at the files you've just made, then write a web page
       that incorporates them. (Use server side includes for the .txt
       files). Copy the text templates you want from the example_templates
       directory to the templates directory. Copy the graph templates you want
       from the example_graph_templates directory to the graph_templates
       directory.
-  16/ Edit /data/weather/weather.ini and add details of your website
+  17/ Edit /data/weather/weather.ini and add details of your website
       for example:
   	[ftp]
   	secure = False
@@ -135,9 +139,9 @@ Getting started:
   	user = username
   	password = secret
   	directory = public_html/weather/data/
-  17/ Try uploading the files:
+  18/ Try uploading the files:
       "python Upload.py /data/weather 24hrs.txt 6hrs.txt 24hrs.png 7days.png"
-  18/ If you want to upload to Twitter, install python-twitter and simplejson
+  19/ If you want to upload to Twitter, install python-twitter and simplejson
       then:
       "python Template.py /data/weather example_templates/tweet.txt tweet.txt"
       "python ToTwitter.py /data/weather tweet.txt"
@@ -146,19 +150,26 @@ Getting started:
         [twitter]
         username = twitterusername
         password = twitterpassword
-  19/ Create directories for your graph templates and text templates, e.g.
+  20/ Create directories for your graph templates and text templates, e.g.
       '~/weather/graph_templates/' and '~/weather/templates/', copy the
       templates you like to them, and run Hourly.py manually:
       "python Hourly.py /data/weather"
       You can now edit /data/weather/weather.ini to point to your template
       directories if Hourly.py didn't find them.
-  20/ Set up a cron job to run Hourly.py every hour or every few hours or
+  21/ Set up a cron job to run Hourly.py every hour or every few hours or
       every day, according to your needs, at a minute or two past the hour.
-  21/ Edit templates, Hourly.py and other files to adjust everything to your
+  22/ Edit templates, Hourly.py and other files to adjust everything to your
       taste.
 
 Comments or questions? Please subscribe to the pywws mailing list
 http://groups.google.com/group/pywws and let us know.
+
+Changes in v10.02:
+	1/ Changed version numbering to year.month.
+	2/ Allowed "upload" to a local directory instead of ftp site.
+	3/ Added "calc" option to text templates (Template.py).
+	4/ Added -v / --verbose option to Hourly.py to allow silent operation.
+	5/ Added internationalisation / localisation of some strings.
 
 Changes in v0.9:
 	1/ Added lowest daytime max and highest nighttime min temperatures

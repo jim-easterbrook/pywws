@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: ISO-8859-1 -*-
 """
 Post a message to Twitter.
 
@@ -18,6 +17,7 @@ import sys
 import twitter
 
 import DataStore
+from Localisation import charset
 
 def ToTwitter(params, file):
     username = params.get('twitter', 'username', 'twitterusername')
@@ -27,7 +27,7 @@ def ToTwitter(params, file):
     tweet_file.close()
     if len(tweet) > 0:
         api = twitter.Api(username=username, password=password,
-                          input_encoding='iso-8859-1')
+                          input_encoding=charset)
         if hasattr(api, 'SetSource'):
             api.SetSource('pywws')
         for i in range(3):

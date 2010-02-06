@@ -20,6 +20,7 @@ import sys
 import xml.dom.minidom
 
 import DataStore
+from Localisation import charset
 from TimeZone import Local
 from WeatherStation import dew_point
 
@@ -95,7 +96,7 @@ class GraphPlotter:
             terminal = '%s large size %d,%d' % (fileformat, w, h)
         terminal = self.GetValue(self.graph, 'terminal', terminal)
         of.write('set terminal %s\n' % (terminal))
-        of.write('set encoding iso_8859_1\n')
+        of.write('set encoding %s\n' % charset.lower().replace('-', '_'))
         of.write('set output "%s"\n' % output_file)
         # set overall title
         title = self.GetValue(self.graph, 'title', '')
