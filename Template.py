@@ -20,7 +20,8 @@ import DataStore
 from TimeZone import Local, utc
 from WeatherStation import pressure_trend_text, wind_dir_text, dew_point
 
-def Template(hourly_data, daily_data, monthly_data, template_file, output_file):
+def Template(raw_data, hourly_data, daily_data, monthly_data,
+             template_file, output_file):
     def jump(idx, count):
         while count > 0:
             new_idx = data_set.after(idx + timedelta(seconds=1))
@@ -106,6 +107,10 @@ def Template(hourly_data, daily_data, monthly_data, template_file, output_file):
                 data_set = hourly_data
                 idx, valid_data = jump(datetime.max, -1)
                 data = data_set[idx]
+            elif command[0] == 'raw':
+                data_set = raw_data
+                idx, valid_data = jump(datetime.max, -1)
+                data = data_set[idx]
             elif command[0] == 'timezone':
                 if command[1] == 'utc':
                     time_zone = utc
@@ -125,7 +130,7 @@ def Template(hourly_data, daily_data, monthly_data, template_file, output_file):
                 if valid_data and loop_count > 0:
                     tmplt.seek(loop_start, 0)
             else:
-                print >>sys.stderr, "Unknown processing directive:", line
+                print >>sys.stderr, "Unknown processing directive: #%s#" % parts[i]
                 return 5
     of.close()
     tmplt.close()
@@ -149,7 +154,8 @@ def main(argv=None):
         if o == '--help':
             print __doc__.strip()
             return 0
-    return Template(DataStore.hourly_store(args[0]), DataStore.daily_store(args[0]),
-                    DataStore.monthly_store(args[0]), args[1], args[2])
+    return Template(DataStore.data_store(args[0]), DataStore.hourly_store(args[0]),
+                    DataStore.daily_store(args[0]), DataStore.monthly_store(args[0]),
+                    args[1], args[2])
 if __name__ == "__main__":
     sys.exit(main())

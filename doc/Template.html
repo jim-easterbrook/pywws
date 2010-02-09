@@ -13,7 +13,7 @@
       <a href="auto/Template.html">Template.py</a> -- creates text data file based on a template
     </h2>
     <p>
-      This is probably the most difficult to use module in the weather station software collection. It generates text files based on a "template" file plus the hourly, daily &amp; monthly weather station data. The template processing goes beyond simple substitution of values to include loops, jumps forwards or backwards in the data, processing of the data and substitution of missing values.
+      This is probably the most difficult to use module in the weather station software collection. It generates text files based on a "template" file plus the raw, hourly, daily &amp; monthly weather station data. The template processing goes beyond simple substitution of values to include loops, jumps forwards or backwards in the data, processing of the data and substitution of missing values.
     </p>
     <p>
       A template file can be any sort of text file (plain text, xml, html, etc.) to which "processing instructions" have been added. These processing instructions are delimited by hash ('#') characters. They are not copied to the output, but cause something else to happen: either a data value is inserted or one of a limited number of other actions is carried out.
@@ -36,6 +36,9 @@
       </li>
       <li>
         <b><code>#hourly#</code></b>: switch to "hourly" summary data. The index is reset to the most recent value.
+      </li>
+      <li>
+        <b><code>#raw#</code></b>: switch to "raw" data. The index is reset to the most recent value.
       </li>
       <li>
         <b><code>#timezone name#</code></b>: convert all datetime values to time zone <code>name</code> before output. Permitted values for <code>name</code> are <code>utc</code> or <code>local</code>.
