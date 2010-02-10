@@ -30,6 +30,7 @@ Dependencies:
 	libusb (http://libusb.sf.net)
 	Python (http://www.python.org/) version 2.4 or higher
 	PyUSB (http://pyusb.berlios.de/) version 0.4 or higher
+	msgfmt (from the gettext package) if installing on Linux
 	For graph drawing:
 	  gnuplot (http://www.gnuplot.info/) v4.2 or higher
 	For secure website uploading (sftp)
@@ -99,11 +100,15 @@ Getting started:
   4/ Install PyUSB, if not already installed
   Note: steps 2..4 may require installation of other software on some
   platforms, and you might have to compile / build some packages.
-  5/ Run "python setup.py install" to install language files.
+  5/ Run "sudo python setup.py install" to install language files.
+     If this fails you may be missing 'msgfmt'. Make sure you have installed
+     the gettext package.
   6/ Run "python TestWeatherStation.py" - it should complain about not
      being able to connect to a weather station
   7/ Connect weather station's USB port to computer
-  8/ Run TestWeatherStation.py again - you should get a load of data
+  8/ Run TestWeatherStation.py again - you should get a load of data.
+     If this fails it might be a 'permissions' problem. Try running as
+     root: "sudo python TestWeatherStation.py"
      8a/ Try options to decode data and show history:
          "python TestWeatherStation.py -d -h 5"
   9/ Run "python AutoDoc.py" to create extra documentation of the
@@ -170,6 +175,7 @@ Changes in v10.02:
 	3/ Added "calc" option to text templates (Template.py).
 	4/ Added -v / --verbose option to Hourly.py to allow silent operation.
 	5/ Added internationalisation / localisation of some strings.
+	6/ Made 'raw' data available to text templates.
 
 Changes in v0.9:
 	1/ Added lowest daytime max and highest nighttime min temperatures
