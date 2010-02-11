@@ -46,12 +46,6 @@ def Upload(params, files):
         import ftplib
         ftp = ftplib.FTP(site, user, password)
 #        print ftp.getwelcome()
-    if directory[0] == '/':
-        directory = directory[1:]
-        params.set('ftp', 'directory', directory)
-    if directory[-1] != '/':
-        directory += '/'
-        params.set('ftp', 'directory', directory)
     for file in files:
         target = directory + os.path.basename(file)
         if secure:
