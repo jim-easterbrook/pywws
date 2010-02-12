@@ -56,7 +56,8 @@ def Hourly(data_dir, verbose=1):
         raw_data, hourly_data, daily_data, monthly_data, work_dir)
     for template in os.listdir(graph_template_dir):
         input_file = os.path.join(graph_template_dir, template)
-        if template[-1] == '~' or not os.path.isfile(input_file):
+        if (template[0] == '.' or template[-1] == '~' or
+            not os.path.isfile(input_file)):
             continue
         if verbose > 0:
             print "Graphing", template
@@ -67,7 +68,8 @@ def Hourly(data_dir, verbose=1):
             uploads.append(output_file)
     for template in os.listdir(template_dir):
         input_file = os.path.join(template_dir, template)
-        if template[-1] == '~' or not os.path.isfile(input_file):
+        if (template[0] == '.' or template[-1] == '~' or
+            not os.path.isfile(input_file)):
             continue
         if verbose > 0:
             print "Templating", template
