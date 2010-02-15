@@ -11,7 +11,7 @@ if lc:
     langs = [lc, lc[:2]]
 # Add one we know to be there
 langs += ["en_GB", "en"]
-trans = gettext.translation('pywws', languages=langs)
+trans = gettext.translation('pywws', './locale', languages=langs)
 _ = trans.gettext
 charset = trans._charset
 if charset in (None, 'ASCII'):
