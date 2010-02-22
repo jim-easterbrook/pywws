@@ -69,11 +69,13 @@ controlled clock, it may have lost its signal.""" % (str(diff))
         print 'Fetching data'
     count = 0
     while last_ptr != current_ptr and last_date > last_stored:
+        count += 1
+        if count >= fixed_block['data_count']:
+            break
         data = ws.get_data(last_ptr)
         if data['delay'] == None:
             break
         raw_data[last_date] = data
-        count += 1
         last_date = last_date - timedelta(minutes=data['delay'])
         last_ptr = ws.dec_ptr(last_ptr)
     if verbose > 0:
