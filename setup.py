@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 
+from datetime import date
 from distutils.command.build import build
 from distutils.core import setup, Command
 from distutils import log
 import os
-from subprocess import check_call
+from subprocess import check_call, Popen, PIPE
 import sys
 if sys.platform == 'win32':
     sys.path.append(os.path.join(sys.prefix, 'Tools', 'i18n'))
@@ -39,8 +40,15 @@ class build_langs(Command):
                 check_call(['msgfmt', '--output-file=%s' % dest, src])
 build.sub_commands.insert(0, ('build_langs', None))
 
+revision = 0
+for line in Popen(['svn', 'info'], stdout=PIPE).stdout:
+    if line.startswith('Revision'):
+        revision = int(line.split(':')[1])
+        break
+version = date.today().strftime('%y.%m') + '_r%d' % revision
+
 setup(name='pywws',
-      version='10.02',
+      version=version,
       description='Python software for wireless weather stations',
       author='Jim Easterbrook',
       author_email='jim@jim-easterbrook.me.uk',
