@@ -20,6 +20,13 @@ def dew_point(temp, hum):
     gamma = ((a * temp) / (b + temp)) + math.log(float(hum) / 100.0)
     return (b * gamma) / (a - gamma)
 
+def apparent_temp(temp, rh, wind):
+    """Compute apparent temperature (real feel), using formula from
+    http://www.bom.gov.au/info/thermal_stress/"""
+    vap_press = (float(rh) / 100.0) * 6.105 * math.exp(
+        17.27 * temp / (237.7 + temp))
+    return temp + (0.33 * vap_press) - (0.70 * wind) - 4.00
+
 # convert wind direction integer to string
 wind_dir_text = [
     _('N'), _('NNE'), _('NE'), _('ENE'),
