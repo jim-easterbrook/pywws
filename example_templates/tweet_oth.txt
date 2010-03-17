@@ -1,0 +1,11 @@
+#hourly#
+#timezone local#
+#calc "(data['idx'] + timedelta(minutes=10)).replace(minute=0)" "%H:%M %Z:"#
+ Temperature: #temp_out "%.1f°C" "-"#
+, Wind: #wind_dir "%s, " "" "wind_dir_text[x]"#
+#wind_ave "%.0f mph (ave), " "" "x * 3.6 / 1.609344"#
+#wind_gust "%.0f mph (gust)" "" "x * 3.6 / 1.609344"#
+, Humidity: #hum_out "%d%%"#
+, Rain (hourly) #rain "%.1f mm"#
+, Pressure: #rel_pressure "%.0f hPa, "#
+#pressure_trend "%s" "" "pressure_trend_text(x)"#
