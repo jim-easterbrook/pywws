@@ -3,6 +3,7 @@
 import gettext
 import locale
 import os
+import sys
 
 langs = []
 #Check the default locale
@@ -11,7 +12,8 @@ if lc:
     langs = [lc, lc[:2]]
 # Add one we know to be there
 langs += ["en_GB", "en"]
-trans = gettext.translation('pywws', './locale', languages=langs)
+trans = gettext.translation(
+    'pywws', os.path.join(os.path.dirname(sys.argv[0]), 'locale'), languages=langs)
 _ = trans.gettext
 charset = trans._charset
 if charset in (None, 'ASCII'):
