@@ -276,9 +276,10 @@ def Process(params, raw_data, hourly_data, daily_data, monthly_data, verbose=1):
     HOURx3 = timedelta(hours=3)
     SECOND = timedelta(seconds=1)
     DAY = timedelta(hours=24)
-    pressure_offset = eval(params.get('fixed', 'pressure offset'))
     # get time of last record
     last_raw = raw_data.before(datetime.max)
+    if last_raw == None:
+        raise IOError('No data found. Check data directory parameter.')
     # get earlier of last daily or hourly, and start from there
     start = hourly_data.before(datetime.max)
     if start != None:
@@ -302,6 +303,7 @@ def Process(params, raw_data, hourly_data, daily_data, monthly_data, verbose=1):
     del hourly_data[start + SECOND:]
     del daily_data[start + SECOND:]
     # preload pressure history, and find last valid rain
+    pressure_offset = eval(params.get('fixed', 'pressure offset'))
     pressure_history = deque()
     last_rain = None
     for raw in raw_data[start - HOURx3:start]:
