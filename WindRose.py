@@ -97,7 +97,23 @@ unset border
         for n in range(16):
             total += histograms[-1][n]
         result = ''
-        yrange = eval(self.GetValue(plot, 'yrange', '31'))
+        yrange = self.GetValue(plot, 'yrange', '31')
+        if yrange == '*':
+            # auto-ranging
+            if total > 0:
+                max_petal = 100.0 * float(max(histograms[-1])) / float(total)
+            else:
+                max_petal = 0.0
+            if max_petal > 40.0:
+                yrange = (int(max_petal / 20.0) * 20) + 21
+            elif max_petal > 30.0:
+                yrange = 41
+            elif max_petal > 20.0:
+                yrange = 31
+            else:
+                yrange = 21
+        else:
+            yrange = eval(yrange)
         result += 'set xrange [-%d:%d]\n' % (yrange, yrange)
         result += 'set yrange [-%d:%d]\n' % (yrange, yrange)
         points = [_('N'), _('S'), _('E'), _('W')]
@@ -108,7 +124,7 @@ unset border
         result += 'set label 1003 "%s" at -%d, 0 center front\n' % (points[3], yrange)
         # plot segments for each speed-direction
         result += 'plot '
-        for i in range(len(thresh)-1, -1, -1):
+        for i in reversed(range(len(thresh))):
             dat_file = os.path.join(self.work_dir, 'plot_%d_%d.dat' % (plot_no, i))
             self.tmp_files.append(dat_file)
             dat = open(dat_file, 'w')
