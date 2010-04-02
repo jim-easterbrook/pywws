@@ -56,8 +56,10 @@ class params:
         in the weather.ini file, they are created and set to default,
         which is then the return value.
         """
-        if default and not self._config.has_option(section, option):
-            self.set(section, option, default)
+        if not self._config.has_option(section, option):
+            if default:
+                self.set(section, option, default)
+            return default
         return self._config.get(section, option)
     def set(self, section, option, value):
         """Set option in section to string value."""
@@ -69,32 +71,43 @@ class core_store:
     def __init__(self, root_dir):
         self._root_dir = root_dir
         self._one_day = timedelta(days=1)
-        # get conservative first and last days for which data (might) exist
-        self._fst_day = date.max.toordinal() - 500
-        self._lst_day = date.min.toordinal() + 500
-        for root, dirs, files in os.walk(self._root_dir):
-            dirs.sort()
-            files.sort()
-            if len(files) > 0:
-                path, lo, hi = self._get_cache_path(
-                    safestrptime(files[0], "%Y-%m-%d.txt").date())
-                self._fst_day = lo
-                break
-        for root, dirs, files in os.walk(self._root_dir):
-            dirs.sort()
-            dirs.reverse()
-            files.sort()
-            if len(files) > 0:
-                path, lo, hi = self._get_cache_path(
-                    safestrptime(files[-1], "%Y-%m-%d.txt").date())
-                self._lst_day = hi
-                break
         # initialise cache
         self._cache = []
         self._cache_ptr = 0
         self._cache_lo = date.max.toordinal()
         self._cache_hi = date.min.toordinal()
         self._cache_dirty = False
+        # get conservative first and last days for which data (might) exist
+        self._fst_day = date.max.toordinal() - 500
+        self._lst_day = date.min.toordinal() + 500
+        for root, dirs, files in os.walk(self._root_dir):
+            files.sort()
+            for file in files:
+                if file[0] == '.':
+                    continue
+                path, lo, hi = self._get_cache_path(
+                    safestrptime(file, "%Y-%m-%d.txt").date())
+                self._fst_day = lo
+                break
+            else:
+                dirs.sort()
+                continue
+            break
+        for root, dirs, files in os.walk(self._root_dir):
+            files.sort()
+            files.reverse()
+            for file in files:
+                if file[0] == '.':
+                    continue
+                path, lo, hi = self._get_cache_path(
+                    safestrptime(file, "%Y-%m-%d.txt").date())
+                self._lst_day = hi
+                break
+            else:
+                dirs.sort()
+                dirs.reverse()
+                continue
+            break
     def __del__(self):
         if self._cache_dirty:
             self._save()
