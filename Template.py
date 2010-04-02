@@ -19,7 +19,7 @@ import sys
 import DataStore
 from TimeZone import Local, utc
 from WeatherStation import (
-    pressure_trend_text, wind_dir_text, dew_point, apparent_temp)
+    pressure_trend_text, wind_dir_text, dew_point, wind_chill, apparent_temp)
 
 def Template(raw_data, hourly_data, daily_data, monthly_data,
              template_file, output_file):

@@ -22,7 +22,7 @@ import xml.dom.minidom
 import DataStore
 from Localisation import charset
 from TimeZone import Local
-from WeatherStation import dew_point, apparent_temp
+from WeatherStation import dew_point, wind_chill, apparent_temp
 
 class GraphPlotter:
     def __init__(self, raw_data, hourly_data, daily_data, monthly_data, work_dir):

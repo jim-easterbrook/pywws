@@ -20,9 +20,23 @@ def dew_point(temp, hum):
     gamma = ((a * temp) / (b + temp)) + math.log(float(hum) / 100.0)
     return (b * gamma) / (a - gamma)
 
+def wind_chill(temp, wind):
+    """Compute wind chill, using formula from
+    http://en.wikipedia.org/wiki/wind_chill"""
+    if temp == None or wind == None:
+        return None
+    wind_kph = wind * 3.6
+    if wind_kph <= 4.8 or temp > 10.0:
+        return temp
+    return min(13.12 + (temp * 0.6215) +
+               (((0.3965 * temp) - 11.37) * (wind_kph ** 0.16)),
+               temp)
+
 def apparent_temp(temp, rh, wind):
     """Compute apparent temperature (real feel), using formula from
     http://www.bom.gov.au/info/thermal_stress/"""
+    if temp == None or rh == None or wind == None:
+        return None
     vap_press = (float(rh) / 100.0) * 6.105 * math.exp(
         17.27 * temp / (237.7 + temp))
     return temp + (0.33 * vap_press) - (0.70 * wind) - 4.00
