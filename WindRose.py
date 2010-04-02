@@ -21,7 +21,6 @@ import sys
 import xml.dom.minidom
 
 import DataStore
-from Localisation import _
 from Plot import GraphPlotter
 from TimeZone import Local
 from WeatherStation import dew_point
@@ -188,6 +187,7 @@ def main(argv=None):
         print >>sys.stderr, __doc__.strip()
         return 2
     return RosePlotter(
+        DataStore.params(args[0]),
         DataStore.data_store(args[0]), DataStore.hourly_store(args[0]),
         DataStore.daily_store(args[0]), DataStore.monthly_store(args[0]),
         args[1]

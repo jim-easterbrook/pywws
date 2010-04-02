@@ -17,7 +17,7 @@ import sys
 import twitter
 
 import DataStore
-from Localisation import charset
+import Localisation
 
 def ToTwitter(params, file):
     username = params.get('twitter', 'username', 'twitterusername')
@@ -26,8 +26,9 @@ def ToTwitter(params, file):
     tweet = tweet_file.read(140)
     tweet_file.close()
     if len(tweet) > 0:
+        Localisation.SetLanguage(params)
         api = twitter.Api(username=username, password=password,
-                          input_encoding=charset)
+                          input_encoding=Localisation.Charset())
         if hasattr(api, 'SetSource'):
             api.SetSource('pywws')
         for i in range(3):

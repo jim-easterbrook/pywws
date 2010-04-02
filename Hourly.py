@@ -51,9 +51,10 @@ def Hourly(data_dir, verbose=1):
     if verbose > 0:
         print 'Generating summary data'
     Process.Process(params, raw_data, hourly_data, daily_data, monthly_data, verbose)
-    plotter = GraphPlotter(raw_data, hourly_data, daily_data, monthly_data, work_dir)
+    plotter = GraphPlotter(
+        params, raw_data, hourly_data, daily_data, monthly_data, work_dir)
     roseplotter = RosePlotter(
-        raw_data, hourly_data, daily_data, monthly_data, work_dir)
+        params, raw_data, hourly_data, daily_data, monthly_data, work_dir)
     for template in os.listdir(graph_template_dir):
         input_file = os.path.join(graph_template_dir, template)
         if (template[0] == '.' or template[-1] == '~' or

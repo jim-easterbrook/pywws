@@ -20,12 +20,14 @@ import sys
 import xml.dom.minidom
 
 import DataStore
-from Localisation import charset
+import Localisation
 from TimeZone import Local
 from WeatherStation import dew_point, wind_chill, apparent_temp
 
 class GraphPlotter:
-    def __init__(self, raw_data, hourly_data, daily_data, monthly_data, work_dir):
+    def __init__(self, params, raw_data, hourly_data,
+                 daily_data, monthly_data, work_dir):
+        Localisation.SetLanguage(params)
         self.raw_data = raw_data
         self.hourly_data = hourly_data
         self.daily_data = daily_data
@@ -96,8 +98,9 @@ class GraphPlotter:
             terminal = '%s large size %d,%d' % (fileformat, w, h)
         terminal = self.GetValue(self.graph, 'terminal', terminal)
         of.write('set terminal %s\n' % (terminal))
-        of.write('set encoding %s\n' % charset.lower().replace('-', '_'))
-        of.write('set output "%s"\n' % output_file)
+        of.write('set encoding %s\n' % (
+            Localisation.Charset().lower().replace('-', '_')))
+        of.write('set output "%s"\n' % (output_file))
         # set overall title
         title = self.GetValue(self.graph, 'title', '')
         if title:
@@ -316,6 +319,7 @@ def main(argv=None):
         print >>sys.stderr, __doc__.strip()
         return 2
     return GraphPlotter(
+        DataStore.params(args[0]),
         DataStore.data_store(args[0]), DataStore.hourly_store(args[0]),
         DataStore.daily_store(args[0]), DataStore.monthly_store(args[0]),
         args[1]

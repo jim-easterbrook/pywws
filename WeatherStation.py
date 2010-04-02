@@ -8,7 +8,7 @@ import math
 import platform
 import usb
 
-from Localisation import _
+import Localisation
 
 def dew_point(temp, hum):
     """Compute dew point, using formula from
