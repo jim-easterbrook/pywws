@@ -289,7 +289,12 @@ def Process(params, raw_data, hourly_data, daily_data, monthly_data, verbose=1):
     # get local time's offset from UTC, without DST
     time_offset = Local.utcoffset(last_raw) - Local.dst(last_raw)
     # set daytime end hour, in UTC
-    day_end_hour = eval(params.get('fixed', 'day end hour', '21'))
+    day_end_hour = params.get('fixed', 'day end hour', None)
+    if day_end_hour:
+        # move definition to 'config' section
+        params.set('config', 'day end hour', day_end_hour)
+        params._config.remove_option('fixed', 'day end hour')
+    day_end_hour = eval(params.get('config', 'day end hour', '21'))
     day_end_hour = (day_end_hour - (time_offset.seconds / 3600)) % 24
     # round to start of this day
     if start.hour < day_end_hour:
