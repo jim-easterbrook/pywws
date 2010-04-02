@@ -101,6 +101,14 @@ def Hourly(data_dir, verbose=1):
             print >>sys.stderr, ex
     for file in uploads:
         os.unlink(file)
+    # uncomment the following 7 lines if you want to upload to Weather Underground
+##    import ToUnderground
+##    for n in range(3):
+##        try:
+##            ToUnderground.ToUnderground(params, raw_data, verbose)
+##            break
+##        except Exception, ex:
+##            print >>sys.stderr, ex
     return 0
 
 def main(argv=None):
