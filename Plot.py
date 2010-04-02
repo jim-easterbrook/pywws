@@ -115,6 +115,19 @@ class GraphPlotter:
             title = self.GetValue(plot, 'title', '')
             title = codecs.encode(title, self.doc.encoding)
             of.write('set key horizontal title "%s"\n' % title)
+            # optional yaxis labels
+            ylabel = self.GetValue(plot, 'ylabel', '')
+            if ylabel:
+                ylabel = codecs.encode(ylabel, self.doc.encoding)
+                of.write('set ylabel "%s"\n' % (ylabel))
+            else:
+                of.write('set ylabel\n')
+            y2label = self.GetValue(plot, 'y2label', '')
+            if y2label:
+                y2label = codecs.encode(y2label, self.doc.encoding)
+                of.write('set y2label "%s"\n' % (y2label))
+            else:
+                of.write('set y2label\n')
             # set data source
             source = self.GetValue(plot, 'source', 'raw')
             if source == 'raw':
@@ -163,7 +176,9 @@ set bmargin 0.9
         result += 'set xrange ["%s":"%s"]\n' % (
             self.x_lo.isoformat(), self.x_hi.isoformat())
         lmargin = eval(self.GetValue(self.graph, 'lmargin', '5'))
-        result += 'set lmargin %d\n' % (lmargin)
+        result += 'set lmargin %g\n' % (lmargin)
+        rmargin = eval(self.GetValue(self.graph, 'rmargin', '-1'))
+        result += 'set rmargin %g\n' % (rmargin)
         if self.duration <= timedelta(hours=24):
             xformat = '%H%M'
         elif self.duration <= timedelta(days=7):
@@ -213,6 +228,13 @@ set bmargin 0.9
             result += 'set yrange [%s]\n' % (yrange.replace(',', ':'))
         else:
             result += 'set yrange [*:*]\n'
+        # set y2 range
+        y2range = self.GetValue(plot, 'y2range', None)
+        if y2range:
+            result += 'set y2range [%s]\n' % (y2range.replace(',', ':'))
+            result += 'unset ytics; set ytics nomirror; set y2tics\n'
+        else:
+            result += 'unset y2tics; set ytics mirror\n'
         # set grid
         result += 'unset grid\n'
         grid = self.GetValue(plot, 'grid', None)
@@ -292,8 +314,10 @@ set bmargin 0.9
                 style = 'lc %d lw %d pt 2 with points' % (colour, width)
             elif words[0] == 'line':
                 style = 'smooth unique lc %d lw %d' % (colour, width)
+            axes = self.GetValue(subplot, 'axes', 'x1y1')
             title = self.GetValue(subplot, 'title', '')
-            result += ' "%s" using 1:2 title "%s" %s' % (dat_file[subplot_no], title, style)
+            result += ' "%s" using 1:2 axes %s title "%s" %s' % (
+                dat_file[subplot_no], axes, title, style)
             if subplot_no != subplot_count - 1:
                 result += ', \\'
             result += '\n'

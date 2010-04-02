@@ -58,6 +58,9 @@
                     <a href="#ycalc">ycalc</a>
 				  </li>
 				  <li>
+                    <a href="#axes">axes</a>
+				  </li>
+				  <li>
                     <a href="#style">style</a>
 				  </li>
 				  <li>
@@ -70,6 +73,15 @@
 			  </li>
 			  <li>
                 <a href="#yrange">yrange</a>
+			  </li>
+			  <li>
+                <a href="#y2range">y2range</a>
+			  </li>
+			  <li>
+                <a href="#ylabel">ylabel</a>
+			  </li>
+			  <li>
+                <a href="#y2label">y2label</a>
 			  </li>
 			  <li>
                 <a href="#grid">grid</a>
@@ -111,6 +123,9 @@
           </li>
           <li>
             <a href="#lmargin">lmargin</a>
+          </li>
+          <li>
+            <a href="#rmargin">rmargin</a>
           </li>
           <li>
             <a href="#xformat">xformat</a>
@@ -191,6 +206,12 @@
 	Sets the left margin of the plots, i.e. the distance from the left hand axis to the left hand edge of the image area. According to the gnuplot documentation the units of <code>lmargin</code> are character widths. The default value is 5, which should look OK in most circumstances.
     </p>
     <h3>
+      <a href="#list" name="rmargin">rmargin</a>
+    </h3>
+    <p>
+	Sets the right margin of the plots, i.e. the distance from the right hand axis to the right hand edge of the image area. According to the gnuplot documentation the units of <code>rmargin</code> are character widths. The default value is -1, which sets automatic adjustment.
+    </p>
+    <h3>
       <a href="#list" name="xformat">xformat</a>
     </h3>
     <p>
@@ -230,10 +251,28 @@
       <a href="#list" name="yrange">yrange</a>
     </h3>
     <p>
-	Sets the lower and upper limits of the Y axis. The value is anything understood by gnuplot, typically a pair of numbers. The default is to allow gnuplot to set appropriate values, which is unlikely to be what you want. For example, to plot typical UK temperatures with no value going off the graph: <code>&lt;yrange&gt;-10, 30&lt;/yrange&gt;</code>. Note that commas are converted to colons, so <code>&lt;yrange&gt;-10:30&lt;/yrange&gt;</code> would be equivalent.
+	Sets the lower and upper limits of the (left hand) Y axis. The value is anything understood by gnuplot, typically a pair of numbers. The default is to allow gnuplot to set appropriate values, which is unlikely to be what you want. For example, to plot typical UK temperatures with no value going off the graph: <code>&lt;yrange&gt;-10, 30&lt;/yrange&gt;</code>. Note that commas are converted to colons, so <code>&lt;yrange&gt;-10:30&lt;/yrange&gt;</code> would be equivalent.
     </p>
     <p>
 	You can use an asterisk to have gnuplot choose a suitable value. For example, to have the upper value auto scale whilst fixing the lower value at zero, use <code>&lt;yrange&gt;0:*&lt;/yrange&gt;</code>.
+    </p>
+    <h3>
+      <a href="#list" name="y2range">y2range</a>
+    </h3>
+    <p>
+	Sets the lower and upper limits of the right hand Y axis. Default is for the right hand Y axis to be the same as the left, but setting a different range is useful in dual axis plotting.
+    </p>
+    <h3>
+      <a href="#list" name="ylabel">ylabel</a>
+    </h3>
+    <p>
+	Adds a label to the (left hand) Y axis. For example, when plotting temperature: <code>&lt;ylabel&gt;&deg;C&lt;/ylabel&gt;</code>. If you use <code>ylabel</code> you will probably want to adjust <code><a href="#lmargin">lmargin</a></code>.
+    </p>
+    <h3>
+      <a href="#list" name="y2label">y2label</a>
+    </h3>
+    <p>
+	Adds a label to the right hand Y axis. For example, when plotting humidity: <code>&lt;y2label&gt;%&lt;/y2label&gt;</code>. This is mostly used when plotting dual axis graphs. If you use <code>y2label</code> you will probably want to adjust <code><a href="#rmargin">rmargin</a></code>.
     </p>
     <h3>
       <a href="#list" name="grid">grid</a>
@@ -277,6 +316,12 @@ autotitles box linetype -1 linewidth 1&lt;/command&gt;</code>. (Don't ask me wha
     </h3>
     <p>
 	Selects the data to be plotted. Any one line Python expression that returns a single float value can be used. At its simplest this just selects one value from the "data" dictionary, for example: <code>&lt;ycalc&gt;data['temp_out']&lt;/ycalc&gt;</code> plots the external temperature. More complex expressions are possible, and some helper functions are provided. For example: <code>&lt;ycalc&gt;dew_point(data['temp_out'], data['hum_out'])&lt;/ycalc&gt;</code> plots the external dew point, and <code>&lt;ycalc&gt;data['wind_ave'] * 3.6 / 1.609344&lt;/ycalc&gt;</code> plots the average wind speed in miles per hour.
+    </p>
+    <h3>
+      <a href="#list" name="axes">axes</a>
+    </h3>
+    <p>
+	Selects which Y axis the data is plotted against. Default is the left hand axis, but the right hand axis can be chosen with: <code>&lt;axes&gt;x1y2&lt;/axes&gt;</code>. This can be used in conjunction with <code><a href="#y2range">y2range</a></code> to plot two unrelated quantities on one graph, for example temperature and humidity.
     </p>
     <h3>
       <a href="#list" name="style">style</a>
