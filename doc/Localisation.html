@@ -26,10 +26,10 @@
       Creating a new translation
     </h3>
     <p>
-      To create a new language file, first copy the supplied pywws.pot file. For example, to create a French translation you would copy pywws.pot to fr.po. Now edit your new .po file (fr.po) and fill in the double quotes on all the 'msgstr' lines with translations of the 'msgid' line immediately above. You should also set the data at the top of the file with your name, email address, language, character set and date/time.
+      To create a new language file, first convert the supplied pywws.pot file to a template using the <code>create_template.sh</code> script. Change to the 'languages' subdirectory and run the script. This should create a suitable file, e.g. 'fr.po' on a French language system. Now edit the new .po file and translate all the 'msgstr' strings to your language.
     </p>
     <p>
-      Before the language file can be used, it needs to be converted to a machine readable form. To do this, type the following command:<br>
+      Before the language file can be used, it needs to be converted to a machine readable form. To do this, change back to the main pywws directory and type the following command:<br>
       <code>python setup.py build</code>.
     </p>
     <p>
