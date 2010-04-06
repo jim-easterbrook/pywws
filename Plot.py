@@ -171,7 +171,6 @@ class GraphPlotter:
         result = """set style fill solid
 set xdata time
 set timefmt "%Y-%m-%dT%H:%M:%S"
-set bmargin 0.9
 """
         result += 'set xrange ["%s":"%s"]\n' % (
             self.x_lo.isoformat(), self.x_hi.isoformat())
@@ -200,7 +199,6 @@ set bmargin 0.9
         result = ''
         # label x axis of last plot
         if plot_no == self.plot_count - 1:
-            result += 'set bmargin\n'
             if self.duration <= timedelta(hours=24):
                 xlabel = _('Time (%Z)')
             elif self.duration <= timedelta(days=7):
@@ -222,6 +220,9 @@ set bmargin 0.9
             if rdat != ldat:
                 result += 'set label "%s" at "%s", graph -0.3 right\n' % (
                     rdat, self.x_hi.isoformat())
+        # set bottom margin
+        bmargin = eval(self.GetValue(plot, 'bmargin', '-1'))
+        result += 'set bmargin %g\n' % (bmargin)
         # set y range
         yrange = self.GetValue(plot, 'yrange', None)
         if yrange:

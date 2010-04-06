@@ -72,6 +72,9 @@
 				</ul>
 			  </li>
 			  <li>
+                <a href="#bmargin">bmargin</a>
+			  </li>
+			  <li>
                 <a href="#yrange">yrange</a>
 			  </li>
 			  <li>
@@ -246,6 +249,15 @@
     </h3>
     <p>
       Every plot element should contain at least one subplot element. A separate trace is drawn for each subplot element, but all share the same X and Y axes.
+    </p>
+    <h3>
+      <a href="#list" name="bmargin">bmargin</a>
+    </h3>
+    <p>
+	Sets the bottom margin, i.e. the spacing between the lower X axis and the edge of the graph (or the next plot). The default is to let gnuplot adjust this automatically, which works OK most of the time but you may wish to fine tune the value to suit your installation.
+    </p>
+    <p>
+	The permitted value is any non-negative real number. On my setup 0.9 is a good value, set as follows: <code>&lt;bmargin&gt;0.9&lt;/bmargin&gt;</code>.
     </p>
     <h3>
       <a href="#list" name="yrange">yrange</a>
