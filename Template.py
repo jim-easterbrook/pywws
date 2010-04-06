@@ -17,11 +17,12 @@ import shlex
 import sys
 
 import DataStore
+import Localisation
 from TimeZone import Local, utc
 from WeatherStation import (
     pressure_trend_text, wind_dir_text, dew_point, wind_chill, apparent_temp)
 
-def Template(raw_data, hourly_data, daily_data, monthly_data,
+def Template(params, raw_data, hourly_data, daily_data, monthly_data,
              template_file, output_file):
     def jump(idx, count):
         while count > 0:
@@ -37,6 +38,7 @@ def Template(raw_data, hourly_data, daily_data, monthly_data,
             idx = new_idx
             count += 1
         return idx, count == 0
+    Localisation.SetLanguage(params)
     # start off in hourly data mode
     data_set = hourly_data
     # start off in utc
@@ -155,7 +157,8 @@ def main(argv=None):
         if o == '--help':
             print __doc__.strip()
             return 0
-    return Template(DataStore.data_store(args[0]), DataStore.hourly_store(args[0]),
+    return Template(DataStore.params(args[0]),
+                    DataStore.data_store(args[0]), DataStore.hourly_store(args[0]),
                     DataStore.daily_store(args[0]), DataStore.monthly_store(args[0]),
                     args[1], args[2])
 if __name__ == "__main__":

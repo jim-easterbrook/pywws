@@ -76,7 +76,8 @@ def Hourly(data_dir, verbose=1):
             print "Templating", template
         output_file = os.path.join(work_dir, template)
         Template.Template(
-            raw_data, hourly_data, daily_data, monthly_data, input_file, output_file)
+            params, raw_data, hourly_data, daily_data,
+            monthly_data, input_file, output_file)
         if 'tweet' in template:
             if verbose > 0:
                 print "Tweeting"
