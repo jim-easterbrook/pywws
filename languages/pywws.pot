@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-02-03 20:41+0000\n"
+"POT-Creation-Date: 2010-04-06 18:58+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,102 +16,114 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../WeatherStation.py:25 ../WindRose.py:94
+#: ../Plot.py:205
+msgid "Time (%Z)"
+msgstr ""
+
+#: ../Plot.py:207
+msgid "Day"
+msgstr ""
+
+#: ../Plot.py:209
+msgid "Date"
+msgstr ""
+
+#: ../WeatherStation.py:46 ../WindRose.py:118
 msgid "N"
 msgstr ""
 
-#: ../WeatherStation.py:25
+#: ../WeatherStation.py:46
 msgid "NNE"
 msgstr ""
 
-#: ../WeatherStation.py:25
+#: ../WeatherStation.py:46
 msgid "NE"
 msgstr ""
 
-#: ../WeatherStation.py:25
+#: ../WeatherStation.py:46
 msgid "ENE"
 msgstr ""
 
-#: ../WeatherStation.py:26 ../WindRose.py:94
+#: ../WeatherStation.py:47 ../WindRose.py:118
 msgid "E"
 msgstr ""
 
-#: ../WeatherStation.py:26
+#: ../WeatherStation.py:47
 msgid "ESE"
 msgstr ""
 
-#: ../WeatherStation.py:26
+#: ../WeatherStation.py:47
 msgid "SE"
 msgstr ""
 
-#: ../WeatherStation.py:26
+#: ../WeatherStation.py:47
 msgid "SSE"
 msgstr ""
 
-#: ../WeatherStation.py:27 ../WindRose.py:94
+#: ../WeatherStation.py:48 ../WindRose.py:118
 msgid "S"
 msgstr ""
 
-#: ../WeatherStation.py:27
+#: ../WeatherStation.py:48
 msgid "SSW"
 msgstr ""
 
-#: ../WeatherStation.py:27
+#: ../WeatherStation.py:48
 msgid "SW"
 msgstr ""
 
-#: ../WeatherStation.py:27
+#: ../WeatherStation.py:48
 msgid "WSW"
 msgstr ""
 
-#: ../WeatherStation.py:28 ../WindRose.py:94
+#: ../WeatherStation.py:49 ../WindRose.py:118
 msgid "W"
 msgstr ""
 
-#: ../WeatherStation.py:28
+#: ../WeatherStation.py:49
 msgid "WNW"
 msgstr ""
 
-#: ../WeatherStation.py:28
+#: ../WeatherStation.py:49
 msgid "NW"
 msgstr ""
 
-#: ../WeatherStation.py:28
+#: ../WeatherStation.py:49
 msgid "NNW"
 msgstr ""
 
-#: ../WeatherStation.py:35
+#: ../WeatherStation.py:56
 msgid "rising very rapidly"
 msgstr ""
 
-#: ../WeatherStation.py:37
+#: ../WeatherStation.py:58
 msgid "rising quickly"
 msgstr ""
 
-#: ../WeatherStation.py:39
+#: ../WeatherStation.py:60
 msgid "rising"
 msgstr ""
 
-#: ../WeatherStation.py:41
+#: ../WeatherStation.py:62
 msgid "rising slowly"
 msgstr ""
 
-#: ../WeatherStation.py:43
+#: ../WeatherStation.py:64
 msgid "falling very rapidly"
 msgstr ""
 
-#: ../WeatherStation.py:45
+#: ../WeatherStation.py:66
 msgid "falling quickly"
 msgstr ""
 
-#: ../WeatherStation.py:47
+#: ../WeatherStation.py:68
 msgid "falling"
 msgstr ""
 
-#: ../WeatherStation.py:49
+#: ../WeatherStation.py:70
 msgid "falling slowly"
 msgstr ""
 
-#: ../WeatherStation.py:50
+#: ../WeatherStation.py:71
 msgid "steady"
 msgstr ""

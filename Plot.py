@@ -202,11 +202,11 @@ set bmargin 0.9
         if plot_no == self.plot_count - 1:
             result += 'set bmargin\n'
             if self.duration <= timedelta(hours=24):
-                xlabel = 'Time (%Z)'
+                xlabel = _('Time (%Z)')
             elif self.duration <= timedelta(days=7):
-                xlabel = 'Day'
+                xlabel = _('Day')
             else:
-                xlabel = 'Date'
+                xlabel = _('Date')
             xlabel = self.GetValue(self.graph, 'xlabel', xlabel)
             xlabel = codecs.encode(xlabel, self.doc.encoding)
             result += 'set xlabel "%s"\n' % (
