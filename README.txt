@@ -30,7 +30,6 @@ Dependencies:
 	libusb (http://libusb.sf.net)
 	Python (http://www.python.org/) version 2.4 or higher
 	PyUSB (http://pyusb.berlios.de/) version 0.4 or higher
-	msgfmt (from the gettext package) if installing on Linux
 	For graph drawing:
 	  gnuplot (http://www.gnuplot.info/) v4.2 or higher
 	For secure website uploading (sftp)
@@ -40,6 +39,8 @@ Dependencies:
 	  python-twitter
 	    (http://code.google.com/p/python-twitter/) v0.6 or higher
 	  simplejson (http://pypi.python.org/pypi/simplejson)
+	To create new language translations:
+	  msgfmt (from the gettext package) if installing on Linux
 
 	Many of these dependencies are available as packages for most Linux
 	distributions. This provides an easier way to install them than
@@ -49,7 +50,7 @@ This software collection currently contains the following files:
 	README.txt		-- you are reading it!
 	LICENCE.txt		-- GNU General Public License
 
-	setup.py		-- installs translation files
+	setup.py		-- compiles translation files
 	WeatherStation.py	-- gets data from the weather station
 	TestWeatherStation.py	-- test communication with weather station
 	DataStore.py		-- stores readings in easy to access files
@@ -64,7 +65,7 @@ This software collection currently contains the following files:
 	ToTwitter.py		-- posts a message to a Twitter account
 	ToUnderground.py	-- posts data to Weather Underground
 	EWtoPy.py		-- converts EasyWeather.dat to DataStore format
-	UpgradeFrom0-1.py	-- converts v0.1 datastore to v0.3
+	UpgradeFrom0-1.py	-- converts v0.1 datastore to current format
 	Reprocess.py		-- regenerates summary data
 	AutoDoc.py		-- generates extra HTML documentation
 
@@ -179,6 +180,7 @@ Changes in v10.04:
 	5/ Added internationalisation / localisation of some strings.
 	6/ Made 'raw' data available to text templates.
 	7/ Added ability to upload to Weather Underground.
+	8/ Added dual axis and cumulative graph capability.
 
 Changes in v0.9:
 	1/ Added lowest daytime max and highest nighttime min temperatures

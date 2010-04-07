@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<graph>
+  <size>600, 1000</size>
+  <lmargin>4</lmargin>
+  <rmargin>4</rmargin>
+  <duration>hours=24</duration>
+  <xtics>2</xtics>
+  <xformat>%H%M</xformat>
+  <dateformat></dateformat>
+  <plot>
+    <yrange>-10, 35</yrange>
+    <y2range>0, 100</y2range>
+    <ylabel>°C</ylabel>
+    <y2label>%</y2label>
+    <source>raw</source>
+    <subplot>
+      <colour>1</colour>
+      <title>Temperature (°C)</title>
+      <ycalc>data['temp_out']</ycalc>
+      <style>line 2</style>
+    </subplot>
+    <subplot>
+      <colour>3</colour>
+      <ycalc>dew_point(data['temp_out'], data['hum_out'])</ycalc>
+      <title>Dew point (°C)</title>
+    </subplot>
+    <subplot>
+      <colour>2</colour>
+      <ycalc>data['hum_out']</ycalc>
+      <title>Humidity (%)</title>
+      <axes>x1y2</axes>
+    </subplot>
+  </plot>
+  <plot>
+    <title>Wind speed (mph)</title>
+    <yrange>0, 30</yrange>
+    <source>raw</source>
+    <subplot>
+      <colour>4</colour>
+      <ycalc>data['wind_gust'] * 3.6 / 1.609344</ycalc>
+      <title>gust</title>
+    </subplot>
+    <subplot>
+      <colour>3</colour>
+      <ycalc>data['wind_ave'] * 3.6 / 1.609344</ycalc>
+      <title>average</title>
+    </subplot>
+  </plot>
+  <plot>
+    <title>Wind direction (°)</title>
+    <yrange>0, 380</yrange>
+    <source>raw</source>
+    <subplot>
+      <style>x 2</style>
+      <colour>2</colour>
+      <ycalc>(None, data['wind_dir'] * 22.5)[data['wind_ave'] > 0.5]</ycalc>
+    </subplot>
+  </plot>
+  <plot>
+    <yrange>0, 5</yrange>
+    <source>hourly</source>
+    <subplot>
+      <colour>5</colour>
+      <style>box</style>
+      <xcalc>data['idx'].replace(minute=30, second=0)</xcalc>
+      <ycalc>data['rain']</ycalc>
+      <title>Hourly rainfall (mm)</title>
+    </subplot>
+    <subplot>
+      <colour>3</colour>
+      <ycalc>data['rain'] + last_ycalc</ycalc>
+      <title>Total rainfall (mm)</title>
+    </subplot>
+  </plot>
+  <plot>
+    <source>hourly</source>
+    <subplot>
+      <colour>2</colour>
+      <ycalc>data['rel_pressure']</ycalc>
+      <title>Pressure (hPa)</title>
+    </subplot>
+    <yrange>960, 1050</yrange>
+  </plot>
+</graph>

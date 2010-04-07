@@ -267,6 +267,7 @@ set timefmt "%Y-%m-%dT%H:%M:%S"
         dat = []
         xcalc = []
         ycalc = []
+        last_ycalcs = []
         for subplot_no in range(subplot_count):
             subplot = subplot_list[subplot_no]
             dat_file.append(os.path.join(self.work_dir, 'plot_%d_%d.dat' % (
@@ -278,6 +279,7 @@ set timefmt "%Y-%m-%dT%H:%M:%S"
             if xcalc[subplot_no]:
                 xcalc[subplot_no] = compile(xcalc[subplot_no], '<string>', 'eval')
             ycalc[subplot_no] = compile(ycalc[subplot_no], '<string>', 'eval')
+            last_ycalcs.append(0.0)
         for data in source[start:stop]:
             for subplot_no in range(subplot_count):
                 if xcalc[subplot_no]:
@@ -288,8 +290,10 @@ set timefmt "%Y-%m-%dT%H:%M:%S"
                     idx = data['idx']
                 idx += self.utcoffset
                 try:
+                    last_ycalc = last_ycalcs[subplot_no]
                     value = eval(ycalc[subplot_no])
                     dat[subplot_no].write('%s %g\n' % (idx.isoformat(), value))
+                    last_ycalcs[subplot_no] = value
                 except TypeError:
                     pass
         for subplot_no in range(subplot_count):

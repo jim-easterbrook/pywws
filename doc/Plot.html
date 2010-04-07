@@ -329,6 +329,9 @@ autotitles box linetype -1 linewidth 1&lt;/command&gt;</code>. (Don't ask me wha
     <p>
 	Selects the data to be plotted. Any one line Python expression that returns a single float value can be used. At its simplest this just selects one value from the "data" dictionary, for example: <code>&lt;ycalc&gt;data['temp_out']&lt;/ycalc&gt;</code> plots the external temperature. More complex expressions are possible, and some helper functions are provided. For example: <code>&lt;ycalc&gt;dew_point(data['temp_out'], data['hum_out'])&lt;/ycalc&gt;</code> plots the external dew point, and <code>&lt;ycalc&gt;data['wind_ave'] * 3.6 / 1.609344&lt;/ycalc&gt;</code> plots the average wind speed in miles per hour.
     </p>
+    <p>
+	Cumulative plots are also possible. The result of each <code>ycalc</code> computation is stored and made available to the next computation in the variable <code>last_ycalc</code>. This can be used with any data, but is most useful with rainfall: <code>&lt;ycalc&gt;data['rain'] + last_ycalc&lt;/ycalc&gt;</code>.
+    </p>
     <h3>
       <a href="#list" name="axes">axes</a>
     </h3>
