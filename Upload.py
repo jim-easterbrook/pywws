@@ -37,8 +37,14 @@ def Upload(params, files):
     directory = params.get('ftp', 'directory', 'public_html/weather/data/')
     # open connection
     if secure:
+        # install a logging handler to keep paramiko quiet
+        import logging
+        class NullHandler(logging.Handler):
+            def emit(self, record):
+                pass
+        h = NullHandler()
+        logging.getLogger('paramiko').addHandler(h)
         import paramiko
-#        paramiko.util.log_to_file("sftp_pywws.log")
         transport = paramiko.Transport((site, 22))
         transport.connect(username=user, password=password)
         ftp = paramiko.SFTPClient.from_transport(transport)
