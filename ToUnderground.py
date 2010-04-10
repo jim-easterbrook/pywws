@@ -16,7 +16,9 @@ import sys
 import urllib
 import urllib2
 from datetime import datetime, timedelta
+
 import DataStore
+from WeatherStation import dew_point
 
 def ToUnderground(params, data, verbose=1):
     password = params.get('underground', 'password', 'undergroudpassword')
@@ -34,10 +36,12 @@ def ToUnderground(params, data, verbose=1):
     getPars['dateutc'] = data_now['idx'].isoformat(' ')
     getPars['winddir'] = '%.0f' % (data_now['wind_dir'] * 22.5)
     getPars['tempf'] = '%.1f' % ((data_now['temp_out'] * 9.0 / 5.0) + 32.0)
+    getPars['dewptf'] = '%.1f' % (
+        (dew_point(data_now['temp_out'], data_now['hum_out']) * 9.0 / 5.0) + 32.0)
     getPars['windspeedmph'] = '%.2f' % (data_now['wind_ave'] / 1.609344)
     getPars['windgustmph'] = '%.2f' % (data_now['wind_gust'] / 1.609344)
     getPars['humidity'] = '%d' % (data_now['hum_out'])
-    getPars['rainin'] = '%.4f' % (max(data_now['rain'] - data_prev['rain'], 0.0) / 25.4)
+    getPars['rainin'] = '%g' % (max(data_now['rain'] - data_prev['rain'], 0.0) / 25.4)
     getPars['baromin'] = '%.2f' % (data_now['abs_pressure'] * 0.02953)
     if verbose > 1:
         print getPars
