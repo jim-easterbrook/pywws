@@ -41,13 +41,14 @@ def apparent_temp(temp, rh, wind):
         17.27 * temp / (237.7 + temp))
     return temp + (0.33 * vap_press) - (0.70 * wind) - 4.00
 
-# convert wind direction integer to string
-wind_dir_text = [
-    _('N'), _('NNE'), _('NE'), _('ENE'),
-    _('E'), _('ESE'), _('SE'), _('SSE'),
-    _('S'), _('SSW'), _('SW'), _('WSW'),
-    _('W'), _('WNW'), _('NW'), _('NNW'),
-    ]
+def get_wind_dir_text():
+    """Return an array to convert wind direction integer to a string."""
+    return [
+        _('N'), _('NNE'), _('NE'), _('ENE'),
+        _('E'), _('ESE'), _('SE'), _('SSE'),
+        _('S'), _('SSW'), _('SW'), _('WSW'),
+        _('W'), _('WNW'), _('NW'), _('NNW'),
+        ]
 
 def pressure_trend_text(trend):
     """Convert pressure trend to a string, see
