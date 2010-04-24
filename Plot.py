@@ -26,13 +26,18 @@ from WeatherStation import dew_point, wind_chill, apparent_temp
 
 class GraphPlotter:
     def __init__(self, params, raw_data, hourly_data,
-                 daily_data, monthly_data, work_dir):
-        Localisation.SetLanguage(params)
+                 daily_data, monthly_data, work_dir, translation=None):
         self.raw_data = raw_data
         self.hourly_data = hourly_data
         self.daily_data = daily_data
         self.monthly_data = monthly_data
         self.work_dir = work_dir
+        # set language related stuff
+        if translation:
+            self.translation = translation
+        else:
+            self.translation = Localisation.GetTranslation(params)
+        self.encoding = params.get('config', 'gnuplot encoding', 'iso_8859_1')
         # create work directory
         if not os.path.isdir(self.work_dir):
             os.makedirs(self.work_dir)
@@ -97,14 +102,13 @@ class GraphPlotter:
         else:
             terminal = '%s large size %d,%d' % (fileformat, w, h)
         terminal = self.GetValue(self.graph, 'terminal', terminal)
+        of.write('set encoding %s\n' % (self.encoding))
         of.write('set terminal %s\n' % (terminal))
-        of.write('set encoding %s\n' % (
-            Localisation.Charset().lower().replace('-', '_')))
         of.write('set output "%s"\n' % (output_file))
         # set overall title
         title = self.GetValue(self.graph, 'title', '')
         if title:
-            title = codecs.encode(title, self.doc.encoding)
+            title = title.encode(self.encoding)
             title = 'title "%s"' % title
         of.write('set multiplot layout %d, %d %s\n' % (self.rows, self.cols, title))
         # do actual plots
@@ -113,18 +117,18 @@ class GraphPlotter:
             plot = plot_list[plot_no]
             # set key / title location
             title = self.GetValue(plot, 'title', '')
-            title = codecs.encode(title, self.doc.encoding)
+            title = title.encode(self.encoding)
             of.write('set key horizontal title "%s"\n' % title)
             # optional yaxis labels
             ylabel = self.GetValue(plot, 'ylabel', '')
             if ylabel:
-                ylabel = codecs.encode(ylabel, self.doc.encoding)
+                ylabel = ylabel.encode(self.encoding)
                 of.write('set ylabel "%s"\n' % (ylabel))
             else:
                 of.write('set ylabel\n')
             y2label = self.GetValue(plot, 'y2label', '')
             if y2label:
-                y2label = codecs.encode(y2label, self.doc.encoding)
+                y2label = y2label.encode(self.encoding)
                 of.write('set y2label "%s"\n' % (y2label))
             else:
                 of.write('set y2label\n')
@@ -189,9 +193,10 @@ set timefmt "%Y-%m-%dT%H:%M:%S"
         xtics = self.GetValue(self.graph, 'xtics', None)
         if xtics:
             result += 'set xtics %d\n' % (eval(xtics) * 3600)
-        result = codecs.encode(result, self.doc.encoding)
+        result = result.encode(self.encoding)
         return result
     def PlotData(self, plot_no, plot, source):
+        _ = self.translation.ugettext
         subplot_list = self.GetChildren(plot, 'subplot')
         subplot_count = len(subplot_list)
         if subplot_count < 1:
@@ -206,12 +211,12 @@ set timefmt "%Y-%m-%dT%H:%M:%S"
             else:
                 xlabel = _('Date')
             xlabel = self.GetValue(self.graph, 'xlabel', xlabel)
-            xlabel = codecs.encode(xlabel, self.doc.encoding)
+            xlabel = xlabel.encode(self.encoding)
             result += 'set xlabel "%s"\n' % (
                 self.x_lo.replace(tzinfo=Local).strftime(xlabel))
             dateformat = '%Y/%m/%d'
             dateformat = self.GetValue(self.graph, 'dateformat', dateformat)
-            dateformat = codecs.encode(dateformat, self.doc.encoding)
+            dateformat = dateformat.encode(self.encoding)
             ldat = self.x_lo.replace(tzinfo=Local).strftime(dateformat)
             rdat = self.x_hi.replace(tzinfo=Local).strftime(dateformat)
             if ldat != '':
@@ -326,7 +331,7 @@ set timefmt "%Y-%m-%dT%H:%M:%S"
             if subplot_no != subplot_count - 1:
                 result += ', \\'
             result += '\n'
-        result = codecs.encode(result, self.doc.encoding)
+        result = result.encode(self.encoding)
         return result
 def main(argv=None):
     if argv is None:

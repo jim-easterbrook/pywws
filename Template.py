@@ -17,14 +17,12 @@ import shlex
 import sys
 
 import DataStore
-import LogData
 import Localisation
 from TimeZone import Local, utc
-from WeatherStation import (
-    pressure_trend_text, get_wind_dir_text, dew_point, wind_chill, apparent_temp)
+import WeatherStation
 
 def Template(params, raw_data, hourly_data, daily_data, monthly_data,
-             template_file, output_file):
+             template_file, output_file, translation=None):
     def jump(idx, count):
         while count > 0:
             new_idx = data_set.after(idx + timedelta(seconds=1))
@@ -40,8 +38,14 @@ def Template(params, raw_data, hourly_data, daily_data, monthly_data,
             count += 1
         return idx, count == 0
     # set language before importing wind_dir_text array
-    Localisation.SetLanguage(params)
-    wind_dir_text = get_wind_dir_text()
+    if not translation:
+        translation = Localisation.GetTranslation(params)
+    WeatherStation.set_translation(translation.gettext)
+    pressure_trend_text = WeatherStation.pressure_trend_text
+    wind_dir_text = WeatherStation.get_wind_dir_text()
+    dew_point = WeatherStation.dew_point
+    wind_chill = WeatherStation.wind_chill
+    apparent_temp = WeatherStation.apparent_temp
     # start off in hourly data mode
     data_set = hourly_data
     # start off in utc

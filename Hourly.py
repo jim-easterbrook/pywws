@@ -18,6 +18,7 @@ import os
 import sys
 
 import DataStore
+import Localisation
 import LogData
 from Plot import GraphPlotter
 from WindRose import RosePlotter
@@ -39,6 +40,8 @@ def Hourly(data_dir, verbose=1):
     hourly_data = DataStore.hourly_store(data_dir)
     daily_data = DataStore.daily_store(data_dir)
     monthly_data = DataStore.monthly_store(data_dir)
+    # create a translation object for our locale
+    translation = Localisation.GetTranslation(params)
     # get weather station data
     # have three tries before giving up
     for n in range(3):
@@ -52,9 +55,11 @@ def Hourly(data_dir, verbose=1):
         print 'Generating summary data'
     Process.Process(params, raw_data, hourly_data, daily_data, monthly_data, verbose)
     plotter = GraphPlotter(
-        params, raw_data, hourly_data, daily_data, monthly_data, work_dir)
+        params, raw_data, hourly_data, daily_data, monthly_data, work_dir,
+        translation=translation)
     roseplotter = RosePlotter(
-        params, raw_data, hourly_data, daily_data, monthly_data, work_dir)
+        params, raw_data, hourly_data, daily_data, monthly_data, work_dir,
+        translation=translation)
     for template in os.listdir(graph_template_dir):
         input_file = os.path.join(graph_template_dir, template)
         if (template[0] == '.' or template[-1] == '~' or
@@ -77,7 +82,7 @@ def Hourly(data_dir, verbose=1):
         output_file = os.path.join(work_dir, template)
         Template.Template(
             params, raw_data, hourly_data, daily_data,
-            monthly_data, input_file, output_file)
+            monthly_data, input_file, output_file, translation=translation)
         if 'tweet' in template:
             if verbose > 0:
                 print "Tweeting"
@@ -85,7 +90,7 @@ def Hourly(data_dir, verbose=1):
             # have three tries before giving up
             for n in range(3):
                 try:
-                    ToTwitter.ToTwitter(params, output_file)
+                    ToTwitter.ToTwitter(params, output_file, translation=translation)
                     break
                 except Exception, ex:
                     print >>sys.stderr, ex

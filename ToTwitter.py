@@ -19,16 +19,22 @@ import twitter
 import DataStore
 import Localisation
 
-def ToTwitter(params, file):
+def ToTwitter(params, file, translation=None):
     username = params.get('twitter', 'username', 'twitterusername')
     password = params.get('twitter', 'password', 'twitterpassword')
     tweet_file = open(file, 'r')
     tweet = tweet_file.read(140)
     tweet_file.close()
     if len(tweet) > 0:
-        Localisation.SetLanguage(params)
-        api = twitter.Api(username=username, password=password,
-                          input_encoding=Localisation.Charset())
+        if not translation:
+            translation = Localisation.GetTranslation(params)
+        charset = translation.charset()
+        # assume that systems with no declared charset actually use iso-8859-1
+        # so tweets can contain the very useful degree symbol
+        if charset in (None, 'ASCII'):
+            charset = 'iso-8859-1'
+        api = twitter.Api(
+            username=username, password=password, input_encoding=charset)
         if hasattr(api, 'SetSource'):
             api.SetSource('pywws')
         for i in range(3):

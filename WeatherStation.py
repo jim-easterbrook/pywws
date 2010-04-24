@@ -41,6 +41,12 @@ def apparent_temp(temp, rh, wind):
         17.27 * temp / (237.7 + temp))
     return temp + (0.33 * vap_press) - (0.70 * wind) - 4.00
 
+def set_translation(trans_function):
+    """Set the localisation translation function to be used by wind_dir_text
+    and pressure_trend_text."""
+    global _
+    _ = trans_function
+
 def get_wind_dir_text():
     """Return an array to convert wind direction integer to a string."""
     return [

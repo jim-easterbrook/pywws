@@ -52,6 +52,7 @@ unset border
         result += 'set bmargin %g\n' % (lmargin)
         return result
     def PlotData(self, plot_no, plot, source):
+        _ = self.translation.ugettext
         # get statistics
         thresh = eval(self.GetValue(
             plot, 'threshold', '0.0, 1.54, 3.09, 5.14, 8.23, 10.8, 15.5'))
