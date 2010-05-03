@@ -249,6 +249,7 @@ set timefmt "%Y-%m-%dT%H:%M:%S"
         # x_lo & x_hi are in local time, data is indexed in UTC
         start = self.x_lo - self.utcoffset
         stop = self.x_hi - self.utcoffset
+        cumu_start = start
         if source == self.raw_data:
             boxwidth = 240      # assume 5 minute data interval
             start = source.before(start)
@@ -273,6 +274,7 @@ set timefmt "%Y-%m-%dT%H:%M:%S"
         xcalc = []
         ycalc = []
         last_ycalcs = []
+        cummulative = []
         for subplot_no in range(subplot_count):
             subplot = subplot_list[subplot_no]
             dat_file.append(os.path.join(self.work_dir, 'plot_%d_%d.dat' % (
@@ -281,6 +283,7 @@ set timefmt "%Y-%m-%dT%H:%M:%S"
             dat.append(open(dat_file[subplot_no], 'w'))
             xcalc.append(self.GetValue(subplot, 'xcalc', None))
             ycalc.append(self.GetValue(subplot, 'ycalc', None))
+            cummulative.append('last_ycalc' in ycalc[subplot_no])
             if xcalc[subplot_no]:
                 xcalc[subplot_no] = compile(xcalc[subplot_no], '<string>', 'eval')
             ycalc[subplot_no] = compile(ycalc[subplot_no], '<string>', 'eval')
@@ -295,8 +298,11 @@ set timefmt "%Y-%m-%dT%H:%M:%S"
                     idx = data['idx']
                 idx += self.utcoffset
                 try:
-                    last_ycalc = last_ycalcs[subplot_no]
-                    value = eval(ycalc[subplot_no])
+                    if cummulative[subplot_no] and data['idx'] <= cumu_start:
+                        value = 0.0
+                    else:
+                        last_ycalc = last_ycalcs[subplot_no]
+                        value = eval(ycalc[subplot_no])
                     dat[subplot_no].write('%s %g\n' % (idx.isoformat(), value))
                     last_ycalcs[subplot_no] = value
                 except TypeError:
