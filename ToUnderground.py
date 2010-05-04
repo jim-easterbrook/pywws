@@ -42,7 +42,12 @@ def ToUnderground(params, data, verbose=1):
     getPars['windgustmph'] = '%.2f' % (data_now['wind_gust'] / 1.609344)
     getPars['humidity'] = '%d' % (data_now['hum_out'])
     getPars['rainin'] = '%g' % (max(data_now['rain'] - data_prev['rain'], 0.0) / 25.4)
-    getPars['baromin'] = '%.2f' % (data_now['abs_pressure'] * 0.02953)
+    if data_now.has_key('rel_pressure'):
+        baromin = data_now['rel_pressure']
+    else:
+        baromin = (data_now['abs_pressure'] +
+                   eval(params.get('fixed', 'pressure offset')))
+    getPars['baromin'] = '%.2f' % (baromin * 0.02953)
     if verbose > 1:
         print getPars
     # convert command to URL
