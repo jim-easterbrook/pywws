@@ -20,6 +20,8 @@ from datetime import datetime, timedelta
 import DataStore
 from WeatherStation import dew_point
 
+def CtoF(C):
+    return (C * 9.0 / 5.0) + 32.0
 def ToUnderground(params, data, verbose=1):
     password = params.get('underground', 'password', 'undergroudpassword')
     station = params.get('underground', 'station', 'undergroundstation')
@@ -34,13 +36,18 @@ def ToUnderground(params, data, verbose=1):
     getPars['ID'] = station
     getPars['PASSWORD'] = password
     getPars['dateutc'] = data_now['idx'].isoformat(' ')
-    getPars['winddir'] = '%.0f' % (data_now['wind_dir'] * 22.5)
-    getPars['tempf'] = '%.1f' % ((data_now['temp_out'] * 9.0 / 5.0) + 32.0)
-    getPars['dewptf'] = '%.1f' % (
-        (dew_point(data_now['temp_out'], data_now['hum_out']) * 9.0 / 5.0) + 32.0)
-    getPars['windspeedmph'] = '%.2f' % (data_now['wind_ave'] * 3.6 / 1.609344)
-    getPars['windgustmph'] = '%.2f' % (data_now['wind_gust'] * 3.6 / 1.609344)
-    getPars['humidity'] = '%d' % (data_now['hum_out'])
+    if data_now['wind_dir'] != None and data_now['wind_dir'] <= 16:
+        getPars['winddir'] = '%.0f' % (data_now['wind_dir'] * 22.5)
+    if data_now['temp_out'] != None:
+        getPars['tempf'] = '%.1f' % (CtoF(data_now['temp_out']))
+        if data_now['hum_out'] != None:
+            getPars['dewptf'] = '%.1f' % (
+                CtoF(dew_point(data_now['temp_out'], data_now['hum_out'])))
+            getPars['humidity'] = '%d' % (data_now['hum_out'])
+    if data_now['wind_ave'] != None:
+        getPars['windspeedmph'] = '%.2f' % (data_now['wind_ave'] * 3.6 / 1.609344)
+    if data_now['wind_gust'] != None:
+        getPars['windgustmph'] = '%.2f' % (data_now['wind_gust'] * 3.6 / 1.609344)
     getPars['rainin'] = '%g' % (max(data_now['rain'] - data_prev['rain'], 0.0) / 25.4)
     if data_now.has_key('rel_pressure'):
         baromin = data_now['rel_pressure']
