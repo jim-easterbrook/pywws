@@ -38,8 +38,8 @@ def ToUnderground(params, data, verbose=1):
     getPars['tempf'] = '%.1f' % ((data_now['temp_out'] * 9.0 / 5.0) + 32.0)
     getPars['dewptf'] = '%.1f' % (
         (dew_point(data_now['temp_out'], data_now['hum_out']) * 9.0 / 5.0) + 32.0)
-    getPars['windspeedmph'] = '%.2f' % (data_now['wind_ave'] / 1.609344)
-    getPars['windgustmph'] = '%.2f' % (data_now['wind_gust'] / 1.609344)
+    getPars['windspeedmph'] = '%.2f' % (data_now['wind_ave'] * 3.6 / 1.609344)
+    getPars['windgustmph'] = '%.2f' % (data_now['wind_gust'] * 3.6 / 1.609344)
     getPars['humidity'] = '%d' % (data_now['hum_out'])
     getPars['rainin'] = '%g' % (max(data_now['rain'] - data_prev['rain'], 0.0) / 25.4)
     if data_now.has_key('rel_pressure'):
