@@ -37,6 +37,7 @@ def ToUnderground(params, data, verbose=1):
     # create weather underground command
     getPars = {}
     getPars['action'] = 'updateraw'
+    getPars['softwaretype'] = 'pywws'
     getPars['ID'] = station
     getPars['PASSWORD'] = password
     getPars['dateutc'] = data_now['idx'].isoformat(' ')
