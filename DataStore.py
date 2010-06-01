@@ -134,19 +134,24 @@ class core_store:
         a, b, lst_day = self._slice(i)
         # go to start of slice
         self._set_cache_ptr(a)
+        cache = self._cache
+        cache_hi = self._cache_hi
+        cache_ptr = self._cache_ptr
         # iterate over complete caches
-        while self._cache_hi <= lst_day:
-            while self._cache_ptr < len(self._cache):
-                yield self._cache[self._cache_ptr]
-                self._cache_ptr += 1
-            self._load(date.fromordinal(self._cache_hi))
-            self._cache_ptr = 0
+        while cache_hi <= lst_day:
+            while cache_ptr < len(cache):
+                yield cache[cache_ptr]
+                cache_ptr += 1
+            self._load(date.fromordinal(cache_hi))
+            cache = self._cache
+            cache_hi = self._cache_hi
+            cache_ptr = 0
         # iterate over part of cache
-        while self._cache_ptr < len(self._cache):
-            if self._cache[self._cache_ptr]['idx'] >= b:
+        while cache_ptr < len(cache):
+            if cache[cache_ptr]['idx'] >= b:
                 return
-            yield self._cache[self._cache_ptr]
-            self._cache_ptr += 1
+            yield cache[cache_ptr]
+            cache_ptr += 1
         return
     def __getitem__(self, i):
         """Return the data item or items with index i.
