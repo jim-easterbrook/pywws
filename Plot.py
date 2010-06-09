@@ -123,13 +123,19 @@ class GraphPlotter:
             ylabel = self.GetValue(plot, 'ylabel', '')
             if ylabel:
                 ylabel = ylabel.encode(self.encoding)
-                of.write('set ylabel "%s"\n' % (ylabel))
+                ylabelangle = self.GetValue(plot, 'ylabelangle', '')
+                if ylabelangle:
+                    ylabelangle = ' rotate by %s' % (ylabelangle)
+                of.write('set ylabel "%s"%s\n' % (ylabel, ylabelangle))
             else:
                 of.write('set ylabel\n')
             y2label = self.GetValue(plot, 'y2label', '')
             if y2label:
                 y2label = y2label.encode(self.encoding)
-                of.write('set y2label "%s"\n' % (y2label))
+                y2labelangle = self.GetValue(plot, 'y2labelangle', '')
+                if y2labelangle:
+                    y2labelangle = ' rotate by %s' % (y2labelangle)
+                of.write('set y2label "%s"%s\n' % (y2label, y2labelangle))
             else:
                 of.write('set y2label\n')
             # set data source
