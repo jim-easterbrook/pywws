@@ -1,0 +1,102 @@
+# Greek translations for user package.
+# Copyright (C) 2010 THE user'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the user package.
+# Πέτρος <nouvakis@sch.gr>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-05-31 23:47+0300\n"
+"PO-Revision-Date: 2010-06-01 00:02+0300\n"
+"Last-Translator:  <nouvakis@sch.gr>\n"
+"Language-Team: Greek\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Time (%Z)"
+msgstr "Ωρα"
+
+msgid "Day"
+msgstr "Ημέρα"
+
+msgid "Date"
+msgstr "Ημερομηνία"
+
+msgid "N"
+msgstr "Β"
+
+msgid "NNE"
+msgstr "ΒΒΑ"
+
+msgid "NE"
+msgstr "ΒΑ"
+
+msgid "ENE"
+msgstr "ΑΒΑ"
+
+msgid "E"
+msgstr "Α"
+
+msgid "ESE"
+msgstr "ΑΝΑ"
+
+msgid "SE"
+msgstr "ΝΑ"
+
+msgid "SSE"
+msgstr "ΝΝΑ"
+
+msgid "S"
+msgstr "Ν"
+
+msgid "SSW"
+msgstr "ΝΝΔ"
+
+msgid "SW"
+msgstr "ΝΔ"
+
+msgid "WSW"
+msgstr "ΔΝΔ"
+
+msgid "W"
+msgstr "Δ"
+
+msgid "WNW"
+msgstr "ΔΒΔ"
+
+msgid "NW"
+msgstr "ΒΔ"
+
+msgid "NNW"
+msgstr "ΒΒΔ"
+
+msgid "rising very rapidly"
+msgstr "ραγδαία άνοδος"
+
+msgid "rising quickly"
+msgstr "γρήγορη άνοδος"
+
+msgid "rising"
+msgstr "άνοδος"
+
+msgid "rising slowly"
+msgstr "αργή άνοδος"
+
+msgid "falling very rapidly"
+msgstr "ραγδαία πτώση"
+
+msgid "falling quickly"
+msgstr "γρήγορη πτώση"
+
+msgid "falling"
+msgstr "πτώση"
+
+msgid "falling slowly"
+msgstr "αργή πτώση"
+
+msgid "steady"
+msgstr "σταθερή"
+
