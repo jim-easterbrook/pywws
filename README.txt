@@ -172,6 +172,11 @@ Getting started:
 Comments or questions? Please subscribe to the pywws mailing list
 http://groups.google.com/group/pywws and let us know.
 
+Changes in v10.06:
+	1/ Improved localisation code.
+	2/ Minor bug fixes.
+	3/ Added Y axis label angle control to plots.
+
 Changes in v10.04:
 	1/ Changed version numbering to year.month.
 	2/ Allowed "upload" to a local directory instead of ftp site.
