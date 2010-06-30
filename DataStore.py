@@ -366,6 +366,8 @@ class daily_store(core_store):
         core_store.__init__(self, os.path.join(root_dir, 'daily'))
     key_list = ['idx', 'start', 'temp_out_ave',
                 'temp_out_min', 'temp_out_min_t', 'temp_out_max', 'temp_out_max_t',
+                'temp_in_ave',
+                'temp_in_min', 'temp_in_min_t', 'temp_in_max', 'temp_in_max_t',
                 'wind_ave', 'wind_gust', 'wind_gust_t', 'wind_dir', 'rain']
     conv = {
         'idx'               : safestrptime,
@@ -375,6 +377,11 @@ class daily_store(core_store):
         'temp_out_min_t'    : safestrptime,
         'temp_out_max'      : float,
         'temp_out_max_t'    : safestrptime,
+        'temp_in_ave'       : float,
+        'temp_in_min'       : float,
+        'temp_in_min_t'     : safestrptime,
+        'temp_in_max'       : float,
+        'temp_in_max_t'     : safestrptime,
         'wind_ave'          : float,
         'wind_gust'         : float,
         'wind_gust_t'       : safestrptime,
@@ -401,6 +408,11 @@ class monthly_store(core_store):
                 'temp_out_min_hi', 'temp_out_min_hi_t', 'temp_out_min_ave',
                 'temp_out_max_lo', 'temp_out_max_lo_t',
                 'temp_out_max_hi', 'temp_out_max_hi_t', 'temp_out_max_ave',
+                'temp_in_ave',
+                'temp_in_min_lo', 'temp_in_min_lo_t',
+                'temp_in_min_hi', 'temp_in_min_hi_t', 'temp_in_min_ave',
+                'temp_in_max_lo', 'temp_in_max_lo_t',
+                'temp_in_max_hi', 'temp_in_max_hi_t', 'temp_in_max_ave',
                 'rain']
     conv = {
         'idx'               : safestrptime,
@@ -416,6 +428,17 @@ class monthly_store(core_store):
         'temp_out_max_hi'   : float,
         'temp_out_max_hi_t' : safestrptime,
         'temp_out_max_ave'  : float,
+        'temp_in_ave'       : float,
+        'temp_in_min_lo'    : float,
+        'temp_in_min_lo_t'  : safestrptime,
+        'temp_in_min_hi'    : float,
+        'temp_in_min_hi_t'  : safestrptime,
+        'temp_in_min_ave'   : float,
+        'temp_in_max_lo'    : float,
+        'temp_in_max_lo_t'  : safestrptime,
+        'temp_in_max_hi'    : float,
+        'temp_in_max_hi_t'  : safestrptime,
+        'temp_in_max_ave'   : float,
         'rain'              : float,
         }
     def _get_cache_path(self, target_date):

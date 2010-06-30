@@ -172,6 +172,10 @@ Getting started:
 Comments or questions? Please subscribe to the pywws mailing list
 http://groups.google.com/group/pywws and let us know.
 
+Changes in v10.07:
+	1/ Added internal temperature to daily and monthly summaries.
+	   Run Reprocess.py when upgrading from v10.06 or earlier.
+
 Changes in v10.06:
 	1/ Improved localisation code.
 	2/ Minor bug fixes.
