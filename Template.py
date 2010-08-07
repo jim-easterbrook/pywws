@@ -46,6 +46,7 @@ def Template(params, raw_data, hourly_data, daily_data, monthly_data,
     dew_point = WeatherStation.dew_point
     wind_chill = WeatherStation.wind_chill
     apparent_temp = WeatherStation.apparent_temp
+    pressure_offset = eval(params.get('fixed', 'pressure offset'))
     # start off in hourly data mode
     data_set = hourly_data
     # start off in utc

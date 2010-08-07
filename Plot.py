@@ -32,6 +32,7 @@ class GraphPlotter:
         self.daily_data = daily_data
         self.monthly_data = monthly_data
         self.work_dir = work_dir
+        self.pressure_offset = eval(params.get('fixed', 'pressure offset'))
         # set language related stuff
         if translation:
             self.translation = translation
@@ -208,6 +209,7 @@ set timefmt "%Y-%m-%dT%H:%M:%S"
         if subplot_count < 1:
             return ''
         result = ''
+        pressure_offset = self.pressure_offset
         # label x axis of last plot
         if plot_no == self.plot_count - 1:
             if self.duration <= timedelta(hours=24):
