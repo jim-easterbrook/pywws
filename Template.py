@@ -130,6 +130,7 @@ def Template(params, raw_data, hourly_data, daily_data, monthly_data,
                     print >>sys.stderr, "Unknown time zone: %s" % command[1]
                     return 6
             elif command[0] == 'jump':
+                prevdata = data
                 idx, valid_data = jump(idx, int(command[1]))
                 data = data_set[idx]
             elif command[0] == 'loop':
