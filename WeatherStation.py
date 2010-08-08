@@ -257,14 +257,14 @@ class weather_station:
     def get_raw_fixed_block(self, unbuffered=False):
         """Get the raw "fixed block" of setting and min/max data."""
         if unbuffered or not self._fixed_block:
-            self._read_fixed_block()
+            self._fixed_block = self._read_fixed_block()
         return self._fixed_block
     def get_fixed_block(self, keys=[], unbuffered=False):
         """Get the decoded "fixed block" of setting and min/max data.
 
         A subset of the entire block can be selected by keys."""
         if unbuffered or not self._fixed_block:
-            self._read_fixed_block()
+            self._fixed_block = self._read_fixed_block()
         format = self.fixed_format
         # navigate down list of keys to get to wanted data
         for key in keys:
@@ -272,8 +272,7 @@ class weather_station:
         return _decode(self._fixed_block, format)
     def get_lo_fix_block(self):
         """Get the first 64 bytes of the raw "fixed block"."""
-        return _decode(self._read_block(0x0000) +
-                       self._read_block(0x0020), self.lo_fix_format)
+        return _decode(self._read_fixed_block(0x0040), self.lo_fix_format)
     def _read_block(self, ptr):
         buf_1 = (ptr / 256) & 0xFF
         buf_2 = ptr & 0xFF;
@@ -281,17 +280,20 @@ class weather_station:
                              [0xA1, buf_1, buf_2, 0x20, 0xA1, buf_1, buf_2, 0x20],
                              value=0x200, timeout=1000)
         return self.devh.interruptRead(0x81, 0x20, 1000)
-    def _read_fixed_block(self):
-        # get first line
-        mempos_curr = 0x0000
-        self._fixed_block = self._read_block(mempos_curr)
-        # check for valid data
-        if (self._fixed_block[0] == 0x55 and self._fixed_block[1] == 0xAA) or \
-           (self._fixed_block[0] == 0xFF and self._fixed_block[1] == 0xFF):
-            for mempos_curr in range(0x0020, 0x0100, 0x0020):
-                self._fixed_block = self._fixed_block + self._read_block(mempos_curr)
-        else:
-            self._fixed_block = None
+    def _read_fixed_block(self, hi=0x0100):
+        # read block repeatedly until it's stable
+        old_fixed_block = None
+        while True:
+            new_fixed_block = []
+            for mempos in range(0x0000, hi, 0x0020):
+                new_fixed_block += self._read_block(mempos)
+            # check 'magic number'
+            if new_fixed_block[0:2] not in ([0x55, 0xAA], [0xFF, 0xFF]):
+                return None
+            # check for consistent data
+            if new_fixed_block == old_fixed_block:
+                return new_fixed_block
+            old_fixed_block = new_fixed_block
     # Tables of "meanings" for raw weather station data. Each key
     # specifies an (offset, type, multiplier) tuple that is understood
     # by _decode.
