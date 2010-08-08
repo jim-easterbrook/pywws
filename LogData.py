@@ -26,26 +26,15 @@ def LogData(params, raw_data, verbose=1):
     if not fixed_block:
         print >>sys.stderr, "Invalid data from weather station"
         return 3
-    # synchronise with weather station's logging time
-    if verbose > 0:
-        print 'Synchronising with weather station'
+    # get address and date-time of last complete logged data
     current_ptr = ws.current_pos()
     data = ws.get_data(current_ptr, unbuffered=True)
-    last_delay = data['delay']
-    while data['delay'] == last_delay:
-        last_delay = data['delay']
-        time.sleep(5)
-        current_ptr = ws.current_pos()
-        data = ws.get_data(current_ptr, unbuffered=True)
-    last_date = datetime.utcnow().replace(microsecond=0) - \
+    last_date = datetime.utcnow().replace(second=0, microsecond=0) - \
                 timedelta(minutes=data['delay'])
     last_ptr = ws.dec_ptr(current_ptr)
-    # re-read fixed block, just in case we read it at an unstable time
-    fixed_block = ws.get_fixed_block(unbuffered=True)
     # check clocks
-    s_time = DataStore.safestrptime(
-        fixed_block['date_time'], '%Y-%m-%d %H:%M') + timedelta(seconds=30)
-    c_time = datetime.now()
+    s_time = DataStore.safestrptime(fixed_block['date_time'], '%Y-%m-%d %H:%M')
+    c_time = datetime.now().replace(second=0, microsecond=0)
     diff = abs(s_time - c_time)
     if diff > timedelta(minutes=2):
         print >>sys.stderr, \
