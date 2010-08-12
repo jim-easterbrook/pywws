@@ -19,8 +19,8 @@ import getopt
 import os
 import sys
 
-import DataStore
-import TimeZone
+from pywws import DataStore
+from pywws import TimeZone
 
 def main(argv=None):
     if argv is None:

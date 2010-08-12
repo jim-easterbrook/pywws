@@ -17,14 +17,14 @@ import getopt
 import os
 import sys
 
-import DataStore
-import Localisation
-import LogData
-from Plot import GraphPlotter
-from WindRose import RosePlotter
-import Process
-import Template
-import Upload
+from pywws import DataStore
+from pywws import Localisation
+from pywws import LogData
+from pywws.Plot import GraphPlotter
+from pywws.WindRose import RosePlotter
+from pywws import Process
+from pywws import Template
+from pywws import Upload
 
 def Hourly(data_dir, verbose=1):
     # get file locations
@@ -86,7 +86,7 @@ def Hourly(data_dir, verbose=1):
         if 'tweet' in template:
             if verbose > 0:
                 print "Tweeting"
-            import ToTwitter
+            from pywws import ToTwitter
             # have three tries before giving up
             for n in range(3):
                 try:
@@ -109,7 +109,7 @@ def Hourly(data_dir, verbose=1):
     for file in uploads:
         os.unlink(file)
     # uncomment the following 7 lines if you want to upload to Weather Underground
-##    import ToUnderground
+##    from pywws import ToUnderground
 ##    for n in range(3):
 ##        try:
 ##            ToUnderground.ToUnderground(params, raw_data, verbose)

@@ -172,9 +172,14 @@ Getting started:
 Comments or questions? Please subscribe to the pywws mailing list
 http://groups.google.com/group/pywws and let us know.
 
-Changes in v10.07:
+Changes in v10.08:
 	1/ Added internal temperature to daily and monthly summaries.
-	   Run Reprocess.py when upgrading from v10.06 or earlier.
+	   Run Reprocess.py when upgrading from earlier versions.
+	2/ Added 'prevdata' to Template.py. Allows calculations that
+	   compare values from different times.
+	3/ Made 'pressure_offset' available to calculations in Plot.py
+	   and Template.py. This is only useful when using 'raw' data.
+	4/ Bug fixes in time stamping of data from weather station.
 
 Changes in v10.06:
 	1/ Improved localisation code.

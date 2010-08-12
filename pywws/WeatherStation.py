@@ -279,7 +279,7 @@ class weather_station:
         self.devh.controlMsg(usb.TYPE_CLASS + usb.RECIP_INTERFACE, 9,
                              [0xA1, buf_1, buf_2, 0x20, 0xA1, buf_1, buf_2, 0x20],
                              value=0x200, timeout=1000)
-        return self.devh.interruptRead(0x81, 0x20, 1000)
+        return self.devh.interruptRead(0x81, 0x20, 100)
     def _read_fixed_block(self, hi=0x0100):
         # read block repeatedly until it's stable
         old_fixed_block = None

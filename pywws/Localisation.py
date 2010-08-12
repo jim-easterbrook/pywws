@@ -18,6 +18,11 @@ def GetTranslation(params):
     # Add one we know to be there
     langs += ["en_GB", "en"]
     # get translation object
-    return gettext.translation(
-        'pywws', os.path.join(os.path.dirname(sys.argv[0]), 'locale'),
-        languages=langs)
+    try:
+        return gettext.translation(
+            'pywws', os.path.join(os.path.dirname(sys.argv[0]), '..', 'locale'),
+            languages=langs)
+    except IOError:
+        return gettext.translation(
+            'pywws', os.path.join(os.path.dirname(sys.argv[0]), 'locale'),
+            languages=langs)

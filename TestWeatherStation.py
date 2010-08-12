@@ -11,10 +11,11 @@ options are:
 """
 
 import datetime
-from DataStore import safestrptime
 import getopt
-import WeatherStation
 import sys
+
+from pywws.DataStore import safestrptime
+from pywws import WeatherStation
 
 def raw_dump(pos, data):
     print "%04x" % pos,

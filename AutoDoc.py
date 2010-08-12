@@ -82,10 +82,17 @@ def AutoDoc():
                    'twitter', 'pydoc']:
         pydoc.writedoc(module)
         PostProcess(module)
-    for file in os.listdir('./'):
+    for file in os.listdir('.'):
         base, ext = os.path.splitext(file)
         if ext != '.py':
             continue
+        pydoc.writedoc(base)
+        PostProcess(base)
+    for file in os.listdir('pywws'):
+        base, ext = os.path.splitext(file)
+        if ext != '.py':
+            continue
+        base = 'pywws.%s' % base
         pydoc.writedoc(base)
         PostProcess(base)
     return 0

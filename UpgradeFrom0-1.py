@@ -11,8 +11,8 @@ import os
 import shutil
 import sys
 
-import DataStore
-import Process
+from pywws import DataStore
+from pywws import Process
 
 def Upgrade(data_dir):
     # convert raw data files
