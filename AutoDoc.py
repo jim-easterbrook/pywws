@@ -29,10 +29,9 @@ class CorrectLinks(HTMLParser):
                     if url.scheme == 'file':
                         # probably a link to full path of Python module
                         # convert to relative path, and change text link as well
-                        base = os.path.basename(url.path)
-                        if os.path.exists(base):
-                            self._subst = base
-                            attrs[idx] = ('href', '../../%s' % base)
+                        self._subst = os.path.basename(url.path)
+                        attrs[idx] = (
+                            'href', url.path.replace(self.path_old, self.path_new))
         self._out.write('<%s' % tag)
         for key, value in attrs:
             self._out.write(' %s="%s"' % (key, value))
@@ -60,8 +59,11 @@ class CorrectLinks(HTMLParser):
     def handle_pi(self, data):
         raise Exception("unhandled pi")
 def AutoDoc():
+    os.chdir(os.path.dirname(sys.argv[0]))
     doc_dir = 'doc/auto'
     link_corrector = CorrectLinks()
+    link_corrector.path_old = os.getcwd()
+    link_corrector.path_new = '../..'
     def PostProcess(module):
         # post-process pydoc output to clean up some of its eccentricities
         # and move to doc_dir
@@ -77,20 +79,24 @@ def AutoDoc():
         os.unlink(src_file)
     if not os.path.isdir(doc_dir):
         os.mkdir(doc_dir)
-    for module in ['math', 'usb', 'datetime', 'getopt', 'sys', 'csv', 'os',
-                   'time', 'shlex', 'ftplib', 'shutil', 're', 'codecs',
-                   'twitter', 'pydoc']:
-        pydoc.writedoc(module)
-        PostProcess(module)
+##    for module in ['math', 'usb', 'datetime', 'getopt', 'sys', 'csv', 'os',
+##                   'time', 'shlex', 'ftplib', 'shutil', 're', 'codecs',
+##                   'twitter', 'pydoc']:
+##        pydoc.writedoc(module)
+##        PostProcess(module)
     for file in os.listdir('.'):
         base, ext = os.path.splitext(file)
         if ext != '.py':
+            continue
+        if base in ('setup'):
             continue
         pydoc.writedoc(base)
         PostProcess(base)
     for file in os.listdir('pywws'):
         base, ext = os.path.splitext(file)
         if ext != '.py':
+            continue
+        if base in ('__init__'):
             continue
         base = 'pywws.%s' % base
         pydoc.writedoc(base)
