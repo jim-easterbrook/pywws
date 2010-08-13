@@ -21,11 +21,11 @@ import sys
 import xml.dom.minidom
 
 import DataStore
-from Plot import GraphPlotter
+from Plot import BasePlotter
 from TimeZone import Local
 from WeatherStation import dew_point
 
-class RosePlotter(GraphPlotter):
+class RosePlotter(BasePlotter):
     def GetPlotList(self):
         return self.GetChildren(self.graph, 'windrose')
     def GetDefaultRows(self):

@@ -24,7 +24,7 @@ import Localisation
 from TimeZone import Local
 from WeatherStation import dew_point, wind_chill, apparent_temp
 
-class GraphPlotter:
+class BasePlotter:
     def __init__(self, params, raw_data, hourly_data,
                  daily_data, monthly_data, work_dir, translation=None):
         self.raw_data = raw_data
@@ -172,6 +172,7 @@ class GraphPlotter:
                 else:
                     return ''
         return default
+class GraphPlotter(BasePlotter):
     def GetPlotList(self):
         return self.GetChildren(self.graph, 'plot')
     def GetDefaultRows(self):
