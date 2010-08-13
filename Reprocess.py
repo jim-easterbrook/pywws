@@ -13,8 +13,8 @@ import getopt
 import os
 import sys
 
-import DataStore
-import Process
+from pywws import DataStore
+from pywws import Process
 
 def Reprocess(data_dir):
     # delete old format summary files
