@@ -29,8 +29,8 @@ def LogData(params, raw_data, verbose=1):
     # get address and date-time of last complete logged data
     current_ptr = ws.current_pos()
     data = ws.get_data(current_ptr, unbuffered=True)
-    last_date = datetime.utcnow().replace(second=0, microsecond=0) - \
-                timedelta(minutes=data['delay'])
+    last_date = datetime.utcnow() - timedelta(minutes=data['delay'], seconds=30)
+    last_date = last_date.replace(second=0, microsecond=0)
     last_ptr = ws.dec_ptr(current_ptr)
     # check clocks
     s_time = DataStore.safestrptime(fixed_block['date_time'], '%Y-%m-%d %H:%M')
