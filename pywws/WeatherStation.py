@@ -4,8 +4,11 @@ Derived from wwsr.c by Michael Pendec (michael.pendec@gmail.com) and
 wwsrdump.c by Svend Skafte (svend@skafte.net), modified by Dave Wells.
 """
 
+from datetime import datetime
 import math
 import platform
+import sys
+import time
 import usb
 
 import Localisation
@@ -223,6 +226,63 @@ class weather_station:
                 # interface was not claimed. No problem
                 pass
         self.devh = None
+    def live_data(self, verbose=0):
+        # There are two things we want to synchronise to - the data is updated every
+        # 48 seconds and the address is incremented every 5 minutes (or 10, 15, ...,
+        # 30). Rather than getting data every second, we sleep until one of the above
+        # is due. (During initialisation we get data every second anyway.)
+        fixed_block = self.get_fixed_block(unbuffered=True)
+        log_interval = fixed_block['read_period'] * 60
+        live_interval = 48
+        old_ptr = self.current_pos()
+        old_data = self.get_data(old_ptr, unbuffered=True)
+        now = time.time()
+        next_live = now
+        live_overdue = now + 3600
+        next_log = None
+        while True:
+            now = time.time()
+            new_ptr = self.current_pos()
+            new_data = self.get_data(old_ptr, unbuffered=True)
+            if verbose > 2:
+                print '.',
+                sys.stdout.flush()
+            # update of 'delay' by logging timer is not new data
+            old_data['delay'] = new_data['delay']
+            if new_ptr != old_ptr:
+                # get a logged record
+                if verbose > 2:
+                    print '%06x' % new_ptr
+                yield (datetime.utcfromtimestamp(now).replace(microsecond=0),
+                       new_data, True)
+                next_log = now + log_interval
+                old_ptr = new_ptr
+            elif new_data != old_data:
+                # new_data is a 'live' record
+                if verbose > 2:
+                    print ''
+                yield (datetime.utcfromtimestamp(now).replace(microsecond=0),
+                       new_data, False)
+                next_live = now + live_interval
+                live_overdue = next_live + 2
+                old_data = dict(new_data)
+            elif now > live_overdue:
+                # overdue for a 'live' record, so repeat old one
+                if verbose > 2:
+                    print '*'
+                yield (datetime.utcfromtimestamp(next_live).replace(microsecond=0),
+                       new_data, False)
+                next_live += live_interval
+                live_overdue = next_live + 2
+            # wake up just before next reading is due, or in one second
+            if next_log:
+                pause = (min(next_log, next_live) - 2) - time.time()
+                time.sleep(max(pause, 1))
+            elif new_data['delay'] < fixed_block['read_period'] - 1:
+                pause = (next_live - 2) - time.time()
+                time.sleep(max(pause, 1))
+            else:
+                time.sleep(1)
     def inc_ptr(self, ptr):
         """Get next circular buffer data pointer."""
         result = ptr + 0x10
@@ -253,7 +313,8 @@ class weather_station:
         return _decode(self.get_raw_data(ptr, unbuffered), self.reading_format)
     def current_pos(self):
         """Get circular buffer location where current data is being written."""
-        return _decode(self._read_block(0x0000), self.lo_fix_format['current_pos'])
+        return _decode(
+            self._read_fixed_block(0x0020), self.lo_fix_format['current_pos'])
     def get_raw_fixed_block(self, unbuffered=False):
         """Get the raw "fixed block" of setting and min/max data."""
         if unbuffered or not self._fixed_block:
@@ -281,7 +342,8 @@ class weather_station:
                              value=0x200, timeout=1000)
         return self.devh.interruptRead(0x81, 0x20, 100)
     def _read_fixed_block(self, hi=0x0100):
-        # read block repeatedly until it's stable
+        # Read block repeatedly until it's stable. This avoids getting corrupt
+        # data if the block is read as the station is updating it.
         old_fixed_block = None
         while True:
             new_fixed_block = []
