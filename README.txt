@@ -50,25 +50,15 @@ This software collection currently contains the following files:
 	README.txt		-- you are reading it!
 	LICENCE.txt		-- GNU General Public License
 
-	setup.py		-- compiles translation files
-	WeatherStation.py	-- gets data from the weather station
 	TestWeatherStation.py	-- test communication with weather station
-	DataStore.py		-- stores readings in easy to access files
-	LogData.py		-- saves recent readings to file
-	Localisation.py		-- provides local language translations
 	Hourly.py		-- run from cron
-	Process.py		-- summarises raw data
-	Plot.py			-- plots weather data using an XML recipe
-	WindRose.py		-- draw a "wind rose" using an XML recipe
-	Template.py		-- creates text data file based on a template
-	Upload.py		-- uploads files to a web site by ftp or sftp
-	ToTwitter.py		-- posts a message to a Twitter account
-	ToUnderground.py	-- posts data to Weather Underground
+	AutoDoc.py		-- generates extra HTML documentation
 	EWtoPy.py		-- converts EasyWeather.dat to DataStore format
 	UpgradeFrom0-1.py	-- converts v0.1 datastore to current format
 	Reprocess.py		-- regenerates summary data
-	AutoDoc.py		-- generates extra HTML documentation
+	setup.py		-- compiles translation files
 
+	pywws/*.py		-- the pywws software modules
 	example_graph_templates/*
 				-- example graph XML "recipes"
 	example_templates/*	-- example text templates
@@ -107,27 +97,29 @@ Getting started:
   6/ Connect weather station's USB port to computer
   7/ Run TestWeatherStation.py again - you should get a load of data.
      If this fails it might be a 'permissions' problem. Try running as
-     root: "sudo python TestWeatherStation.py"
+     root: "sudo python TestWeatherStation.py". If this works then you
+     may be able to set up a 'udev' rule for the weather station. See
+     http://code.google.com/p/pywws/wiki/Compatibility for details.
      7a/ Try options to decode data and show history:
          "python TestWeatherStation.py -d -h 5"
   8/ Run "python AutoDoc.py" to create extra documentation of the
      software.
   9/ Choose somewhere to store readings, e.g. /data/weather
   10/ Get some data from the weather station:
-      "python LogData.py /data/weather"
+      "python pywws/LogData.py /data/weather"
       This will take a while the first time you run it, as it fetches
       all the data stored in the weather station.
   11/ If you have an EasyWeather.dat file, now is the time to convert it:
       "python EWtoPy.py EasyWeather.dat /data/weather"
   12/ Process the raw data to make hourly and daily summaries:
-      "python Process.py /data/weather"
+      "python pywws/Process.py /data/weather"
   13/ Generate some tables:
-      "python Template.py /data/weather example_templates/24hrs.txt 24hrs.txt"
-      "python Template.py /data/weather example_templates/6hrs.txt 6hrs.txt"
+      "python pywws/Template.py /data/weather example_templates/24hrs.txt 24hrs.txt"
+      "python pywws/Template.py /data/weather example_templates/6hrs.txt 6hrs.txt"
   14/ If you want to create graphs, install gnuplot, then:
-      "python Plot.py /data/weather /tmp \
+      "python pywws/Plot.py /data/weather /tmp \
 		example_graph_templates/24hrs.png.xml 24hrs.png"
-      "python Plot.py /data/weather /tmp \
+      "python pywws/Plot.py /data/weather /tmp \
 		example_graph_templates/7days.png.xml 7days.png"
   15/ Have a look at the files you've just made, then write a web page
       that incorporates them. (Use server side includes for the .txt
@@ -141,18 +133,18 @@ Getting started:
   	password = secret
   	directory = public_html/weather/data/
   17/ Try uploading the files:
-      "python Upload.py /data/weather 24hrs.txt 6hrs.txt 24hrs.png 7days.png"
+      "python pywws/Upload.py /data/weather 24hrs.txt 6hrs.txt 24hrs.png 7days.png"
   18/ If you want to upload to Twitter, install python-twitter and simplejson
       then:
-      "python Template.py /data/weather example_templates/tweet.txt tweet.txt"
-      "python ToTwitter.py /data/weather tweet.txt"
+      "python pywws/Template.py /data/weather example_templates/tweet.txt tweet.txt"
+      "python pywws/ToTwitter.py /data/weather tweet.txt"
       You'll need to edit /data/weather/weather.ini with your Twitter
       account details, for example:
         [twitter]
         username = twitterusername
         password = twitterpassword
   19/ If you want to upload to Weather Underground, try:
-      "python ToUnderground.py -vvv /data/weather"
+      "python pywws/ToUnderground.py -vvv /data/weather"
       You'll need to edit /data/weather/weather.ini with your Wunderground
       details, for example:
         [underground]
@@ -179,7 +171,8 @@ Changes in v10.08:
 	   compare values from different times.
 	3/ Made 'pressure_offset' available to calculations in Plot.py
 	   and Template.py. This is only useful when using 'raw' data.
-	4/ Bug fixes in time stamping of data from weather station.
+	4/ Improved synchronisation to weather station's clock when
+	   fetching stored data.
 
 Changes in v10.06:
 	1/ Improved localisation code.
@@ -253,4 +246,3 @@ Still to come, possibly:
 If you've got this software up and running, do let me know what you think.
 Email jim@jim-easterbrook.me.uk
 http://code.google.com/p/pywws/
-
