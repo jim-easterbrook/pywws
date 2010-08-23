@@ -5,7 +5,9 @@ Save weather station history to file.
 
 usage: python LogData.py [options] data_dir
 options are:
-\t--help\t\t\tdisplay this help
+  -h | --help     display this help
+  -s | --sync     increase quality of synchronisation to weather station
+  -v | --verbose  increase number of informative messages
 data_dir is the root directory of the weather data
 """
 
@@ -19,19 +21,13 @@ import DataStore
 from TimeZone import Local
 import WeatherStation
 
-def LogData(params, raw_data, verbose=1):
+def LogData(params, raw_data, verbose=1, sync=0):
     # connect to weather station
     ws = WeatherStation.weather_station()
     fixed_block = ws.get_fixed_block()
     if not fixed_block:
         print >>sys.stderr, "Invalid data from weather station"
         return 3
-    # get address and date-time of last complete logged data
-    current_ptr = ws.current_pos()
-    data = ws.get_data(current_ptr, unbuffered=True)
-    last_date = datetime.utcnow() - timedelta(minutes=data['delay'], seconds=30)
-    last_date = last_date.replace(second=0, microsecond=0)
-    last_ptr = ws.dec_ptr(current_ptr)
     # check clocks
     s_time = DataStore.safestrptime(fixed_block['date_time'], '%Y-%m-%d %H:%M')
     c_time = datetime.now().replace(second=0, microsecond=0)
@@ -46,6 +42,20 @@ controlled clock, it may have lost its signal.""" % (str(diff))
     pressure_offset = fixed_block['rel_pressure'] - fixed_block['abs_pressure']
     params.set('fixed', 'pressure offset', '%g' % (pressure_offset))
     params.set('fixed', 'read period', '%d' % (fixed_block['read_period']))
+    # get address and date-time of last complete logged data
+    if verbose > 0:
+        print 'Synchronising to weather station'
+    for now, data, logged in ws.live_data():
+        if verbose > 2:
+            print now.strftime('%H:%M:%S')
+        if logged:
+            last_date = now
+            break
+        if sync < 1:
+            last_date = now.replace(second=0) - timedelta(minutes=data['delay'])
+            break
+    current_ptr = ws.current_pos()
+    last_ptr = ws.dec_ptr(current_ptr)
     # get time to go back to
     last_stored = raw_data.before(datetime.max)
     if last_stored == None:
@@ -73,16 +83,22 @@ def main(argv=None):
     if argv is None:
         argv = sys.argv
     try:
-        opts, args = getopt.getopt(argv[1:], "", ['help'])
+        opts, args = getopt.getopt(argv[1:], "hsv", ('help', 'sync', 'verbose'))
     except getopt.error, msg:
         print >>sys.stderr, 'Error: %s\n' % msg
         print >>sys.stderr, __doc__.strip()
         return 1
     # process options
+    sync = 0
+    verbose = 0
     for o, a in opts:
-        if o == '--help':
+        if o in ('-h', '--help'):
             print __doc__.strip()
             return 0
+        elif o in ('-s', '--sync'):
+            sync += 1
+        elif o in ('-v', '--verbose'):
+            verbose += 1
     # check arguments
     if len(args) != 1:
         print >>sys.stderr, 'Error: 1 argument required\n'
@@ -90,6 +106,7 @@ def main(argv=None):
         return 2
     root_dir = args[0]
     return LogData(DataStore.params(root_dir),
-                   DataStore.data_store(root_dir))
+                   DataStore.data_store(root_dir),
+                   verbose=verbose, sync=sync)
 if __name__ == "__main__":
     sys.exit(main())
