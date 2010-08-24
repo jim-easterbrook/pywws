@@ -109,8 +109,7 @@ class core_store:
                 continue
             break
     def __del__(self):
-        if self._cache_dirty:
-            self._save()
+        self.flush()
     def _slice(self, i):
         if i.step != None:
             raise TypeError("slice step not permitted")
@@ -282,8 +281,7 @@ class core_store:
         while self._cache_ptr > 0 and self._cache[self._cache_ptr-1]['idx'] >= i:
             self._cache_ptr -= 1
     def _load(self, target_date):
-        if self._cache_dirty:
-            self._save()
+        self.flush()
         self._cache = []
         self._cache_ptr = 0
         self._cache_path, self._cache_lo, self._cache_hi = self._get_cache_path(target_date)
@@ -297,7 +295,9 @@ class core_store:
                     else:
                         row[key] = self.conv[key](row[key])
                 self._cache.append(row)
-    def _save(self):
+    def flush(self):
+        if not self._cache_dirty:
+            return
         self._cache_dirty = False
         if len(self._cache) == 0:
             if os.path.exists(self._cache_path):
