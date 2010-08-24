@@ -273,6 +273,8 @@ def Process(params, raw_data, hourly_data, daily_data, monthly_data, verbose=1):
     the weather station's offset as recorded by LogData.py. The
     pressure trend (change over three hours) is also computed.
     """
+    if verbose > 0:
+        print 'Generating summary data'
     HOUR = timedelta(hours=1)
     HOURx3 = timedelta(hours=3)
     SECOND = timedelta(seconds=1)
@@ -366,6 +368,8 @@ def Process(params, raw_data, hourly_data, daily_data, monthly_data, verbose=1):
             new_data['idx'] = min(stop, last_raw)
             new_data['start'] = day_start
             daily_data[new_data['idx']] = new_data
+    hourly_data.flush()
+    daily_data.flush()
     # compute monthly data from daily data
     start = month_start
     if start == None:
@@ -407,6 +411,7 @@ def Process(params, raw_data, hourly_data, daily_data, monthly_data, verbose=1):
             monthly_data[new_data['idx']] = new_data
         start = stop
         t0 = t1
+    monthly_data.flush()
     return 0
 def main(argv=None):
     if argv is None:

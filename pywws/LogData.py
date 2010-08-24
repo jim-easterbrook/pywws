@@ -79,6 +79,7 @@ controlled clock, it may have lost its signal.""" % (str(diff))
         last_ptr = ws.dec_ptr(last_ptr)
     if verbose > 0:
         print "%d records written" % count
+    raw_data.flush()
 def main(argv=None):
     if argv is None:
         argv = sys.argv
