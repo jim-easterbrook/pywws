@@ -13,6 +13,7 @@ options are:
 data_dir is the root directory of the weather data (default /data/weather)
 """
 
+from datetime import datetime, timedelta
 import getopt
 import os
 import sys
@@ -20,21 +21,14 @@ import sys
 from pywws import DataStore
 from pywws import Localisation
 from pywws import LogData
-from pywws.Plot import GraphPlotter
-from pywws.WindRose import RosePlotter
 from pywws import Process
-from pywws import Template
+from pywws import Tasks
+from pywws.TimeZone import Local, utc
 from pywws import Upload
 
 def Hourly(data_dir, verbose=1):
     # get file locations
     params = DataStore.params(data_dir)
-    template_dir = params.get(
-        'paths', 'templates', os.path.expanduser('~/weather/templates/'))
-    graph_template_dir = params.get(
-        'paths', 'graph_templates', os.path.expanduser('~/weather/graph_templates/'))
-    work_dir = params.get('paths', 'work', '/tmp/weather')
-    uploads = []
     # open data file stores
     raw_data = DataStore.data_store(data_dir)
     hourly_data = DataStore.hourly_store(data_dir)
@@ -43,79 +37,40 @@ def Hourly(data_dir, verbose=1):
     # create a translation object for our locale
     translation = Localisation.GetTranslation(params)
     # get weather station data
-    # have three tries before giving up
-    for n in range(3):
-        try:
-            LogData.LogData(params, raw_data, verbose)
-            break
-        except Exception, ex:
-            print >>sys.stderr, ex
+    LogData.LogData(params, raw_data, verbose)
     # do the processing
-    if verbose > 0:
-        print 'Generating summary data'
     Process.Process(params, raw_data, hourly_data, daily_data, monthly_data, verbose)
-    plotter = GraphPlotter(
-        params, raw_data, hourly_data, daily_data, monthly_data, work_dir,
-        translation=translation)
-    roseplotter = RosePlotter(
-        params, raw_data, hourly_data, daily_data, monthly_data, work_dir,
-        translation=translation)
-    for template in os.listdir(graph_template_dir):
-        input_file = os.path.join(graph_template_dir, template)
-        if (template[0] == '.' or template[-1] == '~' or
-            not os.path.isfile(input_file)):
-            continue
-        if verbose > 0:
-            print "Graphing", template
-        output_file = os.path.join(work_dir, os.path.splitext(template)[0])
-        if plotter.DoPlot(input_file, output_file) == 0:
-            uploads.append(output_file)
-        elif roseplotter.DoPlot(input_file, output_file) == 0:
-            uploads.append(output_file)
-    for template in os.listdir(template_dir):
-        input_file = os.path.join(template_dir, template)
-        if (template[0] == '.' or template[-1] == '~' or
-            not os.path.isfile(input_file)):
-            continue
-        if verbose > 0:
-            print "Templating", template
-        output_file = os.path.join(work_dir, template)
-        Template.Template(
-            params, raw_data, hourly_data, daily_data,
-            monthly_data, input_file, output_file, translation=translation)
-        if 'tweet' in template:
-            if verbose > 0:
-                print "Tweeting"
-            from pywws import ToTwitter
-            # have three tries before giving up
-            for n in range(3):
-                try:
-                    ToTwitter.ToTwitter(params, output_file, translation=translation)
-                    break
-                except Exception, ex:
-                    print >>sys.stderr, ex
-            os.unlink(output_file)
-        else:
-            uploads.append(output_file)
-    if verbose > 0:
-        print "Uploading to web site"
-    # have three tries before giving up
-    for n in range(3):
-        try:
-            Upload.Upload(params, uploads)
-            break
-        except Exception, ex:
-            print >>sys.stderr, ex
+    # get local time's offset from UTC, without DST
+    last_raw = raw_data.before(datetime.max)
+    time_offset = Local.utcoffset(last_raw) - Local.dst(last_raw)
+    # get daytime end hour, in UTC
+    day_end_hour = eval(params.get('config', 'day end hour', '21'))
+    day_end_hour = (day_end_hour - (time_offset.seconds / 3600)) % 24
+    # get hours since day end hour
+    hour = (last_raw + timedelta(minutes=raw_data[last_raw]['delay'])).hour
+    hour -= day_end_hour
+    sections = ['hourly']
+    if hour % 12 == 0:
+        sections.append('12 hourly')
+    if hour % 24 == 0:
+        sections.append('daily')
+    uploads = []
+    for section in sections:
+        Tasks.DoTwitter(
+            section, params, raw_data, hourly_data, daily_data, monthly_data,
+            translation, verbose)
+        if eval(params.get(section, 'underground', 'False')):
+            from pywws import ToUnderground
+            ToUnderground.ToUnderground(params, raw_data, verbose).Upload(True)
+        uploads += Tasks.DoPlots(
+            section, params, raw_data, hourly_data, daily_data, monthly_data,
+            translation, verbose)
+        uploads += Tasks.DoTemplates(
+            section, params, raw_data, hourly_data, daily_data, monthly_data,
+            translation, verbose)
+    Upload.Upload(params, uploads, verbose)
     for file in uploads:
         os.unlink(file)
-    # uncomment the following 7 lines if you want to upload to Weather Underground
-##    from pywws import ToUnderground
-##    for n in range(3):
-##        try:
-##            ToUnderground.ToUnderground(params, raw_data, verbose)
-##            break
-##        except Exception, ex:
-##            print >>sys.stderr, ex
     return 0
 
 def main(argv=None):
