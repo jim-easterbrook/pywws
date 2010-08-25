@@ -19,8 +19,10 @@ import sys
 
 import DataStore
 
-def Upload(params, files):
+def Upload(params, files, verbose=1):
     if eval(params.get('ftp', 'local site', 'False')):
+        if verbose > 0:
+            print "Copying to local directory"
         # copy to local directory
         directory = params.get(
             'ftp', 'directory', os.path.expanduser('~/public_html/weather/data/'))
@@ -29,6 +31,8 @@ def Upload(params, files):
         for file in files:
             shutil.copy2(file, directory)
         return 0
+    if verbose > 0:
+        print "Uploading to web site"
     # get remote site details
     secure = eval(params.get('ftp', 'secure', 'False'))
     site = params.get('ftp', 'site', 'ftp.username.your_isp.co.uk')
@@ -54,16 +58,22 @@ def Upload(params, files):
 #        print ftp.getwelcome()
     for file in files:
         target = directory + os.path.basename(file)
-        if secure:
-            ftp.put(file, target)
-        else:
-            if os.path.splitext(file)[1] in ('.txt', '.xml', '.html'):
-                f = open(file, 'r')
-                ftp.storlines('STOR %s' % (target), f)
-            else:
-                f = open(file, 'rb')
-                ftp.storbinary('STOR %s' % (target), f)
-            f.close()
+        # have three tries before giving up
+        for n in range(3):
+            try:
+                if secure:
+                    ftp.put(file, target)
+                else:
+                    if os.path.splitext(file)[1] in ('.txt', '.xml', '.html'):
+                        f = open(file, 'r')
+                        ftp.storlines('STOR %s' % (target), f)
+                    else:
+                        f = open(file, 'rb')
+                        ftp.storbinary('STOR %s' % (target), f)
+                    f.close()
+                break
+            except Exception, ex:
+                print >>sys.stderr, ex
     if secure:
         ftp.close()
         transport.close()
