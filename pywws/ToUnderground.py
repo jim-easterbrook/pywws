@@ -25,17 +25,14 @@ from WeatherStation import dew_point
 def CtoF(C):
     return (C * 9.0 / 5.0) + 32.0
 class ToUnderground:
-    def __init__(self, params, raw_data, verbose=1, rapid_fire=False):
+    def __init__(self, params, raw_data, verbose=1):
         self.params = params
         self.data = raw_data
         self.verbose = verbose
-        self.rapid_fire = rapid_fire
         self.pressure_offset = eval(params.get('fixed', 'pressure offset'))
-        if self.rapid_fire:
-            self.server = 'rtupdate.wunderground.com'
-        else:
-            self.server = 'weatherstation.wunderground.com'
-        self.url = 'http://%s/weatherstation/updateweatherstation.php' % self.server
+        # Weather Underground server, normal and rapid fire
+        self.server = (
+            'weatherstation.wunderground.com', 'rtupdate.wunderground.com')
         self.rain_midnight = None
         # compute local midnight
         self.midnight = datetime.utcnow().replace(tzinfo=utc).astimezone(
@@ -43,18 +40,18 @@ class ToUnderground:
                 utc).replace(tzinfo=None)
         self.day = timedelta(hours=24)
         self.hour = timedelta(hours=1)
-        # set fixed part of upload data
+        # set fixed part of upload data, versions for normal and rapid fire
         password = self.params.get('underground', 'password', 'undergroudpassword')
         station = self.params.get('underground', 'station', 'undergroundstation')
-        self.fixed_data = {}
-        self.fixed_data['action'] = 'updateraw'
-        self.fixed_data['softwaretype'] = 'pywws'
-        self.fixed_data['ID'] = station
-        self.fixed_data['PASSWORD'] = password
-        if self.rapid_fire:
-            self.fixed_data['realtime'] = '1'
-            self.fixed_data['rtfreq'] = '48'
-    def TranslateData(self, current):
+        self.fixed_data = ({}, {})
+        for i in False, True:
+            self.fixed_data[i]['action'] = 'updateraw'
+            self.fixed_data[i]['softwaretype'] = 'pywws'
+            self.fixed_data[i]['ID'] = station
+            self.fixed_data[i]['PASSWORD'] = password
+        self.fixed_data[True]['realtime'] = '1'
+        self.fixed_data[True]['rtfreq'] = '48'
+    def _TranslateData(self, current, rapid_fire):
         # get rain data for 1 hr ago and local midnight
         rain_hour = self.data[self.data.nearest(current['idx'] - self.hour)]['rain']
         while current['idx'] < self.midnight:
@@ -66,7 +63,7 @@ class ToUnderground:
         if self.rain_midnight == None:
             self.rain_midnight = self.data[self.data.nearest(self.midnight)]['rain']
         # create weather underground command
-        result = dict(self.fixed_data)
+        result = dict(self.fixed_data[rapid_fire])
         result['dateutc'] = current['idx'].isoformat(' ')
         if current['wind_dir'] != None and current['wind_dir'] < 16:
             result['winddir'] = '%.0f' % (current['wind_dir'] * 22.5)
@@ -86,22 +83,29 @@ class ToUnderground:
         result['baromin'] = '%.2f' % (
             (current['abs_pressure'] + self.pressure_offset) * 0.02953)
         return result
-    def SendData(self, data):
+    def SendData(self, data, rapid_fire):
         # upload data
         if self.verbose > 2:
             print data
         # create weather underground command
-        getPars = self.TranslateData(data)
+        getPars = self._TranslateData(data, rapid_fire)
         if self.verbose > 1:
             print getPars
         # convert command to URL
-        full_url = self.url + '?' + urllib.urlencode(getPars)
+        url = 'http://%s/weatherstation/updateweatherstation.php?%s' % (
+            self.server[rapid_fire], urllib.urlencode(getPars))
         if self.verbose > 2:
-            print full_url
-        wudata = urllib2.urlopen(full_url)
-        moreinfo = wudata.read()
-        if self.verbose > 0:
-            print "Weather Underground returns: \"%s\"" % (moreinfo.strip())
+            print url
+        # have three tries before giving up
+        for n in range(3):
+            try:
+                wudata = urllib2.urlopen(url)
+                moreinfo = wudata.read()
+                if self.verbose > 0:
+                    print "Weather Underground returns: \"%s\"" % (moreinfo.strip())
+                break
+            except Exception, ex:
+                print >>sys.stderr, ex
     def Upload(self, catchup):
         if catchup:
             # upload all data since last time
@@ -112,12 +116,12 @@ class ToUnderground:
                 last_update = datetime.utcnow() - timedelta(days=14)
             # iterate over all data since last_update
             for data_now in self.data[last_update:]:
-                self.SendData(data_now)
+                self.SendData(data_now, False)
                 last_update = data_now['idx']
         else:
             # upload most recent data
             last_update = self.data.before(datetime.max)
-            self.SendData(self.data[last_update])
+            self.SendData(self.data[last_update], False)
         self.params.set('underground', 'last update', last_update.isoformat(' '))
         return 0
 def main(argv=None):
