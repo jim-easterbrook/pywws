@@ -249,37 +249,51 @@ class weather_station:
                 sys.stdout.flush()
             # update of 'delay' by logging timer is not new data
             old_data['delay'] = new_data['delay']
+            yielded = False
             if new_ptr != old_ptr:
+                old_ptr = new_ptr
+                next_log = now + log_interval
                 # get a logged record
                 if verbose > 2:
                     print '%06x' % new_ptr
                 yield (datetime.utcfromtimestamp(now).replace(microsecond=0),
                        new_data, True)
-                next_log = now + log_interval
-                old_ptr = new_ptr
+                yielded = True
             elif new_data != old_data:
+                old_data = dict(new_data)
+                next_live = now + live_interval
+                live_overdue = next_live + 2
                 # new_data is a 'live' record
                 if verbose > 2:
                     print ''
                 yield (datetime.utcfromtimestamp(now).replace(microsecond=0),
                        new_data, False)
-                next_live = now + live_interval
-                live_overdue = next_live + 2
-                old_data = dict(new_data)
+                yielded = True
             elif now > live_overdue:
+                next_live += live_interval
+                live_overdue = next_live + 2
                 # overdue for a 'live' record, so repeat old one
                 if verbose > 2:
                     print '*'
                 yield (datetime.utcfromtimestamp(next_live).replace(microsecond=0),
                        new_data, False)
-                next_live += live_interval
-                live_overdue = next_live + 2
+                yielded = True
+            new_now = time.time()
+            # yield may have taken a long time, so update due times if required
+            if yielded:
+                while next_log and next_log <= new_now:
+                    next_log += log_interval
+                    old_ptr = self.inc_ptr(old_ptr)
+                while next_live <= new_now:
+                    next_live += live_interval
+                    live_overdue = next_live + 2
+                    old_data = self.get_data(old_ptr, unbuffered=True)
             # wake up just before next reading is due, or in one second
             if next_log:
-                pause = (min(next_log, next_live) - 2) - time.time()
+                pause = (min(next_log, next_live) - 2) - new_now
                 time.sleep(max(pause, 1))
             elif new_data['delay'] < fixed_block['read_period'] - 1:
-                pause = (next_live - 2) - time.time()
+                pause = (next_live - 2) - new_now
                 time.sleep(max(pause, 1))
             else:
                 time.sleep(1)
