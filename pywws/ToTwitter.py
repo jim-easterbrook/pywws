@@ -12,14 +12,17 @@ Username and password are read from the weather.ini file in data_dir.
 """
 
 import getopt
+import logging
 import os
 import sys
 import twitter
 
 import DataStore
 import Localisation
+from Logger import ApplicationLogger
 
 def ToTwitter(params, file, translation=None):
+    logger = logging.getLogger('pywws.ToTwitter')
     username = params.get('twitter', 'username', 'twitterusername')
     password = params.get('twitter', 'password', 'twitterpassword')
     tweet_file = open(file, 'r')
@@ -42,7 +45,7 @@ def ToTwitter(params, file, translation=None):
                 status = api.PostUpdate(tweet)
                 break
             except Exception, ex:
-                print >>sys.stderr, ex
+                logger.error(str(ex))
     return 0
 def main(argv=None):
     if argv is None:
@@ -63,6 +66,7 @@ def main(argv=None):
         print >>sys.stderr, "Error: 2 arguments required"
         print >>sys.stderr, __doc__.strip()
         return 2
+    logger = ApplicationLogger(1)
     return ToTwitter(DataStore.params(args[0]), args[1])
 if __name__ == "__main__":
     sys.exit(main())

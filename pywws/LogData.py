@@ -13,43 +13,41 @@ data_dir is the root directory of the weather data
 
 from datetime import datetime, timedelta
 import getopt
+import logging
 import os
 import sys
 import time
 
 import DataStore
+from Logger import ApplicationLogger
 from TimeZone import Local
 import WeatherStation
 
-def LogData(params, raw_data, verbose=1, sync=0):
+def LogData(params, raw_data, sync=0):
+    logger = logging.getLogger('pywws.LogData')
     # connect to weather station
     ws = WeatherStation.weather_station()
     fixed_block = ws.get_fixed_block()
     if not fixed_block:
-        print >>sys.stderr, "Invalid data from weather station"
+        logger.error("Invalid data from weather station")
         return 3
     # check clocks
     s_time = DataStore.safestrptime(fixed_block['date_time'], '%Y-%m-%d %H:%M')
     c_time = datetime.now().replace(second=0, microsecond=0)
     diff = abs(s_time - c_time)
     if diff > timedelta(minutes=2):
-        print >>sys.stderr, \
-              """WARNING: computer and weather station clocks disagree by %s (H:M:S).
-Check that the computer is synchronised to a network time server and
-that the weather station clock is correct. If the station has a radio
-controlled clock, it may have lost its signal.""" % (str(diff))
+        logger.warning(
+            "Computer and weather station clocks disagree by %s (H:M:S).", str(diff))
     # store info from fixed block
     pressure_offset = fixed_block['rel_pressure'] - fixed_block['abs_pressure']
     params.set('fixed', 'pressure offset', '%g' % (pressure_offset))
     params.set('fixed', 'read period', '%d' % (fixed_block['read_period']))
     params.flush()
     # get address and date-time of last complete logged data
-    if verbose > 0:
-        print 'Synchronising to weather station'
+    logger.info('Synchronising to weather station')
     for data, logged in ws.live_data():
         last_date = data['idx']
-        if verbose > 2:
-            print last_date.strftime('%H:%M:%S')
+        logger.debug('Reading time %s', last_date.strftime('%H:%M:%S'))
         if logged:
             break
         if sync < 1 and last_date.second > 5 and last_date.second < 55:
@@ -65,8 +63,7 @@ controlled clock, it may have lost its signal.""" % (str(diff))
         last_stored = last_stored + \
                       timedelta(minutes=fixed_block['read_period'] / 2)
     # go back through stored data, until we catch up with what we've already got
-    if verbose > 0:
-        print 'Fetching data'
+    logger.info('Fetching data')
     count = 0
     while last_ptr != current_ptr and last_date > last_stored:
         count += 1
@@ -78,8 +75,7 @@ controlled clock, it may have lost its signal.""" % (str(diff))
         raw_data[last_date] = data
         last_date -= timedelta(minutes=data['delay'])
         last_ptr = ws.dec_ptr(last_ptr)
-    if verbose > 0:
-        print "%d records written" % count
+    logger.info("%d records written", count)
     raw_data.flush()
 def main(argv=None):
     if argv is None:
@@ -106,9 +102,9 @@ def main(argv=None):
         print >>sys.stderr, 'Error: 1 argument required\n'
         print >>sys.stderr, __doc__.strip()
         return 2
+    logger = ApplicationLogger(verbose)
     root_dir = args[0]
-    return LogData(DataStore.params(root_dir),
-                   DataStore.data_store(root_dir),
-                   verbose=verbose, sync=sync)
+    return LogData(
+        DataStore.params(root_dir), DataStore.data_store(root_dir), sync=sync)
 if __name__ == "__main__":
     sys.exit(main())

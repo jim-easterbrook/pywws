@@ -21,12 +21,13 @@ import sys
 from pywws import DataStore
 from pywws import Localisation
 from pywws import LogData
+from pywws.Logger import ApplicationLogger
 from pywws import Process
 from pywws import Tasks
 from pywws.TimeZone import Local, utc
 from pywws import Upload
 
-def Hourly(data_dir, verbose=1):
+def Hourly(data_dir):
     # get file locations
     params = DataStore.params(data_dir)
     # open data file stores
@@ -37,9 +38,9 @@ def Hourly(data_dir, verbose=1):
     # create a translation object for our locale
     translation = Localisation.GetTranslation(params)
     # get weather station data
-    LogData.LogData(params, raw_data, verbose)
+    LogData.LogData(params, raw_data)
     # do the processing
-    Process.Process(params, raw_data, hourly_data, daily_data, monthly_data, verbose)
+    Process.Process(params, raw_data, hourly_data, daily_data, monthly_data)
     # get local time's offset from UTC, without DST
     last_raw = raw_data.before(datetime.max)
     time_offset = Local.utcoffset(last_raw) - Local.dst(last_raw)
@@ -58,17 +59,17 @@ def Hourly(data_dir, verbose=1):
     for section in sections:
         Tasks.DoTwitter(
             section, params, raw_data, hourly_data, daily_data, monthly_data,
-            translation, verbose)
+            translation)
         if eval(params.get(section, 'underground', 'False')):
             from pywws import ToUnderground
-            ToUnderground.ToUnderground(params, raw_data, verbose).Upload(True)
+            ToUnderground.ToUnderground(params, raw_data).Upload(True)
         uploads += Tasks.DoPlots(
             section, params, raw_data, hourly_data, daily_data, monthly_data,
-            translation, verbose)
+            translation)
         uploads += Tasks.DoTemplates(
             section, params, raw_data, hourly_data, daily_data, monthly_data,
-            translation, verbose)
-    Upload.Upload(params, uploads, verbose)
+            translation)
+    Upload.Upload(params, uploads)
     for file in uploads:
         os.unlink(file)
     return 0
@@ -99,6 +100,7 @@ def main(argv=None):
         data_dir = args[0]
     else:
         data_dir = '/data/weather'
-    return Hourly(data_dir, verbose)
+    logger = ApplicationLogger(verbose)
+    return Hourly(data_dir)
 if __name__ == "__main__":
     sys.exit(main())

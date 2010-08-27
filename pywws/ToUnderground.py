@@ -13,22 +13,24 @@ StationID and password are read from the weather.ini file in data_dir.
 """
 
 import getopt
+import logging
 import sys
 import urllib
 import urllib2
 from datetime import datetime, timedelta
 
 import DataStore
+from Logger import ApplicationLogger
 from TimeZone import Local, utc
 from WeatherStation import dew_point
 
 def CtoF(C):
     return (C * 9.0 / 5.0) + 32.0
 class ToUnderground:
-    def __init__(self, params, raw_data, verbose=1):
+    def __init__(self, params, raw_data):
+        self.logger = logging.getLogger('pywws.ToUnderground')
         self.params = params
         self.data = raw_data
-        self.verbose = verbose
         self.pressure_offset = eval(params.get('fixed', 'pressure offset'))
         # Weather Underground server, normal and rapid fire
         self.server = (
@@ -85,27 +87,24 @@ class ToUnderground:
         return result
     def SendData(self, data, rapid_fire):
         # upload data
-        if self.verbose > 2:
-            print data
+        self.logger.debug(str(data))
         # create weather underground command
         getPars = self._TranslateData(data, rapid_fire)
-        if self.verbose > 1:
-            print getPars
+        self.logger.info(str(getPars))
         # convert command to URL
         url = 'http://%s/weatherstation/updateweatherstation.php?%s' % (
             self.server[rapid_fire], urllib.urlencode(getPars))
-        if self.verbose > 2:
-            print url
+        self.logger.debug(url)
         # have three tries before giving up
         for n in range(3):
             try:
                 wudata = urllib2.urlopen(url)
                 moreinfo = wudata.read()
-                if self.verbose > 0:
-                    print "Weather Underground returns: \"%s\"" % (moreinfo.strip())
+                self.logger.info(
+                    "Weather Underground returns: %s", moreinfo.strip())
                 break
             except Exception, ex:
-                print >>sys.stderr, ex
+                self.logger.error(str(ex))
     def Upload(self, catchup):
         if catchup:
             # upload all data since last time
@@ -149,8 +148,8 @@ def main(argv=None):
         print >>sys.stderr, "Error: 1 argument required"
         print >>sys.stderr, __doc__.strip()
         return 2
+    logger = ApplicationLogger(verbose)
     return ToUnderground(
-        DataStore.params(args[0]), DataStore.data_store(args[0]),
-        verbose=verbose).Upload(catchup)
+        DataStore.params(args[0]), DataStore.data_store(args[0])).Upload(catchup)
 if __name__ == "__main__":
     sys.exit(main())

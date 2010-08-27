@@ -12,12 +12,14 @@ output_file is the name of the text file to be created
 
 from datetime import datetime, timedelta
 import getopt
+import logging
 import os
 import shlex
 import sys
 
 import DataStore
 import Localisation
+from Logger import ApplicationLogger
 from TimeZone import Local, utc
 import WeatherStation
 
@@ -37,6 +39,7 @@ def Template(params, raw_data, hourly_data, daily_data, monthly_data,
             idx = new_idx
             count += 1
         return idx, count == 0
+    logger = logging.getLogger('pywws.Template')
     # set language before importing wind_dir_text array
     if not translation:
         translation = Localisation.GetTranslation(params)
@@ -54,7 +57,7 @@ def Template(params, raw_data, hourly_data, daily_data, monthly_data,
     # jump to last item
     idx, valid_data = jump(datetime.max, -1)
     if not valid_data:
-        print >>sys.stderr, "No summary data - run Process.py first"
+        logger.error("No summary data - run Process.py first")
         return 4
     data = data_set[idx]
     # open template file and output file
@@ -128,7 +131,7 @@ def Template(params, raw_data, hourly_data, daily_data, monthly_data,
                 elif command[1] == 'local':
                     time_zone = Local
                 else:
-                    print >>sys.stderr, "Unknown time zone: %s" % command[1]
+                    logger.error("Unknown time zone: %s", command[1])
                     return 6
             elif command[0] == 'jump':
                 prevdata = data
@@ -142,7 +145,7 @@ def Template(params, raw_data, hourly_data, daily_data, monthly_data,
                 if valid_data and loop_count > 0:
                     tmplt.seek(loop_start, 0)
             else:
-                print >>sys.stderr, "Unknown processing directive: #%s#" % parts[i]
+                logger.error("Unknown processing directive: #%s#", parts[i])
                 return 5
     of.close()
     tmplt.close()
@@ -166,6 +169,7 @@ def main(argv=None):
         if o == '--help':
             print __doc__.strip()
             return 0
+    logger = ApplicationLogger(1)
     return Template(DataStore.params(args[0]),
                     DataStore.data_store(args[0]), DataStore.hourly_store(args[0]),
                     DataStore.daily_store(args[0]), DataStore.monthly_store(args[0]),

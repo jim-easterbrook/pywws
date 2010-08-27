@@ -11,10 +11,12 @@ data_dir is the root directory of the weather data
 from collections import deque
 from datetime import date, datetime, timedelta
 import getopt
+import logging
 import os
 import sys
 
 import DataStore
+from Logger import ApplicationLogger
 from TimeZone import Local, utc
 import WeatherStation
 
@@ -68,6 +70,7 @@ class Acc:
     local time (1000-2200 and 2200-1000 during DST), regardless of the
     "day end hour" setting."""
     def __init__(self, time_offset, last_rain):
+        self.logger = logging.getLogger('pywws.Process.Acc')
         self.last_rain = last_rain
         self.h_wind_dir = {}
         self.d_wind_dir = {}
@@ -100,8 +103,8 @@ class Acc:
             if self.last_rain != None:
                 diff = rain - self.last_rain
                 if diff < -0.001:
-                    print '%s rain reset %.1f -> %.1f' % (
-                        idx, self.last_rain, rain)
+                    self.logger.warning(
+                        '%s rain reset %.1f -> %.1f', str(idx), self.last_rain, rain)
                 else:
                     self.h_rain += diff
             self.last_rain = rain
@@ -258,7 +261,7 @@ class MonthAcc:
             result['temp_%s_max_hi' % i], result['temp_%s_max_hi_t' % i] = (
                 self.m_temp[i].max_hi.result())
         return result
-def Process(params, raw_data, hourly_data, daily_data, monthly_data, verbose=1):
+def Process(params, raw_data, hourly_data, daily_data, monthly_data):
     """Generate summaries from raw weather station data.
 
     Starts from the last hourly or daily summary (whichever is
@@ -273,8 +276,8 @@ def Process(params, raw_data, hourly_data, daily_data, monthly_data, verbose=1):
     the weather station's offset as recorded by LogData.py. The
     pressure trend (change over three hours) is also computed.
     """
-    if verbose > 0:
-        print 'Generating summary data'
+    logger = logging.getLogger('pywws.Process')
+    logger.info('Generating summary data')
     HOUR = timedelta(hours=1)
     HOURx3 = timedelta(hours=3)
     SECOND = timedelta(seconds=1)
@@ -321,8 +324,7 @@ def Process(params, raw_data, hourly_data, daily_data, monthly_data, verbose=1):
     acc = Acc(time_offset, last_rain)
     # process the data in day chunks
     while start <= last_raw:
-        if verbose > 0:
-            print "day:", start.isoformat()
+        logger.info("day: %s", start.isoformat())
         day_start = start
         # process each hour
         for hour in range(24):
@@ -401,8 +403,7 @@ def Process(params, raw_data, hourly_data, daily_data, monthly_data, verbose=1):
             stop = start.replace(year=start.year+1, month=1)
         # get month limits
         t1 = stop - month_offset
-        if verbose > 0:
-            print "month:", start.isoformat()
+        logger.info("month: %s", start.isoformat())
         acc = MonthAcc(daily_data[daily_data.after(t0)]['start'])
         for data in daily_data[t0:t1]:
             acc.add(data)
@@ -432,6 +433,7 @@ def main(argv=None):
         print >>sys.stderr, 'Error: 1 argument required\n'
         print >>sys.stderr, __doc__.strip()
         return 2
+    logger = ApplicationLogger(1)
     data_dir = args[0]
     return Process(DataStore.params(data_dir),
                    DataStore.data_store(data_dir),

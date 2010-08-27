@@ -13,16 +13,18 @@ data_dir.
 """
 
 import getopt
+import logging
 import os
 import shutil
 import sys
 
 import DataStore
+from Logger import ApplicationLogger
 
-def Upload(params, files, verbose=1):
+def Upload(params, files):
+    logger = logging.getLogger('pywws.Upload')
     if eval(params.get('ftp', 'local site', 'False')):
-        if verbose > 0:
-            print "Copying to local directory"
+        logger.info("Copying to local directory")
         # copy to local directory
         directory = params.get(
             'ftp', 'directory', os.path.expanduser('~/public_html/weather/data/'))
@@ -31,8 +33,7 @@ def Upload(params, files, verbose=1):
         for file in files:
             shutil.copy2(file, directory)
         return 0
-    if verbose > 0:
-        print "Uploading to web site"
+    logger.info("Uploading to web site")
     # get remote site details
     secure = eval(params.get('ftp', 'secure', 'False'))
     site = params.get('ftp', 'site', 'ftp.username.your_isp.co.uk')
@@ -42,7 +43,6 @@ def Upload(params, files, verbose=1):
     # open connection
     if secure:
         # install a logging handler to keep paramiko quiet
-        import logging
         class NullHandler(logging.Handler):
             def emit(self, record):
                 pass
@@ -55,7 +55,7 @@ def Upload(params, files, verbose=1):
     else:
         import ftplib
         ftp = ftplib.FTP(site, user, password)
-#        print ftp.getwelcome()
+        logger.debug(ftp.getwelcome())
     for file in files:
         target = directory + os.path.basename(file)
         # have three tries before giving up
@@ -73,7 +73,7 @@ def Upload(params, files, verbose=1):
                     f.close()
                 break
             except Exception, ex:
-                print >>sys.stderr, ex
+                logger.error(str(ex))
     if secure:
         ftp.close()
         transport.close()
@@ -99,6 +99,7 @@ def main(argv=None):
         print >>sys.stderr, "Error: at least 2 arguments required"
         print >>sys.stderr, __doc__.strip()
         return 2
+    logger = ApplicationLogger(1)
     return Upload(DataStore.params(args[0]), args[1:])
 if __name__ == "__main__":
     sys.exit(main())

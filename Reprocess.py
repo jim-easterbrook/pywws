@@ -14,6 +14,7 @@ import os
 import sys
 
 from pywws import DataStore
+from pywws.Logger import ApplicationLogger
 from pywws import Process
 
 def Reprocess(data_dir):
@@ -53,6 +54,7 @@ def main(argv=None):
         print >>sys.stderr, 'Error: 1 argument required\n'
         print >>sys.stderr, __doc__.strip()
         return 2
+    logger = ApplicationLogger(1)
     data_dir = args[0]
     return Reprocess(data_dir)
 if __name__ == "__main__":

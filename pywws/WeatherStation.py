@@ -5,6 +5,7 @@ wwsrdump.c by Svend Skafte (svend@skafte.net), modified by Dave Wells.
 """
 
 from datetime import datetime
+import logging
 import math
 import platform
 import sys
@@ -179,6 +180,7 @@ class weather_station:
     """Class that represents the weather station to user program."""
     def __init__(self):
         """Connect to weather station and prepare to read data."""
+        self.logger = logging.getLogger('pywws.weather_station')
         self.devh = None
         # _open_readw
         dev = findDevice(0x1941, 0x8021)
@@ -226,7 +228,7 @@ class weather_station:
                 # interface was not claimed. No problem
                 pass
         self.devh = None
-    def live_data(self, verbose=0):
+    def live_data(self):
         # There are two things we want to synchronise to - the data is updated every
         # 48 seconds and the address is incremented every 5 minutes (or 10, 15, ...,
         # 30). Rather than getting data every second, we sleep until one of the above
@@ -244,9 +246,7 @@ class weather_station:
             now = time.time()
             new_ptr = self.current_pos()
             new_data = self.get_data(old_ptr, unbuffered=True)
-            if verbose > 2:
-                print '.',
-                sys.stdout.flush()
+            self.logger.debug('live_data loop')
             # update of 'delay' by logging timer is not new data
             old_data['delay'] = new_data['delay']
             yielded = False
@@ -254,8 +254,7 @@ class weather_station:
                 old_ptr = new_ptr
                 next_log = now + log_interval
                 # get a logged record
-                if verbose > 2:
-                    print '%06x' % new_ptr
+                self.logger.debug('live_data new ptr: %06x', new_ptr)
                 new_data['idx'] = datetime.utcfromtimestamp(int(now))
                 yield new_data, True
                 yielded = True
@@ -264,8 +263,6 @@ class weather_station:
                 next_live = now + live_interval
                 live_overdue = next_live + 2
                 # new_data is a 'live' record
-                if verbose > 2:
-                    print ''
                 new_data['idx'] = datetime.utcfromtimestamp(int(now))
                 yield new_data, False
                 yielded = True
@@ -273,8 +270,7 @@ class weather_station:
                 next_live += live_interval
                 live_overdue = next_live + 2
                 # overdue for a 'live' record, so repeat old one
-                if verbose > 2:
-                    print '*'
+                self.logger.debug('live_data overdue')
                 new_data['idx'] = datetime.utcfromtimestamp(int(now))
                 yield new_data, False
                 yielded = True
