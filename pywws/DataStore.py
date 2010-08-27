@@ -44,10 +44,14 @@ class params:
         self._config = SafeConfigParser()
         self._config.read(self._path)
     def __del__(self):
-        if self._dirty:
-            of = open(self._path, 'w')
-            self._config.write(of)
-            of.close()
+        self.flush()
+    def flush(self):
+        if not self._dirty:
+            return
+        self._dirty = False
+        of = open(self._path, 'w')
+        self._config.write(of)
+        of.close()
     def get(self, section, option, default=None):
         """
         Get a parameter value and return a string.
