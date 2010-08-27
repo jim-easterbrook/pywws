@@ -42,17 +42,18 @@ controlled clock, it may have lost its signal.""" % (str(diff))
     pressure_offset = fixed_block['rel_pressure'] - fixed_block['abs_pressure']
     params.set('fixed', 'pressure offset', '%g' % (pressure_offset))
     params.set('fixed', 'read period', '%d' % (fixed_block['read_period']))
+    params.flush()
     # get address and date-time of last complete logged data
     if verbose > 0:
         print 'Synchronising to weather station'
-    for now, data, logged in ws.live_data():
+    for data, logged in ws.live_data():
+        last_date = data['idx']
         if verbose > 2:
-            print now.strftime('%H:%M:%S')
+            print last_date.strftime('%H:%M:%S')
         if logged:
-            last_date = now
             break
-        if sync < 1:
-            last_date = now.replace(second=0) - timedelta(minutes=data['delay'])
+        if sync < 1 and last_date.second > 5 and last_date.second < 55:
+            last_date = last_date.replace(second=0) - timedelta(minutes=data['delay'])
             break
     current_ptr = ws.current_pos()
     last_ptr = ws.dec_ptr(current_ptr)
@@ -75,7 +76,7 @@ controlled clock, it may have lost its signal.""" % (str(diff))
         if data['delay'] == None:
             break
         raw_data[last_date] = data
-        last_date = last_date - timedelta(minutes=data['delay'])
+        last_date -= timedelta(minutes=data['delay'])
         last_ptr = ws.dec_ptr(last_ptr)
     if verbose > 0:
         print "%d records written" % count

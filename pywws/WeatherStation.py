@@ -256,8 +256,8 @@ class weather_station:
                 # get a logged record
                 if verbose > 2:
                     print '%06x' % new_ptr
-                yield (datetime.utcfromtimestamp(now).replace(microsecond=0),
-                       new_data, True)
+                new_data['idx'] = datetime.utcfromtimestamp(int(now))
+                yield new_data, True
                 yielded = True
             elif new_data != old_data:
                 old_data = dict(new_data)
@@ -266,8 +266,8 @@ class weather_station:
                 # new_data is a 'live' record
                 if verbose > 2:
                     print ''
-                yield (datetime.utcfromtimestamp(now).replace(microsecond=0),
-                       new_data, False)
+                new_data['idx'] = datetime.utcfromtimestamp(int(now))
+                yield new_data, False
                 yielded = True
             elif now > live_overdue:
                 next_live += live_interval
@@ -275,8 +275,8 @@ class weather_station:
                 # overdue for a 'live' record, so repeat old one
                 if verbose > 2:
                     print '*'
-                yield (datetime.utcfromtimestamp(next_live).replace(microsecond=0),
-                       new_data, False)
+                new_data['idx'] = datetime.utcfromtimestamp(int(now))
+                yield new_data, False
                 yielded = True
             new_now = time.time()
             # yield may have taken a long time, so update due times if required
