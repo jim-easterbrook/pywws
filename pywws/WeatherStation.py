@@ -242,29 +242,29 @@ class weather_station:
         next_live = now
         live_overdue = now + 3600
         next_log = None
+        count = 0
         while True:
             now = time.time()
             new_ptr = self.current_pos()
             new_data = self.get_data(old_ptr, unbuffered=True)
-            self.logger.debug('live_data loop')
             # update of 'delay' by logging timer is not new data
             old_data['delay'] = new_data['delay']
             yielded = False
             if new_ptr != old_ptr:
-                old_ptr = new_ptr
                 next_log = now + log_interval
                 # get a logged record
                 self.logger.debug('live_data new ptr: %06x', new_ptr)
                 new_data['idx'] = datetime.utcfromtimestamp(int(now))
-                yield new_data, True
+                yield new_data, old_ptr, True
                 yielded = True
+                old_ptr = new_ptr
             elif new_data != old_data:
                 old_data = dict(new_data)
                 next_live = now + live_interval
                 live_overdue = next_live + 2
                 # new_data is a 'live' record
                 new_data['idx'] = datetime.utcfromtimestamp(int(now))
-                yield new_data, False
+                yield new_data, old_ptr, False
                 yielded = True
             elif now > live_overdue:
                 next_live += live_interval
@@ -272,11 +272,11 @@ class weather_station:
                 # overdue for a 'live' record, so repeat old one
                 self.logger.debug('live_data overdue')
                 new_data['idx'] = datetime.utcfromtimestamp(int(now))
-                yield new_data, False
+                yield new_data, old_ptr, False
                 yielded = True
             new_now = time.time()
-            # yield may have taken a long time, so update due times if required
             if yielded:
+                # yield may have taken a long time, so update due times if required
                 while next_log and next_log <= new_now:
                     next_log += log_interval
                     old_ptr = self.inc_ptr(old_ptr)
@@ -284,6 +284,10 @@ class weather_station:
                     next_live += live_interval
                     live_overdue = next_live + 2
                     old_data = self.get_data(old_ptr, unbuffered=True)
+                self.logger.debug('live_data loop %d', count)
+                count = 0
+            else:
+                count += 1
             # wake up just before next reading is due, or in one second
             if next_log:
                 pause = (min(next_log, next_live) - 2) - new_now

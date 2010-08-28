@@ -45,16 +45,15 @@ def LogData(params, raw_data, sync=0):
     params.flush()
     # get address and date-time of last complete logged data
     logger.info('Synchronising to weather station')
-    for data, logged in ws.live_data():
+    for data, last_ptr, logged in ws.live_data():
         last_date = data['idx']
         logger.debug('Reading time %s', last_date.strftime('%H:%M:%S'))
         if logged:
             break
         if sync < 1 and last_date.second > 5 and last_date.second < 55:
             last_date = last_date.replace(second=0) - timedelta(minutes=data['delay'])
+            last_ptr = ws.dec_ptr(last_ptr)
             break
-    current_ptr = ws.current_pos()
-    last_ptr = ws.dec_ptr(current_ptr)
     # get time to go back to
     last_stored = raw_data.before(datetime.max)
     if last_stored == None:
@@ -65,14 +64,12 @@ def LogData(params, raw_data, sync=0):
     # go back through stored data, until we catch up with what we've already got
     logger.info('Fetching data')
     count = 0
-    while last_ptr != current_ptr and last_date > last_stored:
-        count += 1
-        if count >= fixed_block['data_count']:
+    while last_date > last_stored:
+        if count >= fixed_block['data_count'] - 1:
             break
         data = ws.get_data(last_ptr)
-        if data['delay'] == None:
-            break
         raw_data[last_date] = data
+        count += 1
         last_date -= timedelta(minutes=data['delay'])
         last_ptr = ws.dec_ptr(last_ptr)
     logger.info("%d records written", count)
