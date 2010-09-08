@@ -3,7 +3,6 @@
   <title>Wind over the last day (mph)</title>
   <duration>hours=24</duration>
   <windrose>
-    <title>Day</title>
     <source>raw</source>
     <ycalc>data['wind_ave'] * 3.6 / 1.609344</ycalc>
     <yrange>31</yrange>
