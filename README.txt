@@ -36,8 +36,7 @@ Dependencies:
 	  paramiko (http://www.lag.net/paramiko/)
 	  pycrypto (http://www.dlitz.net/software/pycrypto/)
 	For Twitter updates:
-	  python-twitter
-	    (http://code.google.com/p/python-twitter/) v0.6 or higher
+	  tweepy (http://code.google.com/p/tweepy/)
 	  simplejson (http://pypi.python.org/pypi/simplejson)
 	To create new language translations:
 	  msgfmt (from the gettext package) if installing on Linux
@@ -134,15 +133,14 @@ Getting started:
   	directory = public_html/weather/data/
   17/ Try uploading the files:
       "python pywws/Upload.py /data/weather 24hrs.txt 6hrs.txt 24hrs.png 7days.png"
-  18/ If you want to upload to Twitter, install python-twitter and simplejson
+  18/ If you want to upload to Twitter, install tweepy and simplejson
       then:
+      "python TwitterAuth.py /data/weather"
+      This will open a web browser (or give you a URL) where you log in
+      to your Twitter account and authorise pywws to post.
+      Then:
       "python pywws/Template.py /data/weather example_templates/tweet.txt tweet.txt"
       "python pywws/ToTwitter.py /data/weather tweet.txt"
-      You'll need to edit /data/weather/weather.ini with your Twitter
-      account details, for example:
-        [twitter]
-        username = twitterusername
-        password = twitterpassword
   19/ If you want to upload to Weather Underground, try:
       "python pywws/ToUnderground.py -vvv /data/weather"
       You'll need to edit /data/weather/weather.ini with your Wunderground
@@ -163,6 +161,14 @@ Getting started:
 
 Comments or questions? Please subscribe to the pywws mailing list
 http://groups.google.com/group/pywws and let us know.
+
+Changes in v10.09:
+	1/ Added 'catchup' mode to ToUnderground.py.
+	2/ Created 'Tasks.py' to handle common tasks.
+	3/ Made better use of Python's logger for info and error
+	   messages.
+	4/ Changed over from 'python-twiter' to 'tweepy' for Twitter
+	   access.
 
 Changes in v10.08:
 	1/ Added internal temperature to daily and monthly summaries.
