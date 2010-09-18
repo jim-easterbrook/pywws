@@ -1,4 +1,5 @@
 #timezone local#
+#roundtime True#
 #hourly#
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos##">
@@ -22,6 +23,7 @@
 , Pressure: #rel_pressure "%.0f hPa, "#
 #pressure_trend "%s" "" "pressure_trend_text(x)"#</description>
       <guid isPermaLink="false">#idx "hourly_%Y_%m_%d_%H_%M_%Z"#</guid>
+#roundtime False#
       <pubDate>#idx "%a, %d %b %Y %H:%M:%S %z"#</pubDate>
     </item>
   </channel>

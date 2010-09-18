@@ -13,6 +13,7 @@
     <th>max gust</th>
   </tr>
 #timezone local#
+#roundtime True#
 #daily#
 #jump -7#
 #loop 7#

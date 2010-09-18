@@ -50,6 +50,8 @@ def Template(params, raw_data, hourly_data, daily_data, monthly_data,
     wind_chill = WeatherStation.wind_chill
     apparent_temp = WeatherStation.apparent_temp
     pressure_offset = eval(params.get('fixed', 'pressure offset'))
+    # start off with no time rounding
+    round_time = None
     # start off in hourly data mode
     data_set = hourly_data
     # start off in utc
@@ -92,6 +94,8 @@ def Template(params, raw_data, hourly_data, daily_data, monthly_data,
                     x = None
                 # adjust time
                 if isinstance(x, datetime):
+                    if round_time:
+                        x += round_time
                     x = x.replace(tzinfo=utc)
                     x = x.astimezone(time_zone)
                 # convert data
@@ -133,6 +137,11 @@ def Template(params, raw_data, hourly_data, daily_data, monthly_data,
                 else:
                     logger.error("Unknown time zone: %s", command[1])
                     return 6
+            elif command[0] == 'roundtime':
+                if eval(command[1]):
+                    round_time = timedelta(seconds=30)
+                else:
+                    round_time = None
             elif command[0] == 'jump':
                 prevdata = data
                 idx, valid_data = jump(idx, int(command[1]))

@@ -31,6 +31,7 @@
     <th>Windboe</th>
   </tr>
 #timezone local#
+#roundtime True#
 #hourly#
 #jump -6#
 #loop 7#

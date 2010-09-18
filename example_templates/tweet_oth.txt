@@ -1,5 +1,6 @@
 #hourly#
 #timezone local#
+#roundtime True#
 #calc "(data['idx'] + timedelta(minutes=10)).replace(minute=0)" "%H:%M %Z:"#
  Temperature: #temp_out "%.1f°C" "-"#
 , Wind: #wind_dir "%s, " "" "wind_dir_text[x]"#

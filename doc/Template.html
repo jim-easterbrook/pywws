@@ -44,6 +44,9 @@
         <b><code>#timezone name#</code></b>: convert all datetime values to time zone <code>name</code> before output. Permitted values for <code>name</code> are <code>utc</code> or <code>local</code>.
       </li>
       <li>
+        <b><code>#roundtime expr#</code></b>: switch time rounding on or off, according to <code>expr</code>. When time rounding is on, 30 seconds is added to each time value used. This is useful if you are only printing out hours and minutes, e.g. with a "%H:%M" format, and want time values such as 10:23:58 to appear as "10:24". Use "True" or "False" for <code>expr</code>. 
+      </li>
+      <li>
         <b><code>#jump count#</code></b>: jump <code>count</code> values. The data index is adjusted by <code>count</code> hours or days. Negative values jump back in time.<br>It is a good idea to put jumps within a loop at the end, just before the <code>#endloop#</code> instruction. The loop can then terminate cleanly if it has run out of data.
       </li>
       <li>

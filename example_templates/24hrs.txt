@@ -1,5 +1,6 @@
 #daily#
 #timezone local#
+#roundtime True#
 <table border="1" rules="all">
 #jump -1#
 #loop 2#
