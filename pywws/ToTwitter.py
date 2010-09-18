@@ -8,23 +8,28 @@ options are:
 data_dir is the root directory of the weather data
 file is the text file to be uploaded
 
-Username and password are read from the weather.ini file in data_dir.
+Authorisation data is read from the weather.ini file in data_dir.
 """
 
 import getopt
 import logging
-import os
 import sys
-import twitter
+import tweepy
 
 import DataStore
 import Localisation
 from Logger import ApplicationLogger
 
+consumer_key = '62moSmU9ERTs0LK0g2xHAg'
+consumer_secret = 'ygdXpjr0rDagU3dqULPqXF8GFgUOD6zYDapoHAH9ck'
+
 def ToTwitter(params, file, translation=None):
     logger = logging.getLogger('pywws.ToTwitter')
-    username = params.get('twitter', 'username', 'twitterusername')
-    password = params.get('twitter', 'password', 'twitterpassword')
+    key = params.get('twitter', 'key')
+    secret = params.get('twitter', 'secret')
+    if (not key) or (not secret):
+        logger.error('Authentication data not found')
+        return 1
     tweet_file = open(file, 'r')
     tweet = tweet_file.read(140)
     tweet_file.close()
@@ -36,13 +41,12 @@ def ToTwitter(params, file, translation=None):
         # so tweets can contain the very useful degree symbol
         if charset in (None, 'ASCII'):
             charset = 'iso-8859-1'
-        api = twitter.Api(
-            username=username, password=password, input_encoding=charset)
-        if hasattr(api, 'SetSource'):
-            api.SetSource('pywws')
+        auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+        auth.set_access_token(key, secret)
+        api = tweepy.API(auth)
         for i in range(3):
             try:
-                status = api.PostUpdate(tweet)
+                status = api.update_status(tweet.decode(charset))
                 break
             except Exception, ex:
                 logger.error(str(ex))
