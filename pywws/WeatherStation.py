@@ -238,65 +238,89 @@ class weather_station:
         live_interval = 48
         old_ptr = self.current_pos()
         old_data = self.get_data(old_ptr, unbuffered=True)
+        next_data = self.get_data(self.inc_ptr(old_ptr))
+        ptr_changed = True
         now = time.time()
-        next_live = now
-        live_overdue = now + 3600
         next_log = None
-        count = 0
+        next_live = None
+        live_overdue = now + 3600
         while True:
             now = time.time()
+            # When the pointer changes, the data is updated first. Getting the data
+            # after getting the pointer makes sure that when we detect a pointer
+            # change the data is correct.
             new_ptr = self.current_pos()
             new_data = self.get_data(old_ptr, unbuffered=True)
-            # update of 'delay' by logging timer is not new data
-            old_data['delay'] = new_data['delay']
+            # hide data changes caused by logging interval being reached
+            if (new_data['delay'] <= 0 or
+                new_data['delay'] >= fixed_block['read_period']):
+                old_data['delay'] = new_data['delay']
             yielded = False
-            if new_ptr != old_ptr:
-                next_log = now + log_interval
-                # get a logged record
-                self.logger.debug('live_data new ptr: %06x', new_ptr)
-                new_data['idx'] = datetime.utcfromtimestamp(int(now))
-                yield new_data, old_ptr, True
-                yielded = True
-                old_ptr = new_ptr
-            elif new_data != old_data:
-                old_data = dict(new_data)
-                next_live = now + live_interval
-                live_overdue = next_live + 2
-                # new_data is a 'live' record
-                new_data['idx'] = datetime.utcfromtimestamp(int(now))
-                yield new_data, old_ptr, False
-                yielded = True
-            elif now > live_overdue:
-                next_live += live_interval
-                live_overdue = next_live + 2
-                # overdue for a 'live' record, so repeat old one
-                self.logger.debug('live_data overdue')
-                new_data['idx'] = datetime.utcfromtimestamp(int(now))
-                yield new_data, old_ptr, False
-                yielded = True
-            new_now = time.time()
-            if yielded:
-                # yield may have taken a long time, so update due times if required
-                while next_log and next_log <= new_now:
-                    next_log += log_interval
-                    old_ptr = self.inc_ptr(old_ptr)
-                while next_live <= new_now:
+            data_changed = new_data != old_data
+            if ptr_changed and new_data == next_data:
+                # picked up old data from new pointer, ignore it
+                self.logger.info('live_data old data')
+                pass
+            elif data_changed or now > live_overdue:
+                result = dict(new_data)
+                if data_changed:
+                    result['idx'] = datetime.utcfromtimestamp(int(now))
+                else:
+                    self.logger.debug('live_data overdue')
+                    result['idx'] = datetime.utcfromtimestamp(int(next_live))
+                yield result, old_ptr, False
+                if next_live and next_live - 6 > now:
+                    # may have lost sync
+                    self.logger.warning('live_data lost sync')
+                    next_log = None
+                    next_live = None
+                    live_overdue = now + 3600
+                elif data_changed:
+                    next_live = now + live_interval
+                    live_overdue = next_live + 3
+                else:
                     next_live += live_interval
-                    live_overdue = next_live + 2
+                    live_overdue = next_live + 3
+                old_data = new_data
+                yielded = True
+                ptr_changed = False
+            if new_ptr != old_ptr:
+                self.logger.debug('live_data new ptr: %06x', new_ptr)
+                result = dict(new_data)
+                result['idx'] = datetime.utcfromtimestamp(int(now))
+                yield result, old_ptr, True
+                next_log = now + log_interval
+                old_ptr = new_ptr
+                next_data = self.get_data(self.inc_ptr(old_ptr))
+                yielded = True
+                ptr_changed = True
+            if yielded:
+                # yield may have taken a long time, so may need to resync
+                now = time.time()
+                if next_log and next_log - 2 <= now:
+                    old_ptr = self.current_pos()
                     old_data = self.get_data(old_ptr, unbuffered=True)
-                self.logger.debug('live_data loop %d', count)
-                count = 0
+                    next_data = self.get_data(self.inc_ptr(old_ptr))
+                    next_log = None
+                    ptr_changed = True
+                    self.logger.debug('live_data reset log')
+                if next_live and next_live - 2 <= now:
+                    old_data = self.get_data(old_ptr, unbuffered=True)
+                    while next_live - 2 <= now:
+                        next_live += live_interval
+                    live_overdue = now + 3600
+                    self.logger.debug('live_data adjust live')
+            # wake up in 12 seconds, or just before next reading is due
+            if not next_live:
+                time.sleep(0.5)
+            elif next_log:
+                pause = (min(next_log, next_live) - 2) - now
+                time.sleep(min(max(pause, 0.5), 12))
+            elif old_data['delay'] < fixed_block['read_period'] - 1:
+                pause = (next_live - 2) - now
+                time.sleep(min(max(pause, 0.5), 12))
             else:
-                count += 1
-            # wake up just before next reading is due, or in one second
-            if next_log:
-                pause = (min(next_log, next_live) - 2) - new_now
-                time.sleep(max(pause, 1))
-            elif new_data['delay'] < fixed_block['read_period'] - 1:
-                pause = (next_live - 2) - new_now
-                time.sleep(max(pause, 1))
-            else:
-                time.sleep(1)
+                time.sleep(0.5)
     def inc_ptr(self, ptr):
         """Get next circular buffer data pointer."""
         result = ptr + 0x10
@@ -330,12 +354,12 @@ class weather_station:
         return _decode(
             self._read_fixed_block(0x0020), self.lo_fix_format['current_pos'])
     def get_raw_fixed_block(self, unbuffered=False):
-        """Get the raw "fixed block" of setting and min/max data."""
+        """Get the raw "fixed block" of settings and min/max data."""
         if unbuffered or not self._fixed_block:
             self._fixed_block = self._read_fixed_block()
         return self._fixed_block
     def get_fixed_block(self, keys=[], unbuffered=False):
-        """Get the decoded "fixed block" of setting and min/max data.
+        """Get the decoded "fixed block" of settings and min/max data.
 
         A subset of the entire block can be selected by keys."""
         if unbuffered or not self._fixed_block:
@@ -349,27 +373,31 @@ class weather_station:
         """Get the first 64 bytes of the raw "fixed block"."""
         return _decode(self._read_fixed_block(0x0040), self.lo_fix_format)
     def _read_block(self, ptr):
+        # Read block repeatedly until it's stable. This avoids getting corrupt
+        # data when the block is read as the station is updating it.
         buf_1 = (ptr / 256) & 0xFF
         buf_2 = ptr & 0xFF;
-        self.devh.controlMsg(usb.TYPE_CLASS + usb.RECIP_INTERFACE, 9,
-                             [0xA1, buf_1, buf_2, 0x20, 0xA1, buf_1, buf_2, 0x20],
-                             value=0x200, timeout=1000)
-        return self.devh.interruptRead(0x81, 0x20, 100)
-    def _read_fixed_block(self, hi=0x0100):
-        # Read block repeatedly until it's stable. This avoids getting corrupt
-        # data if the block is read as the station is updating it.
-        old_fixed_block = None
+        old_block = None
         while True:
-            new_fixed_block = []
-            for mempos in range(0x0000, hi, 0x0020):
-                new_fixed_block += self._read_block(mempos)
-            # check 'magic number'
-            if new_fixed_block[0:2] not in ([0x55, 0xAA], [0xFF, 0xFF]):
-                return None
-            # check for consistent data
-            if new_fixed_block == old_fixed_block:
-                return new_fixed_block
-            old_fixed_block = new_fixed_block
+            self.devh.controlMsg(usb.TYPE_CLASS + usb.RECIP_INTERFACE, 9,
+                                 [0xA1, buf_1, buf_2, 0x20, 0xA1, buf_1, buf_2, 0x20],
+                                 value=0x200, timeout=1000)
+            new_block = self.devh.interruptRead(0x81, 0x20, 1000)
+            if len(new_block) == 0x20:
+                if new_block == old_block:
+                    break
+                if old_block != None:
+                    self.logger.debug('_read_block changing %06x', ptr)
+                old_block = new_block
+        return new_block
+    def _read_fixed_block(self, hi=0x0100):
+        result = []
+        for mempos in range(0x0000, hi, 0x0020):
+            result += self._read_block(mempos)
+        # check 'magic number'
+        if result[0:2] not in ([0x55, 0xAA], [0xFF, 0xFF]):
+            raise IOError("Invalid data from weather station")
+        return result
     # Tables of "meanings" for raw weather station data. Each key
     # specifies an (offset, type, multiplier) tuple that is understood
     # by _decode.
