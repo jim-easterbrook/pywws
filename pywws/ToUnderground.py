@@ -86,11 +86,8 @@ class ToUnderground:
             (current['abs_pressure'] + self.pressure_offset) * 0.02953)
         return result
     def SendData(self, data, rapid_fire):
-        # upload data
-        self.logger.debug(str(data))
         # create weather underground command
         getPars = self._TranslateData(data, rapid_fire)
-        self.logger.info(str(getPars))
         # convert command to URL
         url = 'http://%s/weatherstation/updateweatherstation.php?%s' % (
             self.server[rapid_fire], urllib.urlencode(getPars))
@@ -100,11 +97,16 @@ class ToUnderground:
             try:
                 wudata = urllib2.urlopen(url)
                 moreinfo = wudata.read()
-                self.logger.info(
-                    "Weather Underground returns: %s", moreinfo.strip())
+                result = moreinfo.strip()
+                if result == 'success':
+                    self.logger.debug(
+                        "Weather Underground returns: %s", result)
+                else:
+                    self.logger.error(
+                        "Weather Underground returns: %s", result)
                 break
             except Exception, ex:
-                self.logger.error(str(ex))
+                self.logger.error("Exception: %s", str(ex))
     def Upload(self, catchup):
         if catchup:
             # upload all data since last time
@@ -112,17 +114,26 @@ class ToUnderground:
             if last_update:
                 last_update = DataStore.safestrptime(last_update) + timedelta(minutes=1)
             else:
-                last_update = datetime.utcnow() - timedelta(days=14)
+                last_update = datetime.utcnow() - timedelta(days=7)
             # iterate over all data since last_update
+            count = 0
             for data_now in self.data[last_update:]:
                 self.SendData(data_now, False)
                 last_update = data_now['idx']
+                count += 1
+            if count:
+                self.logger.info('%d records sent', count)
         else:
             # upload most recent data
             last_update = self.data.before(datetime.max)
             self.SendData(self.data[last_update], False)
         self.params.set('underground', 'last update', last_update.isoformat(' '))
         return 0
+    def RapidFire(self, data, catchup):
+        if catchup:
+            self.Upload(True)
+        self.SendData(data, True)
+        self.params.set('underground', 'last update', data['idx'].isoformat(' '))
 def main(argv=None):
     if argv is None:
         argv = sys.argv
