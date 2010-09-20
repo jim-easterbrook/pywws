@@ -59,7 +59,7 @@ def DoTwitter(section, params, raw_data, hourly_data, daily_data, monthly_data,
     templates = eval(params.get(section, 'twitter', '[]'))
     for template in templates:
         input_file = os.path.join(template_dir, template)
-        logger.info("Templating", template)
+        logger.info("Templating %s", template)
         output_file = os.path.join(work_dir, template)
         Template.Template(
             params, raw_data, hourly_data, daily_data,
@@ -71,5 +71,5 @@ def DoTwitter(section, params, raw_data, hourly_data, daily_data, monthly_data,
                 ToTwitter.ToTwitter(params, output_file, translation=translation)
                 break
             except Exception, ex:
-                logger.error(str(ex))
+                logger.exception(str(ex))
         os.unlink(output_file)
