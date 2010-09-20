@@ -40,6 +40,10 @@ def LogData(params, raw_data, sync=0):
             "Computer and weather station clocks disagree by %s (H:M:S).", str(diff))
     # store info from fixed block
     pressure_offset = fixed_block['rel_pressure'] - fixed_block['abs_pressure']
+    old_offset = eval(params.get('fixed', 'pressure offset', 'None'))
+    if old_offset and abs(old_offset - pressure_offset) > 0.01:
+        logger.warning(
+            'Pressure offset change: %g -> %g', old_offset, pressure_offset)
     params.set('fixed', 'pressure offset', '%g' % (pressure_offset))
     params.set('fixed', 'read period', '%d' % (fixed_block['read_period']))
     params.flush()
