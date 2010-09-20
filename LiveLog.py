@@ -6,8 +6,9 @@ Run this continuously, having set what tasks are to be done.
 
 usage: python LiveLog.py [options] data_dir
 options are:
-  -h or --help     display this help
-  -v or --verbose  increase amount of reassuring messages
+  -h      or --help      display this help
+  -l file or --log file  write log information to file
+  -v      or --verbose   increase amount of reassuring messages
 data_dir is the root directory of the weather data (e.g. /data/weather)
 """
 
@@ -116,25 +117,28 @@ def main(argv=None):
     if argv is None:
         argv = sys.argv
     try:
-        opts, args = getopt.getopt(argv[1:], "hv", ['help', 'verbose'])
+        opts, args = getopt.getopt(argv[1:], "hl:v", ['help', 'log=', 'verbose'])
     except getopt.error, msg:
         print >>sys.stderr, 'Error: %s\n' % msg
         print >>sys.stderr, __doc__.strip()
         return 1
     # process options
+    logfile = None
     verbose = 0
     for o, a in opts:
-        if o == '-h' or o == '--help':
+        if o in ('-h', '--help'):
             print __doc__.strip()
             return 0
-        elif o == '-v' or o == '--verbose':
+        elif o in ('-l', '--log'):
+            logfile = a
+        elif o in ('-v', '--verbose'):
             verbose += 1
     # check arguments
     if len(args) != 1:
         print >>sys.stderr, 'Error: 1 argument required\n'
         print >>sys.stderr, __doc__.strip()
         return 2
-    logger = ApplicationLogger(verbose)
+    logger = ApplicationLogger(verbose, logfile)
     return LiveLog(args[0])
 if __name__ == "__main__":
     try:
