@@ -45,7 +45,6 @@ def LogData(params, raw_data, sync=0):
         logger.warning(
             'Pressure offset change: %g -> %g', old_offset, pressure_offset)
     params.set('fixed', 'pressure offset', '%g' % (pressure_offset))
-    params.set('fixed', 'read period', '%d' % (fixed_block['read_period']))
     params.flush()
     # get address and date-time of last complete logged data
     logger.info('Synchronising to weather station')
