@@ -50,7 +50,7 @@ def Hourly(data_dir):
     # get hours since day end hour
     hour = (last_raw + timedelta(minutes=raw_data[last_raw]['delay'])).hour
     hour -= day_end_hour
-    sections = ['hourly']
+    sections = ['live', 'hourly']
     if hour % 12 == 0:
         sections.append('12 hourly')
     if hour % 24 == 0:
