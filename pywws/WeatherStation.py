@@ -233,8 +233,8 @@ class weather_station:
         # 48 seconds and the address is incremented every 5 minutes (or 10, 15, ...,
         # 30). Rather than getting data every second, we sleep until one of the above
         # is due. (During initialisation we get data every second anyway.)
-        fixed_block = self.get_fixed_block(unbuffered=True)
-        log_interval = fixed_block['read_period'] * 60
+        read_period = self.get_fixed_block(['read_period'])
+        log_interval = read_period * 60
         live_interval = 48
         old_ptr = self.current_pos()
         old_data = self.get_data(old_ptr, unbuffered=True)
@@ -252,8 +252,7 @@ class weather_station:
             new_ptr = self.current_pos()
             new_data = self.get_data(old_ptr, unbuffered=True)
             # hide data changes caused by logging interval being reached
-            if (new_data['delay'] <= 0 or
-                new_data['delay'] >= fixed_block['read_period']):
+            if (new_data['delay'] <= 0 or new_data['delay'] >= read_period):
                 old_data['delay'] = new_data['delay']
             yielded = False
             data_changed = new_data != old_data
@@ -318,7 +317,7 @@ class weather_station:
             elif next_log:
                 pause = (min(next_log, next_live) - 2) - now
                 time.sleep(min(max(pause, 0.5), 12))
-            elif old_data['delay'] < fixed_block['read_period'] - 1:
+            elif old_data['delay'] < read_period - 1:
                 pause = (next_live - 2) - now
                 time.sleep(min(max(pause, 0.5), 12))
             else:
