@@ -287,7 +287,9 @@ class weather_station:
             if new_ptr != old_ptr:
                 self.logger.debug('live_data new ptr: %06x', new_ptr)
                 result = dict(new_data)
-                result['idx'] = datetime.utcfromtimestamp(int(now))
+                # round time to nearest exact minute
+                idx = datetime.utcfromtimestamp(int(now) + 30)
+                result['idx'] = idx.replace(second=0)
                 yield result, old_ptr, True
                 next_log = now + log_interval
                 old_ptr = new_ptr
