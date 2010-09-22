@@ -30,6 +30,8 @@ def ToTwitter(params, file, translation=None):
     if (not key) or (not secret):
         logger.error('Authentication data not found')
         return 1
+    lat = params.get('twitter', 'latitude')
+    long = params.get('twitter', 'longitude')
     tweet_file = open(file, 'r')
     tweet = tweet_file.read(140)
     tweet_file.close()
@@ -46,7 +48,7 @@ def ToTwitter(params, file, translation=None):
         api = tweepy.API(auth)
         for i in range(3):
             try:
-                status = api.update_status(tweet.decode(charset))
+                status = api.update_status(tweet.decode(charset), lat=lat, long=long)
                 break
             except Exception, ex:
                 logger.error(str(ex))
