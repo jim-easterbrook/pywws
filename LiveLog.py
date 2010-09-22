@@ -30,9 +30,35 @@ from pywws import ToUnderground
 from pywws import Upload
 from pywws import WeatherStation
 
+def CheckFixedBlock(ws, params, logger):
+    fixed_block = ws.get_fixed_block(unbuffered=True)
+    if not fixed_block:
+        return None
+    # check clocks
+    s_time = DataStore.safestrptime(fixed_block['date_time'], '%Y-%m-%d %H:%M')
+    c_time = datetime.now().replace(second=0, microsecond=0)
+    diff = abs(s_time - c_time)
+    if diff > timedelta(minutes=2):
+        logger.warning(
+            "Computer and weather station clocks disagree by %s (H:M:S).", str(diff))
+    # store info from fixed block
+    pressure_offset = fixed_block['rel_pressure'] - fixed_block['abs_pressure']
+    old_offset = eval(params.get('fixed', 'pressure offset', 'None'))
+    if old_offset and abs(old_offset - pressure_offset) > 0.01:
+        logger.warning(
+            'Pressure offset change: %g -> %g', old_offset, pressure_offset)
+    params.set('fixed', 'pressure offset', '%g' % (pressure_offset))
+    params.flush()
+    return fixed_block
 def LiveLog(data_dir):
     logger = logging.getLogger('pywws.LiveLog')
     params = DataStore.params(data_dir)
+    # connect to weather station
+    ws = WeatherStation.weather_station()
+    fixed_block = CheckFixedBlock(ws, params, logger)
+    if not fixed_block:
+        logger.error("Invalid data from weather station")
+        return 3
     # open data file stores
     raw_data = DataStore.data_store(data_dir)
     hourly_data = DataStore.hourly_store(data_dir)
@@ -48,9 +74,6 @@ def LiveLog(data_dir):
     # get daytime end hour, in UTC
     day_end_hour = eval(params.get('config', 'day end hour', '21'))
     day_end_hour = (day_end_hour - (time_offset.seconds / 3600)) % 24
-    # connect to weather station
-    ws = WeatherStation.weather_station()
-    fixed_block = ws.get_fixed_block()
     # get time of last logged data
     two_minutes = timedelta(minutes=2)
     last_stored = raw_data.before(datetime.max)
@@ -93,6 +116,7 @@ def LiveLog(data_dir):
                     sections.append('12 hourly')
                 if (now.hour - day_end_hour) % 24 == 0:
                     sections.append('daily')
+                fixed_block = CheckFixedBlock(ws, params, logger)
             uploads = []
             for section in sections:
                 Tasks.DoTwitter(
@@ -110,6 +134,7 @@ def LiveLog(data_dir):
                 Upload.Upload(params, uploads)
             for file in uploads:
                 os.unlink(file)
+            params.flush()
         elif eval(params.get('live', 'underground', 'False')):
             underground.RapidFire(data, True)
     return 0
