@@ -238,7 +238,6 @@ class weather_station:
         live_interval = 48
         old_ptr = self.current_pos()
         old_data = self.get_data(old_ptr, unbuffered=True)
-        next_data = self.get_data(self.inc_ptr(old_ptr))
         ptr_changed = True
         now = time.time()
         next_log = None
@@ -256,11 +255,13 @@ class weather_station:
                 old_data['delay'] = new_data['delay']
             yielded = False
             data_changed = new_data != old_data
-            if ptr_changed and new_data == next_data:
+            if ptr_changed and (new_data['delay'] == None or new_data['delay'] > 4):
                 # picked up old data from new pointer, ignore it
                 self.logger.info('live_data old data')
                 pass
             elif data_changed or now > live_overdue:
+                if not next_live:
+                    self.logger.info('live_data synchronised')
                 result = dict(new_data)
                 if data_changed:
                     result['idx'] = datetime.utcfromtimestamp(int(now))
@@ -268,9 +269,9 @@ class weather_station:
                     self.logger.debug('live_data overdue')
                     result['idx'] = datetime.utcfromtimestamp(int(next_live))
                 yield result, old_ptr, False
-                if next_live and next_live - 6 > now:
+                if next_live and now < next_live - 6:
                     # may have lost sync
-                    self.logger.warning('live_data lost sync')
+                    self.logger.debug('live_data lost sync')
                     next_log = None
                     next_live = None
                     live_overdue = now + 3600
@@ -292,22 +293,20 @@ class weather_station:
                 yield result, old_ptr, True
                 next_log = now + log_interval
                 old_ptr = new_ptr
-                next_data = self.get_data(self.inc_ptr(old_ptr))
                 yielded = True
                 ptr_changed = True
             if yielded:
                 # yield may have taken a long time, so may need to resync
                 now = time.time()
-                if next_log and next_log - 2 <= now:
+                if next_log and now >= next_log + 28:
                     old_ptr = self.current_pos()
                     old_data = self.get_data(old_ptr, unbuffered=True)
-                    next_data = self.get_data(self.inc_ptr(old_ptr))
                     next_log = None
                     ptr_changed = True
                     self.logger.debug('live_data reset log')
-                if next_live and next_live - 2 <= now:
+                if next_live and now >= next_live + 6:
                     old_data = self.get_data(old_ptr, unbuffered=True)
-                    while next_live - 2 <= now:
+                    while now >= next_live + 6:
                         next_live += live_interval
                     live_overdue = now + 3600
                     self.logger.debug('live_data adjust live')
