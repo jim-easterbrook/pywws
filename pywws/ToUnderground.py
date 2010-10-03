@@ -133,7 +133,9 @@ class ToUnderground:
         if catchup:
             self.Upload(True)
         self.SendData(data, True)
-        self.params.set('underground', 'last update', data['idx'].isoformat(' '))
+        last_update = self.params.get('underground', 'last update')
+        if data['idx'] < last_update + timedelta(minutes=5):
+            self.params.set('underground', 'last update', data['idx'].isoformat(' '))
 def main(argv=None):
     if argv is None:
         argv = sys.argv
