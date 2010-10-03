@@ -112,17 +112,17 @@ class ToUnderground:
             # upload all data since last time
             last_update = self.params.get('underground', 'last update')
             if last_update:
-                last_update = DataStore.safestrptime(last_update) + timedelta(minutes=1)
+                start = DataStore.safestrptime(last_update) + timedelta(minutes=1)
             else:
-                last_update = datetime.utcnow() - timedelta(days=7)
+                start = datetime.utcnow() - timedelta(days=7)
             # iterate over all data since last_update
             count = 0
-            for data_now in self.data[last_update:]:
-                self.SendData(data_now, False)
-                last_update = data_now['idx']
+            for data in self.data[start:]:
+                self.SendData(data, False)
                 count += 1
             if count:
                 self.logger.info('%d records sent', count)
+            last_update = self.data.before(datetime.max)
         else:
             # upload most recent data
             last_update = self.data.before(datetime.max)
@@ -134,6 +134,10 @@ class ToUnderground:
             self.Upload(True)
         self.SendData(data, True)
         last_update = self.params.get('underground', 'last update')
+        if last_update:
+            last_update = DataStore.safestrptime(last_update)
+        else:
+            last_update = datetime.min
         if data['idx'] < last_update + timedelta(minutes=5):
             self.params.set('underground', 'last update', data['idx'].isoformat(' '))
 def main(argv=None):
