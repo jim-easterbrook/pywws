@@ -166,7 +166,10 @@ def main(argv=None):
     logger = ApplicationLogger(verbose, logfile)
     return LiveLog(args[0])
 if __name__ == "__main__":
+    logger = logging.getLogger('pywws')
     try:
         sys.exit(main())
     except KeyboardInterrupt:
         pass
+    except Exception, e:
+        logger.exception(str(e))
