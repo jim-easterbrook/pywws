@@ -42,6 +42,7 @@ class ToUnderground:
                 utc).replace(tzinfo=None)
         self.day = timedelta(hours=24)
         self.hour = timedelta(hours=1)
+        self.five_mins = timedelta(minutes=5)
         # set fixed part of upload data, versions for normal and rapid fire
         password = self.params.get('underground', 'password', 'undergroudpassword')
         station = self.params.get('underground', 'station', 'undergroundstation')
@@ -130,16 +131,21 @@ class ToUnderground:
         self.params.set('underground', 'last update', last_update.isoformat(' '))
         return 0
     def RapidFire(self, data, catchup):
+        last_log = self.data.before(datetime.max)
+        if last_log < data['idx'] - self.five_mins:
+            # logged data is not (yet) up to date
+            return
         if catchup:
-            self.Upload(True)
+            last_update = self.params.get('underground', 'last update')
+            if last_update:
+                last_update = DataStore.safestrptime(last_update)
+            else:
+                last_update = datetime.min
+            if last_update <= last_log - self.five_mins:
+                # last update was well before last logged data
+                self.Upload(True)
         self.SendData(data, True)
-        last_update = self.params.get('underground', 'last update')
-        if last_update:
-            last_update = DataStore.safestrptime(last_update)
-        else:
-            last_update = datetime.min
-        if data['idx'] < last_update + timedelta(minutes=5):
-            self.params.set('underground', 'last update', data['idx'].isoformat(' '))
+        self.params.set('underground', 'last update', data['idx'].isoformat(' '))
 def main(argv=None):
     if argv is None:
         argv = sys.argv
