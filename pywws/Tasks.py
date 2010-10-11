@@ -57,6 +57,8 @@ def DoTwitter(section, params, raw_data, hourly_data, daily_data, monthly_data,
     template_dir = params.get(
         'paths', 'templates', os.path.expanduser('~/weather/templates/'))
     templates = eval(params.get(section, 'twitter', '[]'))
+    if templates:
+        twitter = ToTwitter.ToTwitter(params, translation=translation)
     for template in templates:
         input_file = os.path.join(template_dir, template)
         logger.info("Templating %s", template)
@@ -65,11 +67,5 @@ def DoTwitter(section, params, raw_data, hourly_data, daily_data, monthly_data,
             params, raw_data, hourly_data, daily_data,
             monthly_data, input_file, output_file, translation=translation)
         logger.info("Tweeting")
-        # have three tries before giving up
-        for n in range(3):
-            try:
-                ToTwitter.ToTwitter(params, output_file, translation=translation)
-                break
-            except Exception, ex:
-                logger.exception(str(ex))
+        twitter.UploadFile(output_file)
         os.unlink(output_file)

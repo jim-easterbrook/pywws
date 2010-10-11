@@ -23,36 +23,47 @@ from Logger import ApplicationLogger
 consumer_key = '62moSmU9ERTs0LK0g2xHAg'
 consumer_secret = 'ygdXpjr0rDagU3dqULPqXF8GFgUOD6zYDapoHAH9ck'
 
-def ToTwitter(params, file, translation=None):
-    logger = logging.getLogger('pywws.ToTwitter')
-    key = params.get('twitter', 'key')
-    secret = params.get('twitter', 'secret')
-    if (not key) or (not secret):
-        logger.error('Authentication data not found')
-        return 1
-    lat = params.get('twitter', 'latitude')
-    long = params.get('twitter', 'longitude')
-    tweet_file = open(file, 'r')
-    tweet = tweet_file.read(140)
-    tweet_file.close()
-    if len(tweet) > 0:
+class ToTwitter(object):
+    def __init__(self, params, translation=None):
+        self.logger = logging.getLogger('pywws.ToTwitter')
+        self.old_ex = None
         if not translation:
             translation = Localisation.GetTranslation(params)
-        charset = translation.charset()
+        self.charset = translation.charset()
         # assume that systems with no declared charset actually use iso-8859-1
         # so tweets can contain the very useful degree symbol
-        if charset in (None, 'ASCII'):
-            charset = 'iso-8859-1'
+        if self.charset in (None, 'ASCII'):
+            self.charset = 'iso-8859-1'
+        # get parameters
+        key = params.get('twitter', 'key')
+        secret = params.get('twitter', 'secret')
+        if (not key) or (not secret):
+            raise RuntimeError('Authentication data not found')
+        self.lat = params.get('twitter', 'latitude')
+        self.long = params.get('twitter', 'longitude')
+        # open API
         auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
         auth.set_access_token(key, secret)
-        api = tweepy.API(auth)
+        self.api = tweepy.API(auth)
+    def Upload(self, tweet):
+        if not tweet:
+            return 0
         for i in range(3):
             try:
-                status = api.update_status(tweet.decode(charset), lat=lat, long=long)
+                status = self.api.update_status(
+                    tweet.decode(self.charset), lat=self.lat, long=self.long)
                 break
             except Exception, ex:
-                logger.error(str(ex))
-    return 0
+                e = str(ex)
+                if e != self.old_ex:
+                    self.logger.error(e)
+                    self.old_ex = e
+        return 0
+    def UploadFile(self, file):
+        tweet_file = open(file, 'r')
+        tweet = tweet_file.read(140)
+        tweet_file.close()
+        return self.Upload(tweet)
 def main(argv=None):
     if argv is None:
         argv = sys.argv
@@ -73,6 +84,6 @@ def main(argv=None):
         print >>sys.stderr, __doc__.strip()
         return 2
     logger = ApplicationLogger(1)
-    return ToTwitter(DataStore.params(args[0]), args[1])
+    return ToTwitter(DataStore.params(args[0])).UploadFile(args[1])
 if __name__ == "__main__":
     sys.exit(main())
