@@ -398,6 +398,22 @@ class weather_station:
         if result[0:2] not in ([0x55, 0xAA], [0xFF, 0xFF]):
             raise IOError("Invalid data from weather station")
         return result
+    def _write_byte(self, ptr, value):
+        buf_1 = (ptr / 256) & 0xFF
+        buf_2 = ptr & 0xFF;
+        self.devh.controlMsg(usb.TYPE_CLASS + usb.RECIP_INTERFACE, 9,
+                             [0xA2, buf_1, buf_2, 0x20, 0xA2, value, 0, 0x20],
+                             value=0x200, timeout=1000)
+        result = self.devh.interruptRead(0x81, 0x08, 1000)
+        for byte in result:
+            if byte != 0xA5:
+                raise IOError('_write_byte failed')
+    def write_data(self, data):
+        """Write a set of single bytes to the weather station. Data must be an
+        array of (ptr, value) pairs."""
+        for ptr, value in data:
+            self._write_byte(ptr, value)
+        self._write_byte(0x1A, 0xAA)
     # Tables of "meanings" for raw weather station data. Each key
     # specifies an (offset, type, multiplier) tuple that is understood
     # by _decode.
