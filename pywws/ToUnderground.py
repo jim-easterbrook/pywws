@@ -26,11 +26,13 @@ from WeatherStation import dew_point
 
 def CtoF(C):
     return (C * 9.0 / 5.0) + 32.0
-class ToUnderground:
+class ToUnderground(object):
     def __init__(self, params, raw_data):
         self.logger = logging.getLogger('pywws.ToUnderground')
         self.params = params
         self.data = raw_data
+        self.old_result = None
+        self.old_ex = None
         self.pressure_offset = eval(params.get('fixed', 'pressure offset'))
         # Weather Underground server, normal and rapid fire
         self.server = (
@@ -102,12 +104,16 @@ class ToUnderground:
                 if result == 'success':
                     self.logger.debug(
                         "Weather Underground returns: %s", result)
-                else:
+                    break
+                elif result != self.old_result:
                     self.logger.error(
                         "Weather Underground returns: %s", result)
-                break
+                    self.old_result = result
             except Exception, ex:
-                self.logger.error("Exception: %s", str(ex))
+                e = str(ex)
+                if e != self.old_ex:
+                    self.logger.error(e)
+                    self.old_ex = e
     def Upload(self, catchup):
         if catchup:
             # upload all data since last time
