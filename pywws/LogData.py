@@ -6,6 +6,7 @@ Save weather station history to file.
 usage: python LogData.py [options] data_dir
 options are:
   -h | --help     display this help
+  -c | --clear    clear weather station's memory full indicator
   -s | --sync     increase quality of synchronisation to weather station
   -v | --verbose  increase number of informative messages
 data_dir is the root directory of the weather data
@@ -23,7 +24,7 @@ from Logger import ApplicationLogger
 from TimeZone import Local
 import WeatherStation
 
-def LogData(params, raw_data, sync=0):
+def LogData(params, raw_data, sync=0, clear=False):
     logger = logging.getLogger('pywws.LogData')
     # connect to weather station
     ws = WeatherStation.weather_station()
@@ -77,22 +78,30 @@ def LogData(params, raw_data, sync=0):
         last_ptr = ws.dec_ptr(last_ptr)
     logger.info("%d records written", count)
     raw_data.flush()
+    if clear:
+        logger.info('Clearing weather station memory')
+        ptr = ws.fixed_format['data_count'][0]
+        ws.write_data([(ptr, 0), (ptr+1, 0)])
 def main(argv=None):
     if argv is None:
         argv = sys.argv
     try:
-        opts, args = getopt.getopt(argv[1:], "hsv", ('help', 'sync', 'verbose'))
+        opts, args = getopt.getopt(
+            argv[1:], "hcsv", ('help', 'clear', 'sync', 'verbose'))
     except getopt.error, msg:
         print >>sys.stderr, 'Error: %s\n' % msg
         print >>sys.stderr, __doc__.strip()
         return 1
     # process options
+    clear = False
     sync = 0
     verbose = 0
     for o, a in opts:
         if o in ('-h', '--help'):
             print __doc__.strip()
             return 0
+        elif o in ('-c', '--clear'):
+            clear = True
         elif o in ('-s', '--sync'):
             sync += 1
         elif o in ('-v', '--verbose'):
@@ -105,6 +114,7 @@ def main(argv=None):
     logger = ApplicationLogger(verbose)
     root_dir = args[0]
     return LogData(
-        DataStore.params(root_dir), DataStore.data_store(root_dir), sync=sync)
+        DataStore.params(root_dir), DataStore.data_store(root_dir),
+        sync=sync, clear=clear)
 if __name__ == "__main__":
     sys.exit(main())
