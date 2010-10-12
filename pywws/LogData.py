@@ -52,6 +52,7 @@ def LogData(params, raw_data, sync=0):
         last_date = data['idx']
         logger.debug('Reading time %s', last_date.strftime('%H:%M:%S'))
         if logged:
+            fixed_block = ws.get_fixed_block(unbuffered=True)
             break
         if sync < 1 and last_date.second > 5 and last_date.second < 55:
             last_date = last_date.replace(second=0) - timedelta(minutes=data['delay'])
@@ -67,9 +68,8 @@ def LogData(params, raw_data, sync=0):
     # go back through stored data, until we catch up with what we've already got
     logger.info('Fetching data')
     count = 0
-    while last_date > last_stored:
-        if count >= fixed_block['data_count'] - 1:
-            break
+    max_count = min(fixed_block['data_count'], 4079)
+    while last_date > last_stored and count < max_count:
         data = ws.get_data(last_ptr)
         raw_data[last_date] = data
         count += 1

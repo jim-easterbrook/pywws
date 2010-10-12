@@ -90,16 +90,17 @@ def LiveLog(data_dir):
             raw_data[now] = data
             count = 1
             # catchup any missing data
-            last_ptr = ptr
-            last_date = now
-            while count < fixed_block['data_count'] - 1:
-                last_ptr = ws.dec_ptr(last_ptr)
-                last_date -= timedelta(minutes=data['delay'])
-                if last_date <= last_stored:
-                    break
-                data = ws.get_data(last_ptr)
-                raw_data[last_date] = data
-                count += 1
+            last_date = now - timedelta(minutes=data['delay'])
+            if last_date > last_stored:
+                last_ptr = ws.dec_ptr(ptr)
+                fixed_block = ws.get_fixed_block(unbuffered=True)
+                max_count = min(fixed_block['data_count'], 4079)
+                while last_date > last_stored and count < max_count:
+                    data = ws.get_data(last_ptr)
+                    raw_data[last_date] = data
+                    count += 1
+                    last_date -= timedelta(minutes=data['delay'])
+                    last_ptr = ws.dec_ptr(last_ptr)
             last_stored = now + two_minutes
             if count > 1:
                 logger.info("%d records written", count)
