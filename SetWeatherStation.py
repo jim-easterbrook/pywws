@@ -8,6 +8,7 @@ options are:
  -c   | --clock          set weather station clock to computer time
  -r n | --read_period n  set logging interval to n minutes
  -v   | --verbose        increase error message verbosity
+ -z   | --zero_memory    clear the weather station logged readings
 """
 
 from datetime import datetime
@@ -28,7 +29,8 @@ def main(argv=None):
         argv = sys.argv
     try:
         opts, args = getopt.getopt(
-            argv[1:], "hcr:v", ['help', 'clock', 'read_period=', 'verbose'])
+            argv[1:], "hcr:vz",
+            ['help', 'clock', 'read_period=', 'verbose', 'zero_memory'])
     except getopt.error, msg:
         print >>sys.stderr, 'Error: %s\n' % msg
         print >>sys.stderr, __doc__.strip()
@@ -37,6 +39,7 @@ def main(argv=None):
     clock = False
     read_period = None
     verbose = 0
+    zero_memory = False
     for o, a in opts:
         if o in ('-h', '--help'):
             print __doc__.strip()
@@ -47,6 +50,8 @@ def main(argv=None):
             read_period = int(a)
         elif o in ('-v', '--verbose'):
             verbose += 1
+        elif o in ('-z', '--zero_memory'):
+            zero_memory = True
     # check arguments
     if len(args) != 0:
         print >>sys.stderr, "Error: No arguments required"
@@ -55,22 +60,32 @@ def main(argv=None):
     logger = ApplicationLogger(verbose)
     # open connection to weather station
     ws = WeatherStation.weather_station()
+    # set data to be sent to station
+    data = []
     # set read period
     if read_period:
-        ws.write_data([(ws.fixed_format['read_period'][0], read_period)])
+        data.append((ws.fixed_format['read_period'][0], read_period))
+    # reset data count
+    if zero_memory:
+        ptr = ws.fixed_format['data_count'][0]
+        data.append((ptr,   0))
+        data.append((ptr+1, 0))
     # set clock
     if clock:
         print "waiting for exact minute"
         now = datetime.now()
+        if now.second >= 55:
+            time.sleep(10)
+            now = datetime.now()
         ptr = ws.fixed_format['date_time'][0]
-        data = [
-            (ptr,   bcd_encode(now.year - 2000)),
-            (ptr+1, bcd_encode(now.month)),
-            (ptr+2, bcd_encode(now.day)),
-            (ptr+3, bcd_encode(now.hour)),
-            (ptr+4, bcd_encode(now.minute + 1)),
-            ]
-        time.sleep(60 - now.second)
+        data.append((ptr,   bcd_encode(now.year - 2000)))
+        data.append((ptr+1, bcd_encode(now.month)))
+        data.append((ptr+2, bcd_encode(now.day)))
+        data.append((ptr+3, bcd_encode(now.hour)))
+        data.append((ptr+4, bcd_encode(now.minute + 1)))
+        time.sleep(59 - now.second)
+    # send it all in one go
+    if data:
         ws.write_data(data)
 if __name__ == "__main__":
     sys.exit(main())
