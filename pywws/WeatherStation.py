@@ -382,21 +382,26 @@ class weather_station:
             self.devh.controlMsg(usb.TYPE_CLASS + usb.RECIP_INTERFACE, 9,
                                  [0xA1, buf_1, buf_2, 0x20, 0xA1, buf_1, buf_2, 0x20],
                                  value=0x200, timeout=1000)
-            new_block = self.devh.interruptRead(0x81, 0x20, 1000)
-            if len(new_block) == 0x20:
-                if new_block == old_block:
-                    break
-                if old_block != None:
-                    self.logger.debug('_read_block changing %06x', ptr)
-                old_block = new_block
+            try:
+                new_block = self.devh.interruptRead(0x81, 0x20, 1000)
+                if len(new_block) == 0x20:
+                    if new_block == old_block:
+                        break
+                    if old_block != None:
+                        self.logger.debug('_read_block changing %06x', ptr)
+                    old_block = new_block
+            except usb.USBError, ex:
+                if ex.args != ('No error',):
+                    raise
         return new_block
     def _read_fixed_block(self, hi=0x0100):
         result = []
         for mempos in range(0x0000, hi, 0x0020):
             result += self._read_block(mempos)
         # check 'magic number'
-        if result[0:2] not in ([0x55, 0xAA], [0xFF, 0xFF]):
-            raise IOError("Invalid data from weather station")
+        if result[:2] not in ([0x55, 0xAA], [0xFF, 0xFF], [0x55, 0x55]):
+            raise IOError(
+                "Unrecognised 'magic number' %02x %02x", result[0], result[1])
         return result
     def _write_byte(self, ptr, value):
         buf_1 = (ptr / 256) & 0xFF
@@ -404,16 +409,32 @@ class weather_station:
         self.devh.controlMsg(usb.TYPE_CLASS + usb.RECIP_INTERFACE, 9,
                              [0xA2, buf_1, buf_2, 0x20, 0xA2, value, 0, 0x20],
                              value=0x200, timeout=1000)
-        result = self.devh.interruptRead(0x81, 0x08, 1000)
-        for byte in result:
-            if byte != 0xA5:
-                raise IOError('_write_byte failed')
+        while True:
+            try:
+                result = self.devh.interruptRead(0x81, 0x08, 1000)
+                for byte in result:
+                    if byte != 0xA5:
+                        raise IOError('_write_byte failed')
+                break
+            except usb.USBError, ex:
+                if ex.args != ('No error',):
+                    raise
     def write_data(self, data):
         """Write a set of single bytes to the weather station. Data must be an
         array of (ptr, value) pairs."""
+        # send data
         for ptr, value in data:
             self._write_byte(ptr, value)
-        self._write_byte(0x1A, 0xAA)
+        # set 'data changed'
+        self._write_byte(self.fixed_format['data_changed'][0], 0xAA)
+        # wait for station to clear 'data changed'
+        while True:
+            ack = _decode(
+                self._read_fixed_block(0x0020), self.fixed_format['data_changed'])
+            if ack == 0:
+                break
+            self.logger.debug('write_data waiting for ack')
+            time.sleep(6)
     # Tables of "meanings" for raw weather station data. Each key
     # specifies an (offset, type, multiplier) tuple that is understood
     # by _decode.
@@ -442,6 +463,7 @@ class weather_station:
     fixed_format = {
         'read_period'   : (16, 'ub', None),
         'timezone'      : (24, 'sb', None),
+        'data_changed'  : (26, 'ub', None),
         'data_count'    : (27, 'us', None),
         'current_pos'   : (30, 'us', None),
         'rel_pressure'  : (32, 'us', 0.1),
