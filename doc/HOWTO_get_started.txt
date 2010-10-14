@@ -5,6 +5,7 @@ How to get started with pywws.
 ==============================
 
 1. Download and unpack the pywws software.
+------------------------------------------
 
 Create a directory for all your weather related files and change to it. For
 example (on a Linux or similar operating system):
@@ -20,6 +21,7 @@ tar zxvf pywws-10.08_r235.tar.gz
 unzip pywws-10.08_r235.zip
 
 2. Install dependencies.
+------------------------
 
 Python 2.4+ - http://python.org/
 'libusb' 0.1.12 - http://libusb.sf.net/
@@ -30,6 +32,7 @@ manager. This is a lot easier than downloading and compiling the source
 files from the project websites.
 
 3. Test the weather station connection.
+---------------------------------------
 
 Connect the weather station (if not already connected) then run the
 TestWeatherStation.py program. Change to the pywws directory first.
@@ -63,6 +66,7 @@ If you have any other problem, please ask for help on the pywws mailing list:
 http://groups.google.com/group/pywws
 
 4. Log your weather station data.
+---------------------------------
 
 First, choose a directory to store all your weather station data. This will
 be written to quite frequently, so a disk drive is preferable to a memory
@@ -94,6 +98,7 @@ more ~/weather/data/weather/raw/2010/2010-10/2010-10-12.txt
 (Replace the year, month and day with ones that you have data for.)
 
 5. Convert old EasyWeather data (optional).
+-------------------------------------------
 
 If you had been running EasyWeather before deciding to use pywws, you can
 convert the data EasyWeather had logged to the pywws format. Find your
@@ -101,7 +106,41 @@ EasyWeather.dat file and then convert it:
 
 python EWtoPy.py EasyWeather.dat ~/weather/data
 
-6. Process the raw data.
+6. Set some configuration options.
+----------------------------------
+
+After running LogData.py there should be a configuration file in your data
+directory called 'weather.ini'. Open this with a text editor. You should
+find something like the following:
+
+[fixed]
+pressure offset = 7.4
+
+The line [fixed] marks the start of a section called '[fixed]', and the
+following line is an entry called 'pressure offset' in the '[fixed]'
+section.
+
+You need to add a new section called [config] with an entry called
+'day end hour'. This tells pywws what convention you want to use when
+calculating daily summary data. In the UK, the 'meteorological day' is
+usually from 21:00 to 21:00 GMT (22:00 to 22:00 BST during summer), so I use
+a day end hour value of 21. In other countries a value of 24 (or 0) might be
+more suitable. Note that the value is set in local winter time. You do not
+need to change it when daylight savings time is in effect.
+
+After editing, your weather.ini file should look something like this:
+
+[fixed]
+pressure offset = 7.4
+
+[config]
+day end hour = 21
+
+For more detail on the configuration file options, see the weather_ini.html
+file in your pywws/doc directory.
+
+7. Process the raw data.
+------------------------
 
 LogData.py just copies the raw data from the weather station. To do something
 useful with that data we probably need hourly, daily and monthly summaries.
@@ -113,7 +152,14 @@ You should now have some processed files to look at:
 
 more ~/weather/data/weather/daily/2010/2010-10-01.txt
 
-7. Set the weather station logging interval.
+If you ever change your 'day end hour' configuration setting, you will need
+to reprocess all your weather data. You can do this by running the
+Reprocess.py program:
+
+python Reprocess.py ~/weather/data
+
+8. Set the weather station logging interval.
+--------------------------------------------
 
 Your weather station probably left the factory with a 30 minute logging
 interval. This enables the station to store about 11 weeks of data. Most
@@ -127,7 +173,8 @@ python SetWeatherStation.py -r 5
 You are now ready to set up hourly or live logging, as described in another
 HOWTO file.
 
-8. Read the documentation.
+9. Read the documentation.
+--------------------------
 
 The doc directory in your pywws directory contains several HTML files, as
 well as the HOWTO guide text files. The HTML files can be read with any
