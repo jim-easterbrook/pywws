@@ -76,7 +76,7 @@ data directory.
 
 Make sure your computer has the right date & time, and time zone, as these
 are used to label the weather station data. If you haven't already done so,
-it's worth setting up ntp to synchronise your computer to a 'time server'.
+it's worth setting up NTP to synchronise your computer to a 'time server'.
 
 The first time you run LogData.py it will take several minutes, as it will
 copy all the data stored in your station's memory. The LogData.py program
@@ -126,6 +126,33 @@ python SetWeatherStation.py -r 5
 
 You are now ready to set up hourly or live logging, as described in another
 HOWTO file.
+
+8. Read the documentation.
+
+The doc directory in your pywws directory contains several HTML files, as
+well as the HOWTO guide text files. The HTML files can be read with any
+web browser. Start with index.html and follow links from there.
+
+More detailed HTML documentation of each Python module can be created from
+the source files by running the AutoDoc.py program:
+
+python ./AutoDoc.py
+
+(Note that there is currently a bug in AutoDoc.py that means you have to
+prefix its name with ./ when running it.)
+
+Alternatively, you can read the documentation directly with pydoc. For
+example:
+
+pydoc pywws.WeatherStation
+
+Finally, you can run pydoc as a mini web server. For example, to use port
+number 1234:
+
+pydoc -p 1234 &
+
+You can then point a web browser at http://localhost:1234/ to read
+documentation on all python modules installed on your computer.
 
 
 Comments or questions? Please subscribe to the pywws mailing list
