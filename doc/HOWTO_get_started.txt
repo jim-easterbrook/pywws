@@ -53,8 +53,8 @@ the screen, for example:
 00c0 08 31 14 30 10 05 14 15 27 10 01 26 20 47 09 01 23 05 13 10 01 26 20 47 09 01 23 05 13 10 02 22
 00e0 11 06 10 02 22 11 06 08 07 07 19 32 08 12 13 22 32 08 09 07 08 48 01 12 05 04 43 10 02 22 14 43
 
-There are several reasons why this might work. Most likely is a 'permissions'
-problem. This can be tested by running the command as root:
+There are several reasons why this might not work. Most likely is a
+'permissions' problem. This can be tested by running the command as root:
 
 sudo python TestWeatherStation.py
 
@@ -116,11 +116,10 @@ find something like the following:
 [fixed]
 pressure offset = 7.4
 
-The line [fixed] marks the start of a section called '[fixed]', and the
-following line is an entry called 'pressure offset' in the '[fixed]'
-section.
+The line [fixed] marks the start of a section (called '[fixed]'), and the
+following line is an entry called 'pressure offset' in that section.
 
-You need to add a new section called [config] with an entry called
+You need to add a new section called '[config]' with an entry called
 'day end hour'. This tells pywws what convention you want to use when
 calculating daily summary data. In the UK, the 'meteorological day' is
 usually from 21:00 to 21:00 GMT (22:00 to 22:00 BST during summer), so I use
@@ -143,7 +142,7 @@ file in your pywws/doc directory.
 ------------------------
 
 LogData.py just copies the raw data from the weather station. To do something
-useful with that data we probably need hourly, daily and monthly summaries.
+useful with that data you probably need hourly, daily and monthly summaries.
 These are created by the Process.py program. For example:
 
 python pywws/Process.py ~/weather/data
