@@ -5,9 +5,10 @@ Test connection to weather station.
 
 usage: python TestWeatherStation.py [options]
 options are:
-\t-d | --decode\t\tdisplay meaningful values instead of raw data
-\t-h | --history count\tdisplay the last "count" readings
-\t--help\t\t\tdisplay this help
+       --help           display this help
+  -d | --decode         display meaningful values instead of raw data
+  -h | --history count  display the last "count" readings
+  -l | --live           display 'live' data
 """
 
 import datetime
@@ -26,7 +27,8 @@ def main(argv=None):
     if argv is None:
         argv = sys.argv
     try:
-        opts, args = getopt.getopt(argv[1:], "dh:", ['decode', 'history=', 'help'])
+        opts, args = getopt.getopt(
+            argv[1:], "dh:l", ['help', 'decode', 'history=', 'live'])
     except getopt.error, msg:
         print >>sys.stderr, 'Error: %s\n' % msg
         print >>sys.stderr, __doc__.strip()
@@ -39,14 +41,17 @@ def main(argv=None):
     # process options
     history_count = 0
     decode = False
+    live = False
     for o, a in opts:
-        if o == '-d' or o == '--decode':
-            decode = True
-        if o == '-h' or o == '--history':
-            history_count = int(a)
         if o == '--help':
             print __doc__.strip()
             return 0
+        elif o in ('-d', '--decode'):
+            decode = True
+        elif o in ('-h', '--history'):
+            history_count = int(a)
+        elif o in ('-l', '--live'):
+            live = True
     # do it!
     ws = WeatherStation.weather_station()
     raw_fixed = ws.get_raw_fixed_block()
@@ -77,6 +82,12 @@ def main(argv=None):
             else:
                 raw_dump(ptr, ws.get_raw_data(ptr))
             ptr = ws.dec_ptr(ptr)
+    if live:
+        for data, ptr, logged in ws.live_data():
+            print "%04x" % ptr,
+            print data['idx'].strftime('%H:%M:%S'),
+            del data['idx']
+            print data
     del ws
     return 0
 if __name__ == "__main__":
