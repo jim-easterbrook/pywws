@@ -14,6 +14,7 @@ StationID and password are read from the weather.ini file in data_dir.
 
 import getopt
 import logging
+import socket
 import sys
 import urllib
 import urllib2
@@ -34,6 +35,8 @@ class ToUnderground(object):
         self.old_result = None
         self.old_ex = None
         self.pressure_offset = eval(params.get('fixed', 'pressure offset'))
+        # set default socket timeout, so urlopen calls don't hang forever
+        socket.setdefaulttimeout(10)
         # Weather Underground server, normal and rapid fire
         self.server = (
             'weatherstation.wunderground.com', 'rtupdate.wunderground.com')
