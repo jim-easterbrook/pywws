@@ -49,13 +49,21 @@ def Upload(params, files):
         h = NullHandler()
         logging.getLogger('paramiko').addHandler(h)
         import paramiko
-        transport = paramiko.Transport((site, 22))
-        transport.connect(username=user, password=password)
-        ftp = paramiko.SFTPClient.from_transport(transport)
+        try:
+            transport = paramiko.Transport((site, 22))
+            transport.connect(username=user, password=password)
+            ftp = paramiko.SFTPClient.from_transport(transport)
+        except Exception, ex:
+            logger.error(str(ex))
+            return 1
     else:
         import ftplib
-        ftp = ftplib.FTP(site, user, password)
-        logger.debug(ftp.getwelcome())
+        try:
+            ftp = ftplib.FTP(site, user, password)
+            logger.debug(ftp.getwelcome())
+        except Exception, ex:
+            logger.error(str(ex))
+            return 1
     for file in files:
         target = directory + os.path.basename(file)
         # have three tries before giving up
@@ -74,11 +82,9 @@ def Upload(params, files):
                 break
             except Exception, ex:
                 logger.error(str(ex))
+    ftp.close()
     if secure:
-        ftp.close()
         transport.close()
-    else:
-        ftp.close()
     return 0
 def main(argv=None):
     if argv is None:
