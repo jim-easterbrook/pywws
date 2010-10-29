@@ -1,5 +1,6 @@
 include *.py *.txt MANIFEST.in
-include doc/*.html
+include pywws/*.py
+include doc/*/*
 recursive-include example_templates *
 recursive-include example_graph_templates *
 recursive-include languages *
