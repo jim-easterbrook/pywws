@@ -60,10 +60,10 @@ class CorrectLinks(HTMLParser):
         raise Exception("unhandled pi")
 def AutoDoc():
     os.chdir(os.path.dirname(sys.argv[0]))
-    doc_dir = 'doc/auto'
+    doc_dir = 'doc/html/auto'
     link_corrector = CorrectLinks()
     link_corrector.path_old = os.getcwd()
-    link_corrector.path_new = '../..'
+    link_corrector.path_new = '../../..'
     def PostProcess(module):
         # post-process pydoc output to clean up some of its eccentricities
         # and move to doc_dir
