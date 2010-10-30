@@ -78,6 +78,10 @@ How to get started with pywws.
    so, it's worth setting up NTP to synchronise your computer to a 'time
    server'.
 
+   Make sure your weather station has the correct offset between 'absolute'
+   and 'relative' atmospheric pressure. See the instruction book for details
+   on how to set this.
+
    The first time you run LogData.py it will take several minutes, as it will
    copy all the data stored in your station's memory. The LogData.py program
    has a 'verbose' option that increases the amount of messages it displays
@@ -111,7 +115,9 @@ How to get started with pywws.
  pressure offset = 7.4
 
    The line [fixed] marks the start of a section (called '[fixed]'), and the
-   following line is an entry called 'pressure offset' in that section.
+   following line is an entry called 'pressure offset' in that section. This
+   stores the difference between absolute and relative atmospheric pressure
+   that was read from the weather station.
 
    You need to add a new section called '[config]' with an entry called 'day
    end hour'. This tells pywws what convention you want to use when

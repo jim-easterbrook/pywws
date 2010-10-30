@@ -97,6 +97,9 @@ mkdir ~/weather/data
       Make sure your computer has the right date &amp; time, and time zone, as these are used to label the weather station data. If you haven't already done so, it's worth setting up NTP to synchronise your computer to a 'time server'.
     </p>
     <p>
+      Make sure your weather station has the correct offset between 'absolute' and 'relative' atmospheric pressure. See the instruction book for details on how to set this.
+    </p>
+    <p>
       The first time you run LogData.py it will take several minutes, as it will copy all the data stored in your station's memory. The LogData.py program has a 'verbose' option that increases the amount of messages it displays while running. This is useful when running it manually, for example:
     </p>
 <pre>
@@ -134,7 +137,7 @@ python EWtoPy.py EasyWeather.dat ~/weather/data
 pressure offset = 7.4
 </pre>
     <p>
-      The line <code>[fixed]</code> marks the start of a <i>section</i> (called '[fixed]'), and the following line is an <i>entry</i> called 'pressure offset' in that section.
+      The line <code>[fixed]</code> marks the start of a <i>section</i> (called '[fixed]'), and the following line is an <i>entry</i> called 'pressure offset' in that section. This stores the difference between absolute and relative atmospheric pressure that was read from the weather station.
     </p>
     <p>
       You need to add a new section called '[config]' with an entry called 'day end hour'. This tells pywws what convention you want to use when calculating daily summary data. In the UK, the 'meteorological day' is usually from 21:00 to 21:00 GMT (22:00 to 22:00 BST during summer), so I use a day end hour value of 21. In other countries a value of 24 (or 0) might be more suitable. Note that the value is set in local winter time. You do not need to change it when daylight savings time is in effect.
