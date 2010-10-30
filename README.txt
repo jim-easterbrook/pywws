@@ -46,7 +46,7 @@ Dependencies:
 	distributions. This provides an easier way to install them than
 	downloading source from the project websites.
 
-This software collection currently contains the following files:
+This software collection currently includes the following files:
 	README.txt		-- you are reading it!
 	CHANGELOG.txt		-- development history
 	LICENCE.txt		-- GNU General Public License
@@ -59,13 +59,16 @@ This software collection currently contains the following files:
 	UpgradeFrom0-1.py	-- converts v0.1 datastore to current format
 	Reprocess.py		-- regenerates summary data
 	TwitterAuth.py		-- authorise pywws to post to Twitter
-	setup.py		-- compiles translation files
+	setup.py		-- builds distributions
+	makefile		-- compiles language files and converts
+				   documentation from HTML to text
 
 	pywws/*.py		-- the pywws software modules
 	example_graph_templates/*
 				-- example graph XML "recipes"
 	example_templates/*	-- example text templates
-	doc/*			-- HTML documentation of most of the above
+	doc/html/*		-- HTML documentation of most of the above
+	doc/txt/*		-- plain text documentation
 	languages/*		-- language source files and utility scripts
 
 Upgrading from earlier versions:
@@ -74,21 +77,11 @@ Upgrading from earlier versions:
 	v0.1 : run UpgradeFrom0-1.py to translate data file format
 	v0.2 or later : run Reprocess.py to regenerate summary data
 
-Preparation:
-	Unlike some other weather station software, this software relies on
-	the weather station base unit's stored readings. New weather stations
-	have the logging interval set to 30 minutes, which allows about 11
-	weeks data to be stored. Before using this software I think it is
-	worth changing the logging interval to 5 minutes, which will still
-	allow for 2 weeks to be stored.
-
-	Unfortunately, you need the EasyWeather software (Windows only) to set
-	the logging interval. Luckily you only need to do it once.
-
-	The second weather station adjustment to make is the offset between
-	absolute and relative pressure. See the instruction book for details.
-
 Getting started:
+  (Steps 1 to 12 are covered in more detail in the file
+  doc/html/HOWTO_get_started.html or doc/txt/HOWTO_get_started.txt
+  Step 18 is covered in more detail in the file
+  doc/html/HOWTO_Twitter.html or doc/txt/HOWTO_Twitter.txt)
   1/ Unzip / untar all the files to a convenient directory
   2/ Install Python, if not already installed
   3/ Install libusb, if not already installed
@@ -160,7 +153,7 @@ Getting started:
       directories if Hourly.py didn't find them.
   21/ Set up a cron job to run Hourly.py every hour or every few hours or
       every day, according to your needs, at a minute or two past the hour.
-  22/ Edit templates, Hourly.py and other files to adjust everything to your
+  22/ Edit templates, weather.ini and other files to adjust everything to your
       taste.
 
 Comments or questions? Please subscribe to the pywws mailing list
