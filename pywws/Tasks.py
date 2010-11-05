@@ -52,13 +52,14 @@ def DoTemplates(section, params, raw_data, hourly_data, daily_data, monthly_data
 def DoTwitter(section, params, raw_data, hourly_data, daily_data, monthly_data,
               translation):
     logger = logging.getLogger('pywws.Tasks.DoTwitter')
-    import ToTwitter
     work_dir = params.get('paths', 'work', '/tmp/weather')
     template_dir = params.get(
         'paths', 'templates', os.path.expanduser('~/weather/templates/'))
     templates = eval(params.get(section, 'twitter', '[]'))
-    if templates:
-        twitter = ToTwitter.ToTwitter(params, translation=translation)
+    if not templates:
+        return
+    import ToTwitter
+    twitter = ToTwitter.ToTwitter(params, translation=translation)
     for template in templates:
         input_file = os.path.join(template_dir, template)
         logger.info("Templating %s", template)
