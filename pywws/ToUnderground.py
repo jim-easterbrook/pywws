@@ -107,7 +107,7 @@ class ToUnderground(object):
                 if result == 'success':
                     self.logger.debug(
                         "Weather Underground returns: %s", result)
-                    break
+                    return True
                 elif result != self.old_result:
                     self.logger.error(
                         "Weather Underground returns: %s", result)
@@ -117,27 +117,33 @@ class ToUnderground(object):
                 if e != self.old_ex:
                     self.logger.error(e)
                     self.old_ex = e
+        return False
     def Upload(self, catchup):
         if catchup:
-            # upload all data since last time
             last_update = self.params.get('underground', 'last update')
             if last_update:
+                # upload all data since last time
                 start = DataStore.safestrptime(last_update) + timedelta(minutes=1)
             else:
+                # upload one week's data
                 start = datetime.utcnow() - timedelta(days=7)
-            # iterate over all data since last_update
             count = 0
             for data in self.data[start:]:
-                self.SendData(data, False)
+                if not self.SendData(data, False):
+                    break
+                last_update = data['idx']
                 count += 1
+            if last_update:
+                self.params.set(
+                    'underground', 'last update', last_update.isoformat(' '))
             if count:
                 self.logger.info('%d records sent', count)
-            last_update = self.data.before(datetime.max)
         else:
             # upload most recent data
             last_update = self.data.before(datetime.max)
-            self.SendData(self.data[last_update], False)
-        self.params.set('underground', 'last update', last_update.isoformat(' '))
+            if self.SendData(self.data[last_update], False):
+                self.params.set(
+                    'underground', 'last update', last_update.isoformat(' '))
         return 0
     def RapidFire(self, data, catchup):
         last_log = self.data.before(datetime.max)
@@ -153,8 +159,8 @@ class ToUnderground(object):
             if last_update <= last_log - self.five_mins:
                 # last update was well before last logged data
                 self.Upload(True)
-        self.SendData(data, True)
-        self.params.set('underground', 'last update', data['idx'].isoformat(' '))
+        if self.SendData(data, True):
+            self.params.set('underground', 'last update', data['idx'].isoformat(' '))
 def main(argv=None):
     if argv is None:
         argv = sys.argv
