@@ -123,7 +123,8 @@ class ToUnderground(object):
             last_update = self.params.get('underground', 'last update')
             if last_update:
                 # upload all data since last time
-                start = DataStore.safestrptime(last_update) + timedelta(minutes=1)
+                last_update = DataStore.safestrptime(last_update)
+                start = last_update + timedelta(minutes=1)
             else:
                 # upload one week's data
                 start = datetime.utcnow() - timedelta(days=7)
