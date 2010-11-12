@@ -1,0 +1,89 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+  <head>
+    <title>
+      pywws: HOWTO language file
+    </title>
+  </head>
+  <body>
+    <h1>
+      <a href="index.html">Python software for USB Wireless WeatherStations</a>
+    </h1>
+    <h2>
+      How to make a language file for pywws.
+    </h2>
+    <h3>
+      1. Introduction.
+    </h3>
+    <p>
+      Some parts of pywws can be configured to use your local language instead of British English. This requires an appropriate language file which contains translations of the various strings used in pywws. The pywws project relies on users to provide these translations. This document describes how to create a language file.
+    </p>
+    <h3>
+      2. Dependencies.
+    </h3>
+    <p>
+      As well as the pywws software you need to install the 'gettext' GNU internationalisation utilities package. This is available from the standard repositories for most Linux distributions, or you can download it from <a href="http://www.gnu.org/software/gettext/">http://www.gnu.org/software/gettext/</a> if you need to compile it yourself.
+    </p>
+    <h3>
+      3. Getting started.
+    </h3>
+    <p>
+      Your pywws directory should already have a subdirectory called languages. This contains the existing set of language files, for example 'sv.po' contains the Swedish translations. If one of these languages is what you need, then edit your weather.ini file and add a 'language' entry to the '[config]' section, for example:
+    </p>
+<pre>
+[config]
+day end hour = 21
+gnuplot encoding = iso_8859_1
+language = sv
+</pre>
+    <p>
+      If there isn't already a file for your language, the rest of this document tells you how to create one.
+    </p>
+    <h3>
+      4. Choose your language code.
+    </h3>
+    <p>
+      Computers use IETF language tags (see <a href="http://en.wikipedia.org/wiki/IETF_language_tag">http://en.wikipedia.org/wiki/IETF_language_tag</a>). For example, in the UK we use 'en_GB'. This has two parts: 'en' for English, and 'GB' for the British version of it. To find the correct code for your language, consult the list at <a href="http://www.gnu.org/software/gettext/manual/gettext.html#Language-Codes">http://www.gnu.org/software/gettext/manual/gettext.html#Language-Codes</a>.
+    </p>
+    <h3>
+      5. Create a language file.
+    </h3>
+    <p>
+      The 'makefile' included with pywws can create a template file for you to fill in. For example, to create a file for the French language:
+    </p>
+<pre>
+make lang LANG=fr
+</pre>
+    <p>
+      This will ask you to confirm your email address, then create a file 'languages/fr.po'. You should now edit this file, filling in every <code>msgstr</code> line with a translation of the <code>msgid</code> line immediately above it. The reason for including your email address is so that anyone who has questions about your translation can get in touch with you. Feel free to put in an invalid address if you are concerned about privacy.
+    </p>
+    <p>
+      After you've edited your new language file it needs to be compiled so that pywws can use it. This is also done by the makefile:
+    </p>
+<pre>
+make lang
+</pre>
+    <p>
+      Don't forget to do this every time you edit a language file.
+    </p>
+    <h3>
+      6. Test the pywws translation.
+    </h3>
+    <p>
+      Edit the language entry in your weather.ini file to use your language code (e.g. 'fr'), then try using Plot.py to plot a graph. The X-axis of the graph should now be labeled in your language, using the translation you provided for 'Time', 'Day' or 'Date'.
+    </p>
+    <h3>
+      7. Send Jim the language file.
+    </h3>
+    <p>
+      I'm sure you would like others to benefit from the work you've done in making a new language file for pywws. Please, please, please send a copy of your language file (for example fr.po) to <a href="mailto:jim%40jim-easterbrook.me.uk">jim@jim-easterbrook.me.uk</a>.
+    </p>
+    <p>
+      Comments or questions? Please subscribe to the pywws mailing list <a href="http://groups.google.com/group/pywws">http://groups.google.com/group/pywws</a> and let us know.
+    </p>
+    <hr>
+    <p>
+      <a href="http://code.google.com/p/pywws/"><i>Python software for USB Wireless WeatherStations</i></a> &copy; <a href="http://www.jim-easterbrook.me.uk/">Jim Easterbrook</a>.
+    </p>
+  </body>
+</html>
