@@ -60,12 +60,16 @@
 [config]
 day end hour = 21
 gnuplot encoding = iso_8859_1
+language = en
 </pre>
     <p>
       <code>day end hour</code> is the end of the <a href="http://en.wikipedia.org/wiki/Meteorological_day">"meteorological day"</a>, in local time without daylight savings time. Typical values are 21, 9, or 24.
     </p>
     <p>
       <code>gnuplot encoding</code> is the text encoding used when plotting graphs. The default value of <code>iso_8859_1</code> allows the degree symbol, which is useful in a weather application! Other values might be needed if your language includes accented characters. The possible values depend on your gnuplot installation so some experimentation may be needed.
+    </p>
+    <p>
+      <code>language</code> is used to localise pywws. It's optional, as pywws usually uses the computer's default language as set by the LANG environment variable. The available languages are those in the locale subdirectory of your pywws installation. If you set any other language, pywws will fall back to using English.
     </p>
     <h3>
       <a href="#list" name="paths">paths</a>: directories in which templates etc. are stored
