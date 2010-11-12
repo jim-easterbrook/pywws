@@ -131,21 +131,18 @@ class ToUnderground(object):
             count = 0
             for data in self.data[start:]:
                 if not self.SendData(data, False):
-                    break
+                    return False
                 last_update = data['idx']
                 count += 1
-            if last_update:
-                self.params.set(
-                    'underground', 'last update', last_update.isoformat(' '))
             if count:
                 self.logger.info('%d records sent', count)
         else:
             # upload most recent data
             last_update = self.data.before(datetime.max)
-            if self.SendData(self.data[last_update], False):
-                self.params.set(
-                    'underground', 'last update', last_update.isoformat(' '))
-        return 0
+            if not self.SendData(self.data[last_update], False):
+                return False
+        self.params.set('underground', 'last update', last_update.isoformat(' '))
+        return True
     def RapidFire(self, data, catchup):
         last_log = self.data.before(datetime.max)
         if last_log < data['idx'] - self.five_mins:
@@ -159,7 +156,8 @@ class ToUnderground(object):
                 last_update = datetime.min
             if last_update <= last_log - self.five_mins:
                 # last update was well before last logged data
-                self.Upload(True)
+                if not self.Upload(True):
+                    return
         if self.SendData(data, True):
             self.params.set('underground', 'last update', data['idx'].isoformat(' '))
 def main(argv=None):
