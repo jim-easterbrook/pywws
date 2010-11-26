@@ -88,7 +88,7 @@ class ToUnderground(object):
         result['rainin'] = '%g' % (max(current['rain'] - rain_hour, 0.0) / 25.4)
         result['dailyrainin'] = '%g' % (
             max(current['rain'] - self.rain_midnight, 0.0) / 25.4)
-        result['baromin'] = '%.2f' % (
+        result['baromin'] = '%.4f' % (
             (current['abs_pressure'] + self.pressure_offset) * 0.02953)
         return result
     def SendData(self, data, rapid_fire):
@@ -120,10 +120,9 @@ class ToUnderground(object):
         return False
     def Upload(self, catchup):
         if catchup:
-            last_update = self.params.get('underground', 'last update')
+            last_update = self.params.get_datetime('underground', 'last update')
             if last_update:
                 # upload all data since last time
-                last_update = DataStore.safestrptime(last_update)
                 start = last_update + timedelta(minutes=1)
             else:
                 # upload one week's data
@@ -149,10 +148,8 @@ class ToUnderground(object):
             # logged data is not (yet) up to date
             return
         if catchup:
-            last_update = self.params.get('underground', 'last update')
-            if last_update:
-                last_update = DataStore.safestrptime(last_update)
-            else:
+            last_update = self.params.get_datetime('underground', 'last update')
+            if not last_update:
                 last_update = datetime.min
             if last_update <= last_log - self.five_mins:
                 # last update was well before last logged data
