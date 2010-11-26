@@ -65,6 +65,11 @@ class params:
                 self.set(section, option, default)
             return default
         return self._config.get(section, option)
+    def get_datetime(self, section, option, default=None):
+        result = self.get(section, option, default)
+        if result:
+            return safestrptime(result)
+        return result
     def set(self, section, option, value):
         """Set option in section to string value."""
         if not self._config.has_section(section):
