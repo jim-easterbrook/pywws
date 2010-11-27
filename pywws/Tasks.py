@@ -67,14 +67,11 @@ def DoTwitter(section, params, raw_data, hourly_data, daily_data, monthly_data,
     for template in templates:
         input_file = os.path.join(template_dir, template)
         logger.info("Templating %s", template)
-        output_file = os.path.join(work_dir, template)
-        Template.Template(
+        tweet = Template.TemplateText(
             params, raw_data, hourly_data, daily_data,
-            monthly_data, input_file, output_file, translation=translation)
+            monthly_data, input_file, translation)
         logger.info("Tweeting")
-        OK = twitter.UploadFile(output_file)
-        os.unlink(output_file)
-        if not OK:
+        if not twitter.Upload(tweet[:140]):
             return False
     return True
 class RegularTasks(object):
