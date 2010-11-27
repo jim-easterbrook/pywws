@@ -23,8 +23,8 @@ from Logger import ApplicationLogger
 from TimeZone import Local, utc
 import WeatherStation
 
-def Template(params, raw_data, hourly_data, daily_data, monthly_data,
-             template_file, output_file, translation=None):
+def TemplateGen(params, raw_data, hourly_data, daily_data, monthly_data,
+                template_file, translation):
     def jump(idx, count):
         while count > 0:
             new_idx = data_set.after(idx + timedelta(seconds=1))
@@ -41,8 +41,6 @@ def Template(params, raw_data, hourly_data, daily_data, monthly_data,
         return idx, count == 0
     logger = logging.getLogger('pywws.Template')
     # set language before importing wind_dir_text array
-    if not translation:
-        translation = Localisation.GetTranslation(params)
     WeatherStation.set_translation(translation.gettext)
     pressure_trend_text = WeatherStation.pressure_trend_text
     wind_dir_text = WeatherStation.get_wind_dir_text()
@@ -60,11 +58,10 @@ def Template(params, raw_data, hourly_data, daily_data, monthly_data,
     idx, valid_data = jump(datetime.max, -1)
     if not valid_data:
         logger.error("No summary data - run Process.py first")
-        return 4
+        return
     data = data_set[idx]
-    # open template file and output file
+    # open template file file
     tmplt = open(template_file, 'r')
-    of = open(output_file, 'w')
     # do the text processing
     while True:
         line = tmplt.readline()
@@ -75,12 +72,12 @@ def Template(params, raw_data, hourly_data, daily_data, monthly_data,
             if i % 2 == 0:
                 # not a processing directive
                 if parts[i] != '\n':
-                    of.write(parts[i])
+                    yield parts[i]
                 continue
             command = shlex.split(parts[i])
             if command == []:
                 # empty command == print a single '#'
-                of.write('#')
+                yield '#'
             elif command[0] in data.keys() + ['calc']:
                 # output a value
                 # format is: key fmt_string no_value_string conversion
@@ -108,11 +105,11 @@ def Template(params, raw_data, hourly_data, daily_data, monthly_data,
                 # write output
                 if x == None:
                     if len(command) > 2:
-                        of.write(command[2])
+                        yield command[2]
                 elif isinstance(x, datetime):
-                    of.write(x.strftime(fmt))
+                    yield x.strftime(fmt)
                 else:
-                    of.write(fmt % (x))
+                    yield fmt % (x)
             elif command[0] == 'monthly':
                 data_set = monthly_data
                 idx, valid_data = jump(datetime.max, -1)
@@ -136,7 +133,7 @@ def Template(params, raw_data, hourly_data, daily_data, monthly_data,
                     time_zone = Local
                 else:
                     logger.error("Unknown time zone: %s", command[1])
-                    return 6
+                    return
             elif command[0] == 'roundtime':
                 if eval(command[1]):
                     round_time = timedelta(seconds=30)
@@ -155,9 +152,27 @@ def Template(params, raw_data, hourly_data, daily_data, monthly_data,
                     tmplt.seek(loop_start, 0)
             else:
                 logger.error("Unknown processing directive: #%s#", parts[i])
-                return 5
-    of.close()
+                return
     tmplt.close()
+    return
+def TemplateText(params, raw_data, hourly_data, daily_data, monthly_data,
+                 template_file, translation):
+    result = ''
+    for text in TemplateGen(params, raw_data, hourly_data, daily_data, monthly_data,
+                            template_file, translation):
+        result += text
+    return result
+def Template(params, raw_data, hourly_data, daily_data, monthly_data,
+             template_file, output_file, translation=None):
+    if not translation:
+        translation = Localisation.GetTranslation(params)
+    # open output file
+    of = open(output_file, 'w')
+    # do the processing
+    for text in TemplateGen(params, raw_data, hourly_data, daily_data, monthly_data,
+                            template_file, translation):
+        of.write(text)
+    of.close()
     return 0
 def main(argv=None):
     if argv is None:
