@@ -52,13 +52,13 @@ class ToTwitter(object):
             try:
                 status = self.api.update_status(
                     tweet.decode(self.charset), lat=self.lat, long=self.long)
-                break
+                return True
             except Exception, ex:
                 e = str(ex)
                 if e != self.old_ex:
                     self.logger.error(e)
                     self.old_ex = e
-        return 0
+        return False
     def UploadFile(self, file):
         tweet_file = open(file, 'r')
         tweet = tweet_file.read(140)
