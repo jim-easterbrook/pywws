@@ -13,7 +13,6 @@ options are:
 data_dir is the root directory of the weather data (default /data/weather)
 """
 
-from datetime import datetime, timedelta
 import getopt
 import os
 import sys
@@ -24,8 +23,6 @@ from pywws import LogData
 from pywws.Logger import ApplicationLogger
 from pywws import Process
 from pywws import Tasks
-from pywws.TimeZone import Local, utc
-from pywws import Upload
 
 def Hourly(data_dir):
     # get file locations
@@ -41,39 +38,12 @@ def Hourly(data_dir):
     LogData.LogData(params, raw_data)
     # do the processing
     Process.Process(params, raw_data, hourly_data, daily_data, monthly_data)
-    # get local time's offset from UTC, without DST
-    last_raw = raw_data.before(datetime.max)
-    time_offset = Local.utcoffset(last_raw) - Local.dst(last_raw)
-    # get daytime end hour, in UTC
-    day_end_hour = eval(params.get('config', 'day end hour', '21'))
-    day_end_hour = (day_end_hour - (time_offset.seconds / 3600)) % 24
-    # get hours since day end hour
-    hour = (last_raw + timedelta(minutes=raw_data[last_raw]['delay'])).hour
-    hour -= day_end_hour
-    sections = ['live', 'hourly']
-    if hour % 12 == 0:
-        sections.append('12 hourly')
-    if hour % 24 == 0:
-        sections.append('daily')
-    uploads = []
-    for section in sections:
-        Tasks.DoTwitter(
-            section, params, raw_data, hourly_data, daily_data, monthly_data,
-            translation)
-        if eval(params.get(section, 'underground', 'False')):
-            from pywws import ToUnderground
-            ToUnderground.ToUnderground(params, raw_data).Upload(True)
-        uploads += Tasks.DoPlots(
-            section, params, raw_data, hourly_data, daily_data, monthly_data,
-            translation)
-        uploads += Tasks.DoTemplates(
-            section, params, raw_data, hourly_data, daily_data, monthly_data,
-            translation)
-    Upload.Upload(params, uploads)
-    for file in uploads:
-        os.unlink(file)
+    # do tasks
+    if not Tasks.RegularTasks(
+        params, raw_data, hourly_data, daily_data, monthly_data, translation
+        ).do_tasks():
+        return 1
     return 0
-
 def main(argv=None):
     if argv is None:
         argv = sys.argv

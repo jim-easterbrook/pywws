@@ -25,9 +25,7 @@ from pywws import LogData
 from pywws.Logger import ApplicationLogger
 from pywws import Process
 from pywws import Tasks
-from pywws.TimeZone import Local, utc
 from pywws import ToUnderground
-from pywws import Upload
 from pywws import WeatherStation
 
 def CheckFixedBlock(ws, params, logger):
@@ -44,6 +42,13 @@ def CheckFixedBlock(ws, params, logger):
     # store info from fixed block
     pressure_offset = fixed_block['rel_pressure'] - fixed_block['abs_pressure']
     old_offset = eval(params.get('fixed', 'pressure offset', 'None'))
+    if old_offset and abs(old_offset - pressure_offset) > 0.01:
+        # re-read fixed block, as can get incorrect values
+        logger.warning('Re-read fixed block')
+        fixed_block = ws.get_fixed_block(unbuffered=True)
+        if not fixed_block:
+            return None
+        pressure_offset = fixed_block['rel_pressure'] - fixed_block['abs_pressure']
     if old_offset and abs(old_offset - pressure_offset) > 0.01:
         logger.warning(
             'Pressure offset change: %g -> %g', old_offset, pressure_offset)
@@ -68,12 +73,9 @@ def LiveLog(data_dir):
     translation = Localisation.GetTranslation(params)
     # create a ToUnderground object
     underground = ToUnderground.ToUnderground(params, raw_data)
-    # get local time's offset from UTC, without DST
-    now = datetime.utcnow()
-    time_offset = Local.utcoffset(now) - Local.dst(now)
-    # get daytime end hour, in UTC
-    day_end_hour = eval(params.get('config', 'day end hour', '21'))
-    day_end_hour = (day_end_hour - (time_offset.seconds / 3600)) % 24
+    # create a RegularTasks object
+    tasks = Tasks.RegularTasks(
+        params, raw_data, hourly_data, daily_data, monthly_data, translation)
     # get time of last logged data
     two_minutes = timedelta(minutes=2)
     last_stored = raw_data.before(datetime.max)
@@ -109,32 +111,10 @@ def LiveLog(data_dir):
             Process.Process(
                 params, raw_data, hourly_data, daily_data, monthly_data)
             # do tasks
-            sections = ['live']
+            tasks.do_tasks()
             if now >= next_hour:
                 next_hour += hour
-                sections.append('hourly')
-                if (now.hour - day_end_hour) % 12 == 0:
-                    sections.append('12 hourly')
-                if (now.hour - day_end_hour) % 24 == 0:
-                    sections.append('daily')
                 fixed_block = CheckFixedBlock(ws, params, logger)
-            uploads = []
-            for section in sections:
-                Tasks.DoTwitter(
-                    section, params, raw_data, hourly_data, daily_data, monthly_data,
-                    translation)
-                if eval(params.get(section, 'underground', 'False')):
-                    underground.Upload(True)
-                uploads += Tasks.DoPlots(
-                    section, params, raw_data, hourly_data, daily_data, monthly_data,
-                    translation)
-                uploads += Tasks.DoTemplates(
-                    section, params, raw_data, hourly_data, daily_data, monthly_data,
-                    translation)
-            if uploads:
-                Upload.Upload(params, uploads)
-            for file in uploads:
-                os.unlink(file)
             params.flush()
         elif eval(params.get('live', 'underground', 'False')):
             underground.RapidFire(data, True)
