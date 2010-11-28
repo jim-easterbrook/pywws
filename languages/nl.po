@@ -1,0 +1,129 @@
+# Dutch translations for pywws package.
+# Copyright (C) 2010 Jim Easterbrook
+# This file is distributed under the same license as the pywws package.
+# Rick Sulman <rick@sulman.org>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: pywws\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-04-06 18:58+0100\n"
+"PO-Revision-Date: 2010-11-27 21:56+0100\n"
+"Last-Translator: root <rick@sulman.org>\n"
+"Language-Team: Dutch\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=ASCII\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: ../Plot.py:205
+msgid "Time (%Z)"
+msgstr "Tijd (%Z)"
+
+#: ../Plot.py:207
+msgid "Day"
+msgstr "Dag"
+
+#: ../Plot.py:209
+msgid "Date"
+msgstr "Datum"
+
+#: ../WeatherStation.py:46 ../WindRose.py:118
+msgid "N"
+msgstr "N"
+
+#: ../WeatherStation.py:46
+msgid "NNE"
+msgstr "NNO"
+
+#: ../WeatherStation.py:46
+msgid "NE"
+msgstr "NO"
+
+#: ../WeatherStation.py:46
+msgid "ENE"
+msgstr "ONO"
+
+#: ../WeatherStation.py:47 ../WindRose.py:118
+msgid "E"
+msgstr "O"
+
+#: ../WeatherStation.py:47
+msgid "ESE"
+msgstr "OZO"
+
+#: ../WeatherStation.py:47
+msgid "SE"
+msgstr "ZO"
+
+#: ../WeatherStation.py:47
+msgid "SSE"
+msgstr "ZZO"
+
+#: ../WeatherStation.py:48 ../WindRose.py:118
+msgid "S"
+msgstr "Z"
+
+#: ../WeatherStation.py:48
+msgid "SSW"
+msgstr "ZZW"
+
+#: ../WeatherStation.py:48
+msgid "SW"
+msgstr "ZW"
+
+#: ../WeatherStation.py:48
+msgid "WSW"
+msgstr "WZW"
+
+#: ../WeatherStation.py:49 ../WindRose.py:118
+msgid "W"
+msgstr "W"
+
+#: ../WeatherStation.py:49
+msgid "WNW"
+msgstr "WNW"
+
+#: ../WeatherStation.py:49
+msgid "NW"
+msgstr "NW"
+
+#: ../WeatherStation.py:49
+msgid "NNW"
+msgstr "NNW"
+
+#: ../WeatherStation.py:56
+msgid "rising very rapidly"
+msgstr "stijgt zeer snel"
+
+#: ../WeatherStation.py:58
+msgid "rising rapidly"
+msgstr "stijgt snel"
+
+#: ../WeatherStation.py:60
+msgid "rising"
+msgstr "stijgend"
+
+#: ../WeatherStation.py:62
+msgid "rising slowly"
+msgstr "stijgt langzaam"
+
+#: ../WeatherStation.py:64
+msgid "falling very rapidly"
+msgstr "zakt zeer snel"
+
+#: ../WeatherStation.py:66
+msgid "falling quickly"
+msgstr "zakt snel"
+
+#: ../WeatherStation.py:68
+msgid "falling"
+msgstr "zakt"
+
+#: ../WeatherStation.py:70
+msgid "falling slowly"
+msgstr "zakt langzaam"
+
+#: ../WeatherStation.py:71
+msgid "steady"
+msgstr "stabiel"
