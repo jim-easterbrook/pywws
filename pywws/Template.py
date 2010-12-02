@@ -143,6 +143,15 @@ def TemplateGen(params, raw_data, hourly_data, daily_data, monthly_data,
                 prevdata = data
                 idx, valid_data = jump(idx, int(command[1]))
                 data = data_set[idx]
+            elif command[0] == 'goto':
+                prevdata = data
+                new_idx = data_set.after(DataStore.safestrptime(command[1]))
+                if new_idx:
+                    idx = new_idx
+                    data = data_set[idx]
+                    valid_data = True
+                else:
+                    valid_data = False
             elif command[0] == 'loop':
                 loop_count = int(command[1])
                 loop_start = tmplt.tell()

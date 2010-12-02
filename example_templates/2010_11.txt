@@ -1,0 +1,31 @@
+<table border="1" rules="all">
+  <tr>
+    <th rowspan="2">24 hours ending</th>
+    <th colspan="2">Temperature</th>
+    <th colspan="3">Wind</th>
+    <th rowspan="2">Rainfall</th>
+  </tr>
+  <tr>
+    <th>day max</th>
+    <th>night min</th>
+    <th>dir</th>
+    <th>average</th>
+    <th>max gust</th>
+  </tr>
+#timezone local#
+#roundtime True#
+#daily#
+#goto "2010-11-01 00:00:00"#
+#loop 30#
+  <tr>
+    <td>#idx "%Y/%m/%d %H:%M %Z"#</td>
+    <td>#temp_out_max "%.1f &deg;C"#</td>
+    <td>#temp_out_min "%.1f &deg;C"#</td>
+    <td>#wind_dir "%s" "-" "wind_dir_text[x]"#</td>
+    <td>#wind_ave "%.0f mph" "" "x * 3.6 / 1.609344"#</td>
+    <td>#wind_gust "%.0f mph" "" "x * 3.6 / 1.609344"#</td>
+    <td>#rain "%0.1f mm"#</td>
+  </tr>
+#jump 1#
+#endloop#
+</table>

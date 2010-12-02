@@ -50,6 +50,9 @@
         <b><code>#jump count#</code></b>: jump <code>count</code> values. The data index is adjusted by <code>count</code> hours or days. Negative values jump back in time.<br>It is a good idea to put jumps within a loop at the end, just before the <code>#endloop#</code> instruction. The loop can then terminate cleanly if it has run out of data.
       </li>
       <li>
+        <b><code>#goto date-time#</code></b>: go to <code>date-time</code>. The data index is adjusted to the record immediately after <code>date-time</code>. This must be in UTC, not your local time zone, and exactly match the ISO date format, for example <code>2010-11-01&nbsp;12:00:00</code> is noon on 1st November 2010.
+      </li>
+      <li>
         <b><code>#loop count#</code></b>: start a loop that will repeat <code>count</code> times. <code>Count</code> must be one or more.
       </li>
       <li>
