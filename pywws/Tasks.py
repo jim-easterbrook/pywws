@@ -6,83 +6,36 @@ from datetime import datetime, timedelta
 import logging
 import os
 
-from Plot import GraphPlotter
+import Plot
 import Template
-from TimeZone import Local, utc
+from TimeZone import Local
 import ToUnderground
 import Upload
-from WindRose import RosePlotter
+import WindRose
 
-def DoPlots(section, params, raw_data, hourly_data, daily_data, monthly_data,
-            translation):
-    logger = logging.getLogger('pywws.Tasks.DoPlots')
-    work_dir = params.get('paths', 'work', '/tmp/weather')
-    plotter = GraphPlotter(
-        params, raw_data, hourly_data, daily_data, monthly_data, work_dir,
-        translation=translation)
-    roseplotter = RosePlotter(
-        params, raw_data, hourly_data, daily_data, monthly_data, work_dir,
-        translation=translation)
-    graph_template_dir = params.get(
-        'paths', 'graph_templates', os.path.expanduser('~/weather/graph_templates/'))
-    templates = eval(params.get(section, 'plot', '[]'))
-    result = []
-    for template in templates:
-        input_file = os.path.join(graph_template_dir, template)
-        logger.info("Graphing %s", template)
-        output_file = os.path.join(work_dir, os.path.splitext(template)[0])
-        if plotter.DoPlot(input_file, output_file) == 0:
-            result.append(output_file)
-        elif roseplotter.DoPlot(input_file, output_file) == 0:
-            result.append(output_file)
-    return result
-def DoTemplates(section, params, raw_data, hourly_data, daily_data, monthly_data,
-                translation):
-    logger = logging.getLogger('pywws.Tasks.DoTemplates')
-    work_dir = params.get('paths', 'work', '/tmp/weather')
-    template_dir = params.get(
-        'paths', 'templates', os.path.expanduser('~/weather/templates/'))
-    templates = eval(params.get(section, 'text', '[]'))
-    result = []
-    for template in templates:
-        input_file = os.path.join(template_dir, template)
-        logger.info("Templating %s", template)
-        output_file = os.path.join(work_dir, template)
-        Template.Template(
-            params, raw_data, hourly_data, daily_data,
-            monthly_data, input_file, output_file, translation=translation)
-        result.append(output_file)
-    return result
-def DoTwitter(section, params, raw_data, hourly_data, daily_data, monthly_data,
-              translation):
-    logger = logging.getLogger('pywws.Tasks.DoTwitter')
-    work_dir = params.get('paths', 'work', '/tmp/weather')
-    template_dir = params.get(
-        'paths', 'templates', os.path.expanduser('~/weather/templates/'))
-    templates = eval(params.get(section, 'twitter', '[]'))
-    if not templates:
-        return True
-    import ToTwitter
-    twitter = ToTwitter.ToTwitter(params, translation=translation)
-    for template in templates:
-        input_file = os.path.join(template_dir, template)
-        logger.info("Templating %s", template)
-        tweet = Template.TemplateText(
-            params, raw_data, hourly_data, daily_data,
-            monthly_data, input_file, translation)
-        logger.info("Tweeting")
-        if not twitter.Upload(tweet[:140]):
-            return False
-    return True
 class RegularTasks(object):
     def __init__(self, params, raw_data, hourly_data, daily_data, monthly_data,
                  translation):
+        self.logger = logging.getLogger('pywws.Tasks.RegularTasks')
         self.params = params
         self.raw_data = raw_data
         self.hourly_data = hourly_data
         self.daily_data = daily_data
         self.monthly_data = monthly_data
         self.translation = translation
+        # get directories
+        self.work_dir = self.params.get('paths', 'work', '/tmp/weather')
+        self.template_dir = self.params.get(
+            'paths', 'templates', os.path.expanduser('~/weather/templates/'))
+        self.graph_template_dir = self.params.get(
+            'paths', 'graph_templates', os.path.expanduser('~/weather/graph_templates/'))
+        # create plotter objects
+        self.plotter = Plot.GraphPlotter(
+            self.params, self.raw_data, self.hourly_data, self.daily_data,
+            self.monthly_data, self.work_dir, translation=self.translation)
+        self.roseplotter = WindRose.RosePlotter(
+            self.params, self.raw_data, self.hourly_data, self.daily_data,
+            self.monthly_data, self.work_dir, translation=self.translation)
         # create a ToUnderground object
         self.underground = ToUnderground.ToUnderground(self.params, self.raw_data)
         # get local time's offset from UTC, without DST
@@ -111,24 +64,26 @@ class RegularTasks(object):
             if (not last_update) or (last_update < threshold):
                 # time to do daily tasks
                 sections.append('daily')
-        uploads = []
-        OK = True
         for section in sections:
-            if not DoTwitter(
-                section, self.params, self.raw_data, self.hourly_data,
-                self.daily_data, self.monthly_data, self.translation):
-                OK = False
-                break
+            for template in eval(self.params.get(section, 'twitter', '[]')):
+                if not self.do_twitter(template):
+                    return False
+        for section in sections:
             if eval(self.params.get(section, 'underground', 'False')):
                 if not self.underground.Upload(True):
-                    OK = False
-                    break
-            uploads += DoPlots(
-                section, self.params, self.raw_data, self.hourly_data,
-                self.daily_data, self.monthly_data, self.translation)
-            uploads += DoTemplates(
-                section, self.params, self.raw_data, self.hourly_data,
-                self.daily_data, self.monthly_data, self.translation)
+                    return False
+                break
+        uploads = []
+        for section in sections:
+            for template in eval(self.params.get(section, 'plot', '[]')):
+                upload = self.do_plot(template)
+                if upload and upload not in uploads:
+                    uploads.append(upload)
+            for template in eval(self.params.get(section, 'text', '[]')):
+                upload = self.do_template(template)
+                if upload not in uploads:
+                    uploads.append(upload)
+        OK = True
         if uploads:
             OK = OK and Upload.Upload(self.params, uploads) == 0
             for file in uploads:
@@ -137,3 +92,30 @@ class RegularTasks(object):
             for section in sections:
                 self.params.set(section, 'last update', now.isoformat(' '))
         return OK
+    def do_twitter(self, template):
+        import ToTwitter
+        twitter = ToTwitter.ToTwitter(self.params, translation=self.translation)
+        self.logger.info("Templating %s", template)
+        input_file = os.path.join(self.template_dir, template)
+        tweet = Template.TemplateText(
+            self.params, self.raw_data, self.hourly_data, self.daily_data,
+            self.monthly_data, input_file, self.translation)
+        self.logger.info("Tweeting")
+        return twitter.Upload(tweet[:140])
+    def do_plot(self, template):
+        self.logger.info("Graphing %s", template)
+        input_file = os.path.join(self.graph_template_dir, template)
+        output_file = os.path.join(self.work_dir, os.path.splitext(template)[0])
+        if self.plotter.DoPlot(input_file, output_file) == 0:
+            return output_file
+        elif self.roseplotter.DoPlot(input_file, output_file) == 0:
+            return output_file
+        return None
+    def do_template(self, template):
+        self.logger.info("Templating %s", template)
+        input_file = os.path.join(self.template_dir, template)
+        output_file = os.path.join(self.work_dir, template)
+        Template.Template(
+            self.params, self.raw_data, self.hourly_data, self.daily_data,
+            self.monthly_data, input_file, output_file, translation=self.translation)
+        return output_file
