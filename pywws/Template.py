@@ -18,6 +18,7 @@ import shlex
 import sys
 
 import DataStore
+from Forecast import Zambretti
 import Localisation
 from Logger import ApplicationLogger
 from TimeZone import Local, utc

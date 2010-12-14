@@ -1,0 +1,17 @@
+<table border="1" rules="all">
+  <tr>
+    <th>date &amp; time</th>
+    <th>Forecast for the following 12 hours</th>
+  </tr>
+#timezone local#
+#roundtime True#
+#hourly#
+#jump -156#
+#loop 99#
+  <tr>
+    <td>#idx "%A %d %B, %H:%M %Z"#</td>
+    <td>#calc "Zambretti(params, data)"#</td>
+  </tr>
+#jump 24#
+#endloop#
+</table>
