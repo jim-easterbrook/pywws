@@ -176,7 +176,7 @@ def findDevice(idVendor, idProduct):
             if device.idVendor == idVendor and device.idProduct == idProduct:
                 return device
     return None
-class weather_station:
+class weather_station(object):
     """Class that represents the weather station to user program."""
     def __init__(self):
         """Connect to weather station and prepare to read data."""
@@ -255,7 +255,8 @@ class weather_station:
                 old_data['delay'] = new_data['delay']
             yielded = False
             data_changed = new_data != old_data
-            if ptr_changed and (new_data['delay'] == None or new_data['delay'] > 4):
+            if ptr_changed and (new_data['delay'] == None or
+                                new_data['delay'] >= read_period):
                 # picked up old data from new pointer, ignore it
                 self.logger.info('live_data old data')
                 pass
