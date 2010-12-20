@@ -22,6 +22,8 @@ import os
 import sys
 import time
 
+import Localisation
+
 def safestrptime(date_string, format=None):
     # time.strptime is time consuming (because it's so flexible?) so don't use
     # it for the fixed format datetime strings in our csv files
@@ -33,7 +35,7 @@ def safestrptime(date_string, format=None):
                                date_string[11:13],
                                date_string[14:16],
                                date_string[17:19])))
-class params:
+class params(object):
     def __init__(self, root_dir):
         """Parameters are stored in a file "weather.ini" in root_dir."""
         if not os.path.isdir(root_dir):
@@ -43,6 +45,8 @@ class params:
         # open config file
         self._config = SafeConfigParser()
         self._config.read(self._path)
+        # get a translation object
+        self.translation = Localisation.GetTranslation(self)
     def __del__(self):
         self.flush()
     def flush(self):
@@ -76,7 +80,7 @@ class params:
             self._config.add_section(section)
         self._config.set(section, option, value)
         self._dirty = True
-class core_store:
+class core_store(object):
     def __init__(self, root_dir):
         self._root_dir = root_dir
         self._one_day = timedelta(days=1)
