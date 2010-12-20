@@ -54,15 +54,16 @@ def main(argv=None):
         print >>sys.stderr, __doc__.strip()
         return 2
     data_dir = args[0]
+    params = DataStore.params(data_dir)
     hourly_data = DataStore.hourly_store(data_dir)
     idx = hourly_data.before(datetime.max)
-    print 'Zambretti (current):', Zambretti(hourly_data[idx])
+    print 'Zambretti (current):', Zambretti(params, hourly_data[idx])
     idx = idx.replace(tzinfo=utc).astimezone(Local)
     if idx.hour < 9:
         idx -= timedelta(hours=24)
     idx = idx.replace(hour=9, minute=0, second=0)
     idx = hourly_data.nearest(idx.astimezone(utc).replace(tzinfo=None))
-    print 'Zambretti  (at 9am):', Zambretti(hourly_data[idx])
+    print 'Zambretti  (at 9am):', Zambretti(params, hourly_data[idx])
     return 0
 if __name__ == "__main__":
     sys.exit(main())
