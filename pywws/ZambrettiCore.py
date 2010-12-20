@@ -31,21 +31,24 @@ import math
 #  [0] a short forecast text is returned
 #  [1] zambretti result_code number (0 - 25) is returned ie. Zambretti() returns a two deep array
 
+def _(msg) : return msg
 
 z_forecast = [
-    "Settled fine", "Fine weather", "Becoming fine",
-    "Fine, becoming less settled", "Fine, possible showers",
-    "Fairly fine, improving", "Fairly fine, possible showers early",
-    "Fairly fine, showery later", "Showery early, improving",
-    "Changeable, mending", "Fairly fine, showers likely",
-    "Rather unsettled clearing later", "Unsettled, probably improving",
-    "Showery, bright intervals", "Showery, becoming less settled",
-    "Changeable, some rain", "Unsettled, short fine intervals",
-    "Unsettled, rain later", "Unsettled, some rain",
-    "Mostly very unsettled", "Occasional rain, worsening",
-    "Rain at times, very unsettled", "Rain at frequent intervals",
-    "Rain, very unsettled", "Stormy, may improve", "Stormy, much rain"
+    _("Settled fine"), _("Fine weather"), _("Becoming fine"),
+    _("Fine, becoming less settled"), _("Fine, possible showers"),
+    _("Fairly fine, improving"), _("Fairly fine, possible showers early"),
+    _("Fairly fine, showery later"), _("Showery early, improving"),
+    _("Changeable, mending"), _("Fairly fine, showers likely"),
+    _("Rather unsettled clearing later"), _("Unsettled, probably improving"),
+    _("Showery, bright intervals"), _("Showery, becoming less settled"),
+    _("Changeable, some rain"), _("Unsettled, short fine intervals"),
+    _("Unsettled, rain later"), _("Unsettled, some rain"),
+    _("Mostly very unsettled"), _("Occasional rain, worsening"),
+    _("Rain at times, very unsettled"), _("Rain at frequent intervals"),
+    _("Rain, very unsettled"), _("Stormy, may improve"), _("Stormy, much rain")
     ]
+
+del _
 
 # equivalents of Zambretti 'dial window' letters A - Z
 rise_options   = [25,25,25,24,24,19,16,12,11, 9, 8, 6, 5, 2,1,1,0,0,0,0,0,0]
