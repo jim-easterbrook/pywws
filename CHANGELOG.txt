@@ -1,13 +1,19 @@
 Python software for USB Wireless WeatherStations (pywws).
 http://code.google.com/p/pywws/
 
+Changes in v10.12:
+    1/ Various bug fixes and software structure improvements.
+    2/ Added a 'goto' instruction to Template.py.
+    3/ Added a 'Zambretti' forecast function to Template.py. This should
+       be treated as an experiment, and not relied upon for accuracy.
+
 Changes in v10.10:
     1/ Added 'catchup' mode to ToUnderground.py.
     2/ Created 'Tasks.py' to handle common tasks.
     3/ Made better use of Python's logger for info and error
        messages.
-    4/ Changed over from 'python-twiter' to 'tweepy' for Twitter
-       access.
+    4/ Changed over from 'python-twitter' to 'tweepy' for Twitter
+       access. Twitter authorisation using OAuth now works.
     5/ Added 'LiveLog.py' live logging program.
     6/ Added 'SetWeatherStation.py' to do some configuration of weather
        station. No longer need EasyWeather to set logging interval!
