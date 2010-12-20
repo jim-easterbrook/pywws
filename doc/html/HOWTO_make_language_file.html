@@ -78,6 +78,18 @@ make lang
     <p>
       I'm sure you would like others to benefit from the work you've done in making a new language file for pywws. Please, please, please send a copy of your language file (for example fr.po) to <a href="mailto:jim%40jim-easterbrook.me.uk">jim@jim-easterbrook.me.uk</a>.
     </p>
+    <h3>
+      8. Update the language file.
+    </h3>
+    <p>
+      As pywws is extended, new strings may be added which will require your translation file to be extended as well. This is fairly easy to do. First you need to remove the language master template file:
+    </p>
+<pre>
+rm languages/pywws.pot
+</pre>
+    <p>
+	  Now run the make command again as in section 5 above. This should add the new strings to your language file, without changing the strings you've already translated.
+    </p>
     <p>
       Comments or questions? Please subscribe to the pywws mailing list <a href="http://groups.google.com/group/pywws">http://groups.google.com/group/pywws</a> and let us know.
     </p>
