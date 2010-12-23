@@ -32,9 +32,16 @@ def LogData(params, raw_data, sync=0, clear=False):
     if not fixed_block:
         logger.error("Invalid data from weather station")
         return 3
+    # get time to go back to
+    last_stored = raw_data.before(datetime.max)
+    if last_stored == None:
+        last_stored = datetime.min
     # check clocks
     s_time = DataStore.safestrptime(fixed_block['date_time'], '%Y-%m-%d %H:%M')
     c_time = datetime.now().replace(second=0, microsecond=0)
+    if c_time < last_stored:
+        logger.error('Computer time is earlier than last stored data')
+        return 4
     diff = abs(s_time - c_time)
     if diff > timedelta(minutes=2):
         logger.warning(
@@ -59,15 +66,9 @@ def LogData(params, raw_data, sync=0, clear=False):
             last_date = last_date.replace(second=0) - timedelta(minutes=data['delay'])
             last_ptr = ws.dec_ptr(last_ptr)
             break
-    # get time to go back to
-    last_stored = raw_data.before(datetime.max)
-    if last_stored == None:
-        last_stored = datetime.min
-    else:
-        last_stored = last_stored + \
-                      timedelta(minutes=fixed_block['read_period'] / 2)
     # go back through stored data, until we catch up with what we've already got
     logger.info('Fetching data')
+    last_stored += timedelta(minutes=fixed_block['read_period'] / 2)
     count = 0
     max_count = min(fixed_block['data_count'], 4079)
     while last_date > last_stored and count < max_count:

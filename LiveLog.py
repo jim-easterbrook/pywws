@@ -21,7 +21,6 @@ import time
 
 from pywws import DataStore
 from pywws import Localisation
-from pywws import LogData
 from pywws.Logger import ApplicationLogger
 from pywws import Process
 from pywws import Tasks
@@ -81,6 +80,10 @@ def LiveLog(data_dir):
     last_stored = raw_data.before(datetime.max)
     if last_stored == None:
         last_stored = datetime.min
+    c_time = datetime.now().replace(second=0, microsecond=0)
+    if c_time < last_stored:
+        logger.error('Computer time is earlier than last stored data')
+        return 4
     last_stored += two_minutes
     # get live data
     hour = timedelta(hours=1)
@@ -115,6 +118,9 @@ def LiveLog(data_dir):
             if now >= next_hour:
                 next_hour += hour
                 fixed_block = CheckFixedBlock(ws, params, logger)
+                if not fixed_block:
+                    logger.error("Invalid data from weather station")
+                    return 3
             params.flush()
         elif eval(params.get('live', 'underground', 'False')):
             underground.RapidFire(data, True)
