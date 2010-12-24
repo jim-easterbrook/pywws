@@ -20,9 +20,9 @@ from Logger import ApplicationLogger
 from TimeZone import Local, utc
 import WeatherStation
 
-class Record:
+class Record(object):
     pass
-class Average:
+class Average(object):
     def __init__(self):
         self.acc = 0.0
         self.count = 0
@@ -35,7 +35,7 @@ class Average:
         if self.count == 0:
             return None
         return self.acc / float(self.count)
-class MinTemp:
+class MinTemp(object):
     def __init__(self):
         self.value = 1000.0
         self.time = None
@@ -47,7 +47,7 @@ class MinTemp:
         if self.time:
             return self.value, self.time
         return None, None
-class MaxTemp:
+class MaxTemp(object):
     def __init__(self):
         self.value = -1000.0
         self.time = None
@@ -59,7 +59,7 @@ class MaxTemp:
         if self.time:
             return self.value, self.time
         return None, None
-class Acc:
+class Acc(object):
     """'Accumulate' raw weather data to produce summaries.
 
     Compute average wind speed, log daytime max & nighttime min
@@ -207,7 +207,7 @@ class Acc:
                 self.d_temp[i].min.result())
         self.reset_daily()
         return retval
-class MonthAcc:
+class MonthAcc(object):
     """Derive monthly summary data from daily data."""
     def __init__(self, start):
         self.m_start = start
@@ -306,6 +306,7 @@ def Process(params, raw_data, hourly_data, daily_data, monthly_data):
     if start.hour < day_end_hour:
         start = start - DAY
     start = start.replace(hour=day_end_hour, minute=0, second=0)
+    start -= timedelta(seconds=30)
     # get start of monthly data to be updated
     month_start = monthly_data.before(datetime.max)
     if month_start != None:
@@ -314,6 +315,7 @@ def Process(params, raw_data, hourly_data, daily_data, monthly_data):
     del hourly_data[start + SECOND:]
     del daily_data[start + SECOND:]
     # preload pressure history, and find last valid rain
+    prev = None
     pressure_offset = eval(params.get('fixed', 'pressure offset'))
     pressure_history = deque()
     last_rain = None
@@ -321,10 +323,11 @@ def Process(params, raw_data, hourly_data, daily_data, monthly_data):
         pressure_history.append((raw['idx'], raw['abs_pressure']))
         if raw['rain'] != None:
             last_rain = raw['rain']
+        prev = raw
     acc = Acc(time_offset, last_rain)
     # process the data in day chunks
     while start <= last_raw:
-        logger.info("day: %s", start.isoformat())
+        logger.info("day: %s", start.isoformat(' '))
         day_start = start
         # process each hour
         for hour in range(24):
@@ -334,6 +337,11 @@ def Process(params, raw_data, hourly_data, daily_data, monthly_data):
             stop = start + HOUR
             for raw in raw_data[start:stop]:
                 pressure_history.append((raw['idx'], raw['abs_pressure']))
+                if prev:
+                    err = raw['idx'] - prev['idx']
+                    if abs(err - timedelta(minutes=raw['delay'])) > timedelta(seconds=45):
+                        logger.warning('unexpected data interval %s %s',
+                                       raw['idx'].isoformat(' '), str(err))
                 acc.add(raw)
                 prev = raw
             # get hourly result
@@ -403,7 +411,7 @@ def Process(params, raw_data, hourly_data, daily_data, monthly_data):
             stop = start.replace(year=start.year+1, month=1)
         # get month limits
         t1 = stop - month_offset
-        logger.info("month: %s", start.isoformat())
+        logger.info("month: %s", start.isoformat(' '))
         acc = MonthAcc(daily_data[daily_data.after(t0)]['start'])
         for data in daily_data[t0:t1]:
             acc.add(data)
