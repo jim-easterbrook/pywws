@@ -28,9 +28,9 @@ Licence terms:
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 Dependencies:
-	libusb (http://libusb.sf.net)
+	libusb (http://libusb.sf.net) version 0.1.12
 	Python (http://www.python.org/) version 2.4 or higher
-	PyUSB (http://pyusb.berlios.de/) version 0.4 or higher
+	PyUSB (http://pyusb.berlios.de/) version 0.4.x
 	For graph drawing:
 	  gnuplot (http://www.gnuplot.info/) v4.2 or higher
 	For secure website uploading (sftp)
@@ -44,7 +44,8 @@ Dependencies:
 
 	Many of these dependencies are available as packages for most Linux
 	distributions. This provides an easier way to install them than
-	downloading source from the project websites.
+	downloading source from the project websites. Note that the package
+	names may be slightly different, e.g. python-usb instead of pyusb.
 
 This software collection currently includes the following files:
 	README.txt		-- you are reading it!
