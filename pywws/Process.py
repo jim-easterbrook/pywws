@@ -306,7 +306,6 @@ def Process(params, raw_data, hourly_data, daily_data, monthly_data):
     if start.hour < day_end_hour:
         start = start - DAY
     start = start.replace(hour=day_end_hour, minute=0, second=0)
-    start -= timedelta(seconds=30)
     # get start of monthly data to be updated
     month_start = monthly_data.before(datetime.max)
     if month_start != None:
@@ -319,29 +318,30 @@ def Process(params, raw_data, hourly_data, daily_data, monthly_data):
     pressure_offset = eval(params.get('fixed', 'pressure offset'))
     pressure_history = deque()
     last_rain = None
-    for raw in raw_data[start - HOURx3:start]:
+    proc_start = start - timedelta(seconds=30)
+    for raw in raw_data[proc_start - HOURx3:proc_start]:
         pressure_history.append((raw['idx'], raw['abs_pressure']))
         if raw['rain'] != None:
             last_rain = raw['rain']
         prev = raw
     acc = Acc(time_offset, last_rain)
     # process the data in day chunks
-    while start <= last_raw:
+    while proc_start <= last_raw:
         logger.info("day: %s", start.isoformat(' '))
         day_start = start
         # process each hour
         for hour in range(24):
-            if start > last_raw:
+            if proc_start > last_raw:
                 break
             # process each data item in the hour
-            stop = start + HOUR
-            for raw in raw_data[start:stop]:
+            stop = proc_start + HOUR
+            for raw in raw_data[proc_start:stop]:
                 pressure_history.append((raw['idx'], raw['abs_pressure']))
                 if prev:
                     err = raw['idx'] - prev['idx']
                     if abs(err - timedelta(minutes=raw['delay'])) > timedelta(seconds=45):
-                        logger.warning('unexpected data interval %s %s',
-                                       raw['idx'].isoformat(' '), str(err))
+                        logger.info('unexpected data interval %s %s',
+                                    raw['idx'].isoformat(' '), str(err))
                 acc.add(raw)
                 prev = raw
             # get hourly result
@@ -371,7 +371,8 @@ def Process(params, raw_data, hourly_data, daily_data, monthly_data):
                     new_data['pressure_trend'] = None
                 # store new hourly data
                 hourly_data[new_data['idx']] = new_data
-            start = stop
+            proc_start = stop
+            start += HOUR
         # store summary of day
         new_data = acc.get_daily()
         if new_data:
