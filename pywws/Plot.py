@@ -172,6 +172,8 @@ class BasePlotter:
                 else:
                     return ''
         return default
+class Record(object):
+    pass
 class GraphPlotter(BasePlotter):
     def GetPlotList(self):
         return self.GetChildren(self.graph, 'plot')
@@ -278,60 +280,56 @@ set timefmt "%Y-%m-%dT%H:%M:%S"
         if stop:
             stop = stop + timedelta(minutes=1)
         # write data files
-        dat_file = []
-        dat = []
-        xcalc = []
-        ycalc = []
-        last_ycalcs = []
-        cummulative = []
-        no_data = []
+        subplots = []
         for subplot_no in range(subplot_count):
-            subplot = subplot_list[subplot_no]
-            dat_file.append(os.path.join(self.work_dir, 'plot_%d_%d.dat' % (
-                plot_no, subplot_no)))
-            self.tmp_files.append(dat_file[subplot_no])
-            dat.append(open(dat_file[subplot_no], 'w'))
-            xcalc.append(self.GetValue(subplot, 'xcalc', None))
-            ycalc.append(self.GetValue(subplot, 'ycalc', None))
-            cummulative.append('last_ycalc' in ycalc[subplot_no])
-            if xcalc[subplot_no]:
-                xcalc[subplot_no] = compile(xcalc[subplot_no], '<string>', 'eval')
-            ycalc[subplot_no] = compile(ycalc[subplot_no], '<string>', 'eval')
-            last_ycalcs.append(0.0)
-            no_data.append(True)
+            subplot = Record()
+            subplot.subplot = subplot_list[subplot_no]
+            subplot.dat_file = os.path.join(self.work_dir, 'plot_%d_%d.dat' % (
+                plot_no, subplot_no))
+            self.tmp_files.append(subplot.dat_file)
+            subplot.dat = open(subplot.dat_file, 'w')
+            subplot.xcalc = self.GetValue(subplot.subplot, 'xcalc', None)
+            subplot.ycalc = self.GetValue(subplot.subplot, 'ycalc', None)
+            subplot.cummulative = 'last_ycalc' in subplot.ycalc
+            if subplot.xcalc:
+                subplot.xcalc = compile(subplot.xcalc, '<string>', 'eval')
+            subplot.ycalc = compile(subplot.ycalc, '<string>', 'eval')
+            subplot.last_ycalcs = 0.0
+            subplot.no_data = True
+            subplots.append(subplot)
         for data in source[start:stop]:
-            for subplot_no in range(subplot_count):
-                if xcalc[subplot_no]:
-                    idx = eval(xcalc[subplot_no])
+            for subplot in subplots:
+                if subplot.xcalc:
+                    idx = eval(subplot.xcalc)
                     if idx == None:
                         continue
                 else:
                     idx = data['idx']
                 idx += self.utcoffset
                 try:
-                    if cummulative[subplot_no] and data['idx'] <= cumu_start:
+                    if subplot.cummulative and data['idx'] <= cumu_start:
                         value = 0.0
                     else:
-                        last_ycalc = last_ycalcs[subplot_no]
-                        value = eval(ycalc[subplot_no])
-                    dat[subplot_no].write('%s %g\n' % (idx.isoformat(), value))
-                    last_ycalcs[subplot_no] = value
-                    no_data[subplot_no] = False
+                        last_ycalc = subplot.last_ycalcs
+                        value = eval(subplot.ycalc)
+                    subplot.dat.write('%s %g\n' % (idx.isoformat(), value))
+                    subplot.last_ycalcs = value
+                    subplot.no_data = False
                 except TypeError:
                     pass
-        for subplot_no in range(subplot_count):
-            if no_data[subplot_no]:
+        for subplot in subplots:
+            if subplot.no_data:
                 idx = self.x_hi + self.duration
-                dat[subplot_no].write('%s %g\n' % (idx.isoformat(), 0.0))
-            dat[subplot_no].close()
+                subplot.dat.write('%s %g\n' % (idx.isoformat(), 0.0))
+            subplot.dat.close()
         # plot data
         result += 'plot '
         colour = 0
         for subplot_no in range(subplot_count):
-            subplot = subplot_list[subplot_no]
-            colour = eval(self.GetValue(subplot, 'colour', str(colour+1)))
+            subplot = subplots[subplot_no]
+            colour = eval(self.GetValue(subplot.subplot, 'colour', str(colour+1)))
             style = self.GetValue(
-                subplot, 'style', 'smooth unique lc %d lw 1' % (colour))
+                subplot.subplot, 'style', 'smooth unique lc %d lw 1' % (colour))
             words = style.split()
             if len(words) > 1 and words[0] in ('+', 'x', 'line'):
                 width = int(words[1])
@@ -345,10 +343,10 @@ set timefmt "%Y-%m-%dT%H:%M:%S"
                 style = 'lc %d lw %d pt 2 with points' % (colour, width)
             elif words[0] == 'line':
                 style = 'smooth unique lc %d lw %d' % (colour, width)
-            axes = self.GetValue(subplot, 'axes', 'x1y1')
-            title = self.GetValue(subplot, 'title', '')
+            axes = self.GetValue(subplot.subplot, 'axes', 'x1y1')
+            title = self.GetValue(subplot.subplot, 'title', '')
             result += ' "%s" using 1:2 axes %s title "%s" %s' % (
-                dat_file[subplot_no], axes, title, style)
+                subplot.dat_file, axes, title, style)
             if subplot_no != subplot_count - 1:
                 result += ', \\'
             result += '\n'
