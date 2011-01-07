@@ -284,6 +284,7 @@ set timefmt "%Y-%m-%dT%H:%M:%S"
         ycalc = []
         last_ycalcs = []
         cummulative = []
+        no_data = []
         for subplot_no in range(subplot_count):
             subplot = subplot_list[subplot_no]
             dat_file.append(os.path.join(self.work_dir, 'plot_%d_%d.dat' % (
@@ -297,6 +298,7 @@ set timefmt "%Y-%m-%dT%H:%M:%S"
                 xcalc[subplot_no] = compile(xcalc[subplot_no], '<string>', 'eval')
             ycalc[subplot_no] = compile(ycalc[subplot_no], '<string>', 'eval')
             last_ycalcs.append(0.0)
+            no_data.append(True)
         for data in source[start:stop]:
             for subplot_no in range(subplot_count):
                 if xcalc[subplot_no]:
@@ -314,9 +316,13 @@ set timefmt "%Y-%m-%dT%H:%M:%S"
                         value = eval(ycalc[subplot_no])
                     dat[subplot_no].write('%s %g\n' % (idx.isoformat(), value))
                     last_ycalcs[subplot_no] = value
+                    no_data[subplot_no] = False
                 except TypeError:
                     pass
         for subplot_no in range(subplot_count):
+            if no_data[subplot_no]:
+                idx = self.x_hi + self.duration
+                dat[subplot_no].write('%s %g\n' % (idx.isoformat(), 0.0))
             dat[subplot_no].close()
         # plot data
         result += 'plot '
