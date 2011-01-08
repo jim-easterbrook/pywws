@@ -12,6 +12,7 @@ from collections import deque
 from datetime import date, datetime, timedelta
 import getopt
 import logging
+import math
 import os
 import sys
 
@@ -59,6 +60,11 @@ class MaxTemp(object):
         if self.time:
             return self.value, self.time
         return None, None
+sin_LUT = []
+cos_LUT = []
+for i in range(16):
+    sin_LUT.append(math.sin(math.radians(float(i) * 360.0 / 16.0)))
+    cos_LUT.append(math.cos(math.radians(float(i) * 360.0 / 16.0)))
 class Acc(object):
     """'Accumulate' raw weather data to produce summaries.
 
@@ -134,11 +140,15 @@ class Acc(object):
             return None
         retval = {}
         if self.h_wind_count > 0:
-            best = 0
+            # convert weighted wind directions to a vector
+            Ve = 0.0
+            Vn = 0.0
             for dir, val in self.h_wind_dir.items():
-                if val > self.h_wind_dir[best]:
-                    best = dir
-            retval['wind_dir'] = best
+                Ve -= val * sin_LUT[dir]
+                Vn -= val * cos_LUT[dir]
+            # get direction of total vector
+            dir_ave = (math.degrees(math.atan2(Ve, Vn)) + 180.0) * 16.0 / 360.0
+            retval['wind_dir'] = int(dir_ave + 0.5) % 16
             wind_ave = self.h_wind_acc / self.h_wind_count
             wind_ave = float(int(wind_ave * 100)) / 100.0
             retval['wind_ave'] = wind_ave
@@ -182,11 +192,15 @@ class Acc(object):
             return None
         retval = {}
         if self.d_wind_count > 0:
-            best = 0
+            # convert weighted wind directions to a vector
+            Ve = 0.0
+            Vn = 0.0
             for dir, val in self.d_wind_dir.items():
-                if val > self.d_wind_dir[best]:
-                    best = dir
-            retval['wind_dir'] = best
+                Ve -= val * sin_LUT[dir]
+                Vn -= val * cos_LUT[dir]
+            # get direction of total vector
+            dir_ave = (math.degrees(math.atan2(Ve, Vn)) + 180.0) * 16.0 / 360.0
+            retval['wind_dir'] = int(dir_ave + 0.5) % 16
             wind_ave = self.d_wind_acc / self.d_wind_count
             wind_ave = float(int(wind_ave * 100)) / 100.0
             retval['wind_ave'] = wind_ave
