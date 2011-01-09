@@ -36,12 +36,12 @@ def LogData(params, raw_data, sync=0, clear=False):
     last_stored = raw_data.before(datetime.max)
     if last_stored == None:
         last_stored = datetime.min
+    if datetime.utcnow() < last_stored:
+        logger.error('Computer time is earlier than last stored data')
+        return 4
     # check clocks
     s_time = DataStore.safestrptime(fixed_block['date_time'], '%Y-%m-%d %H:%M')
     c_time = datetime.now().replace(second=0, microsecond=0)
-    if c_time < last_stored:
-        logger.error('Computer time is earlier than last stored data')
-        return 4
     diff = abs(s_time - c_time)
     if diff > timedelta(minutes=2):
         logger.warning(
