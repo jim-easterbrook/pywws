@@ -25,12 +25,12 @@
     <source>raw</source>
     <subplot>
       <colour>4</colour>
-      <ycalc>data['wind_gust'] * 3.6 / 1.609344</ycalc>
+      <ycalc>wind_mph(data['wind_gust'])</ycalc>
       <title>gust</title>
     </subplot>
     <subplot>
       <colour>3</colour>
-      <ycalc>data['wind_ave'] * 3.6 / 1.609344</ycalc>
+      <ycalc>wind_mph(data['wind_ave'])</ycalc>
       <title>average</title>
     </subplot>
   </plot>

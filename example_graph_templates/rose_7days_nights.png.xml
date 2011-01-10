@@ -6,7 +6,7 @@
     <title>Day</title>
     <source>raw</source>
     <xcalc>data['idx'].hour &gt;= 9 and data['idx'].hour &lt; 21</xcalc>
-    <ycalc>data['wind_ave'] * 3.6 / 1.609344</ycalc>
+    <ycalc>wind_mph(data['wind_ave'])</ycalc>
     <yrange>21</yrange>
     <threshold>0.5, 3.5, 7.5, 12.5, 18.5, 24.5, 31.5</threshold>
     <colour>0, 6, 7, 2, 5, 3, 4, 1</colour>
@@ -15,7 +15,7 @@
     <title>Night</title>
     <source>raw</source>
     <xcalc>data['idx'].hour &lt; 9 or data['idx'].hour &gt;= 21</xcalc>
-    <ycalc>data['wind_ave'] * 3.6 / 1.609344</ycalc>
+    <ycalc>wind_mph(data['wind_ave'])</ycalc>
     <yrange>21</yrange>
     <threshold>0.5, 3.5, 7.5, 12.5, 18.5, 24.5, 31.5</threshold>
     <colour>0, 6, 7, 2, 5, 3, 4, 1</colour>
