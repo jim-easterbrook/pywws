@@ -20,6 +20,7 @@ import os
 import sys
 import xml.dom.minidom
 
+from conversions import *
 import DataStore
 from Plot import BasePlotter
 from TimeZone import Local
