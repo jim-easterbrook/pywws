@@ -17,6 +17,7 @@ import os
 import shlex
 import sys
 
+from conversions import *
 import DataStore
 from Forecast import Zambretti
 import Localisation

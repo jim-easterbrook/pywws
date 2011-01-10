@@ -19,12 +19,13 @@ import os
 import sys
 import xml.dom.minidom
 
+from conversions import *
 import DataStore
 import Localisation
 from TimeZone import Local
 from WeatherStation import dew_point, wind_chill, apparent_temp
 
-class BasePlotter:
+class BasePlotter(object):
     def __init__(self, params, raw_data, hourly_data,
                  daily_data, monthly_data, work_dir, translation=None):
         self.raw_data = raw_data
