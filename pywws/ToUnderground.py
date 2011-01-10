@@ -20,13 +20,12 @@ import urllib
 import urllib2
 from datetime import datetime, timedelta
 
+import conversions
 import DataStore
 from Logger import ApplicationLogger
 from TimeZone import Local, utc
 from WeatherStation import dew_point
 
-def CtoF(C):
-    return (C * 9.0 / 5.0) + 32.0
 class ToUnderground(object):
     def __init__(self, params, raw_data):
         self.logger = logging.getLogger('pywws.ToUnderground')
@@ -76,20 +75,24 @@ class ToUnderground(object):
         if current['wind_dir'] != None and current['wind_dir'] < 16:
             result['winddir'] = '%.0f' % (current['wind_dir'] * 22.5)
         if current['temp_out'] != None:
-            result['tempf'] = '%.1f' % (CtoF(current['temp_out']))
+            result['tempf'] = '%.1f' % (conversions.temp_f(current['temp_out']))
             if current['hum_out'] != None:
                 result['dewptf'] = '%.1f' % (
-                    CtoF(dew_point(current['temp_out'], current['hum_out'])))
+                    conversions.temp_f(
+                        dew_point(current['temp_out'], current['hum_out'])))
                 result['humidity'] = '%d' % (current['hum_out'])
         if current['wind_ave'] != None:
-            result['windspeedmph'] = '%.2f' % (current['wind_ave'] * 3.6 / 1.609344)
+            result['windspeedmph'] = '%.2f' % (
+                conversions.wind_mph(current['wind_ave']))
         if current['wind_gust'] != None:
-            result['windgustmph'] = '%.2f' % (current['wind_gust'] * 3.6 / 1.609344)
-        result['rainin'] = '%g' % (max(current['rain'] - rain_hour, 0.0) / 25.4)
+            result['windgustmph'] = '%.2f' % (
+                conversions.wind_mph(current['wind_gust']))
+        result['rainin'] = '%g' % (
+            conversions.rain_inch(max(current['rain'] - rain_hour, 0.0)))
         result['dailyrainin'] = '%g' % (
-            max(current['rain'] - self.rain_midnight, 0.0) / 25.4)
+            conversions.rain_inch(max(current['rain'] - self.rain_midnight, 0.0)))
         result['baromin'] = '%.4f' % (
-            (current['abs_pressure'] + self.pressure_offset) * 0.02953)
+            conversions.pressure_inhg(current['abs_pressure'] + self.pressure_offset))
         return result
     def SendData(self, data, rapid_fire):
         # create weather underground command
