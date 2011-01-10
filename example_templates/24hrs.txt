@@ -28,12 +28,12 @@
   </tr>
   <tr>
     <th class="right">Average wind speed</th>
-    <td>#wind_ave "%.0f mph" "-" "x * 3.6 / 1.609344"#</td>
+    <td>#wind_ave "%.0f mph" "-" "wind_mph(x)"#</td>
     <td colspan="2"></td>
   </tr>
   <tr>
     <th class="right">Highest gust speed</th>
-    <td>#wind_gust "%.0f mph" "-" "x * 3.6 / 1.609344"#</td>
+    <td>#wind_gust "%.0f mph" "-" "wind_mph(x)"#</td>
     <td>#wind_gust_t "%Y/%m/%d</td><td>%H%M %Z"#</td>
   </tr>
 #idx "  <tr><th colspan=\"4\">&nbsp;</th></tr>" "" "[x, None][loop_count==1]"#
