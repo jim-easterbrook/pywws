@@ -6,11 +6,11 @@ upload to a web site.
 Typically run every hour from cron.
 Comment out or remove the bits you don't need.
 
-usage: python Hourly.py [options] [data_dir]
+usage: python Hourly.py [options] data_dir
 options are:
 \t-h or --help\t\tdisplay this help
 \t-v or --verbose\t\tincrease amount of reassuring messages
-data_dir is the root directory of the weather data (default /data/weather)
+data_dir is the root directory of the weather data (e.g. $(HOME)/weather/data)
 """
 
 import getopt
@@ -62,15 +62,11 @@ def main(argv=None):
         elif o == '-v' or o == '--verbose':
             verbose += 1
     # check arguments
-    if len(args) > 1:
-        print >>sys.stderr, 'Error: 0 or 1 arguments required\n'
+    if len(args) != 1:
+        print >>sys.stderr, 'Error: 1 argument required\n'
         print >>sys.stderr, __doc__.strip()
         return 2
-    elif len(args) == 1:
-        data_dir = args[0]
-    else:
-        data_dir = '/data/weather'
     logger = ApplicationLogger(verbose)
-    return Hourly(data_dir)
+    return Hourly(args[0])
 if __name__ == "__main__":
     sys.exit(main())
