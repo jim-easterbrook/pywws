@@ -78,8 +78,11 @@ class Acc(object):
     def __init__(self, time_offset, last_rain):
         self.logger = logging.getLogger('pywws.Process.Acc')
         self.last_rain = last_rain
-        self.h_wind_dir = {}
-        self.d_wind_dir = {}
+        self.h_wind_dir = []
+        self.d_wind_dir = []
+        for i in range(16):
+            self.h_wind_dir.append(0.0)
+            self.d_wind_dir.append(0.0)
         self.reset_daily()
         self.reset_hourly()
         # divide 24 hours of UTC day into day and night
@@ -111,6 +114,10 @@ class Acc(object):
                 if diff < -0.001:
                     self.logger.warning(
                         '%s rain reset %.1f -> %.1f', str(idx), self.last_rain, rain)
+                elif diff > float(raw['delay'] * 5):
+                    # rain exceeds 5mm / minute, assume corrupt data and ignore it
+                    self.logger.warning(
+                        '%s rain jump %.1f -> %.1f', str(idx), self.last_rain, rain)
                 else:
                     self.h_rain += diff
             self.last_rain = rain
@@ -143,7 +150,8 @@ class Acc(object):
             # convert weighted wind directions to a vector
             Ve = 0.0
             Vn = 0.0
-            for dir, val in self.h_wind_dir.items():
+            for dir in range(16):
+                val = self.h_wind_dir[dir]
                 Ve -= val * sin_LUT[dir]
                 Vn -= val * cos_LUT[dir]
             # get direction of total vector
@@ -195,7 +203,8 @@ class Acc(object):
             # convert weighted wind directions to a vector
             Ve = 0.0
             Vn = 0.0
-            for dir, val in self.d_wind_dir.items():
+            for dir in range(16):
+                val = self.d_wind_dir[dir]
                 Ve -= val * sin_LUT[dir]
                 Vn -= val * cos_LUT[dir]
             # get direction of total vector
