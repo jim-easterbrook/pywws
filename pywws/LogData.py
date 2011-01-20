@@ -83,7 +83,7 @@ def LogData(params, raw_data, sync=0, clear=False):
     if clear:
         logger.info('Clearing weather station memory')
         ptr = ws.fixed_format['data_count'][0]
-        ws.write_data([(ptr, 0), (ptr+1, 0)])
+        ws.write_data([(ptr, 1), (ptr+1, 0)])
 def main(argv=None):
     if argv is None:
         argv = sys.argv

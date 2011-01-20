@@ -11,7 +11,7 @@ options are:
  -z   | --zero_memory    clear the weather station logged readings
 """
 
-from datetime import datetime
+from datetime import datetime, timedelta
 import getopt
 import logging
 import sys
@@ -68,7 +68,7 @@ def main(argv=None):
     # reset data count
     if zero_memory:
         ptr = ws.fixed_format['data_count'][0]
-        data.append((ptr,   0))
+        data.append((ptr,   1))
         data.append((ptr+1, 0))
     # set clock
     if clock:
@@ -77,12 +77,13 @@ def main(argv=None):
         if now.second >= 55:
             time.sleep(10)
             now = datetime.now()
+        now += timedelta(minutes=31)
         ptr = ws.fixed_format['date_time'][0]
         data.append((ptr,   bcd_encode(now.year - 2000)))
         data.append((ptr+1, bcd_encode(now.month)))
         data.append((ptr+2, bcd_encode(now.day)))
         data.append((ptr+3, bcd_encode(now.hour)))
-        data.append((ptr+4, bcd_encode(now.minute + 1)))
+        data.append((ptr+4, bcd_encode(now.minute)))
         time.sleep(59 - now.second)
     # send it all in one go
     if data:
