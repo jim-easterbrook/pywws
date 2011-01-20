@@ -70,7 +70,8 @@ def LogData(params, raw_data, sync=0, clear=False):
     logger.info('Fetching data')
     last_stored += timedelta(minutes=fixed_block['read_period'] / 2)
     count = 0
-    max_count = min(fixed_block['data_count'], 4079)
+    # data_count includes record currently being updated every 48 seconds
+    max_count = fixed_block['data_count'] - 1
     while last_date > last_stored and count < max_count:
         data = ws.get_data(last_ptr)
         raw_data[last_date] = data

@@ -98,7 +98,8 @@ def LiveLog(data_dir):
             if last_date > last_stored:
                 last_ptr = ws.dec_ptr(ptr)
                 fixed_block = ws.get_fixed_block(unbuffered=True)
-                max_count = min(fixed_block['data_count'], 4079)
+                # data_count includes record currently being updated every 48 seconds
+                max_count = fixed_block['data_count'] - 1
                 while last_date > last_stored and count < max_count:
                     data = ws.get_data(last_ptr)
                     raw_data[last_date] = data
