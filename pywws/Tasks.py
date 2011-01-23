@@ -40,6 +40,8 @@ class RegularTasks(object):
         self.underground = ToUnderground.ToUnderground(self.params, self.raw_data)
         # get local time's offset from UTC, without DST
         now = self.raw_data.before(datetime.max)
+        if not now:
+            now = datetime.utcnow()
         time_offset = Local.utcoffset(now) - Local.dst(now)
         # get daytime end hour, in UTC
         self.day_end_hour = eval(params.get('config', 'day end hour', '21'))
@@ -47,6 +49,8 @@ class RegularTasks(object):
     def do_tasks(self):
         sections = ['live']
         now = self.raw_data.before(datetime.max)
+        if not now:
+            now = datetime.utcnow()
         threshold = now.replace(minute=0, second=0, microsecond=0)
         last_update = self.params.get_datetime('hourly', 'last update')
         if (not last_update) or (last_update < threshold):
