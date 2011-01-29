@@ -13,8 +13,8 @@ import sys
 import tweepy
 import webbrowser
 
-import DataStore
-from ToTwitter import consumer_key, consumer_secret
+from pywws import DataStore
+from pywws.ToTwitter import consumer_key, consumer_secret
 
 def TwitterAuth(params):
     auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
