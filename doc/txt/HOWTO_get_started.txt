@@ -19,8 +19,9 @@ How to get started with pywws.
 
   2. Install dependencies.
 
-     * Python 2.4+ - http://python.org/
-     * libusb 0.1.12 - http://libusb.sf.net/
+     * Python 2.4+ - http://python.org/ (Note: Python 3 is not supported.)
+     * libusb 0.1.12 - http://libusb.sf.net/ (Note: libusb 1 is not
+       supported.)
      * PyUSB 0.4.x - http://pyusb.berlios.de/
 
    You should be able to install these using your operating system's package

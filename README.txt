@@ -1,7 +1,7 @@
 Python software for USB Wireless WeatherStations (pywws).
 http://code.google.com/p/pywws/
 
-(C) 2008-10 Jim Easterbrook (jim@jim-easterbrook.me.uk)
+(C) 2008-11 Jim Easterbrook (jim@jim-easterbrook.me.uk)
 derived from previous work by
 Michael Pendec (michael.pendec@gmail.com) and
 Svend Skafte (svend@skafte.net)
@@ -29,7 +29,9 @@ Licence terms:
 
 Dependencies:
 	libusb (http://libusb.sf.net) version 0.1.12
+	(note: libusb 1 is not supported)
 	Python (http://www.python.org/) version 2.4 or higher
+	(note: Python 3 is not supported)
 	PyUSB (http://pyusb.berlios.de/) version 0.4.x
 	For graph drawing:
 	  gnuplot (http://www.gnuplot.info/) v4.2 or higher
@@ -40,7 +42,7 @@ Dependencies:
 	  tweepy (http://code.google.com/p/tweepy/)
 	  simplejson (http://pypi.python.org/pypi/simplejson)
 	To create new language translations:
-	  msgfmt (from the gettext package) if installing on Linux
+	  msgfmt (from the gettext package)
 
 	Many of these dependencies are available as packages for most Linux
 	distributions. This provides an easier way to install them than

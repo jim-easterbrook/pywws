@@ -4,7 +4,7 @@ How to configure pywws to post messages to Twitter.
 
   1. Install dependencies.
 
-     * Python 2.5+ - http://python.org/
+     * Python 2.5+ - http://python.org/ (Note: Python 3 is not supported.)
      * tweepy - http://code.google.com/p/tweepy/
      * simplejson - http://pypi.python.org/pypi/simplejson/
 
