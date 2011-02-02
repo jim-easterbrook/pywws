@@ -77,7 +77,7 @@ def main(argv=None):
         if now.second >= 55:
             time.sleep(10)
             now = datetime.now()
-        now += timedelta(minutes=31)
+        now += timedelta(minutes=1)
         ptr = ws.fixed_format['date_time'][0]
         data.append((ptr,   bcd_encode(now.year - 2000)))
         data.append((ptr+1, bcd_encode(now.month)))
