@@ -12,6 +12,7 @@ from TimeZone import Local
 import ToUnderground
 import Upload
 import WindRose
+import YoWindow
 
 class RegularTasks(object):
     def __init__(self, params, raw_data, hourly_data, daily_data, monthly_data,
@@ -38,6 +39,8 @@ class RegularTasks(object):
             self.monthly_data, self.work_dir, translation=self.translation)
         # create a ToUnderground object
         self.underground = ToUnderground.ToUnderground(self.params, self.raw_data)
+        # create a YoWindow object
+        self.yowindow = YoWindow.YoWindow(self.params, self.raw_data)
         # get local time's offset from UTC, without DST
         now = self.raw_data.before(datetime.max)
         if not now:
@@ -73,6 +76,9 @@ class RegularTasks(object):
                 if not self.do_twitter(template):
                     return False
         for section in sections:
+            yowindow_file = self.params.get(section, 'yowindow', '')
+            if yowindow_file:
+                self.yowindow.write_file(yowindow_file)
             if eval(self.params.get(section, 'underground', 'False')):
                 if not self.underground.Upload(True):
                     return False
