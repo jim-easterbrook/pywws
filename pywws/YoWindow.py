@@ -18,6 +18,7 @@ from datetime import datetime, timedelta
 import DataStore
 from Logger import ApplicationLogger
 from TimeZone import Local, utc
+from WeatherStation import apparent_temp
 
 class YoWindow(object):
     """
@@ -50,6 +51,10 @@ class YoWindow(object):
         if data['temp_out'] != None:
             of.write('    <temperature unit="c">\n')
             of.write('      <current value="%.1f"/>\n' % (data['temp_out']))
+            if data['hum_out'] != None and data['wind_ave'] != None:
+                of.write('      <feels_like value="%.1f"/>\n' % (
+                    apparent_temp(
+                        data['temp_out'], data['hum_out'], data['wind_ave'])))
             of.write('    </temperature>\n')
         if data['hum_out'] != None:
             of.write('    <humidity value="%d"/>\n' % (data['hum_out']))
