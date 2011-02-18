@@ -25,15 +25,10 @@ def Zambretti(params, hourly_data):
         wind = None
     else:
         wind = hourly_data['wind_dir']
-    if hourly_data['pressure_trend'] > 0.5:
-        trend = 1
-    elif hourly_data['pressure_trend'] < -0.5:
-        trend = 2
-    else:
-        trend = 0
     return params.translation.ugettext(ZambrettiCore.Zambretti(
         hourly_data['rel_pressure'], hourly_data['idx'].month,
-        wind, trend, north, baro_upper, baro_lower)[0])
+        wind, hourly_data['pressure_trend'] / 3.0,
+        north=north, baro_top=baro_upper, baro_bottom=baro_lower)[0])
 def main(argv=None):
     if argv is None:
         argv = sys.argv

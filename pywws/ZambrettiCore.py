@@ -1,97 +1,98 @@
 #!/usr/bin/env python
 
-# honeysucklecottage.me.uk - Python port of beteljuice
-# javascript forecaster. Comes with no warranty of any kind.
-
-# Further tweaking / Pythonification by Jim Easterbrook
-
-# beteljuice.com - near enough Zambretti Algorhithm
-# June 2008 - v1.0
-# tweak added so decision # can be output
-
-# Negretti and Zambras 'slide rule' is supposed to be better than 90% accurate
-# for a local forecast upto 12 hrs, it is most accurate in the temperate zones and about 09:00  hrs local solar time.
-# I hope I have been able to 'tweak it' a little better ;-)
-
-# This code is free to use and redistribute as long as NO CHARGE is EVER made for its use or output
-
-import math
-
-# usage: forecast = Zambretti(z_hpa, z_month, z_wind, z_trend
-#                             [, z_north ] [, z_baro_top] [, z_baro_bottom])[0]
-
-#  z_hpa is Sea Level Adjusted (Relative) barometer in hPa or mB
-#  z_month is current month as a number between 1 to 12
-#  z_wind is integer 0 to 11. 0 = N, 1 = NNE, 2 = NE, ... , 15 = NNW
-#  NB. if calm a 'nonsense' value should be sent as z_wind (direction) eg. None
-#  z_trend is barometer trend: 0 = no change, 1= rise, 2 = fall
-#  z_north - in northern hemisphere, default True
-#  z_baro_top - upper range of barometer, default 1050
-#  z_baro_bottom - lower range of barometer, default 950
-#  [0] a short forecast text is returned
-#  [1] zambretti result_code number (0 - 25) is returned ie. Zambretti() returns a two deep array
-
 def _(msg) : return msg
 
-z_forecast = [
-    _("Settled fine"), _("Fine weather"), _("Becoming fine"),
-    _("Fine, becoming less settled"), _("Fine, possible showers"),
-    _("Fairly fine, improving"), _("Fairly fine, possible showers early"),
-    _("Fairly fine, showery later"), _("Showery early, improving"),
-    _("Changeable, mending"), _("Fairly fine, showers likely"),
-    _("Rather unsettled clearing later"), _("Unsettled, probably improving"),
-    _("Showery, bright intervals"), _("Showery, becoming less settled"),
-    _("Changeable, some rain"), _("Unsettled, short fine intervals"),
-    _("Unsettled, rain later"), _("Unsettled, some rain"),
-    _("Mostly very unsettled"), _("Occasional rain, worsening"),
-    _("Rain at times, very unsettled"), _("Rain at frequent intervals"),
-    _("Rain, very unsettled"), _("Stormy, may improve"), _("Stormy, much rain")
-    ]
+forecast_text = {
+    'A' : _("Settled fine"),
+    'B' : _("Fine weather"),
+    'C' : _("Becoming fine"),
+    'D' : _("Fine, becoming less settled"),
+    'E' : _("Fine, possible showers"),
+    'F' : _("Fairly fine, improving"),
+    'G' : _("Fairly fine, possible showers early"),
+    'H' : _("Fairly fine, showery later"),
+    'I' : _("Showery early, improving"),
+    'J' : _("Changeable, mending"),
+    'K' : _("Fairly fine, showers likely"),
+    'L' : _("Rather unsettled clearing later"),
+    'M' : _("Unsettled, probably improving"),
+    'N' : _("Showery, bright intervals"),
+    'O' : _("Showery, becoming less settled"),
+    'P' : _("Changeable, some rain"),
+    'Q' : _("Unsettled, short fine intervals"),
+    'R' : _("Unsettled, rain later"),
+    'S' : _("Unsettled, some rain"),
+    'T' : _("Mostly very unsettled"),
+    'U' : _("Occasional rain, worsening"),
+    'V' : _("Rain at times, very unsettled"),
+    'W' : _("Rain at frequent intervals"),
+    'X' : _("Rain, very unsettled"),
+    'Y' : _("Stormy, may improve"),
+    'Z' : _("Stormy, much rain")
+    }
 
 del _
 
-# equivalents of Zambretti 'dial window' letters A - Z
-rise_options   = [25,25,25,24,24,19,16,12,11, 9, 8, 6, 5, 2,1,1,0,0,0,0,0,0]
-steady_options = [25,25,25,25,25,25,23,23,22,18,15,13,10, 4,1,1,0,0,0,0,0,0]
-fall_options   = [25,25,25,25,25,25,25,25,23,23,21,20,17,14,7,3,1,1,1,0,0,0]
-
-wind_scale = [6.0, 5.0, 5.0, 2.0, -0.5, -2.0, -5.0, -8.5,
-              -12.0, -10.0, -6.0, -4.5, -3.0, -0.5, 1.5, 3.0]
-
-def Zambretti(z_hpa, z_month, z_wind, z_trend,
-               z_north=True, z_baro_top=1050.0, z_baro_bottom=950.0):
-    z_option = (z_hpa - z_baro_bottom) / (z_baro_top - z_baro_bottom)
-    if isinstance(z_wind, int) and z_wind >= 0 and z_wind < 16:
-        if not z_north:
+def Zambretti(pressure, month, wind, trend,
+              north=True, baro_top=1050.0, baro_bottom=950.0):
+    """Simple implementation of Zambretti forecaster algorithm.
+    Inspired by beteljuice.com Java algorithm, as converted to Python by
+    honeysucklecottage.me.uk, and further information
+    from http://www.meteormetrics.com/zambretti.htm"""
+    # normalise pressure
+    pressure = 950.0 + ((1050.0 - 950.0) *
+                        (pressure - baro_bottom) / (baro_top - baro_bottom))
+    # adjust pressure for wind direction
+    if wind != None:
+        if not north:
             # southern hemisphere, so add 180 degrees
-            z_wind = (z_wind + 8) % 16
-        z_option += wind_scale[z_wind] / 100.0
-    if z_north == (z_month >= 4 and z_month <= 9):
-        # local summer
-        if z_trend == 1:
-            z_option += 7.0 / 100.0
-        elif z_trend == 2:
-            z_option -= 7.0 / 100.0
-
-    z_option = int(math.floor(z_option * 22.0))
-    result_text = ""
-    if(z_option < 0):
-        z_option = 0
-        result_text = "Exceptional Weather: "
-    elif(z_option > 21):
-        z_option = 21
-        result_text = "Exceptional Weather: "
-
-    if z_trend == 1:
-        result_code = rise_options[z_option]
-    elif z_trend == 2:
-        result_code = fall_options[z_option]
+            wind = (wind + 8) % 16
+        pressure += (  5.2,  4.2,  3.2,  1.05, -1.1, -3.15, -5.2, -8.35,
+                     -11.5, -9.4, -7.3, -5.25, -3.2, -1.15,  0.9,  3.05)[wind]
+    # compute base forecast from pressure and trend (hPa / hour)
+    if trend >= 0.1:
+        # rising pressure
+        if north == (month >= 4 and month <= 9):
+            pressure += 3.2
+        F = 0.1740 * (1031.40 - pressure)
+        LUT = ('A', 'B', 'B', 'C', 'F', 'G', 'I', 'J', 'L', 'M', 'M', 'Q', 'T',
+               'Y')
+    elif trend <= -0.1:
+        # falling pressure
+        if north == (month >= 4 and month <= 9):
+            pressure -= 3.2
+        F = 0.1553 * (1029.95 - pressure)
+        LUT = ('B', 'D', 'H', 'O', 'R', 'U', 'V', 'X', 'X', 'Z')
     else:
-        result_code = steady_options[z_option]
-    result_text += z_forecast[result_code]
-    return result_text, result_code
+        # steady
+        F = 0.2314 * (1030.81 - pressure)
+        LUT = ('A', 'B', 'B', 'B', 'E', 'K', 'N', 'N', 'P', 'P', 'S', 'W', 'W',
+               'X', 'X', 'X', 'Z')
+    # clip to range of lookup table
+    F = min(max(int(F + 0.5), 0), len(LUT) - 1)
+    # convert to text
+    letter = LUT[F]
+    return forecast_text[letter[0]], letter
 
 if __name__ == "__main__":
-    print Zambretti(965, 7, 8, -0.5)
-    print Zambretti(1000.5, 7, 8, -0.5)
-    print Zambretti(1000.5, 7, 8, +0.5)
+    import WeatherStation
+    WeatherStation.set_translation(lambda x: x)
+    wind_dir = WeatherStation.get_wind_dir_text()
+    for pressure in range(1030, 960, -10):
+        for trend_txt in ('S', 'R-S', 'R-W', 'F-W', 'F-S'):
+            trend, month = {
+                'R-W' : ( 0.2, 1),
+                'F-W' : (-0.2, 1),
+                'R-S' : ( 0.2, 7),
+                'F-S' : (-0.2, 7),
+                'S'   : ( 0.0, 7),
+                }[trend_txt]
+            for wind in (0, 2, 14, None, 4, 12, 6, 10, 8):
+                if wind == None:
+                    wind_txt = 'calm'
+                else:
+                    wind_txt = wind_dir[wind]
+                print '%4d %4s %4s  %3s' % (
+                    pressure, trend_txt, wind_txt,
+                    Zambretti(pressure, month, wind, trend)[1])
+        print ''
