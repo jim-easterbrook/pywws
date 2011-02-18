@@ -129,6 +129,13 @@ def _decode(raw, format):
         hour = _bcd_decode(raw[offset+3])
         minute = _bcd_decode(raw[offset+4])
         return '%4d-%02d-%02d %02d:%02d' % (year + 2000, month, day, hour, minute)
+    def _bit_field(raw, offset):
+        mask = 1
+        result = []
+        for i in range(8):
+            result.append(raw[offset] & mask != 0)
+            mask = mask << 1
+        return result
     if not raw:
         return None
     if isinstance(format, dict):
@@ -164,6 +171,11 @@ def _decode(raw, format):
             result = raw[pos] + ((raw[pos+1] & 0xF0) << 4)
             if result == 0xFFF:
                 result = None
+        elif type == 'bf':
+            result = {}
+            for k, v in zip(scale, _bit_field(raw, pos)):
+                result[k] = v
+            return result
         else:
             raise IOError('unknown type %s' % type)
         if scale and result:
@@ -444,7 +456,31 @@ class weather_station(object):
         }
     lo_fix_format = {
         'read_period'   : (16, 'ub', None),
+        'settings_1'    : (17, 'bf', ('temp_in_F', 'temp_out_F', 'rain_in',
+                                      'bit3', 'bit4', 'pressure_hPa',
+                                      'pressure_inHg', 'pressure_mmHg')),
+        'settings_2'    : (18, 'bf', ('wind_mps', 'wind_kmph', 'wind_knot',
+                                      'wind_mph', 'wind_bft', 'bit5',
+                                      'bit6', 'bit7')),
+        'display_1'     : (19, 'bf', ('pressure_rel', 'wind_gust', 'clock_12hr',
+                                      'date_mdy', 'time_scale_24', 'show_year',
+                                      'show_day_name', 'alarm_time')),
+        'display_2'     : (20, 'bf', ('temp_out_temp', 'temp_out_chill',
+                                      'temp_out_dew', 'rain_hour', 'rain_day',
+                                      'rain_week', 'rain_month', 'rain_total')),
+        'alarm_1'       : (21, 'bf', ('bit0', 'time', 'wind_dir', 'bit3',
+                                      'hum_in_lo', 'hum_in_hi',
+                                      'hum_out_lo', 'hum_out_hi')),
+        'alarm_2'       : (22, 'bf', ('wind_ave', 'wind_gust',
+                                      'rain_hour', 'rain_day',
+                                      'pressure_abs_lo', 'pressure_abs_hi',
+                                      'pressure_rel_lo', 'pressure_rel_hi')),
+        'alarm_3'       : (23, 'bf', ('temp_in_lo', 'temp_in_hi',
+                                      'temp_out_lo', 'temp_out_hi',
+                                      'wind_chill_lo', 'wind_chill_hi',
+                                      'dew_point_lo', 'dew_point_hi')),
         'timezone'      : (24, 'sb', None),
+        'data_changed'  : (26, 'ub', None),
         'data_count'    : (27, 'us', None),
         'current_pos'   : (30, 'us', None),
         'rel_pressure'  : (32, 'us', 0.1),
@@ -453,13 +489,55 @@ class weather_station(object):
         }
     fixed_format = {
         'read_period'   : (16, 'ub', None),
+        'settings_1'    : (17, 'bf', ('temp_in_F', 'temp_out_F', 'rain_in',
+                                      'bit3', 'bit4', 'pressure_hPa',
+                                      'pressure_inHg', 'pressure_mmHg')),
+        'settings_2'    : (18, 'bf', ('wind_mps', 'wind_kmph', 'wind_knot',
+                                      'wind_mph', 'wind_bft', 'bit5',
+                                      'bit6', 'bit7')),
+        'display_1'     : (19, 'bf', ('pressure_rel', 'wind_gust', 'clock_12hr',
+                                      'date_mdy', 'time_scale_24', 'show_year',
+                                      'show_day_name', 'alarm_time')),
+        'display_2'     : (20, 'bf', ('temp_out_temp', 'temp_out_chill',
+                                      'temp_out_dew', 'rain_hour', 'rain_day',
+                                      'rain_week', 'rain_month', 'rain_total')),
+        'alarm_1'       : (21, 'bf', ('bit0', 'time', 'wind_dir', 'bit3',
+                                      'hum_in_lo', 'hum_in_hi',
+                                      'hum_out_lo', 'hum_out_hi')),
+        'alarm_2'       : (22, 'bf', ('wind_ave', 'wind_gust',
+                                      'rain_hour', 'rain_day',
+                                      'pressure_abs_lo', 'pressure_abs_hi',
+                                      'pressure_rel_lo', 'pressure_rel_hi')),
+        'alarm_3'       : (23, 'bf', ('temp_in_lo', 'temp_in_hi',
+                                      'temp_out_lo', 'temp_out_hi',
+                                      'wind_chill_lo', 'wind_chill_hi',
+                                      'dew_point_lo', 'dew_point_hi')),
         'timezone'      : (24, 'sb', None),
+        'unknown_01'    : (25, 'pb', None),
         'data_changed'  : (26, 'ub', None),
         'data_count'    : (27, 'us', None),
+        'unknown_02'    : (29, 'pb', None),
         'current_pos'   : (30, 'us', None),
         'rel_pressure'  : (32, 'us', 0.1),
         'abs_pressure'  : (34, 'us', 0.1),
+        'unknown_03'    : (36, 'pb', None),
+        'unknown_04'    : (37, 'pb', None),
+        'unknown_05'    : (38, 'pb', None),
+        'unknown_06'    : (39, 'pb', None),
+        'unknown_07'    : (40, 'pb', None),
+        'unknown_08'    : (41, 'pb', None),
+        'unknown_09'    : (42, 'pb', None),
         'date_time'     : (43, 'dt', None),
+        'unknown_10'    : (89, 'pb', None),
+        'unknown_11'    : (90, 'pb', None),
+        'unknown_12'    : (91, 'pb', None),
+        'unknown_13'    : (92, 'pb', None),
+        'unknown_14'    : (93, 'pb', None),
+        'unknown_15'    : (94, 'pb', None),
+        'unknown_16'    : (95, 'pb', None),
+        'unknown_17'    : (96, 'pb', None),
+        'unknown_18'    : (97, 'pb', None),
+        'unknown_19'    : (140, 'pb', None),
         'alarm'         : {
             'hum_in'        : {'hi' : (48, 'ub', None), 'lo'  : (49, 'ub', None)},
             'temp_in'       : {'hi' : (50, 'ss', 0.1), 'lo'  : (52, 'ss', 0.1)},
