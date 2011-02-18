@@ -1,6 +1,13 @@
 Python software for USB Wireless WeatherStations (pywws).
 http://code.google.com/p/pywws/
 
+Changes in v11.02:
+    1/ Various bug fixes and software structure improvements.
+    2/ Improved wind direction averaging.
+    3/ Added conversion functions for common things such as C to F.
+    4/ Added a YoWindow module.
+    5/ Improved Zambretti forecaster.
+
 Changes in v10.12:
     1/ Various bug fixes and software structure improvements.
     2/ Added a 'goto' instruction to Template.py.
