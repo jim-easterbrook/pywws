@@ -9,6 +9,7 @@ options are:
   -d | --decode         display meaningful values instead of raw data
   -h | --history count  display the last "count" readings
   -l | --live           display 'live' data
+  -u | --unknown        display unknown fixed block values
 """
 
 import datetime
@@ -28,7 +29,7 @@ def main(argv=None):
         argv = sys.argv
     try:
         opts, args = getopt.getopt(
-            argv[1:], "dh:l", ['help', 'decode', 'history=', 'live'])
+            argv[1:], "dh:lu", ('help', 'decode', 'history=', 'live', 'unknown'))
     except getopt.error, msg:
         print >>sys.stderr, 'Error: %s\n' % msg
         print >>sys.stderr, __doc__.strip()
@@ -42,6 +43,7 @@ def main(argv=None):
     history_count = 0
     decode = False
     live = False
+    unknown = False
     for o, a in opts:
         if o == '--help':
             print __doc__.strip()
@@ -52,6 +54,8 @@ def main(argv=None):
             history_count = int(a)
         elif o in ('-l', '--live'):
             live = True
+        elif o in ('-u', '--unknown'):
+            unknown = True
     # do it!
     ws = WeatherStation.weather_station()
     raw_fixed = ws.get_raw_fixed_block()
@@ -69,6 +73,10 @@ def main(argv=None):
     else:
         for ptr in range(0x0000, 0x0100, 0x20):
             raw_dump(ptr, raw_fixed[ptr:ptr+0x20])
+    if unknown:
+        for k in sorted(ws.fixed_format):
+            if 'unk' in k:
+                print k, ws.get_fixed_block([k])
     if history_count > 0:
         lo_fix = ws.get_lo_fix_block()
         print "Recent history", lo_fix
