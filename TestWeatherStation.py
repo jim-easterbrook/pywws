@@ -6,10 +6,12 @@ Test connection to weather station.
 usage: python TestWeatherStation.py [options]
 options are:
        --help           display this help
+  -3 | --3080           station is a '3080' type instead of a '1080'
   -d | --decode         display meaningful values instead of raw data
   -h | --history count  display the last "count" readings
   -l | --live           display 'live' data
   -u | --unknown        display unknown fixed block values
+  -v | --verbose        increase amount of reassuring messages
 """
 
 import datetime
@@ -17,6 +19,7 @@ import getopt
 import sys
 
 from pywws.DataStore import safestrptime
+from pywws.Logger import ApplicationLogger
 from pywws import WeatherStation
 
 def raw_dump(pos, data):
@@ -29,7 +32,8 @@ def main(argv=None):
         argv = sys.argv
     try:
         opts, args = getopt.getopt(
-            argv[1:], "dh:lu", ('help', 'decode', 'history=', 'live', 'unknown'))
+            argv[1:], "3dh:luv",
+            ('help', '3080', 'decode', 'history=', 'live', 'unknown', 'verbose'))
     except getopt.error, msg:
         print >>sys.stderr, 'Error: %s\n' % msg
         print >>sys.stderr, __doc__.strip()
@@ -44,10 +48,14 @@ def main(argv=None):
     decode = False
     live = False
     unknown = False
+    verbose = 0
+    ws_type = '1080'
     for o, a in opts:
         if o == '--help':
             print __doc__.strip()
             return 0
+        elif o in ('-3', '--3080'):
+            ws_type = '3080'
         elif o in ('-d', '--decode'):
             decode = True
         elif o in ('-h', '--history'):
@@ -56,8 +64,11 @@ def main(argv=None):
             live = True
         elif o in ('-u', '--unknown'):
             unknown = True
+        elif o in ('-v', '--verbose'):
+            verbose += 1
     # do it!
-    ws = WeatherStation.weather_station()
+    logger = ApplicationLogger(verbose)
+    ws = WeatherStation.weather_station(ws_type=ws_type)
     raw_fixed = ws.get_raw_fixed_block()
     if not raw_fixed:
         print "No valid data block found"
