@@ -1,4 +1,4 @@
-"""WeatherStation.py - get data from WH1080 compatible weather stations
+"""WeatherStation.py - get data from WH1080/WH3080 compatible weather stations
 
 Derived from wwsr.c by Michael Pendec (michael.pendec@gmail.com) and
 wwsrdump.c by Svend Skafte (svend@skafte.net), modified by Dave Wells.
@@ -172,6 +172,7 @@ def _decode(raw, format):
             if result == 0xFFF:
                 result = None
         elif type == 'bf':
+            # bit field - 'scale' is a list of bit names
             result = {}
             for k, v in zip(scale, _bit_field(raw, pos)):
                 result[k] = v
@@ -190,7 +191,7 @@ def findDevice(idVendor, idProduct):
     return None
 class weather_station(object):
     """Class that represents the weather station to user program."""
-    def __init__(self):
+    def __init__(self, ws_type='1080'):
         """Connect to weather station and prepare to read data."""
         self.logger = logging.getLogger('pywws.weather_station')
         self.devh = None
@@ -231,6 +232,7 @@ class weather_station(object):
         self._fixed_block = None
         self._data_block = None
         self._data_pos = None
+        self.ws_type = ws_type
     def __del__(self):
         """Disconnect from weather station."""
         if self.devh:
@@ -322,19 +324,31 @@ class weather_station(object):
                     next_log = now + log_interval
                 if result:
                     yield result, old_ptr, True
+                if (new_ptr != self.data_start and
+                    (new_ptr - old_ptr) != self.reading_len[self.ws_type]):
+                    for k in self.reading_len:
+                        if (new_ptr - old_ptr) == self.reading_len[k]:
+                            self.logger.warning(
+                                'live_data type change %s -> %s', self.ws_type, k)
+                            self.ws_type = k
+                            break
+                    else:
+                        self.logger.error(
+                                'live_data unexpected ptr change %06x -> %06x',
+                                old_ptr, new_ptr)
                 old_ptr = new_ptr
                 ptr_changed = True
     def inc_ptr(self, ptr):
         """Get next circular buffer data pointer."""
-        result = ptr + 0x10
-        if result > 0xFFF0:
-            result = 0x0100
+        result = ptr + self.reading_len[self.ws_type]
+        if result >= 0x10000:
+            result = self.data_start
         return result
     def dec_ptr(self, ptr):
         """Get previous circular buffer data pointer."""
-        result = ptr - 0x10
-        if result < 0x0100:
-            result = 0xFFF0
+        result = ptr - self.reading_len[self.ws_type]
+        if result < self.data_start:
+            result = 0x10000 - self.reading_len[self.ws_type]
         return result
     def get_raw_data(self, ptr, unbuffered=False):
         """Get raw data from circular buffer.
@@ -342,10 +356,19 @@ class weather_station(object):
         If unbuffered is false then a cached value that was obtained
         earlier may be returned."""
         idx = ptr - (ptr % 0x20)
-        if unbuffered or self._data_pos != idx:
-            self._data_pos = idx
-            self._data_block = self._read_block(idx)
-        return self._data_block[ptr-idx:0x10+ptr-idx]
+        ptr -= idx
+        count = self.reading_len[self.ws_type]
+        result = []
+        while count > 0:
+            if unbuffered or self._data_pos != idx:
+                self._data_pos = idx
+                self._data_block = self._read_block(idx)
+            result += self._data_block[ptr:count+ptr]
+            count -= len(result)
+            if count <= 0:
+                return result
+            idx += 0x20
+            ptr = 0
     def get_data(self, ptr, unbuffered=False):
         """Get decoded data from circular buffer.
 
@@ -480,39 +503,6 @@ class weather_station(object):
                                       'wind_chill_lo', 'wind_chill_hi',
                                       'dew_point_lo', 'dew_point_hi')),
         'timezone'      : (24, 'sb', None),
-        'data_changed'  : (26, 'ub', None),
-        'data_count'    : (27, 'us', None),
-        'current_pos'   : (30, 'us', None),
-        'rel_pressure'  : (32, 'us', 0.1),
-        'abs_pressure'  : (34, 'us', 0.1),
-        'date_time'     : (43, 'dt', None),
-        }
-    fixed_format = {
-        'read_period'   : (16, 'ub', None),
-        'settings_1'    : (17, 'bf', ('temp_in_F', 'temp_out_F', 'rain_in',
-                                      'bit3', 'bit4', 'pressure_hPa',
-                                      'pressure_inHg', 'pressure_mmHg')),
-        'settings_2'    : (18, 'bf', ('wind_mps', 'wind_kmph', 'wind_knot',
-                                      'wind_mph', 'wind_bft', 'bit5',
-                                      'bit6', 'bit7')),
-        'display_1'     : (19, 'bf', ('pressure_rel', 'wind_gust', 'clock_12hr',
-                                      'date_mdy', 'time_scale_24', 'show_year',
-                                      'show_day_name', 'alarm_time')),
-        'display_2'     : (20, 'bf', ('temp_out_temp', 'temp_out_chill',
-                                      'temp_out_dew', 'rain_hour', 'rain_day',
-                                      'rain_week', 'rain_month', 'rain_total')),
-        'alarm_1'       : (21, 'bf', ('bit0', 'time', 'wind_dir', 'bit3',
-                                      'hum_in_lo', 'hum_in_hi',
-                                      'hum_out_lo', 'hum_out_hi')),
-        'alarm_2'       : (22, 'bf', ('wind_ave', 'wind_gust',
-                                      'rain_hour', 'rain_day',
-                                      'pressure_abs_lo', 'pressure_abs_hi',
-                                      'pressure_rel_lo', 'pressure_rel_hi')),
-        'alarm_3'       : (23, 'bf', ('temp_in_lo', 'temp_in_hi',
-                                      'temp_out_lo', 'temp_out_hi',
-                                      'wind_chill_lo', 'wind_chill_hi',
-                                      'dew_point_lo', 'dew_point_hi')),
-        'timezone'      : (24, 'sb', None),
         'unknown_01'    : (25, 'pb', None),
         'data_changed'  : (26, 'ub', None),
         'data_count'    : (27, 'us', None),
@@ -528,6 +518,8 @@ class weather_station(object):
         'unknown_08'    : (41, 'pb', None),
         'unknown_09'    : (42, 'pb', None),
         'date_time'     : (43, 'dt', None),
+        }
+    fixed_format = {
         'unknown_10'    : (89, 'pb', None),
         'unknown_11'    : (90, 'pb', None),
         'unknown_12'    : (91, 'pb', None),
@@ -582,4 +574,12 @@ class weather_station(object):
             'abs_pressure'  : {'val' : (120, 'us', 0.1), 'date'  : (206, 'dt', None)},
             'rel_pressure'  : {'val' : (124, 'us', 0.1), 'date'  : (216, 'dt', None)},
             },
+        }
+    fixed_format.update(lo_fix_format)
+    # start of readings / end of fixed block
+    data_start = 0x0100     # 256
+    # bytes per reading, depends on weather station type
+    reading_len = {
+        '1080'  : 16,
+        '3080'  : 20,
         }
