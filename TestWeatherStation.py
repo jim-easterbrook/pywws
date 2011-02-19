@@ -77,6 +77,12 @@ def main(argv=None):
         for k in sorted(ws.fixed_format):
             if 'unk' in k:
                 print k, ws.get_fixed_block([k])
+        for k in sorted(ws.fixed_format):
+            if 'settings' in k or 'display' in k or 'alarm' in k:
+                bits = ws.get_fixed_block([k])
+                for b in sorted(bits):
+                    if 'bit' in b:
+                        print k, b, bits[b]
     if history_count > 0:
         lo_fix = ws.get_lo_fix_block()
         print "Recent history", lo_fix
