@@ -59,7 +59,8 @@ def LiveLog(data_dir):
     logger = logging.getLogger('pywws.LiveLog')
     params = DataStore.params(data_dir)
     # connect to weather station
-    ws = WeatherStation.weather_station()
+    ws_type = params.get('config', 'ws type', '1080')
+    ws = WeatherStation.weather_station(ws_type=ws_type)
     fixed_block = CheckFixedBlock(ws, params, logger)
     if not fixed_block:
         logger.error("Invalid data from weather station")

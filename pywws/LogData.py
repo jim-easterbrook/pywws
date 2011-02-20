@@ -27,7 +27,8 @@ import WeatherStation
 def LogData(params, raw_data, sync=0, clear=False):
     logger = logging.getLogger('pywws.LogData')
     # connect to weather station
-    ws = WeatherStation.weather_station()
+    ws_type = params.get('config', 'ws type', '1080')
+    ws = WeatherStation.weather_station(ws_type=ws_type)
     fixed_block = ws.get_fixed_block()
     if not fixed_block:
         logger.error("Invalid data from weather station")
