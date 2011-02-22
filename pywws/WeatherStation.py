@@ -118,6 +118,13 @@ def _decode(raw, format):
         if lo == 0xFF and hi == 0xFF:
             return None
         return (hi * 256) + lo
+    def _unsigned_int3(raw, offset):
+        lo = raw[offset]
+        md = raw[offset+1]
+        hi = raw[offset+2]
+        if lo == 0xFF and md == 0xFF and hi == 0xFF:
+            return None
+        return (hi * 256 * 256) + (md * 256) + lo
     def _bcd_decode(byte):
         hi = (byte / 16) & 0x0F
         lo = byte & 0x0F
@@ -152,6 +159,8 @@ def _decode(raw, format):
             result = _signed_byte(raw, pos)
         elif type == 'us':
             result = _unsigned_short(raw, pos)
+        elif type == 'u3':
+            result = _unsigned_int3(raw, pos)
         elif type == 'ss':
             result = _signed_short(raw, pos)
         elif type == 'dt':
@@ -233,6 +242,15 @@ class weather_station(object):
         self._data_block = None
         self._data_pos = None
         self.ws_type = ws_type
+        # test 'fixed block' for data that only the 3080 stores
+        if self.get_fixed_block(['max', 'illuminance', 'val']):
+            if self.ws_type != '3080':
+                self.logger.warning('type change %s -> %s', self.ws_type, '3080')
+                self.ws_type = '3080'
+        else:
+            if self.ws_type != '1080':
+                self.logger.warning('type change %s -> %s', self.ws_type, '1080')
+                self.ws_type = '1080'
     def __del__(self):
         """Disconnect from weather station."""
         if self.devh:
@@ -355,26 +373,35 @@ class weather_station(object):
 
         If unbuffered is false then a cached value that was obtained
         earlier may be returned."""
+        if unbuffered:
+            self._data_pos = None
         idx = ptr - (ptr % 0x20)
         ptr -= idx
         count = self.reading_len[self.ws_type]
-        result = []
-        while count > 0:
-            if unbuffered or self._data_pos != idx:
+        if ptr + count <= 0x20:
+            # reading doesn't straddle a block boundary
+            if self._data_pos != idx:
                 self._data_pos = idx
                 self._data_block = self._read_block(idx)
-            result += self._data_block[ptr:count+ptr]
-            count -= len(result)
-            if count <= 0:
-                return result
-            idx += 0x20
-            ptr = 0
+        elif self._data_pos == idx + 0x20:
+            # reuse last block read
+            self._data_pos = idx
+            self._data_block = self._read_block(idx) + self._data_block[0:0x20]
+        elif self._data_pos != idx:
+            # read two blocks
+            self._data_pos = idx
+            self._data_block = self._read_block(idx) + self._read_block(idx + 0x20)
+        elif len(self._data_block) <= 0x20:
+            # 'top up' current block
+            self._data_block += self._read_block(idx + 0x20)
+        return self._data_block[ptr:ptr + count]
     def get_data(self, ptr, unbuffered=False):
         """Get decoded data from circular buffer.
 
         If unbuffered is false then a cached value that was obtained
         earlier may be returned."""
-        return _decode(self.get_raw_data(ptr, unbuffered), self.reading_format)
+        return _decode(self.get_raw_data(ptr, unbuffered),
+                       self.reading_format[self.ws_type])
     def current_pos(self):
         """Get circular buffer location where current data is being written."""
         return _decode(
@@ -464,7 +491,9 @@ class weather_station(object):
     # Tables of "meanings" for raw weather station data. Each key
     # specifies an (offset, type, multiplier) tuple that is understood
     # by _decode.
-    reading_format = {
+    # depends on weather station type
+    reading_format = {}
+    reading_format['1080'] = {
         'delay'        : (0, 'ub', None),
         'hum_in'       : (1, 'ub', None),
         'temp_in'      : (2, 'ss', 0.1),
@@ -477,6 +506,11 @@ class weather_station(object):
         'rain'         : (13, 'us', 0.3),
         'status'       : (15, 'pb', None),
         }
+    reading_format['3080'] = {
+        'illuminance' : (16, 'u3', 0.1),
+        'uv'    : (19, 'ub', None),
+        }
+    reading_format['3080'].update(reading_format['1080'])
     lo_fix_format = {
         'read_period'   : (16, 'ub', None),
         'settings_1'    : (17, 'bf', ('temp_in_F', 'temp_out_F', 'rain_in',
@@ -506,7 +540,8 @@ class weather_station(object):
         'unknown_01'    : (25, 'pb', None),
         'data_changed'  : (26, 'ub', None),
         'data_count'    : (27, 'us', None),
-        'unknown_02'    : (29, 'pb', None),
+        'display_3'     : (29, 'bf', ('illuminance_fc', 'bit1', 'bit2', 'bit3',
+                                      'bit4', 'bit5', 'bit6', 'bit7')),
         'current_pos'   : (30, 'us', None),
         'rel_pressure'  : (32, 'us', 0.1),
         'abs_pressure'  : (34, 'us', 0.1),
@@ -520,14 +555,6 @@ class weather_station(object):
         'date_time'     : (43, 'dt', None),
         }
     fixed_format = {
-        'unknown_10'    : (89, 'pb', None),
-        'unknown_11'    : (90, 'pb', None),
-        'unknown_12'    : (91, 'pb', None),
-        'unknown_13'    : (92, 'pb', None),
-        'unknown_14'    : (93, 'pb', None),
-        'unknown_15'    : (94, 'pb', None),
-        'unknown_16'    : (95, 'pb', None),
-        'unknown_17'    : (96, 'pb', None),
         'unknown_18'    : (97, 'pb', None),
         'unknown_19'    : (140, 'pb', None),
         'alarm'         : {
@@ -544,8 +571,12 @@ class weather_station(object):
             'wind_dir'      : (82, 'ub', None),
             'rain'          : {'hour' : (83, 'us', 0.3), 'day'   : (85, 'us', 0.3)},
             'time'          : (87, 'tt', None),
+            'illuminance'   : (89, 'u3', 0.1),
+            'uv'            : (92, 'ub', None),
             },
         'max'           : {
+            'uv'            : {'val' : (93, 'ub', None)},
+            'illuminance'   : {'val' : (94, 'u3', 0.1)},
             'hum_in'        : {'val' : (98, 'ub', None), 'date'   : (141, 'dt', None)},
             'hum_out'       : {'val' : (100, 'ub', None), 'date'  : (151, 'dt', None)},
             'temp_in'       : {'val' : (102, 'ss', 0.1), 'date'  : (161, 'dt', None)},
