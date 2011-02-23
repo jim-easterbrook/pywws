@@ -35,6 +35,9 @@
         <a href="#live">live</a>: tasks to be done every 48 seconds.
       </li>
       <li>
+        <a href="#logged">logged</a>: tasks to be done every time the station loggs a data record.
+      </li>
+      <li>
         <a href="#hourly">hourly</a>: tasks to be done every hour.
       </li>
       <li>
@@ -102,12 +105,38 @@ underground = True
 twitter = []
 text = []
 plot = []
+yowindow = /home/jim/data/yowindow.xml
 </pre>
     <p>
-      This section specifies tasks that are to be carried out for every data sample during 'live logging', i.e. every 48 seconds. It is unlikely that you'd want to do anything other than upload to Weather Underground this often.
+      This section specifies tasks that are to be carried out for every data sample during 'live logging', i.e. every 48 seconds. It is unlikely that you'd want to do anything other than upload to Weather Underground or update your YoWindow file this often.
     </p>
     <p>
       <code>underground</code> enables 'rapid fire' updates to Weather Underground. Valid values are <code>True</code> and <code>False</code>.
+    </p>
+    <p>
+      <code>twitter</code> is a list of text templates to be processed and posted to Twitter.
+    </p>
+    <p>
+      <code>text</code> and <code>plot</code> are lists of text and plot templates to be processed and uploaded to your website.
+    </p>
+    <p>
+      <code>yowindow</code> is the full path of an xml file to be generated for a YoWindow weather widget (see <a href="http://yowindow.com/">http://yowindow.com/</a>). If you don't use YoWindow, leave this entry out.
+    </p>
+    <h3>
+      <a href="#list" name="logged">logged</a>: tasks to be done every time the station logs a data record
+    </h3>
+<pre>
+[logged]
+underground = False
+twitter = ['tweet.txt']
+text = []
+plot = []
+</pre>
+    <p>
+      This section specifies tasks that are to be carried out every time a data record is logged when 'live logging' or every time an hourly cron job is run.
+    </p>
+    <p>
+      <code>underground</code> enables uploads to Weather Underground. All logged data since the last upload is uploaded (up to a maximum of 7 days worth). Valid values are <code>True</code> and <code>False</code>.
     </p>
     <p>
       <code>twitter</code> is a list of text templates to be processed and posted to Twitter.
@@ -170,7 +199,7 @@ text = ['feed_daily.xml']
 plot = ['2008.png.xml', '2009.png.xml', '2010.png.xml', '28days.png.xml']
 </pre>
     <p>
-      This section specifies tasks that are to be carried out every hour when 'live logging' or running an hourly cron job. Use it for things that don't change very often, such as monthly graphs.
+      This section specifies tasks that are to be carried out every day when 'live logging' or running an hourly cron job. Use it for things that don't change very often, such as monthly graphs.
     </p>
     <p>
       <code>underground</code> enables uploads to Weather Underground. All logged data since the last upload is uploaded (up to a maximum of 7 days worth). Valid values are <code>True</code> and <code>False</code>.

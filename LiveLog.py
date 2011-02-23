@@ -24,9 +24,7 @@ from pywws import Localisation
 from pywws.Logger import ApplicationLogger
 from pywws import Process
 from pywws import Tasks
-from pywws import ToUnderground
 from pywws import WeatherStation
-from pywws import YoWindow
 
 def CheckFixedBlock(ws, params, logger):
     fixed_block = ws.get_fixed_block(unbuffered=True)
@@ -72,12 +70,6 @@ def LiveLog(data_dir):
     monthly_data = DataStore.monthly_store(data_dir)
     # create a translation object for our locale
     translation = Localisation.GetTranslation(params)
-    # create a ToUnderground object
-    underground = ToUnderground.ToUnderground(params, raw_data)
-    # create a YoWindow object
-    yowindow_file = params.get('live', 'yowindow', '')
-    if yowindow_file:
-        yowindow = YoWindow.YoWindow(params, raw_data)
     # create a RegularTasks object
     tasks = Tasks.RegularTasks(
         params, raw_data, hourly_data, daily_data, monthly_data, translation)
@@ -129,10 +121,7 @@ def LiveLog(data_dir):
                     return 3
             params.flush()
         else:
-            if yowindow_file:
-                yowindow.write_file(yowindow_file, data)
-            if eval(params.get('live', 'underground', 'False')):
-                underground.RapidFire(data, True)
+            tasks.do_live(data)
     return 0
 def main(argv=None):
     if argv is None:

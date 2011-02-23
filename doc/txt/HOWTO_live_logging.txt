@@ -45,11 +45,26 @@ How to set up 'live' logging with pywws.
    and the 'twitter' entry is a list of templates for messages to be posted
    to Twitter. You should probably leave all of theses lists blank.
 
-   If you don't already have them, create three more sections in your
-   weather.ini file: '[hourly]', '[12 hourly]' and '[daily]'. These sections
-   should have the same entries as the '[live]' section, and specify what to
-   do every hour, twice daily and once per day. Add the names of your
-   template files to the appropriate entries, for example:
+   If you use YoWindow (http://yowindow.com/) you can add an entry to the
+   '[live]' section to specify your YoWindow file, e.g.:
+
+ [live]
+ yowindow = /home/jim/data/yowindow.xml
+ underground = False
+ ...
+
+   If you don't already have them, create four more sections in your
+   weather.ini file: '[logged]', '[hourly]', '[12 hourly]' and '[daily]'.
+   These sections should have the same entries as the '[live]' section, and
+   specify what to do every time data is logged (5 to 30 minutes, depending
+   on your logging interval), every hour, twice daily and once per day. Add
+   the names of your template files to the appropriate entries, for example:
+
+ [logged]
+ underground = False
+ twitter = []
+ plot = []
+ text = []
 
  [hourly]
  underground = False

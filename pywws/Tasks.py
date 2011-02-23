@@ -49,8 +49,31 @@ class RegularTasks(object):
         # get daytime end hour, in UTC
         self.day_end_hour = eval(params.get('config', 'day end hour', '21'))
         self.day_end_hour = (self.day_end_hour - (time_offset.seconds / 3600)) % 24
+    def do_live(self, data):
+        OK = True
+        yowindow_file = self.params.get('live', 'yowindow', '')
+        if yowindow_file:
+            self.yowindow.write_file(yowindow_file, data)
+        for template in eval(self.params.get('live', 'twitter', '[]')):
+            OK = OK and self.do_twitter(template)
+        if eval(self.params.get('live', 'underground', 'False')):
+            OK = OK and self.underground.RapidFire(data, True)
+        uploads = []
+        for template in eval(self.params.get('live', 'plot', '[]')):
+            upload = self.do_plot(template)
+            if upload and upload not in uploads:
+                uploads.append(upload)
+        for template in eval(self.params.get('live', 'text', '[]')):
+            upload = self.do_template(template)
+            if upload not in uploads:
+                uploads.append(upload)
+        if uploads:
+            OK = OK and Upload.Upload(self.params, uploads) == 0
+            for file in uploads:
+                os.unlink(file)
+        return OK
     def do_tasks(self):
-        sections = ['live']
+        sections = ['logged']
         now = self.raw_data.before(datetime.max)
         if not now:
             now = datetime.utcnow()

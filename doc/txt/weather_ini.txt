@@ -19,6 +19,7 @@ weather.ini - configuration file format
      * paths: directories in which templates etc. are stored.
      * fixed: values copied from the weather station's "fixed block".
      * live: tasks to be done every 48 seconds.
+     * logged: tasks to be done every time the station loggs a data record.
      * hourly: tasks to be done every hour.
      * 12 hourly: tasks to be done every 12 hours.
      * daily: tasks to be done every day.
@@ -72,13 +73,39 @@ weather.ini - configuration file format
  twitter = []
  text = []
  plot = []
+ yowindow = /home/jim/data/yowindow.xml
 
    This section specifies tasks that are to be carried out for every data
    sample during 'live logging', i.e. every 48 seconds. It is unlikely that
-   you'd want to do anything other than upload to Weather Underground this
-   often.
+   you'd want to do anything other than upload to Weather Underground or
+   update your YoWindow file this often.
 
    underground enables 'rapid fire' updates to Weather Underground. Valid
+   values are True and False.
+
+   twitter is a list of text templates to be processed and posted to Twitter.
+
+   text and plot are lists of text and plot templates to be processed and
+   uploaded to your website.
+
+   yowindow is the full path of an xml file to be generated for a YoWindow
+   weather widget (see http://yowindow.com/). If you don't use YoWindow,
+   leave this entry out.
+
+  logged: tasks to be done every time the station logs a data record
+
+ [logged]
+ underground = False
+ twitter = ['tweet.txt']
+ text = []
+ plot = []
+
+   This section specifies tasks that are to be carried out every time a data
+   record is logged when 'live logging' or every time an hourly cron job is
+   run.
+
+   underground enables uploads to Weather Underground. All logged data since
+   the last upload is uploaded (up to a maximum of 7 days worth). Valid
    values are True and False.
 
    twitter is a list of text templates to be processed and posted to Twitter.
@@ -135,7 +162,7 @@ weather.ini - configuration file format
  text = ['feed_daily.xml']
  plot = ['2008.png.xml', '2009.png.xml', '2010.png.xml', '28days.png.xml']
 
-   This section specifies tasks that are to be carried out every hour when
+   This section specifies tasks that are to be carried out every day when
    'live logging' or running an hourly cron job. Use it for things that don't
    change very often, such as monthly graphs.
 

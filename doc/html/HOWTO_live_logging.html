@@ -50,9 +50,24 @@ twitter = []
       This section specifies what pywws should do every time it gets a new reading from the weather station, i.e. every 48 seconds. The 'underground' entry should be a boolean value (True or False) that enables 'Rapid Fire' uploads to Weather Underground. The 'plot' and 'text' entries are lists of template files for plots and text files to be uploaded to your web site, and the 'twitter' entry is a list of templates for messages to be posted to Twitter. You should probably leave all of theses lists blank.
     </p>
     <p>
-      If you don't already have them, create three more sections in your weather.ini file: '[hourly]', '[12 hourly]' and '[daily]'. These sections should have the same entries as the '[live]' section, and specify what to do every hour, twice daily and once per day. Add the names of your template files to the appropriate entries, for example:
+	If you use YoWindow (<a href="http://yowindow.com/">http://yowindow.com/</a>) you can add an entry to the '[live]' section to specify your YoWindow file, e.g.:
     </p>
 <pre>
+[live]
+yowindow = /home/jim/data/yowindow.xml
+underground = False
+...
+</pre>
+    <p>
+      If you don't already have them, create four more sections in your weather.ini file: '[logged]', '[hourly]', '[12 hourly]' and '[daily]'. These sections should have the same entries as the '[live]' section, and specify what to do every time data is logged (5 to 30 minutes, depending on your logging interval), every hour, twice daily and once per day. Add the names of your template files to the appropriate entries, for example:
+    </p>
+<pre>
+[logged]
+underground = False
+twitter = []
+plot = []
+text = []
+
 [hourly]
 underground = False
 twitter = ['tweet.txt']
