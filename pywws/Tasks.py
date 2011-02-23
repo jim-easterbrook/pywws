@@ -55,7 +55,7 @@ class RegularTasks(object):
         if yowindow_file:
             self.yowindow.write_file(yowindow_file, data)
         for template in eval(self.params.get('live', 'twitter', '[]')):
-            OK = OK and self.do_twitter(template)
+            OK = OK and self.do_twitter(template, data)
         if eval(self.params.get('live', 'underground', 'False')):
             OK = OK and self.underground.RapidFire(data, True)
         uploads = []
@@ -64,7 +64,7 @@ class RegularTasks(object):
             if upload and upload not in uploads:
                 uploads.append(upload)
         for template in eval(self.params.get('live', 'text', '[]')):
-            upload = self.do_template(template)
+            upload = self.do_template(template, data)
             if upload not in uploads:
                 uploads.append(upload)
         if uploads:
@@ -125,14 +125,15 @@ class RegularTasks(object):
             for section in sections:
                 self.params.set(section, 'last update', now.isoformat(' '))
         return OK
-    def do_twitter(self, template):
+    def do_twitter(self, template, data=None):
         import ToTwitter
         twitter = ToTwitter.ToTwitter(self.params, translation=self.translation)
         self.logger.info("Templating %s", template)
         input_file = os.path.join(self.template_dir, template)
         tweet = Template.TemplateText(
             self.params, self.raw_data, self.hourly_data, self.daily_data,
-            self.monthly_data, input_file, self.translation)
+            self.monthly_data, input_file, live_data=data,
+            translation=self.translation)
         self.logger.info("Tweeting")
         return twitter.Upload(tweet[:140])
     def do_plot(self, template):
@@ -144,11 +145,12 @@ class RegularTasks(object):
         elif self.roseplotter.DoPlot(input_file, output_file) == 0:
             return output_file
         return None
-    def do_template(self, template):
+    def do_template(self, template, data=None):
         self.logger.info("Templating %s", template)
         input_file = os.path.join(self.template_dir, template)
         output_file = os.path.join(self.work_dir, template)
         Template.Template(
             self.params, self.raw_data, self.hourly_data, self.daily_data,
-            self.monthly_data, input_file, output_file, translation=self.translation)
+            self.monthly_data, input_file, output_file, live_data=data,
+            translation=self.translation)
         return output_file

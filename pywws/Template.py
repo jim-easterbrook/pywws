@@ -25,8 +25,8 @@ from Logger import ApplicationLogger
 from TimeZone import Local, utc
 import WeatherStation
 
-def TemplateGen(params, raw_data, hourly_data, daily_data, monthly_data,
-                template_file, translation):
+def TemplateGen(params, live_data, raw_data, hourly_data, daily_data,
+                monthly_data, template_file, translation):
     def jump(idx, count):
         while count > 0:
             new_idx = data_set.after(idx + timedelta(seconds=1))
@@ -42,6 +42,8 @@ def TemplateGen(params, raw_data, hourly_data, daily_data, monthly_data,
             count += 1
         return idx, count == 0
     logger = logging.getLogger('pywws.Template')
+    if not live_data:
+        live_data = raw_data[raw_data.before(datetime.max)]
     # set language before importing wind_dir_text array
     WeatherStation.set_translation(translation.gettext)
     pressure_trend_text = WeatherStation.pressure_trend_text
@@ -128,6 +130,11 @@ def TemplateGen(params, raw_data, hourly_data, daily_data, monthly_data,
                 data_set = raw_data
                 idx, valid_data = jump(datetime.max, -1)
                 data = data_set[idx]
+            elif command[0] == 'live':
+                data_set = raw_data
+                idx = datetime.max
+                valid_data = True
+                data = live_data
             elif command[0] == 'timezone':
                 if command[1] == 'utc':
                     time_zone = utc
@@ -167,21 +174,21 @@ def TemplateGen(params, raw_data, hourly_data, daily_data, monthly_data,
     tmplt.close()
     return
 def TemplateText(params, raw_data, hourly_data, daily_data, monthly_data,
-                 template_file, translation):
+                 template_file, live_data=None, translation=None):
     result = ''
-    for text in TemplateGen(params, raw_data, hourly_data, daily_data, monthly_data,
-                            template_file, translation):
+    for text in TemplateGen(params, live_data, raw_data, hourly_data,
+                            daily_data, monthly_data, template_file, translation):
         result += text
     return result
 def Template(params, raw_data, hourly_data, daily_data, monthly_data,
-             template_file, output_file, translation=None):
+             template_file, output_file, live_data=None, translation=None):
     if not translation:
         translation = Localisation.GetTranslation(params)
     # open output file
     of = open(output_file, 'w')
     # do the processing
-    for text in TemplateGen(params, raw_data, hourly_data, daily_data, monthly_data,
-                            template_file, translation):
+    for text in TemplateGen(params, live_data, raw_data, hourly_data,
+                            daily_data, monthly_data, template_file, translation):
         of.write(text)
     of.close()
     return 0
