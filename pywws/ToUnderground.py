@@ -149,7 +149,7 @@ class ToUnderground(object):
         last_log = self.data.before(datetime.max)
         if last_log < data['idx'] - self.five_mins:
             # logged data is not (yet) up to date
-            return
+            return True
         if catchup:
             last_update = self.params.get_datetime('underground', 'last update')
             if not last_update:
@@ -157,9 +157,11 @@ class ToUnderground(object):
             if last_update <= last_log - self.five_mins:
                 # last update was well before last logged data
                 if not self.Upload(True):
-                    return
-        if self.SendData(data, True):
-            self.params.set('underground', 'last update', data['idx'].isoformat(' '))
+                    return False
+        if not self.SendData(data, True):
+            return False
+        self.params.set('underground', 'last update', data['idx'].isoformat(' '))
+        return True
 def main(argv=None):
     if argv is None:
         argv = sys.argv
