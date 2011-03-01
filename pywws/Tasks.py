@@ -30,6 +30,10 @@ class RegularTasks(object):
             'paths', 'templates', os.path.expanduser('~/weather/templates/'))
         self.graph_template_dir = self.params.get(
             'paths', 'graph_templates', os.path.expanduser('~/weather/graph_templates/'))
+        # create templater object
+        self.templater = Template.Template(
+            self.params, self.raw_data, self.hourly_data, self.daily_data,
+            self.monthly_data)
         # create plotter objects
         self.plotter = Plot.GraphPlotter(
             self.params, self.raw_data, self.hourly_data, self.daily_data,
@@ -130,10 +134,7 @@ class RegularTasks(object):
         twitter = ToTwitter.ToTwitter(self.params, translation=self.translation)
         self.logger.info("Templating %s", template)
         input_file = os.path.join(self.template_dir, template)
-        tweet = Template.TemplateText(
-            self.params, self.raw_data, self.hourly_data, self.daily_data,
-            self.monthly_data, input_file, live_data=data,
-            translation=self.translation)
+        tweet = self.templater.make_text(input_file, live_data=data)
         self.logger.info("Tweeting")
         return twitter.Upload(tweet[:140])
     def do_plot(self, template):
@@ -149,8 +150,5 @@ class RegularTasks(object):
         self.logger.info("Templating %s", template)
         input_file = os.path.join(self.template_dir, template)
         output_file = os.path.join(self.work_dir, template)
-        Template.Template(
-            self.params, self.raw_data, self.hourly_data, self.daily_data,
-            self.monthly_data, input_file, output_file, live_data=data,
-            translation=self.translation)
+        self.templater.make_file(input_file, output_file, live_data=data)
         return output_file
