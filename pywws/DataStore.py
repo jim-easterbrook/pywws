@@ -299,15 +299,16 @@ class core_store(object):
         self._cache_ptr = 0
         self._cache_path, self._cache_lo, self._cache_hi = self._get_cache_path(target_date)
         if os.path.exists(self._cache_path):
-            reader = csv.DictReader(
-                open(self._cache_path, 'rb', 1), self.key_list, quoting=csv.QUOTE_NONE)
+            reader = csv.reader(
+                open(self._cache_path, 'rb', 1), quoting=csv.QUOTE_NONE)
             for row in reader:
-                for key in self.key_list:
-                    if row[key] == '':
-                        row[key] = None
+                result = {}
+                for key, value in zip(self.key_list, row):
+                    if value == '':
+                        result[key] = None
                     else:
-                        row[key] = self.conv[key](row[key])
-                self._cache.append(row)
+                        result[key] = self.conv[key](value)
+                self._cache.append(result)
     def flush(self):
         if not self._cache_dirty:
             return
@@ -320,9 +321,13 @@ class core_store(object):
         dir = os.path.dirname(self._cache_path)
         if not os.path.isdir(dir):
             os.makedirs(dir)
-        writer = csv.DictWriter(
-            open(self._cache_path, 'wb', 1), self.key_list, quoting=csv.QUOTE_NONE)
-        writer.writerows(self._cache)
+        writer = csv.writer(
+            open(self._cache_path, 'wb', 1), quoting=csv.QUOTE_NONE)
+        for data in self._cache:
+            row = []
+            for key in self.key_list[0:len(data)]:
+                row.append(data[key])
+            writer.writerow(row)
     def _get_cache_path(self, target_date):
         # default implementation - one file per day
         path = os.path.join(self._root_dir,
@@ -351,6 +356,8 @@ class data_store(core_store):
         'wind_dir'     : int,
         'rain'         : float,
         'status'       : int,
+        'illuminance'  : float,
+        'uv'           : int,
         }
 class hourly_store(core_store):
     """Stores hourly summary weather station data."""
