@@ -342,7 +342,8 @@ class data_store(core_store):
     def __init__(self, root_dir):
         core_store.__init__(self, os.path.join(root_dir, 'raw'))
     key_list = ['idx', 'delay', 'hum_in', 'temp_in', 'hum_out', 'temp_out',
-                'abs_pressure', 'wind_ave', 'wind_gust', 'wind_dir', 'rain', 'status']
+                'abs_pressure', 'wind_ave', 'wind_gust', 'wind_dir', 'rain',
+                'status', 'illuminance', 'uv']
     conv = {
         'idx'          : safestrptime,
         'delay'        : int,
