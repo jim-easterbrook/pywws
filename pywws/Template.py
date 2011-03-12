@@ -214,7 +214,7 @@ def main(argv=None):
     logger = ApplicationLogger(1)
     return Template(
         DataStore.params(args[0]), DataStore.data_store(args[0]),
-        DataStore.hourly_store(args[0]), DataStore.data_store(args[0]),
+        DataStore.hourly_store(args[0]), DataStore.daily_store(args[0]),
         DataStore.monthly_store(args[0])
         ).make_file(args[1], args[2])
 if __name__ == "__main__":
