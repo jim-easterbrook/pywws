@@ -7,7 +7,7 @@ else
   LC	:= en
 endif
 
-all : doc lang
+all : doc lang pywws/version.py
 
 doc : \
 	$(html_src:doc/html/%.html=doc/txt/%.txt)
@@ -15,6 +15,14 @@ doc : \
 lang : \
 	languages/$(LC).po \
 	$(lang_src:languages/%.po=locale/%/LC_MESSAGES/pywws.mo)
+
+# create a version file
+.PHONY : pywws/version.py
+REVISION	:= $(shell svn info 2>/dev/null | awk '/^Revision/ {print $$2}')
+ifneq '$(REVISION)' ''
+  pywws/version.py :
+	date +"version = '%y.%m_r$(REVISION)'" >$@
+endif
 
 # convert html documents to plain text
 doc/txt/%.txt : doc/html/%.html
