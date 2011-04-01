@@ -42,17 +42,12 @@ def Upload(params, files):
     directory = params.get('ftp', 'directory', 'public_html/weather/data/')
     # open connection
     if secure:
-        # install a logging handler to keep paramiko quiet
-        class NullHandler(logging.Handler):
-            def emit(self, record):
-                pass
-        h = NullHandler()
-        logging.getLogger('paramiko').addHandler(h)
         import paramiko
         try:
             transport = paramiko.Transport((site, 22))
             transport.connect(username=user, password=password)
             ftp = paramiko.SFTPClient.from_transport(transport)
+            ftp.chdir(directory)
         except Exception, ex:
             logger.error(str(ex))
             return 1
@@ -61,11 +56,12 @@ def Upload(params, files):
         try:
             ftp = ftplib.FTP(site, user, password)
             logger.debug(ftp.getwelcome())
+            ftp.cwd(directory)
         except Exception, ex:
             logger.error(str(ex))
             return 1
     for file in files:
-        target = directory + os.path.basename(file)
+        target = os.path.basename(file)
         # have three tries before giving up
         for n in range(3):
             try:
