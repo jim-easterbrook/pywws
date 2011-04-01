@@ -8,7 +8,7 @@ import logging
 import logging.handlers
 
 def ApplicationLogger(verbose, logfile=None):
-    logger = logging.getLogger('pywws')
+    logger = logging.getLogger('')
     if logfile:
         logger.setLevel(max(logging.ERROR - (verbose * 10), 1))
         handler = logging.handlers.RotatingFileHandler(
