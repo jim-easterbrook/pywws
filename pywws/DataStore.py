@@ -341,9 +341,11 @@ class data_store(core_store):
     """Stores raw weather station data."""
     def __init__(self, root_dir):
         core_store.__init__(self, os.path.join(root_dir, 'raw'))
-    key_list = ['idx', 'delay', 'hum_in', 'temp_in', 'hum_out', 'temp_out',
-                'abs_pressure', 'wind_ave', 'wind_gust', 'wind_dir', 'rain',
-                'status', 'illuminance', 'uv']
+    key_list = [
+        'idx', 'delay', 'hum_in', 'temp_in', 'hum_out', 'temp_out',
+        'abs_pressure', 'wind_ave', 'wind_gust', 'wind_dir', 'rain',
+        'status', 'illuminance', 'uv',
+        ]
     conv = {
         'idx'          : safestrptime,
         'delay'        : int,
@@ -364,9 +366,11 @@ class hourly_store(core_store):
     """Stores hourly summary weather station data."""
     def __init__(self, root_dir):
         core_store.__init__(self, os.path.join(root_dir, 'hourly'))
-    key_list = ['idx', 'hum_in', 'temp_in', 'hum_out', 'temp_out',
-                'abs_pressure', 'rel_pressure', 'pressure_trend',
-                'wind_ave', 'wind_gust', 'wind_dir', 'rain']
+    key_list = [
+        'idx', 'hum_in', 'temp_in', 'hum_out', 'temp_out',
+        'abs_pressure', 'rel_pressure', 'pressure_trend',
+        'wind_ave', 'wind_gust', 'wind_dir', 'rain', 'illuminance', 'uv',
+        ]
     conv = {
         'idx'               : safestrptime,
         'hum_in'            : int,
@@ -380,16 +384,24 @@ class hourly_store(core_store):
         'wind_gust'         : float,
         'wind_dir'          : int,
         'rain'              : float,
+        'illuminance'       : float,
+        'uv'                : int,
         }
 class daily_store(core_store):
     """Stores daily summary weather station data."""
     def __init__(self, root_dir):
         core_store.__init__(self, os.path.join(root_dir, 'daily'))
-    key_list = ['idx', 'start', 'temp_out_ave',
-                'temp_out_min', 'temp_out_min_t', 'temp_out_max', 'temp_out_max_t',
-                'temp_in_ave',
-                'temp_in_min', 'temp_in_min_t', 'temp_in_max', 'temp_in_max_t',
-                'wind_ave', 'wind_gust', 'wind_gust_t', 'wind_dir', 'rain']
+    key_list = [
+        'idx', 'start',
+        'temp_out_ave',
+        'temp_out_min', 'temp_out_min_t', 'temp_out_max', 'temp_out_max_t',
+        'temp_in_ave',
+        'temp_in_min', 'temp_in_min_t', 'temp_in_max', 'temp_in_max_t',
+        'wind_ave', 'wind_gust', 'wind_gust_t', 'wind_dir',
+        'rain',
+        'illuminance_ave', 'illuminance_max', 'illuminance_max_t',
+        'uv_ave', 'uv_max', 'uv_max_t',
+        ]
     conv = {
         'idx'               : safestrptime,
         'start'             : safestrptime,
@@ -408,6 +420,12 @@ class daily_store(core_store):
         'wind_gust_t'       : safestrptime,
         'wind_dir'          : int,
         'rain'              : float,
+        'illuminance_ave'   : float,
+        'illuminance_max'   : float,
+        'illuminance_max_t' : safestrptime,
+        'uv_ave'            : float,
+        'uv_max'            : int,
+        'uv_max_t'          : safestrptime,
         }
     def _get_cache_path(self, target_date):
         # one file per month
@@ -424,43 +442,63 @@ class monthly_store(core_store):
     """Stores monthly summary weather station data."""
     def __init__(self, root_dir):
         core_store.__init__(self, os.path.join(root_dir, 'monthly'))
-    key_list = ['idx', 'start', 'temp_out_ave',
-                'temp_out_min_lo', 'temp_out_min_lo_t',
-                'temp_out_min_hi', 'temp_out_min_hi_t', 'temp_out_min_ave',
-                'temp_out_max_lo', 'temp_out_max_lo_t',
-                'temp_out_max_hi', 'temp_out_max_hi_t', 'temp_out_max_ave',
-                'temp_in_ave',
-                'temp_in_min_lo', 'temp_in_min_lo_t',
-                'temp_in_min_hi', 'temp_in_min_hi_t', 'temp_in_min_ave',
-                'temp_in_max_lo', 'temp_in_max_lo_t',
-                'temp_in_max_hi', 'temp_in_max_hi_t', 'temp_in_max_ave',
-                'rain']
+    key_list = [
+        'idx', 'start',
+        'temp_out_ave',
+        'temp_out_min_lo', 'temp_out_min_lo_t',
+        'temp_out_min_hi', 'temp_out_min_hi_t', 'temp_out_min_ave',
+        'temp_out_max_lo', 'temp_out_max_lo_t',
+        'temp_out_max_hi', 'temp_out_max_hi_t', 'temp_out_max_ave',
+        'temp_in_ave',
+        'temp_in_min_lo', 'temp_in_min_lo_t',
+        'temp_in_min_hi', 'temp_in_min_hi_t', 'temp_in_min_ave',
+        'temp_in_max_lo', 'temp_in_max_lo_t',
+        'temp_in_max_hi', 'temp_in_max_hi_t', 'temp_in_max_ave',
+        'rain',
+        'illuminance_ave',
+        'illuminance_max_lo', 'illuminance_max_lo_t',
+        'illuminance_max_hi', 'illuminance_max_hi_t', 'illuminance_max_ave',
+        'uv_ave',
+        'uv_max_lo', 'uv_max_lo_t', 'uv_max_hi', 'uv_max_hi_t', 'uv_max_ave',
+        ]
     conv = {
-        'idx'               : safestrptime,
-        'start'             : safestrptime,
-        'temp_out_ave'      : float,
-        'temp_out_min_lo'   : float,
-        'temp_out_min_lo_t' : safestrptime,
-        'temp_out_min_hi'   : float,
-        'temp_out_min_hi_t' : safestrptime,
-        'temp_out_min_ave'  : float,
-        'temp_out_max_lo'   : float,
-        'temp_out_max_lo_t' : safestrptime,
-        'temp_out_max_hi'   : float,
-        'temp_out_max_hi_t' : safestrptime,
-        'temp_out_max_ave'  : float,
-        'temp_in_ave'       : float,
-        'temp_in_min_lo'    : float,
-        'temp_in_min_lo_t'  : safestrptime,
-        'temp_in_min_hi'    : float,
-        'temp_in_min_hi_t'  : safestrptime,
-        'temp_in_min_ave'   : float,
-        'temp_in_max_lo'    : float,
-        'temp_in_max_lo_t'  : safestrptime,
-        'temp_in_max_hi'    : float,
-        'temp_in_max_hi_t'  : safestrptime,
-        'temp_in_max_ave'   : float,
-        'rain'              : float,
+        'idx'                  : safestrptime,
+        'start'                : safestrptime,
+        'temp_out_ave'         : float,
+        'temp_out_min_lo'      : float,
+        'temp_out_min_lo_t'    : safestrptime,
+        'temp_out_min_hi'      : float,
+        'temp_out_min_hi_t'    : safestrptime,
+        'temp_out_min_ave'     : float,
+        'temp_out_max_lo'      : float,
+        'temp_out_max_lo_t'    : safestrptime,
+        'temp_out_max_hi'      : float,
+        'temp_out_max_hi_t'    : safestrptime,
+        'temp_out_max_ave'     : float,
+        'temp_in_ave'          : float,
+        'temp_in_min_lo'       : float,
+        'temp_in_min_lo_t'     : safestrptime,
+        'temp_in_min_hi'       : float,
+        'temp_in_min_hi_t'     : safestrptime,
+        'temp_in_min_ave'      : float,
+        'temp_in_max_lo'       : float,
+        'temp_in_max_lo_t'     : safestrptime,
+        'temp_in_max_hi'       : float,
+        'temp_in_max_hi_t'     : safestrptime,
+        'temp_in_max_ave'      : float,
+        'rain'                 : float,
+        'illuminance_ave'      : float,
+        'illuminance_max_lo'   : float,
+        'illuminance_max_lo_t' : safestrptime,
+        'illuminance_max_hi'   : float,
+        'illuminance_max_hi_t' : safestrptime,
+        'illuminance_max_ave'  : float,
+        'uv_ave'               : float,
+        'uv_max_lo'            : int,
+        'uv_max_lo_t'          : safestrptime,
+        'uv_max_hi'            : int,
+        'uv_max_hi_t'          : safestrptime,
+        'uv_max_ave'           : float,
         }
     def _get_cache_path(self, target_date):
         # one file per year
