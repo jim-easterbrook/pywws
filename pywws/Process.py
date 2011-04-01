@@ -21,8 +21,6 @@ from Logger import ApplicationLogger
 from TimeZone import Local, utc
 import WeatherStation
 
-class Record(object):
-    pass
 class Average(object):
     def __init__(self):
         self.acc = 0.0
@@ -36,24 +34,24 @@ class Average(object):
         if self.count == 0:
             return None
         return self.acc / float(self.count)
-class MinTemp(object):
+class Minimum(object):
     def __init__(self):
-        self.value = 1000.0
+        self.value = None
         self.time = None
     def add(self, value, time):
-        if value <= self.value:
+        if not self.time or value <= self.value:
             self.value = value
             self.time = time
     def result(self):
         if self.time:
             return self.value, self.time
         return None, None
-class MaxTemp(object):
+class Maximum(object):
     def __init__(self):
-        self.value = -1000.0
+        self.value = None
         self.time = None
     def add(self, value, time):
-        if value > self.value:
+        if not self.time or value > self.value:
             self.value = value
             self.time = time
     def result(self):
@@ -78,6 +76,7 @@ class Acc(object):
     def __init__(self, time_offset, last_rain):
         self.logger = logging.getLogger('pywws.Process.Acc')
         self.last_rain = last_rain
+        self.has_illuminance = False
         self.h_wind_dir = []
         self.d_wind_dir = []
         for i in range(16):
@@ -121,16 +120,23 @@ class Acc(object):
                 else:
                     self.h_rain += diff
             self.last_rain = rain
-        for i in ('in', 'out'):
-            temp = raw['temp_%s' % i]
+        for i in ('temp_in', 'temp_out'):
+            temp = raw[i]
             if temp != None:
-                self.d_temp[i].ave.add(temp)
+                self.d_ave[i].add(temp)
                 if self._daytime[idx.hour]:
                     # daytime max temperature
-                    self.d_temp[i].max.add(temp, idx)
+                    self.d_max[i].add(temp, idx)
                 else:
-                    # nightime min temperature
-                    self.d_temp[i].min.add(temp, idx)
+                    # nighttime min temperature
+                    self.d_min[i].add(temp, idx)
+        if 'illuminance' in raw:
+            self.has_illuminance = True
+            for i in ('illuminance', 'uv'):
+                value = raw[i]
+                if value != None:
+                    self.d_ave[i].add(value)
+                    self.d_max[i].add(value, idx)
         self.h_valid = True
     def reset_hourly(self):
         for i in range(16):
@@ -187,12 +193,16 @@ class Acc(object):
         self.d_wind_count = 0
         self.d_wind_gust = (-1.0, None)
         self.d_rain = 0.0
-        self.d_temp = {}
-        for i in ('in', 'out'):
-            self.d_temp[i] = Record()
-            self.d_temp[i].ave = Average()
-            self.d_temp[i].max = MaxTemp()
-            self.d_temp[i].min = MinTemp()
+        self.d_ave = {}
+        self.d_max = {}
+        self.d_min = {}
+        for i in ('temp_in', 'temp_out'):
+            self.d_ave[i] = Average()
+            self.d_max[i] = Maximum()
+            self.d_min[i] = Minimum()
+        for i in ('illuminance', 'uv'):
+            self.d_ave[i] = Average()
+            self.d_max[i] = Maximum()
         self.d_valid = False
     def get_daily(self):
         if not self.d_valid:
@@ -222,46 +232,56 @@ class Acc(object):
             retval['wind_gust'] = None
         retval['wind_gust_t'] = self.d_wind_gust[1]
         retval['rain'] = self.d_rain
-        for i in ('in', 'out'):
-            retval['temp_%s_ave' % i] = self.d_temp[i].ave.result()
-            retval['temp_%s_max' % i], retval['temp_%s_max_t' % i] = (
-                self.d_temp[i].max.result())
-            retval['temp_%s_min' % i], retval['temp_%s_min_t' % i] = (
-                self.d_temp[i].min.result())
+        for i in ('temp_in', 'temp_out'):
+            retval['%s_ave' % i] = self.d_ave[i].result()
+            (retval['%s_max' % i],
+             retval['%s_max_t' % i]) = self.d_max[i].result()
+            (retval['%s_min' % i],
+             retval['%s_min_t' % i]) = self.d_min[i].result()
+        if self.has_illuminance:
+            for i in ('illuminance', 'uv'):
+                retval['%s_ave' % i] = self.d_ave[i].result()
+                (retval['%s_max' % i],
+                 retval['%s_max_t' % i]) = self.d_max[i].result()
         self.reset_daily()
         return retval
 class MonthAcc(object):
     """Derive monthly summary data from daily data."""
     def __init__(self, start):
         self.m_start = start
-        self.m_temp = {}
-        for i in ('in', 'out'):
-            self.m_temp[i] = Record()
-            self.m_temp[i].ave = Average()
-            self.m_temp[i].min_lo = MinTemp()
-            self.m_temp[i].min_hi = MaxTemp()
-            self.m_temp[i].min_ave = Average()
-            self.m_temp[i].max_lo = MinTemp()
-            self.m_temp[i].max_hi = MaxTemp()
-            self.m_temp[i].max_ave = Average()
+        self.m_ave = {}
+        self.m_min_lo = {}
+        self.m_min_hi = {}
+        self.m_min_ave = {}
+        self.m_max_lo = {}
+        self.m_max_hi = {}
+        self.m_max_ave = {}
+        for i in ('temp_in', 'temp_out'):
+            self.m_ave[i] = Average()
+            self.m_min_lo[i] = Minimum()
+            self.m_min_hi[i] = Maximum()
+            self.m_min_ave[i] = Average()
+            self.m_max_lo[i] = Minimum()
+            self.m_max_hi[i] = Maximum()
+            self.m_max_ave[i] = Average()
         self.m_rain = 0.0
         self.m_valid = False
     def add(self, daily):
         self.m_idx = daily['idx']
-        for i in ('in', 'out'):
-            temp = daily['temp_%s_ave' % i]
+        for i in ('temp_in', 'temp_out'):
+            temp = daily['%s_ave' % i]
             if temp != None:
-                self.m_temp[i].ave.add(temp)
-            temp = daily['temp_%s_min' % i]
+                self.m_ave[i].add(temp)
+            temp = daily['%s_min' % i]
             if temp != None:
-                self.m_temp[i].min_lo.add(temp, daily['temp_%s_min_t' % i])
-                self.m_temp[i].min_hi.add(temp, daily['temp_%s_min_t' % i])
-                self.m_temp[i].min_ave.add(temp)
-            temp = daily['temp_%s_max' % i]
+                self.m_min_lo[i].add(temp, daily['%s_min_t' % i])
+                self.m_min_hi[i].add(temp, daily['%s_min_t' % i])
+                self.m_min_ave[i].add(temp)
+            temp = daily['%s_max' % i]
             if temp != None:
-                self.m_temp[i].max_lo.add(temp, daily['temp_%s_max_t' % i])
-                self.m_temp[i].max_hi.add(temp, daily['temp_%s_max_t' % i])
-                self.m_temp[i].max_ave.add(temp)
+                self.m_max_lo[i].add(temp, daily['%s_max_t' % i])
+                self.m_max_hi[i].add(temp, daily['%s_max_t' % i])
+                self.m_max_ave[i].add(temp)
         self.m_rain += daily['rain']
         self.m_valid = True
     def get_monthly(self):
@@ -271,18 +291,18 @@ class MonthAcc(object):
         result['idx'] = self.m_idx
         result['start'] = self.m_start
         result['rain'] = self.m_rain
-        for i in ('in', 'out'):
-            result['temp_%s_ave' % i] = self.m_temp[i].ave.result()
-            result['temp_%s_min_ave' % i] = self.m_temp[i].min_ave.result()
-            result['temp_%s_min_lo' % i], result['temp_%s_min_lo_t' % i] = (
-                self.m_temp[i].min_lo.result())
-            result['temp_%s_min_hi' % i], result['temp_%s_min_hi_t' % i] = (
-                self.m_temp[i].min_hi.result())
-            result['temp_%s_max_ave' % i] = self.m_temp[i].max_ave.result()
-            result['temp_%s_max_lo' % i], result['temp_%s_max_lo_t' % i] = (
-                self.m_temp[i].max_lo.result())
-            result['temp_%s_max_hi' % i], result['temp_%s_max_hi_t' % i] = (
-                self.m_temp[i].max_hi.result())
+        for i in ('temp_in', 'temp_out'):
+            result['%s_ave' % i] = self.m_ave[i].result()
+            result['%s_min_ave' % i] = self.m_min_ave[i].result()
+            (result['%s_min_lo' % i],
+             result['%s_min_lo_t' % i]) = self.m_min_lo[i].result()
+            (result['%s_min_hi' % i],
+             result['%s_min_hi_t' % i]) = self.m_min_hi[i].result()
+            result['%s_max_ave' % i] = self.m_max_ave[i].result()
+            (result['%s_max_lo' % i],
+             result['%s_max_lo_t' % i]) = self.m_max_lo[i].result()
+            (result['%s_max_hi' % i],
+             result['%s_max_hi_t' % i]) = self.m_max_hi[i].result()
         return result
 def Process(params, raw_data, hourly_data, daily_data, monthly_data):
     """Generate summaries from raw weather station data.
@@ -373,9 +393,12 @@ def Process(params, raw_data, hourly_data, daily_data, monthly_data):
             if new_data and prev['idx'].minute >= 9:
                 # store summary of hour
                 # copy some current readings
-                for key in ['idx', 'hum_in', 'temp_in', 'hum_out', 'temp_out',
-                            'abs_pressure']:
+                for key in ('idx', 'hum_in', 'temp_in', 'hum_out', 'temp_out',
+                            'abs_pressure'):
                     new_data[key] = prev[key]
+                if 'illuminance' in prev:
+                    for key in ('illuminance', 'uv'):
+                        new_data[key] = prev[key]
                 # convert pressure from absolute to relative
                 new_data['rel_pressure'] = \
                     new_data['abs_pressure'] + pressure_offset
