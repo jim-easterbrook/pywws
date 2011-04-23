@@ -106,6 +106,8 @@ class RegularTasks(object):
             yowindow_file = self.params.get(section, 'yowindow', '')
             if yowindow_file:
                 self.yowindow.write_file(yowindow_file)
+                break
+        for section in sections:
             if eval(self.params.get(section, 'underground', 'False')):
                 if not self.underground.Upload(True):
                     return False
