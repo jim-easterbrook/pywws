@@ -249,6 +249,7 @@ class MonthAcc(object):
     """Derive monthly summary data from daily data."""
     def __init__(self, start):
         self.m_start = start
+        self.has_illuminance = False
         self.m_ave = {}
         self.m_min_lo = {}
         self.m_min_hi = {}
@@ -261,6 +262,11 @@ class MonthAcc(object):
             self.m_min_lo[i] = Minimum()
             self.m_min_hi[i] = Maximum()
             self.m_min_ave[i] = Average()
+            self.m_max_lo[i] = Minimum()
+            self.m_max_hi[i] = Maximum()
+            self.m_max_ave[i] = Average()
+        for i in ('illuminance', 'uv'):
+            self.m_ave[i] = Average()
             self.m_max_lo[i] = Minimum()
             self.m_max_hi[i] = Maximum()
             self.m_max_ave[i] = Average()
@@ -282,6 +288,17 @@ class MonthAcc(object):
                 self.m_max_lo[i].add(temp, daily['%s_max_t' % i])
                 self.m_max_hi[i].add(temp, daily['%s_max_t' % i])
                 self.m_max_ave[i].add(temp)
+        if 'illuminance_ave' in daily:
+            self.has_illuminance = True
+            for i in ('illuminance', 'uv'):
+                value = daily['%s_ave' % i]
+                if value != None:
+                    self.m_ave[i].add(value)
+                value = daily['%s_max' % i]
+                if value != None:
+                    self.m_max_lo[i].add(value, daily['%s_max_t' % i])
+                    self.m_max_hi[i].add(value, daily['%s_max_t' % i])
+                    self.m_max_ave[i].add(value)
         self.m_rain += daily['rain']
         self.m_valid = True
     def get_monthly(self):
@@ -303,6 +320,14 @@ class MonthAcc(object):
              result['%s_max_lo_t' % i]) = self.m_max_lo[i].result()
             (result['%s_max_hi' % i],
              result['%s_max_hi_t' % i]) = self.m_max_hi[i].result()
+        if self.has_illuminance:
+            for i in ('illuminance', 'uv'):
+                result['%s_ave' % i] = self.m_ave[i].result()
+                result['%s_max_ave' % i] = self.m_max_ave[i].result()
+                (result['%s_max_lo' % i],
+                 result['%s_max_lo_t' % i]) = self.m_max_lo[i].result()
+                (result['%s_max_hi' % i],
+                 result['%s_max_hi_t' % i]) = self.m_max_hi[i].result()
         return result
 def Process(params, raw_data, hourly_data, daily_data, monthly_data):
     """Generate summaries from raw weather station data.
