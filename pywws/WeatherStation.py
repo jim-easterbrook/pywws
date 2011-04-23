@@ -508,7 +508,7 @@ class weather_station(object):
         }
     reading_format['3080'] = {
         'illuminance' : (16, 'u3', 0.1),
-        'uv'    : (19, 'ub', None),
+        'uv'          : (19, 'ub', None),
         }
     reading_format['3080'].update(reading_format['1080'])
     lo_fix_format = {
