@@ -1,6 +1,12 @@
 Python software for USB Wireless WeatherStations (pywws).
 http://code.google.com/p/pywws/
 
+Changes in v11.05:
+    1/ Added support for '3080' family stations that have illuminance and
+       UV sensors.
+    2/ Broadened the range of tasks that can be done with 'live' data.
+    3/ Various bug fixes and software structure improvements.
+
 Changes in v11.02:
     1/ Various bug fixes and software structure improvements.
     2/ Improved wind direction averaging.
