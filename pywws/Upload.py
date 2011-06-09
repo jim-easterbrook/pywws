@@ -60,6 +60,7 @@ def Upload(params, files):
         except Exception, ex:
             logger.error(str(ex))
             return 1
+    OK = True
     for file in files:
         target = os.path.basename(file)
         # have three tries before giving up
@@ -78,9 +79,13 @@ def Upload(params, files):
                 break
             except Exception, ex:
                 logger.error(str(ex))
+        else:
+            OK = False
     ftp.close()
     if secure:
         transport.close()
+    if not OK:
+        return 1
     return 0
 def main(argv=None):
     if argv is None:
