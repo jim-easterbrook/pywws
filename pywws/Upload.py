@@ -32,7 +32,7 @@ def Upload(params, files):
             os.makedirs(directory)
         for file in files:
             shutil.copy2(file, directory)
-        return 0
+        return True
     logger.info("Uploading to web site")
     # get remote site details
     secure = eval(params.get('ftp', 'secure', 'False'))
@@ -50,7 +50,7 @@ def Upload(params, files):
             ftp.chdir(directory)
         except Exception, ex:
             logger.error(str(ex))
-            return 1
+            return False
     else:
         import ftplib
         try:
@@ -59,7 +59,7 @@ def Upload(params, files):
             ftp.cwd(directory)
         except Exception, ex:
             logger.error(str(ex))
-            return 1
+            return False
     OK = True
     for file in files:
         target = os.path.basename(file)
@@ -84,9 +84,7 @@ def Upload(params, files):
     ftp.close()
     if secure:
         transport.close()
-    if not OK:
-        return 1
-    return 0
+    return OK
 def main(argv=None):
     if argv is None:
         argv = sys.argv
@@ -107,6 +105,8 @@ def main(argv=None):
         print >>sys.stderr, __doc__.strip()
         return 2
     logger = ApplicationLogger(1)
-    return Upload(DataStore.params(args[0]), args[1:])
+    if Upload(DataStore.params(args[0]), args[1:]):
+        return 0
+    return 3
 if __name__ == "__main__":
     sys.exit(main())

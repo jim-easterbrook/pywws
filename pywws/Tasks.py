@@ -72,7 +72,7 @@ class RegularTasks(object):
             if upload not in uploads:
                 uploads.append(upload)
         if uploads:
-            OK = OK and Upload.Upload(self.params, uploads) == 0
+            OK = OK and Upload.Upload(self.params, uploads)
             for file in uploads:
                 os.unlink(file)
         return OK
@@ -124,7 +124,7 @@ class RegularTasks(object):
                     uploads.append(upload)
         OK = True
         if uploads:
-            OK = OK and Upload.Upload(self.params, uploads) == 0
+            OK = OK and Upload.Upload(self.params, uploads)
             for file in uploads:
                 os.unlink(file)
         if OK:
