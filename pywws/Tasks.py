@@ -98,10 +98,10 @@ class RegularTasks(object):
             if (not last_update) or (last_update < threshold):
                 # time to do daily tasks
                 sections.append('daily')
+        OK = True
         for section in sections:
             for template in eval(self.params.get(section, 'twitter', '[]')):
-                if not self.do_twitter(template):
-                    return False
+                OK = OK and self.do_twitter(template)
         for section in sections:
             yowindow_file = self.params.get(section, 'yowindow', '')
             if yowindow_file:
@@ -109,8 +109,7 @@ class RegularTasks(object):
                 break
         for section in sections:
             if eval(self.params.get(section, 'underground', 'False')):
-                if not self.underground.Upload(True):
-                    return False
+                OK = OK and self.underground.Upload(True)
                 break
         uploads = []
         for section in sections:
@@ -122,7 +121,6 @@ class RegularTasks(object):
                 upload = self.do_template(template)
                 if upload not in uploads:
                     uploads.append(upload)
-        OK = True
         if uploads:
             OK = OK and Upload.Upload(self.params, uploads)
             for file in uploads:
