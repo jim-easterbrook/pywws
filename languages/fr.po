@@ -1,0 +1,234 @@
+# French translations for pywws package.
+# Traduction française pour pywws
+# Copyright (C) 2010 Jim Easterbrook
+# Ce fichier est distributé sous licence du logiciel pywws.
+# Jim Easterbrook <jim@jim-easterbrook.me.uk>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: pywws\n"
+"Report-Msgid-Bugs-To: jim@jim-easterbrook.me.uk\n"
+"POT-Creation-Date: 2010-12-20 12:14+0000\n"
+"PO-Revision-Date: 2011-06-26 12:20+0000\n"
+"Last-Translator: Jacques Desroches <jacques.desroches@meteoduquebec.com>\n"
+"Language-Team: French\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: pywws/Plot.py:217
+msgid "Time (%Z)"
+msgstr "Heure (%Z)"
+
+#: pywws/Plot.py:219
+msgid "Day"
+msgstr "Jour"
+
+#: pywws/Plot.py:221
+msgid "Date"
+msgstr "Date"
+
+#: pywws/WeatherStation.py:57 pywws/WindRose.py:119
+msgid "N"
+msgstr "N"
+
+#: pywws/WeatherStation.py:57
+msgid "NNE"
+msgstr "NNE"
+
+#: pywws/WeatherStation.py:57
+msgid "NE"
+msgstr "NE"
+
+#: pywws/WeatherStation.py:57
+msgid "ENE"
+msgstr "ENE"
+
+#: pywws/WeatherStation.py:58 pywws/WindRose.py:119
+msgid "E"
+msgstr "E"
+
+#: pywws/WeatherStation.py:58
+msgid "ESE"
+msgstr "ESE"
+
+#: pywws/WeatherStation.py:58
+msgid "SE"
+msgstr "SE"
+
+#: pywws/WeatherStation.py:58
+msgid "SSE"
+msgstr "SSE"
+
+#: pywws/WeatherStation.py:59 pywws/WindRose.py:119
+msgid "S"
+msgstr "S"
+
+#: pywws/WeatherStation.py:59
+msgid "SSW"
+msgstr "SSO"
+
+#: pywws/WeatherStation.py:59
+msgid "SW"
+msgstr "SO"
+
+#: pywws/WeatherStation.py:59
+msgid "WSW"
+msgstr "OSO"
+
+#: pywws/WeatherStation.py:60 pywws/WindRose.py:119
+msgid "W"
+msgstr "O"
+
+#: pywws/WeatherStation.py:60
+msgid "WNW"
+msgstr "ONO"
+
+#: pywws/WeatherStation.py:60
+msgid "NW"
+msgstr "NO"
+
+#: pywws/WeatherStation.py:60
+msgid "NNW"
+msgstr "NNO"
+
+#: pywws/WeatherStation.py:67
+msgid "rising very rapidly"
+msgstr "en hausse très rapide"
+
+#: pywws/WeatherStation.py:69
+msgid "rising quickly"
+msgstr "en hausse rapide"
+
+#: pywws/WeatherStation.py:71
+msgid "rising"
+msgstr "en hausse"
+
+#: pywws/WeatherStation.py:73
+msgid "rising slowly"
+msgstr "en hausse lente"
+
+#: pywws/WeatherStation.py:75
+msgid "falling very rapidly"
+msgstr "en baisse très rapide"
+
+#: pywws/WeatherStation.py:77
+msgid "falling quickly"
+msgstr "en baisse rapide"
+
+#: pywws/WeatherStation.py:79
+msgid "falling"
+msgstr "en baisse"
+
+#: pywws/WeatherStation.py:81
+msgid "falling slowly"
+msgstr "en baisse lente"
+
+#: pywws/WeatherStation.py:82
+msgid "steady"
+msgstr "stable"
+
+#: pywws/ZambrettiCore.py:37
+msgid "Settled fine"
+msgstr "Beau temps établi"
+
+#: pywws/ZambrettiCore.py:37
+msgid "Fine weather"
+msgstr "Beau temps"
+
+#: pywws/ZambrettiCore.py:37
+msgid "Becoming fine"
+msgstr "en amélioration"
+
+#: pywws/ZambrettiCore.py:38
+msgid "Fine, becoming less settled"
+msgstr "Beau temps, tendance à se dégrader"
+
+#: pywws/ZambrettiCore.py:38
+msgid "Fine, possible showers"
+msgstr "Beau, averses possibles"
+
+#: pywws/ZambrettiCore.py:39
+msgid "Fairly fine, improving"
+msgstr "Plutôt beau, en amélioration"
+
+#: pywws/ZambrettiCore.py:39
+msgid "Fairly fine, possible showers early"
+msgstr "Plutôt beau, averses possibles en matinée"
+
+#: pywws/ZambrettiCore.py:40
+msgid "Fairly fine, showery later"
+msgstr "Plutôt beau, averse en soirée"
+
+#: pywws/ZambrettiCore.py:40
+msgid "Showery early, improving"
+msgstr "Averse en matinée, en amélioration"
+
+#: pywws/ZambrettiCore.py:41
+msgid "Changeable, mending"
+msgstr "Variable, en amélioration"
+
+#: pywws/ZambrettiCore.py:41
+msgid "Fairly fine, showers likely"
+msgstr "Plutôt beau, averse possible"
+
+#: pywws/ZambrettiCore.py:42
+msgid "Rather unsettled clearing later"
+msgstr "plutôt variable, en amélioration."
+
+#: pywws/ZambrettiCore.py:42
+msgid "Unsettled, probably improving"
+msgstr "Perturbé, amélioration probable"
+
+#: pywws/ZambrettiCore.py:43
+msgid "Showery, bright intervals"
+msgstr "Averses éparses, belles éclaircies"
+
+#: pywws/ZambrettiCore.py:43
+msgid "Showery, becoming less settled"
+msgstr "Averses, temps se découvrant"
+
+#: pywws/ZambrettiCore.py:44
+msgid "Changeable, some rain"
+msgstr "Variable, quelques précipitations"
+
+#: pywws/ZambrettiCore.py:44
+msgid "Unsettled, short fine intervals"
+msgstr "Perturbé, de rares éclairces"
+
+#: pywws/ZambrettiCore.py:45
+msgid "Unsettled, rain later"
+msgstr "Variable, quelques précipitations tardives"
+
+#: pywws/ZambrettiCore.py:45
+msgid "Unsettled, some rain"
+msgstr "Variable, quelques précipitations"
+
+#: pywws/ZambrettiCore.py:46
+msgid "Mostly very unsettled"
+msgstr "Très perturbé"
+
+#: pywws/ZambrettiCore.py:46
+msgid "Occasional rain, worsening"
+msgstr "Précipitations occasionnelles, se dégradant"
+
+#: pywws/ZambrettiCore.py:47
+msgid "Rain at times, very unsettled"
+msgstr "Quelques précipitations, très perturbé"
+
+#: pywws/ZambrettiCore.py:47
+msgid "Rain at frequent intervals"
+msgstr "Precipitations à intervalles fréquents"
+
+#: pywws/ZambrettiCore.py:48
+msgid "Rain, very unsettled"
+msgstr "Pluie, très perturbé"
+
+#: pywws/ZambrettiCore.py:48
+msgid "Stormy, may improve"
+msgstr "Tempête, pourrait s'améliorer"
+
+#: pywws/ZambrettiCore.py:48
+msgid "Stormy, much rain"
+msgstr "Tempête, fortes pluies"
