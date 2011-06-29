@@ -1,0 +1,234 @@
+# Danish translations for pywws package.
+# Copyright (C) 2011 Jim Easterbrook
+# This file is distributed under the same license as the pywws package.
+# Kyle Gordon <kyle@lodge.glasgownet.com>, 2011.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: pywws\n"
+"Report-Msgid-Bugs-To: jim@jim-easterbrook.me.uk\n"
+"POT-Creation-Date: 2011-05-15 19:57+0100\n"
+"PO-Revision-Date: 2011-06-26 23:41+0100\n"
+"Last-Translator: Kyle Gordon <kyle@lodge.glasgownet.com>\n"
+"Language-Team: Danish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: da\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: pywws/Plot.py:220
+msgid "Time (%Z)"
+msgstr "klokken"
+
+#: pywws/Plot.py:222
+msgid "Day"
+msgstr "Dag"
+
+#: pywws/Plot.py:224
+msgid "Date"
+msgstr "Dato"
+
+#: pywws/WeatherStation.py:57 pywws/WindRose.py:120
+msgid "N"
+msgstr "N"
+
+#: pywws/WeatherStation.py:57
+msgid "NNE"
+msgstr "NNO"
+
+#: pywws/WeatherStation.py:57
+msgid "NE"
+msgstr "NO"
+
+#: pywws/WeatherStation.py:57
+msgid "ENE"
+msgstr "ONO"
+
+#: pywws/WeatherStation.py:58 pywws/WindRose.py:120
+msgid "E"
+msgstr "O"
+
+#: pywws/WeatherStation.py:58
+msgid "ESE"
+msgstr "OSO"
+
+#: pywws/WeatherStation.py:58
+msgid "SE"
+msgstr "SO"
+
+#: pywws/WeatherStation.py:58
+msgid "SSE"
+msgstr "SSO"
+
+#: pywws/WeatherStation.py:59 pywws/WindRose.py:120
+msgid "S"
+msgstr "S"
+
+#: pywws/WeatherStation.py:59
+msgid "SSW"
+msgstr "SSV"
+
+#: pywws/WeatherStation.py:59
+msgid "SW"
+msgstr "SV"
+
+#: pywws/WeatherStation.py:59
+msgid "WSW"
+msgstr "VSV"
+
+#: pywws/WeatherStation.py:60 pywws/WindRose.py:120
+msgid "W"
+msgstr "V"
+
+#: pywws/WeatherStation.py:60
+msgid "WNW"
+msgstr "VNV"
+
+#: pywws/WeatherStation.py:60
+msgid "NW"
+msgstr "NV"
+
+#: pywws/WeatherStation.py:60
+msgid "NNW"
+msgstr "NNV"
+
+#: pywws/WeatherStation.py:67
+msgid "rising very rapidly"
+msgstr "Stiger meget hurtigt"
+
+#: pywws/WeatherStation.py:69
+msgid "rising quickly"
+msgstr "Stiger hurtigt"
+
+#: pywws/WeatherStation.py:71
+msgid "rising"
+msgstr "Stigende"
+
+#: pywws/WeatherStation.py:73
+msgid "rising slowly"
+msgstr "Stiger langsomt"
+
+#: pywws/WeatherStation.py:75
+msgid "falling very rapidly"
+msgstr "Falder meget hurtigt"
+
+#: pywws/WeatherStation.py:77
+msgid "falling quickly"
+msgstr "falder hurtigt"
+
+#: pywws/WeatherStation.py:79
+msgid "falling"
+msgstr "Faldende"
+
+#: pywws/WeatherStation.py:81
+msgid "falling slowly"
+msgstr "Falder langsomt"
+
+#: pywws/WeatherStation.py:82
+msgid "steady"
+msgstr "Stabil"
+
+#: pywws/ZambrettiCore.py:6
+msgid "Settled fine"
+msgstr "Roligt, Godt"
+
+#: pywws/ZambrettiCore.py:7
+msgid "Fine weather"
+msgstr "Godt vejr"
+
+#: pywws/ZambrettiCore.py:8
+msgid "Becoming fine"
+msgstr "I bedring til Godt"
+
+#: pywws/ZambrettiCore.py:9
+msgid "Fine, becoming less settled"
+msgstr "Godt, uroligt"
+
+#: pywws/ZambrettiCore.py:10
+msgid "Fine, possible showers"
+msgstr "Godt, mulighed for byger"
+
+#: pywws/ZambrettiCore.py:11
+msgid "Fairly fine, improving"
+msgstr "Nogenlunde, I bedring"
+
+#: pywws/ZambrettiCore.py:12
+msgid "Fairly fine, possible showers early"
+msgstr "Nogenlunde, mulighed for byger tidligt"
+
+#: pywws/ZambrettiCore.py:13
+msgid "Fairly fine, showery later"
+msgstr "Nogenlunde, regnfuld senere"
+
+#: pywws/ZambrettiCore.py:14
+msgid "Showery early, improving"
+msgstr "Regnfuld tidlig, I bedring"
+
+#: pywws/ZambrettiCore.py:15
+msgid "Changeable, mending"
+msgstr "Foranderlig, I Bedring "
+
+#: pywws/ZambrettiCore.py:16
+msgid "Fairly fine, showers likely"
+msgstr "Nogenlunde, Muligvis byger"
+
+#: pywws/ZambrettiCore.py:17
+msgid "Rather unsettled clearing later"
+msgstr "Meget Foranderligt, opklaring senere"
+
+#: pywws/ZambrettiCore.py:18
+msgid "Unsettled, probably improving"
+msgstr "Foranderligt, muligvis opklaring"
+
+#: pywws/ZambrettiCore.py:19
+msgid "Showery, bright intervals"
+msgstr "Byger, nogen sol"
+
+#: pywws/ZambrettiCore.py:20
+msgid "Showery, becoming less settled"
+msgstr "Byger, Ustadigt"
+
+#: pywws/ZambrettiCore.py:21
+msgid "Changeable, some rain"
+msgstr "Ustadigt, nogen regn"
+
+#: pywws/ZambrettiCore.py:22
+msgid "Unsettled, short fine intervals"
+msgstr "Foranderligt,Korte intervaler med fint vejr"
+
+#: pywws/ZambrettiCore.py:23
+msgid "Unsettled, rain later"
+msgstr "Foranderligt, Regn senere"
+
+#: pywws/ZambrettiCore.py:24
+msgid "Unsettled, some rain"
+msgstr "Foranderligt, Nogen Regn"
+
+#: pywws/ZambrettiCore.py:25
+msgid "Mostly very unsettled"
+msgstr "Meget Foranderligt"
+
+#: pywws/ZambrettiCore.py:26
+msgid "Occasional rain, worsening"
+msgstr "Nogen regn, Forvaerring"
+
+#: pywws/ZambrettiCore.py:27
+msgid "Rain at times, very unsettled"
+msgstr "Til tider regn, meget foranderligt"
+
+#: pywws/ZambrettiCore.py:28
+msgid "Rain at frequent intervals"
+msgstr "Regn byger"
+
+#: pywws/ZambrettiCore.py:29
+msgid "Rain, very unsettled"
+msgstr "Regn, meget foranderligt"
+
+#: pywws/ZambrettiCore.py:30
+msgid "Stormy, may improve"
+msgstr "Blæsende, mulig forbedring"
+
+#: pywws/ZambrettiCore.py:31
+msgid "Stormy, much rain"
+msgstr "Blæsende, Regnvejr"
