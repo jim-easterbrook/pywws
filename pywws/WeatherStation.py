@@ -452,9 +452,10 @@ class weather_station(object):
         for mempos in range(0x0000, hi, 0x0020):
             result += self._read_block(mempos)
         # check 'magic number'
-        if result[:2] not in ([0x55, 0xAA], [0xFF, 0xFF], [0x55, 0x55]):
+        if result[:2] not in ([0x55, 0xAA], [0xFF, 0xFF],
+                              [0x55, 0x55], [0xC4, 0x00]):
             raise IOError(
-                "Unrecognised 'magic number' %02x %02x", result[0], result[1])
+                "Unrecognised 'magic number' %02x %02x" % (result[0], result[1]))
         return result
     def _write_byte(self, ptr, value):
         buf_1 = (ptr / 256) & 0xFF
