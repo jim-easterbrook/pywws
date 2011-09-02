@@ -59,9 +59,11 @@ class RegularTasks(object):
         if yowindow_file:
             self.yowindow.write_file(yowindow_file, data)
         for template in eval(self.params.get('live', 'twitter', '[]')):
-            OK = OK and self.do_twitter(template, data)
+            if not self.do_twitter(template, data):
+                OK = False
         if eval(self.params.get('live', 'underground', 'False')):
-            OK = OK and self.underground.RapidFire(data, True)
+            if not self.underground.RapidFire(data, True):
+                OK = False
         uploads = []
         for template in eval(self.params.get('live', 'plot', '[]')):
             upload = self.do_plot(template)
@@ -72,7 +74,8 @@ class RegularTasks(object):
             if upload not in uploads:
                 uploads.append(upload)
         if uploads:
-            OK = OK and Upload.Upload(self.params, uploads)
+            if not Upload.Upload(self.params, uploads):
+                OK = False
             for file in uploads:
                 os.unlink(file)
         return OK
@@ -101,7 +104,8 @@ class RegularTasks(object):
         OK = True
         for section in sections:
             for template in eval(self.params.get(section, 'twitter', '[]')):
-                OK = OK and self.do_twitter(template)
+                if not self.do_twitter(template):
+                    OK = False
         for section in sections:
             yowindow_file = self.params.get(section, 'yowindow', '')
             if yowindow_file:
@@ -109,7 +113,8 @@ class RegularTasks(object):
                 break
         for section in sections:
             if eval(self.params.get(section, 'underground', 'False')):
-                OK = OK and self.underground.Upload(True)
+                if not self.underground.Upload(True):
+                    OK = False
                 break
         uploads = []
         for section in sections:
@@ -122,7 +127,8 @@ class RegularTasks(object):
                 if upload not in uploads:
                     uploads.append(upload)
         if uploads:
-            OK = OK and Upload.Upload(self.params, uploads)
+            if not Upload.Upload(self.params, uploads):
+                OK = False
             for file in uploads:
                 os.unlink(file)
         if OK:
