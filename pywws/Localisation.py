@@ -12,7 +12,13 @@ def GetTranslation(params):
     langs = []
     lang = params.get('config', 'language', lc)
     if lang:
-        locale.setlocale(locale.LC_ALL, lang)
+        try:
+            if '.' in lang:
+                locale.setlocale(locale.LC_ALL, lang)
+            else:
+                locale.setlocale(locale.LC_ALL, (lang, encoding))
+        except locale.Error:
+            pass
         langs += [lang, lang[:2]]
     if lc:
         langs += [lc, lc[:2]]
