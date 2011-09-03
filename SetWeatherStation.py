@@ -6,6 +6,7 @@ usage: python SetWeatherStation.py [options]
 options are:
  -h   | --help           display this help
  -c   | --clock          set weather station clock to computer time
+                         (unlikely to work)
  -r n | --read_period n  set logging interval to n minutes
  -v   | --verbose        increase error message verbosity
  -z   | --zero_memory    clear the weather station logged readings
@@ -72,6 +73,8 @@ def main(argv=None):
         data.append((ptr+1, 0))
     # set clock
     if clock:
+        print "Clock setting is not known to work on any model of weather station."
+        print "If it works for you, please let Jim Easterbrook know."
         print "waiting for exact minute"
         now = datetime.now()
         if now.second >= 55:
