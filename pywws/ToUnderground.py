@@ -59,6 +59,10 @@ class ToUnderground(object):
         self.fixed_data[True]['realtime'] = '1'
         self.fixed_data[True]['rtfreq'] = '48'
     def _TranslateData(self, current, rapid_fire):
+        # check we have enough data
+        if (current['temp_out'] is None or
+            current['hum_out'] is None):
+            return None
         # get rain data for 1 hr ago and local midnight
         rain_hour = self.data[self.data.nearest(current['idx'] - self.hour)]['rain']
         while current['idx'] < self.midnight:
@@ -74,13 +78,11 @@ class ToUnderground(object):
         result['dateutc'] = current['idx'].isoformat(' ')
         if current['wind_dir'] != None and current['wind_dir'] < 16:
             result['winddir'] = '%.0f' % (current['wind_dir'] * 22.5)
-        if current['temp_out'] != None:
-            result['tempf'] = '%.1f' % (conversions.temp_f(current['temp_out']))
-            if current['hum_out'] != None:
-                result['dewptf'] = '%.1f' % (
-                    conversions.temp_f(
-                        dew_point(current['temp_out'], current['hum_out'])))
-                result['humidity'] = '%d' % (current['hum_out'])
+        result['tempf'] = '%.1f' % (conversions.temp_f(current['temp_out']))
+        result['dewptf'] = '%.1f' % (
+            conversions.temp_f(
+                dew_point(current['temp_out'], current['hum_out'])))
+        result['humidity'] = '%d' % (current['hum_out'])
         if current['wind_ave'] != None:
             result['windspeedmph'] = '%.2f' % (
                 conversions.wind_mph(current['wind_ave']))
@@ -97,6 +99,8 @@ class ToUnderground(object):
     def SendData(self, data, rapid_fire):
         # create weather underground command
         getPars = self._TranslateData(data, rapid_fire)
+        if not getPars:
+            return not rapid_fire
         # convert command to URL
         url = 'http://%s/weatherstation/updateweatherstation.php?%s' % (
             self.server[rapid_fire], urllib.urlencode(getPars))
