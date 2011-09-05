@@ -7,6 +7,7 @@ options are:
  -h   | --help           display this help
  -c   | --clock          set weather station clock to computer time
                          (unlikely to work)
+ -p f | --pressure f     set relative pressure to n hPa
  -r n | --read_period n  set logging interval to n minutes
  -v   | --verbose        increase error message verbosity
  -z   | --zero_memory    clear the weather station logged readings
@@ -30,14 +31,16 @@ def main(argv=None):
         argv = sys.argv
     try:
         opts, args = getopt.getopt(
-            argv[1:], "hcr:vz",
-            ['help', 'clock', 'read_period=', 'verbose', 'zero_memory'])
+            argv[1:], "hcp:r:vz",
+            ['help', 'clock', 'pressure=', 'read_period=',
+             'verbose', 'zero_memory'])
     except getopt.error, msg:
         print >>sys.stderr, 'Error: %s\n' % msg
         print >>sys.stderr, __doc__.strip()
         return 1
     # process options
     clock = False
+    pressure = None
     read_period = None
     verbose = 0
     zero_memory = False
@@ -47,6 +50,8 @@ def main(argv=None):
             return 0
         elif o in ('-c', '--clock'):
             clock = True
+        elif o in ('-p', '--pressure'):
+            pressure = int((float(a) * 10.0) + 0.5)
         elif o in ('-r', '--read_period'):
             read_period = int(a)
         elif o in ('-v', '--verbose'):
@@ -63,6 +68,11 @@ def main(argv=None):
     ws = WeatherStation.weather_station()
     # set data to be sent to station
     data = []
+    # set relative pressure
+    if pressure:
+        ptr = ws.fixed_format['rel_pressure'][0]
+        data.append((ptr,   pressure % 256))
+        data.append((ptr+1, pressure / 256))
     # set read period
     if read_period:
         data.append((ws.fixed_format['read_period'][0], read_period))
