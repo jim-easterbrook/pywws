@@ -10,7 +10,7 @@
       <a href="index.html">Python software for USB Wireless WeatherStations</a>
     </h1>
     <h2>
-      <a href="auto/pywws.WindRose.html">WindRose.py</a> -- draw a "wind rose" using an XML recipe
+      <a href="auto/pywws.WindRose-module.html">WindRose.py</a> -- draw a "wind rose" using an XML recipe
     </h2>
     <p>
       This routine plots one or more "wind roses" (see <a href="http://en.wikipedia.org/wiki/Wind_rose">Wikipedia</a> for a description). Like <a href="Plot.html">Plot.py</a> almost everything is controlled by an XML "recipe" / template file.
@@ -117,19 +117,19 @@
       <a href="#list" name="start">start</a>
     </h3>
     <p>
-      This element sets the date &amp; time of the wind roses. It is used in the constructor of a Python <a href="auto/datetime.html#datetime">datetime</a> object. For example, to start at noon (local time) on Christmas day: <code>&lt;start&gt;year=2008, month=12, day=25, hour=12&lt;/start&gt;</code>. The default value is <code>(stop - duration)</code>.
+      This element sets the date &amp; time of the wind roses. It is used in the constructor of a Python datetime object. For example, to start at noon (local time) on Christmas day: <code>&lt;start&gt;year=2008, month=12, day=25, hour=12&lt;/start&gt;</code>. The default value is <code>(stop - duration)</code>.
     </p>
     <h3>
       <a href="#list" name="stop">stop</a>
     </h3>
     <p>
-      This element sets the date &amp; time of the end of the wind roses. It is used in the constructor of a Python <a href="auto/datetime.html#datetime">datetime</a> object. For example, to end at 10 am (local time) on new year's day: <code>&lt;stop&gt;year=2009, month=1, day=1, hour=10&lt;/stop&gt;</code>. The default value is <code>(start + duration)</code>, unless <code>start</code> is not defined in which case the timestamp of the latest weather station hourly reading is used.
+      This element sets the date &amp; time of the end of the wind roses. It is used in the constructor of a Python datetime object. For example, to end at 10 am (local time) on new year's day: <code>&lt;stop&gt;year=2009, month=1, day=1, hour=10&lt;/stop&gt;</code>. The default value is <code>(start + duration)</code>, unless <code>start</code> is not defined in which case the timestamp of the latest weather station hourly reading is used.
     </p>
     <h3>
       <a href="#list" name="duration">duration</a>
     </h3>
     <p>
-      This element sets the duration of wind roses, unless both <code>start</code> and <code>stop</code> are defined. It is used in the constructor of a Python <a href="auto/datetime.html#timedelta">timedelta</a> object. For example, to plot one week: <code>&lt;duration&gt;weeks=1&lt;/duration&gt;</code>. The default value is <code>hours=24</code>.
+      This element sets the duration of wind roses, unless both <code>start</code> and <code>stop</code> are defined. It is used in the constructor of a Python timedelta object. For example, to plot one week: <code>&lt;duration&gt;weeks=1&lt;/duration&gt;</code>. The default value is <code>hours=24</code>.
     </p>
     <h3>
       <a href="#list" name="layout">layout</a>

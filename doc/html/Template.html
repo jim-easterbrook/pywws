@@ -10,7 +10,7 @@
       <a href="index.html">Python software for USB Wireless WeatherStations</a>
     </h1>
     <h2>
-      <a href="auto/pywws.Template.html">Template.py</a> -- creates text data file based on a template
+      <a href="auto/pywws.Template-module.html">Template.py</a> -- creates text data file based on a template
     </h2>
     <p>
       This is probably the most difficult to use module in the weather station software collection. It generates text files based on a "template" file plus the raw, hourly, daily &amp; monthly weather station data. The template processing goes beyond simple substitution of values to include loops, jumps forwards or backwards in the data, processing of the data and substitution of missing values.
@@ -59,7 +59,7 @@
         <b><code>#endloop#</code></b>: end a loop started by <code>#loop count#</code>. The template processing will go back to the line containing the <code>#loop count#</code> instruction. Don't try to nest loops.
       </li>
       <li>
-        <b><code>#key fmt_string no_value_string conversion#</code></b>: output a data value. <code>key</code> is the data key, e.g. <code>temp_out</code> for outdoor temperature. <code>fmt_string</code> is a printf-like format string (actually Python's % operator) except for datetime values, when it is input to <a href="auto/datetime.html#datetime">datetime</a>'s strftime() method. <code>no_value_string</code> is output instead of <code>fmt_string</code> when the data value is absent, e.g. if the station lost contact with the outside sensor. <code>conversion</code> is a Python expression to convert the data, e.g. to convert wind speed from m/s to mph you could use <code>"x * 3.6 / 1.609344"</code>.<br>
+        <b><code>#key fmt_string no_value_string conversion#</code></b>: output a data value. <code>key</code> is the data key, e.g. <code>temp_out</code> for outdoor temperature. <code>fmt_string</code> is a printf-like format string (actually Python's % operator) except for datetime values, when it is input to datetime's strftime() method. <code>no_value_string</code> is output instead of <code>fmt_string</code> when the data value is absent, e.g. if the station lost contact with the outside sensor. <code>conversion</code> is a Python expression to convert the data, e.g. to convert wind speed from m/s to mph you could use <code>"x * 3.6 / 1.609344"</code>.<br>
         All these values need double quotes " if they contain spaces or other potentially difficult characters. All except <code>key</code> are optional, but note that if you want to specify a <code>conversion</code>, you also need to specify <code>key</code>, <code>fmt_string</code> and <code>no_value_string</code>.
       </li>
       <li>
@@ -100,7 +100,7 @@
       The <code>#wind_dir ...#</code> and <code>#pressure_trend ...#</code> instructions show use of the built-in array <code>wind_dir_text</code> and function <code>pressure_trend_text</code> to convert numerical values into English text.
     </p>
     <p>
-      Finally we get to <a href="auto/datetime.html#datetime">datetime</a> values. The <code>#idx "%H%M"#</code> instruction simply outputs the time (in HHMM format) of the data's index. The <code>#idx "%Y/%m/%d" "" "[None, x][x.hour == 0 or loop_count == 7]"#</code> instruction is a bit more complicated. It outputs the date, but only on the first line or if the date has changed. It does this by indexing the array <code>[None, x]</code> with a boolean expression that is true when <code>loop_count</code> is 7 (i.e. on the first pass through the loop) or <code>x.hour</code> is zero (i.e. this is the first hour of the day).
+      Finally we get to datetime values. The <code>#idx "%H%M"#</code> instruction simply outputs the time (in HHMM format) of the data's index. The <code>#idx "%Y/%m/%d" "" "[None, x][x.hour == 0 or loop_count == 7]"#</code> instruction is a bit more complicated. It outputs the date, but only on the first line or if the date has changed. It does this by indexing the array <code>[None, x]</code> with a boolean expression that is true when <code>loop_count</code> is 7 (i.e. on the first pass through the loop) or <code>x.hour</code> is zero (i.e. this is the first hour of the day).
     </p>
     <hr>
     <p>

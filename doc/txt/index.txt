@@ -25,7 +25,6 @@ Index
      * UpgradeFrom0-1.py -- converts v0.1 datastore to later versions
      * Reprocess.py -- regenerates hourly and daily summary data
      * TimeZone.py -- provide UTC and local tzinfo objects
-     * AutoDoc.py -- creates detailed documentation of each module
 
    More detail about the individual modules can be found by following the
    above links. This documentation is not comprehensive, I merely attempt to

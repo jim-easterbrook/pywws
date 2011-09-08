@@ -9,9 +9,19 @@ endif
 
 all : doc lang pywws/version.py
 
-doc : \
+doc : extract_doc \
 	$(html_src:doc/html/%.html=doc/txt/%.txt)
 	
+extract_doc :
+	epydoc --html -o doc/html/auto -v \
+		--name "Python software for USB Wireless WeatherStations" \
+		--url http://code.google.com/p/pywws/ \
+		--docformat plaintext --inheritance included \
+		pywws \
+		EWtoPy.py Hourly.py LiveLog.py Reprocess.py \
+		setup.py SetWeatherStation.py TestWeatherStation.py \
+		TwitterAuth.py UpgradeFrom0-1.py
+
 lang : \
 	languages/$(LC).po \
 	$(lang_src:languages/%.po=locale/%/LC_MESSAGES/pywws.mo)

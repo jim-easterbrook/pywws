@@ -181,13 +181,10 @@ How to get started with pywws.
    text versions of the documentation. The HTML files can be read with any
    web browser. Start with index.html and follow links from there.
 
-   More detailed HTML documentation of each Python module can be created from
-   the source files by running the AutoDoc.py program:
+   More detailed HTML documentation of each Python module can be extracted
+   from the source files by epydoc. This is conveniently done with make:
 
- python ./AutoDoc.py
-
-   (Note that there is currently a bug in AutoDoc.py that means you have to
-   prefix its name with ./ when running it.)
+ make doc
 
    Alternatively, you can read the documentation directly with pydoc. For
    example:

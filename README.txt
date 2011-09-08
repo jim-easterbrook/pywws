@@ -57,7 +57,6 @@ This software collection currently includes the following files:
 	TestWeatherStation.py	-- test communication with weather station
 	Hourly.py		-- run from cron or
 	LiveLog.py		-- run continuously
-	AutoDoc.py		-- generates extra HTML documentation
 	EWtoPy.py		-- converts EasyWeather.dat to DataStore format
 	UpgradeFrom0-1.py	-- converts v0.1 datastore to current format
 	Reprocess.py		-- regenerates summary data
@@ -101,29 +100,27 @@ Getting started:
      http://code.google.com/p/pywws/wiki/Compatibility for details.
      7a/ Try options to decode data and show history:
          "python TestWeatherStation.py -d -h 5"
-  8/ Run "python AutoDoc.py" to create extra documentation of the
-     software.
-  9/ Choose somewhere to store readings, e.g. /data/weather
-  10/ Get some data from the weather station:
-      "python pywws/LogData.py /data/weather"
-      This will take a while the first time you run it, as it fetches
-      all the data stored in the weather station.
-  11/ If you have an EasyWeather.dat file, now is the time to convert it:
+  8/ Choose somewhere to store readings, e.g. /data/weather
+  9/ Get some data from the weather station:
+     "python pywws/LogData.py /data/weather"
+     This will take a while the first time you run it, as it fetches
+     all the data stored in the weather station.
+  10/ If you have an EasyWeather.dat file, now is the time to convert it:
       "python EWtoPy.py EasyWeather.dat /data/weather"
-  12/ Process the raw data to make hourly and daily summaries:
+  11/ Process the raw data to make hourly and daily summaries:
       "python pywws/Process.py /data/weather"
-  13/ Generate some tables:
+  12/ Generate some tables:
       "python pywws/Template.py /data/weather example_templates/24hrs.txt 24hrs.txt"
       "python pywws/Template.py /data/weather example_templates/6hrs.txt 6hrs.txt"
-  14/ If you want to create graphs, install gnuplot, then:
+  13/ If you want to create graphs, install gnuplot, then:
       "python pywws/Plot.py /data/weather /tmp \
 		example_graph_templates/24hrs.png.xml 24hrs.png"
       "python pywws/Plot.py /data/weather /tmp \
 		example_graph_templates/7days.png.xml 7days.png"
-  15/ Have a look at the files you've just made, then write a web page
+  14/ Have a look at the files you've just made, then write a web page
       that incorporates them. (Use server side includes for the .txt
       files).
-  16/ Edit /data/weather/weather.ini and add details of your website
+  15/ Edit /data/weather/weather.ini and add details of your website
       for example:
   	[ftp]
   	secure = False
@@ -131,9 +128,9 @@ Getting started:
   	user = username
   	password = secret
   	directory = public_html/weather/data/
-  17/ Try uploading the files:
+  16/ Try uploading the files:
       "python pywws/Upload.py /data/weather 24hrs.txt 6hrs.txt 24hrs.png 7days.png"
-  18/ If you want to upload to Twitter, install tweepy and simplejson
+  17/ If you want to upload to Twitter, install tweepy and simplejson
       then:
       "python TwitterAuth.py /data/weather"
       This will open a web browser (or give you a URL) where you log in
@@ -141,22 +138,22 @@ Getting started:
       Then:
       "python pywws/Template.py /data/weather example_templates/tweet.txt tweet.txt"
       "python pywws/ToTwitter.py /data/weather tweet.txt"
-  19/ If you want to upload to Weather Underground, try:
+  18/ If you want to upload to Weather Underground, try:
       "python pywws/ToUnderground.py -vvv /data/weather"
       You'll need to edit /data/weather/weather.ini with your Wunderground
       details, for example:
         [underground]
         password = undergroudpassword
         station = undergroundstation
-  20/ Create directories for your graph templates and text templates, e.g.
+  19/ Create directories for your graph templates and text templates, e.g.
       '~/weather/graph_templates/' and '~/weather/templates/', copy the
       templates you like to them, and run Hourly.py manually:
       "python Hourly.py /data/weather"
       You can now edit /data/weather/weather.ini to point to your template
       directories if Hourly.py didn't find them.
-  21/ Set up a cron job to run Hourly.py every hour or every few hours or
+  20/ Set up a cron job to run Hourly.py every hour or every few hours or
       every day, according to your needs, at a minute or two past the hour.
-  22/ Edit templates, weather.ini and other files to adjust everything to your
+  21/ Edit templates, weather.ini and other files to adjust everything to your
       taste.
 
 Comments or questions? Please subscribe to the pywws mailing list

@@ -195,14 +195,11 @@ python SetWeatherStation.py -r 5
       The doc directory in your pywws source directory contains HTML and plain text versions of the documentation. The HTML files can be read with any web browser. Start with <a href="index.html">index.html</a> and follow links from there.
     </p>
     <p>
-      More detailed HTML documentation of each Python module can be created from the source files by running the AutoDoc.py program:
+      More detailed HTML documentation of each Python module can be extracted from the source files by epydoc. This is conveniently done with <code>make</code>:
     </p>
 <pre>
-python ./AutoDoc.py
+make doc
 </pre>
-    <p>
-      (Note that there is currently a bug in AutoDoc.py that means you have to prefix its name with ./ when running it.)
-    </p>
     <p>
       Alternatively, you can read the documentation directly with pydoc. For example:
     </p>

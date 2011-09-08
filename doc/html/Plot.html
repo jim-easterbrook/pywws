@@ -10,7 +10,7 @@
       <a href="index.html">Python software for USB Wireless WeatherStations</a>
     </h1>
     <h2>
-      <a href="auto/pywws.Plot.html">Plot.py</a> -- plots graph using an XML template
+      <a href="auto/pywws.Plot-module.html">Plot.py</a> -- plots graph using an XML template
     </h2>
     <p>
       Like <a href="Template.html">Template.py</a> this is one of the more difficult to use modules in the weather station software collection. It plots a graph (or set of graphs) of weather data. Almost everything about the graph is controlled by an XML file. I refer to these files as templates, but they aren't templates in the same sense as Template.py uses to create text files.
@@ -170,19 +170,19 @@
       <a href="#list" name="start">start</a>
     </h3>
     <p>
-	This element sets the date &amp; time of the start of the X axis. It is used in the constructor of a Python <a href="auto/datetime.html#datetime">datetime</a> object. For example, to start the graph at noon (local time) on Christmas day: <code>&lt;start&gt;year=2008, month=12, day=25, hour=12&lt;/start&gt;</code>. The default value is <code>(stop - duration)</code>.
+	This element sets the date &amp; time of the start of the X axis. It is used in the constructor of a Python datetime object. For example, to start the graph at noon (local time) on Christmas day: <code>&lt;start&gt;year=2008, month=12, day=25, hour=12&lt;/start&gt;</code>. The default value is <code>(stop - duration)</code>.
     </p>
     <h3>
       <a href="#list" name="stop">stop</a>
     </h3>
     <p>
-	This element sets the date &amp; time of the end of the X axis. It is used in the constructor of a Python <a href="auto/datetime.html#datetime">datetime</a> object. For example, to end the graph at 10 am (local time) on new year's day: <code>&lt;stop&gt;year=2009, month=1, day=1, hour=10&lt;/stop&gt;</code>. The default value is <code>(start + duration)</code>, unless <code>start</code> is not defined in which case the timestamp of the latest weather station hourly reading is used.
+	This element sets the date &amp; time of the end of the X axis. It is used in the constructor of a Python datetime object. For example, to end the graph at 10 am (local time) on new year's day: <code>&lt;stop&gt;year=2009, month=1, day=1, hour=10&lt;/stop&gt;</code>. The default value is <code>(start + duration)</code>, unless <code>start</code> is not defined in which case the timestamp of the latest weather station hourly reading is used.
     </p>
     <h3>
       <a href="#list" name="duration">duration</a>
     </h3>
     <p>
-	This element sets the extent of the X axis of the graph, unless both <code>start</code> and <code>stop</code> are defined. It is used in the constructor of a Python <a href="auto/datetime.html#timedelta">timedelta</a> object. For example, to plot one week: <code>&lt;duration&gt;weeks=1&lt;/duration&gt;</code>. The default value is <code>hours=24</code>.
+	This element sets the extent of the X axis of the graph, unless both <code>start</code> and <code>stop</code> are defined. It is used in the constructor of a Python timedelta object. For example, to plot one week: <code>&lt;duration&gt;weeks=1&lt;/duration&gt;</code>. The default value is <code>hours=24</code>.
     </p>
     <h3>
       <a href="#list" name="layout">layout</a>
@@ -230,7 +230,7 @@
       <a href="#list" name="xlabel">xlabel</a>
     </h3>
     <p>
-	Sets the X axis label. The value is a <code>strftime</code> style format string. Default depends on the graph <code>duration</code>: 24 hours or less is <code>"Time (%Z)"</code>, 24 hours to 7 days is <code>"Day"</code> and 7 days or more is <code>"Date"</code>. The <a href="auto/datetime.html#datetime">datetime</a> used to compute this is <code>start</code>, which may produce unexpected results when a graph spans DST start or end.
+	Sets the X axis label. The value is a <code>strftime</code> style format string. Default depends on the graph <code>duration</code>: 24 hours or less is <code>"Time (%Z)"</code>, 24 hours to 7 days is <code>"Day"</code> and 7 days or more is <code>"Date"</code>. The datetime used to compute this is <code>start</code>, which may produce unexpected results when a graph spans DST start or end.
     </p>
     <h3>
       <a href="#list" name="dateformat">dateformat</a>
