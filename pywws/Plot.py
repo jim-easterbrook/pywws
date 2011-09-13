@@ -268,9 +268,12 @@ set timefmt "%Y-%m-%dT%H:%M:%S"
         elif source == self.hourly_data:
             boxwidth = 2800
             start = source.before(start)
+            interval = timedelta(minutes=61)
         elif source == self.monthly_data:
             boxwidth = 2800 * 24 * 30
+            interval = timedelta(days=32)
         else:
+            interval = timedelta(hours=25)
             boxwidth = 2800 * 24
         boxwidth = eval(self.GetValue(plot, 'boxwidth', str(boxwidth)))
         result += 'set boxwidth %d\n' % boxwidth
@@ -296,17 +299,24 @@ set timefmt "%Y-%m-%dT%H:%M:%S"
                 subplot.xcalc = compile(subplot.xcalc, '<string>', 'eval')
             subplot.ycalc = compile(subplot.ycalc, '<string>', 'eval')
             subplot.last_ycalcs = 0.0
-            subplot.no_data = True
+            subplot.last_idx = None
             subplots.append(subplot)
         for data in source[start:stop]:
             for subplot in subplots:
                 if subplot.xcalc:
                     idx = eval(subplot.xcalc)
-                    if idx == None:
+                    if idx is None:
                         continue
                 else:
                     idx = data['idx']
                 idx += self.utcoffset
+                if not subplot.cummulative and subplot.last_idx:
+                    if source == self.raw_data:
+                        interval = timedelta(minutes=1+data['delay'])
+                    if idx - subplot.last_idx > interval:
+                        # missing data
+                        subplot.dat.write('%s ?\n' % (idx.isoformat()))
+                    subplot.last_idx = idx
                 try:
                     if subplot.cummulative and data['idx'] <= cumu_start:
                         value = 0.0
@@ -315,13 +325,14 @@ set timefmt "%Y-%m-%dT%H:%M:%S"
                         value = eval(subplot.ycalc)
                     subplot.dat.write('%s %g\n' % (idx.isoformat(), value))
                     subplot.last_ycalcs = value
-                    subplot.no_data = False
                 except TypeError:
-                    pass
+                    if not subplot.cummulative:
+                        subplot.dat.write('%s ?\n' % (idx.isoformat()))
+                    subplot.last_ycalcs = 0.0
         for subplot in subplots:
-            if subplot.no_data:
-                idx = self.x_hi + self.duration
-                subplot.dat.write('%s %g\n' % (idx.isoformat(), 0.0))
+            # ensure the data file isn't empty
+            idx = self.x_hi + self.duration
+            subplot.dat.write('%s ?\n' % (idx.isoformat()))
             subplot.dat.close()
         # plot data
         result += 'plot '
@@ -346,7 +357,7 @@ set timefmt "%Y-%m-%dT%H:%M:%S"
                 style = 'smooth unique lc %d lw %d' % (colour, width)
             axes = self.GetValue(subplot.subplot, 'axes', 'x1y1')
             title = self.GetValue(subplot.subplot, 'title', '')
-            result += ' "%s" using 1:2 axes %s title "%s" %s' % (
+            result += ' "%s" using 1:($2) axes %s title "%s" %s' % (
                 subplot.dat_file, axes, title, style)
             if subplot_no != subplot_count - 1:
                 result += ', \\'
