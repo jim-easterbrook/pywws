@@ -316,7 +316,7 @@ set timefmt "%Y-%m-%dT%H:%M:%S"
                     if idx - subplot.last_idx > interval:
                         # missing data
                         subplot.dat.write('%s ?\n' % (idx.isoformat()))
-                    subplot.last_idx = idx
+                subplot.last_idx = idx
                 try:
                     if subplot.cummulative and data['idx'] <= cumu_start:
                         value = 0.0
