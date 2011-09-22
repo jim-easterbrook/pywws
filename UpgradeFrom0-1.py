@@ -52,9 +52,12 @@ def Upgrade(data_dir):
     print 'Generating hourly and daily summaries'
     params = DataStore.params(data_dir)
     raw_data = DataStore.data_store(data_dir)
+    calib_data = DataStore.calib_store(data_dir)
     hourly_data = DataStore.hourly_store(data_dir)
     daily_data = DataStore.daily_store(data_dir)
-    Process.Process(params, raw_data, hourly_data, daily_data)
+    monthly_data = DataStore.monthly_store(data_dir)
+    Process.Process(
+        params, raw_data, calib_data, hourly_data, daily_data, monthly_data)
     return 0
 def usage():
     print >>sys.stderr, 'usage: %s [options] data_directory' % sys.argv[0]

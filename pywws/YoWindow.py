@@ -25,10 +25,9 @@ class YoWindow(object):
     Class to write YoWindow XML file.
     For file spec see http://yowindow.com/doc/yowindow_pws_format.xml
     """
-    def __init__(self, params, raw_data):
+    def __init__(self, calib_data):
         self.logger = logging.getLogger('pywws.YoWindow')
-        self.data = raw_data
-        self.pressure_offset = eval(params.get('fixed', 'pressure offset'))
+        self.data = calib_data
         # compute local midnight
         self.midnight = datetime.utcnow().replace(tzinfo=utc).astimezone(
             Local).replace(hour=0, minute=0, second=0).astimezone(
@@ -59,8 +58,8 @@ class YoWindow(object):
         if data['hum_out'] != None:
             of.write('    <humidity value="%d"/>\n' % (data['hum_out']))
         of.write('    <pressure value="%.1f" trend="%.1f" unit="hPa"/>\n' % (
-            data['abs_pressure'] + self.pressure_offset,
-            data['abs_pressure'] - data_hour['abs_pressure']))
+            data['rel_pressure'],
+            data['rel_pressure'] - data_hour['rel_pressure']))
         if data['wind_ave'] != None:
             of.write('    <wind>\n')
             of.write('      <speed value="%.1f" unit="m/s"/>\n' % (
@@ -116,7 +115,6 @@ def main(argv=None):
         print >>sys.stderr, __doc__.strip()
         return 2
     logger = ApplicationLogger(verbose)
-    return YoWindow(
-        DataStore.params(args[0]), DataStore.data_store(args[0])).write_file(args[1])
+    return YoWindow(DataStore.calib_store(args[0])).write_file(args[1])
 if __name__ == "__main__":
     sys.exit(main())

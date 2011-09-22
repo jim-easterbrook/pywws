@@ -65,6 +65,7 @@ def LiveLog(data_dir):
         return 3
     # open data file stores
     raw_data = DataStore.data_store(data_dir)
+    calib_data = DataStore.calib_store(data_dir)
     hourly_data = DataStore.hourly_store(data_dir)
     daily_data = DataStore.daily_store(data_dir)
     monthly_data = DataStore.monthly_store(data_dir)
@@ -72,7 +73,7 @@ def LiveLog(data_dir):
     translation = Localisation.GetTranslation(params)
     # create a RegularTasks object
     tasks = Tasks.RegularTasks(
-        params, raw_data, hourly_data, daily_data, monthly_data, translation)
+        params, calib_data, hourly_data, daily_data, monthly_data, translation)
     # get time of last logged data
     two_minutes = timedelta(minutes=2)
     last_stored = raw_data.before(datetime.max)
@@ -109,8 +110,8 @@ def LiveLog(data_dir):
                 logger.info("%d records written", count)
             # process new data
             raw_data.flush()
-            Process.Process(
-                params, raw_data, hourly_data, daily_data, monthly_data)
+            Process.Process(params, raw_data, calib_data,
+                            hourly_data, daily_data, monthly_data)
             # do tasks
             tasks.do_tasks()
             if now >= next_hour:

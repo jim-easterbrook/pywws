@@ -26,10 +26,10 @@ from TimeZone import Local, utc
 import WeatherStation
 
 class Template(object):
-    def __init__(self, params, raw_data, hourly_data, daily_data, monthly_data):
+    def __init__(self, params, calib_data, hourly_data, daily_data, monthly_data):
         self.logger = logging.getLogger('pywws.Template')
         self.params = params
-        self.raw_data = raw_data
+        self.calib_data = calib_data
         self.hourly_data = hourly_data
         self.daily_data = daily_data
         self.monthly_data = monthly_data
@@ -52,7 +52,7 @@ class Template(object):
             return idx, count == 0
         params = self.params
         if not live_data:
-            live_data = self.raw_data[self.raw_data.before(datetime.max)]
+            live_data = self.calib_data[self.calib_data.before(datetime.max)]
         pressure_trend_text = WeatherStation.pressure_trend_text
         wind_dir_text = WeatherStation.get_wind_dir_text()
         dew_point = WeatherStation.dew_point
@@ -134,11 +134,11 @@ class Template(object):
                     idx, valid_data = jump(datetime.max, -1)
                     data = data_set[idx]
                 elif command[0] == 'raw':
-                    data_set = self.raw_data
+                    data_set = self.calib_data
                     idx, valid_data = jump(datetime.max, -1)
                     data = data_set[idx]
                 elif command[0] == 'live':
-                    data_set = self.raw_data
+                    data_set = self.calib_data
                     idx = datetime.max
                     valid_data = True
                     data = live_data
@@ -213,9 +213,9 @@ def main(argv=None):
             return 0
     logger = ApplicationLogger(1)
     return Template(
-        DataStore.params(args[0]), DataStore.data_store(args[0]),
-        DataStore.hourly_store(args[0]), DataStore.daily_store(args[0]),
-        DataStore.monthly_store(args[0])
+        DataStore.params(args[0]),
+        DataStore.calib_store(args[0]), DataStore.hourly_store(args[0]),
+        DataStore.daily_store(args[0]), DataStore.monthly_store(args[0])
         ).make_file(args[1], args[2])
 if __name__ == "__main__":
     sys.exit(main())

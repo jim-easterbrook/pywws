@@ -29,6 +29,7 @@ def Hourly(data_dir):
     params = DataStore.params(data_dir)
     # open data file stores
     raw_data = DataStore.data_store(data_dir)
+    calib_data = DataStore.calib_store(data_dir)
     hourly_data = DataStore.hourly_store(data_dir)
     daily_data = DataStore.daily_store(data_dir)
     monthly_data = DataStore.monthly_store(data_dir)
@@ -37,10 +38,11 @@ def Hourly(data_dir):
     # get weather station data
     LogData.LogData(params, raw_data)
     # do the processing
-    Process.Process(params, raw_data, hourly_data, daily_data, monthly_data)
+    Process.Process(
+        params, raw_data, calib_data, hourly_data, daily_data, monthly_data)
     # do tasks
     if not Tasks.RegularTasks(
-        params, raw_data, hourly_data, daily_data, monthly_data, translation
+        params, calib_data, hourly_data, daily_data, monthly_data, translation
         ).do_tasks():
         return 1
     return 0

@@ -16,17 +16,33 @@ import math
 import os
 import sys
 
+from calib import Calib
 import DataStore
 from Logger import ApplicationLogger
 from TimeZone import Local, utc
 import WeatherStation
+
+def calibrate_data(logger, params, raw_data, calib_data):
+    start = calib_data.before(datetime.max)
+    if start is None:
+        start = raw_data.after(datetime.min)
+    else:
+        start += timedelta(seconds=1)
+    calibrator = Calib(params)
+    day = None
+    for raw in raw_data[start:]:
+        idx = raw['idx']
+        if idx.day != day:
+            logger.info("calib: %s", idx.isoformat(' '))
+            day = idx.day
+        calib_data[idx] = calibrator.calib(raw)
 
 class Average(object):
     def __init__(self):
         self.acc = 0.0
         self.count = 0
     def add(self, value):
-        if value == None:
+        if value is None:
             return
         self.acc += value
         self.count += 1
@@ -58,11 +74,10 @@ class Maximum(object):
         if self.time:
             return self.value, self.time
         return None, None
-sin_LUT = []
-cos_LUT = []
-for i in range(16):
-    sin_LUT.append(math.sin(math.radians(float(i) * 360.0 / 16.0)))
-    cos_LUT.append(math.cos(math.radians(float(i) * 360.0 / 16.0)))
+sin_LUT = map(
+    lambda x: math.sin(math.radians(float(x * 360) / 16.0)), range(16))
+cos_LUT = map(
+    lambda x: math.cos(math.radians(float(x * 360) / 16.0)), range(16))
 class Acc(object):
     """'Accumulate' raw weather data to produce summaries.
 
@@ -96,19 +111,18 @@ class Acc(object):
         """Add a raw data reading."""
         idx = raw['idx']
         wind_ave = raw['wind_ave']
-        if wind_ave != None:
+        if wind_ave is not None:
             wind_dir = raw['wind_dir']
-            if wind_dir != None and wind_dir < 16:
+            if wind_dir is not None and wind_dir < 16:
                 self.h_wind_dir[wind_dir] += wind_ave
             self.h_wind_acc += wind_ave
             self.h_wind_count += 1
         wind_gust = raw['wind_gust']
-        if wind_gust != None and \
-           wind_gust > self.h_wind_gust[0]:
+        if wind_gust is not None and wind_gust > self.h_wind_gust[0]:
             self.h_wind_gust = (wind_gust, idx)
         rain = raw['rain']
-        if rain != None:
-            if self.last_rain != None:
+        if rain is not None:
+            if self.last_rain is not None:
                 diff = rain - self.last_rain
                 if diff < -0.001:
                     self.logger.warning(
@@ -122,7 +136,7 @@ class Acc(object):
             self.last_rain = rain
         for i in ('temp_in', 'temp_out'):
             temp = raw[i]
-            if temp != None:
+            if temp is not None:
                 self.d_ave[i].add(temp)
                 if self._daytime[idx.hour]:
                     # daytime max temperature
@@ -134,7 +148,7 @@ class Acc(object):
             self.has_illuminance = True
             for i in ('illuminance', 'uv'):
                 value = raw[i]
-                if value != None:
+                if value is not None:
                     self.d_ave[i].add(value)
                     self.d_max[i].add(value, idx)
         self.h_valid = True
@@ -276,15 +290,15 @@ class MonthAcc(object):
         self.m_idx = daily['idx']
         for i in ('temp_in', 'temp_out'):
             temp = daily['%s_ave' % i]
-            if temp != None:
+            if temp is not None:
                 self.m_ave[i].add(temp)
             temp = daily['%s_min' % i]
-            if temp != None:
+            if temp is not None:
                 self.m_min_lo[i].add(temp, daily['%s_min_t' % i])
                 self.m_min_hi[i].add(temp, daily['%s_min_t' % i])
                 self.m_min_ave[i].add(temp)
             temp = daily['%s_max' % i]
-            if temp != None:
+            if temp is not None:
                 self.m_max_lo[i].add(temp, daily['%s_max_t' % i])
                 self.m_max_hi[i].add(temp, daily['%s_max_t' % i])
                 self.m_max_ave[i].add(temp)
@@ -292,10 +306,10 @@ class MonthAcc(object):
             self.has_illuminance = True
             for i in ('illuminance', 'uv'):
                 value = daily['%s_ave' % i]
-                if value != None:
+                if value is not None:
                     self.m_ave[i].add(value)
                 value = daily['%s_max' % i]
-                if value != None:
+                if value is not None:
                     self.m_max_lo[i].add(value, daily['%s_max_t' % i])
                     self.m_max_hi[i].add(value, daily['%s_max_t' % i])
                     self.m_max_ave[i].add(value)
@@ -329,7 +343,7 @@ class MonthAcc(object):
                 (result['%s_max_hi' % i],
                  result['%s_max_hi_t' % i]) = self.m_max_hi[i].result()
         return result
-def Process(params, raw_data, hourly_data, daily_data, monthly_data):
+def Process(params, raw_data, calib_data, hourly_data, daily_data, monthly_data):
     """Generate summaries from raw weather station data.
 
     Starts from the last hourly or daily summary (whichever is
@@ -352,13 +366,15 @@ def Process(params, raw_data, hourly_data, daily_data, monthly_data):
     DAY = timedelta(hours=24)
     # get time of last record
     last_raw = raw_data.before(datetime.max)
-    if last_raw == None:
+    if last_raw is None:
         raise IOError('No data found. Check data directory parameter.')
+    # calibrate raw data
+    calibrate_data(logger, params, raw_data, calib_data)
     # get earlier of last daily or hourly, and start from there
     start = hourly_data.before(datetime.max)
-    if start != None:
+    if start is not None:
         start = daily_data.before(start + SECOND)
-    if start == None:
+    if start is None:
         start = raw_data.after(datetime.min)
     # get local time's offset from UTC, without DST
     time_offset = Local.utcoffset(last_raw) - Local.dst(last_raw)
@@ -376,20 +392,20 @@ def Process(params, raw_data, hourly_data, daily_data, monthly_data):
     start = start.replace(hour=day_end_hour, minute=0, second=0)
     # get start of monthly data to be updated
     month_start = monthly_data.before(datetime.max)
-    if month_start != None:
+    if month_start is not None:
         month_start = min(month_start, start)
     # delete any existing records after start, as they may be incomplete
     del hourly_data[start + SECOND:]
     del daily_data[start + SECOND:]
     # preload pressure history, and find last valid rain
     prev = None
-    pressure_offset = eval(params.get('fixed', 'pressure offset'))
     pressure_history = deque()
     last_rain = None
     proc_start = start - timedelta(seconds=30)
-    for raw in raw_data[proc_start - HOURx3:proc_start]:
-        pressure_history.append((raw['idx'], raw['abs_pressure']))
-        if raw['rain'] != None:
+    for raw in calib_data[proc_start - HOURx3:proc_start]:
+        if raw['rel_pressure']:
+            pressure_history.append((raw['idx'], raw['rel_pressure']))
+        if raw['rain'] is not None:
             last_rain = raw['rain']
         prev = raw
     acc = Acc(time_offset, last_rain)
@@ -403,8 +419,9 @@ def Process(params, raw_data, hourly_data, daily_data, monthly_data):
                 break
             # process each data item in the hour
             stop = proc_start + HOUR
-            for raw in raw_data[proc_start:stop]:
-                pressure_history.append((raw['idx'], raw['abs_pressure']))
+            for raw in calib_data[proc_start:stop]:
+                if raw['rel_pressure']:
+                    pressure_history.append((raw['idx'], raw['rel_pressure']))
                 if prev:
                     err = raw['idx'] - prev['idx']
                     if abs(err - timedelta(minutes=raw['delay'])) > timedelta(seconds=45):
@@ -419,25 +436,22 @@ def Process(params, raw_data, hourly_data, daily_data, monthly_data):
                 # store summary of hour
                 # copy some current readings
                 for key in ('idx', 'hum_in', 'temp_in', 'hum_out', 'temp_out',
-                            'abs_pressure'):
+                            'abs_pressure', 'rel_pressure'):
                     new_data[key] = prev[key]
                 if 'illuminance' in prev:
                     for key in ('illuminance', 'uv'):
                         new_data[key] = prev[key]
-                # convert pressure from absolute to relative
-                new_data['rel_pressure'] = \
-                    new_data['abs_pressure'] + pressure_offset
                 # compute pressure trend
                 target = new_data['idx'] - HOURx3
-                while len(pressure_history) >= 2 and \
-                      abs(pressure_history[0][0] - target) > \
-                      abs(pressure_history[1][0] - target):
+                while (len(pressure_history) >= 2 and
+                       abs(pressure_history[0][0] - target) >
+                       abs(pressure_history[1][0] - target)):
                     pressure_history.popleft()
-                if len(pressure_history) >= 1 and \
-                   abs(pressure_history[0][0] - target) < \
-                   timedelta(minutes=prev['delay']):
-                    new_data['pressure_trend'] = new_data['abs_pressure'] - \
-                                                 pressure_history[0][1]
+                if (len(pressure_history) >= 1 and
+                        abs(pressure_history[0][0] - target) <
+                        timedelta(minutes=prev['delay'])):
+                    new_data['pressure_trend'] = (
+                        new_data['rel_pressure'] - pressure_history[0][1])
                 else:
                     new_data['pressure_trend'] = None
                 # store new hourly data
@@ -454,7 +468,7 @@ def Process(params, raw_data, hourly_data, daily_data, monthly_data):
     daily_data.flush()
     # compute monthly data from daily data
     start = month_start
-    if start == None:
+    if start is None:
         start = daily_data.after(datetime.min)
     # set start to end of first day of month
     if start.hour < day_end_hour:
@@ -517,6 +531,7 @@ def main(argv=None):
     data_dir = args[0]
     return Process(DataStore.params(data_dir),
                    DataStore.data_store(data_dir),
+                   DataStore.calib_store(data_dir),
                    DataStore.hourly_store(data_dir),
                    DataStore.daily_store(data_dir),
                    DataStore.monthly_store(data_dir))

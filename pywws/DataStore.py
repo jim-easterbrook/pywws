@@ -175,8 +175,8 @@ class core_store(object):
         if not isinstance(i, datetime):
             raise TypeError("list indices must be %s" % (datetime))
         self._set_cache_ptr(i)
-        if self._cache_ptr >= len(self._cache) or \
-           self._cache[self._cache_ptr]['idx'] != i:
+        if (self._cache_ptr >= len(self._cache) or
+            self._cache[self._cache_ptr]['idx'] != i):
             raise KeyError(i)
         return self._cache[self._cache_ptr]
     def __setitem__(self, i, x):
@@ -192,8 +192,8 @@ class core_store(object):
         if len(self._cache) == 0:
             self._fst_day = min(self._fst_day, self._cache_lo)
             self._lst_day = max(self._lst_day, self._cache_hi)
-        if self._cache_ptr < len(self._cache) and \
-           self._cache[self._cache_ptr]['idx'] == i:
+        if (self._cache_ptr < len(self._cache) and
+            self._cache[self._cache_ptr]['idx'] == i):
             self._cache[self._cache_ptr] = x
         else:
             self._cache.insert(self._cache_ptr, x)
@@ -209,8 +209,8 @@ class core_store(object):
             self._load(date.fromordinal(self._cache_hi))
             self._cache_ptr = 0
         # delete part of cache
-        while self._cache_ptr < len(self._cache) and \
-              self._cache[self._cache_ptr]['idx'] < b:
+        while (self._cache_ptr < len(self._cache) and
+               self._cache[self._cache_ptr]['idx'] < b):
             del self._cache[self._cache_ptr]
             self._cache_dirty = True
         return
@@ -224,8 +224,8 @@ class core_store(object):
         if not isinstance(i, datetime):
             raise TypeError("list indices must be %s" % (datetime))
         self._set_cache_ptr(i)
-        if self._cache_ptr >= len(self._cache) or \
-           self._cache[self._cache_ptr]['idx'] != i:
+        if (self._cache_ptr >= len(self._cache) or
+            self._cache[self._cache_ptr]['idx'] != i):
             raise KeyError(i)
         del self._cache[self._cache_ptr]
         self._cache_dirty = True
@@ -284,11 +284,11 @@ class core_store(object):
         day = i.toordinal()
         if day < self._cache_lo or day >= self._cache_hi:
             self._load(i)
-        if self._cache_ptr < len(self._cache) and \
-              self._cache[self._cache_ptr]['idx'] < i:
+        if (self._cache_ptr < len(self._cache) and
+            self._cache[self._cache_ptr]['idx'] < i):
             self._cache_ptr += 1
-            while self._cache_ptr < len(self._cache) and \
-                  self._cache[self._cache_ptr]['idx'] < i:
+            while (self._cache_ptr < len(self._cache) and
+                   self._cache[self._cache_ptr]['idx'] < i):
                 self._cache_ptr += 1
             return
         while self._cache_ptr > 0 and self._cache[self._cache_ptr-1]['idx'] >= i:
@@ -354,6 +354,32 @@ class data_store(core_store):
         'hum_out'      : int,
         'temp_out'     : float,
         'abs_pressure' : float,
+        'wind_ave'     : float,
+        'wind_gust'    : float,
+        'wind_dir'     : int,
+        'rain'         : float,
+        'status'       : int,
+        'illuminance'  : float,
+        'uv'           : int,
+        }
+class calib_store(core_store):
+    """Stores 'calibrated' weather station data."""
+    def __init__(self, root_dir):
+        core_store.__init__(self, os.path.join(root_dir, 'calib'))
+    key_list = [
+        'idx', 'delay', 'hum_in', 'temp_in', 'hum_out', 'temp_out',
+        'abs_pressure', 'rel_pressure', 'wind_ave', 'wind_gust', 'wind_dir',
+        'rain', 'status', 'illuminance', 'uv',
+        ]
+    conv = {
+        'idx'          : safestrptime,
+        'delay'        : int,
+        'hum_in'       : int,
+        'temp_in'      : float,
+        'hum_out'      : int,
+        'temp_out'     : float,
+        'abs_pressure' : float,
+        'rel_pressure' : float,
         'wind_ave'     : float,
         'wind_gust'    : float,
         'wind_dir'     : int,

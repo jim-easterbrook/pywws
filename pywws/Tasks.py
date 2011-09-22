@@ -6,6 +6,7 @@ from datetime import datetime, timedelta
 import logging
 import os
 
+from calib import Calib
 import Plot
 import Template
 from TimeZone import Local
@@ -15,11 +16,11 @@ import WindRose
 import YoWindow
 
 class RegularTasks(object):
-    def __init__(self, params, raw_data, hourly_data, daily_data, monthly_data,
+    def __init__(self, params, calib_data, hourly_data, daily_data, monthly_data,
                  translation):
         self.logger = logging.getLogger('pywws.Tasks.RegularTasks')
         self.params = params
-        self.raw_data = raw_data
+        self.calib_data = calib_data
         self.hourly_data = hourly_data
         self.daily_data = daily_data
         self.monthly_data = monthly_data
@@ -30,23 +31,25 @@ class RegularTasks(object):
             'paths', 'templates', os.path.expanduser('~/weather/templates/'))
         self.graph_template_dir = self.params.get(
             'paths', 'graph_templates', os.path.expanduser('~/weather/graph_templates/'))
+        # create calibration object
+        self.calibrator = Calib(self.params)
         # create templater object
         self.templater = Template.Template(
-            self.params, self.raw_data, self.hourly_data, self.daily_data,
+            self.params, self.calib_data, self.hourly_data, self.daily_data,
             self.monthly_data)
         # create plotter objects
         self.plotter = Plot.GraphPlotter(
-            self.params, self.raw_data, self.hourly_data, self.daily_data,
+            self.params, self.calib_data, self.hourly_data, self.daily_data,
             self.monthly_data, self.work_dir, translation=self.translation)
         self.roseplotter = WindRose.RosePlotter(
-            self.params, self.raw_data, self.hourly_data, self.daily_data,
+            self.params, self.calib_data, self.hourly_data, self.daily_data,
             self.monthly_data, self.work_dir, translation=self.translation)
         # create a ToUnderground object
-        self.underground = ToUnderground.ToUnderground(self.params, self.raw_data)
+        self.underground = ToUnderground.ToUnderground(self.params, self.calib_data)
         # create a YoWindow object
-        self.yowindow = YoWindow.YoWindow(self.params, self.raw_data)
+        self.yowindow = YoWindow.YoWindow(self.calib_data)
         # get local time's offset from UTC, without DST
-        now = self.raw_data.before(datetime.max)
+        now = self.calib_data.before(datetime.max)
         if not now:
             now = datetime.utcnow()
         time_offset = Local.utcoffset(now) - Local.dst(now)
@@ -54,6 +57,7 @@ class RegularTasks(object):
         self.day_end_hour = eval(params.get('config', 'day end hour', '21'))
         self.day_end_hour = (self.day_end_hour - (time_offset.seconds / 3600)) % 24
     def do_live(self, data):
+        data = self.calibrator.calib(data)
         OK = True
         yowindow_file = self.params.get('live', 'yowindow', '')
         if yowindow_file:
@@ -81,7 +85,7 @@ class RegularTasks(object):
         return OK
     def do_tasks(self):
         sections = ['logged']
-        now = self.raw_data.before(datetime.max)
+        now = self.calib_data.before(datetime.max)
         if not now:
             now = datetime.utcnow()
         threshold = now.replace(minute=0, second=0, microsecond=0)

@@ -27,13 +27,12 @@ from TimeZone import Local, utc
 from WeatherStation import dew_point
 
 class ToUnderground(object):
-    def __init__(self, params, raw_data):
+    def __init__(self, params, calib_data):
         self.logger = logging.getLogger('pywws.ToUnderground')
         self.params = params
-        self.data = raw_data
+        self.data = calib_data
         self.old_result = None
         self.old_ex = None
-        self.pressure_offset = eval(params.get('fixed', 'pressure offset'))
         # set default socket timeout, so urlopen calls don't hang forever
         socket.setdefaulttimeout(10)
         # Weather Underground server, normal and rapid fire
@@ -93,8 +92,9 @@ class ToUnderground(object):
             conversions.rain_inch(max(current['rain'] - rain_hour, 0.0)))
         result['dailyrainin'] = '%g' % (
             conversions.rain_inch(max(current['rain'] - self.rain_midnight, 0.0)))
-        result['baromin'] = '%.4f' % (
-            conversions.pressure_inhg(current['abs_pressure'] + self.pressure_offset))
+        if current['rel_pressure']:
+            result['baromin'] = '%.4f' % (
+                conversions.pressure_inhg(current['rel_pressure']))
         return result
     def SendData(self, data, rapid_fire):
         # create weather underground command
@@ -193,6 +193,7 @@ def main(argv=None):
         return 2
     logger = ApplicationLogger(verbose)
     return ToUnderground(
-        DataStore.params(args[0]), DataStore.data_store(args[0])).Upload(catchup)
+        DataStore.params(args[0]), DataStore.calib_store(args[0])
+        ).Upload(catchup)
 if __name__ == "__main__":
     sys.exit(main())

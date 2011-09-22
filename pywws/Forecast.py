@@ -21,6 +21,8 @@ def Zambretti(params, hourly_data):
     north = eval(params.get('Zambretti', 'north', 'True'))
     baro_upper = eval(params.get('Zambretti', 'baro upper', '1050.0'))
     baro_lower = eval(params.get('Zambretti', 'baro lower', '950.0'))
+    if not hourly_data['rel_pressure']:
+        return ''
     if hourly_data['wind_ave'] is None or hourly_data['wind_ave'] < 0.3:
         wind = None
     else:
@@ -32,6 +34,7 @@ def Zambretti(params, hourly_data):
     return params.translation.ugettext(ZambrettiCore.Zambretti(
         hourly_data['rel_pressure'], hourly_data['idx'].month, wind, trend,
         north=north, baro_top=baro_upper, baro_bottom=baro_lower)[0])
+
 def main(argv=None):
     if argv is None:
         argv = sys.argv
