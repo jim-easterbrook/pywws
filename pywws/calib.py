@@ -19,13 +19,13 @@ class Calib(object):
         self.logger = logging.getLogger('pywws.Calib')
         user_module = params.get('paths', 'user_calib', None)
         if user_module:
-            self.logger.warning('Using user calibration')
+            self.logger.info('Using user calibration')
             path, module = os.path.split(user_module)
             sys.path.insert(0, path)
             module = os.path.splitext(module)[0]
             temp = __import__(module, globals(), locals(), ['Calib'], -1)
             self.calibrator = temp.Calib(params)
         else:
-            self.logger.warning('Using default calibration')
+            self.logger.info('Using default calibration')
             self.calibrator = DefaultCalib(params)
         self.calib = self.calibrator.calib
