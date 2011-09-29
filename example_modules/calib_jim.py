@@ -8,6 +8,9 @@ class Calib(object):
 
     def calib(self, raw):
         result = dict(raw)
+        # sanitise data
+        if result['wind_dir'] is not None and result['wind_dir'] >= 16:
+            result['wind_dir'] = None
         # pressure readings are nonsense since sensor failed
         if raw['idx'] < self.pressure_fault:
             result['rel_pressure'] = raw['abs_pressure'] + 7.4

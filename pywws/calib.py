@@ -11,6 +11,10 @@ class DefaultCalib(object):
         self.pressure_offset = eval(params.get('fixed', 'pressure offset'))
     def calib(self, raw):
         result = dict(raw)
+        # sanitise data
+        if result['wind_dir'] is not None and result['wind_dir'] >= 16:
+            result['wind_dir'] = None
+        # calculate relative pressure
         result['rel_pressure'] = raw['abs_pressure'] + self.pressure_offset
         return result
 
