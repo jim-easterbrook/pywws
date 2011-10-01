@@ -1,0 +1,343 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>weather.ini - configuration file format &mdash; pywws v11.10 documentation</title>
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '11.10',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="pywws v11.10 documentation" href="../index.html" />
+    <link rel="up" title="User guides" href="index.html" />
+    <link rel="next" title="Python programs and modules" href="../api/index.html" />
+    <link rel="prev" title="How to make a language file for pywws" href="language.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../api/index.html" title="Python programs and modules"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="language.html" title="How to make a language file for pywws"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">pywws v11.10 documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">User guides</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="weather-ini-configuration-file-format">
+<h1>weather.ini - configuration file format<a class="headerlink" href="#weather-ini-configuration-file-format" title="Permalink to this headline">¶</a></h1>
+<p>Nearly all configuration of pywws is via a single file in the data
+directory: weather.ini. This file has a structure similar to that of
+Microsoft Windows INI files. It is divided into &#8220;sections&#8221;, each of which
+has a number of &#8220;name = value&#8221; entries. The order in which sections appear
+is not important.</p>
+<p>Some entries in the file are set by pywws, while others need to be edited
+by the user. Any plain text editor can be used to do this. (Don&#8217;t try to
+edit the file while any other pywws software is running.) In many cases
+pywws will initialise the entries to sensible values.</p>
+<p>The following sections are currently in use:</p>
+<blockquote>
+<ul class="simple">
+<li>config: miscellaneous system configuration.</li>
+<li>paths: directories in which templates etc. are stored.</li>
+<li>fixed: values copied from the weather station&#8217;s &#8220;fixed block&#8221;.</li>
+<li>live: tasks to be done every 48 seconds.</li>
+<li>logged: tasks to be done every time the station loggs a data record.</li>
+<li>hourly: tasks to be done every hour.</li>
+<li>12 hourly: tasks to be done every 12 hours.</li>
+<li>daily: tasks to be done every day.</li>
+<li>ftp: configuration of uploading to a website.</li>
+<li>twitter: configuration of posting to Twitter.</li>
+<li>underground: configuration of posting to Weather Underground.</li>
+</ul>
+</blockquote>
+<div class="section" id="config-miscellaneous-system-configuration">
+<h2>config: miscellaneous system configuration<a class="headerlink" href="#config-miscellaneous-system-configuration" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python"><pre>[config]
+day end hour = 21
+gnuplot encoding = iso_8859_1
+language = en</pre>
+</div>
+<p>day end hour is the end of the &#8220;<a class="reference external" href="http://en.wikipedia.org/wiki/Meteorological_day">meteorological day</a>&#8220;, in local time without
+daylight savings time. Typical values are 21, 9, or 24.</p>
+<p>gnuplot encoding is the text encoding used when plotting graphs. The
+default value of iso_8859_1 allows the degree symbol, which is useful in a
+weather application! Other values might be needed if your language
+includes accented characters. The possible values depend on your gnuplot
+installation so some experimentation may be needed.</p>
+<p>language is used to localise pywws. It&#8217;s optional, as pywws usually uses
+the computer&#8217;s default language as set by the LANG environment variable.
+The available languages are those in the locale subdirectory of your pywws
+installation. If you set any other language, pywws will fall back to using
+English.</p>
+</div>
+<div class="section" id="paths-directories-in-which-templates-etc-are-stored">
+<h2>paths: directories in which templates etc. are stored<a class="headerlink" href="#paths-directories-in-which-templates-etc-are-stored" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python"><pre>[paths]
+templates = /home/$USER/weather/templates/
+graph_templates = /home/$USER/weather/graph_templates/
+work = /tmp/weather</pre>
+</div>
+<p>These three entries specify where your text templates and graph templates
+are stored, and where temporary files should be created.</p>
+</div>
+<div class="section" id="fixed-values-copied-from-the-weather-station-s-fixed-block">
+<h2>fixed: values copied from the weather station&#8217;s &#8220;fixed block&#8221;<a class="headerlink" href="#fixed-values-copied-from-the-weather-station-s-fixed-block" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python"><pre>[fixed]
+pressure offset = 7.4</pre>
+</div>
+<p>This section is written by the pywws and should not be edited.</p>
+</div>
+<div class="section" id="live-tasks-to-be-done-every-48-seconds">
+<h2>live: tasks to be done every 48 seconds<a class="headerlink" href="#live-tasks-to-be-done-every-48-seconds" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python"><pre>[live]
+underground = True
+twitter = []
+text = []
+plot = []
+yowindow = /home/jim/data/yowindow.xml</pre>
+</div>
+<p>This section specifies tasks that are to be carried out for every data
+sample during &#8216;live logging&#8217;, i.e. every 48 seconds. It is unlikely that
+you&#8217;d want to do anything other than upload to Weather Underground or
+update your YoWindow file this often.</p>
+<p>underground enables &#8216;rapid fire&#8217; updates to Weather Underground. Valid
+values are True and False.</p>
+<p>twitter is a list of text templates to be processed and posted to Twitter.</p>
+<p>text and plot are lists of text and plot templates to be processed and
+uploaded to your website.</p>
+<p>yowindow is the full path of an xml file to be generated for a YoWindow
+weather widget (see <a class="reference external" href="http://yowindow.com/">http://yowindow.com/</a>). If you don&#8217;t use YoWindow,
+leave this entry out.</p>
+</div>
+<div class="section" id="logged-tasks-to-be-done-every-time-the-station-logs-a-data-record">
+<h2>logged: tasks to be done every time the station logs a data record<a class="headerlink" href="#logged-tasks-to-be-done-every-time-the-station-logs-a-data-record" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">[</span><span class="n">logged</span><span class="p">]</span>
+<span class="n">underground</span> <span class="o">=</span> <span class="bp">False</span>
+<span class="n">twitter</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;tweet.txt&#39;</span><span class="p">]</span>
+<span class="n">text</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">plot</span> <span class="o">=</span> <span class="p">[]</span>
+</pre></div>
+</div>
+<p>This section specifies tasks that are to be carried out every time a data
+record is logged when &#8216;live logging&#8217; or every time an hourly cron job is
+run.</p>
+<p>underground enables uploads to Weather Underground. All logged data since
+the last upload is uploaded (up to a maximum of 7 days worth). Valid
+values are True and False.</p>
+<p>twitter is a list of text templates to be processed and posted to Twitter.</p>
+<p>text and plot are lists of text and plot templates to be processed and
+uploaded to your website.</p>
+</div>
+<div class="section" id="hourly-tasks-to-be-done-every-hour">
+<h2>hourly: tasks to be done every hour<a class="headerlink" href="#hourly-tasks-to-be-done-every-hour" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python"><pre>[hourly]
+underground = False
+twitter = ['tweet.txt']
+text = ['24hrs.txt', '6hrs.txt', '7days.txt', 'feed_hourly.xml',</pre>
+</div>
+<dl class="docutils">
+<dt>&#8216;allmonths.txt&#8217;]</dt>
+<dd>plot = [&#8216;7days.png.xml&#8217;, &#8216;24hrs.png.xml&#8217;, &#8216;rose_12hrs.png.xml&#8217;]</dd>
+</dl>
+<p>This section specifies tasks that are to be carried out every hour when
+&#8216;live logging&#8217; or running an hourly cron job.</p>
+<p>underground enables uploads to Weather Underground. All logged data since
+the last upload is uploaded (up to a maximum of 7 days worth). Valid
+values are True and False.</p>
+<p>twitter is a list of text templates to be processed and posted to Twitter.</p>
+<p>text and plot are lists of text and plot templates to be processed and
+uploaded to your website.</p>
+</div>
+<div class="section" id="hourly-tasks-to-be-done-every-12-hours">
+<h2>12 hourly: tasks to be done every 12 hours<a class="headerlink" href="#hourly-tasks-to-be-done-every-12-hours" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python"><pre>[12 hourly]
+underground = False
+twitter = []
+text = []
+plot = []</pre>
+</div>
+<p>This section specifies tasks that are to be carried out every 12 hours
+when &#8216;live logging&#8217; or running an hourly cron job. Use it for things that
+don&#8217;t change very often, such as monthly graphs.</p>
+<p>underground enables uploads to Weather Underground. All logged data since
+the last upload is uploaded (up to a maximum of 7 days worth). Valid
+values are True and False.</p>
+<p>twitter is a list of text templates to be processed and posted to Twitter.</p>
+<p>text and plot are lists of text and plot templates to be processed and
+uploaded to your website.</p>
+</div>
+<div class="section" id="daily-tasks-to-be-done-every-24-hours">
+<h2>daily: tasks to be done every 24 hours<a class="headerlink" href="#daily-tasks-to-be-done-every-24-hours" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">[</span><span class="n">daily</span><span class="p">]</span>
+<span class="n">underground</span> <span class="o">=</span> <span class="bp">False</span>
+<span class="n">twitter</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">text</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;feed_daily.xml&#39;</span><span class="p">]</span>
+<span class="n">plot</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;2008.png.xml&#39;</span><span class="p">,</span> <span class="s">&#39;2009.png.xml&#39;</span><span class="p">,</span> <span class="s">&#39;2010.png.xml&#39;</span><span class="p">,</span> <span class="s">&#39;28days.png.xml&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>This section specifies tasks that are to be carried out every day when
+&#8216;live logging&#8217; or running an hourly cron job. Use it for things that don&#8217;t
+change very often, such as monthly graphs.</p>
+<p>underground enables uploads to Weather Underground. All logged data since
+the last upload is uploaded (up to a maximum of 7 days worth). Valid
+values are True and False.</p>
+<p>twitter is a list of text templates to be processed and posted to Twitter.</p>
+<p>text and plot are lists of text and plot templates to be processed and
+uploaded to your website.</p>
+</div>
+<div class="section" id="ftp-configuration-of-uploading-to-a-website">
+<h2>ftp: configuration of uploading to a website<a class="headerlink" href="#ftp-configuration-of-uploading-to-a-website" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python"><pre>[ftp]
+local site = False
+secure = False
+site = ftp.your_isp.co.uk
+user = username
+password = userpassword
+directory = public_html/weather/data/</pre>
+</div>
+<p>These entries provide details of your website (or local directory) where
+processed text files and graph images should be transferred to.</p>
+<p>local site specifies whether the files should be copied to a local
+directory or sent to a remote site. You may want to set this if you run
+your web server on the same machine as you are running pywws on.</p>
+<p>secure specifies whether to transfer files using SFTP (secure FTP) instead
+of the more common FTP. Your web site provider should be able to tell you
+if you can use SFTP.</p>
+<p>site is the web address of the FTP site to transfer files to.</p>
+<p>user, and password are the FTP site login details. Your web site provider
+should have provided them to you.</p>
+<p>directory specifies where on the FTP site (or local file system) the files
+should be stored. Note that you may have to experiment with this a bit -
+you might need a &#8216;/&#8217; character at the start of the address.</p>
+</div>
+<div class="section" id="twitter-configuration-of-posting-to-twitter">
+<h2>twitter: configuration of posting to Twitter<a class="headerlink" href="#twitter-configuration-of-posting-to-twitter" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">[</span><span class="n">twitter</span><span class="p">]</span>
+<span class="n">secret</span> <span class="o">=</span> <span class="n">longstringofrandomcharacters</span>
+<span class="n">key</span> <span class="o">=</span> <span class="n">evenlongerstringofrandomcharacters</span>
+<span class="n">latitude</span> <span class="o">=</span> <span class="mf">51.365</span>
+<span class="n">longitude</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.251</span>
+</pre></div>
+</div>
+<p>secret and key are authentication data provided by Twitter. To set them,
+run the TwitterAuth.py program.</p>
+<p>latitude and longitude are optional location data. If you include them
+then your weather station tweets will have location information so users
+can see where your weather station is. It might also enable people to find
+your weather station tweets if they search by location.</p>
+</div>
+<div class="section" id="underground-configuration-of-posting-to-weather-underground">
+<h2>underground: configuration of posting to Weather Underground<a class="headerlink" href="#underground-configuration-of-posting-to-weather-underground" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python"><pre>[underground]
+station = IXYZABA5
+password = secret
+last update = 2010-09-27 19:45:24</pre>
+</div>
+<p>station is the PWS ID allocated to your weather station by Weather Underground.</p>
+<p>password is your Weather Underground password.</p>
+<p>last update is set by pywws when you upload to Weather Underground.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">weather.ini - configuration file format</a><ul>
+<li><a class="reference internal" href="#config-miscellaneous-system-configuration">config: miscellaneous system configuration</a></li>
+<li><a class="reference internal" href="#paths-directories-in-which-templates-etc-are-stored">paths: directories in which templates etc. are stored</a></li>
+<li><a class="reference internal" href="#fixed-values-copied-from-the-weather-station-s-fixed-block">fixed: values copied from the weather station&#8217;s &#8220;fixed block&#8221;</a></li>
+<li><a class="reference internal" href="#live-tasks-to-be-done-every-48-seconds">live: tasks to be done every 48 seconds</a></li>
+<li><a class="reference internal" href="#logged-tasks-to-be-done-every-time-the-station-logs-a-data-record">logged: tasks to be done every time the station logs a data record</a></li>
+<li><a class="reference internal" href="#hourly-tasks-to-be-done-every-hour">hourly: tasks to be done every hour</a></li>
+<li><a class="reference internal" href="#hourly-tasks-to-be-done-every-12-hours">12 hourly: tasks to be done every 12 hours</a></li>
+<li><a class="reference internal" href="#daily-tasks-to-be-done-every-24-hours">daily: tasks to be done every 24 hours</a></li>
+<li><a class="reference internal" href="#ftp-configuration-of-uploading-to-a-website">ftp: configuration of uploading to a website</a></li>
+<li><a class="reference internal" href="#twitter-configuration-of-posting-to-twitter">twitter: configuration of posting to Twitter</a></li>
+<li><a class="reference internal" href="#underground-configuration-of-posting-to-weather-underground">underground: configuration of posting to Weather Underground</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="language.html"
+                        title="previous chapter">How to make a language file for pywws</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="../api/index.html"
+                        title="next chapter">Python programs and modules</a></p>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../api/index.html" title="Python programs and modules"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="language.html" title="How to make a language file for pywws"
+             >previous</a> |</li>
+        <li><a href="../index.html">pywws v11.10 documentation</a> &raquo;</li>
+          <li><a href="index.html" >User guides</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Jim Easterbrook.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.1.
+    </div>
+  </body>
+</html>

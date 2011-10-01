@@ -1,0 +1,196 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>SetWeatherStation &mdash; pywws v11.10 documentation</title>
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '11.10',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="pywws v11.10 documentation" href="../index.html" />
+    <link rel="up" title="Module code" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../index.html">pywws v11.10 documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for SetWeatherStation</h1><div class="highlight"><pre>
+<span class="c">#!/usr/bin/env python</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Set some weather station parameters.</span>
+
+<span class="sd">usage: python SetWeatherStation.py [options]</span>
+<span class="sd">options are:</span>
+<span class="sd"> -h   | --help           display this help</span>
+<span class="sd"> -c   | --clock          set weather station clock to computer time</span>
+<span class="sd">                         (unlikely to work)</span>
+<span class="sd"> -p f | --pressure f     set relative pressure to n hPa</span>
+<span class="sd"> -r n | --read_period n  set logging interval to n minutes</span>
+<span class="sd"> -v   | --verbose        increase error message verbosity</span>
+<span class="sd"> -z   | --zero_memory    clear the weather station logged readings</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
+<span class="kn">import</span> <span class="nn">getopt</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+<span class="kn">from</span> <span class="nn">pywws.Logger</span> <span class="kn">import</span> <span class="n">ApplicationLogger</span>
+<span class="kn">from</span> <span class="nn">pywws</span> <span class="kn">import</span> <span class="n">WeatherStation</span>
+
+<div class="viewcode-block" id="bcd_encode"><a class="viewcode-back" href="../api/SetWeatherStation.html#SetWeatherStation.bcd_encode">[docs]</a><span class="k">def</span> <span class="nf">bcd_encode</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+    <span class="n">hi</span> <span class="o">=</span> <span class="n">value</span> <span class="o">/</span> <span class="mi">10</span>
+    <span class="n">lo</span> <span class="o">=</span> <span class="n">value</span> <span class="o">%</span> <span class="mi">10</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">hi</span> <span class="o">*</span> <span class="mi">16</span><span class="p">)</span> <span class="o">+</span> <span class="n">lo</span></div>
+<div class="viewcode-block" id="main"><a class="viewcode-back" href="../api/SetWeatherStation.html#SetWeatherStation.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">argv</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">argv</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">argv</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">opts</span><span class="p">,</span> <span class="n">args</span> <span class="o">=</span> <span class="n">getopt</span><span class="o">.</span><span class="n">getopt</span><span class="p">(</span>
+            <span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="s">&quot;hcp:r:vz&quot;</span><span class="p">,</span>
+            <span class="p">[</span><span class="s">&#39;help&#39;</span><span class="p">,</span> <span class="s">&#39;clock&#39;</span><span class="p">,</span> <span class="s">&#39;pressure=&#39;</span><span class="p">,</span> <span class="s">&#39;read_period=&#39;</span><span class="p">,</span>
+             <span class="s">&#39;verbose&#39;</span><span class="p">,</span> <span class="s">&#39;zero_memory&#39;</span><span class="p">])</span>
+    <span class="k">except</span> <span class="n">getopt</span><span class="o">.</span><span class="n">error</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span>
+        <span class="k">print</span> <span class="o">&gt;&gt;</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&#39;Error: </span><span class="si">%s</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">msg</span>
+        <span class="k">print</span> <span class="o">&gt;&gt;</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">,</span> <span class="n">__doc__</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">return</span> <span class="mi">1</span>
+    <span class="c"># process options</span>
+    <span class="n">clock</span> <span class="o">=</span> <span class="bp">False</span>
+    <span class="n">pressure</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">read_period</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">verbose</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">zero_memory</span> <span class="o">=</span> <span class="bp">False</span>
+    <span class="k">for</span> <span class="n">o</span><span class="p">,</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">opts</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">o</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;-h&#39;</span><span class="p">,</span> <span class="s">&#39;--help&#39;</span><span class="p">):</span>
+            <span class="k">print</span> <span class="n">__doc__</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="k">return</span> <span class="mi">0</span>
+        <span class="k">elif</span> <span class="n">o</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;-c&#39;</span><span class="p">,</span> <span class="s">&#39;--clock&#39;</span><span class="p">):</span>
+            <span class="n">clock</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="k">elif</span> <span class="n">o</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;-p&#39;</span><span class="p">,</span> <span class="s">&#39;--pressure&#39;</span><span class="p">):</span>
+            <span class="n">pressure</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="nb">float</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="o">*</span> <span class="mf">10.0</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">o</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;-r&#39;</span><span class="p">,</span> <span class="s">&#39;--read_period&#39;</span><span class="p">):</span>
+            <span class="n">read_period</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">o</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;-v&#39;</span><span class="p">,</span> <span class="s">&#39;--verbose&#39;</span><span class="p">):</span>
+            <span class="n">verbose</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">elif</span> <span class="n">o</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;-z&#39;</span><span class="p">,</span> <span class="s">&#39;--zero_memory&#39;</span><span class="p">):</span>
+            <span class="n">zero_memory</span> <span class="o">=</span> <span class="bp">True</span>
+    <span class="c"># check arguments</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">print</span> <span class="o">&gt;&gt;</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&quot;Error: No arguments required&quot;</span>
+        <span class="k">print</span> <span class="o">&gt;&gt;</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">,</span> <span class="n">__doc__</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">return</span> <span class="mi">2</span>
+    <span class="n">logger</span> <span class="o">=</span> <span class="n">ApplicationLogger</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
+    <span class="c"># open connection to weather station</span>
+    <span class="n">ws</span> <span class="o">=</span> <span class="n">WeatherStation</span><span class="o">.</span><span class="n">weather_station</span><span class="p">()</span>
+    <span class="c"># set data to be sent to station</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="c"># set relative pressure</span>
+    <span class="k">if</span> <span class="n">pressure</span><span class="p">:</span>
+        <span class="n">ptr</span> <span class="o">=</span> <span class="n">ws</span><span class="o">.</span><span class="n">fixed_format</span><span class="p">[</span><span class="s">&#39;rel_pressure&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">ptr</span><span class="p">,</span>   <span class="n">pressure</span> <span class="o">%</span> <span class="mi">256</span><span class="p">))</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">ptr</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">pressure</span> <span class="o">/</span> <span class="mi">256</span><span class="p">))</span>
+    <span class="c"># set read period</span>
+    <span class="k">if</span> <span class="n">read_period</span><span class="p">:</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">ws</span><span class="o">.</span><span class="n">fixed_format</span><span class="p">[</span><span class="s">&#39;read_period&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">read_period</span><span class="p">))</span>
+    <span class="c"># reset data count</span>
+    <span class="k">if</span> <span class="n">zero_memory</span><span class="p">:</span>
+        <span class="n">ptr</span> <span class="o">=</span> <span class="n">ws</span><span class="o">.</span><span class="n">fixed_format</span><span class="p">[</span><span class="s">&#39;data_count&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">ptr</span><span class="p">,</span>   <span class="mi">1</span><span class="p">))</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">ptr</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+    <span class="c"># set clock</span>
+    <span class="k">if</span> <span class="n">clock</span><span class="p">:</span>
+        <span class="k">print</span> <span class="s">&quot;Clock setting is not known to work on any model of weather station.&quot;</span>
+        <span class="k">print</span> <span class="s">&quot;If it works for you, please let Jim Easterbrook know.&quot;</span>
+        <span class="k">print</span> <span class="s">&quot;waiting for exact minute&quot;</span>
+        <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">now</span><span class="o">.</span><span class="n">second</span> <span class="o">&gt;=</span> <span class="mi">55</span><span class="p">:</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+            <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+        <span class="n">now</span> <span class="o">+=</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">minutes</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">ptr</span> <span class="o">=</span> <span class="n">ws</span><span class="o">.</span><span class="n">fixed_format</span><span class="p">[</span><span class="s">&#39;date_time&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">ptr</span><span class="p">,</span>   <span class="n">bcd_encode</span><span class="p">(</span><span class="n">now</span><span class="o">.</span><span class="n">year</span> <span class="o">-</span> <span class="mi">2000</span><span class="p">)))</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">ptr</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">bcd_encode</span><span class="p">(</span><span class="n">now</span><span class="o">.</span><span class="n">month</span><span class="p">)))</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">ptr</span><span class="o">+</span><span class="mi">2</span><span class="p">,</span> <span class="n">bcd_encode</span><span class="p">(</span><span class="n">now</span><span class="o">.</span><span class="n">day</span><span class="p">)))</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">ptr</span><span class="o">+</span><span class="mi">3</span><span class="p">,</span> <span class="n">bcd_encode</span><span class="p">(</span><span class="n">now</span><span class="o">.</span><span class="n">hour</span><span class="p">)))</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">ptr</span><span class="o">+</span><span class="mi">4</span><span class="p">,</span> <span class="n">bcd_encode</span><span class="p">(</span><span class="n">now</span><span class="o">.</span><span class="n">minute</span><span class="p">)))</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">59</span> <span class="o">-</span> <span class="n">now</span><span class="o">.</span><span class="n">second</span><span class="p">)</span>
+    <span class="c"># send it all in one go</span>
+    <span class="k">if</span> <span class="n">data</span><span class="p">:</span>
+        <span class="n">ws</span><span class="o">.</span><span class="n">write_data</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../index.html">pywws v11.10 documentation</a> &raquo;</li>
+          <li><a href="index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Jim Easterbrook.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.1.
+    </div>
+  </body>
+</html>

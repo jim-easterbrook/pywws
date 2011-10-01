@@ -1,0 +1,46 @@
+
+Reprocess
+*********
+
+
+Introduction
+============
+
+This program recreates the hourly, daily and monthly summary data that
+is created by the Process.py program. It should be run whenever you
+upgrade to a newer version of pywws.
+
+The program is very simple to use:
+
+   python Reprocess.py data_directory
+
+where ``data_directory`` is the location of your stored data.
+
+
+Detailed API
+============
+
+Regenerate hourly and daily summary data.
+
+usage: python Reprocess.py [options] data_dir options are:
+
+   --help
+
+   display this help
+
+data_dir is the root directory of the weather data
+
+-[ Functions ]-
+
++------------+--------------------------------------------------------------------------------------------+
+| ``Reproces |                                                                                            |
+| s``(data_d |                                                                                            |
+| ir)        |                                                                                            |
++------------+--------------------------------------------------------------------------------------------+
+| ``main``([ |                                                                                            |
+| argv])     |                                                                                            |
++------------+--------------------------------------------------------------------------------------------+
+
+Reprocess.Reprocess(data_dir)
+
+Reprocess.main(argv=None)

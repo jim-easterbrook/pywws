@@ -1,0 +1,164 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>LiveLog &mdash; pywws v11.10 documentation</title>
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '11.10',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="pywws v11.10 documentation" href="../index.html" />
+    <link rel="up" title="Python programs and modules" href="index.html" />
+    <link rel="next" title="Reprocess" href="Reprocess.html" />
+    <link rel="prev" title="Hourly" href="Hourly.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="Reprocess.html" title="Reprocess"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="Hourly.html" title="Hourly"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">pywws v11.10 documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">Python programs and modules</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-LiveLog">
+<span id="livelog"></span><h1>LiveLog<a class="headerlink" href="#module-LiveLog" title="Permalink to this headline">¶</a></h1>
+<p>Get weather data, store it, and process it.</p>
+<p>Run this continuously, having set what tasks are to be done.</p>
+<p>usage: python LiveLog.py [options] data_dir
+options are:</p>
+<blockquote>
+<table class="docutils option-list" frame="void" rules="none">
+<col class="option" />
+<col class="description" />
+<tbody valign="top">
+<tr><td class="option-group">
+<kbd><span class="option">-h</span></kbd></td>
+<td>or &#8211;help      display this help</td></tr>
+</tbody>
+</table>
+<p>-l file or &#8211;log file  write log information to file
+-v      or &#8211;verbose   increase amount of reassuring messages</p>
+</blockquote>
+<p>data_dir is the root directory of the weather data (e.g. /data/weather)</p>
+<p class="rubric">Functions</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr><td><a class="reference internal" href="#LiveLog.CheckFixedBlock" title="LiveLog.CheckFixedBlock"><tt class="xref py py-obj docutils literal"><span class="pre">CheckFixedBlock</span></tt></a>(ws,&nbsp;params,&nbsp;logger)</td>
+<td></td>
+</tr>
+<tr><td><a class="reference internal" href="#LiveLog.LiveLog" title="LiveLog.LiveLog"><tt class="xref py py-obj docutils literal"><span class="pre">LiveLog</span></tt></a>(data_dir)</td>
+<td></td>
+</tr>
+<tr><td><a class="reference internal" href="#LiveLog.main" title="LiveLog.main"><tt class="xref py py-obj docutils literal"><span class="pre">main</span></tt></a>([argv])</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<dl class="function">
+<dt id="LiveLog.CheckFixedBlock">
+<tt class="descclassname">LiveLog.</tt><tt class="descname">CheckFixedBlock</tt><big>(</big><em>ws</em>, <em>params</em>, <em>logger</em><big>)</big><a class="reference internal" href="../_modules/LiveLog.html#CheckFixedBlock"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#LiveLog.CheckFixedBlock" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="LiveLog.LiveLog">
+<tt class="descclassname">LiveLog.</tt><tt class="descname">LiveLog</tt><big>(</big><em>data_dir</em><big>)</big><a class="reference internal" href="../_modules/LiveLog.html#LiveLog"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#LiveLog.LiveLog" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="LiveLog.main">
+<tt class="descclassname">LiveLog.</tt><tt class="descname">main</tt><big>(</big><em>argv=None</em><big>)</big><a class="reference internal" href="../_modules/LiveLog.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#LiveLog.main" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="Hourly.html"
+                        title="previous chapter">Hourly</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="Reprocess.html"
+                        title="next chapter">Reprocess</a></p>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="Reprocess.html" title="Reprocess"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="Hourly.html" title="Hourly"
+             >previous</a> |</li>
+        <li><a href="../index.html">pywws v11.10 documentation</a> &raquo;</li>
+          <li><a href="index.html" >Python programs and modules</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Jim Easterbrook.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.1.
+    </div>
+  </body>
+</html>

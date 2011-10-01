@@ -1,0 +1,26 @@
+
+TwitterAuth
+***********
+
+Authorise pywws to post to your Twitter account.
+
+usage: python TwitterAuth.py [options] data_dir options are:
+
+   -h or --help       display this help
+
+data_dir is the root directory of the weather data
+
+-[ Functions ]-
+
++------------+--------------------------------------------------------------------------------------------+
+| ``TwitterA |                                                                                            |
+| uth``(para |                                                                                            |
+| ms)        |                                                                                            |
++------------+--------------------------------------------------------------------------------------------+
+| ``main``([ |                                                                                            |
+| argv])     |                                                                                            |
++------------+--------------------------------------------------------------------------------------------+
+
+TwitterAuth.TwitterAuth(params)
+
+TwitterAuth.main(argv=None)

@@ -1,0 +1,24 @@
+
+pywws.calib
+***********
+
+Calibrate raw weather station data.
+
+-[ Classes ]-
+
++------------+--------------------------------------------------------------------------------------------+
+| ``Calib``( |                                                                                            |
+| params)    |                                                                                            |
++------------+--------------------------------------------------------------------------------------------+
+| ``DefaultC | Default calibration class - relative pressure conversion only.                             |
+| alib``(par |                                                                                            |
+| ams)       |                                                                                            |
++------------+--------------------------------------------------------------------------------------------+
+
+class class pywws.calib.Calib(params)
+
+class class pywws.calib.DefaultCalib(params)
+
+   Default calibration class - relative pressure conversion only.
+
+   calib(raw)

@@ -1,0 +1,17 @@
+
+pywws.Logger
+************
+
+Common code for logging info and errors.
+
+-[ Functions ]-
+
++------------+--------------------------------------------------------------------------------------------+
+| ``Applicat |                                                                                            |
+| ionLogger` |                                                                                            |
+| `(verbose[ |                                                                                            |
+| ,          |                                                                                            |
+| logfile])  |                                                                                            |
++------------+--------------------------------------------------------------------------------------------+
+
+pywws.Logger.ApplicationLogger(verbose, logfile=None)

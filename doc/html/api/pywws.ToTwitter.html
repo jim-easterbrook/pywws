@@ -1,0 +1,196 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pywws.ToTwitter &mdash; pywws v11.10 documentation</title>
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '11.10',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="pywws v11.10 documentation" href="../index.html" />
+    <link rel="up" title="Python programs and modules" href="index.html" />
+    <link rel="next" title="pywws.ToUnderground" href="pywws.ToUnderground.html" />
+    <link rel="prev" title="pywws.Upload" href="pywws.Upload.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="pywws.ToUnderground.html" title="pywws.ToUnderground"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="pywws.Upload.html" title="pywws.Upload"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">pywws v11.10 documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">Python programs and modules</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="pywws-totwitter">
+<h1>pywws.ToTwitter<a class="headerlink" href="#pywws-totwitter" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p>This module posts a brief message to <a class="reference external" href="https://twitter.com/">Twitter</a>. Account details are stored in the file <tt class="docutils literal"><span class="pre">weather.ini</span></tt> in your data directory. The only way to set these details is to edit the file. Run ToTwitter.py once to set the default values, which you can then change. Here is what you&#8217;re likely to find when you edit weather.ini.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">[</span><span class="n">twitter</span><span class="p">]</span>
+<span class="n">username</span> <span class="o">=</span> <span class="n">twitterusername</span>
+<span class="n">password</span> <span class="o">=</span> <span class="n">twitterpassword</span>
+</pre></div>
+</div>
+<p>The example template <tt class="docutils literal"><span class="pre">tweet.txt</span></tt> can be used to create your message. Note that the message will be truncated to 140 characters if it is too long.</p>
+</div>
+<div class="section" id="module-pywws.ToTwitter">
+<span id="detailed-api"></span><h2>Detailed API<a class="headerlink" href="#module-pywws.ToTwitter" title="Permalink to this headline">¶</a></h2>
+<p>Post a message to Twitter.</p>
+<p>usage: python ToTwitter.py [options] data_dir file
+options are:</p>
+<blockquote>
+<table class="docutils option-list" frame="void" rules="none">
+<col class="option" />
+<col class="description" />
+<tbody valign="top">
+<tr><td class="option-group">
+<kbd><span class="option">--help</span></kbd></td>
+<td>display this help</td></tr>
+</tbody>
+</table>
+</blockquote>
+<p>data_dir is the root directory of the weather data
+file is the text file to be uploaded</p>
+<p>Authorisation data is read from the weather.ini file in data_dir.</p>
+<p class="rubric">Functions</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr><td><a class="reference internal" href="#pywws.ToTwitter.main" title="pywws.ToTwitter.main"><tt class="xref py py-obj docutils literal"><span class="pre">main</span></tt></a>([argv])</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Classes</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr><td><a class="reference internal" href="#pywws.ToTwitter.ToTwitter" title="pywws.ToTwitter.ToTwitter"><tt class="xref py py-obj docutils literal"><span class="pre">ToTwitter</span></tt></a>(params[,&nbsp;translation])</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<dl class="class">
+<dt id="pywws.ToTwitter.ToTwitter">
+<em class="property">class </em><tt class="descclassname">pywws.ToTwitter.</tt><tt class="descname">ToTwitter</tt><big>(</big><em>params</em>, <em>translation=None</em><big>)</big><a class="reference internal" href="../_modules/pywws/ToTwitter.html#ToTwitter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.ToTwitter.ToTwitter" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="pywws.ToTwitter.ToTwitter.Upload">
+<tt class="descname">Upload</tt><big>(</big><em>tweet</em><big>)</big><a class="reference internal" href="../_modules/pywws/ToTwitter.html#ToTwitter.Upload"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.ToTwitter.ToTwitter.Upload" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pywws.ToTwitter.ToTwitter.UploadFile">
+<tt class="descname">UploadFile</tt><big>(</big><em>file</em><big>)</big><a class="reference internal" href="../_modules/pywws/ToTwitter.html#ToTwitter.UploadFile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.ToTwitter.ToTwitter.UploadFile" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="pywws.ToTwitter.main">
+<tt class="descclassname">pywws.ToTwitter.</tt><tt class="descname">main</tt><big>(</big><em>argv=None</em><big>)</big><a class="reference internal" href="../_modules/pywws/ToTwitter.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.ToTwitter.main" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">pywws.ToTwitter</a><ul>
+<li><a class="reference internal" href="#introduction">Introduction</a></li>
+<li><a class="reference internal" href="#module-pywws.ToTwitter">Detailed API</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="pywws.Upload.html"
+                        title="previous chapter">pywws.Upload</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="pywws.ToUnderground.html"
+                        title="next chapter">pywws.ToUnderground</a></p>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="pywws.ToUnderground.html" title="pywws.ToUnderground"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="pywws.Upload.html" title="pywws.Upload"
+             >previous</a> |</li>
+        <li><a href="../index.html">pywws v11.10 documentation</a> &raquo;</li>
+          <li><a href="index.html" >Python programs and modules</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Jim Easterbrook.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.1.
+    </div>
+  </body>
+</html>

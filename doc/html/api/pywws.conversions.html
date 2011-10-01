@@ -1,0 +1,187 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pywws.conversions &mdash; pywws v11.10 documentation</title>
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '11.10',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="pywws v11.10 documentation" href="../index.html" />
+    <link rel="up" title="Python programs and modules" href="index.html" />
+    <link rel="next" title="pywws.Logger" href="pywws.Logger.html" />
+    <link rel="prev" title="pywws.calib" href="pywws.calib.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="pywws.Logger.html" title="pywws.Logger"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="pywws.calib.html" title="pywws.calib"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">pywws v11.10 documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">Python programs and modules</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-pywws.conversions">
+<span id="pywws-conversions"></span><h1>pywws.conversions<a class="headerlink" href="#module-pywws.conversions" title="Permalink to this headline">¶</a></h1>
+<p>A set of functions to convert pywws native units (Centigrade, mm, m/s, hPa) to
+other popular units.</p>
+<p class="rubric">Functions</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr><td><a class="reference internal" href="#pywws.conversions.pressure_inhg" title="pywws.conversions.pressure_inhg"><tt class="xref py py-obj docutils literal"><span class="pre">pressure_inhg</span></tt></a>(hPa)</td>
+<td>Convert pressure from hectopascals/millibar to inches of mercury</td>
+</tr>
+<tr><td><a class="reference internal" href="#pywws.conversions.rain_inch" title="pywws.conversions.rain_inch"><tt class="xref py py-obj docutils literal"><span class="pre">rain_inch</span></tt></a>(mm)</td>
+<td>Convert rainfall from millimetres to inches</td>
+</tr>
+<tr><td><a class="reference internal" href="#pywws.conversions.temp_f" title="pywws.conversions.temp_f"><tt class="xref py py-obj docutils literal"><span class="pre">temp_f</span></tt></a>(c)</td>
+<td>Convert temperature from Celsius to Fahrenheit</td>
+</tr>
+<tr><td><a class="reference internal" href="#pywws.conversions.wind_bft" title="pywws.conversions.wind_bft"><tt class="xref py py-obj docutils literal"><span class="pre">wind_bft</span></tt></a>(ms)</td>
+<td>Convert (wind) wind from metres per second to Beaufort scale</td>
+</tr>
+<tr><td><a class="reference internal" href="#pywws.conversions.wind_kmph" title="pywws.conversions.wind_kmph"><tt class="xref py py-obj docutils literal"><span class="pre">wind_kmph</span></tt></a>(ms)</td>
+<td>Convert (wind) wind from metres per second to kilometres per hour</td>
+</tr>
+<tr><td><a class="reference internal" href="#pywws.conversions.wind_kn" title="pywws.conversions.wind_kn"><tt class="xref py py-obj docutils literal"><span class="pre">wind_kn</span></tt></a>(ms)</td>
+<td>Convert (wind) wind from metres per second to knots</td>
+</tr>
+<tr><td><a class="reference internal" href="#pywws.conversions.wind_mph" title="pywws.conversions.wind_mph"><tt class="xref py py-obj docutils literal"><span class="pre">wind_mph</span></tt></a>(ms)</td>
+<td>Convert (wind) wind from metres per second to miles per hour</td>
+</tr>
+</tbody>
+</table>
+<dl class="function">
+<dt id="pywws.conversions.pressure_inhg">
+<tt class="descclassname">pywws.conversions.</tt><tt class="descname">pressure_inhg</tt><big>(</big><em>hPa</em><big>)</big><a class="reference internal" href="../_modules/pywws/conversions.html#pressure_inhg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.conversions.pressure_inhg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert pressure from hectopascals/millibar to inches of mercury</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pywws.conversions.rain_inch">
+<tt class="descclassname">pywws.conversions.</tt><tt class="descname">rain_inch</tt><big>(</big><em>mm</em><big>)</big><a class="reference internal" href="../_modules/pywws/conversions.html#rain_inch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.conversions.rain_inch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert rainfall from millimetres to inches</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pywws.conversions.temp_f">
+<tt class="descclassname">pywws.conversions.</tt><tt class="descname">temp_f</tt><big>(</big><em>c</em><big>)</big><a class="reference internal" href="../_modules/pywws/conversions.html#temp_f"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.conversions.temp_f" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert temperature from Celsius to Fahrenheit</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pywws.conversions.wind_bft">
+<tt class="descclassname">pywws.conversions.</tt><tt class="descname">wind_bft</tt><big>(</big><em>ms</em><big>)</big><a class="reference internal" href="../_modules/pywws/conversions.html#wind_bft"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.conversions.wind_bft" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert (wind) wind from metres per second to Beaufort scale</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pywws.conversions.wind_kmph">
+<tt class="descclassname">pywws.conversions.</tt><tt class="descname">wind_kmph</tt><big>(</big><em>ms</em><big>)</big><a class="reference internal" href="../_modules/pywws/conversions.html#wind_kmph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.conversions.wind_kmph" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert (wind) wind from metres per second to kilometres per hour</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pywws.conversions.wind_kn">
+<tt class="descclassname">pywws.conversions.</tt><tt class="descname">wind_kn</tt><big>(</big><em>ms</em><big>)</big><a class="reference internal" href="../_modules/pywws/conversions.html#wind_kn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.conversions.wind_kn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert (wind) wind from metres per second to knots</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pywws.conversions.wind_mph">
+<tt class="descclassname">pywws.conversions.</tt><tt class="descname">wind_mph</tt><big>(</big><em>ms</em><big>)</big><a class="reference internal" href="../_modules/pywws/conversions.html#wind_mph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.conversions.wind_mph" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert (wind) wind from metres per second to miles per hour</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="pywws.calib.html"
+                        title="previous chapter">pywws.calib</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="pywws.Logger.html"
+                        title="next chapter">pywws.Logger</a></p>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="pywws.Logger.html" title="pywws.Logger"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="pywws.calib.html" title="pywws.calib"
+             >previous</a> |</li>
+        <li><a href="../index.html">pywws v11.10 documentation</a> &raquo;</li>
+          <li><a href="index.html" >Python programs and modules</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Jim Easterbrook.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.1.
+    </div>
+  </body>
+</html>

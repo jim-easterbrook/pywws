@@ -1,0 +1,206 @@
+
+Python programs and modules
+***************************
+
+Contents:
+
++------------+--------------------------------------------------------------------------------------------+
+| ``Hourly`` | Get weather data, process it, prepare graphs & text files and upload to a web site.        |
++------------+--------------------------------------------------------------------------------------------+
+| ``LiveLog` | Get weather data, store it, and process it.                                                |
+| `          |                                                                                            |
++------------+--------------------------------------------------------------------------------------------+
+| ``Reproces | Regenerate hourly and daily summary data.                                                  |
+| s``        |                                                                                            |
++------------+--------------------------------------------------------------------------------------------+
+| ``TwitterA | Authorise pywws to post to your Twitter account.                                           |
+| uth``      |                                                                                            |
++------------+--------------------------------------------------------------------------------------------+
+| ``SetWeath | Set some weather station parameters.                                                       |
+| erStation` |                                                                                            |
+| `          |                                                                                            |
++------------+--------------------------------------------------------------------------------------------+
+| ``TestWeat | Test connection to weather station.                                                        |
+| herStation |                                                                                            |
+| ``         |                                                                                            |
++------------+--------------------------------------------------------------------------------------------+
+| ``EWtoPy`` | Convert EasyWeather.dat data to pywws format.                                              |
++------------+--------------------------------------------------------------------------------------------+
+| ``pywws.Ta | Routines to perform common tasks such as plotting gaphs or uploading files.                |
+| sks``      |                                                                                            |
++------------+--------------------------------------------------------------------------------------------+
+| ``pywws.Lo | Save weather station history to file.                                                      |
+| gData``    |                                                                                            |
++------------+--------------------------------------------------------------------------------------------+
+| ``pywws.Pr | Generate hourly, daily & monthly summaries of raw weather station data.                    |
+| ocess``    |                                                                                            |
++------------+--------------------------------------------------------------------------------------------+
+| ``pywws.Pl | Plot graphs of weather data according to an XML recipe.                                    |
+| ot``       |                                                                                            |
++------------+--------------------------------------------------------------------------------------------+
+| ``pywws.Wi | Plot a "wind rose".                                                                        |
+| ndRose``   |                                                                                            |
++------------+--------------------------------------------------------------------------------------------+
+| ``pywws.Te | Create text data file based on a template.                                                 |
+| mplate``   |                                                                                            |
++------------+--------------------------------------------------------------------------------------------+
+| ``pywws.Fo | Predict future weather using recent data.                                                  |
+| recast``   |                                                                                            |
++------------+--------------------------------------------------------------------------------------------+
+| ``pywws.Za |                                                                                            |
+| mbrettiCor |                                                                                            |
+| e``        |                                                                                            |
++------------+--------------------------------------------------------------------------------------------+
+| ``pywws.Up | Upload files to a directory by ftp.                                                        |
+| load``     |                                                                                            |
++------------+--------------------------------------------------------------------------------------------+
+| ``pywws.To | Post a message to Twitter.                                                                 |
+| Twitter``  |                                                                                            |
++------------+--------------------------------------------------------------------------------------------+
+| ``pywws.To | Post weather update to WeatherUnderground.                                                 |
+| Undergroun |                                                                                            |
+| d``        |                                                                                            |
++------------+--------------------------------------------------------------------------------------------+
+| ``pywws.Yo | Generate YoWindow XML file.                                                                |
+| Window``   |                                                                                            |
++------------+--------------------------------------------------------------------------------------------+
+| ``pywws.We | WeatherStation.py - get data from WH1080/WH3080 compatible weather stations                |
+| atherStati |                                                                                            |
+| on``       |                                                                                            |
++------------+--------------------------------------------------------------------------------------------+
+| ``pywws.Da | DataStore.py - stores readings in easy to access files                                     |
+| taStore``  |                                                                                            |
++------------+--------------------------------------------------------------------------------------------+
+| ``pywws.Ti | Provide a couple of datetime.tzinfo() objects representing local                           |
+| meZone``   |                                                                                            |
++------------+--------------------------------------------------------------------------------------------+
+| ``pywws.Lo | Localisation.py - provide translations of strings into local language                      |
+| calisation |                                                                                            |
+| ``         |                                                                                            |
++------------+--------------------------------------------------------------------------------------------+
+| ``pywws.ca | Calibrate raw weather station data.                                                        |
+| lib``      |                                                                                            |
++------------+--------------------------------------------------------------------------------------------+
+| ``pywws.co | A set of functions to convert pywws native units (Centigrade, mm, m/s, hPa) to             |
+| nversions` |                                                                                            |
+| `          |                                                                                            |
++------------+--------------------------------------------------------------------------------------------+
+| ``pywws.Lo | Common code for logging info and errors.                                                   |
+| gger``     |                                                                                            |
++------------+--------------------------------------------------------------------------------------------+
+
+* Hourly
+  * Introduction
+  * Detailed API
+* LiveLog
+* Reprocess
+  * Introduction
+  * Detailed API
+* TwitterAuth
+* SetWeatherStation
+* TestWeatherStation
+  * Introduction
+  * Detailed API
+* EWtoPy
+  * Introduction
+  * Detailed API
+* pywws.Tasks
+* pywws.LogData
+  * Introduction
+  * Detailed API
+* pywws.Process
+  * Introduction
+  * Detailed API
+* pywws.Plot
+  * Introduction
+    * XML graph file syntax
+    * graph
+    * plot
+    * start
+    * stop
+    * duration
+    * layout
+    * size
+    * fileformat
+    * terminal
+    * lmargin
+    * rmargin
+    * xformat
+    * xlabel
+    * dateformat
+    * xtics
+    * title
+    * subplot
+    * bmargin
+    * yrange
+    * y2range
+    * ylabel
+    * ylabelangle
+    * y2label
+    * y2labelangle
+    * grid
+    * source
+    * boxwidth
+    * title
+    * command
+    * xcalc
+    * ycalc
+    * axes
+    * style
+    * colour
+    * title
+  * Detailed API
+* pywws.WindRose
+  * Introduction
+  * XML graph file syntax
+    * graph
+    * windrose
+    * start
+    * stop
+    * duration
+    * layout
+    * size
+    * fileformat
+    * lmargin, rmargin, tmargin, bmargin
+    * title
+    * xcalc
+    * ycalc
+    * threshold
+    * colour
+    * yrange
+    * points
+    * source
+    * title
+  * Detailed API
+* pywws.Template
+  * Introduction
+  * Processing instructions
+  * Example
+  * Detailed API
+* pywws.Forecast
+* pywws.ZambrettiCore
+* pywws.Upload
+  * Introduction
+  * Detailed API
+* pywws.ToTwitter
+  * Introduction
+  * Detailed API
+* pywws.ToUnderground
+* pywws.YoWindow
+* pywws.WeatherStation
+  * Introduction
+  * Detailed API
+* pywws.DataStore
+  * Introduction
+  * Detailed API
+* pywws.TimeZone
+  * Introduction
+  * Detailed API
+* pywws.Localisation
+  * Introduction
+  * Creating a new translation
+  * Using a different language
+  * Detailed API
+* pywws.calib
+* pywws.conversions
+* pywws.Logger

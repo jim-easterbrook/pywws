@@ -1,0 +1,289 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pywws.WindRose &mdash; pywws v11.10 documentation</title>
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '11.10',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="pywws v11.10 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">pywws v11.10 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for pywws.WindRose</h1><div class="highlight"><pre>
+<span class="c">#!/usr/bin/env python</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Plot a &quot;wind rose&quot;.</span>
+
+<span class="sd">usage: python WindRose.py [options] data_dir temp_dir xml_file output_file</span>
+<span class="sd">options are:</span>
+<span class="sd">\t-h or --help\t\tdisplay this help</span>
+<span class="sd">data_dir is the root directory of the weather data</span>
+<span class="sd">temp_dir is a workspace for temporary files e.g. /tmp</span>
+<span class="sd">xml_file is the name of the source file that describes the plot</span>
+<span class="sd">output_file is the name of the image file to be created e.g. 24hrs.png</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">codecs</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
+<span class="kn">import</span> <span class="nn">getopt</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">xml.dom.minidom</span>
+
+<span class="kn">from</span> <span class="nn">conversions</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">DataStore</span>
+<span class="kn">from</span> <span class="nn">Plot</span> <span class="kn">import</span> <span class="n">BasePlotter</span>
+<span class="kn">from</span> <span class="nn">TimeZone</span> <span class="kn">import</span> <span class="n">Local</span>
+<span class="kn">from</span> <span class="nn">WeatherStation</span> <span class="kn">import</span> <span class="n">dew_point</span>
+
+<div class="viewcode-block" id="RosePlotter"><a class="viewcode-back" href="../../api/pywws.WindRose.html#pywws.WindRose.RosePlotter">[docs]</a><span class="k">class</span> <span class="nc">RosePlotter</span><span class="p">(</span><span class="n">BasePlotter</span><span class="p">):</span>
+<div class="viewcode-block" id="RosePlotter.GetPlotList"><a class="viewcode-back" href="../../api/pywws.WindRose.html#pywws.WindRose.RosePlotter.GetPlotList">[docs]</a>    <span class="k">def</span> <span class="nf">GetPlotList</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">GetChildren</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="p">,</span> <span class="s">&#39;windrose&#39;</span><span class="p">)</span></div>
+<div class="viewcode-block" id="RosePlotter.GetDefaultRows"><a class="viewcode-back" href="../../api/pywws.WindRose.html#pywws.WindRose.RosePlotter.GetDefaultRows">[docs]</a>    <span class="k">def</span> <span class="nf">GetDefaultRows</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">plot_count</span><span class="p">))</span></div>
+<div class="viewcode-block" id="RosePlotter.GetDefaultPlotSize"><a class="viewcode-back" href="../../api/pywws.WindRose.html#pywws.WindRose.RosePlotter.GetDefaultPlotSize">[docs]</a>    <span class="k">def</span> <span class="nf">GetDefaultPlotSize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mi">600</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">rows</span><span class="p">,</span> <span class="mi">600</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">rows</span></div>
+<div class="viewcode-block" id="RosePlotter.GetPreamble"><a class="viewcode-back" href="../../api/pywws.WindRose.html#pywws.WindRose.RosePlotter.GetPreamble">[docs]</a>    <span class="k">def</span> <span class="nf">GetPreamble</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;set polar</span>
+<span class="s">set angles degrees</span>
+<span class="s">set xtics axis nomirror</span>
+<span class="s">set ytics axis nomirror</span>
+<span class="s">set zeroaxis</span>
+<span class="s">set grid polar 22.5</span>
+<span class="s">set size square</span>
+<span class="s">unset border</span>
+<span class="s">&quot;&quot;&quot;</span>
+        <span class="n">lmargin</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">GetValue</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="p">,</span> <span class="s">&#39;lmargin&#39;</span><span class="p">,</span> <span class="s">&#39;-1&#39;</span><span class="p">))</span>
+        <span class="n">result</span> <span class="o">+=</span> <span class="s">&#39;set lmargin </span><span class="si">%g</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">lmargin</span><span class="p">)</span>
+        <span class="n">lmargin</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">GetValue</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="p">,</span> <span class="s">&#39;rmargin&#39;</span><span class="p">,</span> <span class="s">&#39;-1&#39;</span><span class="p">))</span>
+        <span class="n">result</span> <span class="o">+=</span> <span class="s">&#39;set rmargin </span><span class="si">%g</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">lmargin</span><span class="p">)</span>
+        <span class="n">lmargin</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">GetValue</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="p">,</span> <span class="s">&#39;tmargin&#39;</span><span class="p">,</span> <span class="s">&#39;-1&#39;</span><span class="p">))</span>
+        <span class="n">result</span> <span class="o">+=</span> <span class="s">&#39;set tmargin </span><span class="si">%g</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">lmargin</span><span class="p">)</span>
+        <span class="n">lmargin</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">GetValue</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="p">,</span> <span class="s">&#39;bmargin&#39;</span><span class="p">,</span> <span class="s">&#39;-1&#39;</span><span class="p">))</span>
+        <span class="n">result</span> <span class="o">+=</span> <span class="s">&#39;set bmargin </span><span class="si">%g</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">lmargin</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+<div class="viewcode-block" id="RosePlotter.PlotData"><a class="viewcode-back" href="../../api/pywws.WindRose.html#pywws.WindRose.RosePlotter.PlotData">[docs]</a>    <span class="k">def</span> <span class="nf">PlotData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plot_no</span><span class="p">,</span> <span class="n">plot</span><span class="p">,</span> <span class="n">source</span><span class="p">):</span>
+        <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">translation</span><span class="o">.</span><span class="n">ugettext</span>
+        <span class="c"># get statistics</span>
+        <span class="n">thresh</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">GetValue</span><span class="p">(</span>
+            <span class="n">plot</span><span class="p">,</span> <span class="s">&#39;threshold&#39;</span><span class="p">,</span> <span class="s">&#39;0.0, 1.54, 3.09, 5.14, 8.23, 10.8, 15.5&#39;</span><span class="p">))</span>
+        <span class="n">thresh</span> <span class="o">=</span> <span class="n">thresh</span> <span class="o">+</span> <span class="p">(</span><span class="mf">1000.0</span><span class="p">,)</span>
+        <span class="n">colour</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">GetValue</span><span class="p">(</span><span class="n">plot</span><span class="p">,</span> <span class="s">&#39;colour&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">thresh</span><span class="p">)))))</span>
+        <span class="n">xcalc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">GetValue</span><span class="p">(</span><span class="n">plot</span><span class="p">,</span> <span class="s">&#39;xcalc&#39;</span><span class="p">,</span> <span class="s">&#39;True&#39;</span><span class="p">)</span>
+        <span class="n">xcalc</span> <span class="o">=</span> <span class="nb">compile</span><span class="p">(</span><span class="n">xcalc</span><span class="p">,</span> <span class="s">&#39;&lt;string&gt;&#39;</span><span class="p">,</span> <span class="s">&#39;eval&#39;</span><span class="p">)</span>
+        <span class="n">ycalc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">GetValue</span><span class="p">(</span><span class="n">plot</span><span class="p">,</span> <span class="s">&#39;ycalc&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+        <span class="n">ycalc</span> <span class="o">=</span> <span class="nb">compile</span><span class="p">(</span><span class="n">ycalc</span><span class="p">,</span> <span class="s">&#39;&lt;string&gt;&#39;</span><span class="p">,</span> <span class="s">&#39;eval&#39;</span><span class="p">)</span>
+        <span class="n">histograms</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">thresh</span><span class="p">)):</span>
+            <span class="n">hist</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">16</span><span class="p">):</span>
+                <span class="n">hist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">histograms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">hist</span><span class="p">)</span>
+        <span class="c"># x_lo &amp; x_hi are in local time, data is indexed in UTC</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_lo</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">utcoffset</span>
+        <span class="n">stop</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_hi</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">utcoffset</span>
+        <span class="n">stop</span> <span class="o">=</span> <span class="n">stop</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">minutes</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">source</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">stop</span><span class="p">]:</span>
+            <span class="n">wind_dir</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;wind_dir&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">wind_dir</span> <span class="o">==</span> <span class="bp">None</span> <span class="ow">or</span> <span class="n">wind_dir</span> <span class="o">&gt;=</span> <span class="mi">16</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">eval</span><span class="p">(</span><span class="n">xcalc</span><span class="p">):</span>
+                <span class="k">continue</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="n">ycalc</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">thresh</span><span class="p">)):</span>
+                <span class="k">if</span> <span class="n">value</span> <span class="o">&lt;=</span> <span class="n">thresh</span><span class="p">[</span><span class="n">t</span><span class="p">]:</span>
+                    <span class="n">histograms</span><span class="p">[</span><span class="n">t</span><span class="p">][</span><span class="n">wind_dir</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="k">break</span>
+        <span class="c"># evenly distribute zero speed</span>
+        <span class="n">total</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">16</span><span class="p">):</span>
+            <span class="n">total</span> <span class="o">+=</span> <span class="n">histograms</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">n</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">16</span><span class="p">):</span>
+            <span class="n">histograms</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">total</span> <span class="o">/</span> <span class="mi">16</span>
+        <span class="c"># integrate histograms</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">thresh</span><span class="p">)):</span>
+            <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">16</span><span class="p">):</span>
+                <span class="n">histograms</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">n</span><span class="p">]</span> <span class="o">+=</span> <span class="n">histograms</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">n</span><span class="p">]</span>
+        <span class="n">total</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">16</span><span class="p">):</span>
+            <span class="n">total</span> <span class="o">+=</span> <span class="n">histograms</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">n</span><span class="p">]</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+        <span class="n">yrange</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">GetValue</span><span class="p">(</span><span class="n">plot</span><span class="p">,</span> <span class="s">&#39;yrange&#39;</span><span class="p">,</span> <span class="s">&#39;31&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">yrange</span> <span class="o">==</span> <span class="s">&#39;*&#39;</span><span class="p">:</span>
+            <span class="c"># auto-ranging</span>
+            <span class="k">if</span> <span class="n">total</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">max_petal</span> <span class="o">=</span> <span class="mf">100.0</span> <span class="o">*</span> <span class="nb">float</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">histograms</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">total</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">max_petal</span> <span class="o">=</span> <span class="mf">0.0</span>
+            <span class="k">if</span> <span class="n">max_petal</span> <span class="o">&gt;</span> <span class="mf">40.0</span><span class="p">:</span>
+                <span class="n">yrange</span> <span class="o">=</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">max_petal</span> <span class="o">/</span> <span class="mf">20.0</span><span class="p">)</span> <span class="o">*</span> <span class="mi">20</span><span class="p">)</span> <span class="o">+</span> <span class="mi">21</span>
+            <span class="k">elif</span> <span class="n">max_petal</span> <span class="o">&gt;</span> <span class="mf">30.0</span><span class="p">:</span>
+                <span class="n">yrange</span> <span class="o">=</span> <span class="mi">41</span>
+            <span class="k">elif</span> <span class="n">max_petal</span> <span class="o">&gt;</span> <span class="mf">20.0</span><span class="p">:</span>
+                <span class="n">yrange</span> <span class="o">=</span> <span class="mi">31</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">yrange</span> <span class="o">=</span> <span class="mi">21</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">yrange</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="n">yrange</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">+=</span> <span class="s">&#39;set xrange [-</span><span class="si">%d</span><span class="s">:</span><span class="si">%d</span><span class="s">]</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">yrange</span><span class="p">,</span> <span class="n">yrange</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">+=</span> <span class="s">&#39;set yrange [-</span><span class="si">%d</span><span class="s">:</span><span class="si">%d</span><span class="s">]</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">yrange</span><span class="p">,</span> <span class="n">yrange</span><span class="p">)</span>
+        <span class="n">points</span> <span class="o">=</span> <span class="p">[</span><span class="n">_</span><span class="p">(</span><span class="s">&#39;N&#39;</span><span class="p">),</span> <span class="n">_</span><span class="p">(</span><span class="s">&#39;S&#39;</span><span class="p">),</span> <span class="n">_</span><span class="p">(</span><span class="s">&#39;E&#39;</span><span class="p">),</span> <span class="n">_</span><span class="p">(</span><span class="s">&#39;W&#39;</span><span class="p">)]</span>
+        <span class="n">points</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">GetValue</span><span class="p">(</span><span class="n">plot</span><span class="p">,</span> <span class="s">&#39;points&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">points</span><span class="p">)))</span>
+        <span class="n">result</span> <span class="o">+=</span> <span class="s">&#39;set label 1000 &quot;</span><span class="si">%s</span><span class="s">&quot; at 0, </span><span class="si">%d</span><span class="s"> center front</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">points</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">yrange</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">+=</span> <span class="s">&#39;set label 1001 &quot;</span><span class="si">%s</span><span class="s">&quot; at 0, -</span><span class="si">%d</span><span class="s"> center front</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">points</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">yrange</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">+=</span> <span class="s">&#39;set label 1002 &quot;</span><span class="si">%s</span><span class="s">&quot; at </span><span class="si">%d</span><span class="s">, 0 center front</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">points</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">yrange</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">+=</span> <span class="s">&#39;set label 1003 &quot;</span><span class="si">%s</span><span class="s">&quot; at -</span><span class="si">%d</span><span class="s">, 0 center front</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">points</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">yrange</span><span class="p">)</span>
+        <span class="c"># plot segments for each speed-direction</span>
+        <span class="n">result</span> <span class="o">+=</span> <span class="s">&#39;plot &#39;</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">thresh</span><span class="p">))):</span>
+            <span class="n">dat_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">work_dir</span><span class="p">,</span> <span class="s">&#39;plot_</span><span class="si">%d</span><span class="s">_</span><span class="si">%d</span><span class="s">.dat&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">plot_no</span><span class="p">,</span> <span class="n">i</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tmp_files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dat_file</span><span class="p">)</span>
+            <span class="n">dat</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">dat_file</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">)</span>
+            <span class="n">sub_total</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">16</span><span class="p">):</span>
+                <span class="n">angle</span> <span class="o">=</span> <span class="mf">90.0</span> <span class="o">-</span> <span class="p">(</span><span class="n">n</span> <span class="o">*</span> <span class="mf">22.5</span><span class="p">)</span>
+                <span class="n">sub_total</span> <span class="o">+=</span> <span class="n">histograms</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">n</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">sub_total</span> <span class="o">-=</span> <span class="n">histograms</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">n</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">total</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">value</span> <span class="o">=</span> <span class="mf">100.0</span> <span class="o">*</span> <span class="nb">float</span><span class="p">(</span><span class="n">histograms</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">n</span><span class="p">])</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">total</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">value</span> <span class="o">=</span> <span class="mf">0.0</span>
+                <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">dat</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%g</span><span class="s"> </span><span class="si">%g</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">angle</span> <span class="o">-</span> <span class="mf">11.24</span><span class="p">,</span> <span class="n">value</span> <span class="o">*</span> <span class="mf">0.994</span><span class="p">))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">dat</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%g</span><span class="s"> </span><span class="si">%g</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">angle</span> <span class="o">-</span> <span class="mf">8.1</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+                <span class="n">dat</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%g</span><span class="s"> </span><span class="si">%g</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">angle</span> <span class="o">-</span> <span class="mf">8.0</span><span class="p">,</span> <span class="n">value</span> <span class="o">*</span> <span class="mf">0.997</span><span class="p">))</span>
+                <span class="n">dat</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%g</span><span class="s"> </span><span class="si">%g</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">angle</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span>
+                <span class="n">dat</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%g</span><span class="s"> </span><span class="si">%g</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">angle</span> <span class="o">+</span> <span class="mf">8.0</span><span class="p">,</span> <span class="n">value</span> <span class="o">*</span> <span class="mf">0.997</span><span class="p">))</span>
+                <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">dat</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%g</span><span class="s"> </span><span class="si">%g</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">angle</span> <span class="o">+</span> <span class="mf">11.24</span><span class="p">,</span> <span class="n">value</span> <span class="o">*</span> <span class="mf">0.994</span><span class="p">))</span>
+                    <span class="n">dat</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%g</span><span class="s"> </span><span class="si">%g</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">angle</span> <span class="o">+</span> <span class="mf">11.25</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">dat</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%g</span><span class="s"> </span><span class="si">%g</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">angle</span> <span class="o">+</span> <span class="mf">8.1</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+            <span class="n">dat</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="c"># plot data</span>
+            <span class="k">if</span> <span class="n">total</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="mf">100.0</span> <span class="o">*</span> <span class="nb">float</span><span class="p">(</span><span class="n">sub_total</span><span class="p">)</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">total</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="mf">0.0</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">title</span> <span class="o">=</span> <span class="s">&#39;0 .. </span><span class="si">%g</span><span class="s"> (</span><span class="si">%.3g%%</span><span class="s">)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">thresh</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">value</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">i</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">thresh</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">title</span> <span class="o">=</span> <span class="s">&#39;&gt; </span><span class="si">%g</span><span class="s"> (</span><span class="si">%.3g%%</span><span class="s">)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">thresh</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">value</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">title</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%g</span><span class="s"> .. </span><span class="si">%g</span><span class="s"> (</span><span class="si">%.3g%%</span><span class="s">)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">thresh</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">thresh</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">value</span><span class="p">)</span>
+            <span class="n">result</span> <span class="o">+=</span> <span class="s">&#39;&quot;</span><span class="si">%s</span><span class="s">&quot; using 1:2 title &quot;</span><span class="si">%s</span><span class="s">&quot; with filledcurve lt </span><span class="si">%d</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span>
+                <span class="n">dat_file</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">colour</span><span class="p">[</span><span class="n">i</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">colour</span><span class="p">)])</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">result</span> <span class="o">+=</span> <span class="s">&#39;, </span><span class="se">\\</span><span class="s">&#39;</span>
+            <span class="n">result</span> <span class="o">+=</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span>
+        <span class="k">return</span> <span class="n">result</span></div></div>
+<div class="viewcode-block" id="main"><a class="viewcode-back" href="../../api/pywws.WindRose.html#pywws.WindRose.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">argv</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">argv</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">argv</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">opts</span><span class="p">,</span> <span class="n">args</span> <span class="o">=</span> <span class="n">getopt</span><span class="o">.</span><span class="n">getopt</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="s">&quot;h&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s">&#39;help&#39;</span><span class="p">])</span>
+    <span class="k">except</span> <span class="n">getopt</span><span class="o">.</span><span class="n">error</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span>
+        <span class="k">print</span> <span class="o">&gt;&gt;</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&#39;Error: </span><span class="si">%s</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">msg</span>
+        <span class="k">print</span> <span class="o">&gt;&gt;</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">,</span> <span class="n">__doc__</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">return</span> <span class="mi">1</span>
+    <span class="c"># process options</span>
+    <span class="k">for</span> <span class="n">o</span><span class="p">,</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">opts</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">o</span> <span class="o">==</span> <span class="s">&#39;-h&#39;</span> <span class="ow">or</span> <span class="n">o</span> <span class="o">==</span> <span class="s">&#39;--help&#39;</span><span class="p">:</span>
+            <span class="k">print</span> <span class="n">__doc__</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="k">return</span> <span class="mi">0</span>
+    <span class="c"># check arguments</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">4</span><span class="p">:</span>
+        <span class="k">print</span> <span class="o">&gt;&gt;</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&#39;Error: 4 arguments required</span><span class="se">\n</span><span class="s">&#39;</span>
+        <span class="k">print</span> <span class="o">&gt;&gt;</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">,</span> <span class="n">__doc__</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">return</span> <span class="mi">2</span>
+    <span class="k">return</span> <span class="n">RosePlotter</span><span class="p">(</span>
+        <span class="n">DataStore</span><span class="o">.</span><span class="n">params</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
+        <span class="n">DataStore</span><span class="o">.</span><span class="n">calib_store</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">DataStore</span><span class="o">.</span><span class="n">hourly_store</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
+        <span class="n">DataStore</span><span class="o">.</span><span class="n">daily_store</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">DataStore</span><span class="o">.</span><span class="n">monthly_store</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
+        <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">DoPlot</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">args</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span></div>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">pywws v11.10 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Jim Easterbrook.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.1.
+    </div>
+  </body>
+</html>

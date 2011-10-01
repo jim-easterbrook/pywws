@@ -1,0 +1,21 @@
+
+pywws.ZambrettiCore
+*******************
+
+-[ Functions ]-
+
++------------+--------------------------------------------------------------------------------------------+
+| ``Zambrett | Simple implementation of Zambretti forecaster algorithm.                                   |
+| i``(pressu |                                                                                            |
+| re, month, |                                                                                            |
+| wind,      |                                                                                            |
+| trend[,    |                                                                                            |
+| ...])      |                                                                                            |
++------------+--------------------------------------------------------------------------------------------+
+
+pywws.ZambrettiCore.Zambretti(pressure, month, wind, trend, north=True, baro_top=1050.0, baro_bottom=950.0)
+
+   Simple implementation of Zambretti forecaster algorithm. Inspired
+   by beteljuice.com Java algorithm, as converted to Python by
+   honeysucklecottage.me.uk, and further information from
+   http://www.meteormetrics.com/zambretti.htm

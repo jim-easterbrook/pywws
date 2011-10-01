@@ -1,0 +1,60 @@
+
+pywws.conversions
+*****************
+
+A set of functions to convert pywws native units (Centigrade, mm, m/s,
+hPa) to other popular units.
+
+-[ Functions ]-
+
++------------+--------------------------------------------------------------------------------------------+
+| ``pressure | Convert pressure from hectopascals/millibar to inches of mercury                           |
+| _inhg``(hP |                                                                                            |
+| a)         |                                                                                            |
++------------+--------------------------------------------------------------------------------------------+
+| ``rain_inc | Convert rainfall from millimetres to inches                                                |
+| h``(mm)    |                                                                                            |
++------------+--------------------------------------------------------------------------------------------+
+| ``temp_f`` | Convert temperature from Celsius to Fahrenheit                                             |
+| (c)        |                                                                                            |
++------------+--------------------------------------------------------------------------------------------+
+| ``wind_bft | Convert (wind) wind from metres per second to Beaufort scale                               |
+| ``(ms)     |                                                                                            |
++------------+--------------------------------------------------------------------------------------------+
+| ``wind_kmp | Convert (wind) wind from metres per second to kilometres per hour                          |
+| h``(ms)    |                                                                                            |
++------------+--------------------------------------------------------------------------------------------+
+| ``wind_kn` | Convert (wind) wind from metres per second to knots                                        |
+| `(ms)      |                                                                                            |
++------------+--------------------------------------------------------------------------------------------+
+| ``wind_mph | Convert (wind) wind from metres per second to miles per hour                               |
+| ``(ms)     |                                                                                            |
++------------+--------------------------------------------------------------------------------------------+
+
+pywws.conversions.pressure_inhg(hPa)
+
+   Convert pressure from hectopascals/millibar to inches of mercury
+
+pywws.conversions.rain_inch(mm)
+
+   Convert rainfall from millimetres to inches
+
+pywws.conversions.temp_f(c)
+
+   Convert temperature from Celsius to Fahrenheit
+
+pywws.conversions.wind_bft(ms)
+
+   Convert (wind) wind from metres per second to Beaufort scale
+
+pywws.conversions.wind_kmph(ms)
+
+   Convert (wind) wind from metres per second to kilometres per hour
+
+pywws.conversions.wind_kn(ms)
+
+   Convert (wind) wind from metres per second to knots
+
+pywws.conversions.wind_mph(ms)
+
+   Convert (wind) wind from metres per second to miles per hour

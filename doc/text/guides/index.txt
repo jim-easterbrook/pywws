@@ -1,0 +1,22 @@
+
+User guides
+***********
+
+Contents:
+
+* How to get started with pywws
+* How to set up 'live' logging with pywws
+* How to configure pywws to post messages to Twitter
+* How to make a language file for pywws
+* weather.ini - configuration file format
+  * config: miscellaneous system configuration
+  * paths: directories in which templates etc. are stored
+  * fixed: values copied from the weather station's "fixed block"
+  * live: tasks to be done every 48 seconds
+  * logged: tasks to be done every time the station logs a data record
+  * hourly: tasks to be done every hour
+  * 12 hourly: tasks to be done every 12 hours
+  * daily: tasks to be done every 24 hours
+  * ftp: configuration of uploading to a website
+  * twitter: configuration of posting to Twitter
+  * underground: configuration of posting to Weather Underground

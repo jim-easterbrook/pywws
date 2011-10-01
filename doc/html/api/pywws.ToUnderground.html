@@ -1,0 +1,171 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pywws.ToUnderground &mdash; pywws v11.10 documentation</title>
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '11.10',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="pywws v11.10 documentation" href="../index.html" />
+    <link rel="up" title="Python programs and modules" href="index.html" />
+    <link rel="next" title="pywws.YoWindow" href="pywws.YoWindow.html" />
+    <link rel="prev" title="pywws.ToTwitter" href="pywws.ToTwitter.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="pywws.YoWindow.html" title="pywws.YoWindow"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="pywws.ToTwitter.html" title="pywws.ToTwitter"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">pywws v11.10 documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">Python programs and modules</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-pywws.ToUnderground">
+<span id="pywws-tounderground"></span><h1>pywws.ToUnderground<a class="headerlink" href="#module-pywws.ToUnderground" title="Permalink to this headline">¶</a></h1>
+<p>Post weather update to WeatherUnderground.</p>
+<p>usage: python ToUnderground.py [options] data_dir
+options are:</p>
+<blockquote>
+-h or &#8211;help     display this help
+-c or &#8211;catchup  upload all data since last upload (up to 4 weeks)
+-v or &#8211;verbose  increase amount of reassuring messages</blockquote>
+<p>data_dir is the root directory of the weather data</p>
+<p>StationID and password are read from the weather.ini file in data_dir.</p>
+<p class="rubric">Functions</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr><td><a class="reference internal" href="#pywws.ToUnderground.main" title="pywws.ToUnderground.main"><tt class="xref py py-obj docutils literal"><span class="pre">main</span></tt></a>([argv])</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Classes</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr><td><a class="reference internal" href="#pywws.ToUnderground.ToUnderground" title="pywws.ToUnderground.ToUnderground"><tt class="xref py py-obj docutils literal"><span class="pre">ToUnderground</span></tt></a>(params,&nbsp;calib_data)</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<dl class="class">
+<dt id="pywws.ToUnderground.ToUnderground">
+<em class="property">class </em><tt class="descclassname">pywws.ToUnderground.</tt><tt class="descname">ToUnderground</tt><big>(</big><em>params</em>, <em>calib_data</em><big>)</big><a class="reference internal" href="../_modules/pywws/ToUnderground.html#ToUnderground"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.ToUnderground.ToUnderground" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="pywws.ToUnderground.ToUnderground.RapidFire">
+<tt class="descname">RapidFire</tt><big>(</big><em>data</em>, <em>catchup</em><big>)</big><a class="reference internal" href="../_modules/pywws/ToUnderground.html#ToUnderground.RapidFire"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.ToUnderground.ToUnderground.RapidFire" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pywws.ToUnderground.ToUnderground.SendData">
+<tt class="descname">SendData</tt><big>(</big><em>data</em>, <em>rapid_fire</em><big>)</big><a class="reference internal" href="../_modules/pywws/ToUnderground.html#ToUnderground.SendData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.ToUnderground.ToUnderground.SendData" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pywws.ToUnderground.ToUnderground.Upload">
+<tt class="descname">Upload</tt><big>(</big><em>catchup</em><big>)</big><a class="reference internal" href="../_modules/pywws/ToUnderground.html#ToUnderground.Upload"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.ToUnderground.ToUnderground.Upload" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="pywws.ToUnderground.main">
+<tt class="descclassname">pywws.ToUnderground.</tt><tt class="descname">main</tt><big>(</big><em>argv=None</em><big>)</big><a class="reference internal" href="../_modules/pywws/ToUnderground.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.ToUnderground.main" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="pywws.ToTwitter.html"
+                        title="previous chapter">pywws.ToTwitter</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="pywws.YoWindow.html"
+                        title="next chapter">pywws.YoWindow</a></p>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="pywws.YoWindow.html" title="pywws.YoWindow"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="pywws.ToTwitter.html" title="pywws.ToTwitter"
+             >previous</a> |</li>
+        <li><a href="../index.html">pywws v11.10 documentation</a> &raquo;</li>
+          <li><a href="index.html" >Python programs and modules</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Jim Easterbrook.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.1.
+    </div>
+  </body>
+</html>

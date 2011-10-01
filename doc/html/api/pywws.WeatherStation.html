@@ -1,0 +1,309 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pywws.WeatherStation &mdash; pywws v11.10 documentation</title>
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '11.10',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="pywws v11.10 documentation" href="../index.html" />
+    <link rel="up" title="Python programs and modules" href="index.html" />
+    <link rel="next" title="pywws.DataStore" href="pywws.DataStore.html" />
+    <link rel="prev" title="pywws.YoWindow" href="pywws.YoWindow.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="pywws.DataStore.html" title="pywws.DataStore"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="pywws.YoWindow.html" title="pywws.YoWindow"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">pywws v11.10 documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">Python programs and modules</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="pywws-weatherstation">
+<h1>pywws.WeatherStation<a class="headerlink" href="#pywws-weatherstation" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p>This is the module that actually talks to the weather station base unit. I don&#8217;t have much understanding of USB, so copied a lot from Michael Pendec&#8217;s C program wwsr.</p>
+<p>The weather station memory has two parts: a &#8220;fixed block&#8221; of 256 bytes and a circular buffer of 65280 bytes. As each weather reading takes 16 bytes the station can store 4080 readings, or 14 days of 5-minute interval readings. As data is read in 32-byte chunks, but each weather reading is 16 bytes, a small cache is used to reduce USB traffic. The caching behaviour can be over-ridden with the <tt class="docutils literal"><span class="pre">unbuffered</span></tt> parameter to <tt class="docutils literal"><span class="pre">get_data</span></tt> and <tt class="docutils literal"><span class="pre">get_raw_data</span></tt>.</p>
+<p>Decoding the data is controlled by the static dictionaries <tt class="docutils literal"><span class="pre">reading_format</span></tt>, <tt class="docutils literal"><span class="pre">lo_fix_format</span></tt> and <tt class="docutils literal"><span class="pre">fixed_format</span></tt>. The keys are names of data items and the values can be an <tt class="docutils literal"><span class="pre">(offset,</span> <span class="pre">type</span> <span class="pre">and</span> <span class="pre">multiplier)</span></tt> tuple or another dictionary. So, for example, the reading_format dictionary entry <tt class="docutils literal"><span class="pre">'rain'</span> <span class="pre">:</span> <span class="pre">(13,</span> <span class="pre">'us',</span> <span class="pre">0.3)</span></tt> means that the rain value is an unsigned short (two bytes), 13 bytes from the start of the block, and should be multiplied by 0.3 to get a useful value.</p>
+<p>The use of nested dictionaries in the <tt class="docutils literal"><span class="pre">fixed_format</span></tt> dictionary allows useful subsets of data to be decoded. For example, to decode the entire block <tt class="docutils literal"><span class="pre">get_fixed_block</span></tt> is called with no parameters:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">ws</span> <span class="o">=</span> <span class="n">WeatherStation</span><span class="o">.</span><span class="n">weather_station</span><span class="p">()</span>
+<span class="k">print</span> <span class="n">ws</span><span class="o">.</span><span class="n">get_fixed_block</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>To get the stored minimum external temperature, <tt class="docutils literal"><span class="pre">get_fixed_block</span></tt> is called with a sequence of keys:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">ws</span> <span class="o">=</span> <span class="n">WeatherStation</span><span class="o">.</span><span class="n">weather_station</span><span class="p">()</span>
+<span class="k">print</span> <span class="n">ws</span><span class="o">.</span><span class="n">get_fixed_block</span><span class="p">([</span><span class="s">&#39;min&#39;</span><span class="p">,</span> <span class="s">&#39;temp_out&#39;</span><span class="p">,</span> <span class="s">&#39;val&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>Often there is no requirement to read and decode the entire fixed block, as its first 64 bytes contain the most useful data: the interval between stored readings, the buffer address where the current reading is stored, and the current date &amp; time. The <tt class="docutils literal"><span class="pre">get_lo_fix_block</span></tt> method provides easy access to these.</p>
+<p>For more examples of using the WeatherStation module, see the TestWeatherStation program.</p>
+</div>
+<div class="section" id="module-pywws.WeatherStation">
+<span id="detailed-api"></span><h2>Detailed API<a class="headerlink" href="#module-pywws.WeatherStation" title="Permalink to this headline">¶</a></h2>
+<p>WeatherStation.py - get data from WH1080/WH3080 compatible weather stations</p>
+<p>Derived from wwsr.c by Michael Pendec (<a class="reference external" href="mailto:michael&#46;pendec&#37;&#52;&#48;gmail&#46;com">michael<span>&#46;</span>pendec<span>&#64;</span>gmail<span>&#46;</span>com</a>) and
+wwsrdump.c by Svend Skafte (<a class="reference external" href="mailto:svend&#37;&#52;&#48;skafte&#46;net">svend<span>&#64;</span>skafte<span>&#46;</span>net</a>), modified by Dave Wells.</p>
+<p class="rubric">Functions</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr><td><a class="reference internal" href="#pywws.WeatherStation.apparent_temp" title="pywws.WeatherStation.apparent_temp"><tt class="xref py py-obj docutils literal"><span class="pre">apparent_temp</span></tt></a>(temp,&nbsp;rh,&nbsp;wind)</td>
+<td>Compute apparent temperature (real feel), using formula from</td>
+</tr>
+<tr><td><a class="reference internal" href="#pywws.WeatherStation.dew_point" title="pywws.WeatherStation.dew_point"><tt class="xref py py-obj docutils literal"><span class="pre">dew_point</span></tt></a>(temp,&nbsp;hum)</td>
+<td>Compute dew point, using formula from</td>
+</tr>
+<tr><td><a class="reference internal" href="#pywws.WeatherStation.findDevice" title="pywws.WeatherStation.findDevice"><tt class="xref py py-obj docutils literal"><span class="pre">findDevice</span></tt></a>(idVendor,&nbsp;idProduct)</td>
+<td>Find a USB device by product and vendor id.</td>
+</tr>
+<tr><td><a class="reference internal" href="#pywws.WeatherStation.get_wind_dir_text" title="pywws.WeatherStation.get_wind_dir_text"><tt class="xref py py-obj docutils literal"><span class="pre">get_wind_dir_text</span></tt></a>()</td>
+<td>Return an array to convert wind direction integer to a string.</td>
+</tr>
+<tr><td><a class="reference internal" href="#pywws.WeatherStation.pressure_trend_text" title="pywws.WeatherStation.pressure_trend_text"><tt class="xref py py-obj docutils literal"><span class="pre">pressure_trend_text</span></tt></a>(trend)</td>
+<td>Convert pressure trend to a string, see</td>
+</tr>
+<tr><td><a class="reference internal" href="#pywws.WeatherStation.set_translation" title="pywws.WeatherStation.set_translation"><tt class="xref py py-obj docutils literal"><span class="pre">set_translation</span></tt></a>(trans_function)</td>
+<td>Set the localisation translation function to be used by wind_dir_text</td>
+</tr>
+<tr><td><a class="reference internal" href="#pywws.WeatherStation.wind_chill" title="pywws.WeatherStation.wind_chill"><tt class="xref py py-obj docutils literal"><span class="pre">wind_chill</span></tt></a>(temp,&nbsp;wind)</td>
+<td>Compute wind chill, using formula from</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Classes</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr><td><tt class="xref py py-obj docutils literal"><span class="pre">CUSBDrive</span></tt></td>
+<td></td>
+</tr>
+<tr><td><a class="reference internal" href="#pywws.WeatherStation.weather_station" title="pywws.WeatherStation.weather_station"><tt class="xref py py-obj docutils literal"><span class="pre">weather_station</span></tt></a>([ws_type])</td>
+<td>Class that represents the weather station to user program.</td>
+</tr>
+</tbody>
+</table>
+<dl class="function">
+<dt id="pywws.WeatherStation.apparent_temp">
+<tt class="descclassname">pywws.WeatherStation.</tt><tt class="descname">apparent_temp</tt><big>(</big><em>temp</em>, <em>rh</em>, <em>wind</em><big>)</big><a class="reference internal" href="../_modules/pywws/WeatherStation.html#apparent_temp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.WeatherStation.apparent_temp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute apparent temperature (real feel), using formula from
+<a class="reference external" href="http://www.bom.gov.au/info/thermal_stress/">http://www.bom.gov.au/info/thermal_stress/</a></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pywws.WeatherStation.dew_point">
+<tt class="descclassname">pywws.WeatherStation.</tt><tt class="descname">dew_point</tt><big>(</big><em>temp</em>, <em>hum</em><big>)</big><a class="reference internal" href="../_modules/pywws/WeatherStation.html#dew_point"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.WeatherStation.dew_point" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute dew point, using formula from
+<a class="reference external" href="http://en.wikipedia.org/wiki/Dew_point">http://en.wikipedia.org/wiki/Dew_point</a>.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pywws.WeatherStation.findDevice">
+<tt class="descclassname">pywws.WeatherStation.</tt><tt class="descname">findDevice</tt><big>(</big><em>idVendor</em>, <em>idProduct</em><big>)</big><a class="reference internal" href="../_modules/pywws/WeatherStation.html#findDevice"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.WeatherStation.findDevice" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find a USB device by product and vendor id.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pywws.WeatherStation.get_wind_dir_text">
+<tt class="descclassname">pywws.WeatherStation.</tt><tt class="descname">get_wind_dir_text</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/pywws/WeatherStation.html#get_wind_dir_text"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.WeatherStation.get_wind_dir_text" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an array to convert wind direction integer to a string.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pywws.WeatherStation.pressure_trend_text">
+<tt class="descclassname">pywws.WeatherStation.</tt><tt class="descname">pressure_trend_text</tt><big>(</big><em>trend</em><big>)</big><a class="reference internal" href="../_modules/pywws/WeatherStation.html#pressure_trend_text"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.WeatherStation.pressure_trend_text" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert pressure trend to a string, see
+<a class="reference external" href="http://www.reedsonline.com/weather/weather-terms.htm">http://www.reedsonline.com/weather/weather-terms.htm</a>.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pywws.WeatherStation.set_translation">
+<tt class="descclassname">pywws.WeatherStation.</tt><tt class="descname">set_translation</tt><big>(</big><em>trans_function</em><big>)</big><a class="reference internal" href="../_modules/pywws/WeatherStation.html#set_translation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.WeatherStation.set_translation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the localisation translation function to be used by wind_dir_text
+and pressure_trend_text.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="pywws.WeatherStation.weather_station">
+<em class="property">class </em><tt class="descclassname">pywws.WeatherStation.</tt><tt class="descname">weather_station</tt><big>(</big><em>ws_type='1080'</em><big>)</big><a class="reference internal" href="../_modules/pywws/WeatherStation.html#weather_station"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.WeatherStation.weather_station" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class that represents the weather station to user program.</p>
+<dl class="method">
+<dt id="pywws.WeatherStation.weather_station.current_pos">
+<tt class="descname">current_pos</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/pywws/WeatherStation.html#weather_station.current_pos"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.WeatherStation.weather_station.current_pos" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get circular buffer location where current data is being written.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pywws.WeatherStation.weather_station.dec_ptr">
+<tt class="descname">dec_ptr</tt><big>(</big><em>ptr</em><big>)</big><a class="reference internal" href="../_modules/pywws/WeatherStation.html#weather_station.dec_ptr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.WeatherStation.weather_station.dec_ptr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get previous circular buffer data pointer.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pywws.WeatherStation.weather_station.get_data">
+<tt class="descname">get_data</tt><big>(</big><em>ptr</em>, <em>unbuffered=False</em><big>)</big><a class="reference internal" href="../_modules/pywws/WeatherStation.html#weather_station.get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.WeatherStation.weather_station.get_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get decoded data from circular buffer.</p>
+<p>If unbuffered is false then a cached value that was obtained
+earlier may be returned.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pywws.WeatherStation.weather_station.get_fixed_block">
+<tt class="descname">get_fixed_block</tt><big>(</big><em>keys=</em><span class="optional">[</span><span class="optional">]</span>, <em>unbuffered=False</em><big>)</big><a class="reference internal" href="../_modules/pywws/WeatherStation.html#weather_station.get_fixed_block"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.WeatherStation.weather_station.get_fixed_block" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the decoded &#8220;fixed block&#8221; of settings and min/max data.</p>
+<p>A subset of the entire block can be selected by keys.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pywws.WeatherStation.weather_station.get_lo_fix_block">
+<tt class="descname">get_lo_fix_block</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/pywws/WeatherStation.html#weather_station.get_lo_fix_block"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.WeatherStation.weather_station.get_lo_fix_block" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the first 64 bytes of the raw &#8220;fixed block&#8221;.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pywws.WeatherStation.weather_station.get_raw_data">
+<tt class="descname">get_raw_data</tt><big>(</big><em>ptr</em>, <em>unbuffered=False</em><big>)</big><a class="reference internal" href="../_modules/pywws/WeatherStation.html#weather_station.get_raw_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.WeatherStation.weather_station.get_raw_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get raw data from circular buffer.</p>
+<p>If unbuffered is false then a cached value that was obtained
+earlier may be returned.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pywws.WeatherStation.weather_station.get_raw_fixed_block">
+<tt class="descname">get_raw_fixed_block</tt><big>(</big><em>unbuffered=False</em><big>)</big><a class="reference internal" href="../_modules/pywws/WeatherStation.html#weather_station.get_raw_fixed_block"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.WeatherStation.weather_station.get_raw_fixed_block" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the raw &#8220;fixed block&#8221; of settings and min/max data.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pywws.WeatherStation.weather_station.inc_ptr">
+<tt class="descname">inc_ptr</tt><big>(</big><em>ptr</em><big>)</big><a class="reference internal" href="../_modules/pywws/WeatherStation.html#weather_station.inc_ptr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.WeatherStation.weather_station.inc_ptr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get next circular buffer data pointer.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pywws.WeatherStation.weather_station.live_data">
+<tt class="descname">live_data</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/pywws/WeatherStation.html#weather_station.live_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.WeatherStation.weather_station.live_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pywws.WeatherStation.weather_station.write_data">
+<tt class="descname">write_data</tt><big>(</big><em>data</em><big>)</big><a class="reference internal" href="../_modules/pywws/WeatherStation.html#weather_station.write_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.WeatherStation.weather_station.write_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write a set of single bytes to the weather station. Data must be an
+array of (ptr, value) pairs.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="pywws.WeatherStation.wind_chill">
+<tt class="descclassname">pywws.WeatherStation.</tt><tt class="descname">wind_chill</tt><big>(</big><em>temp</em>, <em>wind</em><big>)</big><a class="reference internal" href="../_modules/pywws/WeatherStation.html#wind_chill"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.WeatherStation.wind_chill" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute wind chill, using formula from
+<a class="reference external" href="http://en.wikipedia.org/wiki/wind_chill">http://en.wikipedia.org/wiki/wind_chill</a></p>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">pywws.WeatherStation</a><ul>
+<li><a class="reference internal" href="#introduction">Introduction</a></li>
+<li><a class="reference internal" href="#module-pywws.WeatherStation">Detailed API</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="pywws.YoWindow.html"
+                        title="previous chapter">pywws.YoWindow</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="pywws.DataStore.html"
+                        title="next chapter">pywws.DataStore</a></p>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="pywws.DataStore.html" title="pywws.DataStore"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="pywws.YoWindow.html" title="pywws.YoWindow"
+             >previous</a> |</li>
+        <li><a href="../index.html">pywws v11.10 documentation</a> &raquo;</li>
+          <li><a href="index.html" >Python programs and modules</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Jim Easterbrook.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.1.
+    </div>
+  </body>
+</html>

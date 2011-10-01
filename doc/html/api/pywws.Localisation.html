@@ -1,0 +1,172 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pywws.Localisation &mdash; pywws v11.10 documentation</title>
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '11.10',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="pywws v11.10 documentation" href="../index.html" />
+    <link rel="up" title="Python programs and modules" href="index.html" />
+    <link rel="next" title="pywws.calib" href="pywws.calib.html" />
+    <link rel="prev" title="pywws.TimeZone" href="pywws.TimeZone.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="pywws.calib.html" title="pywws.calib"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="pywws.TimeZone.html" title="pywws.TimeZone"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">pywws v11.10 documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">Python programs and modules</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="pywws-localisation">
+<h1>pywws.Localisation<a class="headerlink" href="#pywws-localisation" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p>Some of the pywws modules, such as WindRose.py, can automatically use your local language for such things as wind directions. The Localisation.py module, mostly copied from examples in the Python documentation, enables this.</p>
+<p>Before using pywws in your local language, you may need to write a translation file. Human languages have been given codes, such as &#8216;en_GB&#8217; for British English or &#8216;fr_CA&#8217; for Canadian French. To find out what language code you need, have a look at your computer&#8217;s <tt class="docutils literal"><span class="pre">LANG</span></tt> environment variable with this command:</p>
+<div class="highlight-python"><pre>echo $LANG</pre>
+</div>
+<p>Now have a look in the &#8216;languages&#8217; directory in your pywws installation. If there is a .po file whose name matches the first two characters of your <tt class="docutils literal"><span class="pre">LANG</span></tt> environment variable, then you don&#8217;t need to do anything.</p>
+</div>
+<div class="section" id="creating-a-new-translation">
+<h2>Creating a new translation<a class="headerlink" href="#creating-a-new-translation" title="Permalink to this headline">¶</a></h2>
+<p>To create a new language file, first convert the supplied pywws.pot file to a template. For example, to create a French language template:</p>
+<div class="highlight-python"><pre>make lang LANG=fr</pre>
+</div>
+<p>This should create a suitable file, e.g. &#8216;fr.po&#8217; in the &#8216;languages&#8217; directory. Now edit the new .po file and translate all the &#8216;msgstr&#8217; strings to your language.</p>
+<p>Before the language file can be used, it needs to be converted to a machine readable form by running make again:</p>
+<div class="highlight-python"><pre>make lang</pre>
+</div>
+<p>When you are satisfied with your translation effort, please send me a copy of the .po file to add to the pywws distribution.</p>
+</div>
+<div class="section" id="using-a-different-language">
+<h2>Using a different language<a class="headerlink" href="#using-a-different-language" title="Permalink to this headline">¶</a></h2>
+<p>If you want pywws to use a different language to that specified by your <tt class="docutils literal"><span class="pre">LANG</span></tt> environment variable, you can specify it in your weather.ini file. Choose a language for which a translation exists, for example &#8216;en&#8217;, then add it to your weather.ini file as follows:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">[</span><span class="n">config</span><span class="p">]</span>
+<span class="n">language</span> <span class="o">=</span> <span class="n">en</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="module-pywws.Localisation">
+<span id="detailed-api"></span><h2>Detailed API<a class="headerlink" href="#module-pywws.Localisation" title="Permalink to this headline">¶</a></h2>
+<p>Localisation.py - provide translations of strings into local language</p>
+<p class="rubric">Functions</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr><td><a class="reference internal" href="#pywws.Localisation.GetTranslation" title="pywws.Localisation.GetTranslation"><tt class="xref py py-obj docutils literal"><span class="pre">GetTranslation</span></tt></a>(params)</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<dl class="function">
+<dt id="pywws.Localisation.GetTranslation">
+<tt class="descclassname">pywws.Localisation.</tt><tt class="descname">GetTranslation</tt><big>(</big><em>params</em><big>)</big><a class="reference internal" href="../_modules/pywws/Localisation.html#GetTranslation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.Localisation.GetTranslation" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">pywws.Localisation</a><ul>
+<li><a class="reference internal" href="#introduction">Introduction</a></li>
+<li><a class="reference internal" href="#creating-a-new-translation">Creating a new translation</a></li>
+<li><a class="reference internal" href="#using-a-different-language">Using a different language</a></li>
+<li><a class="reference internal" href="#module-pywws.Localisation">Detailed API</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="pywws.TimeZone.html"
+                        title="previous chapter">pywws.TimeZone</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="pywws.calib.html"
+                        title="next chapter">pywws.calib</a></p>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="pywws.calib.html" title="pywws.calib"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="pywws.TimeZone.html" title="pywws.TimeZone"
+             >previous</a> |</li>
+        <li><a href="../index.html">pywws v11.10 documentation</a> &raquo;</li>
+          <li><a href="index.html" >Python programs and modules</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Jim Easterbrook.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.1.
+    </div>
+  </body>
+</html>

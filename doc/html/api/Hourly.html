@@ -1,0 +1,174 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Hourly &mdash; pywws v11.10 documentation</title>
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '11.10',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="pywws v11.10 documentation" href="../index.html" />
+    <link rel="up" title="Python programs and modules" href="index.html" />
+    <link rel="next" title="LiveLog" href="LiveLog.html" />
+    <link rel="prev" title="pywws.Logger" href="pywws.Logger.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="LiveLog.html" title="LiveLog"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="pywws.Logger.html" title="pywws.Logger"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">pywws v11.10 documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">Python programs and modules</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="hourly">
+<h1>Hourly<a class="headerlink" href="#hourly" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p>This script does nothing more than call other modules in sequence to get data from the weather station, process it, plot some graphs, generate some text files and upload the results to a web site.</p>
+<p>The first time Hourly.py is run it will create the following entries in <tt class="docutils literal"><span class="pre">weather.ini</span></tt>. Edit these to suit your installation and preferences. The &#8220;work&#8221; directory is used to store temporary files when plotting graphs.</p>
+<div class="highlight-python"><pre>[paths]
+templates = ~/weather/templates/
+graph_templates = ~/weather/graph_templates/
+work = /tmp/weather</pre>
+</div>
+<p>Once you have it working to your satisfaction, it&#8217;s probably worth setting up a cron job to call it every hour or few hours or day, according to your needs. I run it on the hour, so my crontab entry is:</p>
+<div class="highlight-python"><pre>0 * * * *       /home/jim/weather/Hourly.py</pre>
+</div>
+<p>The only unusual feature of this script is that if any errors occur (such as not being able to connect to the website when uploading) then those parts will be repeated, up to three times in total.</p>
+</div>
+<div class="section" id="module-Hourly">
+<span id="detailed-api"></span><h2>Detailed API<a class="headerlink" href="#module-Hourly" title="Permalink to this headline">¶</a></h2>
+<p>Get weather data, process it, prepare graphs &amp; text files and
+upload to a web site.</p>
+<p>Typically run every hour from cron.
+Comment out or remove the bits you don&#8217;t need.</p>
+<p>usage: python Hourly.py [options] data_dir
+options are:</p>
+<blockquote>
+-h or &#8211;help            display this help
+-v or &#8211;verbose         increase amount of reassuring messages</blockquote>
+<p>data_dir is the root directory of the weather data (e.g. $(HOME)/weather/data)</p>
+<p class="rubric">Functions</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr><td><a class="reference internal" href="#Hourly.Hourly" title="Hourly.Hourly"><tt class="xref py py-obj docutils literal"><span class="pre">Hourly</span></tt></a>(data_dir)</td>
+<td></td>
+</tr>
+<tr><td><a class="reference internal" href="#Hourly.main" title="Hourly.main"><tt class="xref py py-obj docutils literal"><span class="pre">main</span></tt></a>([argv])</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<dl class="function">
+<dt id="Hourly.Hourly">
+<tt class="descclassname">Hourly.</tt><tt class="descname">Hourly</tt><big>(</big><em>data_dir</em><big>)</big><a class="reference internal" href="../_modules/Hourly.html#Hourly"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Hourly.Hourly" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="Hourly.main">
+<tt class="descclassname">Hourly.</tt><tt class="descname">main</tt><big>(</big><em>argv=None</em><big>)</big><a class="reference internal" href="../_modules/Hourly.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Hourly.main" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Hourly</a><ul>
+<li><a class="reference internal" href="#introduction">Introduction</a></li>
+<li><a class="reference internal" href="#module-Hourly">Detailed API</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="pywws.Logger.html"
+                        title="previous chapter">pywws.Logger</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="LiveLog.html"
+                        title="next chapter">LiveLog</a></p>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="LiveLog.html" title="LiveLog"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="pywws.Logger.html" title="pywws.Logger"
+             >previous</a> |</li>
+        <li><a href="../index.html">pywws v11.10 documentation</a> &raquo;</li>
+          <li><a href="index.html" >Python programs and modules</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Jim Easterbrook.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.1.
+    </div>
+  </body>
+</html>

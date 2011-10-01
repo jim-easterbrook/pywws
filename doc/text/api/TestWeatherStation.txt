@@ -1,0 +1,49 @@
+
+TestWeatherStation
+******************
+
+
+Introduction
+============
+
+This is a simple utility to test communication with the weather
+station. If this doesn't work, then there's a problem that needs to be
+sorted out before trying any of the other programs. Likely problems
+include not properly installing libusb or PyUSB. Less likely problems
+include an incompatibility between libusb and some operating systems.
+The most unlikely problem is that you forgot to connect the weather
+station to your computer!
+
+
+Detailed API
+============
+
+Test connection to weather station.
+
+usage: python TestWeatherStation.py [options] options are:
+
+      --help
+
+      display this help
+
+   -3 | --3080           station is a '3080' type instead of a '1080'
+   -d | --decode         display meaningful values instead of raw data
+   -h | --history count  display the last "count" readings -l | --live
+   display 'live' data -u | --unknown        display unknown fixed
+   block values -v | --verbose        increase amount of reassuring
+   messages
+
+-[ Functions ]-
+
++------------+--------------------------------------------------------------------------------------------+
+| ``main``([ |                                                                                            |
+| argv])     |                                                                                            |
++------------+--------------------------------------------------------------------------------------------+
+| ``raw_dump |                                                                                            |
+| ``(pos,    |                                                                                            |
+| data)      |                                                                                            |
++------------+--------------------------------------------------------------------------------------------+
+
+TestWeatherStation.main(argv=None)
+
+TestWeatherStation.raw_dump(pos, data)

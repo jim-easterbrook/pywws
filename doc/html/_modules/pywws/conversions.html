@@ -1,0 +1,147 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pywws.conversions &mdash; pywws v11.10 documentation</title>
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '11.10',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="pywws v11.10 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">pywws v11.10 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for pywws.conversions</h1><div class="highlight"><pre>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">A set of functions to convert pywws native units (Centigrade, mm, m/s, hPa) to</span>
+<span class="sd">other popular units.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="pressure_inhg"><a class="viewcode-back" href="../../api/pywws.conversions.html#pywws.conversions.pressure_inhg">[docs]</a><span class="k">def</span> <span class="nf">pressure_inhg</span><span class="p">(</span><span class="n">hPa</span><span class="p">):</span>
+    <span class="s">&quot;Convert pressure from hectopascals/millibar to inches of mercury&quot;</span>
+    <span class="k">return</span> <span class="n">hPa</span> <span class="o">/</span> <span class="mf">33.86389</span>
+</div>
+<div class="viewcode-block" id="rain_inch"><a class="viewcode-back" href="../../api/pywws.conversions.html#pywws.conversions.rain_inch">[docs]</a><span class="k">def</span> <span class="nf">rain_inch</span><span class="p">(</span><span class="n">mm</span><span class="p">):</span>
+    <span class="s">&quot;Convert rainfall from millimetres to inches&quot;</span>
+    <span class="k">return</span> <span class="n">mm</span> <span class="o">/</span> <span class="mf">25.4</span>
+</div>
+<div class="viewcode-block" id="temp_f"><a class="viewcode-back" href="../../api/pywws.conversions.html#pywws.conversions.temp_f">[docs]</a><span class="k">def</span> <span class="nf">temp_f</span><span class="p">(</span><span class="n">c</span><span class="p">):</span>
+    <span class="s">&quot;Convert temperature from Celsius to Fahrenheit&quot;</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">c</span> <span class="o">*</span> <span class="mf">9.0</span> <span class="o">/</span> <span class="mf">5.0</span><span class="p">)</span> <span class="o">+</span> <span class="mf">32.0</span>
+</div>
+<div class="viewcode-block" id="wind_kmph"><a class="viewcode-back" href="../../api/pywws.conversions.html#pywws.conversions.wind_kmph">[docs]</a><span class="k">def</span> <span class="nf">wind_kmph</span><span class="p">(</span><span class="n">ms</span><span class="p">):</span>
+    <span class="s">&quot;Convert (wind) wind from metres per second to kilometres per hour&quot;</span>
+    <span class="k">return</span> <span class="n">ms</span> <span class="o">*</span> <span class="mf">3.6</span>
+</div>
+<div class="viewcode-block" id="wind_mph"><a class="viewcode-back" href="../../api/pywws.conversions.html#pywws.conversions.wind_mph">[docs]</a><span class="k">def</span> <span class="nf">wind_mph</span><span class="p">(</span><span class="n">ms</span><span class="p">):</span>
+    <span class="s">&quot;Convert (wind) wind from metres per second to miles per hour&quot;</span>
+    <span class="k">return</span> <span class="n">ms</span> <span class="o">*</span> <span class="mf">3.6</span> <span class="o">/</span> <span class="mf">1.609344</span>
+</div>
+<div class="viewcode-block" id="wind_kn"><a class="viewcode-back" href="../../api/pywws.conversions.html#pywws.conversions.wind_kn">[docs]</a><span class="k">def</span> <span class="nf">wind_kn</span><span class="p">(</span><span class="n">ms</span><span class="p">):</span>
+    <span class="s">&quot;Convert (wind) wind from metres per second to knots&quot;</span>
+    <span class="k">return</span> <span class="n">ms</span> <span class="o">*</span> <span class="mf">3.6</span> <span class="o">/</span> <span class="mf">1.852</span>
+</div>
+<div class="viewcode-block" id="wind_bft"><a class="viewcode-back" href="../../api/pywws.conversions.html#pywws.conversions.wind_bft">[docs]</a><span class="k">def</span> <span class="nf">wind_bft</span><span class="p">(</span><span class="n">ms</span><span class="p">):</span>
+    <span class="s">&quot;Convert (wind) wind from metres per second to Beaufort scale&quot;</span>
+    <span class="k">if</span> <span class="n">ms</span> <span class="o">&lt;</span> <span class="mf">0.3</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">0</span>
+    <span class="k">elif</span> <span class="n">ms</span> <span class="o">&lt;=</span> <span class="mf">1.5</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">1</span>
+    <span class="k">elif</span> <span class="n">ms</span> <span class="o">&lt;=</span> <span class="mf">3.4</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">2</span>
+    <span class="k">elif</span> <span class="n">ms</span> <span class="o">&lt;=</span> <span class="mf">5.4</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">3</span>
+    <span class="k">elif</span> <span class="n">ms</span> <span class="o">&lt;=</span> <span class="mf">7.9</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">4</span>
+    <span class="k">elif</span> <span class="n">ms</span> <span class="o">&lt;=</span> <span class="mf">10.7</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">5</span>
+    <span class="k">elif</span> <span class="n">ms</span> <span class="o">&lt;=</span> <span class="mf">13.8</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">6</span>
+    <span class="k">elif</span> <span class="n">ms</span> <span class="o">&lt;=</span> <span class="mf">17.1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">7</span>
+    <span class="k">elif</span> <span class="n">ms</span> <span class="o">&lt;=</span> <span class="mf">20.7</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">8</span>
+    <span class="k">elif</span> <span class="n">ms</span> <span class="o">&lt;=</span> <span class="mf">24.4</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">9</span>
+    <span class="k">elif</span> <span class="n">ms</span> <span class="o">&lt;=</span> <span class="mf">28.4</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">10</span>
+    <span class="k">elif</span> <span class="n">ms</span> <span class="o">&lt;=</span> <span class="mf">32.6</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">11</span>
+    <span class="k">return</span> <span class="mi">12</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">pywws v11.10 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Jim Easterbrook.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.1.
+    </div>
+  </body>
+</html>

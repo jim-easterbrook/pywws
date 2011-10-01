@@ -1,0 +1,41 @@
+
+pywws.ToUnderground
+*******************
+
+Post weather update to WeatherUnderground.
+
+usage: python ToUnderground.py [options] data_dir options are:
+
+   -h or --help     display this help -c or --catchup  upload all data
+   since last upload (up to 4 weeks) -v or --verbose  increase amount
+   of reassuring messages
+
+data_dir is the root directory of the weather data
+
+StationID and password are read from the weather.ini file in data_dir.
+
+-[ Functions ]-
+
++------------+--------------------------------------------------------------------------------------------+
+| ``main``([ |                                                                                            |
+| argv])     |                                                                                            |
++------------+--------------------------------------------------------------------------------------------+
+
+-[ Classes ]-
+
++------------+--------------------------------------------------------------------------------------------+
+| ``ToUnderg |                                                                                            |
+| round``(pa |                                                                                            |
+| rams, cali |                                                                                            |
+| b_data)    |                                                                                            |
++------------+--------------------------------------------------------------------------------------------+
+
+class class pywws.ToUnderground.ToUnderground(params, calib_data)
+
+   RapidFire(data, catchup)
+
+   SendData(data, rapid_fire)
+
+   Upload(catchup)
+
+pywws.ToUnderground.main(argv=None)

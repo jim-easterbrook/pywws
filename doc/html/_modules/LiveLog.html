@@ -1,0 +1,252 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>LiveLog &mdash; pywws v11.10 documentation</title>
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '11.10',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="pywws v11.10 documentation" href="../index.html" />
+    <link rel="up" title="Module code" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../index.html">pywws v11.10 documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for LiveLog</h1><div class="highlight"><pre>
+<span class="c">#!/usr/bin/env python</span>
+
+<span class="sd">&quot;&quot;&quot;Get weather data, store it, and process it.</span>
+
+<span class="sd">Run this continuously, having set what tasks are to be done.</span>
+
+<span class="sd">usage: python LiveLog.py [options] data_dir</span>
+<span class="sd">options are:</span>
+<span class="sd">  -h      or --help      display this help</span>
+<span class="sd">  -l file or --log file  write log information to file</span>
+<span class="sd">  -v      or --verbose   increase amount of reassuring messages</span>
+<span class="sd">data_dir is the root directory of the weather data (e.g. /data/weather)</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
+<span class="kn">import</span> <span class="nn">getopt</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+<span class="kn">from</span> <span class="nn">pywws</span> <span class="kn">import</span> <span class="n">DataStore</span>
+<span class="kn">from</span> <span class="nn">pywws</span> <span class="kn">import</span> <span class="n">Localisation</span>
+<span class="kn">from</span> <span class="nn">pywws.Logger</span> <span class="kn">import</span> <span class="n">ApplicationLogger</span>
+<span class="kn">from</span> <span class="nn">pywws</span> <span class="kn">import</span> <span class="n">Process</span>
+<span class="kn">from</span> <span class="nn">pywws</span> <span class="kn">import</span> <span class="n">Tasks</span>
+<span class="kn">from</span> <span class="nn">pywws</span> <span class="kn">import</span> <span class="n">WeatherStation</span>
+
+<div class="viewcode-block" id="CheckFixedBlock"><a class="viewcode-back" href="../api/LiveLog.html#LiveLog.CheckFixedBlock">[docs]</a><span class="k">def</span> <span class="nf">CheckFixedBlock</span><span class="p">(</span><span class="n">ws</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">logger</span><span class="p">):</span>
+    <span class="n">fixed_block</span> <span class="o">=</span> <span class="n">ws</span><span class="o">.</span><span class="n">get_fixed_block</span><span class="p">(</span><span class="n">unbuffered</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">fixed_block</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">None</span>
+    <span class="c"># check clocks</span>
+    <span class="n">s_time</span> <span class="o">=</span> <span class="n">DataStore</span><span class="o">.</span><span class="n">safestrptime</span><span class="p">(</span><span class="n">fixed_block</span><span class="p">[</span><span class="s">&#39;date_time&#39;</span><span class="p">],</span> <span class="s">&#39;%Y-%m-</span><span class="si">%d</span><span class="s"> %H:%M&#39;</span><span class="p">)</span>
+    <span class="n">c_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">second</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">microsecond</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">diff</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">s_time</span> <span class="o">-</span> <span class="n">c_time</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">diff</span> <span class="o">&gt;</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">minutes</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+            <span class="s">&quot;Computer and weather station clocks disagree by </span><span class="si">%s</span><span class="s"> (H:M:S).&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">diff</span><span class="p">))</span>
+    <span class="c"># store info from fixed block</span>
+    <span class="n">pressure_offset</span> <span class="o">=</span> <span class="n">fixed_block</span><span class="p">[</span><span class="s">&#39;rel_pressure&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">fixed_block</span><span class="p">[</span><span class="s">&#39;abs_pressure&#39;</span><span class="p">]</span>
+    <span class="n">old_offset</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;fixed&#39;</span><span class="p">,</span> <span class="s">&#39;pressure offset&#39;</span><span class="p">,</span> <span class="s">&#39;None&#39;</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">old_offset</span> <span class="ow">and</span> <span class="nb">abs</span><span class="p">(</span><span class="n">old_offset</span> <span class="o">-</span> <span class="n">pressure_offset</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">0.01</span><span class="p">:</span>
+        <span class="c"># re-read fixed block, as can get incorrect values</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s">&#39;Re-read fixed block&#39;</span><span class="p">)</span>
+        <span class="n">fixed_block</span> <span class="o">=</span> <span class="n">ws</span><span class="o">.</span><span class="n">get_fixed_block</span><span class="p">(</span><span class="n">unbuffered</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">fixed_block</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">None</span>
+        <span class="n">pressure_offset</span> <span class="o">=</span> <span class="n">fixed_block</span><span class="p">[</span><span class="s">&#39;rel_pressure&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">fixed_block</span><span class="p">[</span><span class="s">&#39;abs_pressure&#39;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">old_offset</span> <span class="ow">and</span> <span class="nb">abs</span><span class="p">(</span><span class="n">old_offset</span> <span class="o">-</span> <span class="n">pressure_offset</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">0.01</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+            <span class="s">&#39;Pressure offset change: </span><span class="si">%g</span><span class="s"> -&gt; </span><span class="si">%g</span><span class="s">&#39;</span><span class="p">,</span> <span class="n">old_offset</span><span class="p">,</span> <span class="n">pressure_offset</span><span class="p">)</span>
+    <span class="n">params</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s">&#39;fixed&#39;</span><span class="p">,</span> <span class="s">&#39;pressure offset&#39;</span><span class="p">,</span> <span class="s">&#39;</span><span class="si">%g</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">pressure_offset</span><span class="p">))</span>
+    <span class="n">params</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">fixed_block</span></div>
+<div class="viewcode-block" id="LiveLog"><a class="viewcode-back" href="../api/LiveLog.html#LiveLog.LiveLog">[docs]</a><span class="k">def</span> <span class="nf">LiveLog</span><span class="p">(</span><span class="n">data_dir</span><span class="p">):</span>
+    <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s">&#39;pywws.LiveLog&#39;</span><span class="p">)</span>
+    <span class="n">params</span> <span class="o">=</span> <span class="n">DataStore</span><span class="o">.</span><span class="n">params</span><span class="p">(</span><span class="n">data_dir</span><span class="p">)</span>
+    <span class="c"># connect to weather station</span>
+    <span class="n">ws_type</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;config&#39;</span><span class="p">,</span> <span class="s">&#39;ws type&#39;</span><span class="p">,</span> <span class="s">&#39;1080&#39;</span><span class="p">)</span>
+    <span class="n">ws</span> <span class="o">=</span> <span class="n">WeatherStation</span><span class="o">.</span><span class="n">weather_station</span><span class="p">(</span><span class="n">ws_type</span><span class="o">=</span><span class="n">ws_type</span><span class="p">)</span>
+    <span class="n">fixed_block</span> <span class="o">=</span> <span class="n">CheckFixedBlock</span><span class="p">(</span><span class="n">ws</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">logger</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">fixed_block</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&quot;Invalid data from weather station&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="mi">3</span>
+    <span class="c"># open data file stores</span>
+    <span class="n">raw_data</span> <span class="o">=</span> <span class="n">DataStore</span><span class="o">.</span><span class="n">data_store</span><span class="p">(</span><span class="n">data_dir</span><span class="p">)</span>
+    <span class="n">calib_data</span> <span class="o">=</span> <span class="n">DataStore</span><span class="o">.</span><span class="n">calib_store</span><span class="p">(</span><span class="n">data_dir</span><span class="p">)</span>
+    <span class="n">hourly_data</span> <span class="o">=</span> <span class="n">DataStore</span><span class="o">.</span><span class="n">hourly_store</span><span class="p">(</span><span class="n">data_dir</span><span class="p">)</span>
+    <span class="n">daily_data</span> <span class="o">=</span> <span class="n">DataStore</span><span class="o">.</span><span class="n">daily_store</span><span class="p">(</span><span class="n">data_dir</span><span class="p">)</span>
+    <span class="n">monthly_data</span> <span class="o">=</span> <span class="n">DataStore</span><span class="o">.</span><span class="n">monthly_store</span><span class="p">(</span><span class="n">data_dir</span><span class="p">)</span>
+    <span class="c"># create a translation object for our locale</span>
+    <span class="n">translation</span> <span class="o">=</span> <span class="n">Localisation</span><span class="o">.</span><span class="n">GetTranslation</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+    <span class="c"># create a RegularTasks object</span>
+    <span class="n">tasks</span> <span class="o">=</span> <span class="n">Tasks</span><span class="o">.</span><span class="n">RegularTasks</span><span class="p">(</span>
+        <span class="n">params</span><span class="p">,</span> <span class="n">calib_data</span><span class="p">,</span> <span class="n">hourly_data</span><span class="p">,</span> <span class="n">daily_data</span><span class="p">,</span> <span class="n">monthly_data</span><span class="p">,</span> <span class="n">translation</span><span class="p">)</span>
+    <span class="c"># get time of last logged data</span>
+    <span class="n">two_minutes</span> <span class="o">=</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">minutes</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">last_stored</span> <span class="o">=</span> <span class="n">raw_data</span><span class="o">.</span><span class="n">before</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">max</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">last_stored</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">last_stored</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">min</span>
+    <span class="k">if</span> <span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">last_stored</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;Computer time is earlier than last stored data&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="mi">4</span>
+    <span class="n">last_stored</span> <span class="o">+=</span> <span class="n">two_minutes</span>
+    <span class="c"># get live data</span>
+    <span class="n">hour</span> <span class="o">=</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">hours</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">next_hour</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">minute</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">second</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">microsecond</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">hour</span>
+    <span class="k">for</span> <span class="n">data</span><span class="p">,</span> <span class="n">ptr</span><span class="p">,</span> <span class="n">logged</span> <span class="ow">in</span> <span class="n">ws</span><span class="o">.</span><span class="n">live_data</span><span class="p">():</span>
+        <span class="n">now</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;idx&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">logged</span><span class="p">:</span>
+            <span class="c"># store logged data</span>
+            <span class="n">raw_data</span><span class="p">[</span><span class="n">now</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span>
+            <span class="n">count</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="c"># catchup any missing data</span>
+            <span class="n">last_date</span> <span class="o">=</span> <span class="n">now</span> <span class="o">-</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">minutes</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;delay&#39;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">last_date</span> <span class="o">&gt;</span> <span class="n">last_stored</span><span class="p">:</span>
+                <span class="n">last_ptr</span> <span class="o">=</span> <span class="n">ws</span><span class="o">.</span><span class="n">dec_ptr</span><span class="p">(</span><span class="n">ptr</span><span class="p">)</span>
+                <span class="n">fixed_block</span> <span class="o">=</span> <span class="n">ws</span><span class="o">.</span><span class="n">get_fixed_block</span><span class="p">(</span><span class="n">unbuffered</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+                <span class="c"># data_count includes record currently being updated every 48 seconds</span>
+                <span class="n">max_count</span> <span class="o">=</span> <span class="n">fixed_block</span><span class="p">[</span><span class="s">&#39;data_count&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span>
+                <span class="k">while</span> <span class="n">last_date</span> <span class="o">&gt;</span> <span class="n">last_stored</span> <span class="ow">and</span> <span class="n">count</span> <span class="o">&lt;</span> <span class="n">max_count</span><span class="p">:</span>
+                    <span class="n">data</span> <span class="o">=</span> <span class="n">ws</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="n">last_ptr</span><span class="p">)</span>
+                    <span class="n">raw_data</span><span class="p">[</span><span class="n">last_date</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span>
+                    <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="n">last_date</span> <span class="o">-=</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">minutes</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;delay&#39;</span><span class="p">])</span>
+                    <span class="n">last_ptr</span> <span class="o">=</span> <span class="n">ws</span><span class="o">.</span><span class="n">dec_ptr</span><span class="p">(</span><span class="n">last_ptr</span><span class="p">)</span>
+            <span class="n">last_stored</span> <span class="o">=</span> <span class="n">now</span> <span class="o">+</span> <span class="n">two_minutes</span>
+            <span class="k">if</span> <span class="n">count</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%d</span><span class="s"> records written&quot;</span><span class="p">,</span> <span class="n">count</span><span class="p">)</span>
+            <span class="c"># process new data</span>
+            <span class="n">raw_data</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+            <span class="n">Process</span><span class="o">.</span><span class="n">Process</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">raw_data</span><span class="p">,</span> <span class="n">calib_data</span><span class="p">,</span>
+                            <span class="n">hourly_data</span><span class="p">,</span> <span class="n">daily_data</span><span class="p">,</span> <span class="n">monthly_data</span><span class="p">)</span>
+            <span class="c"># do tasks</span>
+            <span class="n">tasks</span><span class="o">.</span><span class="n">do_tasks</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">now</span> <span class="o">&gt;=</span> <span class="n">next_hour</span><span class="p">:</span>
+                <span class="n">next_hour</span> <span class="o">+=</span> <span class="n">hour</span>
+                <span class="n">fixed_block</span> <span class="o">=</span> <span class="n">CheckFixedBlock</span><span class="p">(</span><span class="n">ws</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">logger</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">fixed_block</span><span class="p">:</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&quot;Invalid data from weather station&quot;</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="mi">3</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">tasks</span><span class="o">.</span><span class="n">do_live</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">return</span> <span class="mi">0</span></div>
+<div class="viewcode-block" id="main"><a class="viewcode-back" href="../api/LiveLog.html#LiveLog.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">argv</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">argv</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">argv</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">opts</span><span class="p">,</span> <span class="n">args</span> <span class="o">=</span> <span class="n">getopt</span><span class="o">.</span><span class="n">getopt</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="s">&quot;hl:v&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s">&#39;help&#39;</span><span class="p">,</span> <span class="s">&#39;log=&#39;</span><span class="p">,</span> <span class="s">&#39;verbose&#39;</span><span class="p">])</span>
+    <span class="k">except</span> <span class="n">getopt</span><span class="o">.</span><span class="n">error</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span>
+        <span class="k">print</span> <span class="o">&gt;&gt;</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&#39;Error: </span><span class="si">%s</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">msg</span>
+        <span class="k">print</span> <span class="o">&gt;&gt;</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">,</span> <span class="n">__doc__</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">return</span> <span class="mi">1</span>
+    <span class="c"># process options</span>
+    <span class="n">logfile</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">verbose</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">o</span><span class="p">,</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">opts</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">o</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;-h&#39;</span><span class="p">,</span> <span class="s">&#39;--help&#39;</span><span class="p">):</span>
+            <span class="k">print</span> <span class="n">__doc__</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="k">return</span> <span class="mi">0</span>
+        <span class="k">elif</span> <span class="n">o</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;-l&#39;</span><span class="p">,</span> <span class="s">&#39;--log&#39;</span><span class="p">):</span>
+            <span class="n">logfile</span> <span class="o">=</span> <span class="n">a</span>
+        <span class="k">elif</span> <span class="n">o</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;-v&#39;</span><span class="p">,</span> <span class="s">&#39;--verbose&#39;</span><span class="p">):</span>
+            <span class="n">verbose</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="c"># check arguments</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">print</span> <span class="o">&gt;&gt;</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&#39;Error: 1 argument required</span><span class="se">\n</span><span class="s">&#39;</span>
+        <span class="k">print</span> <span class="o">&gt;&gt;</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">,</span> <span class="n">__doc__</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">return</span> <span class="mi">2</span>
+    <span class="n">logger</span> <span class="o">=</span> <span class="n">ApplicationLogger</span><span class="p">(</span><span class="n">verbose</span><span class="p">,</span> <span class="n">logfile</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">LiveLog</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span></div>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s">&#39;pywws&#39;</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
+    <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
+        <span class="k">pass</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../index.html">pywws v11.10 documentation</a> &raquo;</li>
+          <li><a href="index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Jim Easterbrook.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.1.
+    </div>
+  </body>
+</html>

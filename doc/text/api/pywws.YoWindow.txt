@@ -1,0 +1,38 @@
+
+pywws.YoWindow
+**************
+
+Generate YoWindow XML file.
+
+usage: python pywws/YoWindow.py [options] data_dir output_file options
+are:
+
+   -h or --help     display this help -v or --verbose  increase amount
+   of reassuring messages
+
+data_dir is the root directory of the weather data output_file is the
+YoWindow XML file to be written
+
+-[ Functions ]-
+
++------------+--------------------------------------------------------------------------------------------+
+| ``main``([ |                                                                                            |
+| argv])     |                                                                                            |
++------------+--------------------------------------------------------------------------------------------+
+
+-[ Classes ]-
+
++------------+--------------------------------------------------------------------------------------------+
+| ``YoWindow | Class to write YoWindow XML file.                                                          |
+| ``(calib_d |                                                                                            |
+| ata)       |                                                                                            |
++------------+--------------------------------------------------------------------------------------------+
+
+class class pywws.YoWindow.YoWindow(calib_data)
+
+   Class to write YoWindow XML file. For file spec see
+   http://yowindow.com/doc/yowindow_pws_format.xml
+
+   write_file(file_name, data=None)
+
+pywws.YoWindow.main(argv=None)
