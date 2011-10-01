@@ -6,10 +6,15 @@ else
   LC	:= en
 endif
 
-all : doc lang pywws/version.py
+all : doc lang pywws/version.py README.txt
+
+.PHONY : doc
 
 doc :
 	cd doc_src && $(MAKE) html text
+
+README.txt : doc/text/essentials/README.txt
+	cp -p $< $@
 	
 lang : \
 	languages/$(LC).po \
