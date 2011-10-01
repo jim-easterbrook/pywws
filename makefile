@@ -1,4 +1,3 @@
-html_src	:= $(wildcard doc/html/*)
 lang_src	:= $(wildcard languages/*.po)
 
 ifdef LANG
@@ -9,19 +8,9 @@ endif
 
 all : doc lang pywws/version.py
 
-doc : extract_doc \
-	$(html_src:doc/html/%.html=doc/txt/%.txt)
+doc :
+	cd doc_src && $(MAKE) html text
 	
-extract_doc :
-	epydoc --html -o doc/html/auto -v \
-		--name "Python software for USB Wireless WeatherStations" \
-		--url http://code.google.com/p/pywws/ \
-		--docformat plaintext --inheritance included \
-		pywws \
-		EWtoPy.py Hourly.py LiveLog.py Reprocess.py \
-		setup.py SetWeatherStation.py TestWeatherStation.py \
-		TwitterAuth.py UpgradeFrom0-1.py
-
 lang : \
 	languages/$(LC).po \
 	$(lang_src:languages/%.po=locale/%/LC_MESSAGES/pywws.mo)
@@ -33,10 +22,6 @@ ifneq '$(REVISION)' ''
   pywws/version.py :
 	date +"version = '%y.%m_r$(REVISION)'" >$@
 endif
-
-# convert html documents to plain text
-doc/txt/%.txt : doc/html/%.html
-	links -dump -width 80 $< >$@
 
 # compile a language file
 locale/%/LC_MESSAGES/pywws.mo : languages/%.po
