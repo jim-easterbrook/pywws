@@ -1,0 +1,42 @@
+pywws.Process
+=============
+
+Introduction
+------------
+
+This module takes raw weather station data (typically sampled every five or ten minutes) and generates hourly, daily and monthly summary data, which is useful when creating tables and graphs. The hourly data is derived from all the records in one hour, e.g. from 18:00:00 to 18:59:59, and is given the index of the last record in that hour.
+
+The daily data summarises the weather over a 24 hour period typically ending at 2100 or 0900 hours, local (non DST) time, though midnight is another popular convention. It is indexed by the end of the 24 hour period. Daytime and nightime, as used when computing maximum and minimum temperatures, are assumed to start at 0900 and 2100 local time, or 1000 and 2200 when DST is in effect, regardless of the meteorological day.
+
+To adjust the meteorological day to your preference, or that used by your local official weather station, edit the "day end hour" line in your "weather.ini" file, then run Reprocess.py to regenerate the summaries.
+
+Monthly summary data is computed from the daily summary data. If the meteorological day does not end at midnight, then each month may begin and end up to 12 hours before or after midnight.
+
+Pressure is converted from absolute to relative, using an offset taken from the weather station, so make sure you set this up correctly before processing data. It also computes the pressure trend - how it has varied over the previous three hours.
+
+Wind speed data is averaged over the hour (or day) and the maximum gust speed during the hour (or day) is recorded. The predominant wind direction is also calculated.
+
+Rainfall is converted from the raw "total since last reset" figure to a more useful total in the last hour, day or month.
+
+Detailed API
+------------
+
+.. automodule:: pywws.Process
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      Process
+      calibrate_data
+      main
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Acc
+      Average
+      Maximum
+      Minimum
+      MonthAcc
