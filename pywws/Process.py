@@ -442,18 +442,18 @@ def Process(params, raw_data, calib_data, hourly_data, daily_data, monthly_data)
                     for key in ('illuminance', 'uv'):
                         new_data[key] = prev[key]
                 # compute pressure trend
-                target = new_data['idx'] - HOURx3
-                while (len(pressure_history) >= 2 and
-                       abs(pressure_history[0][0] - target) >
-                       abs(pressure_history[1][0] - target)):
-                    pressure_history.popleft()
-                if (len(pressure_history) >= 1 and
-                        abs(pressure_history[0][0] - target) <
-                        timedelta(minutes=prev['delay'])):
-                    new_data['pressure_trend'] = (
-                        new_data['rel_pressure'] - pressure_history[0][1])
-                else:
-                    new_data['pressure_trend'] = None
+                new_data['pressure_trend'] = None
+                if new_data['rel_pressure']:
+                    target = new_data['idx'] - HOURx3
+                    while (len(pressure_history) >= 2 and
+                           abs(pressure_history[0][0] - target) >
+                           abs(pressure_history[1][0] - target)):
+                        pressure_history.popleft()
+                    if (len(pressure_history) >= 1 and
+                            abs(pressure_history[0][0] - target) <
+                            timedelta(minutes=prev['delay'])):
+                        new_data['pressure_trend'] = (
+                            new_data['rel_pressure'] - pressure_history[0][1])
                 # store new hourly data
                 hourly_data[new_data['idx']] = new_data
             proc_start = stop
