@@ -53,36 +53,27 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="testweatherstation">
-<h1>TestWeatherStation<a class="headerlink" href="#testweatherstation" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="introduction">
-<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
-<p>This is a simple utility to test communication with the weather station. If this doesn&#8217;t work, then there&#8217;s a problem that needs to be sorted out before trying any of the other programs. Likely problems include not properly installing <a class="reference external" href="http://libusb.wiki.sourceforge.net/">libusb</a> or <a class="reference external" href="http://pyusb.berlios.de/">PyUSB</a>. Less likely problems include an incompatibility between libusb and some operating systems. The most unlikely problem is that you forgot to connect the weather station to your computer!</p>
-</div>
-<div class="section" id="module-TestWeatherStation">
-<span id="detailed-api"></span><h2>Detailed API<a class="headerlink" href="#module-TestWeatherStation" title="Permalink to this headline">¶</a></h2>
+  <div class="section" id="module-TestWeatherStation">
+<span id="testweatherstation"></span><h1>TestWeatherStation<a class="headerlink" href="#module-TestWeatherStation" title="Permalink to this headline">¶</a></h1>
 <p>Test connection to weather station.</p>
-<p>usage: python TestWeatherStation.py [options]
-options are:</p>
-<blockquote>
-<blockquote>
-<table class="docutils option-list" frame="void" rules="none">
-<col class="option" />
-<col class="description" />
-<tbody valign="top">
-<tr><td class="option-group">
-<kbd><span class="option">--help</span></kbd></td>
-<td>display this help</td></tr>
-</tbody>
-</table>
-</blockquote>
-<p>-3 | &#8211;3080           station is a &#8216;3080&#8217; type instead of a &#8216;1080&#8217;
--d | &#8211;decode         display meaningful values instead of raw data
--h | &#8211;history count  display the last &#8220;count&#8221; readings
--l | &#8211;live           display &#8216;live&#8217; data
--u | &#8211;unknown        display unknown fixed block values
--v | &#8211;verbose        increase amount of reassuring messages</p>
-</blockquote>
+<p>This is a simple utility to test communication with the weather
+station. If this doesn&#8217;t work, then there&#8217;s a problem that needs to be
+sorted out before trying any of the other programs. Likely problems
+include not properly installing <a class="reference external" href="http://libusb.wiki.sourceforge.net/">libusb</a> or <a class="reference external" href="http://pyusb.berlios.de/">PyUSB</a>. Less likely problems include an
+incompatibility between libusb and some operating systems. The most
+unlikely problem is that you forgot to connect the weather station to
+your computer!</p>
+<div class="highlight-python"><pre>usage: python TestWeatherStation.py [options]
+options are:
+      --help           display this help
+ -3 | --3080           station is a '3080' type instead of a '1080'
+ -d | --decode         display meaningful values instead of raw data
+ -h | --history count  display the last "count" readings
+ -l | --live           display 'live' data
+ -u | --unknown        display unknown fixed block values
+ -v | --verbose        increase amount of reassuring messages
+                       (repeat for even more messages e.g. -vvv)</pre>
+</div>
 <p class="rubric">Functions</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -109,7 +100,6 @@ options are:</p>
 <dd></dd></dl>
 
 </div>
-</div>
 
 
           </div>
@@ -117,15 +107,6 @@ options are:</p>
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="../index.html">Table Of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">TestWeatherStation</a><ul>
-<li><a class="reference internal" href="#introduction">Introduction</a></li>
-<li><a class="reference internal" href="#module-TestWeatherStation">Detailed API</a></li>
-</ul>
-</li>
-</ul>
-
   <h4>Previous topic</h4>
   <p class="topless"><a href="SetWeatherStation.html"
                         title="previous chapter">SetWeatherStation</a></p>

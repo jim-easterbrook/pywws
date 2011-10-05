@@ -35,6 +35,9 @@ Contents:
 | ``pywws.Pr | Generate hourly, daily & monthly summaries of raw weather station data.                    |
 | ocess``    |                                                                                            |
 +------------+--------------------------------------------------------------------------------------------+
+| ``pywws.ca | Calibrate raw weather station data.                                                        |
+| lib``      |                                                                                            |
++------------+--------------------------------------------------------------------------------------------+
 | ``pywws.Pl | Plot graphs of weather data according to an XML recipe.                                    |
 | ot``       |                                                                                            |
 +------------+--------------------------------------------------------------------------------------------+
@@ -99,8 +102,6 @@ Contents:
 * TwitterAuth
 * SetWeatherStation
 * TestWeatherStation
-  * Introduction
-  * Detailed API
 * EWtoPy
   * Introduction
   * Detailed API
@@ -111,6 +112,7 @@ Contents:
 * pywws.Process
   * Introduction
   * Detailed API
+* pywws.calib
 * pywws.Plot
   * Introduction
     * XML graph file syntax

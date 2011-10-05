@@ -16,6 +16,7 @@ Contents:
    pywws.Tasks
    pywws.LogData
    pywws.Process
+   pywws.calib
    pywws.Plot
    pywws.WindRose
    pywws.Template

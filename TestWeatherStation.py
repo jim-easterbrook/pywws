@@ -1,10 +1,23 @@
 #!/usr/bin/env python
 
-"""
-Test connection to weather station.
+"""Test connection to weather station.
 
-usage: python TestWeatherStation.py [options]
-options are:
+This is a simple utility to test communication with the weather
+station. If this doesn't work, then there's a problem that needs to be
+sorted out before trying any of the other programs. Likely problems
+include not properly installing `libusb
+<http://libusb.wiki.sourceforge.net/>`_ or `PyUSB
+<http://pyusb.berlios.de/>`_. Less likely problems include an
+incompatibility between libusb and some operating systems. The most
+unlikely problem is that you forgot to connect the weather station to
+your computer! ::
+
+%s
+"""
+
+__usage__ = """
+ usage: python TestWeatherStation.py [options]
+ options are:
        --help           display this help
   -3 | --3080           station is a '3080' type instead of a '1080'
   -d | --decode         display meaningful values instead of raw data
@@ -12,7 +25,12 @@ options are:
   -l | --live           display 'live' data
   -u | --unknown        display unknown fixed block values
   -v | --verbose        increase amount of reassuring messages
+                        (repeat for even more messages e.g. -vvv)
 """
+
+__doc__ %= __usage__
+
+__usage__ = __doc__.split('\n')[0] + __usage__
 
 import datetime
 import getopt
@@ -36,12 +54,12 @@ def main(argv=None):
             ('help', '3080', 'decode', 'history=', 'live', 'unknown', 'verbose'))
     except getopt.error, msg:
         print >>sys.stderr, 'Error: %s\n' % msg
-        print >>sys.stderr, __doc__.strip()
+        print >>sys.stderr, __usage__.strip()
         return 1
     # check arguments
     if len(args) != 0:
         print >>sys.stderr, 'Error: no arguments allowed\n'
-        print >>sys.stderr, __doc__.strip()
+        print >>sys.stderr, __usage__.strip()
         return 2
     # process options
     history_count = 0
@@ -52,7 +70,7 @@ def main(argv=None):
     ws_type = '1080'
     for o, a in opts:
         if o == '--help':
-            print __doc__.strip()
+            print __usage__.strip()
             return 0
         elif o in ('-3', '--3080'):
             ws_type = '3080'
