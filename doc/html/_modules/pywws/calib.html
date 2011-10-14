@@ -46,7 +46,74 @@
           <div class="body">
             
   <h1>Source code for pywws.calib</h1><div class="highlight"><pre>
-<span class="sd">&quot;&quot;&quot;Calibrate raw weather station data.&quot;&quot;&quot;</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Calibrate raw weather station data</span>
+<span class="sd">==================================</span>
+
+<span class="sd">This module allows adjustment of raw data from the weather station as</span>
+<span class="sd">part of the &#39;processing&#39; step (see :doc:`pywws.Process`). For example,</span>
+<span class="sd">if you have fitted a funnel to double your rain gauge&#39;s collection</span>
+<span class="sd">area, you can write a calibration routine to double the rain value.</span>
+
+<span class="sd">The default calibration does two things:</span>
+<span class="sd">    #. Generate relative atmospheric pressure.</span>
+<span class="sd">    #. Remove invalid wind direction values.</span>
+<span class="sd">Any user calibration you write must also do these.</span>
+
+<span class="sd">Writing your calibration module</span>
+<span class="sd">^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</span>
+
+<span class="sd">Firstly, decide where you want to keep your module. Like your text and</span>
+<span class="sd">graph templates, it&#39;s best to keep it separate from the pywws code, so</span>
+<span class="sd">it isn&#39;t affected by pywws upgrades. I suggest creating a ``modules``</span>
+<span class="sd">directory in the same place as your ``templates`` directory.</span>
+
+<span class="sd">Create a plain text file in your ``modules`` directory, e.g.</span>
+<span class="sd">``calib.py`` and copy the following text into it::</span>
+
+<span class="sd">    class Calib(object):</span>
+<span class="sd">        def __init__(self, params):</span>
+<span class="sd">            self.pressure_offset = eval(params.get(&#39;fixed&#39;, &#39;pressure offset&#39;))</span>
+<span class="sd">        def calib(self, raw):</span>
+<span class="sd">            result = dict(raw)</span>
+<span class="sd">            # sanitise data</span>
+<span class="sd">            if result[&#39;wind_dir&#39;] is not None and result[&#39;wind_dir&#39;] &gt;= 16:</span>
+<span class="sd">                result[&#39;wind_dir&#39;] = None</span>
+<span class="sd">            # calculate relative pressure</span>
+<span class="sd">            result[&#39;rel_pressure&#39;] = raw[&#39;abs_pressure&#39;] + self.pressure_offset</span>
+<span class="sd">            return result</span>
+
+<span class="sd">The :class:`Calib` class has two methods. :py:meth:`Calib.__init__` is</span>
+<span class="sd">the constructor and is a good place to set any constants you need.</span>
+<span class="sd">:py:meth:`Calib.calib` generates a single set of &#39;calibrated&#39; data</span>
+<span class="sd">from a single set of &#39;raw&#39; data. There are a few rules to follow when</span>
+<span class="sd">writing this method:</span>
+
+<span class="sd">    - Make sure you include the line ``result = dict(raw)``, which</span>
+<span class="sd">      copies all the raw data to your result value, at the start.</span>
+
+<span class="sd">    - Don&#39;t modify any of the raw data.</span>
+
+<span class="sd">    - Make sure you set ``result[&#39;rel_pressure&#39;]``.</span>
+
+<span class="sd">    - Don&#39;t forget to ``return`` the result at the end.</span>
+
+<span class="sd">When you&#39;ve finished writing your calibration module you can get pywws</span>
+<span class="sd">to use it by putting its location in your ``weather.ini`` file. It</span>
+<span class="sd">goes in the ``[paths]`` section, as shown in the example below::</span>
+
+<span class="sd">    [paths]</span>
+<span class="sd">    work = /tmp/weather</span>
+<span class="sd">    templates = /home/jim/weather/templates/</span>
+<span class="sd">    graph_templates = /home/jim/weather/graph_templates/</span>
+<span class="sd">    user_calib = /home/jim/weather/modules/usercalib</span>
+
+<span class="sd">Note that the ``user_calib`` value need not include the ``.py`` at the</span>
+<span class="sd">end of the file name.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="n">__docformat__</span> <span class="o">=</span> <span class="s">&quot;restructuredtext en&quot;</span>
 
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
 <span class="kn">import</span> <span class="nn">logging</span>
@@ -54,7 +121,13 @@
 <span class="kn">import</span> <span class="nn">sys</span>
 
 <div class="viewcode-block" id="DefaultCalib"><a class="viewcode-back" href="../../api/pywws.calib.html#pywws.calib.DefaultCalib">[docs]</a><span class="k">class</span> <span class="nc">DefaultCalib</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Default calibration class - relative pressure conversion only.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Default calibration class.</span>
+
+<span class="sd">    This class sets the relative pressure, using a pressure offset</span>
+<span class="sd">    read from the weather station, and &#39;sanitises&#39; the wind direction</span>
+<span class="sd">    value. This is the bare minimum &#39;calibration&#39; required.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pressure_offset</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;fixed&#39;</span><span class="p">,</span> <span class="s">&#39;pressure offset&#39;</span><span class="p">))</span>
 <div class="viewcode-block" id="DefaultCalib.calib"><a class="viewcode-back" href="../../api/pywws.calib.html#pywws.calib.DefaultCalib.calib">[docs]</a>    <span class="k">def</span> <span class="nf">calib</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">raw</span><span class="p">):</span>
@@ -69,6 +142,16 @@
 <span class="n">usercalib</span> <span class="o">=</span> <span class="bp">None</span>
 
 <div class="viewcode-block" id="Calib"><a class="viewcode-back" href="../../api/pywws.calib.html#pywws.calib.Calib">[docs]</a><span class="k">class</span> <span class="nc">Calib</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Calibration class that implements default or user calibration.</span>
+
+<span class="sd">    Other pywws modules use this method to create a calibration</span>
+<span class="sd">    object. The constructor creates either a default calibration</span>
+<span class="sd">    object or a user calibration object, depending on the</span>
+<span class="sd">    ``user_calib`` value in the ``[paths]`` section of the ``params``</span>
+<span class="sd">    parameter. It then adopts the calibration object&#39;s</span>
+<span class="sd">    :py:meth:`calib` method as its own.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
         <span class="k">global</span> <span class="n">usercalib</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s">&#39;pywws.Calib&#39;</span><span class="p">)</span>
@@ -76,10 +159,11 @@
         <span class="k">if</span> <span class="n">user_module</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;Using user calibration&#39;</span><span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">usercalib</span><span class="p">:</span>
-              <span class="n">path</span><span class="p">,</span> <span class="n">module</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">user_module</span><span class="p">)</span>
-              <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
-              <span class="n">module</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">module</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-              <span class="n">usercalib</span> <span class="o">=</span> <span class="nb">__import__</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="nb">globals</span><span class="p">(),</span> <span class="nb">locals</span><span class="p">(),</span> <span class="p">[</span><span class="s">&#39;Calib&#39;</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">path</span><span class="p">,</span> <span class="n">module</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">user_module</span><span class="p">)</span>
+                <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+                <span class="n">module</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">module</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">usercalib</span> <span class="o">=</span> <span class="nb">__import__</span><span class="p">(</span>
+                    <span class="n">module</span><span class="p">,</span> <span class="nb">globals</span><span class="p">(),</span> <span class="nb">locals</span><span class="p">(),</span> <span class="p">[</span><span class="s">&#39;Calib&#39;</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">calibrator</span> <span class="o">=</span> <span class="n">usercalib</span><span class="o">.</span><span class="n">Calib</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;Using default calibration&#39;</span><span class="p">)</span>

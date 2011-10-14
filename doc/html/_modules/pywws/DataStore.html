@@ -70,8 +70,6 @@
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">time</span>
 
-<span class="kn">import</span> <span class="nn">Localisation</span>
-
 <div class="viewcode-block" id="safestrptime"><a class="viewcode-back" href="../../api/pywws.DataStore.html#pywws.DataStore.safestrptime">[docs]</a><span class="k">def</span> <span class="nf">safestrptime</span><span class="p">(</span><span class="n">date_string</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
     <span class="c"># time.strptime is time consuming (because it&#39;s so flexible?) so don&#39;t use</span>
     <span class="c"># it for the fixed format datetime strings in our csv files</span>
@@ -93,8 +91,6 @@
         <span class="c"># open config file</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_config</span> <span class="o">=</span> <span class="n">SafeConfigParser</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="p">)</span>
-        <span class="c"># get a translation object</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">translation</span> <span class="o">=</span> <span class="n">Localisation</span><span class="o">.</span><span class="n">GetTranslation</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
 <div class="viewcode-block" id="params.flush"><a class="viewcode-back" href="../../api/pywws.DataStore.html#pywws.DataStore.params.flush">[docs]</a>    <span class="k">def</span> <span class="nf">flush</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>

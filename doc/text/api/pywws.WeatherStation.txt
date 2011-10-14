@@ -53,11 +53,11 @@ TestWeatherStation program.
 Detailed API
 ============
 
-WeatherStation.py - get data from WH1080/WH3080 compatible weather
-stations
+Get data from WH1080/WH3080 compatible weather stations.
 
-Derived from wwsr.c by Michael Pendec (michael.pendec@gmail.com) and
-wwsrdump.c by Svend Skafte (svend@skafte.net), modified by Dave Wells.
+Derived from wwsr.c by Michael Pendec (michael.pendec@gmail.com),
+wwsrdump.c by Svend Skafte (svend@skafte.net), modified by Dave Wells,
+and other sources.
 
 -[ Functions ]-
 
@@ -84,10 +84,8 @@ wwsrdump.c by Svend Skafte (svend@skafte.net), modified by Dave Wells.
 | _trend_tex |                                                                                            |
 | t``(trend) |                                                                                            |
 +------------+--------------------------------------------------------------------------------------------+
-| ``set_tran | Set the localisation translation function to be used by wind_dir_text                      |
-| slation``( |                                                                                            |
-| trans_func |                                                                                            |
-| tion)      |                                                                                            |
+| ``set_tran |                                                                                            |
+| slation``  |                                                                                            |
 +------------+--------------------------------------------------------------------------------------------+
 | ``wind_chi | Compute wind chill, using formula from                                                     |
 | ll``(temp, |                                                                                            |
@@ -127,11 +125,6 @@ pywws.WeatherStation.pressure_trend_text(trend)
 
    Convert pressure trend to a string, see
    http://www.reedsonline.com/weather/weather-terms.htm.
-
-pywws.WeatherStation.set_translation(trans_function)
-
-   Set the localisation translation function to be used by
-   wind_dir_text and pressure_trend_text.
 
 class class pywws.WeatherStation.weather_station(ws_type='1080')
 

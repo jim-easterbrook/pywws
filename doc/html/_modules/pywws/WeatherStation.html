@@ -46,11 +46,15 @@
           <div class="body">
             
   <h1>Source code for pywws.WeatherStation</h1><div class="highlight"><pre>
-<span class="sd">&quot;&quot;&quot;WeatherStation.py - get data from WH1080/WH3080 compatible weather stations</span>
+<span class="sd">&quot;&quot;&quot;Get data from WH1080/WH3080 compatible weather stations.</span>
 
-<span class="sd">Derived from wwsr.c by Michael Pendec (michael.pendec@gmail.com) and</span>
-<span class="sd">wwsrdump.c by Svend Skafte (svend@skafte.net), modified by Dave Wells.</span>
+<span class="sd">Derived from wwsr.c by Michael Pendec (michael.pendec@gmail.com),</span>
+<span class="sd">wwsrdump.c by Svend Skafte (svend@skafte.net), modified by Dave Wells,</span>
+<span class="sd">and other sources.</span>
+
 <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="n">__docformat__</span> <span class="o">=</span> <span class="s">&quot;restructuredtext&quot;</span>
 
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
 <span class="kn">import</span> <span class="nn">logging</span>
@@ -64,7 +68,9 @@
 
 <div class="viewcode-block" id="dew_point"><a class="viewcode-back" href="../../api/pywws.WeatherStation.html#pywws.WeatherStation.dew_point">[docs]</a><span class="k">def</span> <span class="nf">dew_point</span><span class="p">(</span><span class="n">temp</span><span class="p">,</span> <span class="n">hum</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Compute dew point, using formula from</span>
-<span class="sd">    http://en.wikipedia.org/wiki/Dew_point.&quot;&quot;&quot;</span>
+<span class="sd">    http://en.wikipedia.org/wiki/Dew_point.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">temp</span> <span class="o">==</span> <span class="bp">None</span> <span class="ow">or</span> <span class="n">hum</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">None</span>
     <span class="n">a</span> <span class="o">=</span> <span class="mf">17.27</span>
@@ -74,7 +80,9 @@
 </div>
 <div class="viewcode-block" id="wind_chill"><a class="viewcode-back" href="../../api/pywws.WeatherStation.html#pywws.WeatherStation.wind_chill">[docs]</a><span class="k">def</span> <span class="nf">wind_chill</span><span class="p">(</span><span class="n">temp</span><span class="p">,</span> <span class="n">wind</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Compute wind chill, using formula from</span>
-<span class="sd">    http://en.wikipedia.org/wiki/wind_chill&quot;&quot;&quot;</span>
+<span class="sd">    http://en.wikipedia.org/wiki/wind_chill</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">temp</span> <span class="o">==</span> <span class="bp">None</span> <span class="ow">or</span> <span class="n">wind</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">None</span>
     <span class="n">wind_kph</span> <span class="o">=</span> <span class="n">wind</span> <span class="o">*</span> <span class="mf">3.6</span>
@@ -86,21 +94,20 @@
 </div>
 <div class="viewcode-block" id="apparent_temp"><a class="viewcode-back" href="../../api/pywws.WeatherStation.html#pywws.WeatherStation.apparent_temp">[docs]</a><span class="k">def</span> <span class="nf">apparent_temp</span><span class="p">(</span><span class="n">temp</span><span class="p">,</span> <span class="n">rh</span><span class="p">,</span> <span class="n">wind</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Compute apparent temperature (real feel), using formula from</span>
-<span class="sd">    http://www.bom.gov.au/info/thermal_stress/&quot;&quot;&quot;</span>
+<span class="sd">    http://www.bom.gov.au/info/thermal_stress/</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">temp</span> <span class="o">==</span> <span class="bp">None</span> <span class="ow">or</span> <span class="n">rh</span> <span class="o">==</span> <span class="bp">None</span> <span class="ow">or</span> <span class="n">wind</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">None</span>
     <span class="n">vap_press</span> <span class="o">=</span> <span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">rh</span><span class="p">)</span> <span class="o">/</span> <span class="mf">100.0</span><span class="p">)</span> <span class="o">*</span> <span class="mf">6.105</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span>
         <span class="mf">17.27</span> <span class="o">*</span> <span class="n">temp</span> <span class="o">/</span> <span class="p">(</span><span class="mf">237.7</span> <span class="o">+</span> <span class="n">temp</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">temp</span> <span class="o">+</span> <span class="p">(</span><span class="mf">0.33</span> <span class="o">*</span> <span class="n">vap_press</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="mf">0.70</span> <span class="o">*</span> <span class="n">wind</span><span class="p">)</span> <span class="o">-</span> <span class="mf">4.00</span>
 </div>
-<div class="viewcode-block" id="set_translation"><a class="viewcode-back" href="../../api/pywws.WeatherStation.html#pywws.WeatherStation.set_translation">[docs]</a><span class="k">def</span> <span class="nf">set_translation</span><span class="p">(</span><span class="n">trans_function</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Set the localisation translation function to be used by wind_dir_text</span>
-<span class="sd">    and pressure_trend_text.&quot;&quot;&quot;</span>
-    <span class="k">global</span> <span class="n">_</span>
-    <span class="n">_</span> <span class="o">=</span> <span class="n">trans_function</span>
-</div>
 <div class="viewcode-block" id="get_wind_dir_text"><a class="viewcode-back" href="../../api/pywws.WeatherStation.html#pywws.WeatherStation.get_wind_dir_text">[docs]</a><span class="k">def</span> <span class="nf">get_wind_dir_text</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;Return an array to convert wind direction integer to a string.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Return an array to convert wind direction integer to a string.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">_</span> <span class="o">=</span> <span class="n">Localisation</span><span class="o">.</span><span class="n">translation</span><span class="o">.</span><span class="n">gettext</span>
     <span class="k">return</span> <span class="p">[</span>
         <span class="n">_</span><span class="p">(</span><span class="s">&#39;N&#39;</span><span class="p">),</span> <span class="n">_</span><span class="p">(</span><span class="s">&#39;NNE&#39;</span><span class="p">),</span> <span class="n">_</span><span class="p">(</span><span class="s">&#39;NE&#39;</span><span class="p">),</span> <span class="n">_</span><span class="p">(</span><span class="s">&#39;ENE&#39;</span><span class="p">),</span>
         <span class="n">_</span><span class="p">(</span><span class="s">&#39;E&#39;</span><span class="p">),</span> <span class="n">_</span><span class="p">(</span><span class="s">&#39;ESE&#39;</span><span class="p">),</span> <span class="n">_</span><span class="p">(</span><span class="s">&#39;SE&#39;</span><span class="p">),</span> <span class="n">_</span><span class="p">(</span><span class="s">&#39;SSE&#39;</span><span class="p">),</span>
@@ -110,7 +117,10 @@
 </div>
 <div class="viewcode-block" id="pressure_trend_text"><a class="viewcode-back" href="../../api/pywws.WeatherStation.html#pywws.WeatherStation.pressure_trend_text">[docs]</a><span class="k">def</span> <span class="nf">pressure_trend_text</span><span class="p">(</span><span class="n">trend</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Convert pressure trend to a string, see</span>
-<span class="sd">    http://www.reedsonline.com/weather/weather-terms.htm.&quot;&quot;&quot;</span>
+<span class="sd">    http://www.reedsonline.com/weather/weather-terms.htm.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">_</span> <span class="o">=</span> <span class="n">Localisation</span><span class="o">.</span><span class="n">translation</span><span class="o">.</span><span class="n">gettext</span>
     <span class="k">if</span> <span class="n">trend</span> <span class="o">&gt;</span> <span class="mf">6.0</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">_</span><span class="p">(</span><span class="s">&#39;rising very rapidly&#39;</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">trend</span> <span class="o">&gt;</span> <span class="mf">3.5</span><span class="p">:</span>
@@ -245,7 +255,8 @@
         <span class="k">for</span> <span class="n">device</span> <span class="ow">in</span> <span class="n">bus</span><span class="o">.</span><span class="n">devices</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">device</span><span class="o">.</span><span class="n">idVendor</span> <span class="o">==</span> <span class="n">idVendor</span> <span class="ow">and</span> <span class="n">device</span><span class="o">.</span><span class="n">idProduct</span> <span class="o">==</span> <span class="n">idProduct</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">device</span>
-    <span class="k">return</span> <span class="bp">None</span></div>
+    <span class="k">return</span> <span class="bp">None</span>
+</div>
 <div class="viewcode-block" id="weather_station"><a class="viewcode-back" href="../../api/pywws.WeatherStation.html#pywws.WeatherStation.weather_station">[docs]</a><span class="k">class</span> <span class="nc">weather_station</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Class that represents the weather station to user program.&quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ws_type</span><span class="o">=</span><span class="s">&#39;1080&#39;</span><span class="p">):</span>
@@ -359,14 +370,15 @@
                     <span class="n">next_live</span> <span class="o">=</span> <span class="bp">None</span>
                     <span class="n">live_overdue</span> <span class="o">=</span> <span class="n">now</span> <span class="o">+</span> <span class="mf">3600.0</span>
                 <span class="k">elif</span> <span class="n">now</span> <span class="o">&gt;</span> <span class="n">live_overdue</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;live_data overdue&#39;</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                        <span class="s">&#39;live_data </span><span class="si">%.2f</span><span class="s">s overdue&#39;</span><span class="p">,</span> <span class="n">now</span> <span class="o">-</span> <span class="n">next_live</span><span class="p">)</span>
                     <span class="n">result</span><span class="p">[</span><span class="s">&#39;idx&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">utcfromtimestamp</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">next_live</span><span class="p">))</span>
                     <span class="n">next_live</span> <span class="o">+=</span> <span class="n">live_interval</span>
-                    <span class="n">live_overdue</span> <span class="o">=</span> <span class="n">next_live</span> <span class="o">+</span> <span class="mf">2.0</span>
+                    <span class="n">live_overdue</span> <span class="o">=</span> <span class="n">next_live</span> <span class="o">+</span> <span class="mf">3.0</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">result</span><span class="p">[</span><span class="s">&#39;idx&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">utcfromtimestamp</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">now</span><span class="p">))</span>
                     <span class="n">next_live</span> <span class="o">=</span> <span class="n">now</span> <span class="o">+</span> <span class="n">live_interval</span>
-                    <span class="n">live_overdue</span> <span class="o">=</span> <span class="n">next_live</span> <span class="o">+</span> <span class="mf">2.0</span>
+                    <span class="n">live_overdue</span> <span class="o">=</span> <span class="n">next_live</span> <span class="o">+</span> <span class="mf">3.0</span>
                 <span class="k">if</span> <span class="n">result</span><span class="p">:</span>
                     <span class="k">yield</span> <span class="n">result</span><span class="p">,</span> <span class="n">old_ptr</span><span class="p">,</span> <span class="bp">False</span>
                 <span class="n">old_data</span> <span class="o">=</span> <span class="n">new_data</span>
@@ -477,7 +489,7 @@
         <span class="c"># Read block repeatedly until it&#39;s stable. This avoids getting corrupt</span>
         <span class="c"># data when the block is read as the station is updating it.</span>
         <span class="n">buf_1</span> <span class="o">=</span> <span class="p">(</span><span class="n">ptr</span> <span class="o">/</span> <span class="mi">256</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xFF</span>
-        <span class="n">buf_2</span> <span class="o">=</span> <span class="n">ptr</span> <span class="o">&amp;</span> <span class="mh">0xFF</span><span class="p">;</span>
+        <span class="n">buf_2</span> <span class="o">=</span> <span class="n">ptr</span> <span class="o">&amp;</span> <span class="mh">0xFF</span>
         <span class="n">old_block</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">devh</span><span class="o">.</span><span class="n">controlMsg</span><span class="p">(</span><span class="n">usb</span><span class="o">.</span><span class="n">TYPE_CLASS</span> <span class="o">+</span> <span class="n">usb</span><span class="o">.</span><span class="n">RECIP_INTERFACE</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span>
@@ -507,7 +519,7 @@
         <span class="k">return</span> <span class="n">result</span>
     <span class="k">def</span> <span class="nf">_write_byte</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ptr</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="n">buf_1</span> <span class="o">=</span> <span class="p">(</span><span class="n">ptr</span> <span class="o">/</span> <span class="mi">256</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xFF</span>
-        <span class="n">buf_2</span> <span class="o">=</span> <span class="n">ptr</span> <span class="o">&amp;</span> <span class="mh">0xFF</span><span class="p">;</span>
+        <span class="n">buf_2</span> <span class="o">=</span> <span class="n">ptr</span> <span class="o">&amp;</span> <span class="mh">0xFF</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">devh</span><span class="o">.</span><span class="n">controlMsg</span><span class="p">(</span><span class="n">usb</span><span class="o">.</span><span class="n">TYPE_CLASS</span> <span class="o">+</span> <span class="n">usb</span><span class="o">.</span><span class="n">RECIP_INTERFACE</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span>
                              <span class="p">[</span><span class="mh">0xA2</span><span class="p">,</span> <span class="n">buf_1</span><span class="p">,</span> <span class="n">buf_2</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0xA2</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">],</span>
                              <span class="n">value</span><span class="o">=</span><span class="mh">0x200</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>

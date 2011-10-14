@@ -47,6 +47,7 @@
             
   <h1>Source code for pywws.Forecast</h1><div class="highlight"><pre>
 <span class="c">#!/usr/bin/env python</span>
+
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Predict future weather using recent data.</span>
 
@@ -79,7 +80,7 @@
         <span class="n">trend</span> <span class="o">=</span> <span class="mf">0.0</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">trend</span> <span class="o">=</span> <span class="n">hourly_data</span><span class="p">[</span><span class="s">&#39;pressure_trend&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="mf">3.0</span>
-    <span class="k">return</span> <span class="n">params</span><span class="o">.</span><span class="n">translation</span><span class="o">.</span><span class="n">ugettext</span><span class="p">(</span><span class="n">ZambrettiCore</span><span class="o">.</span><span class="n">Zambretti</span><span class="p">(</span>
+    <span class="k">return</span> <span class="n">Localisation</span><span class="o">.</span><span class="n">translation</span><span class="o">.</span><span class="n">ugettext</span><span class="p">(</span><span class="n">ZambrettiCore</span><span class="o">.</span><span class="n">Zambretti</span><span class="p">(</span>
         <span class="n">hourly_data</span><span class="p">[</span><span class="s">&#39;rel_pressure&#39;</span><span class="p">],</span> <span class="n">hourly_data</span><span class="p">[</span><span class="s">&#39;idx&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">month</span><span class="p">,</span> <span class="n">wind</span><span class="p">,</span> <span class="n">trend</span><span class="p">,</span>
         <span class="n">north</span><span class="o">=</span><span class="n">north</span><span class="p">,</span> <span class="n">baro_top</span><span class="o">=</span><span class="n">baro_upper</span><span class="p">,</span> <span class="n">baro_bottom</span><span class="o">=</span><span class="n">baro_lower</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
 </div>
@@ -104,6 +105,7 @@
         <span class="k">return</span> <span class="mi">2</span>
     <span class="n">data_dir</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">params</span> <span class="o">=</span> <span class="n">DataStore</span><span class="o">.</span><span class="n">params</span><span class="p">(</span><span class="n">data_dir</span><span class="p">)</span>
+    <span class="n">Localisation</span><span class="o">.</span><span class="n">SetApplicationLanguage</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
     <span class="n">hourly_data</span> <span class="o">=</span> <span class="n">DataStore</span><span class="o">.</span><span class="n">hourly_store</span><span class="p">(</span><span class="n">data_dir</span><span class="p">)</span>
     <span class="n">idx</span> <span class="o">=</span> <span class="n">hourly_data</span><span class="o">.</span><span class="n">before</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">max</span><span class="p">)</span>
     <span class="k">print</span> <span class="s">&#39;Zambretti (current):&#39;</span><span class="p">,</span> <span class="n">Zambretti</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">hourly_data</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>
@@ -113,7 +115,8 @@
     <span class="n">idx</span> <span class="o">=</span> <span class="n">idx</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">hour</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span> <span class="n">minute</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">second</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
     <span class="n">idx</span> <span class="o">=</span> <span class="n">hourly_data</span><span class="o">.</span><span class="n">nearest</span><span class="p">(</span><span class="n">idx</span><span class="o">.</span><span class="n">astimezone</span><span class="p">(</span><span class="n">utc</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="bp">None</span><span class="p">))</span>
     <span class="k">print</span> <span class="s">&#39;Zambretti  (at 9am):&#39;</span><span class="p">,</span> <span class="n">Zambretti</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">hourly_data</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>
-    <span class="k">return</span> <span class="mi">0</span></div>
+    <span class="k">return</span> <span class="mi">0</span>
+</div>
 <span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&quot;__main__&quot;</span><span class="p">:</span>
     <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
 </pre></div>

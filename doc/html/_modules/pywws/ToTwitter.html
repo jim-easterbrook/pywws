@@ -72,12 +72,10 @@
 <span class="n">consumer_secret</span> <span class="o">=</span> <span class="s">&#39;ygdXpjr0rDagU3dqULPqXF8GFgUOD6zYDapoHAH9ck&#39;</span>
 
 <div class="viewcode-block" id="ToTwitter"><a class="viewcode-back" href="../../api/pywws.ToTwitter.html#pywws.ToTwitter.ToTwitter">[docs]</a><span class="k">class</span> <span class="nc">ToTwitter</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">translation</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s">&#39;pywws.ToTwitter&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">old_ex</span> <span class="o">=</span> <span class="bp">None</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">translation</span><span class="p">:</span>
-            <span class="n">translation</span> <span class="o">=</span> <span class="n">Localisation</span><span class="o">.</span><span class="n">GetTranslation</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">charset</span> <span class="o">=</span> <span class="n">translation</span><span class="o">.</span><span class="n">charset</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">charset</span> <span class="o">=</span> <span class="n">Localisation</span><span class="o">.</span><span class="n">translation</span><span class="o">.</span><span class="n">charset</span><span class="p">()</span>
         <span class="c"># assume that systems with no declared charset actually use iso-8859-1</span>
         <span class="c"># so tweets can contain the very useful degree symbol</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">charset</span> <span class="ow">in</span> <span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="s">&#39;ASCII&#39;</span><span class="p">):</span>
@@ -93,6 +91,7 @@
         <span class="n">auth</span> <span class="o">=</span> <span class="n">tweepy</span><span class="o">.</span><span class="n">OAuthHandler</span><span class="p">(</span><span class="n">consumer_key</span><span class="p">,</span> <span class="n">consumer_secret</span><span class="p">)</span>
         <span class="n">auth</span><span class="o">.</span><span class="n">set_access_token</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">secret</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">api</span> <span class="o">=</span> <span class="n">tweepy</span><span class="o">.</span><span class="n">API</span><span class="p">(</span><span class="n">auth</span><span class="p">)</span>
+
 <div class="viewcode-block" id="ToTwitter.Upload"><a class="viewcode-back" href="../../api/pywws.ToTwitter.html#pywws.ToTwitter.ToTwitter.Upload">[docs]</a>    <span class="k">def</span> <span class="nf">Upload</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tweet</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">tweet</span><span class="p">:</span>
             <span class="k">return</span> <span class="mi">0</span>
@@ -108,12 +107,14 @@
                 <span class="k">if</span> <span class="n">e</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">old_ex</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">old_ex</span> <span class="o">=</span> <span class="n">e</span>
-        <span class="k">return</span> <span class="bp">False</span></div>
+        <span class="k">return</span> <span class="bp">False</span>
+</div>
 <div class="viewcode-block" id="ToTwitter.UploadFile"><a class="viewcode-back" href="../../api/pywws.ToTwitter.html#pywws.ToTwitter.ToTwitter.UploadFile">[docs]</a>    <span class="k">def</span> <span class="nf">UploadFile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">file</span><span class="p">):</span>
         <span class="n">tweet_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="nb">file</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)</span>
         <span class="n">tweet</span> <span class="o">=</span> <span class="n">tweet_file</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">140</span><span class="p">)</span>
         <span class="n">tweet_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">Upload</span><span class="p">(</span><span class="n">tweet</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">Upload</span><span class="p">(</span><span class="n">tweet</span><span class="p">)</span>
+</div></div>
 <div class="viewcode-block" id="main"><a class="viewcode-back" href="../../api/pywws.ToTwitter.html#pywws.ToTwitter.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">argv</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">argv</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
         <span class="n">argv</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span>
@@ -134,7 +135,10 @@
         <span class="k">print</span> <span class="o">&gt;&gt;</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">,</span> <span class="n">__doc__</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
         <span class="k">return</span> <span class="mi">2</span>
     <span class="n">logger</span> <span class="o">=</span> <span class="n">ApplicationLogger</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">ToTwitter</span><span class="p">(</span><span class="n">DataStore</span><span class="o">.</span><span class="n">params</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span><span class="o">.</span><span class="n">UploadFile</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span></div>
+    <span class="n">params</span> <span class="o">=</span> <span class="n">DataStore</span><span class="o">.</span><span class="n">params</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">Localisation</span><span class="o">.</span><span class="n">SetApplicationLanguage</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ToTwitter</span><span class="p">(</span><span class="n">params</span><span class="p">)</span><span class="o">.</span><span class="n">UploadFile</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+</div>
 <span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&quot;__main__&quot;</span><span class="p">:</span>
     <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
 </pre></div>

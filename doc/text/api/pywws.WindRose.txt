@@ -252,7 +252,7 @@ image file to be created e.g. 24hrs.png
 | a, ...)    |                                                                                            |
 +------------+--------------------------------------------------------------------------------------------+
 
-class class pywws.WindRose.RosePlotter(params, raw_data, hourly_data, daily_data, monthly_data, work_dir, translation=None)
+class class pywws.WindRose.RosePlotter(params, raw_data, hourly_data, daily_data, monthly_data, work_dir)
 
    GetDefaultPlotSize()
 

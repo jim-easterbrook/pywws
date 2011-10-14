@@ -75,14 +75,14 @@
 <div class="viewcode-block" id="Hourly"><a class="viewcode-back" href="../api/Hourly.html#Hourly.Hourly">[docs]</a><span class="k">def</span> <span class="nf">Hourly</span><span class="p">(</span><span class="n">data_dir</span><span class="p">):</span>
     <span class="c"># get file locations</span>
     <span class="n">params</span> <span class="o">=</span> <span class="n">DataStore</span><span class="o">.</span><span class="n">params</span><span class="p">(</span><span class="n">data_dir</span><span class="p">)</span>
+    <span class="c"># localise application</span>
+    <span class="n">Localisation</span><span class="o">.</span><span class="n">SetApplicationLanguage</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
     <span class="c"># open data file stores</span>
     <span class="n">raw_data</span> <span class="o">=</span> <span class="n">DataStore</span><span class="o">.</span><span class="n">data_store</span><span class="p">(</span><span class="n">data_dir</span><span class="p">)</span>
     <span class="n">calib_data</span> <span class="o">=</span> <span class="n">DataStore</span><span class="o">.</span><span class="n">calib_store</span><span class="p">(</span><span class="n">data_dir</span><span class="p">)</span>
     <span class="n">hourly_data</span> <span class="o">=</span> <span class="n">DataStore</span><span class="o">.</span><span class="n">hourly_store</span><span class="p">(</span><span class="n">data_dir</span><span class="p">)</span>
     <span class="n">daily_data</span> <span class="o">=</span> <span class="n">DataStore</span><span class="o">.</span><span class="n">daily_store</span><span class="p">(</span><span class="n">data_dir</span><span class="p">)</span>
     <span class="n">monthly_data</span> <span class="o">=</span> <span class="n">DataStore</span><span class="o">.</span><span class="n">monthly_store</span><span class="p">(</span><span class="n">data_dir</span><span class="p">)</span>
-    <span class="c"># create a translation object for our locale</span>
-    <span class="n">translation</span> <span class="o">=</span> <span class="n">Localisation</span><span class="o">.</span><span class="n">GetTranslation</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
     <span class="c"># get weather station data</span>
     <span class="n">LogData</span><span class="o">.</span><span class="n">LogData</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">raw_data</span><span class="p">)</span>
     <span class="c"># do the processing</span>
@@ -90,10 +90,11 @@
         <span class="n">params</span><span class="p">,</span> <span class="n">raw_data</span><span class="p">,</span> <span class="n">calib_data</span><span class="p">,</span> <span class="n">hourly_data</span><span class="p">,</span> <span class="n">daily_data</span><span class="p">,</span> <span class="n">monthly_data</span><span class="p">)</span>
     <span class="c"># do tasks</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">Tasks</span><span class="o">.</span><span class="n">RegularTasks</span><span class="p">(</span>
-        <span class="n">params</span><span class="p">,</span> <span class="n">calib_data</span><span class="p">,</span> <span class="n">hourly_data</span><span class="p">,</span> <span class="n">daily_data</span><span class="p">,</span> <span class="n">monthly_data</span><span class="p">,</span> <span class="n">translation</span>
+        <span class="n">params</span><span class="p">,</span> <span class="n">calib_data</span><span class="p">,</span> <span class="n">hourly_data</span><span class="p">,</span> <span class="n">daily_data</span><span class="p">,</span> <span class="n">monthly_data</span>
         <span class="p">)</span><span class="o">.</span><span class="n">do_tasks</span><span class="p">():</span>
         <span class="k">return</span> <span class="mi">1</span>
-    <span class="k">return</span> <span class="mi">0</span></div>
+    <span class="k">return</span> <span class="mi">0</span>
+</div>
 <div class="viewcode-block" id="main"><a class="viewcode-back" href="../api/Hourly.html#Hourly.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">argv</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">argv</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
         <span class="n">argv</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span>
@@ -117,7 +118,8 @@
         <span class="k">print</span> <span class="o">&gt;&gt;</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">,</span> <span class="n">__doc__</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
         <span class="k">return</span> <span class="mi">2</span>
     <span class="n">logger</span> <span class="o">=</span> <span class="n">ApplicationLogger</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">Hourly</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span></div>
+    <span class="k">return</span> <span class="n">Hourly</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</div>
 <span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&quot;__main__&quot;</span><span class="p">:</span>
     <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
 </pre></div>

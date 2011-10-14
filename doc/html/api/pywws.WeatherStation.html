@@ -75,9 +75,10 @@
 </div>
 <div class="section" id="module-pywws.WeatherStation">
 <span id="detailed-api"></span><h2>Detailed API<a class="headerlink" href="#module-pywws.WeatherStation" title="Permalink to this headline">¶</a></h2>
-<p>WeatherStation.py - get data from WH1080/WH3080 compatible weather stations</p>
-<p>Derived from wwsr.c by Michael Pendec (<a class="reference external" href="mailto:michael&#46;pendec&#37;&#52;&#48;gmail&#46;com">michael<span>&#46;</span>pendec<span>&#64;</span>gmail<span>&#46;</span>com</a>) and
-wwsrdump.c by Svend Skafte (<a class="reference external" href="mailto:svend&#37;&#52;&#48;skafte&#46;net">svend<span>&#64;</span>skafte<span>&#46;</span>net</a>), modified by Dave Wells.</p>
+<p>Get data from WH1080/WH3080 compatible weather stations.</p>
+<p>Derived from wwsr.c by Michael Pendec (<a class="reference external" href="mailto:michael&#46;pendec&#37;&#52;&#48;gmail&#46;com">michael<span>&#46;</span>pendec<span>&#64;</span>gmail<span>&#46;</span>com</a>),
+wwsrdump.c by Svend Skafte (<a class="reference external" href="mailto:svend&#37;&#52;&#48;skafte&#46;net">svend<span>&#64;</span>skafte<span>&#46;</span>net</a>), modified by Dave Wells,
+and other sources.</p>
 <p class="rubric">Functions</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -100,8 +101,8 @@ wwsrdump.c by Svend Skafte (<a class="reference external" href="mailto:svend&#37
 <tr><td><a class="reference internal" href="#pywws.WeatherStation.pressure_trend_text" title="pywws.WeatherStation.pressure_trend_text"><tt class="xref py py-obj docutils literal"><span class="pre">pressure_trend_text</span></tt></a>(trend)</td>
 <td>Convert pressure trend to a string, see</td>
 </tr>
-<tr><td><a class="reference internal" href="#pywws.WeatherStation.set_translation" title="pywws.WeatherStation.set_translation"><tt class="xref py py-obj docutils literal"><span class="pre">set_translation</span></tt></a>(trans_function)</td>
-<td>Set the localisation translation function to be used by wind_dir_text</td>
+<tr><td><tt class="xref py py-obj docutils literal"><span class="pre">set_translation</span></tt></td>
+<td></td>
 </tr>
 <tr><td><a class="reference internal" href="#pywws.WeatherStation.wind_chill" title="pywws.WeatherStation.wind_chill"><tt class="xref py py-obj docutils literal"><span class="pre">wind_chill</span></tt></a>(temp,&nbsp;wind)</td>
 <td>Compute wind chill, using formula from</td>
@@ -154,13 +155,6 @@ wwsrdump.c by Svend Skafte (<a class="reference external" href="mailto:svend&#37
 <tt class="descclassname">pywws.WeatherStation.</tt><tt class="descname">pressure_trend_text</tt><big>(</big><em>trend</em><big>)</big><a class="reference internal" href="../_modules/pywws/WeatherStation.html#pressure_trend_text"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.WeatherStation.pressure_trend_text" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert pressure trend to a string, see
 <a class="reference external" href="http://www.reedsonline.com/weather/weather-terms.htm">http://www.reedsonline.com/weather/weather-terms.htm</a>.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="pywws.WeatherStation.set_translation">
-<tt class="descclassname">pywws.WeatherStation.</tt><tt class="descname">set_translation</tt><big>(</big><em>trans_function</em><big>)</big><a class="reference internal" href="../_modules/pywws/WeatherStation.html#set_translation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.WeatherStation.set_translation" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set the localisation translation function to be used by wind_dir_text
-and pressure_trend_text.</p>
 </dd></dl>
 
 <dl class="class">

@@ -48,19 +48,37 @@
   <h1>Source code for TestWeatherStation</h1><div class="highlight"><pre>
 <span class="c">#!/usr/bin/env python</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">Test connection to weather station.</span>
+<span class="sd">&quot;&quot;&quot;Test connection to weather station.</span>
 
-<span class="sd">usage: python TestWeatherStation.py [options]</span>
-<span class="sd">options are:</span>
-<span class="sd">       --help           display this help</span>
-<span class="sd">  -3 | --3080           station is a &#39;3080&#39; type instead of a &#39;1080&#39;</span>
-<span class="sd">  -d | --decode         display meaningful values instead of raw data</span>
-<span class="sd">  -h | --history count  display the last &quot;count&quot; readings</span>
-<span class="sd">  -l | --live           display &#39;live&#39; data</span>
-<span class="sd">  -u | --unknown        display unknown fixed block values</span>
-<span class="sd">  -v | --verbose        increase amount of reassuring messages</span>
+<span class="sd">This is a simple utility to test communication with the weather</span>
+<span class="sd">station. If this doesn&#39;t work, then there&#39;s a problem that needs to be</span>
+<span class="sd">sorted out before trying any of the other programs. Likely problems</span>
+<span class="sd">include not properly installing `libusb</span>
+<span class="sd">&lt;http://libusb.wiki.sourceforge.net/&gt;`_ or `PyUSB</span>
+<span class="sd">&lt;http://pyusb.berlios.de/&gt;`_. Less likely problems include an</span>
+<span class="sd">incompatibility between libusb and some operating systems. The most</span>
+<span class="sd">unlikely problem is that you forgot to connect the weather station to</span>
+<span class="sd">your computer! ::</span>
+
+<span class="sd">%s</span>
 <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="n">__usage__</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;</span>
+<span class="s"> usage: python TestWeatherStation.py [options]</span>
+<span class="s"> options are:</span>
+<span class="s">       --help           display this help</span>
+<span class="s">  -3 | --3080           station is a &#39;3080&#39; type instead of a &#39;1080&#39;</span>
+<span class="s">  -d | --decode         display meaningful values instead of raw data</span>
+<span class="s">  -h | --history count  display the last &quot;count&quot; readings</span>
+<span class="s">  -l | --live           display &#39;live&#39; data</span>
+<span class="s">  -u | --unknown        display unknown fixed block values</span>
+<span class="s">  -v | --verbose        increase amount of reassuring messages</span>
+<span class="s">                        (repeat for even more messages e.g. -vvv)</span>
+<span class="s">&quot;&quot;&quot;</span>
+
+<span class="n">__doc__</span> <span class="o">%=</span> <span class="n">__usage__</span>
+
+<span class="n">__usage__</span> <span class="o">=</span> <span class="n">__doc__</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">__usage__</span>
 
 <span class="kn">import</span> <span class="nn">datetime</span>
 <span class="kn">import</span> <span class="nn">getopt</span>
@@ -84,12 +102,12 @@
             <span class="p">(</span><span class="s">&#39;help&#39;</span><span class="p">,</span> <span class="s">&#39;3080&#39;</span><span class="p">,</span> <span class="s">&#39;decode&#39;</span><span class="p">,</span> <span class="s">&#39;history=&#39;</span><span class="p">,</span> <span class="s">&#39;live&#39;</span><span class="p">,</span> <span class="s">&#39;unknown&#39;</span><span class="p">,</span> <span class="s">&#39;verbose&#39;</span><span class="p">))</span>
     <span class="k">except</span> <span class="n">getopt</span><span class="o">.</span><span class="n">error</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span>
         <span class="k">print</span> <span class="o">&gt;&gt;</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&#39;Error: </span><span class="si">%s</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">msg</span>
-        <span class="k">print</span> <span class="o">&gt;&gt;</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">,</span> <span class="n">__doc__</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">print</span> <span class="o">&gt;&gt;</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">,</span> <span class="n">__usage__</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
         <span class="k">return</span> <span class="mi">1</span>
     <span class="c"># check arguments</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">print</span> <span class="o">&gt;&gt;</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&#39;Error: no arguments allowed</span><span class="se">\n</span><span class="s">&#39;</span>
-        <span class="k">print</span> <span class="o">&gt;&gt;</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">,</span> <span class="n">__doc__</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">print</span> <span class="o">&gt;&gt;</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">,</span> <span class="n">__usage__</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
         <span class="k">return</span> <span class="mi">2</span>
     <span class="c"># process options</span>
     <span class="n">history_count</span> <span class="o">=</span> <span class="mi">0</span>
@@ -100,7 +118,7 @@
     <span class="n">ws_type</span> <span class="o">=</span> <span class="s">&#39;1080&#39;</span>
     <span class="k">for</span> <span class="n">o</span><span class="p">,</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">opts</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">o</span> <span class="o">==</span> <span class="s">&#39;--help&#39;</span><span class="p">:</span>
-            <span class="k">print</span> <span class="n">__doc__</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="k">print</span> <span class="n">__usage__</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
             <span class="k">return</span> <span class="mi">0</span>
         <span class="k">elif</span> <span class="n">o</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;-3&#39;</span><span class="p">,</span> <span class="s">&#39;--3080&#39;</span><span class="p">):</span>
             <span class="n">ws_type</span> <span class="o">=</span> <span class="s">&#39;3080&#39;</span>

@@ -49,11 +49,10 @@ Authorisation data is read from the weather.ini file in data_dir.
 +------------+--------------------------------------------------------------------------------------------+
 | ``ToTwitte |                                                                                            |
 | r``(params |                                                                                            |
-| [, transla |                                                                                            |
-| tion])     |                                                                                            |
+| )          |                                                                                            |
 +------------+--------------------------------------------------------------------------------------------+
 
-class class pywws.ToTwitter.ToTwitter(params, translation=None)
+class class pywws.ToTwitter.ToTwitter(params)
 
    Upload(tweet)
 
