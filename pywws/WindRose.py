@@ -189,8 +189,10 @@ def main(argv=None):
         print >>sys.stderr, 'Error: 4 arguments required\n'
         print >>sys.stderr, __doc__.strip()
         return 2
+    params = DataStore.params(args[0])
+    Localisation.SetApplicationLanguage(params)
     return RosePlotter(
-        DataStore.params(args[0]),
+        params,
         DataStore.calib_store(args[0]), DataStore.hourly_store(args[0]),
         DataStore.daily_store(args[0]), DataStore.monthly_store(args[0]),
         args[1]
