@@ -27,7 +27,7 @@ from WeatherStation import dew_point, wind_chill, apparent_temp
 
 class BasePlotter(object):
     def __init__(self, params, raw_data, hourly_data,
-                 daily_data, monthly_data, work_dir, translation=None):
+                 daily_data, monthly_data, work_dir):
         self.raw_data = raw_data
         self.hourly_data = hourly_data
         self.daily_data = daily_data
@@ -35,10 +35,6 @@ class BasePlotter(object):
         self.work_dir = work_dir
         self.pressure_offset = eval(params.get('fixed', 'pressure offset'))
         # set language related stuff
-        if translation:
-            self.translation = translation
-        else:
-            self.translation = Localisation.GetTranslation(params)
         self.encoding = params.get('config', 'gnuplot encoding', 'iso_8859_1')
         # create work directory
         if not os.path.isdir(self.work_dir):
@@ -207,7 +203,7 @@ set timefmt "%Y-%m-%dT%H:%M:%S"
         result = result.encode(self.encoding)
         return result
     def PlotData(self, plot_no, plot, source):
-        _ = self.translation.ugettext
+        _ = Localisation.translation.ugettext
         subplot_list = self.GetChildren(plot, 'subplot')
         subplot_count = len(subplot_list)
         if subplot_count < 1:
@@ -364,6 +360,7 @@ set timefmt "%Y-%m-%dT%H:%M:%S"
             result += '\n'
         result = result.encode(self.encoding)
         return result
+
 def main(argv=None):
     if argv is None:
         argv = sys.argv
@@ -383,11 +380,14 @@ def main(argv=None):
         print >>sys.stderr, 'Error: 4 arguments required\n'
         print >>sys.stderr, __doc__.strip()
         return 2
+    params = DataStore.params(args[0])
+    Localisation.SetApplicationLanguage(params)
     return GraphPlotter(
-        DataStore.params(args[0]),
+        params,
         DataStore.data_store(args[0]), DataStore.hourly_store(args[0]),
         DataStore.daily_store(args[0]), DataStore.monthly_store(args[0]),
         args[1]
         ).DoPlot(args[2], args[3])
+
 if __name__ == "__main__":
     sys.exit(main())

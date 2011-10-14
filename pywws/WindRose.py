@@ -22,6 +22,7 @@ import xml.dom.minidom
 
 from conversions import *
 import DataStore
+import Localisation
 from Plot import BasePlotter
 from TimeZone import Local
 from WeatherStation import dew_point
@@ -53,7 +54,7 @@ unset border
         result += 'set bmargin %g\n' % (lmargin)
         return result
     def PlotData(self, plot_no, plot, source):
-        _ = self.translation.ugettext
+        _ = Localisation.translation.ugettext
         # get statistics
         thresh = eval(self.GetValue(
             plot, 'threshold', '0.0, 1.54, 3.09, 5.14, 8.23, 10.8, 15.5'))

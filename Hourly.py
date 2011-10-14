@@ -27,14 +27,14 @@ from pywws import Tasks
 def Hourly(data_dir):
     # get file locations
     params = DataStore.params(data_dir)
+    # localise application
+    Localisation.SetApplicationLanguage(params)
     # open data file stores
     raw_data = DataStore.data_store(data_dir)
     calib_data = DataStore.calib_store(data_dir)
     hourly_data = DataStore.hourly_store(data_dir)
     daily_data = DataStore.daily_store(data_dir)
     monthly_data = DataStore.monthly_store(data_dir)
-    # create a translation object for our locale
-    translation = Localisation.GetTranslation(params)
     # get weather station data
     LogData.LogData(params, raw_data)
     # do the processing
@@ -42,10 +42,11 @@ def Hourly(data_dir):
         params, raw_data, calib_data, hourly_data, daily_data, monthly_data)
     # do tasks
     if not Tasks.RegularTasks(
-        params, calib_data, hourly_data, daily_data, monthly_data, translation
+        params, calib_data, hourly_data, daily_data, monthly_data
         ).do_tasks():
         return 1
     return 0
+
 def main(argv=None):
     if argv is None:
         argv = sys.argv
@@ -70,5 +71,6 @@ def main(argv=None):
         return 2
     logger = ApplicationLogger(verbose)
     return Hourly(args[0])
+
 if __name__ == "__main__":
     sys.exit(main())

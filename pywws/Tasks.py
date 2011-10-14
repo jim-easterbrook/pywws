@@ -16,15 +16,13 @@ import WindRose
 import YoWindow
 
 class RegularTasks(object):
-    def __init__(self, params, calib_data, hourly_data, daily_data, monthly_data,
-                 translation):
+    def __init__(self, params, calib_data, hourly_data, daily_data, monthly_data):
         self.logger = logging.getLogger('pywws.Tasks.RegularTasks')
         self.params = params
         self.calib_data = calib_data
         self.hourly_data = hourly_data
         self.daily_data = daily_data
         self.monthly_data = monthly_data
-        self.translation = translation
         # get directories
         self.work_dir = self.params.get('paths', 'work', '/tmp/weather')
         self.template_dir = self.params.get(
@@ -40,10 +38,10 @@ class RegularTasks(object):
         # create plotter objects
         self.plotter = Plot.GraphPlotter(
             self.params, self.calib_data, self.hourly_data, self.daily_data,
-            self.monthly_data, self.work_dir, translation=self.translation)
+            self.monthly_data, self.work_dir)
         self.roseplotter = WindRose.RosePlotter(
             self.params, self.calib_data, self.hourly_data, self.daily_data,
-            self.monthly_data, self.work_dir, translation=self.translation)
+            self.monthly_data, self.work_dir)
         # create a ToUnderground object
         self.underground = ToUnderground.ToUnderground(self.params, self.calib_data)
         # create a YoWindow object
@@ -141,7 +139,7 @@ class RegularTasks(object):
         return OK
     def do_twitter(self, template, data=None):
         import ToTwitter
-        twitter = ToTwitter.ToTwitter(self.params, translation=self.translation)
+        twitter = ToTwitter.ToTwitter(self.params)
         self.logger.info("Templating %s", template)
         input_file = os.path.join(self.template_dir, template)
         tweet = self.templater.make_text(input_file, live_data=data)

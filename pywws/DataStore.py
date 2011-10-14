@@ -22,8 +22,6 @@ import os
 import sys
 import time
 
-import Localisation
-
 def safestrptime(date_string, format=None):
     # time.strptime is time consuming (because it's so flexible?) so don't use
     # it for the fixed format datetime strings in our csv files
@@ -45,8 +43,6 @@ class params(object):
         # open config file
         self._config = SafeConfigParser()
         self._config.read(self._path)
-        # get a translation object
-        self.translation = Localisation.GetTranslation(self)
     def __del__(self):
         self.flush()
     def flush(self):

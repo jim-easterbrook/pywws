@@ -1,8 +1,12 @@
-"""WeatherStation.py - get data from WH1080/WH3080 compatible weather stations
+"""Get data from WH1080/WH3080 compatible weather stations.
 
-Derived from wwsr.c by Michael Pendec (michael.pendec@gmail.com) and
-wwsrdump.c by Svend Skafte (svend@skafte.net), modified by Dave Wells.
+Derived from wwsr.c by Michael Pendec (michael.pendec@gmail.com),
+wwsrdump.c by Svend Skafte (svend@skafte.net), modified by Dave Wells,
+and other sources.
+
 """
+
+__docformat__ = "restructuredtext"
 
 from datetime import datetime
 import logging
@@ -16,7 +20,9 @@ import Localisation
 
 def dew_point(temp, hum):
     """Compute dew point, using formula from
-    http://en.wikipedia.org/wiki/Dew_point."""
+    http://en.wikipedia.org/wiki/Dew_point.
+
+    """
     if temp == None or hum == None:
         return None
     a = 17.27
@@ -26,7 +32,9 @@ def dew_point(temp, hum):
 
 def wind_chill(temp, wind):
     """Compute wind chill, using formula from
-    http://en.wikipedia.org/wiki/wind_chill"""
+    http://en.wikipedia.org/wiki/wind_chill
+
+    """
     if temp == None or wind == None:
         return None
     wind_kph = wind * 3.6
@@ -38,21 +46,20 @@ def wind_chill(temp, wind):
 
 def apparent_temp(temp, rh, wind):
     """Compute apparent temperature (real feel), using formula from
-    http://www.bom.gov.au/info/thermal_stress/"""
+    http://www.bom.gov.au/info/thermal_stress/
+
+    """
     if temp == None or rh == None or wind == None:
         return None
     vap_press = (float(rh) / 100.0) * 6.105 * math.exp(
         17.27 * temp / (237.7 + temp))
     return temp + (0.33 * vap_press) - (0.70 * wind) - 4.00
 
-def set_translation(trans_function):
-    """Set the localisation translation function to be used by wind_dir_text
-    and pressure_trend_text."""
-    global _
-    _ = trans_function
-
 def get_wind_dir_text():
-    """Return an array to convert wind direction integer to a string."""
+    """Return an array to convert wind direction integer to a string.
+
+    """
+    _ = Localisation.translation.gettext
     return [
         _('N'), _('NNE'), _('NE'), _('ENE'),
         _('E'), _('ESE'), _('SE'), _('SSE'),
@@ -62,7 +69,10 @@ def get_wind_dir_text():
 
 def pressure_trend_text(trend):
     """Convert pressure trend to a string, see
-    http://www.reedsonline.com/weather/weather-terms.htm."""
+    http://www.reedsonline.com/weather/weather-terms.htm.
+
+    """
+    _ = Localisation.translation.gettext
     if trend > 6.0:
         return _('rising very rapidly')
     elif trend > 3.5:
@@ -198,6 +208,7 @@ def findDevice(idVendor, idProduct):
             if device.idVendor == idVendor and device.idProduct == idProduct:
                 return device
     return None
+
 class weather_station(object):
     """Class that represents the weather station to user program."""
     def __init__(self, ws_type='1080'):
@@ -311,14 +322,15 @@ class weather_station(object):
                     next_live = None
                     live_overdue = now + 3600.0
                 elif now > live_overdue:
-                    self.logger.debug('live_data overdue')
+                    self.logger.debug(
+                        'live_data %.2fs overdue', now - next_live)
                     result['idx'] = datetime.utcfromtimestamp(int(next_live))
                     next_live += live_interval
-                    live_overdue = next_live + 2.0
+                    live_overdue = next_live + 3.0
                 else:
                     result['idx'] = datetime.utcfromtimestamp(int(now))
                     next_live = now + live_interval
-                    live_overdue = next_live + 2.0
+                    live_overdue = next_live + 3.0
                 if result:
                     yield result, old_ptr, False
                 old_data = new_data
@@ -429,7 +441,7 @@ class weather_station(object):
         # Read block repeatedly until it's stable. This avoids getting corrupt
         # data when the block is read as the station is updating it.
         buf_1 = (ptr / 256) & 0xFF
-        buf_2 = ptr & 0xFF;
+        buf_2 = ptr & 0xFF
         old_block = None
         while True:
             self.devh.controlMsg(usb.TYPE_CLASS + usb.RECIP_INTERFACE, 9,
@@ -459,7 +471,7 @@ class weather_station(object):
         return result
     def _write_byte(self, ptr, value):
         buf_1 = (ptr / 256) & 0xFF
-        buf_2 = ptr & 0xFF;
+        buf_2 = ptr & 0xFF
         self.devh.controlMsg(usb.TYPE_CLASS + usb.RECIP_INTERFACE, 9,
                              [0xA2, buf_1, buf_2, 0x20, 0xA2, value, 0, 0x20],
                              value=0x200, timeout=1000)

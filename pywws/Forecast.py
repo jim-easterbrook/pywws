@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+
 """
 Predict future weather using recent data.
 
@@ -31,7 +32,7 @@ def Zambretti(params, hourly_data):
         trend = 0.0
     else:
         trend = hourly_data['pressure_trend'] / 3.0
-    return params.translation.ugettext(ZambrettiCore.Zambretti(
+    return Localisation.translation.ugettext(ZambrettiCore.Zambretti(
         hourly_data['rel_pressure'], hourly_data['idx'].month, wind, trend,
         north=north, baro_top=baro_upper, baro_bottom=baro_lower)[0])
 
@@ -56,6 +57,7 @@ def main(argv=None):
         return 2
     data_dir = args[0]
     params = DataStore.params(data_dir)
+    Localisation.SetApplicationLanguage(params)
     hourly_data = DataStore.hourly_store(data_dir)
     idx = hourly_data.before(datetime.max)
     print 'Zambretti (current):', Zambretti(params, hourly_data[idx])
@@ -66,5 +68,6 @@ def main(argv=None):
     idx = hourly_data.nearest(idx.astimezone(utc).replace(tzinfo=None))
     print 'Zambretti  (at 9am):', Zambretti(params, hourly_data[idx])
     return 0
+
 if __name__ == "__main__":
     sys.exit(main())

@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+
 """
 Create text data file based on a template.
 
@@ -12,6 +13,7 @@ output_file is the name of the text file to be created
 
 from datetime import datetime, timedelta
 import getopt
+import locale
 import logging
 import os
 import shlex
@@ -33,8 +35,6 @@ class Template(object):
         self.hourly_data = hourly_data
         self.daily_data = daily_data
         self.monthly_data = monthly_data
-        # set language before importing wind_dir_text array
-        WeatherStation.set_translation(self.params.translation.gettext)
     def process(self, live_data, template_file):
         def jump(idx, count):
             while count > 0:
@@ -120,7 +120,12 @@ class Template(object):
                     elif isinstance(x, datetime):
                         yield x.strftime(fmt)
                     else:
-                        yield fmt % (x)
+                        if '%%' in fmt:
+                            # get round bug in Python versions < 2.7
+                            yield locale.format_string(
+                                fmt.replace('%%', '##'), x).replace('##', '%')
+                        else:
+                            yield locale.format_string(fmt, x)
                 elif command[0] == 'monthly':
                     data_set = self.monthly_data
                     idx, valid_data = jump(datetime.max, -1)
@@ -212,8 +217,10 @@ def main(argv=None):
             print __doc__.strip()
             return 0
     logger = ApplicationLogger(1)
+    params = DataStore.params(args[0])
+    Localisation.SetApplicationLanguage(params)
     return Template(
-        DataStore.params(args[0]),
+        params,
         DataStore.calib_store(args[0]), DataStore.hourly_store(args[0]),
         DataStore.daily_store(args[0]), DataStore.monthly_store(args[0])
         ).make_file(args[1], args[2])

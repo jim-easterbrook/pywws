@@ -76,7 +76,6 @@ def Zambretti(pressure, month, wind, trend,
 
 if __name__ == "__main__":
     import WeatherStation
-    WeatherStation.set_translation(lambda x: x)
     wind_dir = WeatherStation.get_wind_dir_text()
     for pressure in range(1030, 960, -10):
         for trend_txt in ('S', 'R-S', 'R-W', 'F-W', 'F-S'):

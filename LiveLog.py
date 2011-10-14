@@ -53,9 +53,12 @@ def CheckFixedBlock(ws, params, logger):
     params.set('fixed', 'pressure offset', '%g' % (pressure_offset))
     params.flush()
     return fixed_block
+
 def LiveLog(data_dir):
     logger = logging.getLogger('pywws.LiveLog')
     params = DataStore.params(data_dir)
+    # localise application
+    Localisation.SetApplicationLanguage(params)
     # connect to weather station
     ws_type = params.get('config', 'ws type', '1080')
     ws = WeatherStation.weather_station(ws_type=ws_type)
@@ -69,11 +72,9 @@ def LiveLog(data_dir):
     hourly_data = DataStore.hourly_store(data_dir)
     daily_data = DataStore.daily_store(data_dir)
     monthly_data = DataStore.monthly_store(data_dir)
-    # create a translation object for our locale
-    translation = Localisation.GetTranslation(params)
     # create a RegularTasks object
     tasks = Tasks.RegularTasks(
-        params, calib_data, hourly_data, daily_data, monthly_data, translation)
+        params, calib_data, hourly_data, daily_data, monthly_data)
     # get time of last logged data
     two_minutes = timedelta(minutes=2)
     last_stored = raw_data.before(datetime.max)
@@ -124,6 +125,7 @@ def LiveLog(data_dir):
         else:
             tasks.do_live(data)
     return 0
+
 def main(argv=None):
     if argv is None:
         argv = sys.argv
@@ -151,6 +153,7 @@ def main(argv=None):
         return 2
     logger = ApplicationLogger(verbose, logfile)
     return LiveLog(args[0])
+
 if __name__ == "__main__":
     logger = logging.getLogger('pywws')
     try:
