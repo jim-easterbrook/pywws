@@ -10,6 +10,7 @@ from calib import Calib
 import Plot
 import Template
 from TimeZone import Local
+import ToMetOffice
 import ToUnderground
 import Upload
 import WindRose
@@ -44,6 +45,8 @@ class RegularTasks(object):
             self.monthly_data, self.work_dir)
         # create a ToUnderground object
         self.underground = ToUnderground.ToUnderground(self.params, self.calib_data)
+        # create a ToMetOffice object
+        self.metoffice = ToMetOffice.ToMetOffice(self.params, self.calib_data)
         # create a YoWindow object
         self.yowindow = YoWindow.YoWindow(self.calib_data)
         # get local time's offset from UTC, without DST
@@ -116,6 +119,11 @@ class RegularTasks(object):
         for section in sections:
             if eval(self.params.get(section, 'underground', 'False')):
                 if not self.underground.Upload(True):
+                    OK = False
+                break
+        for section in sections:
+            if eval(self.params.get(section, 'metoffice', 'False')):
+                if not self.metoffice.Upload(True):
                     OK = False
                 break
         uploads = []
