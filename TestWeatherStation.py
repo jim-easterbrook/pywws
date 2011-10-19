@@ -19,7 +19,6 @@ __usage__ = """
  usage: python TestWeatherStation.py [options]
  options are:
        --help           display this help
-  -3 | --3080           station is a '3080' type instead of a '1080'
   -d | --decode         display meaningful values instead of raw data
   -h | --history count  display the last "count" readings
   -l | --live           display 'live' data
@@ -50,8 +49,8 @@ def main(argv=None):
         argv = sys.argv
     try:
         opts, args = getopt.getopt(
-            argv[1:], "3dh:luv",
-            ('help', '3080', 'decode', 'history=', 'live', 'unknown', 'verbose'))
+            argv[1:], "dh:luv",
+            ('help', 'decode', 'history=', 'live', 'unknown', 'verbose'))
     except getopt.error, msg:
         print >>sys.stderr, 'Error: %s\n' % msg
         print >>sys.stderr, __usage__.strip()
@@ -67,13 +66,10 @@ def main(argv=None):
     live = False
     unknown = False
     verbose = 0
-    ws_type = '1080'
     for o, a in opts:
         if o == '--help':
             print __usage__.strip()
             return 0
-        elif o in ('-3', '--3080'):
-            ws_type = '3080'
         elif o in ('-d', '--decode'):
             decode = True
         elif o in ('-h', '--history'):
@@ -86,7 +82,7 @@ def main(argv=None):
             verbose += 1
     # do it!
     logger = ApplicationLogger(verbose)
-    ws = WeatherStation.weather_station(ws_type=ws_type)
+    ws = WeatherStation.weather_station()
     raw_fixed = ws.get_raw_fixed_block()
     if not raw_fixed:
         print "No valid data block found"
@@ -114,7 +110,7 @@ def main(argv=None):
                         print k, b, bits[b]
     if history_count > 0:
         lo_fix = ws.get_lo_fix_block()
-        print "Recent history", lo_fix
+        print "Recent history"
         ptr = lo_fix['current_pos']
         date = safestrptime(lo_fix['date_time'], '%Y-%m-%d %H:%M')
         for i in range(history_count):
