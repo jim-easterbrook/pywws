@@ -466,8 +466,8 @@ class weather_station(object):
         # check 'magic number'
         if result[:2] not in ([0x55, 0xAA], [0xFF, 0xFF],
                               [0x55, 0x55], [0xC4, 0x00]):
-            raise IOError(
-                "Unrecognised 'magic number' %02x %02x" % (result[0], result[1]))
+            self.logger.critical(
+                "Unrecognised 'magic number' %02x %02x", result[0], result[1])
         return result
     def _write_byte(self, ptr, value):
         buf_1 = (ptr / 256) & 0xFF
