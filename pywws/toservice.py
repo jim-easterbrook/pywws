@@ -22,7 +22,7 @@ class ToService(object):
         self.logger = logging.getLogger('pywws.%s' % self.__class__.__name__)
         self.params = params
         self.data = calib_data
-        self.old_result = None
+        self.old_response = None
         self.old_ex = None
         # set default socket timeout, so urlopen calls don't hang forever
         socket.setdefaulttimeout(10)
@@ -84,14 +84,16 @@ class ToService(object):
                 wudata = urllib.urlopen(server, coded_data)
                 response = wudata.readlines()
                 wudata.close()
+                if response != self.old_response:
+                    for line in response:
+                        self.logger.error(line)
+                    self.old_response = response
                 if not response:
                     # Met office returns empty array on success
                     return True
-                for line in response:
+                if response[0] == 'success\n':
                     # Weather Underground returns 'success' string
-                    if line == 'success\n':
-                        return True
-                    self.logger.error(line)
+                    return True
             except Exception, ex:
                 e = str(ex)
                 if e != self.old_ex:
