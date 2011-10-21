@@ -1,36 +1,116 @@
 #!/usr/bin/env python
 
-"""
-Post weather update to WeatherUnderground.
+"""Post weather update to WeatherUnderground
+::
 
-usage: python ToUnderground.py [options] data_dir
-options are:
+%s
+
+Introduction
+------------
+
+`Weather Underground <http://www.wunderground.com/>`_ is a USA based
+web site that gathers weather data from stations around the world.
+This module enables pywws to upload readings to Weather Underground.
+
+Configuration
+-------------
+
+If you haven't already done so, visit the Weather Underground web site
+and create a member account for yourself. Then go to the `'Personal
+Weather Stations' page
+<http://www.wunderground.com/wxstation/signup.html>`_ and follow the
+'new weather station' link. Fill in all the required details, then
+click on 'submit'.
+
+Copy your 'station ID' and password to a new ``[underground]`` section
+in your ``weather.ini`` configuration file::
+
+    [underground]
+    password = secret
+    station = ABCDEFG1A
+
+Remember to stop all pywws software before editing ``weather.ini``.
+
+Test your configuration by running ``ToUnderground.py`` (replace
+``data_dir`` with your weather data directory)::
+
+    python pywws/ToUnderground.py -vvv data_dir
+
+This should show you the data string that is uploaded and then a
+'success' message.
+
+Upload old data
+---------------
+
+Now you can upload your last 7 days' data. Edit your ``weather.ini``
+file and remove the ``last update`` line from the ``[underground]``
+section, then run ``ToUnderground.py`` with the catchup option::
+
+    python pywws/ToUnderground.py -c -v data_dir
+
+This may take 20 minutes or more, depending on how much data you have.
+
+Add Weather Underground upload to regular tasks
+-----------------------------------------------
+
+Edit your ``weather.ini`` again, and add ``underground = True`` to the
+``[live]``, ``[logged]``, ``[hourly]``, ``[12 hourly]`` or ``[daily]``
+section, depending on how often you want to send data. For example::
+
+    [live]
+    underground = True
+    twitter = []
+    plot = []
+    text = []
+
+If you set ``underground = True`` in the ``live`` section, pywws will
+use Weather Underground's 'Rapid Fire' mode to send a reading every 48
+seconds.
+
+Restart your regular pywws program (``Hourly.py`` or ``LiveLog.py``)
+and visit the Weather Underground web site to see regular updates from
+your weather station.
+
+"""
+
+__docformat__ = "restructuredtext en"
+__usage__ = """
+ usage: python ToUnderground.py [options] data_dir
+ options are:
   -h or --help     display this help
   -c or --catchup  upload all data since last upload (up to 4 weeks)
   -v or --verbose  increase amount of reassuring messages
-data_dir is the root directory of the weather data
-
-StationID and password are read from the weather.ini file in data_dir.
+ data_dir is the root directory of the weather data
 """
+__doc__ %= __usage__
+__usage__ = __doc__.split('\n')[0] + __usage__
 
 import getopt
-import logging
-import socket
 import sys
-import urllib
 from datetime import datetime, timedelta
 
-import conversions
 import DataStore
 from Logger import ApplicationLogger
-from TimeZone import Local, utc
 import toservice
-from WeatherStation import dew_point
 
 FIVE_MINS = timedelta(minutes=5)
 
 class ToUnderground(toservice.ToService):
+    """Upload weather data to Weather Underground.
+
+    """
     def __init__(self, params, calib_data):
+        """
+
+        :param params: pywws configuration.
+
+        :type params: :class:`pywws.DataStore.params`
+        
+        :param calib_data: 'calibrated' data.
+
+        :type calib_data: :class:`pywws.DataStore.calib_store`
+    
+        """
         self.config_section = 'underground'
         toservice.ToService.__init__(self, params, calib_data)
         # Weather Underground server, normal and rapid fire
@@ -52,9 +132,54 @@ class ToUnderground(toservice.ToService):
         self.fixed_data_rf['rtfreq'] = '48'
 
     def Upload(self, catchup):
-        return self._upload(self.server, self.fixed_data, catchup)
+        """Upload one or more weather data records.
+
+        This method uploads either the most recent weather data
+        record, or all records since the last upload (up to 7 days),
+        according to the value of :obj:`catchup`.
+
+        It sets the ``last update`` configuration value to the time
+        stamp of the most recent record successfully uploaded.
+
+        :param catchup: upload all data since last upload.
+
+        :type catchup: bool
+
+        :return: success status
+
+        :rtype: bool
+        
+        """
+        return self.upload(self.server, self.fixed_data, catchup)
 
     def RapidFire(self, data, catchup):
+        """Upload a 'Rapid Fire' weather data record.
+
+        This method uploads either a single data record (typically one
+        obtained during 'live' logging), or all records since the last
+        upload (up to 7 days), according to the value of
+        :obj:`catchup`.
+
+        It sets the ``last update`` configuration value to the time
+        stamp of the most recent record successfully uploaded.
+
+        The :obj:`data` parameter contains the data to be uploaded.
+        It should be a 'calibrated' data record, as stored in
+        :class:`pywws.DataStore.calib_store`.
+
+        :param data: the weather data record.
+
+        :type data: dict
+
+        :param catchup: upload all data since last upload.
+
+        :type catchup: bool
+
+        :return: success status
+
+        :rtype: bool
+        
+        """
         last_log = self.data.before(datetime.max)
         if last_log < data['idx'] - FIVE_MINS:
             # logged data is not (yet) up to date
@@ -68,7 +193,7 @@ class ToUnderground(toservice.ToService):
                 # last update was well before last logged data
                 if not self.Upload(True):
                     return False
-        if not self._send_data(data, self.server_rf, self.fixed_data_rf):
+        if not self.send_data(data, self.server_rf, self.fixed_data_rf):
             return False
         self.params.set(
             self.config_section, 'last update', data['idx'].isoformat(' '))

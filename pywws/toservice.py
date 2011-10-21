@@ -18,7 +18,26 @@ HOUR = timedelta(hours=1)
 DAY = timedelta(hours=24)
 
 class ToService(object):
+    """Base class for 'Weather Underground' style weather service
+    uploaders.
+
+    Derived classes must call the base class constructor. They will
+    also want to call the :meth:`upload` method, but may also call
+    other methods.
+
+    """
     def __init__(self, params, calib_data):
+        """
+
+        :param params: pywws configuration.
+
+        :type params: :class:`pywws.DataStore.params`
+        
+        :param calib_data: 'calibrated' data.
+
+        :type calib_data: :class:`pywws.DataStore.calib_store`
+    
+        """
         self.logger = logging.getLogger('pywws.%s' % self.__class__.__name__)
         self.params = params
         self.data = calib_data
@@ -33,7 +52,30 @@ class ToService(object):
         # other init
         self.rain_midnight = None
 
-    def _translate_data(self, current, fixed_data):
+    def translate_data(self, current, fixed_data):
+        """Convert a weather data record to an upload string.
+
+        The :obj:`current` parameter contains the data to be uploaded.
+        It should be a 'calibrated' data record, as stored in
+        :class:`pywws.DataStore.calib_store`.
+
+        The :obj:`fixed_data` parameter contains unvarying data that
+        is site dependent, for example an ID code and authentication
+        data.
+
+        :param current: the weather data record.
+
+        :type current: dict
+
+        :param fixed_data: unvarying upload data.
+
+        :type fixed_data: dict
+
+        :return: an encoded string, or :obj:`None` if invalid data.
+
+        :rtype: string
+        
+        """
         # check we have enough data
         if (current['temp_out'] is None or
             current['hum_out'] is None):
@@ -73,8 +115,35 @@ class ToService(object):
                 conversions.pressure_inhg(current['rel_pressure']))
         return urllib.urlencode(result)
 
-    def _send_data(self, data, server, fixed_data):
-        coded_data = self._translate_data(data, fixed_data)
+    def send_data(self, data, server, fixed_data):
+        """Upload a weather data record.
+
+        The :obj:`data` parameter contains the data to be uploaded.
+        It should be a 'calibrated' data record, as stored in
+        :class:`pywws.DataStore.calib_store`.
+
+        The :obj:`fixed_data` parameter contains unvarying data that
+        is site dependent, for example an ID code and authentication
+        data.
+
+        :param data: the weather data record.
+
+        :type data: dict
+
+        :param server: web address to upload to.
+
+        :type server: string
+
+        :param fixed_data: unvarying upload data.
+
+        :type fixed_data: dict
+
+        :return: success status
+
+        :rtype: bool
+        
+        """
+        coded_data = self.translate_data(data, fixed_data)
         if not coded_data:
             return True
         self.logger.debug(coded_data)
@@ -101,7 +170,37 @@ class ToService(object):
                     self.old_ex = e
         return False
 
-    def _upload(self, server, fixed_data, catchup):
+    def upload(self, server, fixed_data, catchup):
+        """Upload one or more weather data records.
+
+        This method uploads either the most recent weather data
+        record, or all records since the last upload (up to 7 days),
+        according to the value of :obj:`catchup`.
+
+        It sets the ``last update`` configuration value to the time
+        stamp of the most recent record successfully uploaded.
+
+        The :obj:`fixed_data` parameter contains unvarying data that
+        is site dependent, for example an ID code and authentication
+        data.
+
+        :param server: web address to upload to.
+
+        :type server: string
+
+        :param fixed_data: unvarying upload data.
+
+        :type fixed_data: dict
+
+        :param catchup: upload all data since last upload.
+
+        :type catchup: bool
+
+        :return: success status
+
+        :rtype: bool
+        
+        """
         if catchup:
             last_update = self.params.get_datetime(
                 self.config_section, 'last update')
@@ -113,7 +212,7 @@ class ToService(object):
                 start = datetime.utcnow() - timedelta(days=7)
             count = 0
             for data in self.data[start:]:
-                if not self._send_data(data, server, fixed_data):
+                if not self.send_data(data, server, fixed_data):
                     return False
                 self.params.set(
                     self.config_section, 'last update', data['idx'].isoformat(' '))
@@ -123,7 +222,7 @@ class ToService(object):
         else:
             # upload most recent data
             last_update = self.data.before(datetime.max)
-            if not self._send_data(self.data[last_update], server, fixed_data):
+            if not self.send_data(self.data[last_update], server, fixed_data):
                 return False
             self.params.set(
                 self.config_section, 'last update', last_update.isoformat(' '))

@@ -32,6 +32,8 @@ extensions = ['sphinx.ext.autodoc', 'sphinx.ext.autosummary',
               'sphinx.ext.viewcode']
 
 autosummary_generate = True
+autoclass_content = 'both'
+autodoc_member_order = 'bysource'
 autodoc_default_flags = ['members', 'undoc-members']
 
 # Add any paths that contain templates here, relative to this directory.
