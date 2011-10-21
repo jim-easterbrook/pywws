@@ -10,7 +10,7 @@ Introduction
 
 The UK Met Office has recently introduced `WOW - Weather Observations
 Website <http://wow.metoffice.gov.uk/>`_. This can accept readings
-from automatic weather statons, in a very similar way to `Weather
+from automatic weather stations, in a very similar way to `Weather
 Underground <http://www.wunderground.com/>`_. This module enables
 pywws to upload readings to WOW.
 
