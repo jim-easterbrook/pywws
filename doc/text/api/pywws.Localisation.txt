@@ -2,6 +2,13 @@
 pywws.Localisation
 ******************
 
+Localisation.py - provide translations of strings into local language
+
+   usage: python pywws/Localisation.py [options]
+   options are:
+    -h       or  --help       display this help
+    -t code  or  --test code  test use of a language code
+
 
 Introduction
 ============
@@ -11,64 +18,150 @@ your local language for such things as wind directions. The
 Localisation.py module, mostly copied from examples in the Python
 documentation, enables this.
 
-Before using pywws in your local language, you may need to write a
-translation file. Human languages have been given codes, such as
-'en_GB' for British English or 'fr_CA' for Canadian French. To find
-out what language code you need, have a look at your computer's
-``LANG`` environment variable with this command:
-
-   echo $LANG
-
-Now have a look in the 'languages' directory in your pywws
-installation. If there is a .po file whose name matches the first two
-characters of your ``LANG`` environment variable, then you don't need
-to do anything.
-
-
-Creating a new translation
-==========================
-
-To create a new language file, first convert the supplied pywws.pot
-file to a template. For example, to create a French language template:
-
-   make lang LANG=fr
-
-This should create a suitable file, e.g. 'fr.po' in the 'languages'
-directory. Now edit the new .po file and translate all the 'msgstr'
-strings to your language.
-
-Before the language file can be used, it needs to be converted to a
-machine readable form by running make again:
-
-   make lang
-
-When you are satisfied with your translation effort, please send me a
-copy of the .po file to add to the pywws distribution.
+Localisation of pywws is done in two parts - translating strings such
+as 'rising very rapidly', and changing the 'locale' which controls
+things like month names and number representation (e.g. '23,2' instead
+of '23.2'). On some computers it may not be possible to set the
+locale, but translated strings can still be used.
 
 
 Using a different language
 ==========================
 
-If you want pywws to use a different language to that specified by
-your ``LANG`` environment variable, you can specify it in your
-weather.ini file. Choose a language for which a translation exists,
-for example 'en', then add it to your weather.ini file as follows:
+The language used by pywws is set in the ``[config]`` section of the
+``weather.ini`` file. This can be a two-letter language code, such as
+``en`` (English), or can specify a national variant, such as ``fr_CA``
+(Canadian French). It could also include a character set, for example
+``de_DE.UTF-8``.
+
+The choice of language is very system dependant, so Localisation.py
+can be run as a standalone program to test language codes. A good
+starting point might be your system's ``LANG`` environment variable,
+for example:
+
+   jim@brains:~/Documents/weather/devel$ echo $LANG
+   en_GB.UTF-8
+   jim@brains:~/Documents/weather/devel$ python pywws/Localisation.py -t en_GB.UTF-8
+   Locale changed from (None, None) to ('en_GB', 'UTF8')
+   Translation set OK
+   Locale
+     decimal point: 23.2
+     date & time: Friday, 14 October (14/10/11 13:02:00)
+   Translations
+     'NNW' => 'NNW'
+     'rising very rapidly' => 'rising very rapidly'
+     'Rain at times, very unsettled' => 'Rain at times, very unsettled'
+   jim@brains:~/Documents/weather/devel$
+
+In most cases no more than a two-letter code is required:
+
+   jim@brains:~/Documents/weather/devel$ python pywws/Localisation.py -t fr
+   Locale changed from (None, None) to ('fr_FR', 'UTF8')
+   Translation set OK
+   Locale
+     decimal point: 23,2
+     date & time: vendredi, 14 octobre (14/10/2011 13:04:44)
+   Translations
+     'NNW' => 'NNO'
+     'rising very rapidly' => 'en hausse très rapide'
+     'Rain at times, very unsettled' => 'Quelques précipitations, très perturbé'
+   jim@brains:~/Documents/weather/devel$
+
+If you try an unsupported language, pywws falls back to English:
+
+   jim@brains:~/Documents/weather/devel$ python pywws/Localisation.py -t ja
+   Failed to set locale: ja
+   No translation file found for: ja
+   Locale
+     decimal point: 23.2
+     date & time: Friday, 14 October (10/14/11 13:08:49)
+   Translations
+     'NNW' => 'NNW'
+     'rising very rapidly' => 'rising very rapidly'
+     'Rain at times, very unsettled' => 'Rain at times, very unsettled'
+   jim@brains:~/Documents/weather/devel$
+
+Once you've found a suitable language code that works, you can
+configure pywws to use it by editing your ``weather.ini`` file:
 
    [config]
-   language = en
+   language = fr
 
 
-Detailed API
-============
+Creating a new translation
+==========================
 
-Localisation.py - provide translations of strings into local language
+If there is no translation file for your preferred language then you
+need to create one. See *How to make a language file for pywws* for
+detailed instructions.
 
 -[ Functions ]-
 
 +------------+--------------------------------------------------------------------------------------------+
-| ``GetTrans |                                                                                            |
-| lation``(p |                                                                                            |
-| arams)     |                                                                                            |
+| ``SetLocal | Set the 'locale' used by a program.                                                        |
+| e``(lang)  |                                                                                            |
++------------+--------------------------------------------------------------------------------------------+
+| ``SetTrans | Set the translation used by (some) pywws modules.                                          |
+| lation``(l |                                                                                            |
+| ang)       |                                                                                            |
++------------+--------------------------------------------------------------------------------------------+
+| ``SetAppli | Set the locale and translation for a pywws program.                                        |
+| cationLang |                                                                                            |
+| uage``(par |                                                                                            |
+| ams)       |                                                                                            |
 +------------+--------------------------------------------------------------------------------------------+
 
-pywws.Localisation.GetTranslation(params)
+pywws.Localisation.SetLocale(lang)
+
+   Set the 'locale' used by a program.
+
+   This affects the entire application, changing the way dates,
+   currencies and numbers are represented. It should not be called
+   from a library routine that may be used in another program.
+
+   The ``lang`` parameter can be any string that is recognised by
+   ``locale.setlocale()``, for example ``en``, ``en_GB`` or
+   ``en_GB.UTF-8``.
+
+   Parameters:
+      * **lang** (*string*) -- language code.
+
+   Returns:
+      success status.
+
+   Return type:
+      bool
+
+pywws.Localisation.SetTranslation(lang)
+
+   Set the translation used by (some) pywws modules.
+
+   This sets the translation object ``Localisation.translation`` to
+   use a particular language.
+
+   The ``lang`` parameter can be any string of the form ``en``,
+   ``en_GB`` or ``en_GB.UTF-8``. Anything after a ``.`` character is
+   ignored. In the case of a string such as ``en_GB``, the routine
+   will search for an ``en_GB`` language file before searching for an
+   ``en`` one.
+
+   Parameters:
+      * **lang** (*string*) -- language code.
+
+   Returns:
+      success status.
+
+   Return type:
+      bool
+
+pywws.Localisation.SetApplicationLanguage(params)
+
+   Set the locale and translation for a pywws program.
+
+   This function reads the language from the configuration file, then
+   calls ``SetLocale()`` and ``SetTranslation()``.
+
+   Parameters:
+      * **params** (*object*) -- a ``pywws.DataStore.params`` object.
+
+pywws.Localisation.main(argv=None)

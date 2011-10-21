@@ -33,22 +33,22 @@ Copied directly from the datetime module documentation.
 | ``UTC``    | UTC                                                                                        |
 +------------+--------------------------------------------------------------------------------------------+
 
-class class pywws.TimeZone.LocalTimezone
-
-   Local time
-
-   dst(dt)
-
-   tzname(dt)
-
-   utcoffset(dt)
-
 class class pywws.TimeZone.UTC
 
    UTC
 
-   dst(dt)
+   utcoffset(dt)
 
    tzname(dt)
 
+   dst(dt)
+
+class class pywws.TimeZone.LocalTimezone
+
+   Local time
+
    utcoffset(dt)
+
+   dst(dt)
+
+   tzname(dt)

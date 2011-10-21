@@ -15,14 +15,14 @@ files.
 | ...)       |                                                                                            |
 +------------+--------------------------------------------------------------------------------------------+
 
-class class pywws.Tasks.RegularTasks(params, calib_data, hourly_data, daily_data, monthly_data, translation)
+class class pywws.Tasks.RegularTasks(params, calib_data, hourly_data, daily_data, monthly_data)
 
    do_live(data)
 
-   do_plot(template)
-
    do_tasks()
 
-   do_template(template, data=None)
-
    do_twitter(template, data=None)
+
+   do_plot(template)
+
+   do_template(template, data=None)

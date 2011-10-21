@@ -15,12 +15,12 @@ station to your computer!
    usage: python TestWeatherStation.py [options]
    options are:
          --help           display this help
-    -3 | --3080           station is a '3080' type instead of a '1080'
     -d | --decode         display meaningful values instead of raw data
     -h | --history count  display the last "count" readings
     -l | --live           display 'live' data
     -u | --unknown        display unknown fixed block values
     -v | --verbose        increase amount of reassuring messages
+                          (repeat for even more messages e.g. -vvv)
 
 -[ Functions ]-
 
@@ -33,6 +33,6 @@ station to your computer!
 | data)      |                                                                                            |
 +------------+--------------------------------------------------------------------------------------------+
 
-TestWeatherStation.main(argv=None)
-
 TestWeatherStation.raw_dump(pos, data)
+
+TestWeatherStation.main(argv=None)

@@ -103,19 +103,20 @@ and other sources.
 | [ws_type]) |                                                                                            |
 +------------+--------------------------------------------------------------------------------------------+
 
-pywws.WeatherStation.apparent_temp(temp, rh, wind)
-
-   Compute apparent temperature (real feel), using formula from
-   http://www.bom.gov.au/info/thermal_stress/
-
 pywws.WeatherStation.dew_point(temp, hum)
 
    Compute dew point, using formula from
    http://en.wikipedia.org/wiki/Dew_point.
 
-pywws.WeatherStation.findDevice(idVendor, idProduct)
+pywws.WeatherStation.wind_chill(temp, wind)
 
-   Find a USB device by product and vendor id.
+   Compute wind chill, using formula from
+   http://en.wikipedia.org/wiki/wind_chill
+
+pywws.WeatherStation.apparent_temp(temp, rh, wind)
+
+   Compute apparent temperature (real feel), using formula from
+   http://www.bom.gov.au/info/thermal_stress/
 
 pywws.WeatherStation.get_wind_dir_text()
 
@@ -126,18 +127,32 @@ pywws.WeatherStation.pressure_trend_text(trend)
    Convert pressure trend to a string, see
    http://www.reedsonline.com/weather/weather-terms.htm.
 
+pywws.WeatherStation.findDevice(idVendor, idProduct)
+
+   Find a USB device by product and vendor id.
+
 class class pywws.WeatherStation.weather_station(ws_type='1080')
 
    Class that represents the weather station to user program.
 
-   current_pos()
+   Connect to weather station and prepare to read data.
 
-      Get circular buffer location where current data is being
-      written.
+   live_data()
+
+   inc_ptr(ptr)
+
+      Get next circular buffer data pointer.
 
    dec_ptr(ptr)
 
       Get previous circular buffer data pointer.
+
+   get_raw_data(ptr, unbuffered=False)
+
+      Get raw data from circular buffer.
+
+      If unbuffered is false then a cached value that was obtained
+      earlier may be returned.
 
    get_data(ptr, unbuffered=False)
 
@@ -145,6 +160,15 @@ class class pywws.WeatherStation.weather_station(ws_type='1080')
 
       If unbuffered is false then a cached value that was obtained
       earlier may be returned.
+
+   current_pos()
+
+      Get circular buffer location where current data is being
+      written.
+
+   get_raw_fixed_block(unbuffered=False)
+
+      Get the raw "fixed block" of settings and min/max data.
 
    get_fixed_block(keys=[], unbuffered=False)
 
@@ -156,29 +180,7 @@ class class pywws.WeatherStation.weather_station(ws_type='1080')
 
       Get the first 64 bytes of the raw "fixed block".
 
-   get_raw_data(ptr, unbuffered=False)
-
-      Get raw data from circular buffer.
-
-      If unbuffered is false then a cached value that was obtained
-      earlier may be returned.
-
-   get_raw_fixed_block(unbuffered=False)
-
-      Get the raw "fixed block" of settings and min/max data.
-
-   inc_ptr(ptr)
-
-      Get next circular buffer data pointer.
-
-   live_data()
-
    write_data(data)
 
       Write a set of single bytes to the weather station. Data must be
       an array of (ptr, value) pairs.
-
-pywws.WeatherStation.wind_chill(temp, wind)
-
-   Compute wind chill, using formula from
-   http://en.wikipedia.org/wiki/wind_chill

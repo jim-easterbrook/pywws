@@ -183,10 +183,10 @@ to be created
 
 class class pywws.Template.Template(params, calib_data, hourly_data, daily_data, monthly_data)
 
-   make_file(template_file, output_file, live_data=None)
+   process(live_data, template_file)
 
    make_text(template_file, live_data=None)
 
-   process(live_data, template_file)
+   make_file(template_file, output_file, live_data=None)
 
 pywws.Template.main(argv=None)

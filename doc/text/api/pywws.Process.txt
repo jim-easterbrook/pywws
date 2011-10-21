@@ -96,6 +96,26 @@ data_dir is the root directory of the weather data
 | ``(start)  |                                                                                            |
 +------------+--------------------------------------------------------------------------------------------+
 
+pywws.Process.calibrate_data(logger, params, raw_data, calib_data)
+
+class class pywws.Process.Average
+
+   add(value)
+
+   result()
+
+class class pywws.Process.Minimum
+
+   add(value, time)
+
+   result()
+
+class class pywws.Process.Maximum
+
+   add(value, time)
+
+   result()
+
 class class pywws.Process.Acc(time_offset, last_rain)
 
    'Accumulate' raw weather data to produce summaries.
@@ -112,7 +132,7 @@ class class pywws.Process.Acc(time_offset, last_rain)
 
       Add a raw data reading.
 
-   get_daily()
+   reset_hourly()
 
    get_hourly()
 
@@ -120,25 +140,7 @@ class class pywws.Process.Acc(time_offset, last_rain)
 
    reset_daily()
 
-   reset_hourly()
-
-class class pywws.Process.Average
-
-   add(value)
-
-   result()
-
-class class pywws.Process.Maximum
-
-   add(value, time)
-
-   result()
-
-class class pywws.Process.Minimum
-
-   add(value, time)
-
-   result()
+   get_daily()
 
 class class pywws.Process.MonthAcc(start)
 
@@ -163,7 +165,5 @@ pywws.Process.Process(params, raw_data, calib_data, hourly_data, daily_data, mon
    Atmospheric pressure is converted from absolute to relative, using
    the weather station's offset as recorded by LogData.py. The
    pressure trend (change over three hours) is also computed.
-
-pywws.Process.calibrate_data(logger, params, raw_data, calib_data)
 
 pywws.Process.main(argv=None)

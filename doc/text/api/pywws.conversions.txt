@@ -43,18 +43,18 @@ pywws.conversions.temp_f(c)
 
    Convert temperature from Celsius to Fahrenheit
 
-pywws.conversions.wind_bft(ms)
-
-   Convert (wind) wind from metres per second to Beaufort scale
-
 pywws.conversions.wind_kmph(ms)
 
    Convert (wind) wind from metres per second to kilometres per hour
+
+pywws.conversions.wind_mph(ms)
+
+   Convert (wind) wind from metres per second to miles per hour
 
 pywws.conversions.wind_kn(ms)
 
    Convert (wind) wind from metres per second to knots
 
-pywws.conversions.wind_mph(ms)
+pywws.conversions.wind_bft(ms)
 
-   Convert (wind) wind from metres per second to miles per hour
+   Convert (wind) wind from metres per second to Beaufort scale

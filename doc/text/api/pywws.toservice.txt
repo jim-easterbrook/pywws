@@ -7,10 +7,97 @@ Base class for Weather Underground and UK Met Office uploaders.
 -[ Classes ]-
 
 +------------+--------------------------------------------------------------------------------------------+
-| ``ToServic |                                                                                            |
+| ``ToServic | Base class for 'Weather Underground' style weather service                                 |
 | e``(params |                                                                                            |
 | , calib_da |                                                                                            |
 | ta)        |                                                                                            |
 +------------+--------------------------------------------------------------------------------------------+
 
 class class pywws.toservice.ToService(params, calib_data)
+
+   Base class for 'Weather Underground' style weather service
+   uploaders.
+
+   Derived classes must call the base class constructor. They will
+   also want to call the ``upload()`` method, but may also call other
+   methods.
+
+   Parameters:
+      * **params** (``pywws.DataStore.params``) -- pywws
+        configuration.
+
+      * **calib_data** (``pywws.DataStore.calib_store``) --
+        'calibrated' data.
+
+   translate_data(current, fixed_data)
+
+      Convert a weather data record to an upload string.
+
+      The ``current`` parameter contains the data to be uploaded. It
+      should be a 'calibrated' data record, as stored in
+      ``pywws.DataStore.calib_store``.
+
+      The ``fixed_data`` parameter contains unvarying data that is
+      site dependent, for example an ID code and authentication data.
+
+      Parameters:
+         * **current** (*dict*) -- the weather data record.
+
+         * **fixed_data** (*dict*) -- unvarying upload data.
+
+      Returns:
+         an encoded string, or ``None`` if invalid data.
+
+      Return type:
+         string
+
+   send_data(data, server, fixed_data)
+
+      Upload a weather data record.
+
+      The ``data`` parameter contains the data to be uploaded. It
+      should be a 'calibrated' data record, as stored in
+      ``pywws.DataStore.calib_store``.
+
+      The ``fixed_data`` parameter contains unvarying data that is
+      site dependent, for example an ID code and authentication data.
+
+      Parameters:
+         * **data** (*dict*) -- the weather data record.
+
+         * **server** (*string*) -- web address to upload to.
+
+         * **fixed_data** (*dict*) -- unvarying upload data.
+
+      Returns:
+         success status
+
+      Return type:
+         bool
+
+   upload(server, fixed_data, catchup)
+
+      Upload one or more weather data records.
+
+      This method uploads either the most recent weather data record,
+      or all records since the last upload (up to 7 days), according
+      to the value of ``catchup``.
+
+      It sets the ``last update`` configuration value to the time
+      stamp of the most recent record successfully uploaded.
+
+      The ``fixed_data`` parameter contains unvarying data that is
+      site dependent, for example an ID code and authentication data.
+
+      Parameters:
+         * **server** (*string*) -- web address to upload to.
+
+         * **fixed_data** (*dict*) -- unvarying upload data.
+
+         * **catchup** (*bool*) -- upload all data since last upload.
+
+      Returns:
+         success status
+
+      Return type:
+         bool

@@ -86,55 +86,15 @@ timedelta(hours=12):]
 | re``(root_ |                                                                                            |
 | dir)       |                                                                                            |
 +------------+--------------------------------------------------------------------------------------------+
-| ``params`` |                                                                                            |
+| ``params`` | Parameters are stored in a file "weather.ini" in root_dir.                                 |
 | (root_dir) |                                                                                            |
 +------------+--------------------------------------------------------------------------------------------+
 
-class class pywws.DataStore.calib_store(root_dir)
-
-   Stores 'calibrated' weather station data.
-
-class class pywws.DataStore.core_store(root_dir)
-
-   after(idx)
-
-      Return datetime of oldest existing data record whose datetime is
-      >= idx.
-
-      Might not even be in the same year! If no such record exists,
-      return None.
-
-   before(idx)
-
-      Return datetime of newest existing data record whose datetime is
-      < idx.
-
-      Might not even be in the same year! If no such record exists,
-      return None.
-
-   flush()
-
-   nearest(idx)
-
-      Return datetime of record whose datetime is nearest idx.
-
-class class pywws.DataStore.daily_store(root_dir)
-
-   Stores daily summary weather station data.
-
-class class pywws.DataStore.data_store(root_dir)
-
-   Stores raw weather station data.
-
-class class pywws.DataStore.hourly_store(root_dir)
-
-   Stores hourly summary weather station data.
-
-class class pywws.DataStore.monthly_store(root_dir)
-
-   Stores monthly summary weather station data.
+pywws.DataStore.safestrptime(date_string, format=None)
 
 class class pywws.DataStore.params(root_dir)
+
+   Parameters are stored in a file "weather.ini" in root_dir.
 
    flush()
 
@@ -152,4 +112,46 @@ class class pywws.DataStore.params(root_dir)
 
       Set option in section to string value.
 
-pywws.DataStore.safestrptime(date_string, format=None)
+class class pywws.DataStore.core_store(root_dir)
+
+   before(idx)
+
+      Return datetime of newest existing data record whose datetime is
+      < idx.
+
+      Might not even be in the same year! If no such record exists,
+      return None.
+
+   after(idx)
+
+      Return datetime of oldest existing data record whose datetime is
+      >= idx.
+
+      Might not even be in the same year! If no such record exists,
+      return None.
+
+   nearest(idx)
+
+      Return datetime of record whose datetime is nearest idx.
+
+   flush()
+
+class class pywws.DataStore.data_store(root_dir)
+
+   Stores raw weather station data.
+
+class class pywws.DataStore.calib_store(root_dir)
+
+   Stores 'calibrated' weather station data.
+
+class class pywws.DataStore.hourly_store(root_dir)
+
+   Stores hourly summary weather station data.
+
+class class pywws.DataStore.daily_store(root_dir)
+
+   Stores daily summary weather station data.
+
+class class pywws.DataStore.monthly_store(root_dir)
+
+   Stores monthly summary weather station data.

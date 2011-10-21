@@ -60,11 +60,11 @@ Contents:
 | ``pywws.To | Post a message to Twitter.                                                                 |
 | Twitter``  |                                                                                            |
 +------------+--------------------------------------------------------------------------------------------+
-| ``pywws.To | Post weather update to WOW from the Met Office UK.                                         |
+| ``pywws.To | Post weather update to the UK Met Office 'WOW' site                                        |
 | MetOffice` |                                                                                            |
 | `          |                                                                                            |
 +------------+--------------------------------------------------------------------------------------------+
-| ``pywws.To | Post weather update to WeatherUnderground.                                                 |
+| ``pywws.To | Post weather update to WeatherUnderground                                                  |
 | Undergroun |                                                                                            |
 | d``        |                                                                                            |
 +------------+--------------------------------------------------------------------------------------------+
@@ -197,7 +197,16 @@ Contents:
   * Introduction
   * Detailed API
 * pywws.ToMetOffice
+  * Introduction
+  * Configuration
+  * Upload old data
+  * Add Met Office upload to regular tasks
+  * Acknowledgment
 * pywws.ToUnderground
+  * Introduction
+  * Configuration
+  * Upload old data
+  * Add Weather Underground upload to regular tasks
 * pywws.toservice
 * pywws.YoWindow
 * pywws.WeatherStation

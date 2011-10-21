@@ -461,7 +461,7 @@ image file to be created e.g. 24hrs.png
 | a, ...)    |                                                                                            |
 +------------+--------------------------------------------------------------------------------------------+
 
-class class pywws.Plot.BasePlotter(params, raw_data, hourly_data, daily_data, monthly_data, work_dir, translation=None)
+class class pywws.Plot.BasePlotter(params, raw_data, hourly_data, daily_data, monthly_data, work_dir)
 
    DoPlot(input_file, output_file)
 
@@ -469,18 +469,18 @@ class class pywws.Plot.BasePlotter(params, raw_data, hourly_data, daily_data, mo
 
    GetValue(node, name, default)
 
-class class pywws.Plot.GraphPlotter(params, raw_data, hourly_data, daily_data, monthly_data, work_dir, translation=None)
+class class pywws.Plot.Record
 
-   GetDefaultPlotSize()
+class class pywws.Plot.GraphPlotter(params, raw_data, hourly_data, daily_data, monthly_data, work_dir)
+
+   GetPlotList()
 
    GetDefaultRows()
 
-   GetPlotList()
+   GetDefaultPlotSize()
 
    GetPreamble()
 
    PlotData(plot_no, plot, source)
-
-class class pywws.Plot.Record
 
 pywws.Plot.main(argv=None)
