@@ -59,7 +59,7 @@ Dependencies:
 
 * To create new language translations:
 
-  * msgfmt (from the gettext package)
+  * gettext (http://www.gnu.org/s/gettext/)
 
 Many of these dependencies are available as packages for most Linux
 distributions. This provides an easier way to install them than
@@ -98,6 +98,8 @@ This software collection currently includes the following files:
 * example_graph_templates/* -- example graph XML "recipes"
 
 * example_templates/*       -- example text templates
+
+* example_modules/*         -- example calibration modules
 
 * doc/html/*                -- HTML documentation of most of the above
 
@@ -222,7 +224,7 @@ Getting started:
     Wunderground details, for example:
 
        [underground]
-       password = undergroudpassword
+       password = undergroundpassword
        station = undergroundstation
 
 19. Create directories for your graph templates and text templates,

@@ -126,8 +126,8 @@ How to get started with pywws
    You need to add a new section called '[config]' with an entry called 'day
    end hour'. This tells pywws what convention you want to use when
    calculating daily summary data. In the UK, the 'meteorological day' is
-   usually from 21:00 to 21:00 GMT (22:00 to 22:00 BST during summer), so I
-   use a day end hour value of 21. In other countries a value of 24 (or 0)
+   usually from 09:00 to 09:00 GMT (10:00 to 10:00 BST during summer), so I
+   use a day end hour value of 9. In other countries a value of 24 (or 0)
    might be more suitable. Note that the value is set in local winter time.
    You do not need to change it when daylight savings time is in effect.
 
@@ -137,10 +137,9 @@ How to get started with pywws
       pressure offset = 7.4
 
       [config]
-      day end hour = 21
+      day end hour = 9
 
-   For more detail on the configuration file options, see the
-   weather_ini.html file in your pywws/doc/html directory.
+   For more detail on the configuration file options, see :doc:`../guides/weather_ini`.
 
 #. Process the raw data.
 
@@ -181,24 +180,6 @@ How to get started with pywws
    The doc directory in your pywws source directory contains HTML and plain
    text versions of the documentation. The HTML files can be read with any
    web browser. Start with index.html and follow links from there.
-
-   More detailed HTML documentation of each Python module can be extracted
-   from the source files by epydoc. This is conveniently done with make::
-
-      make doc
-
-   Alternatively, you can read the documentation directly with pydoc. For
-   example::
-
-      pydoc pywws.WeatherStation
-
-   Finally, you can run pydoc as a mini web server. For example, to use port
-   number 1234::
-
-      pydoc -p 1234 &
-
-   You can then point a web browser at http://localhost:1234/ to read
-   documentation on all python modules installed on your computer.
 
    Comments or questions? Please subscribe to the pywws mailing list
    http://groups.google.com/group/pywws and let us know.

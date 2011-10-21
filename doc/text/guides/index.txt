@@ -20,3 +20,4 @@ Contents:
   * ftp: configuration of uploading to a website
   * twitter: configuration of posting to Twitter
   * underground: configuration of posting to Weather Underground
+  * metoffice: configuration of posting to UK Met Office WOW

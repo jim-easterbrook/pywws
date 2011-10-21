@@ -162,8 +162,8 @@ that was read from the weather station.</p>
 <p>You need to add a new section called &#8216;[config]&#8217; with an entry called &#8216;day
 end hour&#8217;. This tells pywws what convention you want to use when
 calculating daily summary data. In the UK, the &#8216;meteorological day&#8217; is
-usually from 21:00 to 21:00 GMT (22:00 to 22:00 BST during summer), so I
-use a day end hour value of 21. In other countries a value of 24 (or 0)
+usually from 09:00 to 09:00 GMT (10:00 to 10:00 BST during summer), so I
+use a day end hour value of 9. In other countries a value of 24 (or 0)
 might be more suitable. Note that the value is set in local winter time.
 You do not need to change it when daylight savings time is in effect.</p>
 <p>After editing, your weather.ini file should look something like this:</p>
@@ -171,10 +171,9 @@ You do not need to change it when daylight savings time is in effect.</p>
 pressure offset = 7.4
 
 [config]
-day end hour = 21</pre>
+day end hour = 9</pre>
 </div>
-<p>For more detail on the configuration file options, see the
-weather_ini.html file in your pywws/doc/html directory.</p>
+<p>For more detail on the configuration file options, see <a class="reference internal" href="weather_ini.html"><em>weather.ini - configuration file format</em></a>.</p>
 </li>
 <li><p class="first">Process the raw data.</p>
 <p>LogData.py just copies the raw data from the weather station. To do
@@ -209,20 +208,6 @@ another HOWTO file.</p>
 <p>The doc directory in your pywws source directory contains HTML and plain
 text versions of the documentation. The HTML files can be read with any
 web browser. Start with index.html and follow links from there.</p>
-<p>More detailed HTML documentation of each Python module can be extracted
-from the source files by epydoc. This is conveniently done with make:</p>
-<div class="highlight-python"><pre>make doc</pre>
-</div>
-<p>Alternatively, you can read the documentation directly with pydoc. For
-example:</p>
-<div class="highlight-python"><pre>pydoc pywws.WeatherStation</pre>
-</div>
-<p>Finally, you can run pydoc as a mini web server. For example, to use port
-number 1234:</p>
-<div class="highlight-python"><pre>pydoc -p 1234 &amp;</pre>
-</div>
-<p>You can then point a web browser at <a class="reference external" href="http://localhost:1234/">http://localhost:1234/</a> to read
-documentation on all python modules installed on your computer.</p>
 <p>Comments or questions? Please subscribe to the pywws mailing list
 <a class="reference external" href="http://groups.google.com/group/pywws">http://groups.google.com/group/pywws</a> and let us know.</p>
 </li>

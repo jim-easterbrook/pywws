@@ -50,7 +50,7 @@ Dependencies:
   * simplejson (http://pypi.python.org/pypi/simplejson)
 * To create new language translations:
 
-  * msgfmt (from the gettext package)
+  * gettext (http://www.gnu.org/s/gettext/)
 
 Many of these dependencies are available as packages for most Linux
 distributions. This provides an easier way to install them than
@@ -75,6 +75,7 @@ This software collection currently includes the following files:
 * pywws/\*.py                -- the pywws software modules
 * example_graph_templates/\* -- example graph XML "recipes"
 * example_templates/\*       -- example text templates
+* example_modules/\*         -- example calibration modules
 * doc/html/\*                -- HTML documentation of most of the above
 * doc/txt/\*                 -- plain text documentation
 * languages/\*               -- language source files and utility scripts
@@ -175,7 +176,7 @@ Getting started:
    details, for example::
 
       [underground]
-      password = undergroudpassword
+      password = undergroundpassword
       station = undergroundstation
 #. Create directories for your graph templates and text templates, e.g.
    '~/weather/graph_templates/' and '~/weather/templates/', copy the

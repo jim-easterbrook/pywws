@@ -79,6 +79,7 @@ pywws will initialise the entries to sensible values.</p>
 <li>ftp: configuration of uploading to a website.</li>
 <li>twitter: configuration of posting to Twitter.</li>
 <li>underground: configuration of posting to Weather Underground.</li>
+<li>metoffice: configuration of posting to UK Met Office.</li>
 </ul>
 </blockquote>
 <div class="section" id="config-miscellaneous-system-configuration">
@@ -106,17 +107,19 @@ English.</p>
 <div class="highlight-python"><pre>[paths]
 templates = /home/$USER/weather/templates/
 graph_templates = /home/$USER/weather/graph_templates/
+user_calib = /home/jim/weather/modules/usercalib
 work = /tmp/weather</pre>
 </div>
 <p>These three entries specify where your text templates and graph templates
-are stored, and where temporary files should be created.</p>
+are stored, where temporary files should be created, and (if you have one) the
+location of your calibration module.</p>
 </div>
 <div class="section" id="fixed-values-copied-from-the-weather-station-s-fixed-block">
 <h2>fixed: values copied from the weather station&#8217;s &#8220;fixed block&#8221;<a class="headerlink" href="#fixed-values-copied-from-the-weather-station-s-fixed-block" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-python"><pre>[fixed]
 pressure offset = 7.4</pre>
 </div>
-<p>This section is written by the pywws and should not be edited.</p>
+<p>This section is written by pywws and should not be edited.</p>
 </div>
 <div class="section" id="live-tasks-to-be-done-every-48-seconds">
 <h2>live: tasks to be done every 48 seconds<a class="headerlink" href="#live-tasks-to-be-done-every-48-seconds" title="Permalink to this headline">¶</a></h2>
@@ -144,6 +147,7 @@ leave this entry out.</p>
 <h2>logged: tasks to be done every time the station logs a data record<a class="headerlink" href="#logged-tasks-to-be-done-every-time-the-station-logs-a-data-record" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-python"><div class="highlight"><pre><span class="p">[</span><span class="n">logged</span><span class="p">]</span>
 <span class="n">underground</span> <span class="o">=</span> <span class="bp">False</span>
+<span class="n">metoffice</span> <span class="o">=</span> <span class="bp">False</span>
 <span class="n">twitter</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;tweet.txt&#39;</span><span class="p">]</span>
 <span class="n">text</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="n">plot</span> <span class="o">=</span> <span class="p">[]</span>
@@ -155,6 +159,9 @@ run.</p>
 <p>underground enables uploads to Weather Underground. All logged data since
 the last upload is uploaded (up to a maximum of 7 days worth). Valid
 values are True and False.</p>
+<p>metoffice enables uploads to the UK Met Office. All logged data since
+the last upload is uploaded (up to a maximum of 7 days worth). Valid
+values are True and False.</p>
 <p>twitter is a list of text templates to be processed and posted to Twitter.</p>
 <p>text and plot are lists of text and plot templates to be processed and
 uploaded to your website.</p>
@@ -163,6 +170,7 @@ uploaded to your website.</p>
 <h2>hourly: tasks to be done every hour<a class="headerlink" href="#hourly-tasks-to-be-done-every-hour" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-python"><pre>[hourly]
 underground = False
+metoffice = False
 twitter = ['tweet.txt']
 text = ['24hrs.txt', '6hrs.txt', '7days.txt', 'feed_hourly.xml',</pre>
 </div>
@@ -175,6 +183,9 @@ text = ['24hrs.txt', '6hrs.txt', '7days.txt', 'feed_hourly.xml',</pre>
 <p>underground enables uploads to Weather Underground. All logged data since
 the last upload is uploaded (up to a maximum of 7 days worth). Valid
 values are True and False.</p>
+<p>metoffice enables uploads to the UK Met Office. All logged data since
+the last upload is uploaded (up to a maximum of 7 days worth). Valid
+values are True and False.</p>
 <p>twitter is a list of text templates to be processed and posted to Twitter.</p>
 <p>text and plot are lists of text and plot templates to be processed and
 uploaded to your website.</p>
@@ -183,6 +194,7 @@ uploaded to your website.</p>
 <h2>12 hourly: tasks to be done every 12 hours<a class="headerlink" href="#hourly-tasks-to-be-done-every-12-hours" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-python"><pre>[12 hourly]
 underground = False
+metoffice = False
 twitter = []
 text = []
 plot = []</pre>
@@ -193,6 +205,9 @@ don&#8217;t change very often, such as monthly graphs.</p>
 <p>underground enables uploads to Weather Underground. All logged data since
 the last upload is uploaded (up to a maximum of 7 days worth). Valid
 values are True and False.</p>
+<p>metoffice enables uploads to the UK Met Office. All logged data since
+the last upload is uploaded (up to a maximum of 7 days worth). Valid
+values are True and False.</p>
 <p>twitter is a list of text templates to be processed and posted to Twitter.</p>
 <p>text and plot are lists of text and plot templates to be processed and
 uploaded to your website.</p>
@@ -201,6 +216,7 @@ uploaded to your website.</p>
 <h2>daily: tasks to be done every 24 hours<a class="headerlink" href="#daily-tasks-to-be-done-every-24-hours" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-python"><div class="highlight"><pre><span class="p">[</span><span class="n">daily</span><span class="p">]</span>
 <span class="n">underground</span> <span class="o">=</span> <span class="bp">False</span>
+<span class="n">metoffice</span> <span class="o">=</span> <span class="bp">False</span>
 <span class="n">twitter</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="n">text</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;feed_daily.xml&#39;</span><span class="p">]</span>
 <span class="n">plot</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;2008.png.xml&#39;</span><span class="p">,</span> <span class="s">&#39;2009.png.xml&#39;</span><span class="p">,</span> <span class="s">&#39;2010.png.xml&#39;</span><span class="p">,</span> <span class="s">&#39;28days.png.xml&#39;</span><span class="p">]</span>
@@ -210,6 +226,9 @@ uploaded to your website.</p>
 &#8216;live logging&#8217; or running an hourly cron job. Use it for things that don&#8217;t
 change very often, such as monthly graphs.</p>
 <p>underground enables uploads to Weather Underground. All logged data since
+the last upload is uploaded (up to a maximum of 7 days worth). Valid
+values are True and False.</p>
+<p>metoffice enables uploads to the UK Met Office. All logged data since
 the last upload is uploaded (up to a maximum of 7 days worth). Valid
 values are True and False.</p>
 <p>twitter is a list of text templates to be processed and posted to Twitter.</p>
@@ -268,6 +287,17 @@ last update = 2010-09-27 19:45:24</pre>
 <p>password is your Weather Underground password.</p>
 <p>last update is set by pywws when you upload to Weather Underground.</p>
 </div>
+<div class="section" id="metoffice-configuration-of-posting-to-uk-met-office-wow">
+<h2>metoffice: configuration of posting to UK Met Office WOW<a class="headerlink" href="#metoffice-configuration-of-posting-to-uk-met-office-wow" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python"><pre>[metoffice]
+site id = 12345678
+aws pin = 654321
+last update = 2011-10-21 12:48:00</pre>
+</div>
+<p>site id is the ID allocated to your weather station by the Met Office.</p>
+<p>aws pin is your chosen &#8216;AWS 6-digit PIN&#8217;.</p>
+<p>last update is set by pywws when you upload to the Met Office.</p>
+</div>
 </div>
 
 
@@ -290,6 +320,7 @@ last update = 2010-09-27 19:45:24</pre>
 <li><a class="reference internal" href="#ftp-configuration-of-uploading-to-a-website">ftp: configuration of uploading to a website</a></li>
 <li><a class="reference internal" href="#twitter-configuration-of-posting-to-twitter">twitter: configuration of posting to Twitter</a></li>
 <li><a class="reference internal" href="#underground-configuration-of-posting-to-weather-underground">underground: configuration of posting to Weather Underground</a></li>
+<li><a class="reference internal" href="#metoffice-configuration-of-posting-to-uk-met-office-wow">metoffice: configuration of posting to UK Met Office WOW</a></li>
 </ul>
 </li>
 </ul>

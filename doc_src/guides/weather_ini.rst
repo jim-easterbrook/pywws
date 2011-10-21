@@ -25,6 +25,7 @@ The following sections are currently in use:
   * ftp: configuration of uploading to a website.
   * twitter: configuration of posting to Twitter.
   * underground: configuration of posting to Weather Underground.
+  * metoffice: configuration of posting to UK Met Office.
 
 config: miscellaneous system configuration
 ------------------------------------------
@@ -35,7 +36,8 @@ config: miscellaneous system configuration
  gnuplot encoding = iso_8859_1
  language = en
 
-day end hour is the end of the "`meteorological day <http://en.wikipedia.org/wiki/Meteorological_day>`_", in local time without
+day end hour is the end of the "`meteorological day
+<http://en.wikipedia.org/wiki/Meteorological_day>`_", in local time without
 daylight savings time. Typical values are 21, 9, or 24.
 
 gnuplot encoding is the text encoding used when plotting graphs. The
@@ -57,10 +59,12 @@ paths: directories in which templates etc. are stored
  [paths]
  templates = /home/$USER/weather/templates/
  graph_templates = /home/$USER/weather/graph_templates/
+ user_calib = /home/jim/weather/modules/usercalib
  work = /tmp/weather
 
 These three entries specify where your text templates and graph templates
-are stored, and where temporary files should be created.
+are stored, where temporary files should be created, and (if you have one) the
+location of your calibration module.
 
 fixed: values copied from the weather station's "fixed block"
 -------------------------------------------------------------
@@ -69,7 +73,7 @@ fixed: values copied from the weather station's "fixed block"
  [fixed]
  pressure offset = 7.4
 
-This section is written by the pywws and should not be edited.
+This section is written by pywws and should not be edited.
 
 live: tasks to be done every 48 seconds
 ---------------------------------------
@@ -105,6 +109,7 @@ logged: tasks to be done every time the station logs a data record
 
  [logged]
  underground = False
+ metoffice = False
  twitter = ['tweet.txt']
  text = []
  plot = []
@@ -114,6 +119,10 @@ record is logged when 'live logging' or every time an hourly cron job is
 run.
 
 underground enables uploads to Weather Underground. All logged data since
+the last upload is uploaded (up to a maximum of 7 days worth). Valid
+values are True and False.
+
+metoffice enables uploads to the UK Met Office. All logged data since
 the last upload is uploaded (up to a maximum of 7 days worth). Valid
 values are True and False.
 
@@ -128,6 +137,7 @@ hourly: tasks to be done every hour
 
  [hourly]
  underground = False
+ metoffice = False
  twitter = ['tweet.txt']
  text = ['24hrs.txt', '6hrs.txt', '7days.txt', 'feed_hourly.xml',
 'allmonths.txt']
@@ -137,6 +147,10 @@ This section specifies tasks that are to be carried out every hour when
 'live logging' or running an hourly cron job.
 
 underground enables uploads to Weather Underground. All logged data since
+the last upload is uploaded (up to a maximum of 7 days worth). Valid
+values are True and False.
+
+metoffice enables uploads to the UK Met Office. All logged data since
 the last upload is uploaded (up to a maximum of 7 days worth). Valid
 values are True and False.
 
@@ -151,6 +165,7 @@ uploaded to your website.
 
  [12 hourly]
  underground = False
+ metoffice = False
  twitter = []
  text = []
  plot = []
@@ -160,6 +175,10 @@ when 'live logging' or running an hourly cron job. Use it for things that
 don't change very often, such as monthly graphs.
 
 underground enables uploads to Weather Underground. All logged data since
+the last upload is uploaded (up to a maximum of 7 days worth). Valid
+values are True and False.
+
+metoffice enables uploads to the UK Met Office. All logged data since
 the last upload is uploaded (up to a maximum of 7 days worth). Valid
 values are True and False.
 
@@ -174,6 +193,7 @@ daily: tasks to be done every 24 hours
 
  [daily]
  underground = False
+ metoffice = False
  twitter = []
  text = ['feed_daily.xml']
  plot = ['2008.png.xml', '2009.png.xml', '2010.png.xml', '28days.png.xml']
@@ -183,6 +203,10 @@ This section specifies tasks that are to be carried out every day when
 change very often, such as monthly graphs.
 
 underground enables uploads to Weather Underground. All logged data since
+the last upload is uploaded (up to a maximum of 7 days worth). Valid
+values are True and False.
+
+metoffice enables uploads to the UK Met Office. All logged data since
 the last upload is uploaded (up to a maximum of 7 days worth). Valid
 values are True and False.
 
@@ -255,3 +279,18 @@ station is the PWS ID allocated to your weather station by Weather Underground.
 password is your Weather Underground password.
 
 last update is set by pywws when you upload to Weather Underground.
+
+metoffice: configuration of posting to UK Met Office WOW
+--------------------------------------------------------
+::
+
+ [metoffice]
+ site id = 12345678
+ aws pin = 654321
+ last update = 2011-10-21 12:48:00
+
+site id is the ID allocated to your weather station by the Met Office.
+
+aws pin is your chosen 'AWS 6-digit PIN'.
+
+last update is set by pywws when you upload to the Met Office.

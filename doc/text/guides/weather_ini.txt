@@ -39,6 +39,8 @@ The following sections are currently in use:
 
    * underground: configuration of posting to Weather Underground.
 
+   * metoffice: configuration of posting to UK Met Office.
+
 
 config: miscellaneous system configuration
 ==========================================
@@ -70,10 +72,12 @@ paths: directories in which templates etc. are stored
    [paths]
    templates = /home/$USER/weather/templates/
    graph_templates = /home/$USER/weather/graph_templates/
+   user_calib = /home/jim/weather/modules/usercalib
    work = /tmp/weather
 
 These three entries specify where your text templates and graph
-templates are stored, and where temporary files should be created.
+templates are stored, where temporary files should be created, and (if
+you have one) the location of your calibration module.
 
 
 fixed: values copied from the weather station's "fixed block"
@@ -82,7 +86,7 @@ fixed: values copied from the weather station's "fixed block"
    [fixed]
    pressure offset = 7.4
 
-This section is written by the pywws and should not be edited.
+This section is written by pywws and should not be edited.
 
 
 live: tasks to be done every 48 seconds
@@ -119,6 +123,7 @@ logged: tasks to be done every time the station logs a data record
 
    [logged]
    underground = False
+   metoffice = False
    twitter = ['tweet.txt']
    text = []
    plot = []
@@ -130,6 +135,10 @@ job is run.
 underground enables uploads to Weather Underground. All logged data
 since the last upload is uploaded (up to a maximum of 7 days worth).
 Valid values are True and False.
+
+metoffice enables uploads to the UK Met Office. All logged data since
+the last upload is uploaded (up to a maximum of 7 days worth). Valid
+values are True and False.
 
 twitter is a list of text templates to be processed and posted to
 Twitter.
@@ -143,6 +152,7 @@ hourly: tasks to be done every hour
 
    [hourly]
    underground = False
+   metoffice = False
    twitter = ['tweet.txt']
    text = ['24hrs.txt', '6hrs.txt', '7days.txt', 'feed_hourly.xml',
 
@@ -156,6 +166,10 @@ underground enables uploads to Weather Underground. All logged data
 since the last upload is uploaded (up to a maximum of 7 days worth).
 Valid values are True and False.
 
+metoffice enables uploads to the UK Met Office. All logged data since
+the last upload is uploaded (up to a maximum of 7 days worth). Valid
+values are True and False.
+
 twitter is a list of text templates to be processed and posted to
 Twitter.
 
@@ -168,6 +182,7 @@ uploaded to your website.
 
    [12 hourly]
    underground = False
+   metoffice = False
    twitter = []
    text = []
    plot = []
@@ -179,6 +194,10 @@ that don't change very often, such as monthly graphs.
 underground enables uploads to Weather Underground. All logged data
 since the last upload is uploaded (up to a maximum of 7 days worth).
 Valid values are True and False.
+
+metoffice enables uploads to the UK Met Office. All logged data since
+the last upload is uploaded (up to a maximum of 7 days worth). Valid
+values are True and False.
 
 twitter is a list of text templates to be processed and posted to
 Twitter.
@@ -192,6 +211,7 @@ daily: tasks to be done every 24 hours
 
    [daily]
    underground = False
+   metoffice = False
    twitter = []
    text = ['feed_daily.xml']
    plot = ['2008.png.xml', '2009.png.xml', '2010.png.xml', '28days.png.xml']
@@ -203,6 +223,10 @@ don't change very often, such as monthly graphs.
 underground enables uploads to Weather Underground. All logged data
 since the last upload is uploaded (up to a maximum of 7 days worth).
 Valid values are True and False.
+
+metoffice enables uploads to the UK Met Office. All logged data since
+the last upload is uploaded (up to a maximum of 7 days worth). Valid
+values are True and False.
 
 twitter is a list of text templates to be processed and posted to
 Twitter.
@@ -275,3 +299,18 @@ Underground.
 password is your Weather Underground password.
 
 last update is set by pywws when you upload to Weather Underground.
+
+
+metoffice: configuration of posting to UK Met Office WOW
+========================================================
+
+   [metoffice]
+   site id = 12345678
+   aws pin = 654321
+   last update = 2011-10-21 12:48:00
+
+site id is the ID allocated to your weather station by the Met Office.
+
+aws pin is your chosen 'AWS 6-digit PIN'.
+
+last update is set by pywws when you upload to the Met Office.
