@@ -22,6 +22,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../_static/pywws_logo.ico"/>
     <link rel="top" title="pywws v11.10 documentation" href="../index.html" />
     <link rel="up" title="Module code" href="index.html" /> 
   </head>
@@ -67,7 +68,6 @@
 <span class="s"> usage: python TestWeatherStation.py [options]</span>
 <span class="s"> options are:</span>
 <span class="s">       --help           display this help</span>
-<span class="s">  -3 | --3080           station is a &#39;3080&#39; type instead of a &#39;1080&#39;</span>
 <span class="s">  -d | --decode         display meaningful values instead of raw data</span>
 <span class="s">  -h | --history count  display the last &quot;count&quot; readings</span>
 <span class="s">  -l | --live           display &#39;live&#39; data</span>
@@ -98,8 +98,8 @@
         <span class="n">argv</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">opts</span><span class="p">,</span> <span class="n">args</span> <span class="o">=</span> <span class="n">getopt</span><span class="o">.</span><span class="n">getopt</span><span class="p">(</span>
-            <span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="s">&quot;3dh:luv&quot;</span><span class="p">,</span>
-            <span class="p">(</span><span class="s">&#39;help&#39;</span><span class="p">,</span> <span class="s">&#39;3080&#39;</span><span class="p">,</span> <span class="s">&#39;decode&#39;</span><span class="p">,</span> <span class="s">&#39;history=&#39;</span><span class="p">,</span> <span class="s">&#39;live&#39;</span><span class="p">,</span> <span class="s">&#39;unknown&#39;</span><span class="p">,</span> <span class="s">&#39;verbose&#39;</span><span class="p">))</span>
+            <span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="s">&quot;dh:luv&quot;</span><span class="p">,</span>
+            <span class="p">(</span><span class="s">&#39;help&#39;</span><span class="p">,</span> <span class="s">&#39;decode&#39;</span><span class="p">,</span> <span class="s">&#39;history=&#39;</span><span class="p">,</span> <span class="s">&#39;live&#39;</span><span class="p">,</span> <span class="s">&#39;unknown&#39;</span><span class="p">,</span> <span class="s">&#39;verbose&#39;</span><span class="p">))</span>
     <span class="k">except</span> <span class="n">getopt</span><span class="o">.</span><span class="n">error</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span>
         <span class="k">print</span> <span class="o">&gt;&gt;</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&#39;Error: </span><span class="si">%s</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">msg</span>
         <span class="k">print</span> <span class="o">&gt;&gt;</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">,</span> <span class="n">__usage__</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
@@ -115,13 +115,10 @@
     <span class="n">live</span> <span class="o">=</span> <span class="bp">False</span>
     <span class="n">unknown</span> <span class="o">=</span> <span class="bp">False</span>
     <span class="n">verbose</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="n">ws_type</span> <span class="o">=</span> <span class="s">&#39;1080&#39;</span>
     <span class="k">for</span> <span class="n">o</span><span class="p">,</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">opts</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">o</span> <span class="o">==</span> <span class="s">&#39;--help&#39;</span><span class="p">:</span>
             <span class="k">print</span> <span class="n">__usage__</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
             <span class="k">return</span> <span class="mi">0</span>
-        <span class="k">elif</span> <span class="n">o</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;-3&#39;</span><span class="p">,</span> <span class="s">&#39;--3080&#39;</span><span class="p">):</span>
-            <span class="n">ws_type</span> <span class="o">=</span> <span class="s">&#39;3080&#39;</span>
         <span class="k">elif</span> <span class="n">o</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;-d&#39;</span><span class="p">,</span> <span class="s">&#39;--decode&#39;</span><span class="p">):</span>
             <span class="n">decode</span> <span class="o">=</span> <span class="bp">True</span>
         <span class="k">elif</span> <span class="n">o</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;-h&#39;</span><span class="p">,</span> <span class="s">&#39;--history&#39;</span><span class="p">):</span>
@@ -134,7 +131,7 @@
             <span class="n">verbose</span> <span class="o">+=</span> <span class="mi">1</span>
     <span class="c"># do it!</span>
     <span class="n">logger</span> <span class="o">=</span> <span class="n">ApplicationLogger</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
-    <span class="n">ws</span> <span class="o">=</span> <span class="n">WeatherStation</span><span class="o">.</span><span class="n">weather_station</span><span class="p">(</span><span class="n">ws_type</span><span class="o">=</span><span class="n">ws_type</span><span class="p">)</span>
+    <span class="n">ws</span> <span class="o">=</span> <span class="n">WeatherStation</span><span class="o">.</span><span class="n">weather_station</span><span class="p">()</span>
     <span class="n">raw_fixed</span> <span class="o">=</span> <span class="n">ws</span><span class="o">.</span><span class="n">get_raw_fixed_block</span><span class="p">()</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">raw_fixed</span><span class="p">:</span>
         <span class="k">print</span> <span class="s">&quot;No valid data block found&quot;</span>
@@ -162,7 +159,7 @@
                         <span class="k">print</span> <span class="n">k</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">bits</span><span class="p">[</span><span class="n">b</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">history_count</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">lo_fix</span> <span class="o">=</span> <span class="n">ws</span><span class="o">.</span><span class="n">get_lo_fix_block</span><span class="p">()</span>
-        <span class="k">print</span> <span class="s">&quot;Recent history&quot;</span><span class="p">,</span> <span class="n">lo_fix</span>
+        <span class="k">print</span> <span class="s">&quot;Recent history&quot;</span>
         <span class="n">ptr</span> <span class="o">=</span> <span class="n">lo_fix</span><span class="p">[</span><span class="s">&#39;current_pos&#39;</span><span class="p">]</span>
         <span class="n">date</span> <span class="o">=</span> <span class="n">safestrptime</span><span class="p">(</span><span class="n">lo_fix</span><span class="p">[</span><span class="s">&#39;date_time&#39;</span><span class="p">],</span> <span class="s">&#39;%Y-%m-</span><span class="si">%d</span><span class="s"> %H:%M&#39;</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">history_count</span><span class="p">):</span>

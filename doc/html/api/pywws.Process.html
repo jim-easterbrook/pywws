@@ -22,6 +22,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../_static/pywws_logo.ico"/>
     <link rel="top" title="pywws v11.10 documentation" href="../index.html" />
     <link rel="up" title="Python programs and modules" href="index.html" />
     <link rel="next" title="pywws.calib" href="pywws.calib.html" />
@@ -124,44 +125,10 @@ options are:</p>
 </tr>
 </tbody>
 </table>
-<dl class="class">
-<dt id="pywws.Process.Acc">
-<em class="property">class </em><tt class="descclassname">pywws.Process.</tt><tt class="descname">Acc</tt><big>(</big><em>time_offset</em>, <em>last_rain</em><big>)</big><a class="reference internal" href="../_modules/pywws/Process.html#Acc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.Process.Acc" title="Permalink to this definition">¶</a></dt>
-<dd><p>&#8216;Accumulate&#8217; raw weather data to produce summaries.</p>
-<p>Compute average wind speed, log daytime max &amp; nighttime min
-temperatures and maximum wind gust, find dominant wind direction
-and compute total rainfall.</p>
-<p>Daytime is assumed to be 0900-2100 and nighttime to be 2100-0900,
-local time (1000-2200 and 2200-1000 during DST), regardless of the
-&#8220;day end hour&#8221; setting.</p>
-<dl class="method">
-<dt id="pywws.Process.Acc.add">
-<tt class="descname">add</tt><big>(</big><em>raw</em><big>)</big><a class="reference internal" href="../_modules/pywws/Process.html#Acc.add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.Process.Acc.add" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add a raw data reading.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="pywws.Process.Acc.get_daily">
-<tt class="descname">get_daily</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/pywws/Process.html#Acc.get_daily"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.Process.Acc.get_daily" title="Permalink to this definition">¶</a></dt>
+<dl class="function">
+<dt id="pywws.Process.calibrate_data">
+<tt class="descclassname">pywws.Process.</tt><tt class="descname">calibrate_data</tt><big>(</big><em>logger</em>, <em>params</em>, <em>raw_data</em>, <em>calib_data</em><big>)</big><a class="reference internal" href="../_modules/pywws/Process.html#calibrate_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.Process.calibrate_data" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
-
-<dl class="method">
-<dt id="pywws.Process.Acc.get_hourly">
-<tt class="descname">get_hourly</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/pywws/Process.html#Acc.get_hourly"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.Process.Acc.get_hourly" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the hourly result of the data accumulation.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="pywws.Process.Acc.reset_daily">
-<tt class="descname">reset_daily</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/pywws/Process.html#Acc.reset_daily"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.Process.Acc.reset_daily" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pywws.Process.Acc.reset_hourly">
-<tt class="descname">reset_hourly</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/pywws/Process.html#Acc.reset_hourly"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.Process.Acc.reset_hourly" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
 
 <dl class="class">
 <dt id="pywws.Process.Average">
@@ -174,6 +141,21 @@ local time (1000-2200 and 2200-1000 during DST), regardless of the
 <dl class="method">
 <dt id="pywws.Process.Average.result">
 <tt class="descname">result</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/pywws/Process.html#Average.result"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.Process.Average.result" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pywws.Process.Minimum">
+<em class="property">class </em><tt class="descclassname">pywws.Process.</tt><tt class="descname">Minimum</tt><a class="reference internal" href="../_modules/pywws/Process.html#Minimum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.Process.Minimum" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="pywws.Process.Minimum.add">
+<tt class="descname">add</tt><big>(</big><em>value</em>, <em>time</em><big>)</big><a class="reference internal" href="../_modules/pywws/Process.html#Minimum.add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.Process.Minimum.add" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pywws.Process.Minimum.result">
+<tt class="descname">result</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/pywws/Process.html#Minimum.result"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.Process.Minimum.result" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -194,16 +176,40 @@ local time (1000-2200 and 2200-1000 during DST), regardless of the
 </dd></dl>
 
 <dl class="class">
-<dt id="pywws.Process.Minimum">
-<em class="property">class </em><tt class="descclassname">pywws.Process.</tt><tt class="descname">Minimum</tt><a class="reference internal" href="../_modules/pywws/Process.html#Minimum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.Process.Minimum" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="method">
-<dt id="pywws.Process.Minimum.add">
-<tt class="descname">add</tt><big>(</big><em>value</em>, <em>time</em><big>)</big><a class="reference internal" href="../_modules/pywws/Process.html#Minimum.add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.Process.Minimum.add" title="Permalink to this definition">¶</a></dt>
+<dt id="pywws.Process.Acc">
+<em class="property">class </em><tt class="descclassname">pywws.Process.</tt><tt class="descname">Acc</tt><big>(</big><em>time_offset</em>, <em>last_rain</em><big>)</big><a class="reference internal" href="../_modules/pywws/Process.html#Acc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.Process.Acc" title="Permalink to this definition">¶</a></dt>
+<dd><p>&#8216;Accumulate&#8217; raw weather data to produce summaries.</p>
+<p>Compute average wind speed, log daytime max &amp; nighttime min
+temperatures and maximum wind gust, find dominant wind direction
+and compute total rainfall.</p>
+<p>Daytime is assumed to be 0900-2100 and nighttime to be 2100-0900,
+local time (1000-2200 and 2200-1000 during DST), regardless of the
+&#8220;day end hour&#8221; setting.</p>
+<dl class="method">
+<dt id="pywws.Process.Acc.add">
+<tt class="descname">add</tt><big>(</big><em>raw</em><big>)</big><a class="reference internal" href="../_modules/pywws/Process.html#Acc.add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.Process.Acc.add" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a raw data reading.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pywws.Process.Acc.reset_hourly">
+<tt class="descname">reset_hourly</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/pywws/Process.html#Acc.reset_hourly"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.Process.Acc.reset_hourly" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="pywws.Process.Minimum.result">
-<tt class="descname">result</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/pywws/Process.html#Minimum.result"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.Process.Minimum.result" title="Permalink to this definition">¶</a></dt>
+<dt id="pywws.Process.Acc.get_hourly">
+<tt class="descname">get_hourly</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/pywws/Process.html#Acc.get_hourly"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.Process.Acc.get_hourly" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the hourly result of the data accumulation.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pywws.Process.Acc.reset_daily">
+<tt class="descname">reset_daily</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/pywws/Process.html#Acc.reset_daily"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.Process.Acc.reset_daily" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pywws.Process.Acc.get_daily">
+<tt class="descname">get_daily</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/pywws/Process.html#Acc.get_daily"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.Process.Acc.get_daily" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -238,11 +244,6 @@ station readings.</p>
 the weather station&#8217;s offset as recorded by LogData.py. The
 pressure trend (change over three hours) is also computed.</p>
 </dd></dl>
-
-<dl class="function">
-<dt id="pywws.Process.calibrate_data">
-<tt class="descclassname">pywws.Process.</tt><tt class="descname">calibrate_data</tt><big>(</big><em>logger</em>, <em>params</em>, <em>raw_data</em>, <em>calib_data</em><big>)</big><a class="reference internal" href="../_modules/pywws/Process.html#calibrate_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.Process.calibrate_data" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
 
 <dl class="function">
 <dt id="pywws.Process.main">

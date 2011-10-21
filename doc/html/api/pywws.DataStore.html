@@ -22,6 +22,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../_static/pywws_logo.ico"/>
     <link rel="top" title="pywws v11.10 documentation" href="../index.html" />
     <link rel="up" title="Python programs and modules" href="index.html" />
     <link rel="next" title="pywws.TimeZone" href="pywws.TimeZone.html" />
@@ -121,78 +122,20 @@ data[datetime.utcnow() - timedelta(hours=12):]</p>
 <td></td>
 </tr>
 <tr><td><a class="reference internal" href="#pywws.DataStore.params" title="pywws.DataStore.params"><tt class="xref py py-obj docutils literal"><span class="pre">params</span></tt></a>(root_dir)</td>
-<td></td>
+<td>Parameters are stored in a file &#8220;weather.ini&#8221; in root_dir.</td>
 </tr>
 </tbody>
 </table>
-<dl class="class">
-<dt id="pywws.DataStore.calib_store">
-<em class="property">class </em><tt class="descclassname">pywws.DataStore.</tt><tt class="descname">calib_store</tt><big>(</big><em>root_dir</em><big>)</big><a class="reference internal" href="../_modules/pywws/DataStore.html#calib_store"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.DataStore.calib_store" title="Permalink to this definition">¶</a></dt>
-<dd><p>Stores &#8216;calibrated&#8217; weather station data.</p>
-</dd></dl>
-
-<dl class="class">
-<dt id="pywws.DataStore.core_store">
-<em class="property">class </em><tt class="descclassname">pywws.DataStore.</tt><tt class="descname">core_store</tt><big>(</big><em>root_dir</em><big>)</big><a class="reference internal" href="../_modules/pywws/DataStore.html#core_store"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.DataStore.core_store" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="method">
-<dt id="pywws.DataStore.core_store.after">
-<tt class="descname">after</tt><big>(</big><em>idx</em><big>)</big><a class="reference internal" href="../_modules/pywws/DataStore.html#core_store.after"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.DataStore.core_store.after" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return datetime of oldest existing data record whose
-datetime is &gt;= idx.</p>
-<p>Might not even be in the same year! If no such record exists,
-return None.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="pywws.DataStore.core_store.before">
-<tt class="descname">before</tt><big>(</big><em>idx</em><big>)</big><a class="reference internal" href="../_modules/pywws/DataStore.html#core_store.before"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.DataStore.core_store.before" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return datetime of newest existing data record whose
-datetime is &lt; idx.</p>
-<p>Might not even be in the same year! If no such record exists,
-return None.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="pywws.DataStore.core_store.flush">
-<tt class="descname">flush</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/pywws/DataStore.html#core_store.flush"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.DataStore.core_store.flush" title="Permalink to this definition">¶</a></dt>
+<dl class="function">
+<dt id="pywws.DataStore.safestrptime">
+<tt class="descclassname">pywws.DataStore.</tt><tt class="descname">safestrptime</tt><big>(</big><em>date_string</em>, <em>format=None</em><big>)</big><a class="reference internal" href="../_modules/pywws/DataStore.html#safestrptime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.DataStore.safestrptime" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
-
-<dl class="method">
-<dt id="pywws.DataStore.core_store.nearest">
-<tt class="descname">nearest</tt><big>(</big><em>idx</em><big>)</big><a class="reference internal" href="../_modules/pywws/DataStore.html#core_store.nearest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.DataStore.core_store.nearest" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return datetime of record whose datetime is nearest idx.</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="pywws.DataStore.daily_store">
-<em class="property">class </em><tt class="descclassname">pywws.DataStore.</tt><tt class="descname">daily_store</tt><big>(</big><em>root_dir</em><big>)</big><a class="reference internal" href="../_modules/pywws/DataStore.html#daily_store"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.DataStore.daily_store" title="Permalink to this definition">¶</a></dt>
-<dd><p>Stores daily summary weather station data.</p>
-</dd></dl>
-
-<dl class="class">
-<dt id="pywws.DataStore.data_store">
-<em class="property">class </em><tt class="descclassname">pywws.DataStore.</tt><tt class="descname">data_store</tt><big>(</big><em>root_dir</em><big>)</big><a class="reference internal" href="../_modules/pywws/DataStore.html#data_store"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.DataStore.data_store" title="Permalink to this definition">¶</a></dt>
-<dd><p>Stores raw weather station data.</p>
-</dd></dl>
-
-<dl class="class">
-<dt id="pywws.DataStore.hourly_store">
-<em class="property">class </em><tt class="descclassname">pywws.DataStore.</tt><tt class="descname">hourly_store</tt><big>(</big><em>root_dir</em><big>)</big><a class="reference internal" href="../_modules/pywws/DataStore.html#hourly_store"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.DataStore.hourly_store" title="Permalink to this definition">¶</a></dt>
-<dd><p>Stores hourly summary weather station data.</p>
-</dd></dl>
-
-<dl class="class">
-<dt id="pywws.DataStore.monthly_store">
-<em class="property">class </em><tt class="descclassname">pywws.DataStore.</tt><tt class="descname">monthly_store</tt><big>(</big><em>root_dir</em><big>)</big><a class="reference internal" href="../_modules/pywws/DataStore.html#monthly_store"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.DataStore.monthly_store" title="Permalink to this definition">¶</a></dt>
-<dd><p>Stores monthly summary weather station data.</p>
-</dd></dl>
 
 <dl class="class">
 <dt id="pywws.DataStore.params">
 <em class="property">class </em><tt class="descclassname">pywws.DataStore.</tt><tt class="descname">params</tt><big>(</big><em>root_dir</em><big>)</big><a class="reference internal" href="../_modules/pywws/DataStore.html#params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.DataStore.params" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="method">
+<dd><p>Parameters are stored in a file &#8220;weather.ini&#8221; in root_dir.</p>
+<dl class="method">
 <dt id="pywws.DataStore.params.flush">
 <tt class="descname">flush</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/pywws/DataStore.html#params.flush"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.DataStore.params.flush" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -219,10 +162,69 @@ which is then the return value.</p>
 
 </dd></dl>
 
-<dl class="function">
-<dt id="pywws.DataStore.safestrptime">
-<tt class="descclassname">pywws.DataStore.</tt><tt class="descname">safestrptime</tt><big>(</big><em>date_string</em>, <em>format=None</em><big>)</big><a class="reference internal" href="../_modules/pywws/DataStore.html#safestrptime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.DataStore.safestrptime" title="Permalink to this definition">¶</a></dt>
+<dl class="class">
+<dt id="pywws.DataStore.core_store">
+<em class="property">class </em><tt class="descclassname">pywws.DataStore.</tt><tt class="descname">core_store</tt><big>(</big><em>root_dir</em><big>)</big><a class="reference internal" href="../_modules/pywws/DataStore.html#core_store"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.DataStore.core_store" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="pywws.DataStore.core_store.before">
+<tt class="descname">before</tt><big>(</big><em>idx</em><big>)</big><a class="reference internal" href="../_modules/pywws/DataStore.html#core_store.before"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.DataStore.core_store.before" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return datetime of newest existing data record whose
+datetime is &lt; idx.</p>
+<p>Might not even be in the same year! If no such record exists,
+return None.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pywws.DataStore.core_store.after">
+<tt class="descname">after</tt><big>(</big><em>idx</em><big>)</big><a class="reference internal" href="../_modules/pywws/DataStore.html#core_store.after"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.DataStore.core_store.after" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return datetime of oldest existing data record whose
+datetime is &gt;= idx.</p>
+<p>Might not even be in the same year! If no such record exists,
+return None.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pywws.DataStore.core_store.nearest">
+<tt class="descname">nearest</tt><big>(</big><em>idx</em><big>)</big><a class="reference internal" href="../_modules/pywws/DataStore.html#core_store.nearest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.DataStore.core_store.nearest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return datetime of record whose datetime is nearest idx.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pywws.DataStore.core_store.flush">
+<tt class="descname">flush</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/pywws/DataStore.html#core_store.flush"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.DataStore.core_store.flush" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pywws.DataStore.data_store">
+<em class="property">class </em><tt class="descclassname">pywws.DataStore.</tt><tt class="descname">data_store</tt><big>(</big><em>root_dir</em><big>)</big><a class="reference internal" href="../_modules/pywws/DataStore.html#data_store"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.DataStore.data_store" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stores raw weather station data.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="pywws.DataStore.calib_store">
+<em class="property">class </em><tt class="descclassname">pywws.DataStore.</tt><tt class="descname">calib_store</tt><big>(</big><em>root_dir</em><big>)</big><a class="reference internal" href="../_modules/pywws/DataStore.html#calib_store"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.DataStore.calib_store" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stores &#8216;calibrated&#8217; weather station data.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="pywws.DataStore.hourly_store">
+<em class="property">class </em><tt class="descclassname">pywws.DataStore.</tt><tt class="descname">hourly_store</tt><big>(</big><em>root_dir</em><big>)</big><a class="reference internal" href="../_modules/pywws/DataStore.html#hourly_store"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.DataStore.hourly_store" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stores hourly summary weather station data.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="pywws.DataStore.daily_store">
+<em class="property">class </em><tt class="descclassname">pywws.DataStore.</tt><tt class="descname">daily_store</tt><big>(</big><em>root_dir</em><big>)</big><a class="reference internal" href="../_modules/pywws/DataStore.html#daily_store"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.DataStore.daily_store" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stores daily summary weather station data.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="pywws.DataStore.monthly_store">
+<em class="property">class </em><tt class="descclassname">pywws.DataStore.</tt><tt class="descname">monthly_store</tt><big>(</big><em>root_dir</em><big>)</big><a class="reference internal" href="../_modules/pywws/DataStore.html#monthly_store"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.DataStore.monthly_store" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stores monthly summary weather station data.</p>
+</dd></dl>
 
 </div>
 </div>

@@ -1,0 +1,30 @@
+
+pywws.ToMetOffice
+*****************
+
+Post weather update to WOW from the Met Office UK.
+
+usage: python ToMetOffice.py [options] data_dir options are:
+
+   -h or --help     display this help -c or --catchup  upload all data
+   since last upload (up to 4 weeks) -v or --verbose  increase amount
+   of reassuring messages
+
+data_dir is the root directory of the weather data
+
+StationID and password are read from the weather.ini file in data_dir.
+
+-[ Classes ]-
+
++------------+--------------------------------------------------------------------------------------------+
+| ``ToMetOff |                                                                                            |
+| ice``(para |                                                                                            |
+| ms, calib_ |                                                                                            |
+| data)      |                                                                                            |
++------------+--------------------------------------------------------------------------------------------+
+
+class class pywws.ToMetOffice.ToMetOffice(params, calib_data)
+
+   Upload(catchup)
+
+pywws.ToMetOffice.main(argv=None)

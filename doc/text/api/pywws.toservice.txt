@@ -1,0 +1,16 @@
+
+pywws.toservice
+***************
+
+Base class for Weather Underground and UK Met Office uploaders.
+
+-[ Classes ]-
+
++------------+--------------------------------------------------------------------------------------------+
+| ``ToServic |                                                                                            |
+| e``(params |                                                                                            |
+| , calib_da |                                                                                            |
+| ta)        |                                                                                            |
++------------+--------------------------------------------------------------------------------------------+
+
+class class pywws.toservice.ToService(params, calib_data)

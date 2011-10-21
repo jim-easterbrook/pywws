@@ -22,6 +22,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../_static/pywws_logo.ico"/>
     <link rel="top" title="pywws v11.10 documentation" href="../index.html" />
     <link rel="up" title="Python programs and modules" href="index.html" />
     <link rel="next" title="pywws.calib" href="pywws.calib.html" />
@@ -156,25 +157,6 @@ instructions.</p>
 </tbody>
 </table>
 <dl class="function">
-<dt id="pywws.Localisation.SetApplicationLanguage">
-<tt class="descclassname">pywws.Localisation.</tt><tt class="descname">SetApplicationLanguage</tt><big>(</big><em>params</em><big>)</big><a class="reference internal" href="../_modules/pywws/Localisation.html#SetApplicationLanguage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.Localisation.SetApplicationLanguage" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set the locale and translation for a pywws program.</p>
-<p>This function reads the language from the configuration file, then
-calls <a class="reference internal" href="#pywws.Localisation.SetLocale" title="pywws.Localisation.SetLocale"><tt class="xref py py-func docutils literal"><span class="pre">SetLocale()</span></tt></a> and <a class="reference internal" href="#pywws.Localisation.SetTranslation" title="pywws.Localisation.SetTranslation"><tt class="xref py py-func docutils literal"><span class="pre">SetTranslation()</span></tt></a>.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>params</strong> (<em>object</em>) &#8211; a <a class="reference internal" href="pywws.DataStore.html#pywws.DataStore.params" title="pywws.DataStore.params"><tt class="xref py py-class docutils literal"><span class="pre">pywws.DataStore.params</span></tt></a> object.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
 <dt id="pywws.Localisation.SetLocale">
 <tt class="descclassname">pywws.Localisation.</tt><tt class="descname">SetLocale</tt><big>(</big><em>lang</em><big>)</big><a class="reference internal" href="../_modules/pywws/Localisation.html#SetLocale"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.Localisation.SetLocale" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the &#8216;locale&#8217; used by a program.</p>
@@ -226,6 +208,25 @@ will search for an <tt class="docutils literal"><span class="pre">en_GB</span></
 </td>
 </tr>
 <tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">bool</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pywws.Localisation.SetApplicationLanguage">
+<tt class="descclassname">pywws.Localisation.</tt><tt class="descname">SetApplicationLanguage</tt><big>(</big><em>params</em><big>)</big><a class="reference internal" href="../_modules/pywws/Localisation.html#SetApplicationLanguage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.Localisation.SetApplicationLanguage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the locale and translation for a pywws program.</p>
+<p>This function reads the language from the configuration file, then
+calls <a class="reference internal" href="#pywws.Localisation.SetLocale" title="pywws.Localisation.SetLocale"><tt class="xref py py-func docutils literal"><span class="pre">SetLocale()</span></tt></a> and <a class="reference internal" href="#pywws.Localisation.SetTranslation" title="pywws.Localisation.SetTranslation"><tt class="xref py py-func docutils literal"><span class="pre">SetTranslation()</span></tt></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>params</strong> (<em>object</em>) &#8211; a <a class="reference internal" href="pywws.DataStore.html#pywws.DataStore.params" title="pywws.DataStore.params"><tt class="xref py py-class docutils literal"><span class="pre">pywws.DataStore.params</span></tt></a> object.</li>
+</ul>
 </td>
 </tr>
 </tbody>

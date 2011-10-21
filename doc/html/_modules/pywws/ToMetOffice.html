@@ -1,0 +1,274 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pywws.ToMetOffice &mdash; pywws v11.10 documentation</title>
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '11.10',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../../_static/pywws_logo.ico"/>
+    <link rel="top" title="pywws v11.10 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">pywws v11.10 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for pywws.ToMetOffice</h1><div class="highlight"><pre>
+<span class="c">#!/usr/bin/env python</span>
+
+<span class="sd">&quot;&quot;&quot;Post weather update to the UK Met Office &#39;WOW&#39; site</span>
+<span class="sd">::</span>
+
+<span class="sd">%s</span>
+
+<span class="sd">Introduction</span>
+<span class="sd">------------</span>
+
+<span class="sd">The UK Met Office has recently introduced `WOW - Weather Observations</span>
+<span class="sd">Website &lt;http://wow.metoffice.gov.uk/&gt;`_. This can accept readings</span>
+<span class="sd">from automatic weather statons, in a very similar way to `Weather</span>
+<span class="sd">Underground &lt;http://www.wunderground.com/&gt;`_. This module enables</span>
+<span class="sd">pywws to upload readings to WOW.</span>
+
+<span class="sd">Configuration</span>
+<span class="sd">-------------</span>
+
+<span class="sd">If you haven&#39;t already done so, visit the Met Office WOW web site and</span>
+<span class="sd">create a user account for yourself. Then go to the `&#39;Sites&#39; page</span>
+<span class="sd">&lt;http://wow.metoffice.gov.uk/sites&gt;`_ and follow the &#39;create new site&#39;</span>
+<span class="sd">link. Fill in all the required details, including the &#39;AWS 6-digit</span>
+<span class="sd">PIN&#39;. Note that the &#39;reporting hours&#39; should be set to option C,</span>
+<span class="sd">regardless of your &#39;day end hour&#39; setting.</span>
+
+<span class="sd">Copy your &#39;site ID&#39; and &#39;AWS PIN&#39; from the Met Office web site to a</span>
+<span class="sd">new ``[metoffice]`` section in your ``weather.ini`` configuration</span>
+<span class="sd">file::</span>
+
+<span class="sd">    [metoffice]</span>
+<span class="sd">    site id = 12345678</span>
+<span class="sd">    aws pin = 654321</span>
+
+<span class="sd">Remember to stop all pywws software before editing ``weather.ini``.</span>
+
+<span class="sd">Test your configuration by running ``ToMetOffice.py`` (replace</span>
+<span class="sd">``data_dir`` with your weather data directory)::</span>
+
+<span class="sd">    python pywws/ToMetOffice.py -vvv data_dir</span>
+
+<span class="sd">This should show you the data string that is uploaded, and no other</span>
+<span class="sd">messages.</span>
+
+<span class="sd">Upload old data</span>
+<span class="sd">---------------</span>
+
+<span class="sd">Now you can upload your last 7 days&#39; data. Edit your ``weather.ini``</span>
+<span class="sd">file and remove the ``last update`` line from the ``[metoffice]``</span>
+<span class="sd">section, then run ``ToMetOffice.py`` with the catchup option::</span>
+
+<span class="sd">    python pywws/ToMetOffice.py -c -v data_dir</span>
+
+<span class="sd">This may take 20 minutes or more, depending on how much data you have.</span>
+
+<span class="sd">Add Met Office upload to regular tasks</span>
+<span class="sd">--------------------------------------</span>
+
+<span class="sd">Edit your ``weather.ini`` again, and add ``metoffice = True`` to the</span>
+<span class="sd">``[logged]``, ``[hourly]``, ``[12 hourly]`` or ``[daily]`` section,</span>
+<span class="sd">depending on how often you want to send data. For example::</span>
+
+<span class="sd">    [logged]</span>
+<span class="sd">    plot = []</span>
+<span class="sd">    text = []</span>
+<span class="sd">    twitter = []</span>
+<span class="sd">    underground = False</span>
+<span class="sd">    metoffice = True</span>
+
+<span class="sd">Restart your regular pywws program (``Hourly.py`` or ``LiveLog.py``)</span>
+<span class="sd">and visit the Met Office WOW web site to see regular updates from your</span>
+<span class="sd">weather station.</span>
+
+<span class="sd">Acknowledgment</span>
+<span class="sd">--------------</span>
+
+<span class="sd">Thanks to `Tom &lt;mailto:e_l_p_i_s@yahoo.co.uk&gt;`_ for writing the</span>
+<span class="sd">initial version of ``ToMetOffice.py``.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="n">__docformat__</span> <span class="o">=</span> <span class="s">&quot;restructuredtext en&quot;</span>
+<span class="n">__usage__</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;</span>
+<span class="s"> usage: python ToMetOffice.py [options] data_dir</span>
+<span class="s"> options are:</span>
+<span class="s">  -h or --help     display this help</span>
+<span class="s">  -c or --catchup  upload all data since last upload (up to 1 week)</span>
+<span class="s">  -v or --verbose  increase amount of reassuring messages</span>
+<span class="s"> data_dir is the root directory of the weather data</span>
+<span class="s">&quot;&quot;&quot;</span>
+<span class="n">__doc__</span> <span class="o">%=</span> <span class="n">__usage__</span>
+<span class="n">__usage__</span> <span class="o">=</span> <span class="n">__doc__</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">__usage__</span>
+
+<span class="kn">import</span> <span class="nn">getopt</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="kn">import</span> <span class="nn">DataStore</span>
+<span class="kn">from</span> <span class="nn">Logger</span> <span class="kn">import</span> <span class="n">ApplicationLogger</span>
+<span class="kn">import</span> <span class="nn">toservice</span>
+
+<div class="viewcode-block" id="ToMetOffice"><a class="viewcode-back" href="../../api/pywws.ToMetOffice.html#pywws.ToMetOffice.ToMetOffice">[docs]</a><span class="k">class</span> <span class="nc">ToMetOffice</span><span class="p">(</span><span class="n">toservice</span><span class="o">.</span><span class="n">ToService</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Upload weather data to UK Met Office &#39;WOW&#39;.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">calib_data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param params: pywws configuration.</span>
+
+<span class="sd">        :type params: :class:`pywws.DataStore.params`</span>
+<span class="sd">        </span>
+<span class="sd">        :param calib_data: &#39;calibrated&#39; data.</span>
+
+<span class="sd">        :type calib_data: :class:`pywws.DataStore.calib_store`</span>
+<span class="sd">    </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config_section</span> <span class="o">=</span> <span class="s">&#39;metoffice&#39;</span>
+        <span class="n">toservice</span><span class="o">.</span><span class="n">ToService</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">calib_data</span><span class="p">)</span>
+        <span class="c"># UK Met Office &#39;WOW&#39; server</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">server</span> <span class="o">=</span> <span class="s">&#39;http://wow.metoffice.gov.uk/automaticreading&#39;</span>
+        <span class="c"># set fixed part of upload data</span>
+        <span class="n">siteid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config_section</span><span class="p">,</span> <span class="s">&#39;site id&#39;</span><span class="p">)</span>
+        <span class="n">siteAuthenticationKey</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config_section</span><span class="p">,</span> <span class="s">&#39;aws pin&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fixed_data</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s">&#39;siteid&#39;</span>                <span class="p">:</span> <span class="n">siteid</span><span class="p">,</span>
+            <span class="s">&#39;siteAuthenticationKey&#39;</span> <span class="p">:</span> <span class="n">siteAuthenticationKey</span><span class="p">,</span>
+            <span class="s">&#39;softwaretype&#39;</span>          <span class="p">:</span> <span class="s">&#39;pywws&#39;</span>
+            <span class="p">}</span>
+
+<div class="viewcode-block" id="ToMetOffice.Upload"><a class="viewcode-back" href="../../api/pywws.ToMetOffice.html#pywws.ToMetOffice.ToMetOffice.Upload">[docs]</a>    <span class="k">def</span> <span class="nf">Upload</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">catchup</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Upload one or more weather data records.</span>
+
+<span class="sd">        This method uploads either the most recent weather data</span>
+<span class="sd">        record, or all records since the last upload (up to 7 days),</span>
+<span class="sd">        according to the value of :obj:`catchup`.</span>
+
+<span class="sd">        It sets the ``last update`` configuration value to the time</span>
+<span class="sd">        stamp of the most recent record successfully uploaded.</span>
+
+<span class="sd">        :param catchup: upload all data since last upload.</span>
+
+<span class="sd">        :type catchup: bool</span>
+
+<span class="sd">        :return: success status</span>
+
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">upload</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">server</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fixed_data</span><span class="p">,</span> <span class="n">catchup</span><span class="p">)</span>
+</div></div>
+<div class="viewcode-block" id="main"><a class="viewcode-back" href="../../api/pywws.ToMetOffice.html#pywws.ToMetOffice.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">argv</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">argv</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">argv</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">opts</span><span class="p">,</span> <span class="n">args</span> <span class="o">=</span> <span class="n">getopt</span><span class="o">.</span><span class="n">getopt</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="s">&quot;hcv&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s">&#39;help&#39;</span><span class="p">,</span> <span class="s">&#39;catchup&#39;</span><span class="p">,</span> <span class="s">&#39;verbose&#39;</span><span class="p">])</span>
+    <span class="k">except</span> <span class="n">getopt</span><span class="o">.</span><span class="n">error</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span>
+        <span class="k">print</span> <span class="o">&gt;&gt;</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&#39;Error: </span><span class="si">%s</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">msg</span>
+        <span class="k">print</span> <span class="o">&gt;&gt;</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">,</span> <span class="n">__usage__</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">return</span> <span class="mi">1</span>
+    <span class="c"># process options</span>
+    <span class="n">catchup</span> <span class="o">=</span> <span class="bp">False</span>
+    <span class="n">verbose</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">o</span><span class="p">,</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">opts</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">o</span> <span class="o">==</span> <span class="s">&#39;-h&#39;</span> <span class="ow">or</span> <span class="n">o</span> <span class="o">==</span> <span class="s">&#39;--help&#39;</span><span class="p">:</span>
+            <span class="k">print</span> <span class="n">__usage__</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="k">return</span> <span class="mi">0</span>
+        <span class="k">elif</span> <span class="n">o</span> <span class="o">==</span> <span class="s">&#39;-c&#39;</span> <span class="ow">or</span> <span class="n">o</span> <span class="o">==</span> <span class="s">&#39;--catchup&#39;</span><span class="p">:</span>
+            <span class="n">catchup</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="k">elif</span> <span class="n">o</span> <span class="o">==</span> <span class="s">&#39;-v&#39;</span> <span class="ow">or</span> <span class="n">o</span> <span class="o">==</span> <span class="s">&#39;--verbose&#39;</span><span class="p">:</span>
+            <span class="n">verbose</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="c"># check arguments</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">print</span> <span class="o">&gt;&gt;</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&quot;Error: 1 argument required&quot;</span>
+        <span class="k">print</span> <span class="o">&gt;&gt;</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">,</span> <span class="n">__usage__</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">return</span> <span class="mi">2</span>
+    <span class="n">logger</span> <span class="o">=</span> <span class="n">ApplicationLogger</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ToMetOffice</span><span class="p">(</span>
+        <span class="n">DataStore</span><span class="o">.</span><span class="n">params</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">DataStore</span><span class="o">.</span><span class="n">calib_store</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">Upload</span><span class="p">(</span><span class="n">catchup</span><span class="p">)</span>
+</div>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">pywws v11.10 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Jim Easterbrook.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.1.
+    </div>
+  </body>
+</html>

@@ -22,6 +22,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../../_static/pywws_logo.ico"/>
     <link rel="top" title="pywws v11.10 documentation" href="../../index.html" />
     <link rel="up" title="Module code" href="../index.html" /> 
   </head>
@@ -514,8 +515,8 @@
         <span class="c"># check &#39;magic number&#39;</span>
         <span class="k">if</span> <span class="n">result</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">([</span><span class="mh">0x55</span><span class="p">,</span> <span class="mh">0xAA</span><span class="p">],</span> <span class="p">[</span><span class="mh">0xFF</span><span class="p">,</span> <span class="mh">0xFF</span><span class="p">],</span>
                               <span class="p">[</span><span class="mh">0x55</span><span class="p">,</span> <span class="mh">0x55</span><span class="p">],</span> <span class="p">[</span><span class="mh">0xC4</span><span class="p">,</span> <span class="mh">0x00</span><span class="p">]):</span>
-            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span>
-                <span class="s">&quot;Unrecognised &#39;magic number&#39; </span><span class="si">%02x</span><span class="s"> </span><span class="si">%02x</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span>
+                <span class="s">&quot;Unrecognised &#39;magic number&#39; </span><span class="si">%02x</span><span class="s"> </span><span class="si">%02x</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">result</span>
     <span class="k">def</span> <span class="nf">_write_byte</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ptr</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="n">buf_1</span> <span class="o">=</span> <span class="p">(</span><span class="n">ptr</span> <span class="o">/</span> <span class="mi">256</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xFF</span>

@@ -14,13 +14,6 @@ data_dir is the root directory of the weather data
 
 StationID and password are read from the weather.ini file in data_dir.
 
--[ Functions ]-
-
-+------------+--------------------------------------------------------------------------------------------+
-| ``main``([ |                                                                                            |
-| argv])     |                                                                                            |
-+------------+--------------------------------------------------------------------------------------------+
-
 -[ Classes ]-
 
 +------------+--------------------------------------------------------------------------------------------+
@@ -33,8 +26,6 @@ StationID and password are read from the weather.ini file in data_dir.
 class class pywws.ToUnderground.ToUnderground(params, calib_data)
 
    RapidFire(data, catchup)
-
-   SendData(data, rapid_fire)
 
    Upload(catchup)
 

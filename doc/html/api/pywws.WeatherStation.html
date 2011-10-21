@@ -22,6 +22,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../_static/pywws_logo.ico"/>
     <link rel="top" title="pywws v11.10 documentation" href="../index.html" />
     <link rel="up" title="Python programs and modules" href="index.html" />
     <link rel="next" title="pywws.DataStore" href="pywws.DataStore.html" />
@@ -125,13 +126,6 @@ and other sources.</p>
 </tbody>
 </table>
 <dl class="function">
-<dt id="pywws.WeatherStation.apparent_temp">
-<tt class="descclassname">pywws.WeatherStation.</tt><tt class="descname">apparent_temp</tt><big>(</big><em>temp</em>, <em>rh</em>, <em>wind</em><big>)</big><a class="reference internal" href="../_modules/pywws/WeatherStation.html#apparent_temp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.WeatherStation.apparent_temp" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute apparent temperature (real feel), using formula from
-<a class="reference external" href="http://www.bom.gov.au/info/thermal_stress/">http://www.bom.gov.au/info/thermal_stress/</a></p>
-</dd></dl>
-
-<dl class="function">
 <dt id="pywws.WeatherStation.dew_point">
 <tt class="descclassname">pywws.WeatherStation.</tt><tt class="descname">dew_point</tt><big>(</big><em>temp</em>, <em>hum</em><big>)</big><a class="reference internal" href="../_modules/pywws/WeatherStation.html#dew_point"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.WeatherStation.dew_point" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute dew point, using formula from
@@ -139,9 +133,17 @@ and other sources.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="pywws.WeatherStation.findDevice">
-<tt class="descclassname">pywws.WeatherStation.</tt><tt class="descname">findDevice</tt><big>(</big><em>idVendor</em>, <em>idProduct</em><big>)</big><a class="reference internal" href="../_modules/pywws/WeatherStation.html#findDevice"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.WeatherStation.findDevice" title="Permalink to this definition">¶</a></dt>
-<dd><p>Find a USB device by product and vendor id.</p>
+<dt id="pywws.WeatherStation.wind_chill">
+<tt class="descclassname">pywws.WeatherStation.</tt><tt class="descname">wind_chill</tt><big>(</big><em>temp</em>, <em>wind</em><big>)</big><a class="reference internal" href="../_modules/pywws/WeatherStation.html#wind_chill"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.WeatherStation.wind_chill" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute wind chill, using formula from
+<a class="reference external" href="http://en.wikipedia.org/wiki/wind_chill">http://en.wikipedia.org/wiki/wind_chill</a></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pywws.WeatherStation.apparent_temp">
+<tt class="descclassname">pywws.WeatherStation.</tt><tt class="descname">apparent_temp</tt><big>(</big><em>temp</em>, <em>rh</em>, <em>wind</em><big>)</big><a class="reference internal" href="../_modules/pywws/WeatherStation.html#apparent_temp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.WeatherStation.apparent_temp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute apparent temperature (real feel), using formula from
+<a class="reference external" href="http://www.bom.gov.au/info/thermal_stress/">http://www.bom.gov.au/info/thermal_stress/</a></p>
 </dd></dl>
 
 <dl class="function">
@@ -157,14 +159,26 @@ and other sources.</p>
 <a class="reference external" href="http://www.reedsonline.com/weather/weather-terms.htm">http://www.reedsonline.com/weather/weather-terms.htm</a>.</p>
 </dd></dl>
 
+<dl class="function">
+<dt id="pywws.WeatherStation.findDevice">
+<tt class="descclassname">pywws.WeatherStation.</tt><tt class="descname">findDevice</tt><big>(</big><em>idVendor</em>, <em>idProduct</em><big>)</big><a class="reference internal" href="../_modules/pywws/WeatherStation.html#findDevice"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.WeatherStation.findDevice" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find a USB device by product and vendor id.</p>
+</dd></dl>
+
 <dl class="class">
 <dt id="pywws.WeatherStation.weather_station">
 <em class="property">class </em><tt class="descclassname">pywws.WeatherStation.</tt><tt class="descname">weather_station</tt><big>(</big><em>ws_type='1080'</em><big>)</big><a class="reference internal" href="../_modules/pywws/WeatherStation.html#weather_station"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.WeatherStation.weather_station" title="Permalink to this definition">¶</a></dt>
 <dd><p>Class that represents the weather station to user program.</p>
+<p>Connect to weather station and prepare to read data.</p>
 <dl class="method">
-<dt id="pywws.WeatherStation.weather_station.current_pos">
-<tt class="descname">current_pos</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/pywws/WeatherStation.html#weather_station.current_pos"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.WeatherStation.weather_station.current_pos" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get circular buffer location where current data is being written.</p>
+<dt id="pywws.WeatherStation.weather_station.live_data">
+<tt class="descname">live_data</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/pywws/WeatherStation.html#weather_station.live_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.WeatherStation.weather_station.live_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pywws.WeatherStation.weather_station.inc_ptr">
+<tt class="descname">inc_ptr</tt><big>(</big><em>ptr</em><big>)</big><a class="reference internal" href="../_modules/pywws/WeatherStation.html#weather_station.inc_ptr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.WeatherStation.weather_station.inc_ptr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get next circular buffer data pointer.</p>
 </dd></dl>
 
 <dl class="method">
@@ -174,11 +188,31 @@ and other sources.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="pywws.WeatherStation.weather_station.get_raw_data">
+<tt class="descname">get_raw_data</tt><big>(</big><em>ptr</em>, <em>unbuffered=False</em><big>)</big><a class="reference internal" href="../_modules/pywws/WeatherStation.html#weather_station.get_raw_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.WeatherStation.weather_station.get_raw_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get raw data from circular buffer.</p>
+<p>If unbuffered is false then a cached value that was obtained
+earlier may be returned.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="pywws.WeatherStation.weather_station.get_data">
 <tt class="descname">get_data</tt><big>(</big><em>ptr</em>, <em>unbuffered=False</em><big>)</big><a class="reference internal" href="../_modules/pywws/WeatherStation.html#weather_station.get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.WeatherStation.weather_station.get_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get decoded data from circular buffer.</p>
 <p>If unbuffered is false then a cached value that was obtained
 earlier may be returned.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pywws.WeatherStation.weather_station.current_pos">
+<tt class="descname">current_pos</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/pywws/WeatherStation.html#weather_station.current_pos"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.WeatherStation.weather_station.current_pos" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get circular buffer location where current data is being written.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pywws.WeatherStation.weather_station.get_raw_fixed_block">
+<tt class="descname">get_raw_fixed_block</tt><big>(</big><em>unbuffered=False</em><big>)</big><a class="reference internal" href="../_modules/pywws/WeatherStation.html#weather_station.get_raw_fixed_block"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.WeatherStation.weather_station.get_raw_fixed_block" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the raw &#8220;fixed block&#8221; of settings and min/max data.</p>
 </dd></dl>
 
 <dl class="method">
@@ -195,44 +229,12 @@ earlier may be returned.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pywws.WeatherStation.weather_station.get_raw_data">
-<tt class="descname">get_raw_data</tt><big>(</big><em>ptr</em>, <em>unbuffered=False</em><big>)</big><a class="reference internal" href="../_modules/pywws/WeatherStation.html#weather_station.get_raw_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.WeatherStation.weather_station.get_raw_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get raw data from circular buffer.</p>
-<p>If unbuffered is false then a cached value that was obtained
-earlier may be returned.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="pywws.WeatherStation.weather_station.get_raw_fixed_block">
-<tt class="descname">get_raw_fixed_block</tt><big>(</big><em>unbuffered=False</em><big>)</big><a class="reference internal" href="../_modules/pywws/WeatherStation.html#weather_station.get_raw_fixed_block"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.WeatherStation.weather_station.get_raw_fixed_block" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the raw &#8220;fixed block&#8221; of settings and min/max data.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="pywws.WeatherStation.weather_station.inc_ptr">
-<tt class="descname">inc_ptr</tt><big>(</big><em>ptr</em><big>)</big><a class="reference internal" href="../_modules/pywws/WeatherStation.html#weather_station.inc_ptr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.WeatherStation.weather_station.inc_ptr" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get next circular buffer data pointer.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="pywws.WeatherStation.weather_station.live_data">
-<tt class="descname">live_data</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/pywws/WeatherStation.html#weather_station.live_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.WeatherStation.weather_station.live_data" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
 <dt id="pywws.WeatherStation.weather_station.write_data">
 <tt class="descname">write_data</tt><big>(</big><em>data</em><big>)</big><a class="reference internal" href="../_modules/pywws/WeatherStation.html#weather_station.write_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.WeatherStation.weather_station.write_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write a set of single bytes to the weather station. Data must be an
 array of (ptr, value) pairs.</p>
 </dd></dl>
 
-</dd></dl>
-
-<dl class="function">
-<dt id="pywws.WeatherStation.wind_chill">
-<tt class="descclassname">pywws.WeatherStation.</tt><tt class="descname">wind_chill</tt><big>(</big><em>temp</em>, <em>wind</em><big>)</big><a class="reference internal" href="../_modules/pywws/WeatherStation.html#wind_chill"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.WeatherStation.wind_chill" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute wind chill, using formula from
-<a class="reference external" href="http://en.wikipedia.org/wiki/wind_chill">http://en.wikipedia.org/wiki/wind_chill</a></p>
 </dd></dl>
 
 </div>

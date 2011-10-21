@@ -1,0 +1,321 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pywws.toservice &mdash; pywws v11.10 documentation</title>
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '11.10',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../../_static/pywws_logo.ico"/>
+    <link rel="top" title="pywws v11.10 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">pywws v11.10 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for pywws.toservice</h1><div class="highlight"><pre>
+<span class="sd">&quot;&quot;&quot;Base class for Weather Underground and UK Met Office uploaders.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">socket</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">urllib</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
+
+<span class="kn">import</span> <span class="nn">conversions</span>
+<span class="kn">import</span> <span class="nn">DataStore</span>
+<span class="kn">from</span> <span class="nn">Logger</span> <span class="kn">import</span> <span class="n">ApplicationLogger</span>
+<span class="kn">from</span> <span class="nn">TimeZone</span> <span class="kn">import</span> <span class="n">Local</span><span class="p">,</span> <span class="n">utc</span>
+<span class="kn">from</span> <span class="nn">WeatherStation</span> <span class="kn">import</span> <span class="n">dew_point</span>
+
+<span class="n">HOUR</span> <span class="o">=</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">hours</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">DAY</span> <span class="o">=</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">hours</span><span class="o">=</span><span class="mi">24</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ToService"><a class="viewcode-back" href="../../api/pywws.toservice.html#pywws.toservice.ToService">[docs]</a><span class="k">class</span> <span class="nc">ToService</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Base class for &#39;Weather Underground&#39; style weather service</span>
+<span class="sd">    uploaders.</span>
+
+<span class="sd">    Derived classes must call the base class constructor. They will</span>
+<span class="sd">    also want to call the :meth:`upload` method, but may also call</span>
+<span class="sd">    other methods.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">calib_data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param params: pywws configuration.</span>
+
+<span class="sd">        :type params: :class:`pywws.DataStore.params`</span>
+<span class="sd">        </span>
+<span class="sd">        :param calib_data: &#39;calibrated&#39; data.</span>
+
+<span class="sd">        :type calib_data: :class:`pywws.DataStore.calib_store`</span>
+<span class="sd">    </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s">&#39;pywws.</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">params</span> <span class="o">=</span> <span class="n">params</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">calib_data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">old_response</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">old_ex</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="c"># set default socket timeout, so urlopen calls don&#39;t hang forever</span>
+        <span class="n">socket</span><span class="o">.</span><span class="n">setdefaulttimeout</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+        <span class="c"># compute local midnight</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">midnight</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="n">utc</span><span class="p">)</span><span class="o">.</span><span class="n">astimezone</span><span class="p">(</span>
+            <span class="n">Local</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">hour</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">minute</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">second</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">astimezone</span><span class="p">(</span>
+                <span class="n">utc</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
+        <span class="c"># other init</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rain_midnight</span> <span class="o">=</span> <span class="bp">None</span>
+
+<div class="viewcode-block" id="ToService.translate_data"><a class="viewcode-back" href="../../api/pywws.toservice.html#pywws.toservice.ToService.translate_data">[docs]</a>    <span class="k">def</span> <span class="nf">translate_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">current</span><span class="p">,</span> <span class="n">fixed_data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Convert a weather data record to an upload string.</span>
+
+<span class="sd">        The :obj:`current` parameter contains the data to be uploaded.</span>
+<span class="sd">        It should be a &#39;calibrated&#39; data record, as stored in</span>
+<span class="sd">        :class:`pywws.DataStore.calib_store`.</span>
+
+<span class="sd">        The :obj:`fixed_data` parameter contains unvarying data that</span>
+<span class="sd">        is site dependent, for example an ID code and authentication</span>
+<span class="sd">        data.</span>
+
+<span class="sd">        :param current: the weather data record.</span>
+
+<span class="sd">        :type current: dict</span>
+
+<span class="sd">        :param fixed_data: unvarying upload data.</span>
+
+<span class="sd">        :type fixed_data: dict</span>
+
+<span class="sd">        :return: an encoded string, or :obj:`None` if invalid data.</span>
+
+<span class="sd">        :rtype: string</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># check we have enough data</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">current</span><span class="p">[</span><span class="s">&#39;temp_out&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span>
+            <span class="n">current</span><span class="p">[</span><span class="s">&#39;hum_out&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">None</span>
+        <span class="c"># get rain data for 1 hr ago and local midnight</span>
+        <span class="n">rain_hour</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">nearest</span><span class="p">(</span><span class="n">current</span><span class="p">[</span><span class="s">&#39;idx&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">HOUR</span><span class="p">)][</span><span class="s">&#39;rain&#39;</span><span class="p">]</span>
+        <span class="k">while</span> <span class="n">current</span><span class="p">[</span><span class="s">&#39;idx&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">midnight</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">midnight</span> <span class="o">-=</span> <span class="n">DAY</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rain_midnight</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">while</span> <span class="n">current</span><span class="p">[</span><span class="s">&#39;idx&#39;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">midnight</span> <span class="o">+</span> <span class="n">DAY</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">midnight</span> <span class="o">+=</span> <span class="n">DAY</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rain_midnight</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rain_midnight</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rain_midnight</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">nearest</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">midnight</span><span class="p">)][</span><span class="s">&#39;rain&#39;</span><span class="p">]</span>
+        <span class="c"># create weather underground command</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">fixed_data</span><span class="p">)</span>
+        <span class="n">result</span><span class="p">[</span><span class="s">&#39;dateutc&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">current</span><span class="p">[</span><span class="s">&#39;idx&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(</span><span class="s">&#39; &#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">current</span><span class="p">[</span><span class="s">&#39;wind_dir&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">result</span><span class="p">[</span><span class="s">&#39;winddir&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%.0f</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">current</span><span class="p">[</span><span class="s">&#39;wind_dir&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="mf">22.5</span><span class="p">)</span>
+        <span class="n">result</span><span class="p">[</span><span class="s">&#39;tempf&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%.1f</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">conversions</span><span class="o">.</span><span class="n">temp_f</span><span class="p">(</span><span class="n">current</span><span class="p">[</span><span class="s">&#39;temp_out&#39;</span><span class="p">]))</span>
+        <span class="n">result</span><span class="p">[</span><span class="s">&#39;dewptf&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%.1f</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span>
+            <span class="n">conversions</span><span class="o">.</span><span class="n">temp_f</span><span class="p">(</span>
+                <span class="n">dew_point</span><span class="p">(</span><span class="n">current</span><span class="p">[</span><span class="s">&#39;temp_out&#39;</span><span class="p">],</span> <span class="n">current</span><span class="p">[</span><span class="s">&#39;hum_out&#39;</span><span class="p">])))</span>
+        <span class="n">result</span><span class="p">[</span><span class="s">&#39;humidity&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%d</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">current</span><span class="p">[</span><span class="s">&#39;hum_out&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">current</span><span class="p">[</span><span class="s">&#39;wind_ave&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">result</span><span class="p">[</span><span class="s">&#39;windspeedmph&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%.2f</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span>
+                <span class="n">conversions</span><span class="o">.</span><span class="n">wind_mph</span><span class="p">(</span><span class="n">current</span><span class="p">[</span><span class="s">&#39;wind_ave&#39;</span><span class="p">]))</span>
+        <span class="k">if</span> <span class="n">current</span><span class="p">[</span><span class="s">&#39;wind_gust&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">result</span><span class="p">[</span><span class="s">&#39;windgustmph&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%.2f</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span>
+                <span class="n">conversions</span><span class="o">.</span><span class="n">wind_mph</span><span class="p">(</span><span class="n">current</span><span class="p">[</span><span class="s">&#39;wind_gust&#39;</span><span class="p">]))</span>
+        <span class="n">result</span><span class="p">[</span><span class="s">&#39;rainin&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%g</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span>
+            <span class="n">conversions</span><span class="o">.</span><span class="n">rain_inch</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">current</span><span class="p">[</span><span class="s">&#39;rain&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">rain_hour</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)))</span>
+        <span class="n">result</span><span class="p">[</span><span class="s">&#39;dailyrainin&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%g</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span>
+            <span class="n">conversions</span><span class="o">.</span><span class="n">rain_inch</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">current</span><span class="p">[</span><span class="s">&#39;rain&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">rain_midnight</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)))</span>
+        <span class="k">if</span> <span class="n">current</span><span class="p">[</span><span class="s">&#39;rel_pressure&#39;</span><span class="p">]:</span>
+            <span class="n">result</span><span class="p">[</span><span class="s">&#39;baromin&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%.4f</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span>
+                <span class="n">conversions</span><span class="o">.</span><span class="n">pressure_inhg</span><span class="p">(</span><span class="n">current</span><span class="p">[</span><span class="s">&#39;rel_pressure&#39;</span><span class="p">]))</span>
+        <span class="k">return</span> <span class="n">urllib</span><span class="o">.</span><span class="n">urlencode</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="ToService.send_data"><a class="viewcode-back" href="../../api/pywws.toservice.html#pywws.toservice.ToService.send_data">[docs]</a>    <span class="k">def</span> <span class="nf">send_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">server</span><span class="p">,</span> <span class="n">fixed_data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Upload a weather data record.</span>
+
+<span class="sd">        The :obj:`data` parameter contains the data to be uploaded.</span>
+<span class="sd">        It should be a &#39;calibrated&#39; data record, as stored in</span>
+<span class="sd">        :class:`pywws.DataStore.calib_store`.</span>
+
+<span class="sd">        The :obj:`fixed_data` parameter contains unvarying data that</span>
+<span class="sd">        is site dependent, for example an ID code and authentication</span>
+<span class="sd">        data.</span>
+
+<span class="sd">        :param data: the weather data record.</span>
+
+<span class="sd">        :type data: dict</span>
+
+<span class="sd">        :param server: web address to upload to.</span>
+
+<span class="sd">        :type server: string</span>
+
+<span class="sd">        :param fixed_data: unvarying upload data.</span>
+
+<span class="sd">        :type fixed_data: dict</span>
+
+<span class="sd">        :return: success status</span>
+
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">coded_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">translate_data</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">fixed_data</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">coded_data</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">coded_data</span><span class="p">)</span>
+        <span class="c"># have three tries before giving up</span>
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">wudata</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">server</span><span class="p">,</span> <span class="n">coded_data</span><span class="p">)</span>
+                <span class="n">response</span> <span class="o">=</span> <span class="n">wudata</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+                <span class="n">wudata</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">response</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">old_response</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">response</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">old_response</span> <span class="o">=</span> <span class="n">response</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">response</span><span class="p">:</span>
+                    <span class="c"># Met office returns empty array on success</span>
+                    <span class="k">return</span> <span class="bp">True</span>
+                <span class="k">if</span> <span class="n">response</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;success</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">:</span>
+                    <span class="c"># Weather Underground returns &#39;success&#39; string</span>
+                    <span class="k">return</span> <span class="bp">True</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">,</span> <span class="n">ex</span><span class="p">:</span>
+                <span class="n">e</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">ex</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">e</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">old_ex</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">old_ex</span> <span class="o">=</span> <span class="n">e</span>
+        <span class="k">return</span> <span class="bp">False</span>
+</div>
+<div class="viewcode-block" id="ToService.upload"><a class="viewcode-back" href="../../api/pywws.toservice.html#pywws.toservice.ToService.upload">[docs]</a>    <span class="k">def</span> <span class="nf">upload</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">server</span><span class="p">,</span> <span class="n">fixed_data</span><span class="p">,</span> <span class="n">catchup</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Upload one or more weather data records.</span>
+
+<span class="sd">        This method uploads either the most recent weather data</span>
+<span class="sd">        record, or all records since the last upload (up to 7 days),</span>
+<span class="sd">        according to the value of :obj:`catchup`.</span>
+
+<span class="sd">        It sets the ``last update`` configuration value to the time</span>
+<span class="sd">        stamp of the most recent record successfully uploaded.</span>
+
+<span class="sd">        The :obj:`fixed_data` parameter contains unvarying data that</span>
+<span class="sd">        is site dependent, for example an ID code and authentication</span>
+<span class="sd">        data.</span>
+
+<span class="sd">        :param server: web address to upload to.</span>
+
+<span class="sd">        :type server: string</span>
+
+<span class="sd">        :param fixed_data: unvarying upload data.</span>
+
+<span class="sd">        :type fixed_data: dict</span>
+
+<span class="sd">        :param catchup: upload all data since last upload.</span>
+
+<span class="sd">        :type catchup: bool</span>
+
+<span class="sd">        :return: success status</span>
+
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">catchup</span><span class="p">:</span>
+            <span class="n">last_update</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">get_datetime</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">config_section</span><span class="p">,</span> <span class="s">&#39;last update&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">last_update</span><span class="p">:</span>
+                <span class="c"># upload all data since last time</span>
+                <span class="n">start</span> <span class="o">=</span> <span class="n">last_update</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">minutes</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c"># upload one week&#39;s data</span>
+                <span class="n">start</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()</span> <span class="o">-</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">7</span><span class="p">)</span>
+            <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">start</span><span class="p">:]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">send_data</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">server</span><span class="p">,</span> <span class="n">fixed_data</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="bp">False</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">set</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">config_section</span><span class="p">,</span> <span class="s">&#39;last update&#39;</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;idx&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(</span><span class="s">&#39; &#39;</span><span class="p">))</span>
+                <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">count</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%d</span><span class="s"> records sent&#39;</span><span class="p">,</span> <span class="n">count</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c"># upload most recent data</span>
+            <span class="n">last_update</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">before</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">max</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">send_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">last_update</span><span class="p">],</span> <span class="n">server</span><span class="p">,</span> <span class="n">fixed_data</span><span class="p">):</span>
+                <span class="k">return</span> <span class="bp">False</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">set</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">config_section</span><span class="p">,</span> <span class="s">&#39;last update&#39;</span><span class="p">,</span> <span class="n">last_update</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(</span><span class="s">&#39; &#39;</span><span class="p">))</span>
+        <span class="k">return</span> <span class="bp">True</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">pywws v11.10 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Jim Easterbrook.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.1.
+    </div>
+  </body>
+</html>

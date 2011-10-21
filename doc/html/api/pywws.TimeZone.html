@@ -22,6 +22,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../_static/pywws_logo.ico"/>
     <link rel="top" title="pywws v11.10 documentation" href="../index.html" />
     <link rel="up" title="Python programs and modules" href="index.html" />
     <link rel="next" title="pywws.Localisation" href="pywws.Localisation.html" />
@@ -81,33 +82,12 @@ time and UTC.</p>
 </tbody>
 </table>
 <dl class="class">
-<dt id="pywws.TimeZone.LocalTimezone">
-<em class="property">class </em><tt class="descclassname">pywws.TimeZone.</tt><tt class="descname">LocalTimezone</tt><a class="reference internal" href="../_modules/pywws/TimeZone.html#LocalTimezone"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.TimeZone.LocalTimezone" title="Permalink to this definition">¶</a></dt>
-<dd><p>Local time</p>
-<dl class="method">
-<dt id="pywws.TimeZone.LocalTimezone.dst">
-<tt class="descname">dst</tt><big>(</big><em>dt</em><big>)</big><a class="reference internal" href="../_modules/pywws/TimeZone.html#LocalTimezone.dst"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.TimeZone.LocalTimezone.dst" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pywws.TimeZone.LocalTimezone.tzname">
-<tt class="descname">tzname</tt><big>(</big><em>dt</em><big>)</big><a class="reference internal" href="../_modules/pywws/TimeZone.html#LocalTimezone.tzname"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.TimeZone.LocalTimezone.tzname" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pywws.TimeZone.LocalTimezone.utcoffset">
-<tt class="descname">utcoffset</tt><big>(</big><em>dt</em><big>)</big><a class="reference internal" href="../_modules/pywws/TimeZone.html#LocalTimezone.utcoffset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.TimeZone.LocalTimezone.utcoffset" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="class">
 <dt id="pywws.TimeZone.UTC">
 <em class="property">class </em><tt class="descclassname">pywws.TimeZone.</tt><tt class="descname">UTC</tt><a class="reference internal" href="../_modules/pywws/TimeZone.html#UTC"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.TimeZone.UTC" title="Permalink to this definition">¶</a></dt>
 <dd><p>UTC</p>
 <dl class="method">
-<dt id="pywws.TimeZone.UTC.dst">
-<tt class="descname">dst</tt><big>(</big><em>dt</em><big>)</big><a class="reference internal" href="../_modules/pywws/TimeZone.html#UTC.dst"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.TimeZone.UTC.dst" title="Permalink to this definition">¶</a></dt>
+<dt id="pywws.TimeZone.UTC.utcoffset">
+<tt class="descname">utcoffset</tt><big>(</big><em>dt</em><big>)</big><a class="reference internal" href="../_modules/pywws/TimeZone.html#UTC.utcoffset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.TimeZone.UTC.utcoffset" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -116,8 +96,29 @@ time and UTC.</p>
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="pywws.TimeZone.UTC.utcoffset">
-<tt class="descname">utcoffset</tt><big>(</big><em>dt</em><big>)</big><a class="reference internal" href="../_modules/pywws/TimeZone.html#UTC.utcoffset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.TimeZone.UTC.utcoffset" title="Permalink to this definition">¶</a></dt>
+<dt id="pywws.TimeZone.UTC.dst">
+<tt class="descname">dst</tt><big>(</big><em>dt</em><big>)</big><a class="reference internal" href="../_modules/pywws/TimeZone.html#UTC.dst"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.TimeZone.UTC.dst" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pywws.TimeZone.LocalTimezone">
+<em class="property">class </em><tt class="descclassname">pywws.TimeZone.</tt><tt class="descname">LocalTimezone</tt><a class="reference internal" href="../_modules/pywws/TimeZone.html#LocalTimezone"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.TimeZone.LocalTimezone" title="Permalink to this definition">¶</a></dt>
+<dd><p>Local time</p>
+<dl class="method">
+<dt id="pywws.TimeZone.LocalTimezone.utcoffset">
+<tt class="descname">utcoffset</tt><big>(</big><em>dt</em><big>)</big><a class="reference internal" href="../_modules/pywws/TimeZone.html#LocalTimezone.utcoffset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.TimeZone.LocalTimezone.utcoffset" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pywws.TimeZone.LocalTimezone.dst">
+<tt class="descname">dst</tt><big>(</big><em>dt</em><big>)</big><a class="reference internal" href="../_modules/pywws/TimeZone.html#LocalTimezone.dst"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.TimeZone.LocalTimezone.dst" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pywws.TimeZone.LocalTimezone.tzname">
+<tt class="descname">tzname</tt><big>(</big><em>dt</em><big>)</big><a class="reference internal" href="../_modules/pywws/TimeZone.html#LocalTimezone.tzname"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.TimeZone.LocalTimezone.tzname" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>

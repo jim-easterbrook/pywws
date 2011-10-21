@@ -35,7 +35,7 @@ Contents:
 | ``pywws.Pr | Generate hourly, daily & monthly summaries of raw weather station data.                    |
 | ocess``    |                                                                                            |
 +------------+--------------------------------------------------------------------------------------------+
-| ``pywws.ca | Calibrate raw weather station data.                                                        |
+| ``pywws.ca | Calibrate raw weather station data                                                         |
 | lib``      |                                                                                            |
 +------------+--------------------------------------------------------------------------------------------+
 | ``pywws.Pl | Plot graphs of weather data according to an XML recipe.                                    |
@@ -60,14 +60,21 @@ Contents:
 | ``pywws.To | Post a message to Twitter.                                                                 |
 | Twitter``  |                                                                                            |
 +------------+--------------------------------------------------------------------------------------------+
+| ``pywws.To | Post weather update to WOW from the Met Office UK.                                         |
+| MetOffice` |                                                                                            |
+| `          |                                                                                            |
++------------+--------------------------------------------------------------------------------------------+
 | ``pywws.To | Post weather update to WeatherUnderground.                                                 |
 | Undergroun |                                                                                            |
 | d``        |                                                                                            |
 +------------+--------------------------------------------------------------------------------------------+
+| ``pywws.to | Base class for Weather Underground and UK Met Office uploaders.                            |
+| service``  |                                                                                            |
++------------+--------------------------------------------------------------------------------------------+
 | ``pywws.Yo | Generate YoWindow XML file.                                                                |
 | Window``   |                                                                                            |
 +------------+--------------------------------------------------------------------------------------------+
-| ``pywws.We | WeatherStation.py - get data from WH1080/WH3080 compatible weather stations                |
+| ``pywws.We | Get data from WH1080/WH3080 compatible weather stations.                                   |
 | atherStati |                                                                                            |
 | on``       |                                                                                            |
 +------------+--------------------------------------------------------------------------------------------+
@@ -77,11 +84,11 @@ Contents:
 | ``pywws.Ti | Provide a couple of datetime.tzinfo() objects representing local                           |
 | meZone``   |                                                                                            |
 +------------+--------------------------------------------------------------------------------------------+
-| ``pywws.Lo | Localisation.py - provide translations of strings into local language                      |
+| ``pywws.Lo | Localisation.py - provide translations of strings into local                               |
 | calisation |                                                                                            |
 | ``         |                                                                                            |
 +------------+--------------------------------------------------------------------------------------------+
-| ``pywws.ca | Calibrate raw weather station data.                                                        |
+| ``pywws.ca | Calibrate raw weather station data                                                         |
 | lib``      |                                                                                            |
 +------------+--------------------------------------------------------------------------------------------+
 | ``pywws.co | A set of functions to convert pywws native units (Centigrade, mm, m/s, hPa) to             |
@@ -113,6 +120,8 @@ Contents:
   * Introduction
   * Detailed API
 * pywws.calib
+  * Calibrate raw weather station data
+    * Writing your calibration module
 * pywws.Plot
   * Introduction
     * XML graph file syntax
@@ -187,7 +196,9 @@ Contents:
 * pywws.ToTwitter
   * Introduction
   * Detailed API
+* pywws.ToMetOffice
 * pywws.ToUnderground
+* pywws.toservice
 * pywws.YoWindow
 * pywws.WeatherStation
   * Introduction
@@ -200,9 +211,10 @@ Contents:
   * Detailed API
 * pywws.Localisation
   * Introduction
-  * Creating a new translation
   * Using a different language
-  * Detailed API
+  * Creating a new translation
 * pywws.calib
+  * Calibrate raw weather station data
+    * Writing your calibration module
 * pywws.conversions
 * pywws.Logger

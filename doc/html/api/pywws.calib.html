@@ -22,6 +22,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../_static/pywws_logo.ico"/>
     <link rel="top" title="pywws v11.10 documentation" href="../index.html" />
     <link rel="up" title="Python programs and modules" href="index.html" />
     <link rel="next" title="pywws.conversions" href="pywws.conversions.html" />
@@ -132,18 +133,6 @@ end of the file name.</p>
 </tbody>
 </table>
 <dl class="class">
-<dt id="pywws.calib.Calib">
-<em class="property">class </em><tt class="descclassname">pywws.calib.</tt><tt class="descname">Calib</tt><big>(</big><em>params</em><big>)</big><a class="reference internal" href="../_modules/pywws/calib.html#Calib"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.calib.Calib" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calibration class that implements default or user calibration.</p>
-<p>Other pywws modules use this method to create a calibration
-object. The constructor creates either a default calibration
-object or a user calibration object, depending on the
-<tt class="docutils literal"><span class="pre">user_calib</span></tt> value in the <tt class="docutils literal"><span class="pre">[paths]</span></tt> section of the <tt class="docutils literal"><span class="pre">params</span></tt>
-parameter. It then adopts the calibration object&#8217;s
-<tt class="xref py py-meth docutils literal"><span class="pre">calib()</span></tt> method as its own.</p>
-</dd></dl>
-
-<dl class="class">
 <dt id="pywws.calib.DefaultCalib">
 <em class="property">class </em><tt class="descclassname">pywws.calib.</tt><tt class="descname">DefaultCalib</tt><big>(</big><em>params</em><big>)</big><a class="reference internal" href="../_modules/pywws/calib.html#DefaultCalib"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.calib.DefaultCalib" title="Permalink to this definition">¶</a></dt>
 <dd><p>Default calibration class.</p>
@@ -155,6 +144,18 @@ value. This is the bare minimum &#8216;calibration&#8217; required.</p>
 <tt class="descname">calib</tt><big>(</big><em>raw</em><big>)</big><a class="reference internal" href="../_modules/pywws/calib.html#DefaultCalib.calib"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.calib.DefaultCalib.calib" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+</dd></dl>
+
+<dl class="class">
+<dt id="pywws.calib.Calib">
+<em class="property">class </em><tt class="descclassname">pywws.calib.</tt><tt class="descname">Calib</tt><big>(</big><em>params</em><big>)</big><a class="reference internal" href="../_modules/pywws/calib.html#Calib"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.calib.Calib" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calibration class that implements default or user calibration.</p>
+<p>Other pywws modules use this method to create a calibration
+object. The constructor creates either a default calibration
+object or a user calibration object, depending on the
+<tt class="docutils literal"><span class="pre">user_calib</span></tt> value in the <tt class="docutils literal"><span class="pre">[paths]</span></tt> section of the <tt class="docutils literal"><span class="pre">params</span></tt>
+parameter. It then adopts the calibration object&#8217;s
+<tt class="xref py py-meth docutils literal"><span class="pre">calib()</span></tt> method as its own.</p>
 </dd></dl>
 
 </div>
