@@ -8,10 +8,16 @@ endif
 
 all : doc lang pywws/version.py README.txt
 
-.PHONY : doc
+.PHONY : doc clean
 
 doc :
 	cd doc_src && $(MAKE) html text
+
+clean :
+	find doc -name "*.html" -delete
+	find doc -name "*.txt" -delete
+	rm -f doc/html/.buildinfo doc/html/objects.inv doc/html/searchindex.js
+	rm -Rf doc/doctrees
 
 README.txt : doc/text/essentials/README.txt
 	cp -p $< $@
