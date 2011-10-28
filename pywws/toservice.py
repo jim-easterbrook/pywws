@@ -53,7 +53,7 @@ class ToService(object):
         self.rain_midnight = None
 
     def translate_data(self, current, fixed_data):
-        """Convert a weather data record to an upload string.
+        """Convert a weather data record to upload format.
 
         The :obj:`current` parameter contains the data to be uploaded.
         It should be a 'calibrated' data record, as stored in
@@ -71,14 +71,13 @@ class ToService(object):
 
         :type fixed_data: dict
 
-        :return: an encoded string, or :obj:`None` if invalid data.
+        :return: converted data, or :obj:`None` if invalid data.
 
-        :rtype: string
+        :rtype: dict(string)
         
         """
         # check we have enough data
-        if (current['temp_out'] is None or
-            current['hum_out'] is None):
+        if current['temp_out'] is None or current['hum_out'] is None:
             return None
         # get rain data for 1 hr ago and local midnight
         rain_hour = self.data[self.data.nearest(current['idx'] - HOUR)]['rain']
@@ -90,7 +89,7 @@ class ToService(object):
             self.rain_midnight = None
         if self.rain_midnight is None:
             self.rain_midnight = self.data[self.data.nearest(self.midnight)]['rain']
-        # create weather underground command
+        # convert data
         result = dict(fixed_data)
         result['dateutc'] = current['idx'].isoformat(' ')
         if current['wind_dir'] is not None:
@@ -113,7 +112,7 @@ class ToService(object):
         if current['rel_pressure']:
             result['baromin'] = '%.4f' % (
                 conversions.pressure_inhg(current['rel_pressure']))
-        return urllib.urlencode(result)
+        return result
 
     def send_data(self, data, server, fixed_data):
         """Upload a weather data record.
@@ -146,6 +145,7 @@ class ToService(object):
         coded_data = self.translate_data(data, fixed_data)
         if not coded_data:
             return True
+        coded_data = urllib.urlencode(coded_data)
         self.logger.debug(coded_data)
         # have three tries before giving up
         for n in range(3):

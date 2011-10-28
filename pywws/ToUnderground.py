@@ -131,6 +131,40 @@ class ToUnderground(toservice.ToService):
         self.fixed_data_rf['realtime'] = '1'
         self.fixed_data_rf['rtfreq'] = '48'
 
+    def translate_data(self, current, fixed_data):
+        """Convert a weather data record to upload format.
+
+        The :obj:`current` parameter contains the data to be uploaded.
+        It should be a 'calibrated' data record, as stored in
+        :class:`pywws.DataStore.calib_store`.
+
+        The :obj:`fixed_data` parameter contains unvarying data that
+        is site dependent, for example an ID code and authentication
+        data.
+
+        :param current: the weather data record.
+
+        :type current: dict
+
+        :param fixed_data: unvarying upload data.
+
+        :type fixed_data: dict
+
+        :return: converted data, or :obj:`None` if invalid data.
+
+        :rtype: dict(string)
+        
+        """
+        result = toservice.ToService.translate_data(self, current, fixed_data)
+        if result and current.has_key('uv'):
+            if current['uv'] is not None:
+                result['UV'] = '%d' % (current['uv'])
+            if current['illuminance'] is not None:
+                # approximate conversion from lux to W/m2
+                result['solarradiation'] = '%.2f' % (
+                    current['illuminance'] * 0.005)
+        return result
+
     def Upload(self, catchup):
         """Upload one or more weather data records.
 
