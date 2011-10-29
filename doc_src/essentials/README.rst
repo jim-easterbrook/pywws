@@ -93,6 +93,10 @@ Getting started:
 
    Note: steps 2..4 may require installation of other software on some
    platforms, and you might have to compile / build some packages.
+#. Change your current directory to your pywws installation directory, for example::
+
+     cd ${HOME}/weather/pywws-11.10_r429
+
 #. Run TestWeatherStation.py::
 
      python TestWeatherStation.py
