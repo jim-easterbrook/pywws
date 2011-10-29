@@ -119,13 +119,13 @@ class Template(object):
                             yield command[2]
                     elif isinstance(x, datetime):
                         yield x.strftime(fmt)
+                    elif sys.version_info < (2, 5):
+                        yield fmt % (x)
+                    elif sys.version_info < (2, 7) and '%%' in fmt:
+                        yield locale.format_string(
+                            fmt.replace('%%', '##'), x).replace('##', '%')
                     else:
-                        if '%%' in fmt:
-                            # get round bug in Python versions < 2.7
-                            yield locale.format_string(
-                                fmt.replace('%%', '##'), x).replace('##', '%')
-                        else:
-                            yield locale.format_string(fmt, x)
+                        yield locale.format_string(fmt, x)
                 elif command[0] == 'monthly':
                     data_set = self.monthly_data
                     idx, valid_data = jump(datetime.max, -1)
