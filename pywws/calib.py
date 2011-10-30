@@ -115,7 +115,7 @@ class Calib(object):
                 sys.path.insert(0, path)
                 module = os.path.splitext(module)[0]
                 usercalib = __import__(
-                    module, globals(), locals(), ['Calib'], -1)
+                    module, globals(), locals(), ['Calib'])
             self.calibrator = usercalib.Calib(params)
         else:
             self.logger.info('Using default calibration')
