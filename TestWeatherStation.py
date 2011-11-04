@@ -109,10 +109,10 @@ def main(argv=None):
                     if 'bit' in b:
                         print k, b, bits[b]
     if history_count > 0:
-        lo_fix = ws.get_lo_fix_block()
+        fixed_block = ws.get_fixed_block()
         print "Recent history"
-        ptr = lo_fix['current_pos']
-        date = safestrptime(lo_fix['date_time'], '%Y-%m-%d %H:%M')
+        ptr = fixed_block['current_pos']
+        date = safestrptime(fixed_block['date_time'], '%Y-%m-%d %H:%M')
         for i in range(history_count):
             if decode:
                 data = ws.get_data(ptr)
@@ -130,4 +130,7 @@ def main(argv=None):
     del ws
     return 0
 if __name__ == "__main__":
-    sys.exit(main())
+    try:
+        sys.exit(main())
+    except KeyboardInterrupt:
+        pass
