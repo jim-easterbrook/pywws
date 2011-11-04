@@ -155,7 +155,7 @@ class ToService(object):
                 wudata.close()
                 if response != self.old_response:
                     for line in response:
-                        self.logger.error(line)
+                        self.logger.error(line.strip())
                     self.old_response = response
                 if not response:
                     # Met office returns empty array on success
