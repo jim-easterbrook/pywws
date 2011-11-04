@@ -102,9 +102,14 @@ def LiveLog(data_dir):
                 max_count = fixed_block['data_count'] - 1
                 while last_date > last_stored and count < max_count:
                     data = ws.get_data(last_ptr)
-                    raw_data[last_date] = data
-                    count += 1
-                    last_date -= timedelta(minutes=data['delay'])
+                    if data['delay'] is None or data['delay'] > 30:
+                        logger.error('invalid data at %04x, %s',
+                                     last_ptr, last_date.isoformat(' '))
+                        last_date -= timedelta(minutes=fixed_block['read_period'])
+                    else:
+                        raw_data[last_date] = data
+                        count += 1
+                        last_date -= timedelta(minutes=data['delay'])
                     last_ptr = ws.dec_ptr(last_ptr)
             last_stored = now + two_minutes
             if count > 1:
