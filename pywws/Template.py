@@ -52,7 +52,11 @@ class Template(object):
             return idx, count == 0
         params = self.params
         if not live_data:
-            live_data = self.calib_data[self.calib_data.before(datetime.max)]
+            idx = self.calib_data.before(datetime.max)
+            if not idx:
+                self.logger.error("No calib data - run Process.py first")
+                return
+            live_data = self.calib_data[idx]
         pressure_trend_text = WeatherStation.pressure_trend_text
         wind_dir_text = WeatherStation.get_wind_dir_text()
         dew_point = WeatherStation.dew_point
