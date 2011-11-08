@@ -81,6 +81,8 @@ unset border
             if not eval(xcalc):
                 continue
             value = eval(ycalc)
+            if value is None:
+                continue
             for t in range(len(thresh)):
                 if value <= thresh[t]:
                     histograms[t][wind_dir] += 1
