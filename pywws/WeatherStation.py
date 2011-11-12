@@ -6,7 +6,7 @@ and other sources.
 
 """
 
-__docformat__ = "restructuredtext"
+__docformat__ = "restructuredtext en"
 
 from datetime import datetime
 import logging
@@ -201,6 +201,7 @@ def _decode(raw, format):
         if scale and result:
             result = float(result) * scale
     return result
+
 def findDevice(idVendor, idProduct):
     """Find a USB device by product and vendor id."""
     for bus in usb.busses():
@@ -209,45 +210,202 @@ def findDevice(idVendor, idProduct):
                 return device
     return None
 
+class CUSBDrive(object):
+    """Low level interface to weather station via USB.
+
+    Loosely modeled on a C++ class obtained from
+    http://site.ambientweatherstore.com/easyweather/ws_1080_2080_protocol.zip.
+    I don't know the provenance of this, but it looks as if it may
+    have come from the manufacturer.
+
+    """
+    EndMark          = 0x20
+    ReadCommand      = 0xA1
+    WriteCommand     = 0xA0
+    WriteCommandWord = 0xA2
+
+    def __init__(self):
+        self.logger = logging.getLogger('pywws.WeatherStation.CUSBDrive')
+        self.devh = self._open()
+
+    def __del__(self):
+        if self.devh:
+            try:
+                self.devh.releaseInterface()
+            except usb.USBError:
+                # interface was not claimed. No problem
+                pass
+
+    def _reset_device(self):
+        self.devh.reset()
+        self.devh = self._open()
+
+    def _reset_end_point(self):
+        self.devh.clearHalt(0x81)
+
+    def _open(self):
+        """Open connection to weather station.
+
+        This method searches the connected USB devices for one with
+        the correct product and vendor ID, then opens a connection to
+        the device and claims the interface.
+
+        :return: the weather station device handle.
+        
+        """
+        dev = findDevice(0x1941, 0x8021)
+        if not dev:
+            raise IOError("Weather station device not found")
+        devh = dev.open()
+        if not devh:
+            raise IOError("Open device failed")
+##        if platform.system() is 'Windows':
+##            devh.setConfiguration(1)
+        try:
+            devh.claimInterface(0)
+        except usb.USBError:
+            # claim interface failed, try detaching kernel driver first
+            if not hasattr(devh, 'detachKernelDriver'):
+                raise RuntimeError(
+                    "Please upgrade pyusb (or python-usb) to 0.4 or higher")
+            try:
+                devh.detachKernelDriver(0)
+                devh.claimInterface(0)
+            except usb.USBError:
+                raise IOError("Claim interface failed")
+        return devh
+
+    def _read_data(self):
+        """Receive 8 bytes from the device.
+
+        If the read fails for any reason, :obj:`None` is returned.
+
+        :return: the data received.
+
+        :rtype: list(int)
+
+        """
+        try:
+            result = self.devh.interruptRead(0x81, 8, 1200)
+        except usb.USBError, ex:
+            self.logger.exception(ex)
+            if ex.args != ('No error',):
+                raise
+            result = None
+        if result is None or len(result) < 8:
+            self.logger.error('_read_data failed')
+            return None
+        return result
+
+    def _write_data(self, buf):
+        """Send 8 bytes to the device.
+
+        :param buf: the data to send.
+
+        :type buf: list(int)
+
+        :return: success status.
+
+        :rtype: bool
+
+        """
+        result = self.devh.controlMsg(
+            usb.ENDPOINT_OUT + usb.TYPE_CLASS + usb.RECIP_INTERFACE,
+            usb.REQ_SET_CONFIGURATION, buf, value=0x200, timeout=50)
+        if result != 8:
+            self.logger.error('_write_data failed')
+            return False
+        return True
+
+    def read_data(self, address):
+        """Read 32 bytes from the weather station.
+
+        If the read fails for any reason, :obj:`None` is returned.
+
+        :param address: address to read from.
+
+        :type address: int
+
+        :return: the data from the weather station.
+
+        :rtype: list(int)
+
+        """
+        if not self.devh:
+            self.devh = self._open()
+            if not self.devh:
+                return None
+        buf = [
+            self.ReadCommand,
+            address / 256,
+            address % 256,
+            self.EndMark,
+            self.ReadCommand,
+            address / 256,
+            address % 256,
+            self.EndMark,
+            ]
+        if not self._write_data(buf):
+            self._reset_end_point()
+            return None
+        result = list()
+        for i in range(4):
+            buf = self._read_data()
+            if buf is None:
+                self._reset_end_point()
+                return None
+            result += buf
+        return result
+
+    def write_data(self, address, data):
+        """Write a single byte to the weather station.
+
+        :param address: address to write to.
+
+        :type address: int
+
+        :param data: the value to write.
+
+        :type data: int
+
+        :return: success status.
+
+        :rtype: bool
+
+        """
+        if not self.devh:
+            self.devh = self._open()
+            if not self.devh:
+                return None
+        buf = [
+            self.WriteCommandWord,
+            address / 256,
+            address % 256,
+            self.EndMark,
+            self.WriteCommandWord,
+            data,
+            0,
+            self.EndMark,
+            ]
+        if not self._write_data(buf):
+            self._reset_end_point()
+            return False
+        buf = self._read_data()
+        if buf is None:
+            self._reset_end_point()
+            return False
+        for byte in buf:
+            if byte != 0xA5:
+                return False
+        return True
+
 class weather_station(object):
     """Class that represents the weather station to user program."""
     def __init__(self, ws_type='1080'):
         """Connect to weather station and prepare to read data."""
         self.logger = logging.getLogger('pywws.weather_station')
-        self.devh = None
-        # _open_readw
-        dev = findDevice(0x1941, 0x8021)
-        if not dev:
-            raise IOError("Weather station device not found")
-        self.devh = dev.open()
-        if not self.devh:
-            raise IOError("Open device failed")
-        if platform.system() is 'Windows':
-            self.devh.setConfiguration(1)
-        try:
-            self.devh.claimInterface(0)
-        except usb.USBError:
-            # claim interface failed, try detaching kernel driver first
-            if not hasattr(self.devh, 'detachKernelDriver'):
-                raise RuntimeError(
-                    "Please upgrade pyusb (or python-usb) to 0.4 or higher")
-            try:
-                self.devh.detachKernelDriver(0)
-                self.devh.claimInterface(0)
-            except usb.USBError:
-                raise IOError("Claim interface failed")
-        self.devh.setAltInterface(0)
-        # _init_wread
-        tbuf = self.devh.getDescriptor(1, 0, 0x12)
-        tbuf = self.devh.getDescriptor(2, 0, 0x09)
-        tbuf = self.devh.getDescriptor(2, 0, 0x22)
-        self.devh.releaseInterface()
-        self.devh.setConfiguration(1)
-        self.devh.claimInterface(0)
-        self.devh.setAltInterface(0)
-        self.devh.controlMsg(usb.TYPE_CLASS + usb.RECIP_INTERFACE,
-                             0xA, 0, timeout=1000)
-        tbuf = self.devh.getDescriptor(0x22, 0, 0x74)
+        # create basic IO object
+        self.cusb = CUSBDrive()
         # init variables
         self._fixed_block = None
         self._data_block = None
@@ -262,96 +420,79 @@ class weather_station(object):
             if self.ws_type != '1080':
                 self.logger.warning('type change %s -> %s', self.ws_type, '1080')
                 self.ws_type = '1080'
-    def __del__(self):
-        """Disconnect from weather station."""
-        if self.devh:
-            try:
-                self.devh.releaseInterface()
-            except usb.USBError:
-                # interface was not claimed. No problem
-                pass
-        self.devh = None
     def live_data(self):
-        # There are two things we want to synchronise to - the data is updated every
-        # 48 seconds and the address is incremented every 5 minutes (or 10, 15, ...,
-        # 30). Rather than getting data every second, we sleep until one of the above
-        # is due. (During initialisation we get data every second anyway.)
+        # There are two things we want to synchronise to - the data is
+        # updated every 48 seconds and the address is incremented
+        # every 5 minutes (or 10, 15, ..., 30). Rather than getting
+        # data every second or two, we sleep until one of the above is
+        # due. (During initialisation we get data every two seconds
+        # anyway.)
         read_period = self.get_fixed_block(['read_period'])
         log_interval = float(read_period * 60)
         live_interval = 48.0
         old_ptr = self.current_pos()
         old_data = self.get_data(old_ptr, unbuffered=True)
-        ptr_changed = False
         now = time.time()
         next_log = None
         next_live = None
         live_overdue = now + 3600.0
+        no_op_count = 0
         while True:
             # wake up just before next reading is due
             if not next_live:
                 pause = 0.0
             elif next_log:
-                pause = (min(next_log, next_live) - 2) - time.time()
+                pause = min(next_log - 4.0, next_live - 2.0) - time.time()
             elif old_data['delay'] < read_period - 1:
-                pause = (next_live - 2) - time.time()
+                pause = (next_live - 2.0) - time.time()
             else:
                 pause = 0.0
-            time.sleep(max(pause, 1.0))
-            # When the pointer changes, the data is updated first. Getting the data
-            # after getting the pointer makes sure that when we detect a pointer
-            # change the data is correct.
-            new_ptr = self.current_pos()
+            time.sleep(max(pause, 2.0))
             new_data = self.get_data(old_ptr, unbuffered=True)
             now = time.time()
-            if ptr_changed and (new_data['delay'] == None or
-                                new_data['delay'] >= read_period):
-                # picked up old data from new pointer, ignore it
-                self.logger.info('live_data old data')
-                continue
-            # hide data changes caused by logging interval being reached
-            if new_data['delay'] <= 0 or new_data['delay'] >= read_period:
+            while next_live and next_live < now - live_interval:
+                self.logger.warning('live_data missed')
+                next_live += live_interval
+                live_overdue += live_interval
+            if no_op_count > 1 and next_log and next_log < now - 12.0:
+                self.logger.warning('live_data log extended')
+                next_log += 60.0
+            if new_data['delay'] < read_period:
+                # pointer won't have changed
+                new_ptr = old_ptr
+            else:
+                new_ptr = self.current_pos()
+                # make sure changes because of logging interval aren't
+                # mistaken for new live data
                 old_data['delay'] = new_data['delay']
-            if new_data != old_data or now > live_overdue:
-                if not next_live:
-                    self.logger.info('live_data synchronised')
-                result = dict(new_data)
-                if pause > 1.0:
-                    # found change immediately on waking up - probably lost sync
-                    self.logger.info('live_data lost sync')
-                    result = None
-                    next_live = None
-                    live_overdue = now + 3600.0
-                elif now > live_overdue:
-                    self.logger.debug(
-                        'live_data %.2fs overdue', now - next_live)
-                    result['idx'] = datetime.utcfromtimestamp(int(next_live))
-                    next_live += live_interval
-                    live_overdue = next_live + 3.0
-                else:
-                    result['idx'] = datetime.utcfromtimestamp(int(now))
-                    next_live = now + live_interval
-                    live_overdue = next_live + 3.0
-                if result:
-                    yield result, old_ptr, False
-                old_data = new_data
-                ptr_changed = False
             if new_ptr != old_ptr:
                 self.logger.debug('live_data new ptr: %06x', new_ptr)
+                # re-read data, to be absolutely sure it's the last
+                # logged data before the pointer was updated
+                new_data = self.get_data(old_ptr, unbuffered=True)
                 result = dict(new_data)
-                if next_log:
-                    pred = next_log + float(result['delay'] * 60) - log_interval
-                if pause > 1.0:
-                    # found change immediately on waking up - probably lost sync
-                    self.logger.info('live_data lost log sync')
-                    result = None
-                    next_log = None
-                elif next_log and now > pred + 3.0:
-                    self.logger.info('live_data log %gs late', now - pred)
-                    result['idx'] = datetime.utcfromtimestamp(int(pred))
-                    next_log = pred + log_interval
-                else:
+                if no_op_count > 0:
+                    # normal in-sync behaviour
                     result['idx'] = datetime.utcfromtimestamp(int(now))
+                    if not next_log:
+                        self.logger.warning('live_data log synchronised')
                     next_log = now + log_interval
+                elif next_log:
+                    # found change immediately on waking up
+                    pred = next_log + float(result['delay'] * 60) - log_interval
+                    result['idx'] = datetime.utcfromtimestamp(int(pred))
+                    if now > pred:
+                        # woke up late
+                        next_log = pred + log_interval
+                    elif now > pred - 4.0:
+                        # woke up just in time
+                        next_log = now + log_interval
+                    else:
+                        self.logger.warning('live_data lost log sync')
+                        result = None
+                        next_log = None
+                else:
+                    result = None
                 if result:
                     yield result, old_ptr, True
                 if (new_ptr != self.data_start and
@@ -364,10 +505,53 @@ class weather_station(object):
                             break
                     else:
                         self.logger.error(
-                                'live_data unexpected ptr change %06x -> %06x',
-                                old_ptr, new_ptr)
+                            'live_data unexpected ptr change %06x -> %06x',
+                            old_ptr, new_ptr)
                 old_ptr = new_ptr
-                ptr_changed = True
+                old_data['delay'] = 0
+                no_op_count = 0
+            elif new_data != old_data:
+                result = dict(new_data)
+                if no_op_count > 0:
+                    # normal in-sync behaviour
+                    result['idx'] = datetime.utcfromtimestamp(int(now))
+                    if not next_live:
+                        self.logger.warning('live_data synchronised')
+                    next_live = now + live_interval
+                elif next_live:
+                    # found change immediately on wake up
+                    result['idx'] = datetime.utcfromtimestamp(int(next_live))
+                    if now > next_live:
+                        # woke up late
+                        next_live += live_interval
+                    elif now > next_live - 2.0:
+                        # woke up just in time
+                        next_live = now + live_interval
+                    else:
+                        self.logger.warning('live_data lost sync')
+                        result = None
+                        next_live = None
+                else:
+                    result = None
+                if next_live:
+                    live_overdue = next_live + 6.0
+                else:
+                    live_overdue = now + 3600.0
+                if result:
+                    yield result, old_ptr, False
+                old_data = new_data
+                no_op_count = 0
+            elif now > live_overdue:
+                self.logger.info('live_data %.2fs overdue', now - next_live)
+                result = dict(new_data)
+                result['idx'] = datetime.utcfromtimestamp(int(next_live))
+                next_live += live_interval
+                live_overdue = next_live + 6.0
+                yield result, old_ptr, False
+                old_data = new_data
+                no_op_count = 0
+            else:
+                no_op_count += 1
     def inc_ptr(self, ptr):
         """Get next circular buffer data pointer."""
         result = ptr + self.reading_len[self.ws_type]
@@ -434,28 +618,21 @@ class weather_station(object):
         for key in keys:
             format = format[key]
         return _decode(self._fixed_block, format)
-    def get_lo_fix_block(self):
-        """Get the first 64 bytes of the raw "fixed block"."""
-        return _decode(self._read_fixed_block(0x0040), self.lo_fix_format)
     def _read_block(self, ptr):
         # Read block repeatedly until it's stable. This avoids getting corrupt
         # data when the block is read as the station is updating it.
-        buf_1 = (ptr / 256) & 0xFF
-        buf_2 = ptr & 0xFF
         old_block = None
         while True:
-            self.devh.controlMsg(usb.TYPE_CLASS + usb.RECIP_INTERFACE, 9,
-                                 [0xA1, buf_1, buf_2, 0x20, 0xA1, buf_1, buf_2, 0x20],
-                                 value=0x200, timeout=1000)
             try:
-                new_block = self.devh.interruptRead(0x81, 0x20, 1000)
-                if len(new_block) == 0x20:
+                new_block = self.cusb.read_data(ptr)
+                if new_block:
                     if new_block == old_block:
                         break
                     if old_block != None:
                         self.logger.debug('_read_block changing %06x', ptr)
                     old_block = new_block
             except usb.USBError, ex:
+                print ex
                 if ex.args != ('No error',):
                     raise
         return new_block
@@ -470,21 +647,8 @@ class weather_station(object):
                 "Unrecognised 'magic number' %02x %02x", result[0], result[1])
         return result
     def _write_byte(self, ptr, value):
-        buf_1 = (ptr / 256) & 0xFF
-        buf_2 = ptr & 0xFF
-        self.devh.controlMsg(usb.TYPE_CLASS + usb.RECIP_INTERFACE, 9,
-                             [0xA2, buf_1, buf_2, 0x20, 0xA2, value, 0, 0x20],
-                             value=0x200, timeout=1000)
-        while True:
-            try:
-                result = self.devh.interruptRead(0x81, 0x08, 1000)
-                for byte in result:
-                    if byte != 0xA5:
-                        raise IOError('_write_byte failed')
-                break
-            except usb.USBError, ex:
-                if ex.args != ('No error',):
-                    raise
+        if not self.cusb.write_data(ptr, value):
+            raise IOError('_write_byte failed')
     def write_data(self, data):
         """Write a set of single bytes to the weather station. Data must be an
         array of (ptr, value) pairs."""
@@ -556,6 +720,8 @@ class weather_station(object):
         'display_3'     : (29, 'bf', ('illuminance_fc', 'bit1', 'bit2', 'bit3',
                                       'bit4', 'bit5', 'bit6', 'bit7')),
         'current_pos'   : (30, 'us', None),
+        }
+    fixed_format = {
         'rel_pressure'  : (32, 'us', 0.1),
         'abs_pressure'  : (34, 'us', 0.1),
         'unknown_03'    : (36, 'pb', None),
@@ -566,8 +732,6 @@ class weather_station(object):
         'unknown_08'    : (41, 'pb', None),
         'unknown_09'    : (42, 'pb', None),
         'date_time'     : (43, 'dt', None),
-        }
-    fixed_format = {
         'unknown_18'    : (97, 'pb', None),
         'unknown_19'    : (140, 'pb', None),
         'alarm'         : {
