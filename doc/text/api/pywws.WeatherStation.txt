@@ -84,9 +84,6 @@ and other sources.
 | _trend_tex |                                                                                            |
 | t``(trend) |                                                                                            |
 +------------+--------------------------------------------------------------------------------------------+
-| ``set_tran |                                                                                            |
-| slation``  |                                                                                            |
-+------------+--------------------------------------------------------------------------------------------+
 | ``wind_chi | Compute wind chill, using formula from                                                     |
 | ll``(temp, |                                                                                            |
 | wind)      |                                                                                            |
@@ -95,8 +92,8 @@ and other sources.
 -[ Classes ]-
 
 +------------+--------------------------------------------------------------------------------------------+
-| ``CUSBDriv |                                                                                            |
-| e``        |                                                                                            |
+| ``CUSBDriv | Low level interface to weather station via USB.                                            |
+| e``()      |                                                                                            |
 +------------+--------------------------------------------------------------------------------------------+
 | ``weather_ | Class that represents the weather station to user program.                                 |
 | station``( |                                                                                            |
@@ -130,6 +127,45 @@ pywws.WeatherStation.pressure_trend_text(trend)
 pywws.WeatherStation.findDevice(idVendor, idProduct)
 
    Find a USB device by product and vendor id.
+
+class class pywws.WeatherStation.CUSBDrive
+
+   Low level interface to weather station via USB.
+
+   Loosely modeled on a C++ class obtained from http://site.ambientwea
+   therstore.com/easyweather/ws_1080_2080_protocol.zip. I don't know
+   the provenance of this, but it looks as if it may have come from
+   the manufacturer.
+
+   read_data(address)
+
+      Read 32 bytes from the weather station.
+
+      If the read fails for any reason, ``None`` is returned.
+
+      Parameters:
+         * **address** (*int*) -- address to read from.
+
+      Returns:
+         the data from the weather station.
+
+      Return type:
+         list(int)
+
+   write_data(address, data)
+
+      Write a single byte to the weather station.
+
+      Parameters:
+         * **address** (*int*) -- address to write to.
+
+         * **data** (*int*) -- the value to write.
+
+      Returns:
+         success status.
+
+      Return type:
+         bool
 
 class class pywws.WeatherStation.weather_station(ws_type='1080')
 
@@ -175,10 +211,6 @@ class class pywws.WeatherStation.weather_station(ws_type='1080')
       Get the decoded "fixed block" of settings and min/max data.
 
       A subset of the entire block can be selected by keys.
-
-   get_lo_fix_block()
-
-      Get the first 64 bytes of the raw "fixed block".
 
    write_data(data)
 

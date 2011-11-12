@@ -2,59 +2,47 @@
 pywws.Process
 *************
 
+Generate hourly, daily & monthly summaries of raw weather station data
 
-Introduction
-============
+   usage: python Process.py [options] data_dir
+   options are:
+    -h or --help     display this help
+   data_dir is the root directory of the weather data
 
 This module takes raw weather station data (typically sampled every
 five or ten minutes) and generates hourly, daily and monthly summary
-data, which is useful when creating tables and graphs. The hourly data
-is derived from all the records in one hour, e.g. from 18:00:00 to
-18:59:59, and is given the index of the last record in that hour.
+data, which is useful when creating tables and graphs.
+
+Before computing the data summaries, raw data is "calibrated" using a
+user-programmable function. See *pywws.calib* for details.
+
+The hourly data is derived from all the records in one hour, e.g. from
+18:00:00 to 18:59:59, and is given the index of the last complete
+record in that hour.
 
 The daily data summarises the weather over a 24 hour period typically
 ending at 2100 or 0900 hours, local (non DST) time, though midnight is
-another popular convention. It is indexed by the end of the 24 hour
-period. Daytime and nightime, as used when computing maximum and
-minimum temperatures, are assumed to start at 0900 and 2100 local
-time, or 1000 and 2200 when DST is in effect, regardless of the
-meteorological day.
+another popular convention. It is also indexed by the last complete
+record in the period. Daytime and nightime, as used when computing
+maximum and minimum temperatures, are assumed to start at 0900 and
+2100 local time, or 1000 and 2200 when DST is in effect, regardless of
+the meteorological day.
 
 To adjust the meteorological day to your preference, or that used by
 your local official weather station, edit the "day end hour" line in
-your "weather.ini" file, then run Reprocess.py to regenerate the
+your ``weather.ini`` file, then run Reprocess.py to regenerate the
 summaries.
 
 Monthly summary data is computed from the daily summary data. If the
 meteorological day does not end at midnight, then each month may begin
 and end up to 12 hours before or after midnight.
 
-Pressure is converted from absolute to relative, using an offset taken
-from the weather station, so make sure you set this up correctly
-before processing data. It also computes the pressure trend - how it
-has varied over the previous three hours.
-
 Wind speed data is averaged over the hour (or day) and the maximum
 gust speed during the hour (or day) is recorded. The predominant wind
-direction is also calculated.
+direction is calculated using vector arithmetic.
 
 Rainfall is converted from the raw "total since last reset" figure to
 a more useful total in the last hour, day or month.
-
-
-Detailed API
-============
-
-Generate hourly, daily & monthly summaries of raw weather station
-data.
-
-usage: python Process.py [options] data_dir options are:
-
-   --help
-
-   display this help
-
-data_dir is the root directory of the weather data
 
 -[ Functions ]-
 
@@ -65,40 +53,58 @@ data_dir is the root directory of the weather data
 | calib_data |                                                                                            |
 | , ...)     |                                                                                            |
 +------------+--------------------------------------------------------------------------------------------+
-| ``calibrat |                                                                                            |
+| ``calibrat | 'Calibrate' raw data, using a user-supplied function.                                      |
 | e_data``(l |                                                                                            |
 | ogger,     |                                                                                            |
 | params,    |                                                                                            |
 | raw_data,  |                                                                                            |
 | ...)       |                                                                                            |
 +------------+--------------------------------------------------------------------------------------------+
-| ``main``([ |                                                                                            |
-| argv])     |                                                                                            |
+| ``generate | Generate hourly summaries from calibrated data.                                            |
+| _hourly``( |                                                                                            |
+| logger, ca |                                                                                            |
+| lib_data,  |                                                                                            |
+| ...)       |                                                                                            |
++------------+--------------------------------------------------------------------------------------------+
+| ``generate | Generate daily summaries from calibrated and hourly data.                                  |
+| _daily``(l |                                                                                            |
+| ogger, day |                                                                                            |
+| _end_hour, |                                                                                            |
+| ...)       |                                                                                            |
++------------+--------------------------------------------------------------------------------------------+
+| ``generate | Generate monthly summaries from daily data.                                                |
+| _monthly`` |                                                                                            |
+| (logger, d |                                                                                            |
+| ay_end_hou |                                                                                            |
+| r, ...)    |                                                                                            |
 +------------+--------------------------------------------------------------------------------------------+
 
 -[ Classes ]-
 
 +------------+--------------------------------------------------------------------------------------------+
-| ``Acc``(ti | 'Accumulate' raw weather data to produce summaries.                                        |
-| me_offset, |                                                                                            |
-| last_rain) |                                                                                            |
-+------------+--------------------------------------------------------------------------------------------+
-| ``Average` |                                                                                            |
+| ``Average` | Compute average of multiple data values.                                                   |
 | `()        |                                                                                            |
 +------------+--------------------------------------------------------------------------------------------+
-| ``Maximum` |                                                                                            |
+| ``Maximum` | Compute maximum value and timestamp of multiple data values.                               |
 | `()        |                                                                                            |
 +------------+--------------------------------------------------------------------------------------------+
-| ``Minimum` |                                                                                            |
+| ``Minimum` | Compute minimum value and timestamp of multiple data values.                               |
 | `()        |                                                                                            |
 +------------+--------------------------------------------------------------------------------------------+
-| ``MonthAcc | Derive monthly summary data from daily data.                                               |
-| ``(start)  |                                                                                            |
+| ``HourAcc` | 'Accumulate' raw weather data to produce hourly summary.                                   |
+| `(last_rai |                                                                                            |
+| n)         |                                                                                            |
 +------------+--------------------------------------------------------------------------------------------+
-
-pywws.Process.calibrate_data(logger, params, raw_data, calib_data)
+| ``DayAcc`` | 'Accumulate' weather data to produce daily summary.                                        |
+| (daytime)  |                                                                                            |
++------------+--------------------------------------------------------------------------------------------+
+| ``MonthAcc | 'Accumulate' daily weather data to produce monthly summary.                                |
+| ``()       |                                                                                            |
++------------+--------------------------------------------------------------------------------------------+
 
 class class pywws.Process.Average
+
+   Compute average of multiple data values.
 
    add(value)
 
@@ -106,64 +112,88 @@ class class pywws.Process.Average
 
 class class pywws.Process.Minimum
 
+   Compute minimum value and timestamp of multiple data values.
+
    add(value, time)
 
    result()
 
 class class pywws.Process.Maximum
 
+   Compute maximum value and timestamp of multiple data values.
+
    add(value, time)
 
    result()
 
-class class pywws.Process.Acc(time_offset, last_rain)
+class class pywws.Process.HourAcc(last_rain)
 
-   'Accumulate' raw weather data to produce summaries.
+   'Accumulate' raw weather data to produce hourly summary.
 
-   Compute average wind speed, log daytime max & nighttime min
-   temperatures and maximum wind gust, find dominant wind direction
-   and compute total rainfall.
+   Compute average wind speed and maximum wind gust, find dominant
+   wind direction and compute total rainfall.
+
+   reset()
+
+   add_raw(data)
+
+   result()
+
+class class pywws.Process.DayAcc(daytime)
+
+   'Accumulate' weather data to produce daily summary.
+
+   Compute average wind speed, maximum wind gust and daytime max &
+   nighttime min temperatures, find dominant wind direction and
+   compute total rainfall.
 
    Daytime is assumed to be 0900-2100 and nighttime to be 2100-0900,
    local time (1000-2200 and 2200-1000 during DST), regardless of the
    "day end hour" setting.
 
-   add(raw)
+   reset()
 
-      Add a raw data reading.
+   add_raw(data)
 
-   reset_hourly()
+   add_hourly(data)
 
-   get_hourly()
+   result()
 
-      Get the hourly result of the data accumulation.
+class class pywws.Process.MonthAcc
 
-   reset_daily()
+   'Accumulate' daily weather data to produce monthly summary.
 
-   get_daily()
+   Compute daytime max & nighttime min temperatures.
 
-class class pywws.Process.MonthAcc(start)
+   reset()
 
-   Derive monthly summary data from daily data.
+   add_daily(data)
 
-   add(daily)
+   result()
 
-   get_monthly()
+pywws.Process.calibrate_data(logger, params, raw_data, calib_data)
+
+   'Calibrate' raw data, using a user-supplied function.
+
+pywws.Process.generate_hourly(logger, calib_data, hourly_data, process_from)
+
+   Generate hourly summaries from calibrated data.
+
+pywws.Process.generate_daily(logger, day_end_hour, daytime, calib_data, hourly_data, daily_data, process_from)
+
+   Generate daily summaries from calibrated and hourly data.
+
+pywws.Process.generate_monthly(logger, day_end_hour, time_offset, daily_data, monthly_data, process_from)
+
+   Generate monthly summaries from daily data.
 
 pywws.Process.Process(params, raw_data, calib_data, hourly_data, daily_data, monthly_data)
 
    Generate summaries from raw weather station data.
 
-   Starts from the last hourly or daily summary (whichever is earlier)
-   and continues to end of the raw data.
-
    The meteorological day end (typically 2100 or 0900 local time) is
-   set in the preferences file "weather.ini". The default value is
+   set in the preferences file ``weather.ini``. The default value is
    2100 (2200 during DST), following the historical convention for
    weather station readings.
-
-   Atmospheric pressure is converted from absolute to relative, using
-   the weather station's offset as recorded by LogData.py. The
-   pressure trend (change over three hours) is also computed.
 
 pywws.Process.main(argv=None)

@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pywws.ToUnderground &mdash; pywws v11.10 documentation</title>
+    <title>pywws.ToUnderground &mdash; pywws v11.11 documentation</title>
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '11.10',
+        VERSION:     '11.11',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="shortcut icon" href="../../_static/pywws_logo.ico"/>
-    <link rel="top" title="pywws v11.10 documentation" href="../../index.html" />
+    <link rel="top" title="pywws v11.11 documentation" href="../../index.html" />
     <link rel="up" title="Module code" href="../index.html" /> 
   </head>
   <body>
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">pywws v11.10 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">pywws v11.11 documentation</a> &raquo;</li>
           <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -180,6 +180,40 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">fixed_data_rf</span><span class="p">[</span><span class="s">&#39;realtime&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;1&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fixed_data_rf</span><span class="p">[</span><span class="s">&#39;rtfreq&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;48&#39;</span>
 
+<div class="viewcode-block" id="ToUnderground.translate_data"><a class="viewcode-back" href="../../api/pywws.ToUnderground.html#pywws.ToUnderground.ToUnderground.translate_data">[docs]</a>    <span class="k">def</span> <span class="nf">translate_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">current</span><span class="p">,</span> <span class="n">fixed_data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Convert a weather data record to upload format.</span>
+
+<span class="sd">        The :obj:`current` parameter contains the data to be uploaded.</span>
+<span class="sd">        It should be a &#39;calibrated&#39; data record, as stored in</span>
+<span class="sd">        :class:`pywws.DataStore.calib_store`.</span>
+
+<span class="sd">        The :obj:`fixed_data` parameter contains unvarying data that</span>
+<span class="sd">        is site dependent, for example an ID code and authentication</span>
+<span class="sd">        data.</span>
+
+<span class="sd">        :param current: the weather data record.</span>
+
+<span class="sd">        :type current: dict</span>
+
+<span class="sd">        :param fixed_data: unvarying upload data.</span>
+
+<span class="sd">        :type fixed_data: dict</span>
+
+<span class="sd">        :return: converted data, or :obj:`None` if invalid data.</span>
+
+<span class="sd">        :rtype: dict(string)</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">toservice</span><span class="o">.</span><span class="n">ToService</span><span class="o">.</span><span class="n">translate_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">current</span><span class="p">,</span> <span class="n">fixed_data</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">result</span> <span class="ow">and</span> <span class="n">current</span><span class="o">.</span><span class="n">has_key</span><span class="p">(</span><span class="s">&#39;uv&#39;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">current</span><span class="p">[</span><span class="s">&#39;uv&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">result</span><span class="p">[</span><span class="s">&#39;UV&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%d</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">current</span><span class="p">[</span><span class="s">&#39;uv&#39;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">current</span><span class="p">[</span><span class="s">&#39;illuminance&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="c"># approximate conversion from lux to W/m2</span>
+                <span class="n">result</span><span class="p">[</span><span class="s">&#39;solarradiation&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%.2f</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span>
+                    <span class="n">current</span><span class="p">[</span><span class="s">&#39;illuminance&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="mf">0.005</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span>
+</div>
 <div class="viewcode-block" id="ToUnderground.Upload"><a class="viewcode-back" href="../../api/pywws.ToUnderground.html#pywws.ToUnderground.ToUnderground.Upload">[docs]</a>    <span class="k">def</span> <span class="nf">Upload</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">catchup</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Upload one or more weather data records.</span>
 
@@ -313,7 +347,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">pywws v11.10 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">pywws v11.11 documentation</a> &raquo;</li>
           <li><a href="../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>

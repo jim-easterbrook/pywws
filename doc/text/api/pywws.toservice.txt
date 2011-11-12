@@ -31,7 +31,7 @@ class class pywws.toservice.ToService(params, calib_data)
 
    translate_data(current, fixed_data)
 
-      Convert a weather data record to an upload string.
+      Convert a weather data record to upload format.
 
       The ``current`` parameter contains the data to be uploaded. It
       should be a 'calibrated' data record, as stored in
@@ -46,10 +46,10 @@ class class pywws.toservice.ToService(params, calib_data)
          * **fixed_data** (*dict*) -- unvarying upload data.
 
       Returns:
-         an encoded string, or ``None`` if invalid data.
+         converted data, or ``None`` if invalid data.
 
       Return type:
-         string
+         dict(string)
 
    send_data(data, server, fixed_data)
 

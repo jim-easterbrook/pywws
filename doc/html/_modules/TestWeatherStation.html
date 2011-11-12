@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>TestWeatherStation &mdash; pywws v11.10 documentation</title>
+    <title>TestWeatherStation &mdash; pywws v11.11 documentation</title>
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '11.10',
+        VERSION:     '11.11',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="shortcut icon" href="../_static/pywws_logo.ico"/>
-    <link rel="top" title="pywws v11.10 documentation" href="../index.html" />
+    <link rel="top" title="pywws v11.11 documentation" href="../index.html" />
     <link rel="up" title="Module code" href="index.html" /> 
   </head>
   <body>
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../index.html">pywws v11.10 documentation</a> &raquo;</li>
+        <li><a href="../index.html">pywws v11.11 documentation</a> &raquo;</li>
           <li><a href="index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -158,10 +158,10 @@
                     <span class="k">if</span> <span class="s">&#39;bit&#39;</span> <span class="ow">in</span> <span class="n">b</span><span class="p">:</span>
                         <span class="k">print</span> <span class="n">k</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">bits</span><span class="p">[</span><span class="n">b</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">history_count</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">lo_fix</span> <span class="o">=</span> <span class="n">ws</span><span class="o">.</span><span class="n">get_lo_fix_block</span><span class="p">()</span>
+        <span class="n">fixed_block</span> <span class="o">=</span> <span class="n">ws</span><span class="o">.</span><span class="n">get_fixed_block</span><span class="p">()</span>
         <span class="k">print</span> <span class="s">&quot;Recent history&quot;</span>
-        <span class="n">ptr</span> <span class="o">=</span> <span class="n">lo_fix</span><span class="p">[</span><span class="s">&#39;current_pos&#39;</span><span class="p">]</span>
-        <span class="n">date</span> <span class="o">=</span> <span class="n">safestrptime</span><span class="p">(</span><span class="n">lo_fix</span><span class="p">[</span><span class="s">&#39;date_time&#39;</span><span class="p">],</span> <span class="s">&#39;%Y-%m-</span><span class="si">%d</span><span class="s"> %H:%M&#39;</span><span class="p">)</span>
+        <span class="n">ptr</span> <span class="o">=</span> <span class="n">fixed_block</span><span class="p">[</span><span class="s">&#39;current_pos&#39;</span><span class="p">]</span>
+        <span class="n">date</span> <span class="o">=</span> <span class="n">safestrptime</span><span class="p">(</span><span class="n">fixed_block</span><span class="p">[</span><span class="s">&#39;date_time&#39;</span><span class="p">],</span> <span class="s">&#39;%Y-%m-</span><span class="si">%d</span><span class="s"> %H:%M&#39;</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">history_count</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">decode</span><span class="p">:</span>
                 <span class="n">data</span> <span class="o">=</span> <span class="n">ws</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="n">ptr</span><span class="p">)</span>
@@ -179,7 +179,10 @@
     <span class="k">del</span> <span class="n">ws</span>
     <span class="k">return</span> <span class="mi">0</span></div>
 <span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&quot;__main__&quot;</span><span class="p">:</span>
-    <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
+    <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
+        <span class="k">pass</span>
 </pre></div>
 
           </div>
@@ -213,7 +216,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../index.html">pywws v11.10 documentation</a> &raquo;</li>
+        <li><a href="../index.html">pywws v11.11 documentation</a> &raquo;</li>
           <li><a href="index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>

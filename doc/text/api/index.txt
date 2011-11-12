@@ -32,7 +32,7 @@ Contents:
 | ``pywws.Lo | Save weather station history to file.                                                      |
 | gData``    |                                                                                            |
 +------------+--------------------------------------------------------------------------------------------+
-| ``pywws.Pr | Generate hourly, daily & monthly summaries of raw weather station data.                    |
+| ``pywws.Pr | Generate hourly, daily & monthly summaries of raw weather station                          |
 | ocess``    |                                                                                            |
 +------------+--------------------------------------------------------------------------------------------+
 | ``pywws.ca | Calibrate raw weather station data                                                         |
@@ -117,8 +117,6 @@ Contents:
   * Introduction
   * Detailed API
 * pywws.Process
-  * Introduction
-  * Detailed API
 * pywws.calib
   * Calibrate raw weather station data
     * Writing your calibration module

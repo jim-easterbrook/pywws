@@ -99,6 +99,28 @@ class class pywws.ToUnderground.ToUnderground(params, calib_data)
       * **calib_data** (``pywws.DataStore.calib_store``) --
         'calibrated' data.
 
+   translate_data(current, fixed_data)
+
+      Convert a weather data record to upload format.
+
+      The ``current`` parameter contains the data to be uploaded. It
+      should be a 'calibrated' data record, as stored in
+      ``pywws.DataStore.calib_store``.
+
+      The ``fixed_data`` parameter contains unvarying data that is
+      site dependent, for example an ID code and authentication data.
+
+      Parameters:
+         * **current** (*dict*) -- the weather data record.
+
+         * **fixed_data** (*dict*) -- unvarying upload data.
+
+      Returns:
+         converted data, or ``None`` if invalid data.
+
+      Return type:
+         dict(string)
+
    Upload(catchup)
 
       Upload one or more weather data records.

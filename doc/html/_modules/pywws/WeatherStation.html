@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pywws.WeatherStation &mdash; pywws v11.10 documentation</title>
+    <title>pywws.WeatherStation &mdash; pywws v11.11 documentation</title>
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '11.10',
+        VERSION:     '11.11',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="shortcut icon" href="../../_static/pywws_logo.ico"/>
-    <link rel="top" title="pywws v11.10 documentation" href="../../index.html" />
+    <link rel="top" title="pywws v11.11 documentation" href="../../index.html" />
     <link rel="up" title="Module code" href="../index.html" /> 
   </head>
   <body>
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">pywws v11.10 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">pywws v11.11 documentation</a> &raquo;</li>
           <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -55,7 +55,7 @@
 
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="n">__docformat__</span> <span class="o">=</span> <span class="s">&quot;restructuredtext&quot;</span>
+<span class="n">__docformat__</span> <span class="o">=</span> <span class="s">&quot;restructuredtext en&quot;</span>
 
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
 <span class="kn">import</span> <span class="nn">logging</span>
@@ -250,6 +250,7 @@
         <span class="k">if</span> <span class="n">scale</span> <span class="ow">and</span> <span class="n">result</span><span class="p">:</span>
             <span class="n">result</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="o">*</span> <span class="n">scale</span>
     <span class="k">return</span> <span class="n">result</span>
+
 <div class="viewcode-block" id="findDevice"><a class="viewcode-back" href="../../api/pywws.WeatherStation.html#pywws.WeatherStation.findDevice">[docs]</a><span class="k">def</span> <span class="nf">findDevice</span><span class="p">(</span><span class="n">idVendor</span><span class="p">,</span> <span class="n">idProduct</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Find a USB device by product and vendor id.&quot;&quot;&quot;</span>
     <span class="k">for</span> <span class="n">bus</span> <span class="ow">in</span> <span class="n">usb</span><span class="o">.</span><span class="n">busses</span><span class="p">():</span>
@@ -258,45 +259,202 @@
                 <span class="k">return</span> <span class="n">device</span>
     <span class="k">return</span> <span class="bp">None</span>
 </div>
+<div class="viewcode-block" id="CUSBDrive"><a class="viewcode-back" href="../../api/pywws.WeatherStation.html#pywws.WeatherStation.CUSBDrive">[docs]</a><span class="k">class</span> <span class="nc">CUSBDrive</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Low level interface to weather station via USB.</span>
+
+<span class="sd">    Loosely modeled on a C++ class obtained from</span>
+<span class="sd">    http://site.ambientweatherstore.com/easyweather/ws_1080_2080_protocol.zip.</span>
+<span class="sd">    I don&#39;t know the provenance of this, but it looks as if it may</span>
+<span class="sd">    have come from the manufacturer.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">EndMark</span>          <span class="o">=</span> <span class="mh">0x20</span>
+    <span class="n">ReadCommand</span>      <span class="o">=</span> <span class="mh">0xA1</span>
+    <span class="n">WriteCommand</span>     <span class="o">=</span> <span class="mh">0xA0</span>
+    <span class="n">WriteCommandWord</span> <span class="o">=</span> <span class="mh">0xA2</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s">&#39;pywws.WeatherStation.CUSBDrive&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">devh</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_open</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">devh</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">devh</span><span class="o">.</span><span class="n">releaseInterface</span><span class="p">()</span>
+            <span class="k">except</span> <span class="n">usb</span><span class="o">.</span><span class="n">USBError</span><span class="p">:</span>
+                <span class="c"># interface was not claimed. No problem</span>
+                <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">_reset_device</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">devh</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">devh</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_open</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_reset_end_point</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">devh</span><span class="o">.</span><span class="n">clearHalt</span><span class="p">(</span><span class="mh">0x81</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_open</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Open connection to weather station.</span>
+
+<span class="sd">        This method searches the connected USB devices for one with</span>
+<span class="sd">        the correct product and vendor ID, then opens a connection to</span>
+<span class="sd">        the device and claims the interface.</span>
+
+<span class="sd">        :return: the weather station device handle.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">dev</span> <span class="o">=</span> <span class="n">findDevice</span><span class="p">(</span><span class="mh">0x1941</span><span class="p">,</span> <span class="mh">0x8021</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">dev</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s">&quot;Weather station device not found&quot;</span><span class="p">)</span>
+        <span class="n">devh</span> <span class="o">=</span> <span class="n">dev</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">devh</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s">&quot;Open device failed&quot;</span><span class="p">)</span>
+<span class="c">##        if platform.system() is &#39;Windows&#39;:</span>
+<span class="c">##            devh.setConfiguration(1)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">devh</span><span class="o">.</span><span class="n">claimInterface</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">usb</span><span class="o">.</span><span class="n">USBError</span><span class="p">:</span>
+            <span class="c"># claim interface failed, try detaching kernel driver first</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">devh</span><span class="p">,</span> <span class="s">&#39;detachKernelDriver&#39;</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                    <span class="s">&quot;Please upgrade pyusb (or python-usb) to 0.4 or higher&quot;</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">devh</span><span class="o">.</span><span class="n">detachKernelDriver</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                <span class="n">devh</span><span class="o">.</span><span class="n">claimInterface</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">usb</span><span class="o">.</span><span class="n">USBError</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s">&quot;Claim interface failed&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">devh</span>
+
+    <span class="k">def</span> <span class="nf">_read_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Receive 8 bytes from the device.</span>
+
+<span class="sd">        If the read fails for any reason, :obj:`None` is returned.</span>
+
+<span class="sd">        :return: the data received.</span>
+
+<span class="sd">        :rtype: list(int)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">devh</span><span class="o">.</span><span class="n">interruptRead</span><span class="p">(</span><span class="mh">0x81</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">1200</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">usb</span><span class="o">.</span><span class="n">USBError</span><span class="p">,</span> <span class="n">ex</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="n">ex</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">ex</span><span class="o">.</span><span class="n">args</span> <span class="o">!=</span> <span class="p">(</span><span class="s">&#39;No error&#39;</span><span class="p">,):</span>
+                <span class="k">raise</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">8</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;_read_data failed&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">None</span>
+        <span class="k">return</span> <span class="n">result</span>
+
+    <span class="k">def</span> <span class="nf">_write_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">buf</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Send 8 bytes to the device.</span>
+
+<span class="sd">        :param buf: the data to send.</span>
+
+<span class="sd">        :type buf: list(int)</span>
+
+<span class="sd">        :return: success status.</span>
+
+<span class="sd">        :rtype: bool</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">devh</span><span class="o">.</span><span class="n">controlMsg</span><span class="p">(</span>
+            <span class="n">usb</span><span class="o">.</span><span class="n">ENDPOINT_OUT</span> <span class="o">+</span> <span class="n">usb</span><span class="o">.</span><span class="n">TYPE_CLASS</span> <span class="o">+</span> <span class="n">usb</span><span class="o">.</span><span class="n">RECIP_INTERFACE</span><span class="p">,</span>
+            <span class="n">usb</span><span class="o">.</span><span class="n">REQ_SET_CONFIGURATION</span><span class="p">,</span> <span class="n">buf</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mh">0x200</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">result</span> <span class="o">!=</span> <span class="mi">8</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;_write_data failed&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">False</span>
+        <span class="k">return</span> <span class="bp">True</span>
+
+<div class="viewcode-block" id="CUSBDrive.read_data"><a class="viewcode-back" href="../../api/pywws.WeatherStation.html#pywws.WeatherStation.CUSBDrive.read_data">[docs]</a>    <span class="k">def</span> <span class="nf">read_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">address</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Read 32 bytes from the weather station.</span>
+
+<span class="sd">        If the read fails for any reason, :obj:`None` is returned.</span>
+
+<span class="sd">        :param address: address to read from.</span>
+
+<span class="sd">        :type address: int</span>
+
+<span class="sd">        :return: the data from the weather station.</span>
+
+<span class="sd">        :rtype: list(int)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">devh</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">devh</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_open</span><span class="p">()</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">devh</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">None</span>
+        <span class="n">buf</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ReadCommand</span><span class="p">,</span>
+            <span class="n">address</span> <span class="o">/</span> <span class="mi">256</span><span class="p">,</span>
+            <span class="n">address</span> <span class="o">%</span> <span class="mi">256</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">EndMark</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ReadCommand</span><span class="p">,</span>
+            <span class="n">address</span> <span class="o">/</span> <span class="mi">256</span><span class="p">,</span>
+            <span class="n">address</span> <span class="o">%</span> <span class="mi">256</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">EndMark</span><span class="p">,</span>
+            <span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_write_data</span><span class="p">(</span><span class="n">buf</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_reset_end_point</span><span class="p">()</span>
+            <span class="k">return</span> <span class="bp">None</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
+            <span class="n">buf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_data</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">buf</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_reset_end_point</span><span class="p">()</span>
+                <span class="k">return</span> <span class="bp">None</span>
+            <span class="n">result</span> <span class="o">+=</span> <span class="n">buf</span>
+        <span class="k">return</span> <span class="n">result</span>
+</div>
+<div class="viewcode-block" id="CUSBDrive.write_data"><a class="viewcode-back" href="../../api/pywws.WeatherStation.html#pywws.WeatherStation.CUSBDrive.write_data">[docs]</a>    <span class="k">def</span> <span class="nf">write_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">address</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Write a single byte to the weather station.</span>
+
+<span class="sd">        :param address: address to write to.</span>
+
+<span class="sd">        :type address: int</span>
+
+<span class="sd">        :param data: the value to write.</span>
+
+<span class="sd">        :type data: int</span>
+
+<span class="sd">        :return: success status.</span>
+
+<span class="sd">        :rtype: bool</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">devh</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">devh</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_open</span><span class="p">()</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">devh</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">None</span>
+        <span class="n">buf</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">WriteCommandWord</span><span class="p">,</span>
+            <span class="n">address</span> <span class="o">/</span> <span class="mi">256</span><span class="p">,</span>
+            <span class="n">address</span> <span class="o">%</span> <span class="mi">256</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">EndMark</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">WriteCommandWord</span><span class="p">,</span>
+            <span class="n">data</span><span class="p">,</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">EndMark</span><span class="p">,</span>
+            <span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_write_data</span><span class="p">(</span><span class="n">buf</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_reset_end_point</span><span class="p">()</span>
+            <span class="k">return</span> <span class="bp">False</span>
+        <span class="n">buf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_data</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">buf</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_reset_end_point</span><span class="p">()</span>
+            <span class="k">return</span> <span class="bp">False</span>
+        <span class="k">for</span> <span class="n">byte</span> <span class="ow">in</span> <span class="n">buf</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">byte</span> <span class="o">!=</span> <span class="mh">0xA5</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">False</span>
+        <span class="k">return</span> <span class="bp">True</span>
+</div></div>
 <div class="viewcode-block" id="weather_station"><a class="viewcode-back" href="../../api/pywws.WeatherStation.html#pywws.WeatherStation.weather_station">[docs]</a><span class="k">class</span> <span class="nc">weather_station</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Class that represents the weather station to user program.&quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ws_type</span><span class="o">=</span><span class="s">&#39;1080&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Connect to weather station and prepare to read data.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s">&#39;pywws.weather_station&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">devh</span> <span class="o">=</span> <span class="bp">None</span>
-        <span class="c"># _open_readw</span>
-        <span class="n">dev</span> <span class="o">=</span> <span class="n">findDevice</span><span class="p">(</span><span class="mh">0x1941</span><span class="p">,</span> <span class="mh">0x8021</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">dev</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s">&quot;Weather station device not found&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">devh</span> <span class="o">=</span> <span class="n">dev</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">devh</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s">&quot;Open device failed&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span> <span class="ow">is</span> <span class="s">&#39;Windows&#39;</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">devh</span><span class="o">.</span><span class="n">setConfiguration</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">devh</span><span class="o">.</span><span class="n">claimInterface</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-        <span class="k">except</span> <span class="n">usb</span><span class="o">.</span><span class="n">USBError</span><span class="p">:</span>
-            <span class="c"># claim interface failed, try detaching kernel driver first</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">devh</span><span class="p">,</span> <span class="s">&#39;detachKernelDriver&#39;</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                    <span class="s">&quot;Please upgrade pyusb (or python-usb) to 0.4 or higher&quot;</span><span class="p">)</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">devh</span><span class="o">.</span><span class="n">detachKernelDriver</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">devh</span><span class="o">.</span><span class="n">claimInterface</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-            <span class="k">except</span> <span class="n">usb</span><span class="o">.</span><span class="n">USBError</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s">&quot;Claim interface failed&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">devh</span><span class="o">.</span><span class="n">setAltInterface</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-        <span class="c"># _init_wread</span>
-        <span class="n">tbuf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">devh</span><span class="o">.</span><span class="n">getDescriptor</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mh">0x12</span><span class="p">)</span>
-        <span class="n">tbuf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">devh</span><span class="o">.</span><span class="n">getDescriptor</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mh">0x09</span><span class="p">)</span>
-        <span class="n">tbuf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">devh</span><span class="o">.</span><span class="n">getDescriptor</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mh">0x22</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">devh</span><span class="o">.</span><span class="n">releaseInterface</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">devh</span><span class="o">.</span><span class="n">setConfiguration</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">devh</span><span class="o">.</span><span class="n">claimInterface</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">devh</span><span class="o">.</span><span class="n">setAltInterface</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">devh</span><span class="o">.</span><span class="n">controlMsg</span><span class="p">(</span><span class="n">usb</span><span class="o">.</span><span class="n">TYPE_CLASS</span> <span class="o">+</span> <span class="n">usb</span><span class="o">.</span><span class="n">RECIP_INTERFACE</span><span class="p">,</span>
-                             <span class="mh">0xA</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
-        <span class="n">tbuf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">devh</span><span class="o">.</span><span class="n">getDescriptor</span><span class="p">(</span><span class="mh">0x22</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mh">0x74</span><span class="p">)</span>
+        <span class="c"># create basic IO object</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cusb</span> <span class="o">=</span> <span class="n">CUSBDrive</span><span class="p">()</span>
         <span class="c"># init variables</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_fixed_block</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_data_block</span> <span class="o">=</span> <span class="bp">None</span>
@@ -311,96 +469,79 @@
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ws_type</span> <span class="o">!=</span> <span class="s">&#39;1080&#39;</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s">&#39;type change </span><span class="si">%s</span><span class="s"> -&gt; </span><span class="si">%s</span><span class="s">&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ws_type</span><span class="p">,</span> <span class="s">&#39;1080&#39;</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">ws_type</span> <span class="o">=</span> <span class="s">&#39;1080&#39;</span>
-    <span class="k">def</span> <span class="nf">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Disconnect from weather station.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">devh</span><span class="p">:</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">devh</span><span class="o">.</span><span class="n">releaseInterface</span><span class="p">()</span>
-            <span class="k">except</span> <span class="n">usb</span><span class="o">.</span><span class="n">USBError</span><span class="p">:</span>
-                <span class="c"># interface was not claimed. No problem</span>
-                <span class="k">pass</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">devh</span> <span class="o">=</span> <span class="bp">None</span>
 <div class="viewcode-block" id="weather_station.live_data"><a class="viewcode-back" href="../../api/pywws.WeatherStation.html#pywws.WeatherStation.weather_station.live_data">[docs]</a>    <span class="k">def</span> <span class="nf">live_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c"># There are two things we want to synchronise to - the data is updated every</span>
-        <span class="c"># 48 seconds and the address is incremented every 5 minutes (or 10, 15, ...,</span>
-        <span class="c"># 30). Rather than getting data every second, we sleep until one of the above</span>
-        <span class="c"># is due. (During initialisation we get data every second anyway.)</span>
+        <span class="c"># There are two things we want to synchronise to - the data is</span>
+        <span class="c"># updated every 48 seconds and the address is incremented</span>
+        <span class="c"># every 5 minutes (or 10, 15, ..., 30). Rather than getting</span>
+        <span class="c"># data every second or two, we sleep until one of the above is</span>
+        <span class="c"># due. (During initialisation we get data every two seconds</span>
+        <span class="c"># anyway.)</span>
         <span class="n">read_period</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_fixed_block</span><span class="p">([</span><span class="s">&#39;read_period&#39;</span><span class="p">])</span>
         <span class="n">log_interval</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">read_period</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>
         <span class="n">live_interval</span> <span class="o">=</span> <span class="mf">48.0</span>
         <span class="n">old_ptr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_pos</span><span class="p">()</span>
         <span class="n">old_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="n">old_ptr</span><span class="p">,</span> <span class="n">unbuffered</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-        <span class="n">ptr_changed</span> <span class="o">=</span> <span class="bp">False</span>
         <span class="n">now</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
         <span class="n">next_log</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="n">next_live</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="n">live_overdue</span> <span class="o">=</span> <span class="n">now</span> <span class="o">+</span> <span class="mf">3600.0</span>
+        <span class="n">no_op_count</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
             <span class="c"># wake up just before next reading is due</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">next_live</span><span class="p">:</span>
                 <span class="n">pause</span> <span class="o">=</span> <span class="mf">0.0</span>
             <span class="k">elif</span> <span class="n">next_log</span><span class="p">:</span>
-                <span class="n">pause</span> <span class="o">=</span> <span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">next_log</span><span class="p">,</span> <span class="n">next_live</span><span class="p">)</span> <span class="o">-</span> <span class="mi">2</span><span class="p">)</span> <span class="o">-</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+                <span class="n">pause</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">next_log</span> <span class="o">-</span> <span class="mf">4.0</span><span class="p">,</span> <span class="n">next_live</span> <span class="o">-</span> <span class="mf">2.0</span><span class="p">)</span> <span class="o">-</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
             <span class="k">elif</span> <span class="n">old_data</span><span class="p">[</span><span class="s">&#39;delay&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">read_period</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="n">pause</span> <span class="o">=</span> <span class="p">(</span><span class="n">next_live</span> <span class="o">-</span> <span class="mi">2</span><span class="p">)</span> <span class="o">-</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+                <span class="n">pause</span> <span class="o">=</span> <span class="p">(</span><span class="n">next_live</span> <span class="o">-</span> <span class="mf">2.0</span><span class="p">)</span> <span class="o">-</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">pause</span> <span class="o">=</span> <span class="mf">0.0</span>
-            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">pause</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">))</span>
-            <span class="c"># When the pointer changes, the data is updated first. Getting the data</span>
-            <span class="c"># after getting the pointer makes sure that when we detect a pointer</span>
-            <span class="c"># change the data is correct.</span>
-            <span class="n">new_ptr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_pos</span><span class="p">()</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">pause</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">))</span>
             <span class="n">new_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="n">old_ptr</span><span class="p">,</span> <span class="n">unbuffered</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
             <span class="n">now</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-            <span class="k">if</span> <span class="n">ptr_changed</span> <span class="ow">and</span> <span class="p">(</span><span class="n">new_data</span><span class="p">[</span><span class="s">&#39;delay&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="bp">None</span> <span class="ow">or</span>
-                                <span class="n">new_data</span><span class="p">[</span><span class="s">&#39;delay&#39;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">read_period</span><span class="p">):</span>
-                <span class="c"># picked up old data from new pointer, ignore it</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;live_data old data&#39;</span><span class="p">)</span>
-                <span class="k">continue</span>
-            <span class="c"># hide data changes caused by logging interval being reached</span>
-            <span class="k">if</span> <span class="n">new_data</span><span class="p">[</span><span class="s">&#39;delay&#39;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">new_data</span><span class="p">[</span><span class="s">&#39;delay&#39;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">read_period</span><span class="p">:</span>
+            <span class="k">while</span> <span class="n">next_live</span> <span class="ow">and</span> <span class="n">next_live</span> <span class="o">&lt;</span> <span class="n">now</span> <span class="o">-</span> <span class="n">live_interval</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s">&#39;live_data missed&#39;</span><span class="p">)</span>
+                <span class="n">next_live</span> <span class="o">+=</span> <span class="n">live_interval</span>
+                <span class="n">live_overdue</span> <span class="o">+=</span> <span class="n">live_interval</span>
+            <span class="k">if</span> <span class="n">no_op_count</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">next_log</span> <span class="ow">and</span> <span class="n">next_log</span> <span class="o">&lt;</span> <span class="n">now</span> <span class="o">-</span> <span class="mf">12.0</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s">&#39;live_data log extended&#39;</span><span class="p">)</span>
+                <span class="n">next_log</span> <span class="o">+=</span> <span class="mf">60.0</span>
+            <span class="k">if</span> <span class="n">new_data</span><span class="p">[</span><span class="s">&#39;delay&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">read_period</span><span class="p">:</span>
+                <span class="c"># pointer won&#39;t have changed</span>
+                <span class="n">new_ptr</span> <span class="o">=</span> <span class="n">old_ptr</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">new_ptr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_pos</span><span class="p">()</span>
+                <span class="c"># make sure changes because of logging interval aren&#39;t</span>
+                <span class="c"># mistaken for new live data</span>
                 <span class="n">old_data</span><span class="p">[</span><span class="s">&#39;delay&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_data</span><span class="p">[</span><span class="s">&#39;delay&#39;</span><span class="p">]</span>
-            <span class="k">if</span> <span class="n">new_data</span> <span class="o">!=</span> <span class="n">old_data</span> <span class="ow">or</span> <span class="n">now</span> <span class="o">&gt;</span> <span class="n">live_overdue</span><span class="p">:</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">next_live</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;live_data synchronised&#39;</span><span class="p">)</span>
-                <span class="n">result</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">new_data</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">pause</span> <span class="o">&gt;</span> <span class="mf">1.0</span><span class="p">:</span>
-                    <span class="c"># found change immediately on waking up - probably lost sync</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;live_data lost sync&#39;</span><span class="p">)</span>
-                    <span class="n">result</span> <span class="o">=</span> <span class="bp">None</span>
-                    <span class="n">next_live</span> <span class="o">=</span> <span class="bp">None</span>
-                    <span class="n">live_overdue</span> <span class="o">=</span> <span class="n">now</span> <span class="o">+</span> <span class="mf">3600.0</span>
-                <span class="k">elif</span> <span class="n">now</span> <span class="o">&gt;</span> <span class="n">live_overdue</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-                        <span class="s">&#39;live_data </span><span class="si">%.2f</span><span class="s">s overdue&#39;</span><span class="p">,</span> <span class="n">now</span> <span class="o">-</span> <span class="n">next_live</span><span class="p">)</span>
-                    <span class="n">result</span><span class="p">[</span><span class="s">&#39;idx&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">utcfromtimestamp</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">next_live</span><span class="p">))</span>
-                    <span class="n">next_live</span> <span class="o">+=</span> <span class="n">live_interval</span>
-                    <span class="n">live_overdue</span> <span class="o">=</span> <span class="n">next_live</span> <span class="o">+</span> <span class="mf">3.0</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">result</span><span class="p">[</span><span class="s">&#39;idx&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">utcfromtimestamp</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">now</span><span class="p">))</span>
-                    <span class="n">next_live</span> <span class="o">=</span> <span class="n">now</span> <span class="o">+</span> <span class="n">live_interval</span>
-                    <span class="n">live_overdue</span> <span class="o">=</span> <span class="n">next_live</span> <span class="o">+</span> <span class="mf">3.0</span>
-                <span class="k">if</span> <span class="n">result</span><span class="p">:</span>
-                    <span class="k">yield</span> <span class="n">result</span><span class="p">,</span> <span class="n">old_ptr</span><span class="p">,</span> <span class="bp">False</span>
-                <span class="n">old_data</span> <span class="o">=</span> <span class="n">new_data</span>
-                <span class="n">ptr_changed</span> <span class="o">=</span> <span class="bp">False</span>
             <span class="k">if</span> <span class="n">new_ptr</span> <span class="o">!=</span> <span class="n">old_ptr</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;live_data new ptr: </span><span class="si">%06x</span><span class="s">&#39;</span><span class="p">,</span> <span class="n">new_ptr</span><span class="p">)</span>
+                <span class="c"># re-read data, to be absolutely sure it&#39;s the last</span>
+                <span class="c"># logged data before the pointer was updated</span>
+                <span class="n">new_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="n">old_ptr</span><span class="p">,</span> <span class="n">unbuffered</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
                 <span class="n">result</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">new_data</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">next_log</span><span class="p">:</span>
-                    <span class="n">pred</span> <span class="o">=</span> <span class="n">next_log</span> <span class="o">+</span> <span class="nb">float</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s">&#39;delay&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span> <span class="o">-</span> <span class="n">log_interval</span>
-                <span class="k">if</span> <span class="n">pause</span> <span class="o">&gt;</span> <span class="mf">1.0</span><span class="p">:</span>
-                    <span class="c"># found change immediately on waking up - probably lost sync</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;live_data lost log sync&#39;</span><span class="p">)</span>
-                    <span class="n">result</span> <span class="o">=</span> <span class="bp">None</span>
-                    <span class="n">next_log</span> <span class="o">=</span> <span class="bp">None</span>
-                <span class="k">elif</span> <span class="n">next_log</span> <span class="ow">and</span> <span class="n">now</span> <span class="o">&gt;</span> <span class="n">pred</span> <span class="o">+</span> <span class="mf">3.0</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;live_data log </span><span class="si">%g</span><span class="s">s late&#39;</span><span class="p">,</span> <span class="n">now</span> <span class="o">-</span> <span class="n">pred</span><span class="p">)</span>
-                    <span class="n">result</span><span class="p">[</span><span class="s">&#39;idx&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">utcfromtimestamp</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">pred</span><span class="p">))</span>
-                    <span class="n">next_log</span> <span class="o">=</span> <span class="n">pred</span> <span class="o">+</span> <span class="n">log_interval</span>
-                <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">no_op_count</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="c"># normal in-sync behaviour</span>
                     <span class="n">result</span><span class="p">[</span><span class="s">&#39;idx&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">utcfromtimestamp</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">now</span><span class="p">))</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">next_log</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s">&#39;live_data log synchronised&#39;</span><span class="p">)</span>
                     <span class="n">next_log</span> <span class="o">=</span> <span class="n">now</span> <span class="o">+</span> <span class="n">log_interval</span>
+                <span class="k">elif</span> <span class="n">next_log</span><span class="p">:</span>
+                    <span class="c"># found change immediately on waking up</span>
+                    <span class="n">pred</span> <span class="o">=</span> <span class="n">next_log</span> <span class="o">+</span> <span class="nb">float</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s">&#39;delay&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span> <span class="o">-</span> <span class="n">log_interval</span>
+                    <span class="n">result</span><span class="p">[</span><span class="s">&#39;idx&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">utcfromtimestamp</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">pred</span><span class="p">))</span>
+                    <span class="k">if</span> <span class="n">now</span> <span class="o">&gt;</span> <span class="n">pred</span><span class="p">:</span>
+                        <span class="c"># woke up late</span>
+                        <span class="n">next_log</span> <span class="o">=</span> <span class="n">pred</span> <span class="o">+</span> <span class="n">log_interval</span>
+                    <span class="k">elif</span> <span class="n">now</span> <span class="o">&gt;</span> <span class="n">pred</span> <span class="o">-</span> <span class="mf">4.0</span><span class="p">:</span>
+                        <span class="c"># woke up just in time</span>
+                        <span class="n">next_log</span> <span class="o">=</span> <span class="n">now</span> <span class="o">+</span> <span class="n">log_interval</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s">&#39;live_data lost log sync&#39;</span><span class="p">)</span>
+                        <span class="n">result</span> <span class="o">=</span> <span class="bp">None</span>
+                        <span class="n">next_log</span> <span class="o">=</span> <span class="bp">None</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">result</span> <span class="o">=</span> <span class="bp">None</span>
                 <span class="k">if</span> <span class="n">result</span><span class="p">:</span>
                     <span class="k">yield</span> <span class="n">result</span><span class="p">,</span> <span class="n">old_ptr</span><span class="p">,</span> <span class="bp">True</span>
                 <span class="k">if</span> <span class="p">(</span><span class="n">new_ptr</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_start</span> <span class="ow">and</span>
@@ -413,10 +554,53 @@
                             <span class="k">break</span>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
-                                <span class="s">&#39;live_data unexpected ptr change </span><span class="si">%06x</span><span class="s"> -&gt; </span><span class="si">%06x</span><span class="s">&#39;</span><span class="p">,</span>
-                                <span class="n">old_ptr</span><span class="p">,</span> <span class="n">new_ptr</span><span class="p">)</span>
+                            <span class="s">&#39;live_data unexpected ptr change </span><span class="si">%06x</span><span class="s"> -&gt; </span><span class="si">%06x</span><span class="s">&#39;</span><span class="p">,</span>
+                            <span class="n">old_ptr</span><span class="p">,</span> <span class="n">new_ptr</span><span class="p">)</span>
                 <span class="n">old_ptr</span> <span class="o">=</span> <span class="n">new_ptr</span>
-                <span class="n">ptr_changed</span> <span class="o">=</span> <span class="bp">True</span></div>
+                <span class="n">old_data</span><span class="p">[</span><span class="s">&#39;delay&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">no_op_count</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">elif</span> <span class="n">new_data</span> <span class="o">!=</span> <span class="n">old_data</span><span class="p">:</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">new_data</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">no_op_count</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="c"># normal in-sync behaviour</span>
+                    <span class="n">result</span><span class="p">[</span><span class="s">&#39;idx&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">utcfromtimestamp</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">now</span><span class="p">))</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">next_live</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s">&#39;live_data synchronised&#39;</span><span class="p">)</span>
+                    <span class="n">next_live</span> <span class="o">=</span> <span class="n">now</span> <span class="o">+</span> <span class="n">live_interval</span>
+                <span class="k">elif</span> <span class="n">next_live</span><span class="p">:</span>
+                    <span class="c"># found change immediately on wake up</span>
+                    <span class="n">result</span><span class="p">[</span><span class="s">&#39;idx&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">utcfromtimestamp</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">next_live</span><span class="p">))</span>
+                    <span class="k">if</span> <span class="n">now</span> <span class="o">&gt;</span> <span class="n">next_live</span><span class="p">:</span>
+                        <span class="c"># woke up late</span>
+                        <span class="n">next_live</span> <span class="o">+=</span> <span class="n">live_interval</span>
+                    <span class="k">elif</span> <span class="n">now</span> <span class="o">&gt;</span> <span class="n">next_live</span> <span class="o">-</span> <span class="mf">2.0</span><span class="p">:</span>
+                        <span class="c"># woke up just in time</span>
+                        <span class="n">next_live</span> <span class="o">=</span> <span class="n">now</span> <span class="o">+</span> <span class="n">live_interval</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s">&#39;live_data lost sync&#39;</span><span class="p">)</span>
+                        <span class="n">result</span> <span class="o">=</span> <span class="bp">None</span>
+                        <span class="n">next_live</span> <span class="o">=</span> <span class="bp">None</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">result</span> <span class="o">=</span> <span class="bp">None</span>
+                <span class="k">if</span> <span class="n">next_live</span><span class="p">:</span>
+                    <span class="n">live_overdue</span> <span class="o">=</span> <span class="n">next_live</span> <span class="o">+</span> <span class="mf">6.0</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">live_overdue</span> <span class="o">=</span> <span class="n">now</span> <span class="o">+</span> <span class="mf">3600.0</span>
+                <span class="k">if</span> <span class="n">result</span><span class="p">:</span>
+                    <span class="k">yield</span> <span class="n">result</span><span class="p">,</span> <span class="n">old_ptr</span><span class="p">,</span> <span class="bp">False</span>
+                <span class="n">old_data</span> <span class="o">=</span> <span class="n">new_data</span>
+                <span class="n">no_op_count</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">elif</span> <span class="n">now</span> <span class="o">&gt;</span> <span class="n">live_overdue</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;live_data </span><span class="si">%.2f</span><span class="s">s overdue&#39;</span><span class="p">,</span> <span class="n">now</span> <span class="o">-</span> <span class="n">next_live</span><span class="p">)</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">new_data</span><span class="p">)</span>
+                <span class="n">result</span><span class="p">[</span><span class="s">&#39;idx&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">utcfromtimestamp</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">next_live</span><span class="p">))</span>
+                <span class="n">next_live</span> <span class="o">+=</span> <span class="n">live_interval</span>
+                <span class="n">live_overdue</span> <span class="o">=</span> <span class="n">next_live</span> <span class="o">+</span> <span class="mf">6.0</span>
+                <span class="k">yield</span> <span class="n">result</span><span class="p">,</span> <span class="n">old_ptr</span><span class="p">,</span> <span class="bp">False</span>
+                <span class="n">old_data</span> <span class="o">=</span> <span class="n">new_data</span>
+                <span class="n">no_op_count</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">no_op_count</span> <span class="o">+=</span> <span class="mi">1</span></div>
 <div class="viewcode-block" id="weather_station.inc_ptr"><a class="viewcode-back" href="../../api/pywws.WeatherStation.html#pywws.WeatherStation.weather_station.inc_ptr">[docs]</a>    <span class="k">def</span> <span class="nf">inc_ptr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ptr</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get next circular buffer data pointer.&quot;&quot;&quot;</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">ptr</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">reading_len</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">ws_type</span><span class="p">]</span>
@@ -483,28 +667,21 @@
         <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
             <span class="n">format</span> <span class="o">=</span> <span class="n">format</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">_decode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fixed_block</span><span class="p">,</span> <span class="n">format</span><span class="p">)</span></div>
-<div class="viewcode-block" id="weather_station.get_lo_fix_block"><a class="viewcode-back" href="../../api/pywws.WeatherStation.html#pywws.WeatherStation.weather_station.get_lo_fix_block">[docs]</a>    <span class="k">def</span> <span class="nf">get_lo_fix_block</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get the first 64 bytes of the raw &quot;fixed block&quot;.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">_decode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_read_fixed_block</span><span class="p">(</span><span class="mh">0x0040</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">lo_fix_format</span><span class="p">)</span></div>
     <span class="k">def</span> <span class="nf">_read_block</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ptr</span><span class="p">):</span>
         <span class="c"># Read block repeatedly until it&#39;s stable. This avoids getting corrupt</span>
         <span class="c"># data when the block is read as the station is updating it.</span>
-        <span class="n">buf_1</span> <span class="o">=</span> <span class="p">(</span><span class="n">ptr</span> <span class="o">/</span> <span class="mi">256</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xFF</span>
-        <span class="n">buf_2</span> <span class="o">=</span> <span class="n">ptr</span> <span class="o">&amp;</span> <span class="mh">0xFF</span>
         <span class="n">old_block</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">devh</span><span class="o">.</span><span class="n">controlMsg</span><span class="p">(</span><span class="n">usb</span><span class="o">.</span><span class="n">TYPE_CLASS</span> <span class="o">+</span> <span class="n">usb</span><span class="o">.</span><span class="n">RECIP_INTERFACE</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span>
-                                 <span class="p">[</span><span class="mh">0xA1</span><span class="p">,</span> <span class="n">buf_1</span><span class="p">,</span> <span class="n">buf_2</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0xA1</span><span class="p">,</span> <span class="n">buf_1</span><span class="p">,</span> <span class="n">buf_2</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">],</span>
-                                 <span class="n">value</span><span class="o">=</span><span class="mh">0x200</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">new_block</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">devh</span><span class="o">.</span><span class="n">interruptRead</span><span class="p">(</span><span class="mh">0x81</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
-                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">new_block</span><span class="p">)</span> <span class="o">==</span> <span class="mh">0x20</span><span class="p">:</span>
+                <span class="n">new_block</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cusb</span><span class="o">.</span><span class="n">read_data</span><span class="p">(</span><span class="n">ptr</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">new_block</span><span class="p">:</span>
                     <span class="k">if</span> <span class="n">new_block</span> <span class="o">==</span> <span class="n">old_block</span><span class="p">:</span>
                         <span class="k">break</span>
                     <span class="k">if</span> <span class="n">old_block</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">:</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;_read_block changing </span><span class="si">%06x</span><span class="s">&#39;</span><span class="p">,</span> <span class="n">ptr</span><span class="p">)</span>
                     <span class="n">old_block</span> <span class="o">=</span> <span class="n">new_block</span>
             <span class="k">except</span> <span class="n">usb</span><span class="o">.</span><span class="n">USBError</span><span class="p">,</span> <span class="n">ex</span><span class="p">:</span>
+                <span class="k">print</span> <span class="n">ex</span>
                 <span class="k">if</span> <span class="n">ex</span><span class="o">.</span><span class="n">args</span> <span class="o">!=</span> <span class="p">(</span><span class="s">&#39;No error&#39;</span><span class="p">,):</span>
                     <span class="k">raise</span>
         <span class="k">return</span> <span class="n">new_block</span>
@@ -519,21 +696,8 @@
                 <span class="s">&quot;Unrecognised &#39;magic number&#39; </span><span class="si">%02x</span><span class="s"> </span><span class="si">%02x</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">result</span>
     <span class="k">def</span> <span class="nf">_write_byte</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ptr</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="n">buf_1</span> <span class="o">=</span> <span class="p">(</span><span class="n">ptr</span> <span class="o">/</span> <span class="mi">256</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xFF</span>
-        <span class="n">buf_2</span> <span class="o">=</span> <span class="n">ptr</span> <span class="o">&amp;</span> <span class="mh">0xFF</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">devh</span><span class="o">.</span><span class="n">controlMsg</span><span class="p">(</span><span class="n">usb</span><span class="o">.</span><span class="n">TYPE_CLASS</span> <span class="o">+</span> <span class="n">usb</span><span class="o">.</span><span class="n">RECIP_INTERFACE</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span>
-                             <span class="p">[</span><span class="mh">0xA2</span><span class="p">,</span> <span class="n">buf_1</span><span class="p">,</span> <span class="n">buf_2</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0xA2</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">],</span>
-                             <span class="n">value</span><span class="o">=</span><span class="mh">0x200</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
-        <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">devh</span><span class="o">.</span><span class="n">interruptRead</span><span class="p">(</span><span class="mh">0x81</span><span class="p">,</span> <span class="mh">0x08</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
-                <span class="k">for</span> <span class="n">byte</span> <span class="ow">in</span> <span class="n">result</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">byte</span> <span class="o">!=</span> <span class="mh">0xA5</span><span class="p">:</span>
-                        <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s">&#39;_write_byte failed&#39;</span><span class="p">)</span>
-                <span class="k">break</span>
-            <span class="k">except</span> <span class="n">usb</span><span class="o">.</span><span class="n">USBError</span><span class="p">,</span> <span class="n">ex</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">ex</span><span class="o">.</span><span class="n">args</span> <span class="o">!=</span> <span class="p">(</span><span class="s">&#39;No error&#39;</span><span class="p">,):</span>
-                    <span class="k">raise</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">cusb</span><span class="o">.</span><span class="n">write_data</span><span class="p">(</span><span class="n">ptr</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s">&#39;_write_byte failed&#39;</span><span class="p">)</span>
 <div class="viewcode-block" id="weather_station.write_data"><a class="viewcode-back" href="../../api/pywws.WeatherStation.html#pywws.WeatherStation.weather_station.write_data">[docs]</a>    <span class="k">def</span> <span class="nf">write_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Write a set of single bytes to the weather station. Data must be an</span>
 <span class="sd">        array of (ptr, value) pairs.&quot;&quot;&quot;</span>
@@ -605,6 +769,8 @@
         <span class="s">&#39;display_3&#39;</span>     <span class="p">:</span> <span class="p">(</span><span class="mi">29</span><span class="p">,</span> <span class="s">&#39;bf&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;illuminance_fc&#39;</span><span class="p">,</span> <span class="s">&#39;bit1&#39;</span><span class="p">,</span> <span class="s">&#39;bit2&#39;</span><span class="p">,</span> <span class="s">&#39;bit3&#39;</span><span class="p">,</span>
                                       <span class="s">&#39;bit4&#39;</span><span class="p">,</span> <span class="s">&#39;bit5&#39;</span><span class="p">,</span> <span class="s">&#39;bit6&#39;</span><span class="p">,</span> <span class="s">&#39;bit7&#39;</span><span class="p">)),</span>
         <span class="s">&#39;current_pos&#39;</span>   <span class="p">:</span> <span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="s">&#39;us&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span>
+        <span class="p">}</span>
+    <span class="n">fixed_format</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s">&#39;rel_pressure&#39;</span>  <span class="p">:</span> <span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="s">&#39;us&#39;</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">),</span>
         <span class="s">&#39;abs_pressure&#39;</span>  <span class="p">:</span> <span class="p">(</span><span class="mi">34</span><span class="p">,</span> <span class="s">&#39;us&#39;</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">),</span>
         <span class="s">&#39;unknown_03&#39;</span>    <span class="p">:</span> <span class="p">(</span><span class="mi">36</span><span class="p">,</span> <span class="s">&#39;pb&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span>
@@ -615,8 +781,6 @@
         <span class="s">&#39;unknown_08&#39;</span>    <span class="p">:</span> <span class="p">(</span><span class="mi">41</span><span class="p">,</span> <span class="s">&#39;pb&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span>
         <span class="s">&#39;unknown_09&#39;</span>    <span class="p">:</span> <span class="p">(</span><span class="mi">42</span><span class="p">,</span> <span class="s">&#39;pb&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span>
         <span class="s">&#39;date_time&#39;</span>     <span class="p">:</span> <span class="p">(</span><span class="mi">43</span><span class="p">,</span> <span class="s">&#39;dt&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span>
-        <span class="p">}</span>
-    <span class="n">fixed_format</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s">&#39;unknown_18&#39;</span>    <span class="p">:</span> <span class="p">(</span><span class="mi">97</span><span class="p">,</span> <span class="s">&#39;pb&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span>
         <span class="s">&#39;unknown_19&#39;</span>    <span class="p">:</span> <span class="p">(</span><span class="mi">140</span><span class="p">,</span> <span class="s">&#39;pb&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span>
         <span class="s">&#39;alarm&#39;</span>         <span class="p">:</span> <span class="p">{</span>
@@ -709,7 +873,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">pywws v11.10 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">pywws v11.11 documentation</a> &raquo;</li>
           <li><a href="../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>

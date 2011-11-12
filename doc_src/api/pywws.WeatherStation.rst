@@ -38,7 +38,6 @@ Detailed API
       findDevice
       get_wind_dir_text
       pressure_trend_text
-      set_translation
       wind_chill
    
    .. rubric:: Classes
