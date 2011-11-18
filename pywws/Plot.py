@@ -264,12 +264,12 @@ set timefmt "%Y-%m-%dT%H:%M:%S"
         elif source == self.hourly_data:
             boxwidth = 2800
             start = source.before(start)
-            interval = timedelta(minutes=61)
+            interval = timedelta(minutes=90)
         elif source == self.monthly_data:
             boxwidth = 2800 * 24 * 30
-            interval = timedelta(days=32)
+            interval = timedelta(days=46)
         else:
-            interval = timedelta(hours=25)
+            interval = timedelta(hours=36)
             boxwidth = 2800 * 24
         boxwidth = eval(self.GetValue(plot, 'boxwidth', str(boxwidth)))
         result += 'set boxwidth %d\n' % boxwidth
@@ -308,7 +308,7 @@ set timefmt "%Y-%m-%dT%H:%M:%S"
                 idx += self.utcoffset
                 if not subplot.cummulative and subplot.last_idx:
                     if source == self.raw_data:
-                        interval = timedelta(minutes=1+data['delay'])
+                        interval = timedelta(minutes=((data['delay']*3)+1)/2)
                     if idx - subplot.last_idx > interval:
                         # missing data
                         subplot.dat.write('%s ?\n' % (idx.isoformat()))
