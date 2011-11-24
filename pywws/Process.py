@@ -344,6 +344,9 @@ class MonthAcc(object):
         self.max_lo = {}
         self.max_hi = {}
         self.max_ave = {}
+        self.wind_dir = list()
+        for i in range(16):
+            self.wind_dir.append(0.0)
         self.reset()
 
     def reset(self):
@@ -360,6 +363,11 @@ class MonthAcc(object):
             self.max_lo[i] = Minimum()
             self.max_hi[i] = Maximum()
             self.max_ave[i] = Average()
+        for i in range(16):
+            self.wind_dir[i] = 0.0
+        self.wind_acc = 0.0
+        self.wind_count = 0
+        self.wind_gust = (-1.0, None)
         self.rain = 0.0
         self.valid = False
 
@@ -379,6 +387,16 @@ class MonthAcc(object):
                 self.max_lo[i].add(temp, data['%s_max_t' % i])
                 self.max_hi[i].add(temp, data['%s_max_t' % i])
                 self.max_ave[i].add(temp)
+        wind_ave = data['wind_ave']
+        if wind_ave is not None:
+            wind_dir = data['wind_dir']
+            if wind_dir is not None:
+                self.wind_dir[wind_dir] += wind_ave
+            self.wind_acc += wind_ave
+            self.wind_count += 1
+        wind_gust = data['wind_gust']
+        if wind_gust is not None and wind_gust > self.wind_gust[0]:
+            self.wind_gust = (wind_gust, data['wind_gust_t'])
         if 'illuminance_ave' in data:
             self.has_illuminance = True
             for i in ('illuminance', 'uv'):
@@ -411,6 +429,27 @@ class MonthAcc(object):
              result['%s_max_lo_t' % i]) = self.max_lo[i].result()
             (result['%s_max_hi' % i],
              result['%s_max_hi_t' % i]) = self.max_hi[i].result()
+        if self.wind_count > 0:
+            # convert weighted wind directions to a vector
+            Ve = 0.0
+            Vn = 0.0
+            for dir in range(16):
+                val = self.wind_dir[dir]
+                Ve -= val * sin_LUT[dir]
+                Vn -= val * cos_LUT[dir]
+            # get direction of total vector
+            dir_ave = (math.degrees(math.atan2(Ve, Vn)) + 180.0) * 16.0 / 360.0
+            result['wind_dir'] = int(dir_ave + 0.5) % 16
+            wind_ave = self.wind_acc / self.wind_count
+            result['wind_ave'] = wind_ave
+        else:
+            result['wind_dir'] = None
+            result['wind_ave'] = None
+        if self.wind_gust[1]:
+            result['wind_gust'] = self.wind_gust[0]
+        else:
+            result['wind_gust'] = None
+        result['wind_gust_t'] = self.wind_gust[1]
         if self.has_illuminance:
             for i in ('illuminance', 'uv'):
                 result['%s_ave' % i] = self.ave[i].result()
