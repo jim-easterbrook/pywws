@@ -142,8 +142,8 @@ class HourAcc(object):
         self.wind_dir = list()
         for i in range(16):
             self.wind_dir.append(0.0)
-        self.copy_keys = ('idx', 'hum_in', 'temp_in', 'hum_out', 'temp_out',
-                          'abs_pressure', 'rel_pressure')
+        self.copy_keys = ['idx', 'hum_in', 'temp_in', 'hum_out', 'temp_out',
+                          'abs_pressure', 'rel_pressure']
         self.reset()
 
     def reset(self):
