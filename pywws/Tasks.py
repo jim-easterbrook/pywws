@@ -67,8 +67,7 @@ class RegularTasks(object):
             if not self.do_twitter(template, data):
                 OK = False
         if eval(self.params.get('live', 'underground', 'False')):
-            if not self.underground.RapidFire(data, True):
-                OK = False
+            self.underground.RapidFire(data, True)
         uploads = []
         for template in eval(self.params.get('live', 'plot', '[]')):
             upload = self.do_plot(template)
@@ -118,13 +117,11 @@ class RegularTasks(object):
                 break
         for section in sections:
             if eval(self.params.get(section, 'underground', 'False')):
-                if not self.underground.Upload(True):
-                    OK = False
+                self.underground.Upload(True)
                 break
         for section in sections:
             if eval(self.params.get(section, 'metoffice', 'False')):
-                if not self.metoffice.Upload(True):
-                    OK = False
+                self.metoffice.Upload(True)
                 break
         uploads = []
         for section in sections:
