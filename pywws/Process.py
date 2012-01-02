@@ -179,7 +179,7 @@ class HourAcc(object):
                     self.logger.warning(
                         '%s rain jump %.1f -> %.1f', str(idx), self.last_rain, rain)
                 else:
-                    self.rain += diff
+                    self.rain += max(0.0, diff)
             self.last_rain = rain
         # copy some current readings
         if 'illuminance' in data and not 'illuminance' in self.copy_keys:
