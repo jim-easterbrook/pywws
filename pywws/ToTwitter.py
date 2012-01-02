@@ -89,7 +89,9 @@ def main(argv=None):
     logger = ApplicationLogger(1)
     params = DataStore.params(args[0])
     Localisation.SetApplicationLanguage(params)
-    return ToTwitter(params).UploadFile(args[1])
+    if ToTwitter(params).UploadFile(args[1]):
+        return 0
+    return 3
 
 if __name__ == "__main__":
     sys.exit(main())
