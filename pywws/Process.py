@@ -246,7 +246,8 @@ class DayAcc(object):
         self.wind_count = 0
         self.wind_gust = (-1.0, None)
         self.rain = 0.0
-        for i in ('temp_in', 'temp_out'):
+        for i in ('temp_in', 'temp_out', 'hum_in', 'hum_out',
+                  'abs_pressure', 'rel_pressure'):
             self.ave[i] = Average()
             self.max[i] = Maximum()
             self.min[i] = Minimum()
@@ -270,6 +271,12 @@ class DayAcc(object):
                 else:
                     # nighttime min temperature
                     self.min[i].add(temp, idx)
+        for i in ('hum_in', 'hum_out', 'abs_pressure', 'rel_pressure'):
+            value = data[i]
+            if value is not None:
+                self.ave[i].add(value)
+                self.max[i].add(value, idx)
+                self.min[i].add(value, idx)
         if 'illuminance' in data:
             self.has_illuminance = True
             for i in ('illuminance', 'uv'):
@@ -316,7 +323,8 @@ class DayAcc(object):
             self.retval['wind_gust'] = None
         self.retval['wind_gust_t'] = self.wind_gust[1]
         self.retval['rain'] = self.rain
-        for i in ('temp_in', 'temp_out'):
+        for i in ('temp_in', 'temp_out', 'hum_in', 'hum_out',
+                  'abs_pressure', 'rel_pressure'):
             self.retval['%s_ave' % i] = self.ave[i].result()
             (self.retval['%s_max' % i],
              self.retval['%s_max_t' % i]) = self.max[i].result()
@@ -338,6 +346,8 @@ class MonthAcc(object):
     def __init__(self):
         self.has_illuminance = False
         self.ave = {}
+        self.min = {}
+        self.max = {}
         self.min_lo = {}
         self.min_hi = {}
         self.min_ave = {}
@@ -358,6 +368,10 @@ class MonthAcc(object):
             self.max_lo[i] = Minimum()
             self.max_hi[i] = Maximum()
             self.max_ave[i] = Average()
+        for i in ('hum_in', 'hum_out', 'abs_pressure', 'rel_pressure'):
+            self.ave[i] = Average()
+            self.max[i] = Maximum()
+            self.min[i] = Minimum()
         for i in ('illuminance', 'uv'):
             self.ave[i] = Average()
             self.max_lo[i] = Minimum()
@@ -387,6 +401,16 @@ class MonthAcc(object):
                 self.max_lo[i].add(temp, data['%s_max_t' % i])
                 self.max_hi[i].add(temp, data['%s_max_t' % i])
                 self.max_ave[i].add(temp)
+        for i in ('hum_in', 'hum_out', 'abs_pressure', 'rel_pressure'):
+            value = data['%s_ave' % i]
+            if value is not None:
+                self.ave[i].add(value)
+            value = data['%s_min' % i]
+            if value is not None:
+                self.min[i].add(value, data['%s_min_t' % i])
+            value = data['%s_max' % i]
+            if value is not None:
+                self.max[i].add(value, data['%s_max_t' % i])
         wind_ave = data['wind_ave']
         if wind_ave is not None:
             wind_dir = data['wind_dir']
@@ -429,6 +453,12 @@ class MonthAcc(object):
              result['%s_max_lo_t' % i]) = self.max_lo[i].result()
             (result['%s_max_hi' % i],
              result['%s_max_hi_t' % i]) = self.max_hi[i].result()
+        for i in ('hum_in', 'hum_out', 'abs_pressure', 'rel_pressure'):
+            result['%s_ave' % i] = self.ave[i].result()
+            (result['%s_max' % i],
+             result['%s_max_t' % i]) = self.max[i].result()
+            (result['%s_min' % i],
+             result['%s_min_t' % i]) = self.min[i].result()
         if self.wind_count > 0:
             # convert weighted wind directions to a vector
             Ve = 0.0
