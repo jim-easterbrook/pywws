@@ -1,0 +1,34 @@
+[
+#timezone local#
+#raw#
+#jump -7#
+#jump 1#
+#loop 6#
+  {
+      "Date": "#idx "%m/%d/%Y %H:%M"#",
+      "Time": " #idx "%H:%M %Z"# ",
+      "TempOut": #temp_out "%.1f"#,
+      "FeelsLike": #calc "apparent_temp(data['temp_out'], data['hum_out'], data['wind_ave'])" "%.1f"#,
+      "HumidityOut": #hum_out "%d"#,
+      "WindDirection": " #wind_dir "%s" "-" "wind_dir_text[x]"# ",
+      "WindAvg": #wind_ave "%.0f" "" "x"#,
+      "WindGust": #wind_gust "%.0f" "" "x"#,
+      "Rain": #calc "data['rain']-prevdata['rain']" "%0.1f"#,
+      "AbsPressure": #abs_pressure "%.1f"#
+  },
+#jump 1#
+#endloop#
+#jump 1#
+  {
+      "Date": "#idx "%m/%d/%Y %H:%M"#",
+      "Time": " #idx "%H:%M %Z"# ",
+      "TempOut": #temp_out "%.1f"#,
+      "FeelsLike": #calc "apparent_temp(data['temp_out'], data['hum_out'], data['wind_ave'])" "%.1f"#,
+      "HumidityOut": #hum_out "%d"#,
+      "WindDirection": " #wind_dir "%s" "-" "wind_dir_text[x]"# ",
+      "WindAvg": #wind_ave "%.0f" "" "x"#,
+      "WindGust": #wind_gust "%.0f" "" "x"#,
+      "Rain": #calc "data['rain']-prevdata['rain']" "%0.1f"#,
+      "AbsPressure": #abs_pressure "%.1f"#
+  }
+]
