@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pywws.ToTwitter &mdash; pywws v11.11 documentation</title>
+    <title>pywws.ToTwitter &mdash; pywws v12.01 documentation</title>
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '11.11',
+        VERSION:     '12.01',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="shortcut icon" href="../../_static/pywws_logo.ico"/>
-    <link rel="top" title="pywws v11.11 documentation" href="../../index.html" />
+    <link rel="top" title="pywws v12.01 documentation" href="../../index.html" />
     <link rel="up" title="Module code" href="../index.html" /> 
   </head>
   <body>
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">pywws v11.11 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">pywws v12.01 documentation</a> &raquo;</li>
           <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -138,7 +138,9 @@
     <span class="n">logger</span> <span class="o">=</span> <span class="n">ApplicationLogger</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">params</span> <span class="o">=</span> <span class="n">DataStore</span><span class="o">.</span><span class="n">params</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
     <span class="n">Localisation</span><span class="o">.</span><span class="n">SetApplicationLanguage</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">ToTwitter</span><span class="p">(</span><span class="n">params</span><span class="p">)</span><span class="o">.</span><span class="n">UploadFile</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">ToTwitter</span><span class="p">(</span><span class="n">params</span><span class="p">)</span><span class="o">.</span><span class="n">UploadFile</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+        <span class="k">return</span> <span class="mi">0</span>
+    <span class="k">return</span> <span class="mi">3</span>
 </div>
 <span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&quot;__main__&quot;</span><span class="p">:</span>
     <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
@@ -175,7 +177,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">pywws v11.11 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">pywws v12.01 documentation</a> &raquo;</li>
           <li><a href="../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>

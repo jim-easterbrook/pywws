@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pywws.DataStore &mdash; pywws v11.11 documentation</title>
+    <title>pywws.DataStore &mdash; pywws v12.01 documentation</title>
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '11.11',
+        VERSION:     '12.01',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="shortcut icon" href="../../_static/pywws_logo.ico"/>
-    <link rel="top" title="pywws v11.11 documentation" href="../../index.html" />
+    <link rel="top" title="pywws v12.01 documentation" href="../../index.html" />
     <link rel="up" title="Module code" href="../index.html" /> 
   </head>
   <body>
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">pywws v11.11 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">pywws v12.01 documentation</a> &raquo;</li>
           <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -464,39 +464,69 @@
         <span class="n">core_store</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root_dir</span><span class="p">,</span> <span class="s">&#39;daily&#39;</span><span class="p">))</span>
     <span class="n">key_list</span> <span class="o">=</span> <span class="p">[</span>
         <span class="s">&#39;idx&#39;</span><span class="p">,</span> <span class="s">&#39;start&#39;</span><span class="p">,</span>
+        <span class="s">&#39;hum_out_ave&#39;</span><span class="p">,</span>
+        <span class="s">&#39;hum_out_min&#39;</span><span class="p">,</span> <span class="s">&#39;hum_out_min_t&#39;</span><span class="p">,</span> <span class="s">&#39;hum_out_max&#39;</span><span class="p">,</span> <span class="s">&#39;hum_out_max_t&#39;</span><span class="p">,</span>
         <span class="s">&#39;temp_out_ave&#39;</span><span class="p">,</span>
         <span class="s">&#39;temp_out_min&#39;</span><span class="p">,</span> <span class="s">&#39;temp_out_min_t&#39;</span><span class="p">,</span> <span class="s">&#39;temp_out_max&#39;</span><span class="p">,</span> <span class="s">&#39;temp_out_max_t&#39;</span><span class="p">,</span>
+        <span class="s">&#39;hum_in_ave&#39;</span><span class="p">,</span>
+        <span class="s">&#39;hum_in_min&#39;</span><span class="p">,</span> <span class="s">&#39;hum_in_min_t&#39;</span><span class="p">,</span> <span class="s">&#39;hum_in_max&#39;</span><span class="p">,</span> <span class="s">&#39;hum_in_max_t&#39;</span><span class="p">,</span>
         <span class="s">&#39;temp_in_ave&#39;</span><span class="p">,</span>
         <span class="s">&#39;temp_in_min&#39;</span><span class="p">,</span> <span class="s">&#39;temp_in_min_t&#39;</span><span class="p">,</span> <span class="s">&#39;temp_in_max&#39;</span><span class="p">,</span> <span class="s">&#39;temp_in_max_t&#39;</span><span class="p">,</span>
+        <span class="s">&#39;abs_pressure_ave&#39;</span><span class="p">,</span>
+        <span class="s">&#39;abs_pressure_min&#39;</span><span class="p">,</span> <span class="s">&#39;abs_pressure_min_t&#39;</span><span class="p">,</span>
+        <span class="s">&#39;abs_pressure_max&#39;</span><span class="p">,</span> <span class="s">&#39;abs_pressure_max_t&#39;</span><span class="p">,</span>
+        <span class="s">&#39;rel_pressure_ave&#39;</span><span class="p">,</span>
+        <span class="s">&#39;rel_pressure_min&#39;</span><span class="p">,</span> <span class="s">&#39;rel_pressure_min_t&#39;</span><span class="p">,</span>
+        <span class="s">&#39;rel_pressure_max&#39;</span><span class="p">,</span> <span class="s">&#39;rel_pressure_max_t&#39;</span><span class="p">,</span>
         <span class="s">&#39;wind_ave&#39;</span><span class="p">,</span> <span class="s">&#39;wind_gust&#39;</span><span class="p">,</span> <span class="s">&#39;wind_gust_t&#39;</span><span class="p">,</span> <span class="s">&#39;wind_dir&#39;</span><span class="p">,</span>
         <span class="s">&#39;rain&#39;</span><span class="p">,</span>
         <span class="s">&#39;illuminance_ave&#39;</span><span class="p">,</span> <span class="s">&#39;illuminance_max&#39;</span><span class="p">,</span> <span class="s">&#39;illuminance_max_t&#39;</span><span class="p">,</span>
         <span class="s">&#39;uv_ave&#39;</span><span class="p">,</span> <span class="s">&#39;uv_max&#39;</span><span class="p">,</span> <span class="s">&#39;uv_max_t&#39;</span><span class="p">,</span>
         <span class="p">]</span>
     <span class="n">conv</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s">&#39;idx&#39;</span>               <span class="p">:</span> <span class="n">safestrptime</span><span class="p">,</span>
-        <span class="s">&#39;start&#39;</span>             <span class="p">:</span> <span class="n">safestrptime</span><span class="p">,</span>
-        <span class="s">&#39;temp_out_ave&#39;</span>      <span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-        <span class="s">&#39;temp_out_min&#39;</span>      <span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-        <span class="s">&#39;temp_out_min_t&#39;</span>    <span class="p">:</span> <span class="n">safestrptime</span><span class="p">,</span>
-        <span class="s">&#39;temp_out_max&#39;</span>      <span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-        <span class="s">&#39;temp_out_max_t&#39;</span>    <span class="p">:</span> <span class="n">safestrptime</span><span class="p">,</span>
-        <span class="s">&#39;temp_in_ave&#39;</span>       <span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-        <span class="s">&#39;temp_in_min&#39;</span>       <span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-        <span class="s">&#39;temp_in_min_t&#39;</span>     <span class="p">:</span> <span class="n">safestrptime</span><span class="p">,</span>
-        <span class="s">&#39;temp_in_max&#39;</span>       <span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-        <span class="s">&#39;temp_in_max_t&#39;</span>     <span class="p">:</span> <span class="n">safestrptime</span><span class="p">,</span>
-        <span class="s">&#39;wind_ave&#39;</span>          <span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-        <span class="s">&#39;wind_gust&#39;</span>         <span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-        <span class="s">&#39;wind_gust_t&#39;</span>       <span class="p">:</span> <span class="n">safestrptime</span><span class="p">,</span>
-        <span class="s">&#39;wind_dir&#39;</span>          <span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-        <span class="s">&#39;rain&#39;</span>              <span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-        <span class="s">&#39;illuminance_ave&#39;</span>   <span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-        <span class="s">&#39;illuminance_max&#39;</span>   <span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-        <span class="s">&#39;illuminance_max_t&#39;</span> <span class="p">:</span> <span class="n">safestrptime</span><span class="p">,</span>
-        <span class="s">&#39;uv_ave&#39;</span>            <span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-        <span class="s">&#39;uv_max&#39;</span>            <span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-        <span class="s">&#39;uv_max_t&#39;</span>          <span class="p">:</span> <span class="n">safestrptime</span><span class="p">,</span>
+        <span class="s">&#39;idx&#39;</span>                <span class="p">:</span> <span class="n">safestrptime</span><span class="p">,</span>
+        <span class="s">&#39;start&#39;</span>              <span class="p">:</span> <span class="n">safestrptime</span><span class="p">,</span>
+        <span class="s">&#39;hum_out_ave&#39;</span>        <span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="s">&#39;hum_out_min&#39;</span>        <span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="s">&#39;hum_out_min_t&#39;</span>      <span class="p">:</span> <span class="n">safestrptime</span><span class="p">,</span>
+        <span class="s">&#39;hum_out_max&#39;</span>        <span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="s">&#39;hum_out_max_t&#39;</span>      <span class="p">:</span> <span class="n">safestrptime</span><span class="p">,</span>
+        <span class="s">&#39;temp_out_ave&#39;</span>       <span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="s">&#39;temp_out_min&#39;</span>       <span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="s">&#39;temp_out_min_t&#39;</span>     <span class="p">:</span> <span class="n">safestrptime</span><span class="p">,</span>
+        <span class="s">&#39;temp_out_max&#39;</span>       <span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="s">&#39;temp_out_max_t&#39;</span>     <span class="p">:</span> <span class="n">safestrptime</span><span class="p">,</span>
+        <span class="s">&#39;hum_in_ave&#39;</span>         <span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="s">&#39;hum_in_min&#39;</span>         <span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="s">&#39;hum_in_min_t&#39;</span>       <span class="p">:</span> <span class="n">safestrptime</span><span class="p">,</span>
+        <span class="s">&#39;hum_in_max&#39;</span>         <span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="s">&#39;hum_in_max_t&#39;</span>       <span class="p">:</span> <span class="n">safestrptime</span><span class="p">,</span>
+        <span class="s">&#39;temp_in_ave&#39;</span>        <span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="s">&#39;temp_in_min&#39;</span>        <span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="s">&#39;temp_in_min_t&#39;</span>      <span class="p">:</span> <span class="n">safestrptime</span><span class="p">,</span>
+        <span class="s">&#39;temp_in_max&#39;</span>        <span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="s">&#39;temp_in_max_t&#39;</span>      <span class="p">:</span> <span class="n">safestrptime</span><span class="p">,</span>
+        <span class="s">&#39;abs_pressure_ave&#39;</span>   <span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="s">&#39;abs_pressure_min&#39;</span>   <span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="s">&#39;abs_pressure_min_t&#39;</span> <span class="p">:</span> <span class="n">safestrptime</span><span class="p">,</span>
+        <span class="s">&#39;abs_pressure_max&#39;</span>   <span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="s">&#39;abs_pressure_max_t&#39;</span> <span class="p">:</span> <span class="n">safestrptime</span><span class="p">,</span>
+        <span class="s">&#39;rel_pressure_ave&#39;</span>   <span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="s">&#39;rel_pressure_min&#39;</span>   <span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="s">&#39;rel_pressure_min_t&#39;</span> <span class="p">:</span> <span class="n">safestrptime</span><span class="p">,</span>
+        <span class="s">&#39;rel_pressure_max&#39;</span>   <span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="s">&#39;rel_pressure_max_t&#39;</span> <span class="p">:</span> <span class="n">safestrptime</span><span class="p">,</span>
+        <span class="s">&#39;wind_ave&#39;</span>           <span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="s">&#39;wind_gust&#39;</span>          <span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="s">&#39;wind_gust_t&#39;</span>        <span class="p">:</span> <span class="n">safestrptime</span><span class="p">,</span>
+        <span class="s">&#39;wind_dir&#39;</span>           <span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="s">&#39;rain&#39;</span>               <span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="s">&#39;illuminance_ave&#39;</span>    <span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="s">&#39;illuminance_max&#39;</span>    <span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="s">&#39;illuminance_max_t&#39;</span>  <span class="p">:</span> <span class="n">safestrptime</span><span class="p">,</span>
+        <span class="s">&#39;uv_ave&#39;</span>             <span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="s">&#39;uv_max&#39;</span>             <span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="s">&#39;uv_max_t&#39;</span>           <span class="p">:</span> <span class="n">safestrptime</span><span class="p">,</span>
         <span class="p">}</span>
     <span class="k">def</span> <span class="nf">_get_cache_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target_date</span><span class="p">):</span>
         <span class="c"># one file per month</span>
@@ -515,16 +545,27 @@
         <span class="n">core_store</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root_dir</span><span class="p">,</span> <span class="s">&#39;monthly&#39;</span><span class="p">))</span>
     <span class="n">key_list</span> <span class="o">=</span> <span class="p">[</span>
         <span class="s">&#39;idx&#39;</span><span class="p">,</span> <span class="s">&#39;start&#39;</span><span class="p">,</span>
+        <span class="s">&#39;hum_out_ave&#39;</span><span class="p">,</span>
+        <span class="s">&#39;hum_out_min&#39;</span><span class="p">,</span> <span class="s">&#39;hum_out_min_t&#39;</span><span class="p">,</span> <span class="s">&#39;hum_out_max&#39;</span><span class="p">,</span> <span class="s">&#39;hum_out_max_t&#39;</span><span class="p">,</span>
         <span class="s">&#39;temp_out_ave&#39;</span><span class="p">,</span>
         <span class="s">&#39;temp_out_min_lo&#39;</span><span class="p">,</span> <span class="s">&#39;temp_out_min_lo_t&#39;</span><span class="p">,</span>
         <span class="s">&#39;temp_out_min_hi&#39;</span><span class="p">,</span> <span class="s">&#39;temp_out_min_hi_t&#39;</span><span class="p">,</span> <span class="s">&#39;temp_out_min_ave&#39;</span><span class="p">,</span>
         <span class="s">&#39;temp_out_max_lo&#39;</span><span class="p">,</span> <span class="s">&#39;temp_out_max_lo_t&#39;</span><span class="p">,</span>
         <span class="s">&#39;temp_out_max_hi&#39;</span><span class="p">,</span> <span class="s">&#39;temp_out_max_hi_t&#39;</span><span class="p">,</span> <span class="s">&#39;temp_out_max_ave&#39;</span><span class="p">,</span>
+        <span class="s">&#39;hum_in_ave&#39;</span><span class="p">,</span>
+        <span class="s">&#39;hum_in_min&#39;</span><span class="p">,</span> <span class="s">&#39;hum_in_min_t&#39;</span><span class="p">,</span> <span class="s">&#39;hum_in_max&#39;</span><span class="p">,</span> <span class="s">&#39;hum_in_max_t&#39;</span><span class="p">,</span>
         <span class="s">&#39;temp_in_ave&#39;</span><span class="p">,</span>
         <span class="s">&#39;temp_in_min_lo&#39;</span><span class="p">,</span> <span class="s">&#39;temp_in_min_lo_t&#39;</span><span class="p">,</span>
         <span class="s">&#39;temp_in_min_hi&#39;</span><span class="p">,</span> <span class="s">&#39;temp_in_min_hi_t&#39;</span><span class="p">,</span> <span class="s">&#39;temp_in_min_ave&#39;</span><span class="p">,</span>
         <span class="s">&#39;temp_in_max_lo&#39;</span><span class="p">,</span> <span class="s">&#39;temp_in_max_lo_t&#39;</span><span class="p">,</span>
         <span class="s">&#39;temp_in_max_hi&#39;</span><span class="p">,</span> <span class="s">&#39;temp_in_max_hi_t&#39;</span><span class="p">,</span> <span class="s">&#39;temp_in_max_ave&#39;</span><span class="p">,</span>
+        <span class="s">&#39;abs_pressure_ave&#39;</span><span class="p">,</span>
+        <span class="s">&#39;abs_pressure_min&#39;</span><span class="p">,</span> <span class="s">&#39;abs_pressure_min_t&#39;</span><span class="p">,</span>
+        <span class="s">&#39;abs_pressure_max&#39;</span><span class="p">,</span> <span class="s">&#39;abs_pressure_max_t&#39;</span><span class="p">,</span>
+        <span class="s">&#39;rel_pressure_ave&#39;</span><span class="p">,</span>
+        <span class="s">&#39;rel_pressure_min&#39;</span><span class="p">,</span> <span class="s">&#39;rel_pressure_min_t&#39;</span><span class="p">,</span>
+        <span class="s">&#39;rel_pressure_max&#39;</span><span class="p">,</span> <span class="s">&#39;rel_pressure_max_t&#39;</span><span class="p">,</span>
+        <span class="s">&#39;wind_ave&#39;</span><span class="p">,</span> <span class="s">&#39;wind_gust&#39;</span><span class="p">,</span> <span class="s">&#39;wind_gust_t&#39;</span><span class="p">,</span> <span class="s">&#39;wind_dir&#39;</span><span class="p">,</span>
         <span class="s">&#39;rain&#39;</span><span class="p">,</span>
         <span class="s">&#39;illuminance_ave&#39;</span><span class="p">,</span>
         <span class="s">&#39;illuminance_max_lo&#39;</span><span class="p">,</span> <span class="s">&#39;illuminance_max_lo_t&#39;</span><span class="p">,</span>
@@ -535,6 +576,11 @@
     <span class="n">conv</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s">&#39;idx&#39;</span>                  <span class="p">:</span> <span class="n">safestrptime</span><span class="p">,</span>
         <span class="s">&#39;start&#39;</span>                <span class="p">:</span> <span class="n">safestrptime</span><span class="p">,</span>
+        <span class="s">&#39;hum_out_ave&#39;</span>          <span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="s">&#39;hum_out_min&#39;</span>          <span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="s">&#39;hum_out_min_t&#39;</span>        <span class="p">:</span> <span class="n">safestrptime</span><span class="p">,</span>
+        <span class="s">&#39;hum_out_max&#39;</span>          <span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="s">&#39;hum_out_max_t&#39;</span>        <span class="p">:</span> <span class="n">safestrptime</span><span class="p">,</span>
         <span class="s">&#39;temp_out_ave&#39;</span>         <span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
         <span class="s">&#39;temp_out_min_lo&#39;</span>      <span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
         <span class="s">&#39;temp_out_min_lo_t&#39;</span>    <span class="p">:</span> <span class="n">safestrptime</span><span class="p">,</span>
@@ -546,6 +592,11 @@
         <span class="s">&#39;temp_out_max_hi&#39;</span>      <span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
         <span class="s">&#39;temp_out_max_hi_t&#39;</span>    <span class="p">:</span> <span class="n">safestrptime</span><span class="p">,</span>
         <span class="s">&#39;temp_out_max_ave&#39;</span>     <span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="s">&#39;hum_in_ave&#39;</span>           <span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="s">&#39;hum_in_min&#39;</span>           <span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="s">&#39;hum_in_min_t&#39;</span>         <span class="p">:</span> <span class="n">safestrptime</span><span class="p">,</span>
+        <span class="s">&#39;hum_in_max&#39;</span>           <span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="s">&#39;hum_in_max_t&#39;</span>         <span class="p">:</span> <span class="n">safestrptime</span><span class="p">,</span>
         <span class="s">&#39;temp_in_ave&#39;</span>          <span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
         <span class="s">&#39;temp_in_min_lo&#39;</span>       <span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
         <span class="s">&#39;temp_in_min_lo_t&#39;</span>     <span class="p">:</span> <span class="n">safestrptime</span><span class="p">,</span>
@@ -557,6 +608,20 @@
         <span class="s">&#39;temp_in_max_hi&#39;</span>       <span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
         <span class="s">&#39;temp_in_max_hi_t&#39;</span>     <span class="p">:</span> <span class="n">safestrptime</span><span class="p">,</span>
         <span class="s">&#39;temp_in_max_ave&#39;</span>      <span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="s">&#39;abs_pressure_ave&#39;</span>     <span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="s">&#39;abs_pressure_min&#39;</span>     <span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="s">&#39;abs_pressure_min_t&#39;</span>   <span class="p">:</span> <span class="n">safestrptime</span><span class="p">,</span>
+        <span class="s">&#39;abs_pressure_max&#39;</span>     <span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="s">&#39;abs_pressure_max_t&#39;</span>   <span class="p">:</span> <span class="n">safestrptime</span><span class="p">,</span>
+        <span class="s">&#39;rel_pressure_ave&#39;</span>     <span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="s">&#39;rel_pressure_min&#39;</span>     <span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="s">&#39;rel_pressure_min_t&#39;</span>   <span class="p">:</span> <span class="n">safestrptime</span><span class="p">,</span>
+        <span class="s">&#39;rel_pressure_max&#39;</span>     <span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="s">&#39;rel_pressure_max_t&#39;</span>   <span class="p">:</span> <span class="n">safestrptime</span><span class="p">,</span>
+        <span class="s">&#39;wind_ave&#39;</span>             <span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="s">&#39;wind_gust&#39;</span>            <span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="s">&#39;wind_gust_t&#39;</span>          <span class="p">:</span> <span class="n">safestrptime</span><span class="p">,</span>
+        <span class="s">&#39;wind_dir&#39;</span>             <span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="s">&#39;rain&#39;</span>                 <span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
         <span class="s">&#39;illuminance_ave&#39;</span>      <span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
         <span class="s">&#39;illuminance_max_lo&#39;</span>   <span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
@@ -611,7 +676,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">pywws v11.11 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">pywws v12.01 documentation</a> &raquo;</li>
           <li><a href="../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>

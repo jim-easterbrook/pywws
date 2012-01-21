@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pywws.Process &mdash; pywws v11.11 documentation</title>
+    <title>pywws.Process &mdash; pywws v12.01 documentation</title>
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '11.11',
+        VERSION:     '12.01',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="shortcut icon" href="../../_static/pywws_logo.ico"/>
-    <link rel="top" title="pywws v11.11 documentation" href="../../index.html" />
+    <link rel="top" title="pywws v12.01 documentation" href="../../index.html" />
     <link rel="up" title="Module code" href="../index.html" /> 
   </head>
   <body>
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">pywws v11.11 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">pywws v12.01 documentation</a> &raquo;</li>
           <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -191,8 +191,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">wind_dir</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">16</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">wind_dir</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">copy_keys</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;idx&#39;</span><span class="p">,</span> <span class="s">&#39;hum_in&#39;</span><span class="p">,</span> <span class="s">&#39;temp_in&#39;</span><span class="p">,</span> <span class="s">&#39;hum_out&#39;</span><span class="p">,</span> <span class="s">&#39;temp_out&#39;</span><span class="p">,</span>
-                          <span class="s">&#39;abs_pressure&#39;</span><span class="p">,</span> <span class="s">&#39;rel_pressure&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">copy_keys</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;idx&#39;</span><span class="p">,</span> <span class="s">&#39;hum_in&#39;</span><span class="p">,</span> <span class="s">&#39;temp_in&#39;</span><span class="p">,</span> <span class="s">&#39;hum_out&#39;</span><span class="p">,</span> <span class="s">&#39;temp_out&#39;</span><span class="p">,</span>
+                          <span class="s">&#39;abs_pressure&#39;</span><span class="p">,</span> <span class="s">&#39;rel_pressure&#39;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
 
 <div class="viewcode-block" id="HourAcc.reset"><a class="viewcode-back" href="../../api/pywws.Process.html#pywws.Process.HourAcc.reset">[docs]</a>    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -228,7 +228,7 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
                         <span class="s">&#39;</span><span class="si">%s</span><span class="s"> rain jump </span><span class="si">%.1f</span><span class="s"> -&gt; </span><span class="si">%.1f</span><span class="s">&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">idx</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_rain</span><span class="p">,</span> <span class="n">rain</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">rain</span> <span class="o">+=</span> <span class="n">diff</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">rain</span> <span class="o">+=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">diff</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">last_rain</span> <span class="o">=</span> <span class="n">rain</span>
         <span class="c"># copy some current readings</span>
         <span class="k">if</span> <span class="s">&#39;illuminance&#39;</span> <span class="ow">in</span> <span class="n">data</span> <span class="ow">and</span> <span class="ow">not</span> <span class="s">&#39;illuminance&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy_keys</span><span class="p">:</span>
@@ -295,7 +295,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">wind_count</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">wind_gust</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">rain</span> <span class="o">=</span> <span class="mf">0.0</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;temp_in&#39;</span><span class="p">,</span> <span class="s">&#39;temp_out&#39;</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;temp_in&#39;</span><span class="p">,</span> <span class="s">&#39;temp_out&#39;</span><span class="p">,</span> <span class="s">&#39;hum_in&#39;</span><span class="p">,</span> <span class="s">&#39;hum_out&#39;</span><span class="p">,</span>
+                  <span class="s">&#39;abs_pressure&#39;</span><span class="p">,</span> <span class="s">&#39;rel_pressure&#39;</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">ave</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">Average</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">max</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">Maximum</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">min</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">Minimum</span><span class="p">()</span>
@@ -319,6 +320,12 @@
                 <span class="k">else</span><span class="p">:</span>
                     <span class="c"># nighttime min temperature</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">min</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">temp</span><span class="p">,</span> <span class="n">idx</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;hum_in&#39;</span><span class="p">,</span> <span class="s">&#39;hum_out&#39;</span><span class="p">,</span> <span class="s">&#39;abs_pressure&#39;</span><span class="p">,</span> <span class="s">&#39;rel_pressure&#39;</span><span class="p">):</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ave</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">max</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">idx</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">min</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">idx</span><span class="p">)</span>
         <span class="k">if</span> <span class="s">&#39;illuminance&#39;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">has_illuminance</span> <span class="o">=</span> <span class="bp">True</span>
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;illuminance&#39;</span><span class="p">,</span> <span class="s">&#39;uv&#39;</span><span class="p">):</span>
@@ -365,7 +372,8 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">retval</span><span class="p">[</span><span class="s">&#39;wind_gust&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">retval</span><span class="p">[</span><span class="s">&#39;wind_gust_t&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wind_gust</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">retval</span><span class="p">[</span><span class="s">&#39;rain&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rain</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;temp_in&#39;</span><span class="p">,</span> <span class="s">&#39;temp_out&#39;</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;temp_in&#39;</span><span class="p">,</span> <span class="s">&#39;temp_out&#39;</span><span class="p">,</span> <span class="s">&#39;hum_in&#39;</span><span class="p">,</span> <span class="s">&#39;hum_out&#39;</span><span class="p">,</span>
+                  <span class="s">&#39;abs_pressure&#39;</span><span class="p">,</span> <span class="s">&#39;rel_pressure&#39;</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">retval</span><span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">_ave&#39;</span> <span class="o">%</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ave</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
             <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">retval</span><span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">_max&#39;</span> <span class="o">%</span> <span class="n">i</span><span class="p">],</span>
              <span class="bp">self</span><span class="o">.</span><span class="n">retval</span><span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">_max_t&#39;</span> <span class="o">%</span> <span class="n">i</span><span class="p">])</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
@@ -387,12 +395,17 @@
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">has_illuminance</span> <span class="o">=</span> <span class="bp">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ave</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">min</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">min_lo</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">min_hi</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">min_ave</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">max_lo</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">max_hi</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">max_ave</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wind_dir</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">16</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">wind_dir</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
 
 <div class="viewcode-block" id="MonthAcc.reset"><a class="viewcode-back" href="../../api/pywws.Process.html#pywws.Process.MonthAcc.reset">[docs]</a>    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -404,11 +417,20 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">max_lo</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">Minimum</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">max_hi</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">Maximum</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">max_ave</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">Average</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;hum_in&#39;</span><span class="p">,</span> <span class="s">&#39;hum_out&#39;</span><span class="p">,</span> <span class="s">&#39;abs_pressure&#39;</span><span class="p">,</span> <span class="s">&#39;rel_pressure&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ave</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">Average</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">max</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">Maximum</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">min</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">Minimum</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;illuminance&#39;</span><span class="p">,</span> <span class="s">&#39;uv&#39;</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">ave</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">Average</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">max_lo</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">Minimum</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">max_hi</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">Maximum</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">max_ave</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">Average</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">16</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">wind_dir</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wind_acc</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wind_count</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wind_gust</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">rain</span> <span class="o">=</span> <span class="mf">0.0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">valid</span> <span class="o">=</span> <span class="bp">False</span>
 </div>
@@ -428,6 +450,26 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">max_lo</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">temp</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">_max_t&#39;</span> <span class="o">%</span> <span class="n">i</span><span class="p">])</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">max_hi</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">temp</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">_max_t&#39;</span> <span class="o">%</span> <span class="n">i</span><span class="p">])</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">max_ave</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">temp</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;hum_in&#39;</span><span class="p">,</span> <span class="s">&#39;hum_out&#39;</span><span class="p">,</span> <span class="s">&#39;abs_pressure&#39;</span><span class="p">,</span> <span class="s">&#39;rel_pressure&#39;</span><span class="p">):</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">_ave&#39;</span> <span class="o">%</span> <span class="n">i</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ave</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">_min&#39;</span> <span class="o">%</span> <span class="n">i</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">min</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">_min_t&#39;</span> <span class="o">%</span> <span class="n">i</span><span class="p">])</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">_max&#39;</span> <span class="o">%</span> <span class="n">i</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">max</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">_max_t&#39;</span> <span class="o">%</span> <span class="n">i</span><span class="p">])</span>
+        <span class="n">wind_ave</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;wind_ave&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">wind_ave</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">wind_dir</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;wind_dir&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">wind_dir</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">wind_dir</span><span class="p">[</span><span class="n">wind_dir</span><span class="p">]</span> <span class="o">+=</span> <span class="n">wind_ave</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">wind_acc</span> <span class="o">+=</span> <span class="n">wind_ave</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">wind_count</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">wind_gust</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;wind_gust&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">wind_gust</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">wind_gust</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">wind_gust</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">wind_gust</span> <span class="o">=</span> <span class="p">(</span><span class="n">wind_gust</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;wind_gust_t&#39;</span><span class="p">])</span>
         <span class="k">if</span> <span class="s">&#39;illuminance_ave&#39;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">has_illuminance</span> <span class="o">=</span> <span class="bp">True</span>
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;illuminance&#39;</span><span class="p">,</span> <span class="s">&#39;uv&#39;</span><span class="p">):</span>
@@ -460,6 +502,33 @@
              <span class="n">result</span><span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">_max_lo_t&#39;</span> <span class="o">%</span> <span class="n">i</span><span class="p">])</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_lo</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
             <span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">_max_hi&#39;</span> <span class="o">%</span> <span class="n">i</span><span class="p">],</span>
              <span class="n">result</span><span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">_max_hi_t&#39;</span> <span class="o">%</span> <span class="n">i</span><span class="p">])</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_hi</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;hum_in&#39;</span><span class="p">,</span> <span class="s">&#39;hum_out&#39;</span><span class="p">,</span> <span class="s">&#39;abs_pressure&#39;</span><span class="p">,</span> <span class="s">&#39;rel_pressure&#39;</span><span class="p">):</span>
+            <span class="n">result</span><span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">_ave&#39;</span> <span class="o">%</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ave</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
+            <span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">_max&#39;</span> <span class="o">%</span> <span class="n">i</span><span class="p">],</span>
+             <span class="n">result</span><span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">_max_t&#39;</span> <span class="o">%</span> <span class="n">i</span><span class="p">])</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
+            <span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">_min&#39;</span> <span class="o">%</span> <span class="n">i</span><span class="p">],</span>
+             <span class="n">result</span><span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">_min_t&#39;</span> <span class="o">%</span> <span class="n">i</span><span class="p">])</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">min</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">wind_count</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c"># convert weighted wind directions to a vector</span>
+            <span class="n">Ve</span> <span class="o">=</span> <span class="mf">0.0</span>
+            <span class="n">Vn</span> <span class="o">=</span> <span class="mf">0.0</span>
+            <span class="k">for</span> <span class="nb">dir</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">16</span><span class="p">):</span>
+                <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wind_dir</span><span class="p">[</span><span class="nb">dir</span><span class="p">]</span>
+                <span class="n">Ve</span> <span class="o">-=</span> <span class="n">val</span> <span class="o">*</span> <span class="n">sin_LUT</span><span class="p">[</span><span class="nb">dir</span><span class="p">]</span>
+                <span class="n">Vn</span> <span class="o">-=</span> <span class="n">val</span> <span class="o">*</span> <span class="n">cos_LUT</span><span class="p">[</span><span class="nb">dir</span><span class="p">]</span>
+            <span class="c"># get direction of total vector</span>
+            <span class="n">dir_ave</span> <span class="o">=</span> <span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">atan2</span><span class="p">(</span><span class="n">Ve</span><span class="p">,</span> <span class="n">Vn</span><span class="p">))</span> <span class="o">+</span> <span class="mf">180.0</span><span class="p">)</span> <span class="o">*</span> <span class="mf">16.0</span> <span class="o">/</span> <span class="mf">360.0</span>
+            <span class="n">result</span><span class="p">[</span><span class="s">&#39;wind_dir&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">dir_ave</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">%</span> <span class="mi">16</span>
+            <span class="n">wind_ave</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wind_acc</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">wind_count</span>
+            <span class="n">result</span><span class="p">[</span><span class="s">&#39;wind_ave&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">wind_ave</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">result</span><span class="p">[</span><span class="s">&#39;wind_dir&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="n">result</span><span class="p">[</span><span class="s">&#39;wind_ave&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">wind_gust</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="n">result</span><span class="p">[</span><span class="s">&#39;wind_gust&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wind_gust</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">result</span><span class="p">[</span><span class="s">&#39;wind_gust&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="n">result</span><span class="p">[</span><span class="s">&#39;wind_gust_t&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wind_gust</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_illuminance</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;illuminance&#39;</span><span class="p">,</span> <span class="s">&#39;uv&#39;</span><span class="p">):</span>
                 <span class="n">result</span><span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">_ave&#39;</span> <span class="o">%</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ave</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
@@ -746,7 +815,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">pywws v11.11 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">pywws v12.01 documentation</a> &raquo;</li>
           <li><a href="../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>

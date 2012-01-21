@@ -2,9 +2,15 @@
 pywws.LogData
 *************
 
+Save weather station history to file
 
-Introduction
-============
+   usage: python LogData.py [options] data_dir
+   options are:
+    -h   | --help     display this help
+    -c   | --clear    clear weather station's memory full indicator
+    -s n | --sync n   set quality of synchronisation to weather station (0 or 1)
+    -v   | --verbose  increase number of informative messages
+   data_dir is the root directory of the weather data
 
 This program / module gets data from the weather station's memory and
 stores it to file. Each time it is run it fetches all data that is
@@ -25,21 +31,6 @@ clock instead. A networked computer should have its clock set
 accurately by ntp, whereas the weather station's clock could be set to
 anything.
 
-
-Detailed API
-============
-
-Save weather station history to file.
-
-usage: python LogData.py [options] data_dir options are:
-
-   -h | --help     display this help -c | --clear    clear weather
-   station's memory full indicator -s | --sync     increase quality of
-   synchronisation to weather station -v | --verbose  increase number
-   of informative messages
-
-data_dir is the root directory of the weather data
-
 -[ Functions ]-
 
 +------------+--------------------------------------------------------------------------------------------+
@@ -53,6 +44,6 @@ data_dir is the root directory of the weather data
 | argv])     |                                                                                            |
 +------------+--------------------------------------------------------------------------------------------+
 
-pywws.LogData.LogData(params, raw_data, sync=0, clear=False)
+pywws.LogData.LogData(params, raw_data, sync=None, clear=False)
 
 pywws.LogData.main(argv=None)

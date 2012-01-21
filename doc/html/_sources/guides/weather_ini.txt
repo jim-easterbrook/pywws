@@ -35,6 +35,7 @@ config: miscellaneous system configuration
  day end hour = 21
  gnuplot encoding = iso_8859_1
  language = en
+ logdata sync = 1
 
 day end hour is the end of the "`meteorological day
 <http://en.wikipedia.org/wiki/Meteorological_day>`_", in local time without
@@ -51,6 +52,10 @@ the computer's default language as set by the LANG environment variable.
 The available languages are those in the locale subdirectory of your pywws
 installation. If you set any other language, pywws will fall back to using
 English.
+
+logdata sync sets the quality of synchronisation used by
+:doc:`../api/pywws.LogData`. Set it to 0 for fast & inaccurate or 1 for
+slower but precise.
 
 paths: directories in which templates etc. are stored
 -----------------------------------------------------

@@ -1,16 +1,45 @@
 #!/usr/bin/env python
 
-"""
-Save weather station history to file.
+"""Save weather station history to file
+::
 
-usage: python LogData.py [options] data_dir
-options are:
+%s
+
+This program / module gets data from the weather station's memory and
+stores it to file. Each time it is run it fetches all data that is
+newer than the last stored data, so it only needs to be run every hour
+or so. As the weather station stores at least two weeks' readings,
+LogData.py could be run quite infrequently if you don't need
+up-to-date data.
+
+There is no date or time information in the raw weather station data,
+so LogData.py creates a time stamp for each reading. It uses the
+computer's clock, rather than the weather station clock which can not
+be read accurately by the computer. A networked computer should have
+its clock set accurately by `ntp
+<http://en.wikipedia.org/wiki/Network_Time_Protocol>`_.
+
+Synchronisation with the weather station is achieved by waiting for a
+change in the current data. There are two levels of synchronisation,
+set by the config file or a command line option. Level 0 is quicker,
+but sets the seconds value of the logged data time stamps to zero.
+Level 1 waits until the weather station stores a new logged record,
+and gets time stamps accurate to a couple of seconds.
+
+"""
+
+__docformat__ = "restructuredtext en"
+__usage__ = """
+ usage: python LogData.py [options] data_dir
+ options are:
   -h   | --help     display this help
   -c   | --clear    clear weather station's memory full indicator
   -s n | --sync n   set quality of synchronisation to weather station (0 or 1)
   -v   | --verbose  increase number of informative messages
-data_dir is the root directory of the weather data
+ data_dir is the root directory of the weather data
 """
+__doc__ %= __usage__
+__usage__ = __doc__.split('\n')[0] + __usage__
 
 from datetime import datetime, timedelta
 import getopt
@@ -93,6 +122,7 @@ def LogData(params, raw_data, sync=None, clear=False):
         logger.info('Clearing weather station memory')
         ptr = ws.fixed_format['data_count'][0]
         ws.write_data([(ptr, 1), (ptr+1, 0)])
+
 def main(argv=None):
     if argv is None:
         argv = sys.argv
@@ -101,7 +131,7 @@ def main(argv=None):
             argv[1:], "hcs:v", ('help', 'clear', 'sync=', 'verbose'))
     except getopt.error, msg:
         print >>sys.stderr, 'Error: %s\n' % msg
-        print >>sys.stderr, __doc__.strip()
+        print >>sys.stderr, __usage__.strip()
         return 1
     # process options
     clear = False
@@ -109,7 +139,7 @@ def main(argv=None):
     verbose = 0
     for o, a in opts:
         if o in ('-h', '--help'):
-            print __doc__.strip()
+            print __usage__.strip()
             return 0
         elif o in ('-c', '--clear'):
             clear = True
@@ -120,12 +150,13 @@ def main(argv=None):
     # check arguments
     if len(args) != 1:
         print >>sys.stderr, 'Error: 1 argument required\n'
-        print >>sys.stderr, __doc__.strip()
+        print >>sys.stderr, __usage__.strip()
         return 2
     logger = ApplicationLogger(verbose)
     root_dir = args[0]
     return LogData(
         DataStore.params(root_dir), DataStore.data_store(root_dir),
         sync=sync, clear=clear)
+
 if __name__ == "__main__":
     sys.exit(main())

@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>weather.ini - configuration file format &mdash; pywws v11.11 documentation</title>
+    <title>weather.ini - configuration file format &mdash; pywws v12.01 documentation</title>
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '11.11',
+        VERSION:     '12.01',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="shortcut icon" href="../_static/pywws_logo.ico"/>
-    <link rel="top" title="pywws v11.11 documentation" href="../index.html" />
+    <link rel="top" title="pywws v12.01 documentation" href="../index.html" />
     <link rel="up" title="User guides" href="index.html" />
     <link rel="next" title="Python programs and modules" href="../api/index.html" />
     <link rel="prev" title="How to make a language file for pywws" href="language.html" /> 
@@ -44,7 +44,7 @@
         <li class="right" >
           <a href="language.html" title="How to make a language file for pywws"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">pywws v11.11 documentation</a> &raquo;</li>
+        <li><a href="../index.html">pywws v12.01 documentation</a> &raquo;</li>
           <li><a href="index.html" accesskey="U">User guides</a> &raquo;</li> 
       </ul>
     </div>  
@@ -87,7 +87,8 @@ pywws will initialise the entries to sensible values.</p>
 <div class="highlight-python"><pre>[config]
 day end hour = 21
 gnuplot encoding = iso_8859_1
-language = en</pre>
+language = en
+logdata sync = 1</pre>
 </div>
 <p>day end hour is the end of the &#8220;<a class="reference external" href="http://en.wikipedia.org/wiki/Meteorological_day">meteorological day</a>&#8220;, in local time without
 daylight savings time. Typical values are 21, 9, or 24.</p>
@@ -101,6 +102,9 @@ the computer&#8217;s default language as set by the LANG environment variable.
 The available languages are those in the locale subdirectory of your pywws
 installation. If you set any other language, pywws will fall back to using
 English.</p>
+<p>logdata sync sets the quality of synchronisation used by
+<a class="reference internal" href="../api/pywws.LogData.html"><em>pywws.LogData</em></a>. Set it to 0 for fast &amp; inaccurate or 1 for
+slower but precise.</p>
 </div>
 <div class="section" id="paths-directories-in-which-templates-etc-are-stored">
 <h2>paths: directories in which templates etc. are stored<a class="headerlink" href="#paths-directories-in-which-templates-etc-are-stored" title="Permalink to this headline">¶</a></h2>
@@ -363,7 +367,7 @@ last update = 2011-10-21 12:48:00</pre>
         <li class="right" >
           <a href="language.html" title="How to make a language file for pywws"
              >previous</a> |</li>
-        <li><a href="../index.html">pywws v11.11 documentation</a> &raquo;</li>
+        <li><a href="../index.html">pywws v12.01 documentation</a> &raquo;</li>
           <li><a href="index.html" >User guides</a> &raquo;</li> 
       </ul>
     </div>

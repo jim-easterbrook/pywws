@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pywws.LogData &mdash; pywws v11.11 documentation</title>
+    <title>pywws.LogData &mdash; pywws v12.01 documentation</title>
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '11.11',
+        VERSION:     '12.01',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="shortcut icon" href="../../_static/pywws_logo.ico"/>
-    <link rel="top" title="pywws v11.11 documentation" href="../../index.html" />
+    <link rel="top" title="pywws v12.01 documentation" href="../../index.html" />
     <link rel="up" title="Module code" href="../index.html" /> 
   </head>
   <body>
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">pywws v11.11 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">pywws v12.01 documentation</a> &raquo;</li>
           <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -54,10 +54,10 @@
 
 <span class="sd">usage: python LogData.py [options] data_dir</span>
 <span class="sd">options are:</span>
-<span class="sd">  -h | --help     display this help</span>
-<span class="sd">  -c | --clear    clear weather station&#39;s memory full indicator</span>
-<span class="sd">  -s | --sync     increase quality of synchronisation to weather station</span>
-<span class="sd">  -v | --verbose  increase number of informative messages</span>
+<span class="sd">  -h   | --help     display this help</span>
+<span class="sd">  -c   | --clear    clear weather station&#39;s memory full indicator</span>
+<span class="sd">  -s n | --sync n   set quality of synchronisation to weather station (0 or 1)</span>
+<span class="sd">  -v   | --verbose  increase number of informative messages</span>
 <span class="sd">data_dir is the root directory of the weather data</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
@@ -73,7 +73,7 @@
 <span class="kn">from</span> <span class="nn">TimeZone</span> <span class="kn">import</span> <span class="n">Local</span>
 <span class="kn">import</span> <span class="nn">WeatherStation</span>
 
-<div class="viewcode-block" id="LogData"><a class="viewcode-back" href="../../api/pywws.LogData.html#pywws.LogData.LogData">[docs]</a><span class="k">def</span> <span class="nf">LogData</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">raw_data</span><span class="p">,</span> <span class="n">sync</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">clear</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+<div class="viewcode-block" id="LogData"><a class="viewcode-back" href="../../api/pywws.LogData.html#pywws.LogData.LogData">[docs]</a><span class="k">def</span> <span class="nf">LogData</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">raw_data</span><span class="p">,</span> <span class="n">sync</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">clear</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
     <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s">&#39;pywws.LogData&#39;</span><span class="p">)</span>
     <span class="c"># connect to weather station</span>
     <span class="n">ws_type</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;config&#39;</span><span class="p">,</span> <span class="s">&#39;ws type&#39;</span><span class="p">,</span> <span class="s">&#39;1080&#39;</span><span class="p">)</span>
@@ -82,6 +82,9 @@
     <span class="k">if</span> <span class="ow">not</span> <span class="n">fixed_block</span><span class="p">:</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&quot;Invalid data from weather station&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="mi">3</span>
+    <span class="c"># get sync config value</span>
+    <span class="k">if</span> <span class="n">sync</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">sync</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;config&#39;</span><span class="p">,</span> <span class="s">&#39;logdata sync&#39;</span><span class="p">,</span> <span class="s">&#39;1&#39;</span><span class="p">))</span>
     <span class="c"># get time to go back to</span>
     <span class="n">last_stored</span> <span class="o">=</span> <span class="n">raw_data</span><span class="o">.</span><span class="n">before</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">max</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">last_stored</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
@@ -144,14 +147,14 @@
         <span class="n">argv</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">opts</span><span class="p">,</span> <span class="n">args</span> <span class="o">=</span> <span class="n">getopt</span><span class="o">.</span><span class="n">getopt</span><span class="p">(</span>
-            <span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="s">&quot;hcsv&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;help&#39;</span><span class="p">,</span> <span class="s">&#39;clear&#39;</span><span class="p">,</span> <span class="s">&#39;sync&#39;</span><span class="p">,</span> <span class="s">&#39;verbose&#39;</span><span class="p">))</span>
+            <span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="s">&quot;hcs:v&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;help&#39;</span><span class="p">,</span> <span class="s">&#39;clear&#39;</span><span class="p">,</span> <span class="s">&#39;sync=&#39;</span><span class="p">,</span> <span class="s">&#39;verbose&#39;</span><span class="p">))</span>
     <span class="k">except</span> <span class="n">getopt</span><span class="o">.</span><span class="n">error</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span>
         <span class="k">print</span> <span class="o">&gt;&gt;</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&#39;Error: </span><span class="si">%s</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">msg</span>
         <span class="k">print</span> <span class="o">&gt;&gt;</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">,</span> <span class="n">__doc__</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
         <span class="k">return</span> <span class="mi">1</span>
     <span class="c"># process options</span>
     <span class="n">clear</span> <span class="o">=</span> <span class="bp">False</span>
-    <span class="n">sync</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">sync</span> <span class="o">=</span> <span class="bp">None</span>
     <span class="n">verbose</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="k">for</span> <span class="n">o</span><span class="p">,</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">opts</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">o</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;-h&#39;</span><span class="p">,</span> <span class="s">&#39;--help&#39;</span><span class="p">):</span>
@@ -160,7 +163,7 @@
         <span class="k">elif</span> <span class="n">o</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;-c&#39;</span><span class="p">,</span> <span class="s">&#39;--clear&#39;</span><span class="p">):</span>
             <span class="n">clear</span> <span class="o">=</span> <span class="bp">True</span>
         <span class="k">elif</span> <span class="n">o</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;-s&#39;</span><span class="p">,</span> <span class="s">&#39;--sync&#39;</span><span class="p">):</span>
-            <span class="n">sync</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">sync</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">o</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;-v&#39;</span><span class="p">,</span> <span class="s">&#39;--verbose&#39;</span><span class="p">):</span>
             <span class="n">verbose</span> <span class="o">+=</span> <span class="mi">1</span>
     <span class="c"># check arguments</span>
@@ -208,7 +211,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">pywws v11.11 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">pywws v12.01 documentation</a> &raquo;</li>
           <li><a href="../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>

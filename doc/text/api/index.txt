@@ -114,8 +114,6 @@ Contents:
   * Detailed API
 * pywws.Tasks
 * pywws.LogData
-  * Introduction
-  * Detailed API
 * pywws.Process
 * pywws.calib
   * Calibrate raw weather station data

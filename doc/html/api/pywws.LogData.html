@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pywws.LogData &mdash; pywws v11.11 documentation</title>
+    <title>pywws.LogData &mdash; pywws v12.01 documentation</title>
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '11.11',
+        VERSION:     '12.01',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="shortcut icon" href="../_static/pywws_logo.ico"/>
-    <link rel="top" title="pywws v11.11 documentation" href="../index.html" />
+    <link rel="top" title="pywws v12.01 documentation" href="../index.html" />
     <link rel="up" title="Python programs and modules" href="index.html" />
     <link rel="next" title="pywws.Process" href="pywws.Process.html" />
     <link rel="prev" title="pywws.Tasks" href="pywws.Tasks.html" /> 
@@ -44,7 +44,7 @@
         <li class="right" >
           <a href="pywws.Tasks.html" title="pywws.Tasks"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">pywws v11.11 documentation</a> &raquo;</li>
+        <li><a href="../index.html">pywws v12.01 documentation</a> &raquo;</li>
           <li><a href="index.html" accesskey="U">Python programs and modules</a> &raquo;</li> 
       </ul>
     </div>  
@@ -54,25 +54,34 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="pywws-logdata">
-<h1>pywws.LogData<a class="headerlink" href="#pywws-logdata" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="introduction">
-<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
-<p>This program / module gets data from the weather station&#8217;s memory and stores it to file. Each time it is run it fetches all data that is newer than the last stored data, so it only needs to be run every hour or so. As the weather station stores at least two weeks&#8217; readings, LogData.py could be run quite infrequently if you don&#8217;t need up-to-date data.</p>
-<p>There is no date or time information in the raw weather station data, so LogData.py waits until the &#8220;age&#8221; of the station&#8217;s current data changes, then uses that time instant to calculate when the readings were stored. This process can be off by up to a minute, so stored data may not have uniform intervals between readings.</p>
-<p>The weather station does have a real time clock (without seconds, unfortunately) but LogData.py ignores this and uses the computer&#8217;s own clock instead. A networked computer should have its clock set accurately by <a class="reference external" href="http://en.wikipedia.org/wiki/Network_Time_Protocol">ntp</a>, whereas the weather station&#8217;s clock could be set to anything.</p>
+  <div class="section" id="module-pywws.LogData">
+<span id="pywws-logdata"></span><h1>pywws.LogData<a class="headerlink" href="#module-pywws.LogData" title="Permalink to this headline">¶</a></h1>
+<p>Save weather station history to file</p>
+<div class="highlight-python"><pre>usage: python LogData.py [options] data_dir
+options are:
+ -h   | --help     display this help
+ -c   | --clear    clear weather station's memory full indicator
+ -s n | --sync n   set quality of synchronisation to weather station (0 or 1)
+ -v   | --verbose  increase number of informative messages
+data_dir is the root directory of the weather data</pre>
 </div>
-<div class="section" id="module-pywws.LogData">
-<span id="detailed-api"></span><h2>Detailed API<a class="headerlink" href="#module-pywws.LogData" title="Permalink to this headline">¶</a></h2>
-<p>Save weather station history to file.</p>
-<p>usage: python LogData.py [options] data_dir
-options are:</p>
-<blockquote>
--h | &#8211;help     display this help
--c | &#8211;clear    clear weather station&#8217;s memory full indicator
--s | &#8211;sync     increase quality of synchronisation to weather station
--v | &#8211;verbose  increase number of informative messages</blockquote>
-<p>data_dir is the root directory of the weather data</p>
+<p>This program / module gets data from the weather station&#8217;s memory and
+stores it to file. Each time it is run it fetches all data that is
+newer than the last stored data, so it only needs to be run every hour
+or so. As the weather station stores at least two weeks&#8217; readings,
+LogData.py could be run quite infrequently if you don&#8217;t need
+up-to-date data.</p>
+<p>There is no date or time information in the raw weather station data,
+so LogData.py creates a time stamp for each reading. It uses the
+computer&#8217;s clock, rather than the weather station clock which can not
+be read accurately by the computer. A networked computer should have
+its clock set accurately by <a class="reference external" href="http://en.wikipedia.org/wiki/Network_Time_Protocol">ntp</a>.</p>
+<p>Synchronisation with the weather station is achieved by waiting for a
+change in the current data. There are two levels of synchronisation,
+set by the config file or a command line option. Level 0 is quicker,
+but sets the seconds value of the logged data time stamps to zero.
+Level 1 waits until the weather station stores a new logged record,
+and gets time stamps accurate to a couple of seconds.</p>
 <p class="rubric">Functions</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -90,7 +99,7 @@ options are:</p>
 </table>
 <dl class="function">
 <dt id="pywws.LogData.LogData">
-<tt class="descclassname">pywws.LogData.</tt><tt class="descname">LogData</tt><big>(</big><em>params</em>, <em>raw_data</em>, <em>sync=0</em>, <em>clear=False</em><big>)</big><a class="reference internal" href="../_modules/pywws/LogData.html#LogData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.LogData.LogData" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">pywws.LogData.</tt><tt class="descname">LogData</tt><big>(</big><em>params</em>, <em>raw_data</em>, <em>sync=None</em>, <em>clear=False</em><big>)</big><a class="reference internal" href="../_modules/pywws/LogData.html#LogData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.LogData.LogData" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
@@ -99,7 +108,6 @@ options are:</p>
 <dd></dd></dl>
 
 </div>
-</div>
 
 
           </div>
@@ -107,15 +115,6 @@ options are:</p>
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="../index.html">Table Of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">pywws.LogData</a><ul>
-<li><a class="reference internal" href="#introduction">Introduction</a></li>
-<li><a class="reference internal" href="#module-pywws.LogData">Detailed API</a></li>
-</ul>
-</li>
-</ul>
-
   <h4>Previous topic</h4>
   <p class="topless"><a href="pywws.Tasks.html"
                         title="previous chapter">pywws.Tasks</a></p>
@@ -154,7 +153,7 @@ options are:</p>
         <li class="right" >
           <a href="pywws.Tasks.html" title="pywws.Tasks"
              >previous</a> |</li>
-        <li><a href="../index.html">pywws v11.11 documentation</a> &raquo;</li>
+        <li><a href="../index.html">pywws v12.01 documentation</a> &raquo;</li>
           <li><a href="index.html" >Python programs and modules</a> &raquo;</li> 
       </ul>
     </div>
