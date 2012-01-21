@@ -5,10 +5,10 @@ Save weather station history to file.
 
 usage: python LogData.py [options] data_dir
 options are:
-  -h | --help     display this help
-  -c | --clear    clear weather station's memory full indicator
-  -s | --sync     increase quality of synchronisation to weather station
-  -v | --verbose  increase number of informative messages
+  -h   | --help     display this help
+  -c   | --clear    clear weather station's memory full indicator
+  -s n | --sync n   set quality of synchronisation to weather station (0 or 1)
+  -v   | --verbose  increase number of informative messages
 data_dir is the root directory of the weather data
 """
 
@@ -24,7 +24,7 @@ from Logger import ApplicationLogger
 from TimeZone import Local
 import WeatherStation
 
-def LogData(params, raw_data, sync=0, clear=False):
+def LogData(params, raw_data, sync=None, clear=False):
     logger = logging.getLogger('pywws.LogData')
     # connect to weather station
     ws_type = params.get('config', 'ws type', '1080')
@@ -33,6 +33,9 @@ def LogData(params, raw_data, sync=0, clear=False):
     if not fixed_block:
         logger.error("Invalid data from weather station")
         return 3
+    # get sync config value
+    if sync is None:
+        sync = int(params.get('config', 'logdata sync', '1'))
     # get time to go back to
     last_stored = raw_data.before(datetime.max)
     if last_stored == None:
@@ -95,14 +98,14 @@ def main(argv=None):
         argv = sys.argv
     try:
         opts, args = getopt.getopt(
-            argv[1:], "hcsv", ('help', 'clear', 'sync', 'verbose'))
+            argv[1:], "hcs:v", ('help', 'clear', 'sync=', 'verbose'))
     except getopt.error, msg:
         print >>sys.stderr, 'Error: %s\n' % msg
         print >>sys.stderr, __doc__.strip()
         return 1
     # process options
     clear = False
-    sync = 0
+    sync = None
     verbose = 0
     for o, a in opts:
         if o in ('-h', '--help'):
@@ -111,7 +114,7 @@ def main(argv=None):
         elif o in ('-c', '--clear'):
             clear = True
         elif o in ('-s', '--sync'):
-            sync += 1
+            sync = int(a)
         elif o in ('-v', '--verbose'):
             verbose += 1
     # check arguments
