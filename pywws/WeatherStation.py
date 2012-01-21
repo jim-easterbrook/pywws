@@ -285,13 +285,7 @@ class CUSBDrive(object):
         :rtype: list(int)
 
         """
-        try:
-            result = self.devh.interruptRead(0x81, 8, 1200)
-        except usb.USBError, ex:
-            self.logger.exception(ex)
-            if ex.args != ('No error',):
-                raise
-            result = None
+        result = self.devh.interruptRead(0x81, 8, 1200)
         if result is None or len(result) < 8:
             self.logger.error('_read_data failed')
             return None
@@ -443,7 +437,8 @@ class weather_station(object):
                 pause = 0.0
             elif next_log:
                 pause = min(next_log - 4.0, next_live - 2.0) - time.time()
-            elif old_data['delay'] < read_period - 1:
+            elif (old_data['delay'] is not None and
+                  old_data['delay'] < read_period - 1):
                 pause = (next_live - 2.0) - time.time()
             else:
                 pause = 0.0
@@ -457,7 +452,8 @@ class weather_station(object):
             if no_op_count > 1 and next_log and next_log < now - 12.0:
                 self.logger.warning('live_data log extended')
                 next_log += 60.0
-            if new_data['delay'] < read_period:
+            if (new_data['delay'] is not None and
+                new_data['delay'] < read_period):
                 # pointer won't have changed
                 new_ptr = old_ptr
             else:
@@ -479,7 +475,9 @@ class weather_station(object):
                     next_log = now + log_interval
                 elif next_log:
                     # found change immediately on waking up
-                    pred = next_log + float(result['delay'] * 60) - log_interval
+                    pred = next_log
+                    if result['delay']:
+                        pred += float(result['delay'] * 60) - log_interval
                     result['idx'] = datetime.utcfromtimestamp(int(pred))
                     if now > pred:
                         # woke up late
@@ -623,18 +621,13 @@ class weather_station(object):
         # data when the block is read as the station is updating it.
         old_block = None
         while True:
-            try:
-                new_block = self.cusb.read_data(ptr)
-                if new_block:
-                    if new_block == old_block:
-                        break
-                    if old_block != None:
-                        self.logger.debug('_read_block changing %06x', ptr)
-                    old_block = new_block
-            except usb.USBError, ex:
-                print ex
-                if ex.args != ('No error',):
-                    raise
+            new_block = self.cusb.read_data(ptr)
+            if new_block:
+                if new_block == old_block:
+                    break
+                if old_block != None:
+                    self.logger.debug('_read_block changing %06x', ptr)
+                old_block = new_block
         return new_block
     def _read_fixed_block(self, hi=0x0100):
         result = []
