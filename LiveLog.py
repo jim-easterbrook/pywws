@@ -94,7 +94,10 @@ def LiveLog(data_dir):
             raw_data[now] = data
             count = 1
             # catchup any missing data
-            last_date = now - timedelta(minutes=data['delay'])
+            if data['delay'] is None:
+                last_date = datetime.min
+            else:
+                last_date = now - timedelta(minutes=data['delay'])
             if last_date > last_stored:
                 last_ptr = ws.dec_ptr(ptr)
                 fixed_block = ws.get_fixed_block(unbuffered=True)
