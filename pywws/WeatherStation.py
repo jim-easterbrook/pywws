@@ -11,12 +11,14 @@ __docformat__ = "restructuredtext en"
 from datetime import datetime
 import logging
 import math
-import platform
 import sys
 import time
-import usb
 
 import Localisation
+try:
+    from device_hidapi import USBDevice
+except ImportError:
+    from device_libusb import USBDevice
 
 def dew_point(temp, hum):
     """Compute dew point, using formula from
@@ -226,90 +228,7 @@ class CUSBDrive(object):
 
     def __init__(self):
         self.logger = logging.getLogger('pywws.WeatherStation.CUSBDrive')
-        self.devh = self._open()
-
-    def __del__(self):
-        if self.devh:
-            try:
-                self.devh.releaseInterface()
-            except usb.USBError:
-                # interface was not claimed. No problem
-                pass
-
-    def _reset_device(self):
-        self.devh.reset()
-        self.devh = self._open()
-
-    def _reset_end_point(self):
-        self.devh.clearHalt(0x81)
-
-    def _open(self):
-        """Open connection to weather station.
-
-        This method searches the connected USB devices for one with
-        the correct product and vendor ID, then opens a connection to
-        the device and claims the interface.
-
-        :return: the weather station device handle.
-        
-        """
-        dev = findDevice(0x1941, 0x8021)
-        if not dev:
-            raise IOError("Weather station device not found")
-        devh = dev.open()
-        if not devh:
-            raise IOError("Open device failed")
-##        if platform.system() is 'Windows':
-##            devh.setConfiguration(1)
-        try:
-            devh.claimInterface(0)
-        except usb.USBError:
-            # claim interface failed, try detaching kernel driver first
-            if not hasattr(devh, 'detachKernelDriver'):
-                raise RuntimeError(
-                    "Please upgrade pyusb (or python-usb) to 0.4 or higher")
-            try:
-                devh.detachKernelDriver(0)
-                devh.claimInterface(0)
-            except usb.USBError:
-                raise IOError("Claim interface failed")
-        return devh
-
-    def _read_data(self):
-        """Receive 8 bytes from the device.
-
-        If the read fails for any reason, :obj:`None` is returned.
-
-        :return: the data received.
-
-        :rtype: list(int)
-
-        """
-        result = self.devh.interruptRead(0x81, 8, 1200)
-        if result is None or len(result) < 8:
-            self.logger.error('_read_data failed')
-            return None
-        return result
-
-    def _write_data(self, buf):
-        """Send 8 bytes to the device.
-
-        :param buf: the data to send.
-
-        :type buf: list(int)
-
-        :return: success status.
-
-        :rtype: bool
-
-        """
-        result = self.devh.controlMsg(
-            usb.ENDPOINT_OUT + usb.TYPE_CLASS + usb.RECIP_INTERFACE,
-            usb.REQ_SET_CONFIGURATION, buf, value=0x200, timeout=50)
-        if result != 8:
-            self.logger.error('_write_data failed')
-            return False
-        return True
+        self.usb = USBDevice(0x1941, 0x8021)
 
     def read_data(self, address):
         """Read 32 bytes from the weather station.
@@ -325,10 +244,6 @@ class CUSBDrive(object):
         :rtype: list(int)
 
         """
-        if not self.devh:
-            self.devh = self._open()
-            if not self.devh:
-                return None
         buf = [
             self.ReadCommand,
             address / 256,
@@ -339,14 +254,12 @@ class CUSBDrive(object):
             address % 256,
             self.EndMark,
             ]
-        if not self._write_data(buf):
-            self._reset_end_point()
+        if not self.usb.write_data(buf):
             return None
         result = list()
         for i in range(4):
-            buf = self._read_data()
+            buf = self.usb.read_data()
             if buf is None:
-                self._reset_end_point()
                 return None
             result += buf
         return result
@@ -367,10 +280,6 @@ class CUSBDrive(object):
         :rtype: bool
 
         """
-        if not self.devh:
-            self.devh = self._open()
-            if not self.devh:
-                return None
         buf = [
             self.WriteCommandWord,
             address / 256,
@@ -381,12 +290,10 @@ class CUSBDrive(object):
             0,
             self.EndMark,
             ]
-        if not self._write_data(buf):
-            self._reset_end_point()
+        if not self.usb.write_data(buf):
             return False
-        buf = self._read_data()
+        buf = self.usb.read_data()
         if buf is None:
-            self._reset_end_point()
             return False
         for byte in buf:
             if byte != 0xA5:
