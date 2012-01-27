@@ -16,9 +16,15 @@ import time
 
 import Localisation
 try:
-    from device_hidapi import USBDevice
+    from device_cython_hidapi import USBDevice
+    print 'using cython-hidapi'
 except ImportError:
-    from device_libusb import USBDevice
+    try:
+        from device_hidapi import USBDevice
+        print 'using hidapi'
+    except ImportError:
+        from device_libusb import USBDevice
+        print 'using libusb'
 
 def dew_point(temp, hum):
     """Compute dew point, using formula from
