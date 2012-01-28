@@ -15,16 +15,8 @@ import sys
 import time
 
 import Localisation
-try:
-    from device_cython_hidapi import USBDevice
-    print 'using cython-hidapi'
-except ImportError:
-    try:
-        from device_hidapi import USBDevice
-        print 'using hidapi'
-    except ImportError:
-        from device_libusb import USBDevice
-        print 'using libusb'
+# import USBDevice later, when we know which USB library to use
+USBDevice = None
 
 def dew_point(temp, hum):
     """Compute dew point, using formula from
@@ -210,14 +202,6 @@ def _decode(raw, format):
             result = float(result) * scale
     return result
 
-def findDevice(idVendor, idProduct):
-    """Find a USB device by product and vendor id."""
-    for bus in usb.busses():
-        for device in bus.devices:
-            if device.idVendor == idVendor and device.idProduct == idProduct:
-                return device
-    return None
-
 class CUSBDrive(object):
     """Low level interface to weather station via USB.
 
@@ -232,11 +216,27 @@ class CUSBDrive(object):
     WriteCommand     = 0xA0
     WriteCommandWord = 0xA2
 
-    def __init__(self):
+    def __init__(self, library):
+        global USBDevice
         self.logger = logging.getLogger('pywws.WeatherStation.CUSBDrive')
-        self.usb = USBDevice(0x1941, 0x8021)
+        if not USBDevice and library in ('auto', 'cython-hidapi'):
+            try:
+                from device_cython_hidapi import USBDevice
+            except ImportError:
+                if library != 'auto':
+                    raise
+        if not USBDevice and library in ('auto', 'hidapi'):
+            try:
+                from device_hidapi import USBDevice
+            except ImportError:
+                if library != 'auto':
+                    raise
+        if not USBDevice:
+            from device_libusb import USBDevice
+        self.logger.info('using %s', USBDevice.__module__)
+        self.dev = USBDevice(0x1941, 0x8021)
 
-    def read_data(self, address):
+    def read_block(self, address):
         """Read 32 bytes from the weather station.
 
         If the read fails for any reason, :obj:`None` is returned.
@@ -260,17 +260,17 @@ class CUSBDrive(object):
             address % 256,
             self.EndMark,
             ]
-        if not self.usb.write_data(buf):
+        if not self.dev.write_data(buf):
             return None
         result = list()
         for i in range(4):
-            buf = self.usb.read_data()
+            buf = self.dev.read_data()
             if buf is None:
                 return None
             result += buf
         return result
 
-    def write_data(self, address, data):
+    def write_byte(self, address, data):
         """Write a single byte to the weather station.
 
         :param address: address to write to.
@@ -296,9 +296,9 @@ class CUSBDrive(object):
             0,
             self.EndMark,
             ]
-        if not self.usb.write_data(buf):
+        if not self.dev.write_data(buf):
             return False
-        buf = self.usb.read_data()
+        buf = self.dev.read_data()
         if buf is None:
             return False
         for byte in buf:
@@ -308,11 +308,11 @@ class CUSBDrive(object):
 
 class weather_station(object):
     """Class that represents the weather station to user program."""
-    def __init__(self, ws_type='1080'):
+    def __init__(self, ws_type='1080', library='auto'):
         """Connect to weather station and prepare to read data."""
         self.logger = logging.getLogger('pywws.weather_station')
         # create basic IO object
-        self.cusb = CUSBDrive()
+        self.cusb = CUSBDrive(library)
         # init variables
         self._fixed_block = None
         self._data_block = None
@@ -327,6 +327,7 @@ class weather_station(object):
             if self.ws_type != '1080':
                 self.logger.warning('type change %s -> %s', self.ws_type, '1080')
                 self.ws_type = '1080'
+
     def live_data(self):
         # There are two things we want to synchronise to - the data is
         # updated every 48 seconds and the address is incremented
@@ -463,18 +464,21 @@ class weather_station(object):
                 no_op_count = 0
             else:
                 no_op_count += 1
+
     def inc_ptr(self, ptr):
         """Get next circular buffer data pointer."""
         result = ptr + self.reading_len[self.ws_type]
         if result >= 0x10000:
             result = self.data_start
         return result
+
     def dec_ptr(self, ptr):
         """Get previous circular buffer data pointer."""
         result = ptr - self.reading_len[self.ws_type]
         if result < self.data_start:
             result = 0x10000 - self.reading_len[self.ws_type]
         return result
+
     def get_raw_data(self, ptr, unbuffered=False):
         """Get raw data from circular buffer.
 
@@ -502,6 +506,7 @@ class weather_station(object):
             # 'top up' current block
             self._data_block += self._read_block(idx + 0x20)
         return self._data_block[ptr:ptr + count]
+
     def get_data(self, ptr, unbuffered=False):
         """Get decoded data from circular buffer.
 
@@ -509,15 +514,18 @@ class weather_station(object):
         earlier may be returned."""
         return _decode(self.get_raw_data(ptr, unbuffered),
                        self.reading_format[self.ws_type])
+
     def current_pos(self):
         """Get circular buffer location where current data is being written."""
         return _decode(
             self._read_fixed_block(0x0020), self.lo_fix_format['current_pos'])
+
     def get_raw_fixed_block(self, unbuffered=False):
         """Get the raw "fixed block" of settings and min/max data."""
         if unbuffered or not self._fixed_block:
             self._fixed_block = self._read_fixed_block()
         return self._fixed_block
+
     def get_fixed_block(self, keys=[], unbuffered=False):
         """Get the decoded "fixed block" of settings and min/max data.
 
@@ -529,12 +537,13 @@ class weather_station(object):
         for key in keys:
             format = format[key]
         return _decode(self._fixed_block, format)
+
     def _read_block(self, ptr):
         # Read block repeatedly until it's stable. This avoids getting corrupt
         # data when the block is read as the station is updating it.
         old_block = None
         while True:
-            new_block = self.cusb.read_data(ptr)
+            new_block = self.cusb.read_block(ptr)
             if new_block:
                 if new_block == old_block:
                     break
@@ -542,6 +551,7 @@ class weather_station(object):
                     self.logger.debug('_read_block changing %06x', ptr)
                 old_block = new_block
         return new_block
+
     def _read_fixed_block(self, hi=0x0100):
         result = []
         for mempos in range(0x0000, hi, 0x0020):
@@ -552,9 +562,11 @@ class weather_station(object):
             self.logger.critical(
                 "Unrecognised 'magic number' %02x %02x", result[0], result[1])
         return result
+
     def _write_byte(self, ptr, value):
-        if not self.cusb.write_data(ptr, value):
+        if not self.cusb.write_byte(ptr, value):
             raise IOError('_write_byte failed')
+
     def write_data(self, data):
         """Write a set of single bytes to the weather station. Data must be an
         array of (ptr, value) pairs."""
@@ -571,6 +583,7 @@ class weather_station(object):
                 break
             self.logger.debug('write_data waiting for ack')
             time.sleep(6)
+
     # Tables of "meanings" for raw weather station data. Each key
     # specifies an (offset, type, multiplier) tuple that is understood
     # by _decode.
