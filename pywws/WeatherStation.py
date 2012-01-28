@@ -232,7 +232,7 @@ class CUSBDrive(object):
                 if library != 'auto':
                     raise
         if not USBDevice:
-            from device_libusb import USBDevice
+            from device_pyusb import USBDevice
         self.logger.info('using %s', USBDevice.__module__)
         self.dev = USBDevice(0x1941, 0x8021)
 
