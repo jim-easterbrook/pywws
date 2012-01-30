@@ -215,7 +215,7 @@ class ToUnderground(toservice.ToService):
         
         """
         last_log = self.data.before(datetime.max)
-        if last_log < data['idx'] - FIVE_MINS:
+        if not last_log or last_log < data['idx'] - FIVE_MINS:
             # logged data is not (yet) up to date
             return True
         if catchup:
