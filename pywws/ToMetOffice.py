@@ -127,27 +127,6 @@ class ToMetOffice(toservice.ToService):
             'softwaretype'          : 'pywws'
             }
 
-    def Upload(self, catchup):
-        """Upload one or more weather data records.
-
-        This method uploads either the most recent weather data
-        record, or all records since the last upload (up to 7 days),
-        according to the value of :obj:`catchup`.
-
-        It sets the ``last update`` configuration value to the time
-        stamp of the most recent record successfully uploaded.
-
-        :param catchup: upload all data since last upload.
-
-        :type catchup: bool
-
-        :return: success status
-
-        :rtype: bool
-        
-        """
-        return self.upload(self.server, self.fixed_data, catchup)
-
 def main(argv=None):
     if argv is None:
         argv = sys.argv

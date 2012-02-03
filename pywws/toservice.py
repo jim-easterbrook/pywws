@@ -170,7 +170,7 @@ class ToService(object):
                     self.old_ex = e
         return False
 
-    def upload(self, server, fixed_data, catchup):
+    def Upload(self, catchup):
         """Upload one or more weather data records.
 
         This method uploads either the most recent weather data
@@ -179,18 +179,6 @@ class ToService(object):
 
         It sets the ``last update`` configuration value to the time
         stamp of the most recent record successfully uploaded.
-
-        The :obj:`fixed_data` parameter contains unvarying data that
-        is site dependent, for example an ID code and authentication
-        data.
-
-        :param server: web address to upload to.
-
-        :type server: string
-
-        :param fixed_data: unvarying upload data.
-
-        :type fixed_data: dict
 
         :param catchup: upload all data since last upload.
 
@@ -212,7 +200,7 @@ class ToService(object):
                 start = datetime.utcnow() - timedelta(days=7)
             count = 0
             for data in self.data[start:]:
-                if not self.send_data(data, server, fixed_data):
+                if not self.send_data(data, self.server, self.fixed_data):
                     return False
                 self.params.set(
                     self.config_section, 'last update', data['idx'].isoformat(' '))
@@ -222,7 +210,8 @@ class ToService(object):
         else:
             # upload most recent data
             last_update = self.data.before(datetime.max)
-            if not self.send_data(self.data[last_update], server, fixed_data):
+            if not self.send_data(
+                    self.data[last_update], self.server, self.fixed_data):
                 return False
             self.params.set(
                 self.config_section, 'last update', last_update.isoformat(' '))
