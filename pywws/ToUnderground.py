@@ -93,8 +93,6 @@ import DataStore
 from Logger import ApplicationLogger
 import toservice
 
-FIVE_MINS = timedelta(minutes=5)
-
 class ToUnderground(toservice.ToService):
     """Upload weather data to Weather Underground.
 
@@ -130,87 +128,6 @@ class ToUnderground(toservice.ToService):
         self.fixed_data_rf = dict(self.fixed_data)
         self.fixed_data_rf['realtime'] = '1'
         self.fixed_data_rf['rtfreq'] = '48'
-
-    def translate_data(self, current, fixed_data):
-        """Convert a weather data record to upload format.
-
-        The :obj:`current` parameter contains the data to be uploaded.
-        It should be a 'calibrated' data record, as stored in
-        :class:`pywws.DataStore.calib_store`.
-
-        The :obj:`fixed_data` parameter contains unvarying data that
-        is site dependent, for example an ID code and authentication
-        data.
-
-        :param current: the weather data record.
-
-        :type current: dict
-
-        :param fixed_data: unvarying upload data.
-
-        :type fixed_data: dict
-
-        :return: converted data, or :obj:`None` if invalid data.
-
-        :rtype: dict(string)
-        
-        """
-        result = toservice.ToService.translate_data(self, current, fixed_data)
-        if result and current.has_key('uv'):
-            if current['uv'] is not None:
-                result['UV'] = '%d' % (current['uv'])
-            if current['illuminance'] is not None:
-                # approximate conversion from lux to W/m2
-                result['solarradiation'] = '%.2f' % (
-                    current['illuminance'] * 0.005)
-        return result
-
-    def RapidFire(self, data, catchup):
-        """Upload a 'Rapid Fire' weather data record.
-
-        This method uploads either a single data record (typically one
-        obtained during 'live' logging), or all records since the last
-        upload (up to 7 days), according to the value of
-        :obj:`catchup`.
-
-        It sets the ``last update`` configuration value to the time
-        stamp of the most recent record successfully uploaded.
-
-        The :obj:`data` parameter contains the data to be uploaded.
-        It should be a 'calibrated' data record, as stored in
-        :class:`pywws.DataStore.calib_store`.
-
-        :param data: the weather data record.
-
-        :type data: dict
-
-        :param catchup: upload all data since last upload.
-
-        :type catchup: bool
-
-        :return: success status
-
-        :rtype: bool
-        
-        """
-        last_log = self.data.before(datetime.max)
-        if not last_log or last_log < data['idx'] - FIVE_MINS:
-            # logged data is not (yet) up to date
-            return True
-        if catchup:
-            last_update = self.params.get_datetime(
-                self.config_section, 'last update')
-            if not last_update:
-                last_update = datetime.min
-            if last_update <= last_log - FIVE_MINS:
-                # last update was well before last logged data
-                if not self.Upload(True):
-                    return False
-        if not self.send_data(data, self.server_rf, self.fixed_data_rf):
-            return False
-        self.params.set(
-            self.config_section, 'last update', data['idx'].isoformat(' '))
-        return True
 
 def main(argv=None):
     if argv is None:
