@@ -4,8 +4,10 @@
 
 """
 
+from ConfigParser import SafeConfigParser
 import getopt
 import logging
+import os
 import socket
 import sys
 import urllib
@@ -20,55 +22,6 @@ from WeatherStation import dew_point
 FIVE_MINS = timedelta(minutes=5)
 HOUR = timedelta(hours=1)
 DAY = timedelta(hours=24)
-
-default_params = {
-    'metoffice' : {
-        'url'       : 'http://wow.metoffice.gov.uk/automaticreading',
-        'header'    : {
-            'siteid'                : '12345678',
-            'siteAuthenticationKey' : '987654',
-            },
-        'data'      : (
-            'tempf', 'dewptf', 'humidity', 'baromin',
-            'windspeedmph', 'windgustmph', 'winddir',
-            'rainin', 'dailyrainin',
-            ),
-        },
-    'stacjapogodywawpl' : {
-        'url'       : 'http://stacjapogody.waw.pl/mapastacji/uploadweatherstationdata.php',
-        'header'    : {
-            'action'    : 'updateraw',
-            'ID'        : 'stacjapogodywawplstation',
-            'PASSWORD'  : 'stacjapogodywawplpassword',
-            },
-        'data'      : (
-            'tempf', 'dewptf', 'humidity', 'baromin',
-            'windspeedmph', 'windgustmph', 'winddir',
-            'rainin', 'dailyrainin',
-            'UV', 'solarradiation',
-            ),
-        },
-    'stacjapogodywawpl-rf' : {
-        'url'   : 'http://stacjapogody.waw.pl/mapastacji/uploadweatherstationdata.php',
-        },
-    'underground' : {
-        'url'       : 'http://weatherstation.wunderground.com/weatherstation/updateweatherstation.php',
-        'header'    : {
-            'action'    : 'updateraw',
-            'ID'        : 'undergroundstation',
-            'PASSWORD'  : 'undergroudpassword',
-            },
-        'data'      : (
-            'tempf', 'dewptf', 'humidity', 'baromin',
-            'windspeedmph', 'windgustmph', 'winddir',
-            'rainin', 'dailyrainin',
-            'UV', 'solarradiation',
-            ),
-        },
-    'underground-rf' : {
-        'url'   : 'http://rtupdate.wunderground.com/weatherstation/updateweatherstation.php',
-        },
-    }
 
 class ToService(object):
     """Base class for 'Weather Underground' style weather service
@@ -110,53 +63,36 @@ class ToService(object):
                 utc).replace(tzinfo=None)
         # other init
         self.rain_midnight = None
+        # open params file
+        service_params = SafeConfigParser()
+        service_params.optionxform = str
+        service_params.readfp(open(os.path.join(
+            os.path.dirname(__file__), 'services',
+            '%s.ini' % (self.config_section))))
         # get URL
-        if self.config_section in default_params:
-            default = default_params[self.config_section]['url']
-        else:
-            default = 'http://example.com/upload'
-        self.server = self.params.get(self.config_section, 'url', default)
+        self.server = service_params.get('config', 'url')
         # get fixed part of upload data
-        if self.config_section in default_params:
-            default = default_params[self.config_section]['header']
-        else:
-            default = {
-                'action'    : 'updateraw',
-                'ID'        : 'ABC123',
-                'PASSWORD'  : 'secret',
-                }
-        self.fixed_data = eval(
-            self.params.get(self.config_section, 'header', str(default)))
-        self.fixed_data['softwaretype'] = 'pywws'
+        self.fixed_data = dict()
+        for name, value in service_params.items('fixed'):
+            if value[0] == '*':
+                value = self.params.get(
+                    self.config_section, value[1:], 'unknown')
+            self.fixed_data[name] = value
         # get other parameters
-        self.catchup = eval(
-            self.params.get(self.config_section, 'catchup', '7'))
-        self.rapid_fire = eval(
-            self.params.get(self.config_section, 'rapidfire', 'False'))
-        if self.rapid_fire:
-            rf_name = '%s-rf' % self.config_section
-            # get rapid fire URL
-            if rf_name in default_params:
-                default = default_params[rf_name]['url']
-            else:
-                default = 'http://rt.example.com/upload'
-            self.server_rf = self.params.get(rf_name, 'url', default)
-            # set rapid fire header
+        self.catchup = eval(service_params.get('config', 'catchup'))
+        rapid_fire = eval(service_params.get('config', 'rapidfire'))
+        if rapid_fire:
+            self.server_rf = service_params.get('config', 'url-rf')
             self.fixed_data_rf = dict(self.fixed_data)
-            self.fixed_data_rf['realtime'] = '1'
-            self.fixed_data_rf['rtfreq'] = '48'
-        # list of data to be sent
-        if self.config_section in default_params:
-            default = default_params[self.config_section]['data']
+            for name, value in service_params.items('fixed-rf'):
+                self.fixed_data_rf[name] = value
         else:
-            default = (
-                'tempf', 'dewptf', 'humidity', 'baromin',
-                'windspeedmph', 'windgustmph', 'winddir',
-                'rainin', 'dailyrainin',
-                'UV', 'solarradiation',
-                )
-        self.data_items = eval(
-            self.params.get(self.config_section, 'data', str(default)))
+            self.server_rf = self.server
+            self.fixed_data_rf = self.fixed_data
+        # list of data to be sent
+        self.data_items = dict()
+        for name, value in service_params.items('data'):
+            self.data_items[name] = value
 
     def translate_data(self, current, fixed_data):
         """Convert a weather data record to upload format.
@@ -197,38 +133,45 @@ class ToService(object):
             self.rain_midnight = self.data[self.data.nearest(self.midnight)]['rain']
         # convert data
         result = dict(fixed_data)
-        result['dateutc'] = current['idx'].isoformat(' ')
+        if 'dateutc' in self.data_items:
+            result[self.data_items['dateutc']] = current['idx'].isoformat(' ')
+        # Centigrade temperature for Swedish temperatur.nu site
+        if 'tempc' in self.data_items:
+            result[self.data_items['tempc']] = '%.1f' % (current['temp_out'])
+        # USA units for everyone else...
         if 'winddir' in self.data_items and current['wind_dir'] is not None:
-            result['winddir'] = '%.0f' % (current['wind_dir'] * 22.5)
+            result[self.data_items['winddir']] = '%.0f' % (
+                current['wind_dir'] * 22.5)
         if 'tempf' in self.data_items:
-            result['tempf'] = '%.1f' % (conversions.temp_f(current['temp_out']))
+            result[self.data_items['tempf']] = '%.1f' % (conversions.temp_f(
+                current['temp_out']))
         if 'dewptf' in self.data_items:
-            result['dewptf'] = '%.1f' % (conversions.temp_f(
+            result[self.data_items['dewptf']] = '%.1f' % (conversions.temp_f(
                     dew_point(current['temp_out'], current['hum_out'])))
         if 'humidity' in self.data_items:
-            result['humidity'] = '%d' % (current['hum_out'])
+            result[self.data_items['humidity']] = '%d' % (current['hum_out'])
         if 'windspeedmph' in self.data_items and current['wind_ave'] is not None:
-            result['windspeedmph'] = '%.2f' % (
+            result[self.data_items['windspeedmph']] = '%.2f' % (
                 conversions.wind_mph(current['wind_ave']))
         if 'windgustmph' in self.data_items and current['wind_gust'] is not None:
-            result['windgustmph'] = '%.2f' % (
+            result[self.data_items['windgustmph']] = '%.2f' % (
                 conversions.wind_mph(current['wind_gust']))
         if 'rainin' in self.data_items:
-            result['rainin'] = '%g' % (
+            result[self.data_items['rainin']] = '%g' % (
                 conversions.rain_inch(max(current['rain'] - rain_hour, 0.0)))
         if 'dailyrainin' in self.data_items:
-            result['dailyrainin'] = '%g' % (
+            result[self.data_items['dailyrainin']] = '%g' % (
                 conversions.rain_inch(max(current['rain'] - self.rain_midnight, 0.0)))
         if 'baromin' in self.data_items and current['rel_pressure']:
-            result['baromin'] = '%.4f' % (
+            result[self.data_items['baromin']] = '%.4f' % (
                 conversions.pressure_inhg(current['rel_pressure']))
         if current.has_key('uv'):
-            if 'UV' in self.data_items and current['uv'] is not None:
-                result['UV'] = '%d' % (current['uv'])
-            if ('illuminance' in self.data_items and
+            if 'uv' in self.data_items and current['uv'] is not None:
+                result[self.data_items['uv']] = '%d' % (current['uv'])
+            if ('solarradiation' in self.data_items and
                     current['illuminance'] is not None):
                 # approximate conversion from lux to W/m2
-                result['solarradiation'] = '%.2f' % (
+                result[self.data_items['solarradiation']] = '%.2f' % (
                     current['illuminance'] * 0.005)
         return result
 
