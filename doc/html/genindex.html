@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Index &mdash; pywws v12.01 documentation</title>
+    <title>Index &mdash; pywws v12.02 documentation</title>
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
-        VERSION:     '12.01',
+        VERSION:     '12.02',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="shortcut icon" href="_static/pywws_logo.ico"/>
-    <link rel="top" title="pywws v12.01 documentation" href="index.html" /> 
+    <link rel="top" title="pywws v12.02 documentation" href="index.html" /> 
   </head>
   <body>
     <div class="related">
@@ -35,7 +35,7 @@
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="index.html">pywws v12.01 documentation</a> &raquo;</li> 
+        <li><a href="index.html">pywws v12.02 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -133,9 +133,6 @@
 
 <h2 id="F">F</h2>
 <table width="100%" class="indextable genindextable"><tr>
-  <td width="33%" valign="top"><dl>
-    <dt><a href="api/pywws.WeatherStation.html#pywws.WeatherStation.findDevice">findDevice() (in module pywws.WeatherStation)</a></dt>
-</dl></td>
   <td width="33%" valign="top"><dl>
     <dt><a href="api/pywws.DataStore.html#pywws.DataStore.core_store.flush">flush() (pywws.DataStore.core_store method)</a></dt>
     <dd><dl>
@@ -236,6 +233,7 @@
       <dt><a href="api/pywws.Upload.html#pywws.Upload.main">(in module pywws.Upload)</a></dt>
       <dt><a href="api/pywws.WindRose.html#pywws.WindRose.main">(in module pywws.WindRose)</a></dt>
       <dt><a href="api/pywws.YoWindow.html#pywws.YoWindow.main">(in module pywws.YoWindow)</a></dt>
+      <dt><a href="api/pywws.toservice.html#pywws.toservice.main">(in module pywws.toservice)</a></dt>
   </dl></dd>
     <dt><a href="api/pywws.Template.html#pywws.Template.Template.make_file">make_file() (pywws.Template.Template method)</a></dt>
     <dt><a href="api/pywws.Template.html#pywws.Template.Template.make_text">make_text() (pywws.Template.Template method)</a></dt>
@@ -297,9 +295,9 @@
 <table width="100%" class="indextable genindextable"><tr>
   <td width="33%" valign="top"><dl>
     <dt><a href="api/pywws.conversions.html#pywws.conversions.rain_inch">rain_inch() (in module pywws.conversions)</a></dt>
-    <dt><a href="api/pywws.ToUnderground.html#pywws.ToUnderground.ToUnderground.RapidFire">RapidFire() (pywws.ToUnderground.ToUnderground method)</a></dt>
+    <dt><a href="api/pywws.toservice.html#pywws.toservice.ToService.RapidFire">RapidFire() (pywws.toservice.ToService method)</a></dt>
     <dt><a href="api/TestWeatherStation.html#TestWeatherStation.raw_dump">raw_dump() (in module TestWeatherStation)</a></dt>
-    <dt><a href="api/pywws.WeatherStation.html#pywws.WeatherStation.CUSBDrive.read_data">read_data() (pywws.WeatherStation.CUSBDrive method)</a></dt>
+    <dt><a href="api/pywws.WeatherStation.html#pywws.WeatherStation.CUSBDrive.read_block">read_block() (pywws.WeatherStation.CUSBDrive method)</a></dt>
     <dt><a href="api/pywws.Plot.html#pywws.Plot.Record">Record (class in pywws.Plot)</a></dt>
     <dt><a href="api/pywws.Tasks.html#pywws.Tasks.RegularTasks">RegularTasks (class in pywws.Tasks)</a></dt>
 </dl></td>
@@ -351,9 +349,6 @@
   <td width="33%" valign="top"><dl>
     <dt><a href="api/pywws.ToUnderground.html#pywws.ToUnderground.ToUnderground">ToUnderground (class in pywws.ToUnderground)</a></dt>
     <dt><a href="api/pywws.toservice.html#pywws.toservice.ToService.translate_data">translate_data() (pywws.toservice.ToService method)</a></dt>
-    <dd><dl>
-      <dt><a href="api/pywws.ToUnderground.html#pywws.ToUnderground.ToUnderground.translate_data">(pywws.ToUnderground.ToUnderground method)</a></dt>
-  </dl></dd>
     <dt><a href="api/TwitterAuth.html#module-TwitterAuth">TwitterAuth (module)</a></dt>
     <dt><a href="api/TwitterAuth.html#TwitterAuth.TwitterAuth">TwitterAuth() (in module TwitterAuth)</a></dt>
     <dt><a href="api/pywws.TimeZone.html#pywws.TimeZone.LocalTimezone.tzname">tzname() (pywws.TimeZone.LocalTimezone method)</a></dt>
@@ -368,16 +363,12 @@
   <td width="33%" valign="top"><dl>
     <dt><a href="api/pywws.Upload.html#pywws.Upload.Upload">Upload() (in module pywws.Upload)</a></dt>
     <dd><dl>
-      <dt><a href="api/pywws.ToMetOffice.html#pywws.ToMetOffice.ToMetOffice.Upload">(pywws.ToMetOffice.ToMetOffice method)</a></dt>
+      <dt><a href="api/pywws.ToTwitter.html#pywws.ToTwitter.ToTwitter.Upload">(pywws.ToTwitter.ToTwitter method)</a></dt>
+      <dt><a href="api/pywws.toservice.html#pywws.toservice.ToService.Upload">(pywws.toservice.ToService method)</a></dt>
   </dl></dd>
-    <dt><a href="api/pywws.toservice.html#pywws.toservice.ToService.upload">upload() (pywws.toservice.ToService method)</a></dt>
-    <dt><a href="api/pywws.ToTwitter.html#pywws.ToTwitter.ToTwitter.Upload">Upload() (pywws.ToTwitter.ToTwitter method)</a></dt>
-    <dd><dl>
-      <dt><a href="api/pywws.ToUnderground.html#pywws.ToUnderground.ToUnderground.Upload">(pywws.ToUnderground.ToUnderground method)</a></dt>
-  </dl></dd>
+    <dt><a href="api/pywws.ToTwitter.html#pywws.ToTwitter.ToTwitter.UploadFile">UploadFile() (pywws.ToTwitter.ToTwitter method)</a></dt>
 </dl></td>
   <td width="33%" valign="top"><dl>
-    <dt><a href="api/pywws.ToTwitter.html#pywws.ToTwitter.ToTwitter.UploadFile">UploadFile() (pywws.ToTwitter.ToTwitter method)</a></dt>
     <dt><a href="api/pywws.TimeZone.html#pywws.TimeZone.UTC">UTC (class in pywws.TimeZone)</a></dt>
     <dt><a href="api/pywws.TimeZone.html#pywws.TimeZone.LocalTimezone.utcoffset">utcoffset() (pywws.TimeZone.LocalTimezone method)</a></dt>
     <dd><dl>
@@ -393,14 +384,12 @@
     <dt><a href="api/pywws.conversions.html#pywws.conversions.wind_bft">wind_bft() (in module pywws.conversions)</a></dt>
     <dt><a href="api/pywws.WeatherStation.html#pywws.WeatherStation.wind_chill">wind_chill() (in module pywws.WeatherStation)</a></dt>
     <dt><a href="api/pywws.conversions.html#pywws.conversions.wind_kmph">wind_kmph() (in module pywws.conversions)</a></dt>
+    <dt><a href="api/pywws.conversions.html#pywws.conversions.wind_kn">wind_kn() (in module pywws.conversions)</a></dt>
 </dl></td>
   <td width="33%" valign="top"><dl>
-    <dt><a href="api/pywws.conversions.html#pywws.conversions.wind_kn">wind_kn() (in module pywws.conversions)</a></dt>
     <dt><a href="api/pywws.conversions.html#pywws.conversions.wind_mph">wind_mph() (in module pywws.conversions)</a></dt>
-    <dt><a href="api/pywws.WeatherStation.html#pywws.WeatherStation.CUSBDrive.write_data">write_data() (pywws.WeatherStation.CUSBDrive method)</a></dt>
-    <dd><dl>
-      <dt><a href="api/pywws.WeatherStation.html#pywws.WeatherStation.weather_station.write_data">(pywws.WeatherStation.weather_station method)</a></dt>
-  </dl></dd>
+    <dt><a href="api/pywws.WeatherStation.html#pywws.WeatherStation.CUSBDrive.write_byte">write_byte() (pywws.WeatherStation.CUSBDrive method)</a></dt>
+    <dt><a href="api/pywws.WeatherStation.html#pywws.WeatherStation.weather_station.write_data">write_data() (pywws.WeatherStation.weather_station method)</a></dt>
     <dt><a href="api/pywws.YoWindow.html#pywws.YoWindow.YoWindow.write_file">write_file() (pywws.YoWindow.YoWindow method)</a></dt>
 </dl></td>
 </tr></table>
@@ -458,7 +447,7 @@
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="index.html">pywws v12.01 documentation</a> &raquo;</li> 
+        <li><a href="index.html">pywws v12.02 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

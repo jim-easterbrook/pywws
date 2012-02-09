@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pywws.ToUnderground &mdash; pywws v12.01 documentation</title>
+    <title>pywws.ToUnderground &mdash; pywws v12.02 documentation</title>
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '12.01',
+        VERSION:     '12.02',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="shortcut icon" href="../_static/pywws_logo.ico"/>
-    <link rel="top" title="pywws v12.01 documentation" href="../index.html" />
+    <link rel="top" title="pywws v12.02 documentation" href="../index.html" />
     <link rel="up" title="Python programs and modules" href="index.html" />
     <link rel="next" title="pywws.toservice" href="pywws.toservice.html" />
     <link rel="prev" title="pywws.ToMetOffice" href="pywws.ToMetOffice.html" /> 
@@ -44,7 +44,7 @@
         <li class="right" >
           <a href="pywws.ToMetOffice.html" title="pywws.ToMetOffice"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">pywws v12.01 documentation</a> &raquo;</li>
+        <li><a href="../index.html">pywws v12.02 documentation</a> &raquo;</li>
           <li><a href="index.html" accesskey="U">Python programs and modules</a> &raquo;</li> 
       </ul>
     </div>  
@@ -147,97 +147,6 @@ your weather station.</p>
 </tr>
 </tbody>
 </table>
-<dl class="method">
-<dt id="pywws.ToUnderground.ToUnderground.translate_data">
-<tt class="descname">translate_data</tt><big>(</big><em>current</em>, <em>fixed_data</em><big>)</big><a class="reference internal" href="../_modules/pywws/ToUnderground.html#ToUnderground.translate_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.ToUnderground.ToUnderground.translate_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert a weather data record to upload format.</p>
-<p>The <tt class="xref py py-obj docutils literal"><span class="pre">current</span></tt> parameter contains the data to be uploaded.
-It should be a &#8216;calibrated&#8217; data record, as stored in
-<a class="reference internal" href="pywws.DataStore.html#pywws.DataStore.calib_store" title="pywws.DataStore.calib_store"><tt class="xref py py-class docutils literal"><span class="pre">pywws.DataStore.calib_store</span></tt></a>.</p>
-<p>The <tt class="xref py py-obj docutils literal"><span class="pre">fixed_data</span></tt> parameter contains unvarying data that
-is site dependent, for example an ID code and authentication
-data.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>current</strong> (<em>dict</em>) &#8211; the weather data record.</li>
-<li><strong>fixed_data</strong> (<em>dict</em>) &#8211; unvarying upload data.</li>
-</ul>
-</td>
-</tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">converted data, or <tt class="xref py py-obj xref docutils literal"><span class="pre">None</span></tt> if invalid data.</p>
-</td>
-</tr>
-<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">dict(string)</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="pywws.ToUnderground.ToUnderground.Upload">
-<tt class="descname">Upload</tt><big>(</big><em>catchup</em><big>)</big><a class="reference internal" href="../_modules/pywws/ToUnderground.html#ToUnderground.Upload"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.ToUnderground.ToUnderground.Upload" title="Permalink to this definition">¶</a></dt>
-<dd><p>Upload one or more weather data records.</p>
-<p>This method uploads either the most recent weather data
-record, or all records since the last upload (up to 7 days),
-according to the value of <tt class="xref py py-obj docutils literal"><span class="pre">catchup</span></tt>.</p>
-<p>It sets the <tt class="docutils literal"><span class="pre">last</span> <span class="pre">update</span></tt> configuration value to the time
-stamp of the most recent record successfully uploaded.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>catchup</strong> (<em>bool</em>) &#8211; upload all data since last upload.</li>
-</ul>
-</td>
-</tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">success status</p>
-</td>
-</tr>
-<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">bool</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="pywws.ToUnderground.ToUnderground.RapidFire">
-<tt class="descname">RapidFire</tt><big>(</big><em>data</em>, <em>catchup</em><big>)</big><a class="reference internal" href="../_modules/pywws/ToUnderground.html#ToUnderground.RapidFire"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.ToUnderground.ToUnderground.RapidFire" title="Permalink to this definition">¶</a></dt>
-<dd><p>Upload a &#8216;Rapid Fire&#8217; weather data record.</p>
-<p>This method uploads either a single data record (typically one
-obtained during &#8216;live&#8217; logging), or all records since the last
-upload (up to 7 days), according to the value of
-<tt class="xref py py-obj docutils literal"><span class="pre">catchup</span></tt>.</p>
-<p>It sets the <tt class="docutils literal"><span class="pre">last</span> <span class="pre">update</span></tt> configuration value to the time
-stamp of the most recent record successfully uploaded.</p>
-<p>The <tt class="xref py py-obj docutils literal"><span class="pre">data</span></tt> parameter contains the data to be uploaded.
-It should be a &#8216;calibrated&#8217; data record, as stored in
-<a class="reference internal" href="pywws.DataStore.html#pywws.DataStore.calib_store" title="pywws.DataStore.calib_store"><tt class="xref py py-class docutils literal"><span class="pre">pywws.DataStore.calib_store</span></tt></a>.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>data</strong> (<em>dict</em>) &#8211; the weather data record.</li>
-<li><strong>catchup</strong> (<em>bool</em>) &#8211; upload all data since last upload.</li>
-</ul>
-</td>
-</tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">success status</p>
-</td>
-</tr>
-<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">bool</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
 </dd></dl>
 
 <dl class="function">
@@ -303,7 +212,7 @@ It should be a &#8216;calibrated&#8217; data record, as stored in
         <li class="right" >
           <a href="pywws.ToMetOffice.html" title="pywws.ToMetOffice"
              >previous</a> |</li>
-        <li><a href="../index.html">pywws v12.01 documentation</a> &raquo;</li>
+        <li><a href="../index.html">pywws v12.02 documentation</a> &raquo;</li>
           <li><a href="index.html" >Python programs and modules</a> &raquo;</li> 
       </ul>
     </div>

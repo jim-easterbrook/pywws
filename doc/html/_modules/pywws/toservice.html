@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pywws.toservice &mdash; pywws v12.01 documentation</title>
+    <title>pywws.toservice &mdash; pywws v12.02 documentation</title>
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '12.01',
+        VERSION:     '12.02',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="shortcut icon" href="../../_static/pywws_logo.ico"/>
-    <link rel="top" title="pywws v12.01 documentation" href="../../index.html" />
+    <link rel="top" title="pywws v12.02 documentation" href="../../index.html" />
     <link rel="up" title="Module code" href="../index.html" /> 
   </head>
   <body>
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">pywws v12.01 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">pywws v12.02 documentation</a> &raquo;</li>
           <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -47,11 +47,125 @@
           <div class="body">
             
   <h1>Source code for pywws.toservice</h1><div class="highlight"><pre>
-<span class="sd">&quot;&quot;&quot;Base class for Weather Underground and UK Met Office uploaders.</span>
+<span class="c">#!/usr/bin/env python</span>
+
+<span class="sd">&quot;&quot;&quot;Post weather update to services such as Weather Underground</span>
+<span class="sd">::</span>
+
+<span class="sd">%s</span>
+
+<span class="sd">Introduction</span>
+<span class="sd">------------</span>
+
+<span class="sd">Several organisations allow weather stations to upload data using a</span>
+<span class="sd">simple HTTP &#39;POST&#39; request, with the data encoded as a sequence of</span>
+<span class="sd">``key=value`` pairs separated by ``&amp;`` characters.</span>
+
+<span class="sd">This module enables pywws to upload readings to these organisations.</span>
+<span class="sd">It is highly customisable using configuration files. Each &#39;service&#39;</span>
+<span class="sd">requires a configuration file in ``pywws/services`` (that should not</span>
+<span class="sd">need to be edited by the user) and a section in ``weather.ini``</span>
+<span class="sd">containing user specific data such as your site ID and password.</span>
+
+<span class="sd">There are currently four services for which configuration files have</span>
+<span class="sd">been written.</span>
+
+<span class="sd">+-----------------------+-----------------------------------------------------------------------+</span>
+<span class="sd">| service name          | organisation                                                          |</span>
+<span class="sd">+=======================+=======================================================================+</span>
+<span class="sd">| ``metoffice``         | `UK Met Office &lt;http://wow.metoffice.gov.uk/&gt;`_                       |</span>
+<span class="sd">+-----------------------+-----------------------------------------------------------------------+</span>
+<span class="sd">| ``stacjapogodywawpl`` | `Stacja Pogody &lt;http://stacjapogody.waw.pl/index.php?id=mapastacji&gt;`_ |</span>
+<span class="sd">+-----------------------+-----------------------------------------------------------------------+</span>
+<span class="sd">| ``temperaturnu``      | `temperatur.nu &lt;http://www.temperatur.nu/&gt;`_                          |</span>
+<span class="sd">+-----------------------+-----------------------------------------------------------------------+</span>
+<span class="sd">| ``underground``       | `Weather Underground &lt;http://www.wunderground.com/&gt;`_                 |</span>
+<span class="sd">+-----------------------+-----------------------------------------------------------------------+</span>
+
+<span class="sd">Configuration</span>
+<span class="sd">-------------</span>
+
+<span class="sd">If you haven&#39;t already done so, visit the organisation&#39;s web site and</span>
+<span class="sd">create an account for your weather station. Make a note of any site ID</span>
+<span class="sd">and password details you are given.</span>
+
+<span class="sd">Stop any pywws software that is running and then run ``toservice.py``</span>
+<span class="sd">to create a section in ``weather.ini``::</span>
+
+<span class="sd">    python pywws/toservice.py data_dir service_name</span>
+
+<span class="sd">``service_name`` is a single word service name, such as ``metoffice``,</span>
+<span class="sd">``data_dir`` is your weather data directory, as usual.</span>
+
+<span class="sd">Edit ``weather.ini`` and find the section corresponding to the service</span>
+<span class="sd">name, e.g. ``[underground]``. Copy your site details into this</span>
+<span class="sd">section, for example::</span>
+
+<span class="sd">    [underground]</span>
+<span class="sd">    password = secret</span>
+<span class="sd">    station = ABCDEFG1A</span>
+
+<span class="sd">Now you can test your configuration::</span>
+
+<span class="sd">    python pywws/toservice.py -vvv data_dir service_name</span>
+
+<span class="sd">This should show you the data string that is uploaded and any response</span>
+<span class="sd">such as a &#39;success&#39; message.</span>
+
+<span class="sd">Upload old data</span>
+<span class="sd">---------------</span>
+
+<span class="sd">Now you can upload your last 7 days&#39; data, if the service supports it.</span>
+<span class="sd">Edit your ``weather.ini`` file and remove the ``last update`` line</span>
+<span class="sd">from the appropriate section, then run ``toservice.py`` with the</span>
+<span class="sd">catchup option::</span>
+
+<span class="sd">    python pywws/toservice.py -cv data_dir service_name</span>
+
+<span class="sd">This may take 20 minutes or more, depending on how much data you have.</span>
+
+<span class="sd">Add service(s) upload to regular tasks</span>
+<span class="sd">--------------------------------------</span>
+
+<span class="sd">Edit your ``weather.ini`` again, and add a list of services to the</span>
+<span class="sd">``[live]``, ``[logged]``, ``[hourly]``, ``[12 hourly]`` or ``[daily]``</span>
+<span class="sd">section, depending on how often you want to send data. For example::</span>
+
+<span class="sd">    [live]</span>
+<span class="sd">    twitter = []</span>
+<span class="sd">    plot = []</span>
+<span class="sd">    text = []</span>
+<span class="sd">    services = [&#39;underground&#39;]</span>
+
+<span class="sd">    [logged]</span>
+<span class="sd">    twitter = []</span>
+<span class="sd">    plot = []</span>
+<span class="sd">    text = []</span>
+<span class="sd">    services = [&#39;metoffice&#39;, &#39;stacjapogodywawpl&#39;]</span>
+
+<span class="sd">Restart your regular pywws program (``Hourly.py`` or ``LiveLog.py``)</span>
+<span class="sd">and visit the appropriate web site to see regular updates from your</span>
+<span class="sd">weather station.</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
 
+<span class="n">__docformat__</span> <span class="o">=</span> <span class="s">&quot;restructuredtext en&quot;</span>
+<span class="n">__usage__</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;</span>
+<span class="s"> usage: python toservice.py [options] data_dir service_name</span>
+<span class="s"> options are:</span>
+<span class="s">  -h or --help     display this help</span>
+<span class="s">  -c or --catchup  upload all data since last upload</span>
+<span class="s">  -v or --verbose  increase amount of reassuring messages</span>
+<span class="s"> data_dir is the root directory of the weather data</span>
+<span class="s"> service_name is the service to upload to, e.g. underground</span>
+<span class="s">&quot;&quot;&quot;</span>
+<span class="n">__doc__</span> <span class="o">%=</span> <span class="n">__usage__</span>
+<span class="n">__usage__</span> <span class="o">=</span> <span class="n">__doc__</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">__usage__</span>
+
+<span class="kn">from</span> <span class="nn">ConfigParser</span> <span class="kn">import</span> <span class="n">SafeConfigParser</span>
+<span class="kn">import</span> <span class="nn">getopt</span>
 <span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">socket</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">urllib</span>
@@ -63,19 +177,16 @@
 <span class="kn">from</span> <span class="nn">TimeZone</span> <span class="kn">import</span> <span class="n">Local</span><span class="p">,</span> <span class="n">utc</span>
 <span class="kn">from</span> <span class="nn">WeatherStation</span> <span class="kn">import</span> <span class="n">dew_point</span>
 
+<span class="n">FIVE_MINS</span> <span class="o">=</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">minutes</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
 <span class="n">HOUR</span> <span class="o">=</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">hours</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">DAY</span> <span class="o">=</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">hours</span><span class="o">=</span><span class="mi">24</span><span class="p">)</span>
 
 <div class="viewcode-block" id="ToService"><a class="viewcode-back" href="../../api/pywws.toservice.html#pywws.toservice.ToService">[docs]</a><span class="k">class</span> <span class="nc">ToService</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Base class for &#39;Weather Underground&#39; style weather service</span>
-<span class="sd">    uploaders.</span>
-
-<span class="sd">    Derived classes must call the base class constructor. They will</span>
-<span class="sd">    also want to call the :meth:`upload` method, but may also call</span>
-<span class="sd">    other methods.</span>
+    <span class="sd">&quot;&quot;&quot;Upload weather data to weather services such as Weather</span>
+<span class="sd">    Underground.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">calib_data</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">calib_data</span><span class="p">,</span> <span class="n">service_name</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :param params: pywws configuration.</span>
@@ -85,9 +196,19 @@
 <span class="sd">        :param calib_data: &#39;calibrated&#39; data.</span>
 
 <span class="sd">        :type calib_data: :class:`pywws.DataStore.calib_store`</span>
+
+<span class="sd">        :keyword service_name: name of service to upload to.</span>
+
+<span class="sd">        :type service_name: string</span>
 <span class="sd">    </span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s">&#39;pywws.</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">service_name</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">config_section</span> <span class="o">=</span> <span class="n">service_name</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span>
+                <span class="s">&#39;pywws.ToService(</span><span class="si">%s</span><span class="s">)&#39;</span> <span class="o">%</span> <span class="n">service_name</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span>
+                <span class="s">&#39;pywws.</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">params</span> <span class="o">=</span> <span class="n">params</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">calib_data</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">old_response</span> <span class="o">=</span> <span class="bp">None</span>
@@ -100,6 +221,36 @@
                 <span class="n">utc</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
         <span class="c"># other init</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">rain_midnight</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="c"># open params file</span>
+        <span class="n">service_params</span> <span class="o">=</span> <span class="n">SafeConfigParser</span><span class="p">()</span>
+        <span class="n">service_params</span><span class="o">.</span><span class="n">optionxform</span> <span class="o">=</span> <span class="nb">str</span>
+        <span class="n">service_params</span><span class="o">.</span><span class="n">readfp</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">__file__</span><span class="p">),</span> <span class="s">&#39;services&#39;</span><span class="p">,</span>
+            <span class="s">&#39;</span><span class="si">%s</span><span class="s">.ini&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config_section</span><span class="p">))))</span>
+        <span class="c"># get URL</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">server</span> <span class="o">=</span> <span class="n">service_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;config&#39;</span><span class="p">,</span> <span class="s">&#39;url&#39;</span><span class="p">)</span>
+        <span class="c"># get fixed part of upload data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fixed_data</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">service_params</span><span class="o">.</span><span class="n">items</span><span class="p">(</span><span class="s">&#39;fixed&#39;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;*&#39;</span><span class="p">:</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">config_section</span><span class="p">,</span> <span class="n">value</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="s">&#39;unknown&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fixed_data</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="c"># get other parameters</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">catchup</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="n">service_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;config&#39;</span><span class="p">,</span> <span class="s">&#39;catchup&#39;</span><span class="p">))</span>
+        <span class="n">rapid_fire</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="n">service_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;config&#39;</span><span class="p">,</span> <span class="s">&#39;rapidfire&#39;</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">rapid_fire</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">server_rf</span> <span class="o">=</span> <span class="n">service_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;config&#39;</span><span class="p">,</span> <span class="s">&#39;url-rf&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fixed_data_rf</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fixed_data</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">service_params</span><span class="o">.</span><span class="n">items</span><span class="p">(</span><span class="s">&#39;fixed-rf&#39;</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">fixed_data_rf</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">server_rf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">server</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fixed_data_rf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fixed_data</span>
+        <span class="c"># list of data to be sent</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_items</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">service_params</span><span class="o">.</span><span class="n">items</span><span class="p">(</span><span class="s">&#39;data&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 
 <div class="viewcode-block" id="ToService.translate_data"><a class="viewcode-back" href="../../api/pywws.toservice.html#pywws.toservice.ToService.translate_data">[docs]</a>    <span class="k">def</span> <span class="nf">translate_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">current</span><span class="p">,</span> <span class="n">fixed_data</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Convert a weather data record to upload format.</span>
@@ -140,27 +291,46 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">rain_midnight</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">nearest</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">midnight</span><span class="p">)][</span><span class="s">&#39;rain&#39;</span><span class="p">]</span>
         <span class="c"># convert data</span>
         <span class="n">result</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">fixed_data</span><span class="p">)</span>
-        <span class="n">result</span><span class="p">[</span><span class="s">&#39;dateutc&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">current</span><span class="p">[</span><span class="s">&#39;idx&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(</span><span class="s">&#39; &#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">current</span><span class="p">[</span><span class="s">&#39;wind_dir&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="n">result</span><span class="p">[</span><span class="s">&#39;winddir&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%.0f</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">current</span><span class="p">[</span><span class="s">&#39;wind_dir&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="mf">22.5</span><span class="p">)</span>
-        <span class="n">result</span><span class="p">[</span><span class="s">&#39;tempf&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%.1f</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">conversions</span><span class="o">.</span><span class="n">temp_f</span><span class="p">(</span><span class="n">current</span><span class="p">[</span><span class="s">&#39;temp_out&#39;</span><span class="p">]))</span>
-        <span class="n">result</span><span class="p">[</span><span class="s">&#39;dewptf&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%.1f</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span>
-            <span class="n">conversions</span><span class="o">.</span><span class="n">temp_f</span><span class="p">(</span>
-                <span class="n">dew_point</span><span class="p">(</span><span class="n">current</span><span class="p">[</span><span class="s">&#39;temp_out&#39;</span><span class="p">],</span> <span class="n">current</span><span class="p">[</span><span class="s">&#39;hum_out&#39;</span><span class="p">])))</span>
-        <span class="n">result</span><span class="p">[</span><span class="s">&#39;humidity&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%d</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">current</span><span class="p">[</span><span class="s">&#39;hum_out&#39;</span><span class="p">])</span>
-        <span class="k">if</span> <span class="n">current</span><span class="p">[</span><span class="s">&#39;wind_ave&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="n">result</span><span class="p">[</span><span class="s">&#39;windspeedmph&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%.2f</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span>
+        <span class="k">if</span> <span class="s">&#39;dateutc&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">:</span>
+            <span class="n">result</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="s">&#39;dateutc&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">current</span><span class="p">[</span><span class="s">&#39;idx&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(</span><span class="s">&#39; &#39;</span><span class="p">)</span>
+        <span class="c"># Centigrade temperature for Swedish temperatur.nu site</span>
+        <span class="k">if</span> <span class="s">&#39;tempc&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">:</span>
+            <span class="n">result</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="s">&#39;tempc&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%.1f</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">current</span><span class="p">[</span><span class="s">&#39;temp_out&#39;</span><span class="p">])</span>
+        <span class="c"># USA units for everyone else...</span>
+        <span class="k">if</span> <span class="s">&#39;winddir&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_items</span> <span class="ow">and</span> <span class="n">current</span><span class="p">[</span><span class="s">&#39;wind_dir&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">result</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="s">&#39;winddir&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%.0f</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span>
+                <span class="n">current</span><span class="p">[</span><span class="s">&#39;wind_dir&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="mf">22.5</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s">&#39;tempf&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">:</span>
+            <span class="n">result</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="s">&#39;tempf&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%.1f</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">conversions</span><span class="o">.</span><span class="n">temp_f</span><span class="p">(</span>
+                <span class="n">current</span><span class="p">[</span><span class="s">&#39;temp_out&#39;</span><span class="p">]))</span>
+        <span class="k">if</span> <span class="s">&#39;dewptf&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">:</span>
+            <span class="n">result</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="s">&#39;dewptf&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%.1f</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">conversions</span><span class="o">.</span><span class="n">temp_f</span><span class="p">(</span>
+                    <span class="n">dew_point</span><span class="p">(</span><span class="n">current</span><span class="p">[</span><span class="s">&#39;temp_out&#39;</span><span class="p">],</span> <span class="n">current</span><span class="p">[</span><span class="s">&#39;hum_out&#39;</span><span class="p">])))</span>
+        <span class="k">if</span> <span class="s">&#39;humidity&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">:</span>
+            <span class="n">result</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="s">&#39;humidity&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%d</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">current</span><span class="p">[</span><span class="s">&#39;hum_out&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="s">&#39;windspeedmph&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_items</span> <span class="ow">and</span> <span class="n">current</span><span class="p">[</span><span class="s">&#39;wind_ave&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">result</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="s">&#39;windspeedmph&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%.2f</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span>
                 <span class="n">conversions</span><span class="o">.</span><span class="n">wind_mph</span><span class="p">(</span><span class="n">current</span><span class="p">[</span><span class="s">&#39;wind_ave&#39;</span><span class="p">]))</span>
-        <span class="k">if</span> <span class="n">current</span><span class="p">[</span><span class="s">&#39;wind_gust&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="n">result</span><span class="p">[</span><span class="s">&#39;windgustmph&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%.2f</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span>
+        <span class="k">if</span> <span class="s">&#39;windgustmph&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_items</span> <span class="ow">and</span> <span class="n">current</span><span class="p">[</span><span class="s">&#39;wind_gust&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">result</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="s">&#39;windgustmph&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%.2f</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span>
                 <span class="n">conversions</span><span class="o">.</span><span class="n">wind_mph</span><span class="p">(</span><span class="n">current</span><span class="p">[</span><span class="s">&#39;wind_gust&#39;</span><span class="p">]))</span>
-        <span class="n">result</span><span class="p">[</span><span class="s">&#39;rainin&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%g</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span>
-            <span class="n">conversions</span><span class="o">.</span><span class="n">rain_inch</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">current</span><span class="p">[</span><span class="s">&#39;rain&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">rain_hour</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)))</span>
-        <span class="n">result</span><span class="p">[</span><span class="s">&#39;dailyrainin&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%g</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span>
-            <span class="n">conversions</span><span class="o">.</span><span class="n">rain_inch</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">current</span><span class="p">[</span><span class="s">&#39;rain&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">rain_midnight</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)))</span>
-        <span class="k">if</span> <span class="n">current</span><span class="p">[</span><span class="s">&#39;rel_pressure&#39;</span><span class="p">]:</span>
-            <span class="n">result</span><span class="p">[</span><span class="s">&#39;baromin&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%.4f</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span>
+        <span class="k">if</span> <span class="s">&#39;rainin&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">:</span>
+            <span class="n">result</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="s">&#39;rainin&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%g</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span>
+                <span class="n">conversions</span><span class="o">.</span><span class="n">rain_inch</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">current</span><span class="p">[</span><span class="s">&#39;rain&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">rain_hour</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)))</span>
+        <span class="k">if</span> <span class="s">&#39;dailyrainin&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">:</span>
+            <span class="n">result</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="s">&#39;dailyrainin&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%g</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span>
+                <span class="n">conversions</span><span class="o">.</span><span class="n">rain_inch</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">current</span><span class="p">[</span><span class="s">&#39;rain&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">rain_midnight</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)))</span>
+        <span class="k">if</span> <span class="s">&#39;baromin&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_items</span> <span class="ow">and</span> <span class="n">current</span><span class="p">[</span><span class="s">&#39;rel_pressure&#39;</span><span class="p">]:</span>
+            <span class="n">result</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="s">&#39;baromin&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%.4f</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span>
                 <span class="n">conversions</span><span class="o">.</span><span class="n">pressure_inhg</span><span class="p">(</span><span class="n">current</span><span class="p">[</span><span class="s">&#39;rel_pressure&#39;</span><span class="p">]))</span>
+        <span class="k">if</span> <span class="n">current</span><span class="o">.</span><span class="n">has_key</span><span class="p">(</span><span class="s">&#39;uv&#39;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="s">&#39;uv&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_items</span> <span class="ow">and</span> <span class="n">current</span><span class="p">[</span><span class="s">&#39;uv&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">result</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="s">&#39;uv&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%d</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">current</span><span class="p">[</span><span class="s">&#39;uv&#39;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="p">(</span><span class="s">&#39;solarradiation&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_items</span> <span class="ow">and</span>
+                    <span class="n">current</span><span class="p">[</span><span class="s">&#39;illuminance&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">):</span>
+                <span class="c"># approximate conversion from lux to W/m2</span>
+                <span class="n">result</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">data_items</span><span class="p">[</span><span class="s">&#39;solarradiation&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%.2f</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span>
+                    <span class="n">current</span><span class="p">[</span><span class="s">&#39;illuminance&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="mf">0.005</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">result</span>
 </div>
 <div class="viewcode-block" id="ToService.send_data"><a class="viewcode-back" href="../../api/pywws.toservice.html#pywws.toservice.ToService.send_data">[docs]</a>    <span class="k">def</span> <span class="nf">send_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">server</span><span class="p">,</span> <span class="n">fixed_data</span><span class="p">):</span>
@@ -219,7 +389,7 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">old_ex</span> <span class="o">=</span> <span class="n">e</span>
         <span class="k">return</span> <span class="bp">False</span>
 </div>
-<div class="viewcode-block" id="ToService.upload"><a class="viewcode-back" href="../../api/pywws.toservice.html#pywws.toservice.ToService.upload">[docs]</a>    <span class="k">def</span> <span class="nf">upload</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">server</span><span class="p">,</span> <span class="n">fixed_data</span><span class="p">,</span> <span class="n">catchup</span><span class="p">):</span>
+<div class="viewcode-block" id="ToService.Upload"><a class="viewcode-back" href="../../api/pywws.toservice.html#pywws.toservice.ToService.Upload">[docs]</a>    <span class="k">def</span> <span class="nf">Upload</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">catchup</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Upload one or more weather data records.</span>
 
 <span class="sd">        This method uploads either the most recent weather data</span>
@@ -228,18 +398,6 @@
 
 <span class="sd">        It sets the ``last update`` configuration value to the time</span>
 <span class="sd">        stamp of the most recent record successfully uploaded.</span>
-
-<span class="sd">        The :obj:`fixed_data` parameter contains unvarying data that</span>
-<span class="sd">        is site dependent, for example an ID code and authentication</span>
-<span class="sd">        data.</span>
-
-<span class="sd">        :param server: web address to upload to.</span>
-
-<span class="sd">        :type server: string</span>
-
-<span class="sd">        :param fixed_data: unvarying upload data.</span>
-
-<span class="sd">        :type fixed_data: dict</span>
 
 <span class="sd">        :param catchup: upload all data since last upload.</span>
 
@@ -250,18 +408,15 @@
 <span class="sd">        :rtype: bool</span>
 <span class="sd">        </span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">catchup</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">catchup</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">catchup</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">start</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()</span> <span class="o">-</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">catchup</span><span class="p">)</span>
             <span class="n">last_update</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">get_datetime</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">config_section</span><span class="p">,</span> <span class="s">&#39;last update&#39;</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">last_update</span><span class="p">:</span>
-                <span class="c"># upload all data since last time</span>
-                <span class="n">start</span> <span class="o">=</span> <span class="n">last_update</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">minutes</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="c"># upload one week&#39;s data</span>
-                <span class="n">start</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()</span> <span class="o">-</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">7</span><span class="p">)</span>
+                <span class="n">start</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">last_update</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">minutes</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
             <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">start</span><span class="p">:]:</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">send_data</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">server</span><span class="p">,</span> <span class="n">fixed_data</span><span class="p">):</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">send_data</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">server</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fixed_data</span><span class="p">):</span>
                     <span class="k">return</span> <span class="bp">False</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">set</span><span class="p">(</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">config_section</span><span class="p">,</span> <span class="s">&#39;last update&#39;</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;idx&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(</span><span class="s">&#39; &#39;</span><span class="p">))</span>
@@ -271,11 +426,94 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="c"># upload most recent data</span>
             <span class="n">last_update</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">before</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">max</span><span class="p">)</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">send_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">last_update</span><span class="p">],</span> <span class="n">server</span><span class="p">,</span> <span class="n">fixed_data</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">send_data</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">last_update</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">server</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fixed_data</span><span class="p">):</span>
                 <span class="k">return</span> <span class="bp">False</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">set</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">config_section</span><span class="p">,</span> <span class="s">&#39;last update&#39;</span><span class="p">,</span> <span class="n">last_update</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(</span><span class="s">&#39; &#39;</span><span class="p">))</span>
-        <span class="k">return</span> <span class="bp">True</span></div></div>
+        <span class="k">return</span> <span class="bp">True</span>
+</div>
+<div class="viewcode-block" id="ToService.RapidFire"><a class="viewcode-back" href="../../api/pywws.toservice.html#pywws.toservice.ToService.RapidFire">[docs]</a>    <span class="k">def</span> <span class="nf">RapidFire</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">catchup</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Upload a &#39;Rapid Fire&#39; weather data record.</span>
+
+<span class="sd">        This method uploads either a single data record (typically one</span>
+<span class="sd">        obtained during &#39;live&#39; logging), or all records since the last</span>
+<span class="sd">        upload (up to 7 days), according to the value of</span>
+<span class="sd">        :obj:`catchup`.</span>
+
+<span class="sd">        It sets the ``last update`` configuration value to the time</span>
+<span class="sd">        stamp of the most recent record successfully uploaded.</span>
+
+<span class="sd">        The :obj:`data` parameter contains the data to be uploaded.</span>
+<span class="sd">        It should be a &#39;calibrated&#39; data record, as stored in</span>
+<span class="sd">        :class:`pywws.DataStore.calib_store`.</span>
+
+<span class="sd">        :param data: the weather data record.</span>
+
+<span class="sd">        :type data: dict</span>
+
+<span class="sd">        :param catchup: upload all data since last upload.</span>
+
+<span class="sd">        :type catchup: bool</span>
+
+<span class="sd">        :return: success status</span>
+
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">last_log</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">before</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">max</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">last_log</span> <span class="ow">or</span> <span class="n">last_log</span> <span class="o">&lt;</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;idx&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">FIVE_MINS</span><span class="p">:</span>
+            <span class="c"># logged data is not (yet) up to date</span>
+            <span class="k">return</span> <span class="bp">True</span>
+        <span class="k">if</span> <span class="n">catchup</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">catchup</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">last_update</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">get_datetime</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">config_section</span><span class="p">,</span> <span class="s">&#39;last update&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">last_update</span><span class="p">:</span>
+                <span class="n">last_update</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">min</span>
+            <span class="k">if</span> <span class="n">last_update</span> <span class="o">&lt;=</span> <span class="n">last_log</span> <span class="o">-</span> <span class="n">FIVE_MINS</span><span class="p">:</span>
+                <span class="c"># last update was well before last logged data</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">Upload</span><span class="p">(</span><span class="bp">True</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="bp">False</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">send_data</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">server_rf</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fixed_data_rf</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">set</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">config_section</span><span class="p">,</span> <span class="s">&#39;last update&#39;</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;idx&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(</span><span class="s">&#39; &#39;</span><span class="p">))</span>
+        <span class="k">return</span> <span class="bp">True</span>
+</div></div>
+<div class="viewcode-block" id="main"><a class="viewcode-back" href="../../api/pywws.toservice.html#pywws.toservice.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">argv</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">argv</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">argv</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">opts</span><span class="p">,</span> <span class="n">args</span> <span class="o">=</span> <span class="n">getopt</span><span class="o">.</span><span class="n">getopt</span><span class="p">(</span>
+            <span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="s">&quot;hcv&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s">&#39;help&#39;</span><span class="p">,</span> <span class="s">&#39;catchup&#39;</span><span class="p">,</span> <span class="s">&#39;verbose&#39;</span><span class="p">])</span>
+    <span class="k">except</span> <span class="n">getopt</span><span class="o">.</span><span class="n">error</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span>
+        <span class="k">print</span> <span class="o">&gt;&gt;</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&#39;Error: </span><span class="si">%s</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">msg</span>
+        <span class="k">print</span> <span class="o">&gt;&gt;</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">,</span> <span class="n">__usage__</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">return</span> <span class="mi">1</span>
+    <span class="c"># process options</span>
+    <span class="n">catchup</span> <span class="o">=</span> <span class="bp">False</span>
+    <span class="n">verbose</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">o</span><span class="p">,</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">opts</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">o</span> <span class="o">==</span> <span class="s">&#39;-h&#39;</span> <span class="ow">or</span> <span class="n">o</span> <span class="o">==</span> <span class="s">&#39;--help&#39;</span><span class="p">:</span>
+            <span class="k">print</span> <span class="n">__usage__</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="k">return</span> <span class="mi">0</span>
+        <span class="k">elif</span> <span class="n">o</span> <span class="o">==</span> <span class="s">&#39;-c&#39;</span> <span class="ow">or</span> <span class="n">o</span> <span class="o">==</span> <span class="s">&#39;--catchup&#39;</span><span class="p">:</span>
+            <span class="n">catchup</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="k">elif</span> <span class="n">o</span> <span class="o">==</span> <span class="s">&#39;-v&#39;</span> <span class="ow">or</span> <span class="n">o</span> <span class="o">==</span> <span class="s">&#39;--verbose&#39;</span><span class="p">:</span>
+            <span class="n">verbose</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="c"># check arguments</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">print</span> <span class="o">&gt;&gt;</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&quot;Error: 2 arguments required&quot;</span>
+        <span class="k">print</span> <span class="o">&gt;&gt;</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">,</span> <span class="n">__usage__</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">return</span> <span class="mi">2</span>
+    <span class="n">logger</span> <span class="o">=</span> <span class="n">ApplicationLogger</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ToService</span><span class="p">(</span>
+        <span class="n">DataStore</span><span class="o">.</span><span class="n">params</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">DataStore</span><span class="o">.</span><span class="n">calib_store</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
+        <span class="n">service_name</span><span class="o">=</span><span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">Upload</span><span class="p">(</span><span class="n">catchup</span><span class="p">)</span>
+</div>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
 </pre></div>
 
           </div>
@@ -309,7 +547,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">pywws v12.01 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">pywws v12.02 documentation</a> &raquo;</li>
           <li><a href="../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>

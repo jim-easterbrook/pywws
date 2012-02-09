@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pywws.Tasks &mdash; pywws v12.01 documentation</title>
+    <title>pywws.Tasks &mdash; pywws v12.02 documentation</title>
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '12.01',
+        VERSION:     '12.02',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="shortcut icon" href="../../_static/pywws_logo.ico"/>
-    <link rel="top" title="pywws v12.01 documentation" href="../../index.html" />
+    <link rel="top" title="pywws v12.02 documentation" href="../../index.html" />
     <link rel="up" title="Module code" href="../index.html" /> 
   </head>
   <body>
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">pywws v12.01 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">pywws v12.02 documentation</a> &raquo;</li>
           <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -61,6 +61,7 @@
 <span class="kn">from</span> <span class="nn">TimeZone</span> <span class="kn">import</span> <span class="n">Local</span>
 <span class="kn">import</span> <span class="nn">ToMetOffice</span>
 <span class="kn">import</span> <span class="nn">ToUnderground</span>
+<span class="kn">from</span> <span class="nn">toservice</span> <span class="kn">import</span> <span class="n">ToService</span>
 <span class="kn">import</span> <span class="nn">Upload</span>
 <span class="kn">import</span> <span class="nn">WindRose</span>
 <span class="kn">import</span> <span class="nn">YoWindow</span>
@@ -92,6 +93,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">roseplotter</span> <span class="o">=</span> <span class="n">WindRose</span><span class="o">.</span><span class="n">RosePlotter</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">calib_data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hourly_data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">daily_data</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">monthly_data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">work_dir</span><span class="p">)</span>
+        <span class="c"># directory of service uploaders</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">services</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
         <span class="c"># create a ToUnderground object</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">underground</span> <span class="o">=</span> <span class="n">ToUnderground</span><span class="o">.</span><span class="n">ToUnderground</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">calib_data</span><span class="p">)</span>
         <span class="c"># create a ToMetOffice object</span>
@@ -106,6 +109,7 @@
         <span class="c"># get daytime end hour, in UTC</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">day_end_hour</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;config&#39;</span><span class="p">,</span> <span class="s">&#39;day end hour&#39;</span><span class="p">,</span> <span class="s">&#39;21&#39;</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">day_end_hour</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">day_end_hour</span> <span class="o">-</span> <span class="p">(</span><span class="n">time_offset</span><span class="o">.</span><span class="n">seconds</span> <span class="o">/</span> <span class="mi">3600</span><span class="p">))</span> <span class="o">%</span> <span class="mi">24</span>
+
 <div class="viewcode-block" id="RegularTasks.do_live"><a class="viewcode-back" href="../../api/pywws.Tasks.html#pywws.Tasks.RegularTasks.do_live">[docs]</a>    <span class="k">def</span> <span class="nf">do_live</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
         <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calibrator</span><span class="o">.</span><span class="n">calib</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
         <span class="n">OK</span> <span class="o">=</span> <span class="bp">True</span>
@@ -117,6 +121,11 @@
                 <span class="n">OK</span> <span class="o">=</span> <span class="bp">False</span>
         <span class="k">if</span> <span class="nb">eval</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;live&#39;</span><span class="p">,</span> <span class="s">&#39;underground&#39;</span><span class="p">,</span> <span class="s">&#39;False&#39;</span><span class="p">)):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">underground</span><span class="o">.</span><span class="n">RapidFire</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">service</span> <span class="ow">in</span> <span class="nb">eval</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;live&#39;</span><span class="p">,</span> <span class="s">&#39;services&#39;</span><span class="p">,</span> <span class="s">&#39;[]&#39;</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="n">service</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">services</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">services</span><span class="p">[</span><span class="n">service</span><span class="p">]</span> <span class="o">=</span> <span class="n">ToService</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">calib_data</span><span class="p">,</span> <span class="n">service_name</span><span class="o">=</span><span class="n">service</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">services</span><span class="p">[</span><span class="n">service</span><span class="p">]</span><span class="o">.</span><span class="n">RapidFire</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>
         <span class="n">uploads</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">template</span> <span class="ow">in</span> <span class="nb">eval</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;live&#39;</span><span class="p">,</span> <span class="s">&#39;plot&#39;</span><span class="p">,</span> <span class="s">&#39;[]&#39;</span><span class="p">)):</span>
             <span class="n">upload</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">do_plot</span><span class="p">(</span><span class="n">template</span><span class="p">)</span>
@@ -131,7 +140,8 @@
                 <span class="n">OK</span> <span class="o">=</span> <span class="bp">False</span>
             <span class="k">for</span> <span class="nb">file</span> <span class="ow">in</span> <span class="n">uploads</span><span class="p">:</span>
                 <span class="n">os</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="nb">file</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">OK</span></div>
+        <span class="k">return</span> <span class="n">OK</span>
+</div>
 <div class="viewcode-block" id="RegularTasks.do_tasks"><a class="viewcode-back" href="../../api/pywws.Tasks.html#pywws.Tasks.RegularTasks.do_tasks">[docs]</a>    <span class="k">def</span> <span class="nf">do_tasks</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">sections</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;logged&#39;</span><span class="p">]</span>
         <span class="n">now</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calib_data</span><span class="o">.</span><span class="n">before</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">max</span><span class="p">)</span>
@@ -164,6 +174,16 @@
             <span class="k">if</span> <span class="n">yowindow_file</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">yowindow</span><span class="o">.</span><span class="n">write_file</span><span class="p">(</span><span class="n">yowindow_file</span><span class="p">)</span>
                 <span class="k">break</span>
+        <span class="n">all_services</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">section</span> <span class="ow">in</span> <span class="n">sections</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">service</span> <span class="ow">in</span> <span class="nb">eval</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">section</span><span class="p">,</span> <span class="s">&#39;services&#39;</span><span class="p">,</span> <span class="s">&#39;[]&#39;</span><span class="p">)):</span>
+                <span class="k">if</span> <span class="n">service</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">all_services</span><span class="p">:</span>
+                    <span class="n">all_services</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">service</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">service</span> <span class="ow">in</span> <span class="n">all_services</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">service</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">services</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">services</span><span class="p">[</span><span class="n">service</span><span class="p">]</span> <span class="o">=</span> <span class="n">ToService</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">calib_data</span><span class="p">,</span> <span class="n">service_name</span><span class="o">=</span><span class="n">service</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">services</span><span class="p">[</span><span class="n">service</span><span class="p">]</span><span class="o">.</span><span class="n">Upload</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">section</span> <span class="ow">in</span> <span class="n">sections</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">eval</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">section</span><span class="p">,</span> <span class="s">&#39;underground&#39;</span><span class="p">,</span> <span class="s">&#39;False&#39;</span><span class="p">)):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">underground</span><span class="o">.</span><span class="n">Upload</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
@@ -190,7 +210,8 @@
         <span class="k">if</span> <span class="n">OK</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">section</span> <span class="ow">in</span> <span class="n">sections</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">section</span><span class="p">,</span> <span class="s">&#39;last update&#39;</span><span class="p">,</span> <span class="n">now</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(</span><span class="s">&#39; &#39;</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">OK</span></div>
+        <span class="k">return</span> <span class="n">OK</span>
+</div>
 <div class="viewcode-block" id="RegularTasks.do_twitter"><a class="viewcode-back" href="../../api/pywws.Tasks.html#pywws.Tasks.RegularTasks.do_twitter">[docs]</a>    <span class="k">def</span> <span class="nf">do_twitter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">template</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="kn">import</span> <span class="nn">ToTwitter</span>
         <span class="n">twitter</span> <span class="o">=</span> <span class="n">ToTwitter</span><span class="o">.</span><span class="n">ToTwitter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">)</span>
@@ -198,7 +219,8 @@
         <span class="n">input_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">template_dir</span><span class="p">,</span> <span class="n">template</span><span class="p">)</span>
         <span class="n">tweet</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">templater</span><span class="o">.</span><span class="n">make_text</span><span class="p">(</span><span class="n">input_file</span><span class="p">,</span> <span class="n">live_data</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;Tweeting&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">twitter</span><span class="o">.</span><span class="n">Upload</span><span class="p">(</span><span class="n">tweet</span><span class="p">[:</span><span class="mi">140</span><span class="p">])</span></div>
+        <span class="k">return</span> <span class="n">twitter</span><span class="o">.</span><span class="n">Upload</span><span class="p">(</span><span class="n">tweet</span><span class="p">[:</span><span class="mi">140</span><span class="p">])</span>
+</div>
 <div class="viewcode-block" id="RegularTasks.do_plot"><a class="viewcode-back" href="../../api/pywws.Tasks.html#pywws.Tasks.RegularTasks.do_plot">[docs]</a>    <span class="k">def</span> <span class="nf">do_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">template</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;Graphing </span><span class="si">%s</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">template</span><span class="p">)</span>
         <span class="n">input_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">graph_template_dir</span><span class="p">,</span> <span class="n">template</span><span class="p">)</span>
@@ -207,7 +229,8 @@
             <span class="k">return</span> <span class="n">output_file</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">roseplotter</span><span class="o">.</span><span class="n">DoPlot</span><span class="p">(</span><span class="n">input_file</span><span class="p">,</span> <span class="n">output_file</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">output_file</span>
-        <span class="k">return</span> <span class="bp">None</span></div>
+        <span class="k">return</span> <span class="bp">None</span>
+</div>
 <div class="viewcode-block" id="RegularTasks.do_template"><a class="viewcode-back" href="../../api/pywws.Tasks.html#pywws.Tasks.RegularTasks.do_template">[docs]</a>    <span class="k">def</span> <span class="nf">do_template</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">template</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;Templating </span><span class="si">%s</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">template</span><span class="p">)</span>
         <span class="n">input_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">template_dir</span><span class="p">,</span> <span class="n">template</span><span class="p">)</span>
@@ -247,7 +270,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">pywws v12.01 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">pywws v12.02 documentation</a> &raquo;</li>
           <li><a href="../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>

@@ -105,24 +105,4 @@ class class pywws.ToMetOffice.ToMetOffice(params, calib_data)
       * **calib_data** (``pywws.DataStore.calib_store``) --
         'calibrated' data.
 
-   Upload(catchup)
-
-      Upload one or more weather data records.
-
-      This method uploads either the most recent weather data record,
-      or all records since the last upload (up to 7 days), according
-      to the value of ``catchup``.
-
-      It sets the ``last update`` configuration value to the time
-      stamp of the most recent record successfully uploaded.
-
-      Parameters:
-         * **catchup** (*bool*) -- upload all data since last upload.
-
-      Returns:
-         success status
-
-      Return type:
-         bool
-
 pywws.ToMetOffice.main(argv=None)

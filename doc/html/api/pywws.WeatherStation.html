@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pywws.WeatherStation &mdash; pywws v12.01 documentation</title>
+    <title>pywws.WeatherStation &mdash; pywws v12.02 documentation</title>
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '12.01',
+        VERSION:     '12.02',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="shortcut icon" href="../_static/pywws_logo.ico"/>
-    <link rel="top" title="pywws v12.01 documentation" href="../index.html" />
+    <link rel="top" title="pywws v12.02 documentation" href="../index.html" />
     <link rel="up" title="Python programs and modules" href="index.html" />
     <link rel="next" title="pywws.DataStore" href="pywws.DataStore.html" />
     <link rel="prev" title="pywws.YoWindow" href="pywws.YoWindow.html" /> 
@@ -44,7 +44,7 @@
         <li class="right" >
           <a href="pywws.YoWindow.html" title="pywws.YoWindow"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">pywws v12.01 documentation</a> &raquo;</li>
+        <li><a href="../index.html">pywws v12.02 documentation</a> &raquo;</li>
           <li><a href="index.html" accesskey="U">Python programs and modules</a> &raquo;</li> 
       </ul>
     </div>  
@@ -93,8 +93,8 @@ and other sources.</p>
 <tr><td><a class="reference internal" href="#pywws.WeatherStation.dew_point" title="pywws.WeatherStation.dew_point"><tt class="xref py py-obj docutils literal"><span class="pre">dew_point</span></tt></a>(temp,&nbsp;hum)</td>
 <td>Compute dew point, using formula from</td>
 </tr>
-<tr><td><a class="reference internal" href="#pywws.WeatherStation.findDevice" title="pywws.WeatherStation.findDevice"><tt class="xref py py-obj docutils literal"><span class="pre">findDevice</span></tt></a>(idVendor,&nbsp;idProduct)</td>
-<td>Find a USB device by product and vendor id.</td>
+<tr><td><tt class="xref py py-obj docutils literal"><span class="pre">findDevice</span></tt></td>
+<td></td>
 </tr>
 <tr><td><a class="reference internal" href="#pywws.WeatherStation.get_wind_dir_text" title="pywws.WeatherStation.get_wind_dir_text"><tt class="xref py py-obj docutils literal"><span class="pre">get_wind_dir_text</span></tt></a>()</td>
 <td>Return an array to convert wind direction integer to a string.</td>
@@ -114,10 +114,10 @@ and other sources.</p>
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr><td><a class="reference internal" href="#pywws.WeatherStation.CUSBDrive" title="pywws.WeatherStation.CUSBDrive"><tt class="xref py py-obj docutils literal"><span class="pre">CUSBDrive</span></tt></a>()</td>
+<tr><td><a class="reference internal" href="#pywws.WeatherStation.CUSBDrive" title="pywws.WeatherStation.CUSBDrive"><tt class="xref py py-obj docutils literal"><span class="pre">CUSBDrive</span></tt></a>(library)</td>
 <td>Low level interface to weather station via USB.</td>
 </tr>
-<tr><td><a class="reference internal" href="#pywws.WeatherStation.weather_station" title="pywws.WeatherStation.weather_station"><tt class="xref py py-obj docutils literal"><span class="pre">weather_station</span></tt></a>([ws_type])</td>
+<tr><td><a class="reference internal" href="#pywws.WeatherStation.weather_station" title="pywws.WeatherStation.weather_station"><tt class="xref py py-obj docutils literal"><span class="pre">weather_station</span></tt></a>([ws_type,&nbsp;library])</td>
 <td>Class that represents the weather station to user program.</td>
 </tr>
 </tbody>
@@ -156,23 +156,17 @@ and other sources.</p>
 <a class="reference external" href="http://www.reedsonline.com/weather/weather-terms.htm">http://www.reedsonline.com/weather/weather-terms.htm</a>.</p>
 </dd></dl>
 
-<dl class="function">
-<dt id="pywws.WeatherStation.findDevice">
-<tt class="descclassname">pywws.WeatherStation.</tt><tt class="descname">findDevice</tt><big>(</big><em>idVendor</em>, <em>idProduct</em><big>)</big><a class="reference internal" href="../_modules/pywws/WeatherStation.html#findDevice"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.WeatherStation.findDevice" title="Permalink to this definition">¶</a></dt>
-<dd><p>Find a USB device by product and vendor id.</p>
-</dd></dl>
-
 <dl class="class">
 <dt id="pywws.WeatherStation.CUSBDrive">
-<em class="property">class </em><tt class="descclassname">pywws.WeatherStation.</tt><tt class="descname">CUSBDrive</tt><a class="reference internal" href="../_modules/pywws/WeatherStation.html#CUSBDrive"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.WeatherStation.CUSBDrive" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">pywws.WeatherStation.</tt><tt class="descname">CUSBDrive</tt><big>(</big><em>library</em><big>)</big><a class="reference internal" href="../_modules/pywws/WeatherStation.html#CUSBDrive"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.WeatherStation.CUSBDrive" title="Permalink to this definition">¶</a></dt>
 <dd><p>Low level interface to weather station via USB.</p>
 <p>Loosely modeled on a C++ class obtained from
 <a class="reference external" href="http://site.ambientweatherstore.com/easyweather/ws_1080_2080_protocol.zip">http://site.ambientweatherstore.com/easyweather/ws_1080_2080_protocol.zip</a>.
 I don&#8217;t know the provenance of this, but it looks as if it may
 have come from the manufacturer.</p>
 <dl class="method">
-<dt id="pywws.WeatherStation.CUSBDrive.read_data">
-<tt class="descname">read_data</tt><big>(</big><em>address</em><big>)</big><a class="reference internal" href="../_modules/pywws/WeatherStation.html#CUSBDrive.read_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.WeatherStation.CUSBDrive.read_data" title="Permalink to this definition">¶</a></dt>
+<dt id="pywws.WeatherStation.CUSBDrive.read_block">
+<tt class="descname">read_block</tt><big>(</big><em>address</em><big>)</big><a class="reference internal" href="../_modules/pywws/WeatherStation.html#CUSBDrive.read_block"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.WeatherStation.CUSBDrive.read_block" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read 32 bytes from the weather station.</p>
 <p>If the read fails for any reason, <tt class="xref py py-obj xref docutils literal"><span class="pre">None</span></tt> is returned.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -195,8 +189,8 @@ have come from the manufacturer.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pywws.WeatherStation.CUSBDrive.write_data">
-<tt class="descname">write_data</tt><big>(</big><em>address</em>, <em>data</em><big>)</big><a class="reference internal" href="../_modules/pywws/WeatherStation.html#CUSBDrive.write_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.WeatherStation.CUSBDrive.write_data" title="Permalink to this definition">¶</a></dt>
+<dt id="pywws.WeatherStation.CUSBDrive.write_byte">
+<tt class="descname">write_byte</tt><big>(</big><em>address</em>, <em>data</em><big>)</big><a class="reference internal" href="../_modules/pywws/WeatherStation.html#CUSBDrive.write_byte"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.WeatherStation.CUSBDrive.write_byte" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write a single byte to the weather station.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -222,7 +216,7 @@ have come from the manufacturer.</p>
 
 <dl class="class">
 <dt id="pywws.WeatherStation.weather_station">
-<em class="property">class </em><tt class="descclassname">pywws.WeatherStation.</tt><tt class="descname">weather_station</tt><big>(</big><em>ws_type='1080'</em><big>)</big><a class="reference internal" href="../_modules/pywws/WeatherStation.html#weather_station"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.WeatherStation.weather_station" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">pywws.WeatherStation.</tt><tt class="descname">weather_station</tt><big>(</big><em>ws_type='1080'</em>, <em>library='auto'</em><big>)</big><a class="reference internal" href="../_modules/pywws/WeatherStation.html#weather_station"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.WeatherStation.weather_station" title="Permalink to this definition">¶</a></dt>
 <dd><p>Class that represents the weather station to user program.</p>
 <p>Connect to weather station and prepare to read data.</p>
 <dl class="method">
@@ -342,7 +336,7 @@ array of (ptr, value) pairs.</p>
         <li class="right" >
           <a href="pywws.YoWindow.html" title="pywws.YoWindow"
              >previous</a> |</li>
-        <li><a href="../index.html">pywws v12.01 documentation</a> &raquo;</li>
+        <li><a href="../index.html">pywws v12.02 documentation</a> &raquo;</li>
           <li><a href="index.html" >Python programs and modules</a> &raquo;</li> 
       </ul>
     </div>

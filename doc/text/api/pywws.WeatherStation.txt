@@ -71,10 +71,8 @@ and other sources.
 | t``(temp,  |                                                                                            |
 | hum)       |                                                                                            |
 +------------+--------------------------------------------------------------------------------------------+
-| ``findDevi | Find a USB device by product and vendor id.                                                |
-| ce``(idVen |                                                                                            |
-| dor,       |                                                                                            |
-| idProduct) |                                                                                            |
+| ``findDevi |                                                                                            |
+| ce``       |                                                                                            |
 +------------+--------------------------------------------------------------------------------------------+
 | ``get_wind | Return an array to convert wind direction integer to a string.                             |
 | _dir_text` |                                                                                            |
@@ -93,11 +91,13 @@ and other sources.
 
 +------------+--------------------------------------------------------------------------------------------+
 | ``CUSBDriv | Low level interface to weather station via USB.                                            |
-| e``()      |                                                                                            |
+| e``(librar |                                                                                            |
+| y)         |                                                                                            |
 +------------+--------------------------------------------------------------------------------------------+
 | ``weather_ | Class that represents the weather station to user program.                                 |
 | station``( |                                                                                            |
-| [ws_type]) |                                                                                            |
+| [ws_type,  |                                                                                            |
+| library])  |                                                                                            |
 +------------+--------------------------------------------------------------------------------------------+
 
 pywws.WeatherStation.dew_point(temp, hum)
@@ -124,11 +124,7 @@ pywws.WeatherStation.pressure_trend_text(trend)
    Convert pressure trend to a string, see
    http://www.reedsonline.com/weather/weather-terms.htm.
 
-pywws.WeatherStation.findDevice(idVendor, idProduct)
-
-   Find a USB device by product and vendor id.
-
-class class pywws.WeatherStation.CUSBDrive
+class class pywws.WeatherStation.CUSBDrive(library)
 
    Low level interface to weather station via USB.
 
@@ -137,7 +133,7 @@ class class pywws.WeatherStation.CUSBDrive
    the provenance of this, but it looks as if it may have come from
    the manufacturer.
 
-   read_data(address)
+   read_block(address)
 
       Read 32 bytes from the weather station.
 
@@ -152,7 +148,7 @@ class class pywws.WeatherStation.CUSBDrive
       Return type:
          list(int)
 
-   write_data(address, data)
+   write_byte(address, data)
 
       Write a single byte to the weather station.
 
@@ -167,7 +163,7 @@ class class pywws.WeatherStation.CUSBDrive
       Return type:
          bool
 
-class class pywws.WeatherStation.weather_station(ws_type='1080')
+class class pywws.WeatherStation.weather_station(ws_type='1080', library='auto')
 
    Class that represents the weather station to user program.
 

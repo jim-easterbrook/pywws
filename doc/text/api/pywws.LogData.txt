@@ -20,16 +20,17 @@ LogData.py could be run quite infrequently if you don't need up-to-
 date data.
 
 There is no date or time information in the raw weather station data,
-so LogData.py waits until the "age" of the station's current data
-changes, then uses that time instant to calculate when the readings
-were stored. This process can be off by up to a minute, so stored data
-may not have uniform intervals between readings.
+so LogData.py creates a time stamp for each reading. It uses the
+computer's clock, rather than the weather station clock which can not
+be read accurately by the computer. A networked computer should have
+its clock set accurately by ntp.
 
-The weather station does have a real time clock (without seconds,
-unfortunately) but LogData.py ignores this and uses the computer's own
-clock instead. A networked computer should have its clock set
-accurately by ntp, whereas the weather station's clock could be set to
-anything.
+Synchronisation with the weather station is achieved by waiting for a
+change in the current data. There are two levels of synchronisation,
+set by the config file or a command line option. Level 0 is quicker,
+but sets the seconds value of the logged data time stamps to zero.
+Level 1 waits until the weather station stores a new logged record,
+and gets time stamps accurate to a couple of seconds.
 
 -[ Functions ]-
 

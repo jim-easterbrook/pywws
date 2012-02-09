@@ -29,7 +29,7 @@ Contents:
 | ``pywws.Ta | Routines to perform common tasks such as plotting gaphs or uploading files.                |
 | sks``      |                                                                                            |
 +------------+--------------------------------------------------------------------------------------------+
-| ``pywws.Lo | Save weather station history to file.                                                      |
+| ``pywws.Lo | Save weather station history to file                                                       |
 | gData``    |                                                                                            |
 +------------+--------------------------------------------------------------------------------------------+
 | ``pywws.Pr | Generate hourly, daily & monthly summaries of raw weather station                          |
@@ -68,7 +68,7 @@ Contents:
 | Undergroun |                                                                                            |
 | d``        |                                                                                            |
 +------------+--------------------------------------------------------------------------------------------+
-| ``pywws.to | Base class for Weather Underground and UK Met Office uploaders.                            |
+| ``pywws.to | Post weather update to services such as Weather Underground                                |
 | service``  |                                                                                            |
 +------------+--------------------------------------------------------------------------------------------+
 | ``pywws.Yo | Generate YoWindow XML file.                                                                |
@@ -204,6 +204,10 @@ Contents:
   * Upload old data
   * Add Weather Underground upload to regular tasks
 * pywws.toservice
+  * Introduction
+  * Configuration
+  * Upload old data
+  * Add service(s) upload to regular tasks
 * pywws.YoWindow
 * pywws.WeatherStation
   * Introduction
