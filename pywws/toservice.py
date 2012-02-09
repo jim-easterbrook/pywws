@@ -1,8 +1,117 @@
 #!/usr/bin/env python
 
-"""Base class for Weather Underground and UK Met Office uploaders.
+"""Post weather update to services such as Weather Underground
+::
+
+%s
+
+Introduction
+------------
+
+Several organisations allow weather stations to upload data using a
+simple HTTP 'POST' request, with the data encoded as a sequence of
+``key=value`` pairs separated by ``&`` characters.
+
+This module enables pywws to upload readings to these organisations.
+It is highly customisable using configuration files. Each 'service'
+requires a configuration file in ``pywws/services`` (that should not
+need to be edited by the user) and a section in ``weather.ini``
+containing user specific data such as your site ID and password.
+
+There are currently four services for which configuration files have
+been written.
+
++-----------------------+-----------------------------------------------------------------------+
+| service name          | organisation                                                          |
++=======================+=======================================================================+
+| ``metoffice``         | `UK Met Office <http://wow.metoffice.gov.uk/>`_                       |
++-----------------------+-----------------------------------------------------------------------+
+| ``stacjapogodywawpl`` | `Stacja Pogody <http://stacjapogody.waw.pl/index.php?id=mapastacji>`_ |
++-----------------------+-----------------------------------------------------------------------+
+| ``temperaturnu``      | `temperatur.nu <http://www.temperatur.nu/>`_                          |
++-----------------------+-----------------------------------------------------------------------+
+| ``underground``       | `Weather Underground <http://www.wunderground.com/>`_                 |
++-----------------------+-----------------------------------------------------------------------+
+
+Configuration
+-------------
+
+If you haven't already done so, visit the organisation's web site and
+create an account for your weather station. Make a note of any site ID
+and password details you are given.
+
+Stop any pywws software that is running and then run ``toservice.py``
+to create a section in ``weather.ini``::
+
+    python pywws/toservice.py data_dir service_name
+
+``service_name`` is a single word service name, such as ``metoffice``,
+``data_dir`` is your weather data directory, as usual.
+
+Edit ``weather.ini`` and find the section corresponding to the service
+name, e.g. ``[underground]``. Copy your site details into this
+section, for example::
+
+    [underground]
+    password = secret
+    station = ABCDEFG1A
+
+Now you can test your configuration::
+
+    python pywws/toservice.py -vvv data_dir service_name
+
+This should show you the data string that is uploaded and any response
+such as a 'success' message.
+
+Upload old data
+---------------
+
+Now you can upload your last 7 days' data, if the service supports it.
+Edit your ``weather.ini`` file and remove the ``last update`` line
+from the appropriate section, then run ``toservice.py`` with the
+catchup option::
+
+    python pywws/toservice.py -cv data_dir service_name
+
+This may take 20 minutes or more, depending on how much data you have.
+
+Add service(s) upload to regular tasks
+--------------------------------------
+
+Edit your ``weather.ini`` again, and add a list of services to the
+``[live]``, ``[logged]``, ``[hourly]``, ``[12 hourly]`` or ``[daily]``
+section, depending on how often you want to send data. For example::
+
+    [live]
+    twitter = []
+    plot = []
+    text = []
+    services = ['underground']
+
+    [logged]
+    twitter = []
+    plot = []
+    text = []
+    services = ['metoffice', 'stacjapogodywawpl']
+
+Restart your regular pywws program (``Hourly.py`` or ``LiveLog.py``)
+and visit the appropriate web site to see regular updates from your
+weather station.
 
 """
+
+__docformat__ = "restructuredtext en"
+__usage__ = """
+ usage: python toservice.py [options] data_dir service_name
+ options are:
+  -h or --help     display this help
+  -c or --catchup  upload all data since last upload
+  -v or --verbose  increase amount of reassuring messages
+ data_dir is the root directory of the weather data
+ service_name is the service to upload to, e.g. underground
+"""
+__doc__ %= __usage__
+__usage__ = __doc__.split('\n')[0] + __usage__
 
 from ConfigParser import SafeConfigParser
 import getopt
@@ -24,12 +133,8 @@ HOUR = timedelta(hours=1)
 DAY = timedelta(hours=24)
 
 class ToService(object):
-    """Base class for 'Weather Underground' style weather service
-    uploaders.
-
-    Derived classes must call the base class constructor. They will
-    also want to call the :meth:`upload` method, but may also call
-    other methods.
+    """Upload weather data to weather services such as Weather
+    Underground.
 
     """
     def __init__(self, params, calib_data, service_name=None):
@@ -42,6 +147,10 @@ class ToService(object):
         :param calib_data: 'calibrated' data.
 
         :type calib_data: :class:`pywws.DataStore.calib_store`
+
+        :keyword service_name: name of service to upload to.
+
+        :type service_name: string
     
         """
         if service_name:
