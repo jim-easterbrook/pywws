@@ -12,6 +12,7 @@ import Template
 from TimeZone import Local
 import ToMetOffice
 import ToUnderground
+from toservice import ToService
 import Upload
 import WindRose
 import YoWindow
@@ -43,6 +44,8 @@ class RegularTasks(object):
         self.roseplotter = WindRose.RosePlotter(
             self.params, self.calib_data, self.hourly_data, self.daily_data,
             self.monthly_data, self.work_dir)
+        # directory of service uploaders
+        self.services = dict()
         # create a ToUnderground object
         self.underground = ToUnderground.ToUnderground(self.params, self.calib_data)
         # create a ToMetOffice object
@@ -57,6 +60,7 @@ class RegularTasks(object):
         # get daytime end hour, in UTC
         self.day_end_hour = eval(params.get('config', 'day end hour', '21'))
         self.day_end_hour = (self.day_end_hour - (time_offset.seconds / 3600)) % 24
+
     def do_live(self, data):
         data = self.calibrator.calib(data)
         OK = True
@@ -68,6 +72,11 @@ class RegularTasks(object):
                 OK = False
         if eval(self.params.get('live', 'underground', 'False')):
             self.underground.RapidFire(data, True)
+        for service in eval(self.params.get('live', 'services', '[]')):
+            if service not in self.services:
+                self.services[service] = ToService(
+                    self.params, self.calib_data, service_name=service)
+            self.services[service].RapidFire(data, True)
         uploads = []
         for template in eval(self.params.get('live', 'plot', '[]')):
             upload = self.do_plot(template)
@@ -83,6 +92,7 @@ class RegularTasks(object):
             for file in uploads:
                 os.unlink(file)
         return OK
+
     def do_tasks(self):
         sections = ['logged']
         now = self.calib_data.before(datetime.max)
@@ -115,6 +125,16 @@ class RegularTasks(object):
             if yowindow_file:
                 self.yowindow.write_file(yowindow_file)
                 break
+        all_services = list()
+        for section in sections:
+            for service in eval(self.params.get(section, 'services', '[]')):
+                if service not in all_services:
+                    all_services.append(service)
+        for service in all_services:
+            if service not in self.services:
+                self.services[service] = ToService(
+                    self.params, self.calib_data, service_name=service)
+            self.services[service].Upload(True)
         for section in sections:
             if eval(self.params.get(section, 'underground', 'False')):
                 self.underground.Upload(True)
@@ -142,6 +162,7 @@ class RegularTasks(object):
             for section in sections:
                 self.params.set(section, 'last update', now.isoformat(' '))
         return OK
+
     def do_twitter(self, template, data=None):
         import ToTwitter
         twitter = ToTwitter.ToTwitter(self.params)
@@ -150,6 +171,7 @@ class RegularTasks(object):
         tweet = self.templater.make_text(input_file, live_data=data)
         self.logger.info("Tweeting")
         return twitter.Upload(tweet[:140])
+
     def do_plot(self, template):
         self.logger.info("Graphing %s", template)
         input_file = os.path.join(self.graph_template_dir, template)
@@ -159,6 +181,7 @@ class RegularTasks(object):
         elif self.roseplotter.DoPlot(input_file, output_file) == 0:
             return output_file
         return None
+
     def do_template(self, template, data=None):
         self.logger.info("Templating %s", template)
         input_file = os.path.join(self.template_dir, template)
