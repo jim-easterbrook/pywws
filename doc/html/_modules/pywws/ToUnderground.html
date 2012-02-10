@@ -54,6 +54,10 @@
 
 <span class="sd">%s</span>
 
+<span class="sd">.. Warning::</span>
+<span class="sd">    This module has been superseded by the :doc:`pywws.toservice`</span>
+<span class="sd">    module. It will be deleted from pywws in the next release.</span>
+
 <span class="sd">Introduction</span>
 <span class="sd">------------</span>
 
@@ -158,25 +162,8 @@
 <span class="sd">        :type calib_data: :class:`pywws.DataStore.calib_store`</span>
 <span class="sd">    </span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">config_section</span> <span class="o">=</span> <span class="s">&#39;underground&#39;</span>
-        <span class="n">toservice</span><span class="o">.</span><span class="n">ToService</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">calib_data</span><span class="p">)</span>
-        <span class="c"># Weather Underground server, normal and rapid fire</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">server</span> <span class="o">=</span> <span class="s">&#39;http://weatherstation.wunderground.com/weatherstation/updateweatherstation.php&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">server_rf</span> <span class="o">=</span> <span class="s">&#39;http://rtupdate.wunderground.com/weatherstation/updateweatherstation.php&#39;</span>
-        <span class="c"># set fixed part of upload data, versions for normal and rapid fire</span>
-        <span class="n">password</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">config_section</span><span class="p">,</span> <span class="s">&#39;password&#39;</span><span class="p">,</span> <span class="s">&#39;undergroudpassword&#39;</span><span class="p">)</span>
-        <span class="n">station</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">config_section</span><span class="p">,</span> <span class="s">&#39;station&#39;</span><span class="p">,</span> <span class="s">&#39;undergroundstation&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">fixed_data</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s">&#39;action&#39;</span>       <span class="p">:</span> <span class="s">&#39;updateraw&#39;</span><span class="p">,</span>
-            <span class="s">&#39;ID&#39;</span>           <span class="p">:</span> <span class="n">station</span><span class="p">,</span>
-            <span class="s">&#39;PASSWORD&#39;</span>     <span class="p">:</span> <span class="n">password</span><span class="p">,</span>
-            <span class="s">&#39;softwaretype&#39;</span> <span class="p">:</span> <span class="s">&#39;pywws&#39;</span><span class="p">,</span>
-            <span class="p">}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">fixed_data_rf</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fixed_data</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">fixed_data_rf</span><span class="p">[</span><span class="s">&#39;realtime&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;1&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">fixed_data_rf</span><span class="p">[</span><span class="s">&#39;rtfreq&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;48&#39;</span>
+        <span class="n">toservice</span><span class="o">.</span><span class="n">ToService</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">calib_data</span><span class="p">,</span> <span class="n">service_name</span><span class="o">=</span><span class="s">&#39;underground&#39;</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="main"><a class="viewcode-back" href="../../api/pywws.ToUnderground.html#pywws.ToUnderground.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">argv</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">argv</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>

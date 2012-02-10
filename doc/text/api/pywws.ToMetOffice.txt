@@ -11,6 +11,9 @@ Post weather update to the UK Met Office 'WOW' site
     -v or --verbose  increase amount of reassuring messages
    data_dir is the root directory of the weather data
 
+Warning: This module has been superseded by the *pywws.toservice* module. It
+  will be deleted from pywws in the next release.
+
 
 Introduction
 ============
