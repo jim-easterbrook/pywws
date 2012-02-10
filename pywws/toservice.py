@@ -244,13 +244,15 @@ class ToService(object):
         result = dict(fixed_data)
         if 'dateutc' in self.data_items:
             result[self.data_items['dateutc']] = current['idx'].isoformat(' ')
-        # Centigrade temperature for Swedish temperatur.nu site
-        if 'tempc' in self.data_items:
-            result[self.data_items['tempc']] = '%.1f' % (current['temp_out'])
-        # USA units for everyone else...
+        if 'YYYYMMDDhhmm' in self.data_items:
+            t = current['idx'].replace(tzinfo=utc)
+            t = t.astimezone(Local)
+            result[self.data_items['YYYYMMDDhhmm']] = t.strftime('%Y%m%d%H%M')
         if 'winddir' in self.data_items and current['wind_dir'] is not None:
             result[self.data_items['winddir']] = '%.0f' % (
                 current['wind_dir'] * 22.5)
+        if 'tempc' in self.data_items:
+            result[self.data_items['tempc']] = '%.1f' % (current['temp_out'])
         if 'tempf' in self.data_items:
             result[self.data_items['tempf']] = '%.1f' % (conversions.temp_f(
                 current['temp_out']))
@@ -259,18 +261,27 @@ class ToService(object):
                     dew_point(current['temp_out'], current['hum_out'])))
         if 'humidity' in self.data_items:
             result[self.data_items['humidity']] = '%d' % (current['hum_out'])
+        if 'windspeedms' in self.data_items and current['wind_ave'] is not None:
+            result[self.data_items['windspeedms']] = '%.1f' % (
+                current['wind_ave'])
         if 'windspeedmph' in self.data_items and current['wind_ave'] is not None:
             result[self.data_items['windspeedmph']] = '%.2f' % (
                 conversions.wind_mph(current['wind_ave']))
         if 'windgustmph' in self.data_items and current['wind_gust'] is not None:
             result[self.data_items['windgustmph']] = '%.2f' % (
                 conversions.wind_mph(current['wind_gust']))
+        if 'rainmm' in self.data_items:
+            result[self.data_items['rainmm']] = '%g' % (
+                max(current['rain'] - rain_hour, 0.0))
         if 'rainin' in self.data_items:
             result[self.data_items['rainin']] = '%g' % (
                 conversions.rain_inch(max(current['rain'] - rain_hour, 0.0)))
         if 'dailyrainin' in self.data_items:
             result[self.data_items['dailyrainin']] = '%g' % (
                 conversions.rain_inch(max(current['rain'] - self.rain_midnight, 0.0)))
+        if 'baromhpa' in self.data_items and current['rel_pressure']:
+            result[self.data_items['baromhpa']] = '%.1f' % (
+                current['rel_pressure'])
         if 'baromin' in self.data_items and current['rel_pressure']:
             result[self.data_items['baromin']] = '%.4f' % (
                 conversions.pressure_inhg(current['rel_pressure']))
@@ -315,8 +326,8 @@ class ToService(object):
         coded_data = self.translate_data(data, fixed_data)
         if not coded_data:
             return True
-        coded_data = urllib.urlencode(coded_data)
         self.logger.debug(coded_data)
+        coded_data = urllib.urlencode(coded_data)
         # have three tries before giving up
         for n in range(3):
             try:
