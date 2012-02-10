@@ -5,6 +5,10 @@
 
 %s
 
+.. Warning::
+    This module has been superseded by the :doc:`pywws.toservice`
+    module. It will be deleted from pywws in the next release.
+
 Introduction
 ------------
 
@@ -109,25 +113,8 @@ class ToUnderground(toservice.ToService):
         :type calib_data: :class:`pywws.DataStore.calib_store`
     
         """
-        self.config_section = 'underground'
-        toservice.ToService.__init__(self, params, calib_data)
-        # Weather Underground server, normal and rapid fire
-        self.server = 'http://weatherstation.wunderground.com/weatherstation/updateweatherstation.php'
-        self.server_rf = 'http://rtupdate.wunderground.com/weatherstation/updateweatherstation.php'
-        # set fixed part of upload data, versions for normal and rapid fire
-        password = self.params.get(
-            self.config_section, 'password', 'undergroudpassword')
-        station = self.params.get(
-            self.config_section, 'station', 'undergroundstation')
-        self.fixed_data = {
-            'action'       : 'updateraw',
-            'ID'           : station,
-            'PASSWORD'     : password,
-            'softwaretype' : 'pywws',
-            }
-        self.fixed_data_rf = dict(self.fixed_data)
-        self.fixed_data_rf['realtime'] = '1'
-        self.fixed_data_rf['rtfreq'] = '48'
+        toservice.ToService.__init__(
+            self, params, calib_data, service_name='underground')
 
 def main(argv=None):
     if argv is None:

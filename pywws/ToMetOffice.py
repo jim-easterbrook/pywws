@@ -5,6 +5,10 @@
 
 %s
 
+.. Warning::
+    This module has been superseded by the :doc:`pywws.toservice`
+    module. It will be deleted from pywws in the next release.
+
 Introduction
 ------------
 
@@ -114,18 +118,8 @@ class ToMetOffice(toservice.ToService):
         :type calib_data: :class:`pywws.DataStore.calib_store`
     
         """
-        self.config_section = 'metoffice'
-        toservice.ToService.__init__(self, params, calib_data)
-        # UK Met Office 'WOW' server
-        self.server = 'http://wow.metoffice.gov.uk/automaticreading'
-        # set fixed part of upload data
-        siteid = self.params.get(self.config_section, 'site id')
-        siteAuthenticationKey = self.params.get(self.config_section, 'aws pin')
-        self.fixed_data = {
-            'siteid'                : siteid,
-            'siteAuthenticationKey' : siteAuthenticationKey,
-            'softwaretype'          : 'pywws'
-            }
+        toservice.ToService.__init__(
+            self, params, calib_data, service_name='metoffice')
 
 def main(argv=None):
     if argv is None:
