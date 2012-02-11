@@ -18,22 +18,22 @@ requires a configuration file in ``pywws/services`` (that should not
 need to be edited by the user) and a section in ``weather.ini``
 containing user specific data such as your site ID and password.
 
-There are currently four services for which configuration files have
+There are currently five services for which configuration files have
 been written.
 
-+-----------------------+-----------------------------------------------------------------------+--------------------------------------------------------+
-| service name          | organisation                                                          | config file                                            |
-+=======================+=======================================================================+========================================================+
-| ``metoffice``         | `UK Met Office <http://wow.metoffice.gov.uk/>`_                       | :download:`../../pywws/services/metoffice.ini`         |
-+-----------------------+-----------------------------------------------------------------------+--------------------------------------------------------+
-| ``stacjapogodywawpl`` | `Stacja Pogody <http://stacjapogody.waw.pl/index.php?id=mapastacji>`_ | :download:`../../pywws/services/stacjapogodywawpl.ini` |
-+-----------------------+-----------------------------------------------------------------------+--------------------------------------------------------+
-| ``temperaturnu``      | `temperatur.nu <http://www.temperatur.nu/>`_                          | :download:`../../pywws/services/temperaturnu.ini`      |
-+-----------------------+-----------------------------------------------------------------------+--------------------------------------------------------+
-| ``underground``       | `Weather Underground <http://www.wunderground.com/>`_                 | :download:`../../pywws/services/underground.ini`       |
-+-----------------------+-----------------------------------------------------------------------+--------------------------------------------------------+
-| ``wetterarchivde``    | `wetter.com <http://www.wetter.com/community/>`_                      | :download:`../../pywws/services/wetterarchivde.ini`    |
-+-----------------------+-----------------------------------------------------------------------+--------------------------------------------------------+
++-----------------------------------------------------------------------+-----------------------+--------------------------------------------------------+
+| organisation                                                          | service name          | config file                                            |
++=======================================================================+=======================+========================================================+
+| `UK Met Office <http://wow.metoffice.gov.uk/>`_                       | ``metoffice``         | :download:`../../pywws/services/metoffice.ini`         |
++-----------------------------------------------------------------------+-----------------------+--------------------------------------------------------+
+| `Stacja Pogody <http://stacjapogody.waw.pl/index.php?id=mapastacji>`_ | ``stacjapogodywawpl`` | :download:`../../pywws/services/stacjapogodywawpl.ini` |
++-----------------------------------------------------------------------+-----------------------+--------------------------------------------------------+
+| `temperatur.nu <http://www.temperatur.nu/>`_                          | ``temperaturnu``      | :download:`../../pywws/services/temperaturnu.ini`      |
++-----------------------------------------------------------------------+-----------------------+--------------------------------------------------------+
+| `Weather Underground <http://www.wunderground.com/>`_                 | ``underground``       | :download:`../../pywws/services/underground.ini`       |
++-----------------------------------------------------------------------+-----------------------+--------------------------------------------------------+
+| `wetter.com <http://www.wetter.com/community/>`_                      | ``wetterarchivde``    | :download:`../../pywws/services/wetterarchivde.ini`    |
++-----------------------------------------------------------------------+-----------------------+--------------------------------------------------------+
 
 Configuration
 -------------
@@ -95,6 +95,17 @@ section, depending on how often you want to send data. For example::
     plot = []
     text = []
     services = ['metoffice', 'stacjapogodywawpl']
+
+    [hourly]
+    twitter = []
+    plot = []
+    text = []
+    services = ['underground']
+
+Note that the ``[live]`` section is only used when running
+``LiveLog.py``. It is a good idea to repeat any service selected in
+``[live]`` in the ``[hourly]`` section in case you switch to running
+``Hourly.py``.
 
 Restart your regular pywws program (``Hourly.py`` or ``LiveLog.py``)
 and visit the appropriate web site to see regular updates from your
@@ -201,9 +212,93 @@ class ToService(object):
             self.server_rf = self.server
             self.fixed_data_rf = self.fixed_data
         # list of data to be sent
-        self.data_items = dict()
+        self.data_items = list()
         for name, value in service_params.items('data'):
-            self.data_items[name] = value
+            if name == 'dateutc':
+                self.data_items.append(
+                    ('idx', self.get_one, value, '%s', lambda x: x.isoformat(' ')))
+            if name == 'YYYYMMDDhhmm':
+                self.data_items.append(
+                    ('idx', self.get_one, value, '%s',
+                     lambda x: x.replace(tzinfo=utc).astimezone(
+                         Local).strftime('%Y%m%d%H%M')))
+            if name == 'tempc':
+                self.data_items.append(
+                    ('temp_out', self.get_one, value, '%.1f', None))
+            if name == 'tempf':
+                self.data_items.append(
+                    ('temp_out', self.get_one, value, '%.1f',
+                     conversions.temp_f))
+            if name == 'dewptf':
+                self.data_items.append(
+                    ('temp_out', self.dew_pt, value, '%.1f',
+                     conversions.temp_f))
+            if name == 'winddir':
+                self.data_items.append(
+                    ('wind_dir', self.get_one, value, '%.0f',
+                     conversions.winddir_degrees))
+            if name == 'humidity':
+                self.data_items.append(
+                    ('hum_out', self.get_one, value, '%.d', None))
+            if name == 'windspeedms':
+                self.data_items.append(
+                    ('wind_ave', self.get_one, value, '%.1f', None))
+            if name == 'windspeedmph':
+                self.data_items.append(
+                    ('wind_ave', self.get_one, value, '%.2f',
+                     conversions.wind_mph))
+            if name == 'windgustmph':
+                self.data_items.append(
+                    ('wind_gust', self.get_one, value, '%.2f',
+                     conversions.wind_mph))
+            if name == 'baromhpa':
+                self.data_items.append(
+                    ('rel_pressure', self.get_one, value, '%.1f', None))
+            if name == 'baromin':
+                self.data_items.append(
+                    ('rel_pressure', self.get_one, value, '%.4f',
+                     conversions.pressure_inhg))
+            if name == 'rainmm':
+                self.data_items.append(
+                    ('rain', self.rain_hour, value, '%.1f', None))
+            if name == 'rainin':
+                self.data_items.append(
+                    ('rain', self.rain_hour, value, '%g',
+                     conversions.rain_inch))
+            if name == 'dailyrainin':
+                self.data_items.append(
+                    ('rain', self.rain_day, value, '%g',
+                     conversions.rain_inch))
+            if  self.params.get('config', 'ws type') == '3080':
+                if name == 'uv':
+                    self.data_items.append(
+                        ('uv', self.get_one, value, '%d', None))
+                if name == 'solarradiation':
+                    self.data_items.append(
+                        ('illuminance', self.get_one, value, '%.2f',
+                         conversions.illuminance_wm2))
+
+    def get_one(self, data, key):
+        return data[key]
+
+    def dew_pt(self, data, key):
+        return dew_point(data['temp_out'], data['hum_out'])
+
+    def rain_hour(self, data, key):
+        rain_hour = self.data[self.data.nearest(data['idx'] - HOUR)]['rain']
+        return max(0.0, data['rain'] - rain_hour)
+
+    def rain_day(self, data, key):
+        while data['idx'] < self.midnight:
+            self.midnight -= DAY
+            self.rain_midnight = None
+        while data['idx'] >= self.midnight + DAY:
+            self.midnight += DAY
+            self.rain_midnight = None
+        if self.rain_midnight is None:
+            self.rain_midnight = self.data[
+                self.data.nearest(self.midnight)]['rain']
+        return max(0.0, data['rain'] - self.rain_midnight)
 
     def translate_data(self, current, fixed_data):
         """Convert a weather data record to upload format.
@@ -232,69 +327,14 @@ class ToService(object):
         # check we have enough data
         if current['temp_out'] is None or current['hum_out'] is None:
             return None
-        # get rain data for 1 hr ago and local midnight
-        rain_hour = self.data[self.data.nearest(current['idx'] - HOUR)]['rain']
-        while current['idx'] < self.midnight:
-            self.midnight -= DAY
-            self.rain_midnight = None
-        while current['idx'] >= self.midnight + DAY:
-            self.midnight += DAY
-            self.rain_midnight = None
-        if self.rain_midnight is None:
-            self.rain_midnight = self.data[self.data.nearest(self.midnight)]['rain']
         # convert data
         result = dict(fixed_data)
-        if 'dateutc' in self.data_items:
-            result[self.data_items['dateutc']] = current['idx'].isoformat(' ')
-        if 'YYYYMMDDhhmm' in self.data_items:
-            t = current['idx'].replace(tzinfo=utc)
-            t = t.astimezone(Local)
-            result[self.data_items['YYYYMMDDhhmm']] = t.strftime('%Y%m%d%H%M')
-        if 'winddir' in self.data_items and current['wind_dir'] is not None:
-            result[self.data_items['winddir']] = '%.0f' % (
-                current['wind_dir'] * 22.5)
-        if 'tempc' in self.data_items:
-            result[self.data_items['tempc']] = '%.1f' % (current['temp_out'])
-        if 'tempf' in self.data_items:
-            result[self.data_items['tempf']] = '%.1f' % (conversions.temp_f(
-                current['temp_out']))
-        if 'dewptf' in self.data_items:
-            result[self.data_items['dewptf']] = '%.1f' % (conversions.temp_f(
-                    dew_point(current['temp_out'], current['hum_out'])))
-        if 'humidity' in self.data_items:
-            result[self.data_items['humidity']] = '%d' % (current['hum_out'])
-        if 'windspeedms' in self.data_items and current['wind_ave'] is not None:
-            result[self.data_items['windspeedms']] = '%.1f' % (
-                current['wind_ave'])
-        if 'windspeedmph' in self.data_items and current['wind_ave'] is not None:
-            result[self.data_items['windspeedmph']] = '%.2f' % (
-                conversions.wind_mph(current['wind_ave']))
-        if 'windgustmph' in self.data_items and current['wind_gust'] is not None:
-            result[self.data_items['windgustmph']] = '%.2f' % (
-                conversions.wind_mph(current['wind_gust']))
-        if 'rainmm' in self.data_items:
-            result[self.data_items['rainmm']] = '%g' % (
-                max(current['rain'] - rain_hour, 0.0))
-        if 'rainin' in self.data_items:
-            result[self.data_items['rainin']] = '%g' % (
-                conversions.rain_inch(max(current['rain'] - rain_hour, 0.0)))
-        if 'dailyrainin' in self.data_items:
-            result[self.data_items['dailyrainin']] = '%g' % (
-                conversions.rain_inch(max(current['rain'] - self.rain_midnight, 0.0)))
-        if 'baromhpa' in self.data_items and current['rel_pressure']:
-            result[self.data_items['baromhpa']] = '%.1f' % (
-                current['rel_pressure'])
-        if 'baromin' in self.data_items and current['rel_pressure']:
-            result[self.data_items['baromin']] = '%.4f' % (
-                conversions.pressure_inhg(current['rel_pressure']))
-        if current.has_key('uv'):
-            if 'uv' in self.data_items and current['uv'] is not None:
-                result[self.data_items['uv']] = '%d' % (current['uv'])
-            if ('solarradiation' in self.data_items and
-                    current['illuminance'] is not None):
-                # approximate conversion from lux to W/m2
-                result[self.data_items['solarradiation']] = '%.2f' % (
-                    current['illuminance'] * 0.005)
+        for key, compute, name, fmt, conv in self.data_items:
+            value = compute(current, key)
+            if conv:
+                value = conv(value)
+            if value is not None:
+                result[name] = fmt % value
         return result
 
     def send_data(self, data, server, fixed_data):
