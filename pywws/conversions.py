@@ -3,6 +3,12 @@ A set of functions to convert pywws native units (Centigrade, mm, m/s, hPa) to
 other popular units.
 """
 
+def illuminance_wm2(lux):
+    "Approximate conversion of illuminance in lux to solar radiation in W/m2"
+    if lux is None:
+        return None
+    return lux * 0.005
+
 def pressure_inhg(hPa):
     "Convert pressure from hectopascals/millibar to inches of mercury"
     if hPa is None:
@@ -21,26 +27,32 @@ def temp_f(c):
         return None
     return (c * 9.0 / 5.0) + 32.0
 
+def winddir_degrees(pts):
+    "Convert wind direction from 0..15 to degrees"
+    if pts is None:
+        return None
+    return pts * 22.5
+
 def wind_kmph(ms):
-    "Convert (wind) wind from metres per second to kilometres per hour"
+    "Convert wind from metres per second to kilometres per hour"
     if ms is None:
         return None
     return ms * 3.6
 
 def wind_mph(ms):
-    "Convert (wind) wind from metres per second to miles per hour"
+    "Convert wind from metres per second to miles per hour"
     if ms is None:
         return None
     return ms * 3.6 / 1.609344
 
 def wind_kn(ms):
-    "Convert (wind) wind from metres per second to knots"
+    "Convert wind from metres per second to knots"
     if ms is None:
         return None
     return ms * 3.6 / 1.852
 
 def wind_bft(ms):
-    "Convert (wind) wind from metres per second to Beaufort scale"
+    "Convert wind from metres per second to Beaufort scale"
     if ms is None:
         return None
     if ms < 0.3:
