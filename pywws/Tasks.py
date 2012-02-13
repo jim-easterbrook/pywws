@@ -10,8 +10,6 @@ from calib import Calib
 import Plot
 import Template
 from TimeZone import Local
-import ToMetOffice
-import ToUnderground
 from toservice import ToService
 import Upload
 import WindRose
@@ -46,10 +44,6 @@ class RegularTasks(object):
             self.monthly_data, self.work_dir)
         # directory of service uploaders
         self.services = dict()
-        # create a ToUnderground object
-        self.underground = ToUnderground.ToUnderground(self.params, self.calib_data)
-        # create a ToMetOffice object
-        self.metoffice = ToMetOffice.ToMetOffice(self.params, self.calib_data)
         # create a YoWindow object
         self.yowindow = YoWindow.YoWindow(self.calib_data)
         # get local time's offset from UTC, without DST
@@ -60,6 +54,21 @@ class RegularTasks(object):
         # get daytime end hour, in UTC
         self.day_end_hour = eval(params.get('config', 'day end hour', '21'))
         self.day_end_hour = (self.day_end_hour - (time_offset.seconds / 3600)) % 24
+        # convert config from underground/metoffice to new services
+        for section in ('live', 'logged', 'hourly', '12 hourly', 'daily'):
+            services = eval(self.params.get(section, 'services', '[]'))
+            for svc in ('underground', 'metoffice'):
+                if self.params.get(section, svc) == 'True':
+                    if svc not in services:
+                        services.append(svc)
+                self.params._config.remove_option(section, svc)
+            self.params.set(section, 'services', str(services))
+        # create service uploader objects
+        for section in ('live', 'logged', 'hourly', '12 hourly', 'daily'):
+            for service in eval(self.params.get(section, 'services', '[]')):
+                if service not in self.services:
+                    self.services[service] = ToService(
+                        self.params, self.calib_data, service_name=service)
 
     def do_live(self, data):
         data = self.calibrator.calib(data)
@@ -70,12 +79,7 @@ class RegularTasks(object):
         for template in eval(self.params.get('live', 'twitter', '[]')):
             if not self.do_twitter(template, data):
                 OK = False
-        if eval(self.params.get('live', 'underground', 'False')):
-            self.underground.RapidFire(data, True)
         for service in eval(self.params.get('live', 'services', '[]')):
-            if service not in self.services:
-                self.services[service] = ToService(
-                    self.params, self.calib_data, service_name=service)
             self.services[service].RapidFire(data, True)
         uploads = []
         for template in eval(self.params.get('live', 'plot', '[]')):
@@ -131,18 +135,7 @@ class RegularTasks(object):
                 if service not in all_services:
                     all_services.append(service)
         for service in all_services:
-            if service not in self.services:
-                self.services[service] = ToService(
-                    self.params, self.calib_data, service_name=service)
             self.services[service].Upload(True)
-        for section in sections:
-            if eval(self.params.get(section, 'underground', 'False')):
-                self.underground.Upload(True)
-                break
-        for section in sections:
-            if eval(self.params.get(section, 'metoffice', 'False')):
-                self.metoffice.Upload(True)
-                break
         uploads = []
         for section in sections:
             for template in eval(self.params.get(section, 'plot', '[]')):
