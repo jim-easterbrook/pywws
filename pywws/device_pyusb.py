@@ -1,4 +1,60 @@
-"""Low level USB interface to weather station, using libusb.
+"""Low level USB interface to weather station, using PyUSB.
+
+Introduction
+============
+
+This module handles low level communication with the weather station
+via the `PyUSB <http://sourceforge.net/apps/trac/pyusb/>`_ library. An
+alternative module, :doc:`pywws.device_cython_hidapi`, uses the
+`cython-hidapi <https://github.com/gbishop/cython-hidapi>`_ library.
+The choice of which module to use depends on which libraries are
+available for you computer.
+
+Users of recent versions of Mac OS have no choice. The operating
+system makes it very difficult to access HID devices (such as the
+weather station) directly, so the ``hidapi`` library has to be used.
+``cython-hidapi`` is a Python interface to that library.
+
+Users of OpenWRT and similar embedded Linux platforms will probably
+not be able to install ``cython-hidapi``, so are constrained to use
+``libusb`` and its ``PyUSB`` Python interface.
+
+Installation
+============
+
+Some of this software may already be installed on your machine, so do
+check before downloading sources and compiling them yourself.
+
+#.  Install libusb and PyUSB.
+
+    These should be available as packages for your operating system,
+    but their names may vary. For example, on Ubuntu Linux::
+
+        sudo apt-get install libusb-0.1-4 python-usb
+
+    On some embedded linux systems::
+
+        ipkg install libusb py25-usb
+
+Testing
+=======
+
+Run ``TestWeatherStation.py`` with increased verbosity so it reports
+which USB device access module is being used::
+
+    python TestWeatherStation.py -vv
+    18:28:09:pywws.WeatherStation.CUSBDrive:using pywws.device_pyusb
+    0000 55 aa ff ff ff ff ff ff ff ff ff ff ff ff ff ff 05 20 01 41 11 00 00 00 81 00 00 0f 05 00 e0 51
+    0020 03 27 ce 27 00 00 00 00 00 00 00 12 02 14 18 27 41 23 c8 00 00 00 46 2d 2c 01 64 80 c8 00 00 00
+    0040 64 00 64 80 a0 28 80 25 a0 28 80 25 03 36 00 05 6b 00 00 0a 00 f4 01 12 00 00 00 00 00 00 00 00
+    0060 00 00 49 0a 63 12 05 01 7f 00 36 01 60 80 36 01 60 80 bc 00 7b 80 95 28 12 26 6c 28 25 26 c8 01
+    0080 1d 02 d8 00 de 00 ff 00 ff 00 ff 00 00 11 10 06 01 29 12 02 01 19 32 11 09 09 05 18 12 01 22 13
+    00a0 14 11 11 04 15 04 11 12 17 05 12 11 09 02 15 26 12 02 11 07 05 11 09 02 15 26 12 02 11 07 05 11
+    00c0 09 10 09 12 12 02 02 12 38 12 02 07 19 00 11 12 16 03 27 12 02 03 11 00 11 12 16 03 27 11 12 26
+    00e0 21 32 11 12 26 21 32 12 02 06 19 57 12 02 06 19 57 12 02 06 19 57 12 02 06 19 57 12 02 06 19 57
+
+API
+===
 
 """
 
@@ -9,11 +65,18 @@ import platform
 import usb
 
 class USBDevice(object):
-    """Low level interface to weather station via USB.
-
-    """
-
     def __init__(self, idVendor, idProduct):
+        """Low level USB device access via PyUSB library.
+
+        :param idVendor: the USB ``vendor ID` number, for example 0x1941.
+
+        :type idVendor: int
+
+        :param idProduct: the USB ``product ID` number, for example 0x8021.
+
+        :type idProduct: int
+
+        """
         self.logger = logging.getLogger('pywws.device_libusb.USBDevice')
         dev = self._find_device(idVendor, idProduct)
         if not dev:
