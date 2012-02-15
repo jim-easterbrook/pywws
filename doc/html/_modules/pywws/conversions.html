@@ -52,6 +52,12 @@
 <span class="sd">other popular units.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
+<div class="viewcode-block" id="illuminance_wm2"><a class="viewcode-back" href="../../api/pywws.conversions.html#pywws.conversions.illuminance_wm2">[docs]</a><span class="k">def</span> <span class="nf">illuminance_wm2</span><span class="p">(</span><span class="n">lux</span><span class="p">):</span>
+    <span class="s">&quot;Approximate conversion of illuminance in lux to solar radiation in W/m2&quot;</span>
+    <span class="k">if</span> <span class="n">lux</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">None</span>
+    <span class="k">return</span> <span class="n">lux</span> <span class="o">*</span> <span class="mf">0.005</span>
+</div>
 <div class="viewcode-block" id="pressure_inhg"><a class="viewcode-back" href="../../api/pywws.conversions.html#pywws.conversions.pressure_inhg">[docs]</a><span class="k">def</span> <span class="nf">pressure_inhg</span><span class="p">(</span><span class="n">hPa</span><span class="p">):</span>
     <span class="s">&quot;Convert pressure from hectopascals/millibar to inches of mercury&quot;</span>
     <span class="k">if</span> <span class="n">hPa</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
@@ -70,26 +76,32 @@
         <span class="k">return</span> <span class="bp">None</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">c</span> <span class="o">*</span> <span class="mf">9.0</span> <span class="o">/</span> <span class="mf">5.0</span><span class="p">)</span> <span class="o">+</span> <span class="mf">32.0</span>
 </div>
+<div class="viewcode-block" id="winddir_degrees"><a class="viewcode-back" href="../../api/pywws.conversions.html#pywws.conversions.winddir_degrees">[docs]</a><span class="k">def</span> <span class="nf">winddir_degrees</span><span class="p">(</span><span class="n">pts</span><span class="p">):</span>
+    <span class="s">&quot;Convert wind direction from 0..15 to degrees&quot;</span>
+    <span class="k">if</span> <span class="n">pts</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">None</span>
+    <span class="k">return</span> <span class="n">pts</span> <span class="o">*</span> <span class="mf">22.5</span>
+</div>
 <div class="viewcode-block" id="wind_kmph"><a class="viewcode-back" href="../../api/pywws.conversions.html#pywws.conversions.wind_kmph">[docs]</a><span class="k">def</span> <span class="nf">wind_kmph</span><span class="p">(</span><span class="n">ms</span><span class="p">):</span>
-    <span class="s">&quot;Convert (wind) wind from metres per second to kilometres per hour&quot;</span>
+    <span class="s">&quot;Convert wind from metres per second to kilometres per hour&quot;</span>
     <span class="k">if</span> <span class="n">ms</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">None</span>
     <span class="k">return</span> <span class="n">ms</span> <span class="o">*</span> <span class="mf">3.6</span>
 </div>
 <div class="viewcode-block" id="wind_mph"><a class="viewcode-back" href="../../api/pywws.conversions.html#pywws.conversions.wind_mph">[docs]</a><span class="k">def</span> <span class="nf">wind_mph</span><span class="p">(</span><span class="n">ms</span><span class="p">):</span>
-    <span class="s">&quot;Convert (wind) wind from metres per second to miles per hour&quot;</span>
+    <span class="s">&quot;Convert wind from metres per second to miles per hour&quot;</span>
     <span class="k">if</span> <span class="n">ms</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">None</span>
     <span class="k">return</span> <span class="n">ms</span> <span class="o">*</span> <span class="mf">3.6</span> <span class="o">/</span> <span class="mf">1.609344</span>
 </div>
 <div class="viewcode-block" id="wind_kn"><a class="viewcode-back" href="../../api/pywws.conversions.html#pywws.conversions.wind_kn">[docs]</a><span class="k">def</span> <span class="nf">wind_kn</span><span class="p">(</span><span class="n">ms</span><span class="p">):</span>
-    <span class="s">&quot;Convert (wind) wind from metres per second to knots&quot;</span>
+    <span class="s">&quot;Convert wind from metres per second to knots&quot;</span>
     <span class="k">if</span> <span class="n">ms</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">None</span>
     <span class="k">return</span> <span class="n">ms</span> <span class="o">*</span> <span class="mf">3.6</span> <span class="o">/</span> <span class="mf">1.852</span>
 </div>
 <div class="viewcode-block" id="wind_bft"><a class="viewcode-back" href="../../api/pywws.conversions.html#pywws.conversions.wind_bft">[docs]</a><span class="k">def</span> <span class="nf">wind_bft</span><span class="p">(</span><span class="n">ms</span><span class="p">):</span>
-    <span class="s">&quot;Convert (wind) wind from metres per second to Beaufort scale&quot;</span>
+    <span class="s">&quot;Convert wind from metres per second to Beaufort scale&quot;</span>
     <span class="k">if</span> <span class="n">ms</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">None</span>
     <span class="k">if</span> <span class="n">ms</span> <span class="o">&lt;</span> <span class="mf">0.3</span><span class="p">:</span>

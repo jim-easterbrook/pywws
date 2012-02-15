@@ -18,18 +18,23 @@ hPa) to other popular units.
 | ``temp_f`` | Convert temperature from Celsius to Fahrenheit                                             |
 | (c)        |                                                                                            |
 +------------+--------------------------------------------------------------------------------------------+
-| ``wind_bft | Convert (wind) wind from metres per second to Beaufort scale                               |
+| ``wind_bft | Convert wind from metres per second to Beaufort scale                                      |
 | ``(ms)     |                                                                                            |
 +------------+--------------------------------------------------------------------------------------------+
-| ``wind_kmp | Convert (wind) wind from metres per second to kilometres per hour                          |
+| ``wind_kmp | Convert wind from metres per second to kilometres per hour                                 |
 | h``(ms)    |                                                                                            |
 +------------+--------------------------------------------------------------------------------------------+
-| ``wind_kn` | Convert (wind) wind from metres per second to knots                                        |
+| ``wind_kn` | Convert wind from metres per second to knots                                               |
 | `(ms)      |                                                                                            |
 +------------+--------------------------------------------------------------------------------------------+
-| ``wind_mph | Convert (wind) wind from metres per second to miles per hour                               |
+| ``wind_mph | Convert wind from metres per second to miles per hour                                      |
 | ``(ms)     |                                                                                            |
 +------------+--------------------------------------------------------------------------------------------+
+
+pywws.conversions.illuminance_wm2(lux)
+
+   Approximate conversion of illuminance in lux to solar radiation in
+   W/m2
 
 pywws.conversions.pressure_inhg(hPa)
 
@@ -43,18 +48,22 @@ pywws.conversions.temp_f(c)
 
    Convert temperature from Celsius to Fahrenheit
 
+pywws.conversions.winddir_degrees(pts)
+
+   Convert wind direction from 0..15 to degrees
+
 pywws.conversions.wind_kmph(ms)
 
-   Convert (wind) wind from metres per second to kilometres per hour
+   Convert wind from metres per second to kilometres per hour
 
 pywws.conversions.wind_mph(ms)
 
-   Convert (wind) wind from metres per second to miles per hour
+   Convert wind from metres per second to miles per hour
 
 pywws.conversions.wind_kn(ms)
 
-   Convert (wind) wind from metres per second to knots
+   Convert wind from metres per second to knots
 
 pywws.conversions.wind_bft(ms)
 
-   Convert (wind) wind from metres per second to Beaufort scale
+   Convert wind from metres per second to Beaufort scale

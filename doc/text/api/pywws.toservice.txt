@@ -26,22 +26,22 @@ requires a configuration file in ``pywws/services`` (that should not
 need to be edited by the user) and a section in ``weather.ini``
 containing user specific data such as your site ID and password.
 
-There are currently four services for which configuration files have
+There are currently five services for which configuration files have
 been written.
 
-+-------------------------+-------------------------------------------------------------------------+----------------------------------------------------------+
-| service name            | organisation                                                            | config file                                              |
-+=========================+=========================================================================+==========================================================+
-| ``metoffice``           | UK Met Office                                                           | ``../../pywws/services/metoffice.ini``                   |
-+-------------------------+-------------------------------------------------------------------------+----------------------------------------------------------+
-| ``stacjapogodywawpl``   | Stacja Pogody                                                           | ``../../pywws/services/stacjapogodywawpl.ini``           |
-+-------------------------+-------------------------------------------------------------------------+----------------------------------------------------------+
-| ``temperaturnu``        | temperatur.nu                                                           | ``../../pywws/services/temperaturnu.ini``                |
-+-------------------------+-------------------------------------------------------------------------+----------------------------------------------------------+
-| ``underground``         | Weather Underground                                                     | ``../../pywws/services/underground.ini``                 |
-+-------------------------+-------------------------------------------------------------------------+----------------------------------------------------------+
-| ``wetterarchivde``      | wetter.com                                                              | ``../../pywws/services/wetterarchivde.ini``              |
-+-------------------------+-------------------------------------------------------------------------+----------------------------------------------------------+
++-------------------------------------------------------------------------+-------------------------+----------------------------------------------------------+
+| organisation                                                            | service name            | config file                                              |
++=========================================================================+=========================+==========================================================+
+| UK Met Office                                                           | ``metoffice``           | ``../../pywws/services/metoffice.ini``                   |
++-------------------------------------------------------------------------+-------------------------+----------------------------------------------------------+
+| Stacja Pogody                                                           | ``stacjapogodywawpl``   | ``../../pywws/services/stacjapogodywawpl.ini``           |
++-------------------------------------------------------------------------+-------------------------+----------------------------------------------------------+
+| temperatur.nu                                                           | ``temperaturnu``        | ``../../pywws/services/temperaturnu.ini``                |
++-------------------------------------------------------------------------+-------------------------+----------------------------------------------------------+
+| Weather Underground                                                     | ``underground``         | ``../../pywws/services/underground.ini``                 |
++-------------------------------------------------------------------------+-------------------------+----------------------------------------------------------+
+| wetter.com                                                              | ``wetterarchivde``      | ``../../pywws/services/wetterarchivde.ini``              |
++-------------------------------------------------------------------------+-------------------------+----------------------------------------------------------+
 
 
 Configuration
@@ -107,6 +107,17 @@ section, depending on how often you want to send data. For example:
    text = []
    services = ['metoffice', 'stacjapogodywawpl']
 
+   [hourly]
+   twitter = []
+   plot = []
+   text = []
+   services = ['underground']
+
+Note that the ``[live]`` section is only used when running
+``LiveLog.py``. It is a good idea to repeat any service selected in
+``[live]`` in the ``[hourly]`` section in case you switch to running
+``Hourly.py``.
+
 Restart your regular pywws program (``Hourly.py`` or ``LiveLog.py``)
 and visit the appropriate web site to see regular updates from your
 weather station.
@@ -134,6 +145,14 @@ class class pywws.toservice.ToService(params, calib_data, service_name=None)
         'calibrated' data.
 
       * **service_name** (*string*) -- name of service to upload to.
+
+   get_one(data, key)
+
+   dew_pt(data, key)
+
+   rain_hour(data, key)
+
+   rain_day(data, key)
 
    translate_data(current, fixed_data)
 
