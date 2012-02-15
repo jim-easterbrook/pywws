@@ -29,6 +29,8 @@ Contents:
    pywws.toservice
    pywws.YoWindow
    pywws.WeatherStation
+   pywws.device_cython_hidapi
+   pywws.device_pyusb
    pywws.DataStore
    pywws.TimeZone
    pywws.Localisation

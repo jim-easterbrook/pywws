@@ -78,6 +78,14 @@ Contents:
 | atherStati |                                                                                            |
 | on``       |                                                                                            |
 +------------+--------------------------------------------------------------------------------------------+
+| ``pywws.de | Low level USB interface to weather station, using cython-hidapi.                           |
+| vice_cytho |                                                                                            |
+| n_hidapi`` |                                                                                            |
++------------+--------------------------------------------------------------------------------------------+
+| ``pywws.de | Low level USB interface to weather station, using PyUSB.                                   |
+| vice_pyusb |                                                                                            |
+| ``         |                                                                                            |
++------------+--------------------------------------------------------------------------------------------+
 | ``pywws.Da | DataStore.py - stores readings in easy to access files                                     |
 | taStore``  |                                                                                            |
 +------------+--------------------------------------------------------------------------------------------+
@@ -212,6 +220,16 @@ Contents:
 * pywws.WeatherStation
   * Introduction
   * Detailed API
+* pywws.device_cython_hidapi
+  * Introduction
+  * Installation
+  * Testing
+  * API
+* pywws.device_pyusb
+  * Introduction
+  * Installation
+  * Testing
+  * API
 * pywws.DataStore
   * Introduction
   * Detailed API
