@@ -22,6 +22,7 @@ __usage__ = """
   -d | --decode         display meaningful values instead of raw data
   -h | --history count  display the last "count" readings
   -l | --live           display 'live' data
+  -m | --logged         display 'logged' data
   -u | --unknown        display unknown fixed block values
   -v | --verbose        increase amount of reassuring messages
                         (repeat for even more messages e.g. -vvv)
@@ -49,8 +50,8 @@ def main(argv=None):
         argv = sys.argv
     try:
         opts, args = getopt.getopt(
-            argv[1:], "dh:luv",
-            ('help', 'decode', 'history=', 'live', 'unknown', 'verbose'))
+            argv[1:], "dh:lmuv",
+            ('help', 'decode', 'history=', 'live', 'logged', 'unknown', 'verbose'))
     except getopt.error, msg:
         print >>sys.stderr, 'Error: %s\n' % msg
         print >>sys.stderr, __usage__.strip()
@@ -64,6 +65,7 @@ def main(argv=None):
     history_count = 0
     decode = False
     live = False
+    logged = False
     unknown = False
     verbose = 0
     for o, a in opts:
@@ -76,6 +78,10 @@ def main(argv=None):
             history_count = int(a)
         elif o in ('-l', '--live'):
             live = True
+            logged = False
+        elif o in ('-m', '--logged'):
+            live = False
+            logged = True
         elif o in ('-u', '--unknown'):
             unknown = True
         elif o in ('-v', '--verbose'):
@@ -123,6 +129,12 @@ def main(argv=None):
             ptr = ws.dec_ptr(ptr)
     if live:
         for data, ptr, logged in ws.live_data():
+            print "%04x" % ptr,
+            print data['idx'].strftime('%H:%M:%S'),
+            del data['idx']
+            print data
+    if logged:
+        for data, ptr, logged in ws.live_data(logged_only=True):
             print "%04x" % ptr,
             print data['idx'].strftime('%H:%M:%S'),
             del data['idx']

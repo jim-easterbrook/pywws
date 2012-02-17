@@ -328,7 +328,7 @@ class weather_station(object):
                 self.logger.warning('type change %s -> %s', self.ws_type, '1080')
                 self.ws_type = '1080'
 
-    def live_data(self):
+    def live_data(self, logged_only=False):
         # There are two things we want to synchronise to - the data is
         # updated every 48 seconds and the address is incremented
         # every 5 minutes (or 10, 15, ..., 30). Rather than getting
@@ -347,16 +347,23 @@ class weather_station(object):
         no_op_count = 0
         while True:
             # wake up just before next reading is due
-            if not next_live:
+            now = time.time()
+            pause = 600.0
+            if next_live:
+                pause = min(pause, (next_live - 2.0) - now)
+            elif not logged_only:
                 pause = 0.0
-            elif next_log:
-                pause = min(next_log - 4.0, next_live - 2.0) - time.time()
-            elif (old_data['delay'] is not None and
-                  old_data['delay'] < read_period - 1):
-                pause = (next_live - 2.0) - time.time()
-            else:
+            if next_log:
+                pause = min(pause, (next_log - 4.0) - now)
+            elif (old_data['delay'] is None or
+                  old_data['delay'] >= read_period - 1):
                 pause = 0.0
-            time.sleep(max(pause, 2.0))
+            elif not next_live:
+                pause = min(pause,
+                            ((read_period - old_data['delay']) * 60.0) - 110.0)
+            pause = max(pause, 2.0)
+            self.logger.debug('delay %s, pause %g', str(old_data['delay']), pause)
+            time.sleep(pause)
             new_data = self.get_data(old_ptr, unbuffered=True)
             now = time.time()
             while next_live and next_live < now - live_interval:
@@ -422,6 +429,9 @@ class weather_station(object):
                 old_ptr = new_ptr
                 old_data['delay'] = 0
                 no_op_count = 0
+            elif logged_only:
+                old_data = new_data
+                no_op_count += 1
             elif new_data != old_data:
                 result = dict(new_data)
                 if no_op_count > 0:
