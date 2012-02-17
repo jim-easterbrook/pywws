@@ -70,6 +70,20 @@ class RegularTasks(object):
                     self.services[service] = ToService(
                         self.params, self.calib_data, service_name=service)
 
+    def has_live_tasks(self):
+        yowindow_file = self.params.get('live', 'yowindow', '')
+        if yowindow_file:
+            return True
+        for template in eval(self.params.get('live', 'twitter', '[]')):
+            return True
+        for service in eval(self.params.get('live', 'services', '[]')):
+            return True
+        for template in eval(self.params.get('live', 'plot', '[]')):
+            return True
+        for template in eval(self.params.get('live', 'text', '[]')):
+            return True
+        return False
+
     def do_live(self, data):
         data = self.calibrator.calib(data)
         OK = True

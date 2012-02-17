@@ -87,7 +87,8 @@ def LiveLog(data_dir):
     # get live data
     hour = timedelta(hours=1)
     next_hour = datetime.utcnow().replace(minute=0, second=0, microsecond=0) + hour
-    for data, ptr, logged in ws.live_data():
+    for data, ptr, logged in ws.live_data(logged_only=
+                                          (not tasks.has_live_tasks())):
         now = data['idx']
         if logged:
             # store logged data
