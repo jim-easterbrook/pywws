@@ -37,6 +37,8 @@ def CheckFixedBlock(ws, params, logger):
     if diff > timedelta(minutes=2):
         logger.warning(
             "Computer and weather station clocks disagree by %s (H:M:S).", str(diff))
+    # store weather station type
+    params.set('fixed', 'ws type', ws.ws_type)
     # store info from fixed block
     pressure_offset = fixed_block['rel_pressure'] - fixed_block['abs_pressure']
     old_offset = eval(params.get('fixed', 'pressure offset', 'None'))
@@ -61,6 +63,10 @@ def LiveLog(data_dir):
     Localisation.SetApplicationLanguage(params)
     # connect to weather station
     ws_type = params.get('config', 'ws type', '1080')
+    if ws_type:
+        params._config.remove_option('config', 'ws type')
+        params.set('fixed', 'ws type', ws_type)
+    ws_type = params.get('fixed', 'ws type', '1080')
     ws = WeatherStation.weather_station(ws_type=ws_type)
     fixed_block = CheckFixedBlock(ws, params, logger)
     if not fixed_block:

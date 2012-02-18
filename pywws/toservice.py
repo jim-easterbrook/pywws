@@ -269,7 +269,7 @@ class ToService(object):
                 self.data_items.append(
                     ('rain', self.rain_day, value, '%g',
                      conversions.rain_inch))
-            if  self.params.get('config', 'ws type') == '3080':
+            if  self.params.get('fixed', 'ws type') == '3080':
                 if name == 'uv':
                     self.data_items.append(
                         ('uv', self.get_one, value, '%d', None))

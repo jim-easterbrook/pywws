@@ -57,6 +57,10 @@ def LogData(params, raw_data, sync=None, clear=False):
     logger = logging.getLogger('pywws.LogData')
     # connect to weather station
     ws_type = params.get('config', 'ws type', '1080')
+    if ws_type:
+        params._config.remove_option('config', 'ws type')
+        params.set('fixed', 'ws type', ws_type)
+    ws_type = params.get('fixed', 'ws type', '1080')
     ws = WeatherStation.weather_station(ws_type=ws_type)
     fixed_block = ws.get_fixed_block()
     if not fixed_block:
@@ -79,6 +83,8 @@ def LogData(params, raw_data, sync=None, clear=False):
     if diff > timedelta(minutes=2):
         logger.warning(
             "Computer and weather station clocks disagree by %s (H:M:S).", str(diff))
+    # store weather station type
+    params.set('fixed', 'ws type', ws.ws_type)
     # store info from fixed block
     pressure_offset = fixed_block['rel_pressure'] - fixed_block['abs_pressure']
     old_offset = eval(params.get('fixed', 'pressure offset', 'None'))
@@ -89,7 +95,7 @@ def LogData(params, raw_data, sync=None, clear=False):
     params.flush()
     # get address and date-time of last complete logged data
     logger.info('Synchronising to weather station')
-    for data, last_ptr, logged in ws.live_data():
+    for data, last_ptr, logged in ws.live_data(logged_only=(sync > 0)):
         last_date = data['idx']
         logger.debug('Reading time %s', last_date.strftime('%H:%M:%S'))
         if logged:
