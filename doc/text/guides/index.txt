@@ -19,5 +19,5 @@ Contents:
   * daily: tasks to be done every 24 hours
   * ftp: configuration of uploading to a website
   * twitter: configuration of posting to Twitter
-  * underground: configuration of posting to Weather Underground
-  * metoffice: configuration of posting to UK Met Office WOW
+  * underground, metoffice, temperaturnu etc: configuration of posting
+    to 'services'

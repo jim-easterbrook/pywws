@@ -377,7 +377,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s">&#39;type change </span><span class="si">%s</span><span class="s"> -&gt; </span><span class="si">%s</span><span class="s">&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ws_type</span><span class="p">,</span> <span class="s">&#39;1080&#39;</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">ws_type</span> <span class="o">=</span> <span class="s">&#39;1080&#39;</span>
 
-<div class="viewcode-block" id="weather_station.live_data"><a class="viewcode-back" href="../../api/pywws.WeatherStation.html#pywws.WeatherStation.weather_station.live_data">[docs]</a>    <span class="k">def</span> <span class="nf">live_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="weather_station.live_data"><a class="viewcode-back" href="../../api/pywws.WeatherStation.html#pywws.WeatherStation.weather_station.live_data">[docs]</a>    <span class="k">def</span> <span class="nf">live_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logged_only</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
         <span class="c"># There are two things we want to synchronise to - the data is</span>
         <span class="c"># updated every 48 seconds and the address is incremented</span>
         <span class="c"># every 5 minutes (or 10, 15, ..., 30). Rather than getting</span>
@@ -396,16 +396,23 @@
         <span class="n">no_op_count</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
             <span class="c"># wake up just before next reading is due</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">next_live</span><span class="p">:</span>
+            <span class="n">now</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+            <span class="n">pause</span> <span class="o">=</span> <span class="mf">600.0</span>
+            <span class="k">if</span> <span class="n">next_live</span><span class="p">:</span>
+                <span class="n">pause</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">pause</span><span class="p">,</span> <span class="p">(</span><span class="n">next_live</span> <span class="o">-</span> <span class="mf">2.0</span><span class="p">)</span> <span class="o">-</span> <span class="n">now</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="ow">not</span> <span class="n">logged_only</span><span class="p">:</span>
                 <span class="n">pause</span> <span class="o">=</span> <span class="mf">0.0</span>
-            <span class="k">elif</span> <span class="n">next_log</span><span class="p">:</span>
-                <span class="n">pause</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">next_log</span> <span class="o">-</span> <span class="mf">4.0</span><span class="p">,</span> <span class="n">next_live</span> <span class="o">-</span> <span class="mf">2.0</span><span class="p">)</span> <span class="o">-</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-            <span class="k">elif</span> <span class="p">(</span><span class="n">old_data</span><span class="p">[</span><span class="s">&#39;delay&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span>
-                  <span class="n">old_data</span><span class="p">[</span><span class="s">&#39;delay&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">read_period</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
-                <span class="n">pause</span> <span class="o">=</span> <span class="p">(</span><span class="n">next_live</span> <span class="o">-</span> <span class="mf">2.0</span><span class="p">)</span> <span class="o">-</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-            <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">next_log</span><span class="p">:</span>
+                <span class="n">pause</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">pause</span><span class="p">,</span> <span class="p">(</span><span class="n">next_log</span> <span class="o">-</span> <span class="mf">4.0</span><span class="p">)</span> <span class="o">-</span> <span class="n">now</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="p">(</span><span class="n">old_data</span><span class="p">[</span><span class="s">&#39;delay&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span>
+                  <span class="n">old_data</span><span class="p">[</span><span class="s">&#39;delay&#39;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">read_period</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
                 <span class="n">pause</span> <span class="o">=</span> <span class="mf">0.0</span>
-            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">pause</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="ow">not</span> <span class="n">next_live</span><span class="p">:</span>
+                <span class="n">pause</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">pause</span><span class="p">,</span>
+                            <span class="p">((</span><span class="n">read_period</span> <span class="o">-</span> <span class="n">old_data</span><span class="p">[</span><span class="s">&#39;delay&#39;</span><span class="p">])</span> <span class="o">*</span> <span class="mf">60.0</span><span class="p">)</span> <span class="o">-</span> <span class="mf">110.0</span><span class="p">)</span>
+            <span class="n">pause</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">pause</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;delay </span><span class="si">%s</span><span class="s">, pause </span><span class="si">%g</span><span class="s">&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">old_data</span><span class="p">[</span><span class="s">&#39;delay&#39;</span><span class="p">]),</span> <span class="n">pause</span><span class="p">)</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">pause</span><span class="p">)</span>
             <span class="n">new_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="n">old_ptr</span><span class="p">,</span> <span class="n">unbuffered</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
             <span class="n">now</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
             <span class="k">while</span> <span class="n">next_live</span> <span class="ow">and</span> <span class="n">next_live</span> <span class="o">&lt;</span> <span class="n">now</span> <span class="o">-</span> <span class="n">live_interval</span><span class="p">:</span>
@@ -471,6 +478,9 @@
                 <span class="n">old_ptr</span> <span class="o">=</span> <span class="n">new_ptr</span>
                 <span class="n">old_data</span><span class="p">[</span><span class="s">&#39;delay&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
                 <span class="n">no_op_count</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">elif</span> <span class="n">logged_only</span><span class="p">:</span>
+                <span class="n">old_data</span> <span class="o">=</span> <span class="n">new_data</span>
+                <span class="n">no_op_count</span> <span class="o">+=</span> <span class="mi">1</span>
             <span class="k">elif</span> <span class="n">new_data</span> <span class="o">!=</span> <span class="n">old_data</span><span class="p">:</span>
                 <span class="n">result</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">new_data</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">no_op_count</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>

@@ -17,6 +17,8 @@ files.
 
 class class pywws.Tasks.RegularTasks(params, calib_data, hourly_data, daily_data, monthly_data)
 
+   has_live_tasks()
+
    do_live(data)
 
    do_tasks()

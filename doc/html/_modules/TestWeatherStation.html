@@ -71,6 +71,7 @@
 <span class="s">  -d | --decode         display meaningful values instead of raw data</span>
 <span class="s">  -h | --history count  display the last &quot;count&quot; readings</span>
 <span class="s">  -l | --live           display &#39;live&#39; data</span>
+<span class="s">  -m | --logged         display &#39;logged&#39; data</span>
 <span class="s">  -u | --unknown        display unknown fixed block values</span>
 <span class="s">  -v | --verbose        increase amount of reassuring messages</span>
 <span class="s">                        (repeat for even more messages e.g. -vvv)</span>
@@ -98,8 +99,8 @@
         <span class="n">argv</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">opts</span><span class="p">,</span> <span class="n">args</span> <span class="o">=</span> <span class="n">getopt</span><span class="o">.</span><span class="n">getopt</span><span class="p">(</span>
-            <span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="s">&quot;dh:luv&quot;</span><span class="p">,</span>
-            <span class="p">(</span><span class="s">&#39;help&#39;</span><span class="p">,</span> <span class="s">&#39;decode&#39;</span><span class="p">,</span> <span class="s">&#39;history=&#39;</span><span class="p">,</span> <span class="s">&#39;live&#39;</span><span class="p">,</span> <span class="s">&#39;unknown&#39;</span><span class="p">,</span> <span class="s">&#39;verbose&#39;</span><span class="p">))</span>
+            <span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="s">&quot;dh:lmuv&quot;</span><span class="p">,</span>
+            <span class="p">(</span><span class="s">&#39;help&#39;</span><span class="p">,</span> <span class="s">&#39;decode&#39;</span><span class="p">,</span> <span class="s">&#39;history=&#39;</span><span class="p">,</span> <span class="s">&#39;live&#39;</span><span class="p">,</span> <span class="s">&#39;logged&#39;</span><span class="p">,</span> <span class="s">&#39;unknown&#39;</span><span class="p">,</span> <span class="s">&#39;verbose&#39;</span><span class="p">))</span>
     <span class="k">except</span> <span class="n">getopt</span><span class="o">.</span><span class="n">error</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span>
         <span class="k">print</span> <span class="o">&gt;&gt;</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&#39;Error: </span><span class="si">%s</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">msg</span>
         <span class="k">print</span> <span class="o">&gt;&gt;</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">,</span> <span class="n">__usage__</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
@@ -113,6 +114,7 @@
     <span class="n">history_count</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">decode</span> <span class="o">=</span> <span class="bp">False</span>
     <span class="n">live</span> <span class="o">=</span> <span class="bp">False</span>
+    <span class="n">logged</span> <span class="o">=</span> <span class="bp">False</span>
     <span class="n">unknown</span> <span class="o">=</span> <span class="bp">False</span>
     <span class="n">verbose</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="k">for</span> <span class="n">o</span><span class="p">,</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">opts</span><span class="p">:</span>
@@ -125,6 +127,10 @@
             <span class="n">history_count</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">o</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;-l&#39;</span><span class="p">,</span> <span class="s">&#39;--live&#39;</span><span class="p">):</span>
             <span class="n">live</span> <span class="o">=</span> <span class="bp">True</span>
+            <span class="n">logged</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="k">elif</span> <span class="n">o</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;-m&#39;</span><span class="p">,</span> <span class="s">&#39;--logged&#39;</span><span class="p">):</span>
+            <span class="n">live</span> <span class="o">=</span> <span class="bp">False</span>
+            <span class="n">logged</span> <span class="o">=</span> <span class="bp">True</span>
         <span class="k">elif</span> <span class="n">o</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;-u&#39;</span><span class="p">,</span> <span class="s">&#39;--unknown&#39;</span><span class="p">):</span>
             <span class="n">unknown</span> <span class="o">=</span> <span class="bp">True</span>
         <span class="k">elif</span> <span class="n">o</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;-v&#39;</span><span class="p">,</span> <span class="s">&#39;--verbose&#39;</span><span class="p">):</span>
@@ -172,6 +178,12 @@
             <span class="n">ptr</span> <span class="o">=</span> <span class="n">ws</span><span class="o">.</span><span class="n">dec_ptr</span><span class="p">(</span><span class="n">ptr</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">live</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">data</span><span class="p">,</span> <span class="n">ptr</span><span class="p">,</span> <span class="n">logged</span> <span class="ow">in</span> <span class="n">ws</span><span class="o">.</span><span class="n">live_data</span><span class="p">():</span>
+            <span class="k">print</span> <span class="s">&quot;</span><span class="si">%04x</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">ptr</span><span class="p">,</span>
+            <span class="k">print</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;idx&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s">&#39;%H:%M:%S&#39;</span><span class="p">),</span>
+            <span class="k">del</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;idx&#39;</span><span class="p">]</span>
+            <span class="k">print</span> <span class="n">data</span>
+    <span class="k">if</span> <span class="n">logged</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">data</span><span class="p">,</span> <span class="n">ptr</span><span class="p">,</span> <span class="n">logged</span> <span class="ow">in</span> <span class="n">ws</span><span class="o">.</span><span class="n">live_data</span><span class="p">(</span><span class="n">logged_only</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
             <span class="k">print</span> <span class="s">&quot;</span><span class="si">%04x</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">ptr</span><span class="p">,</span>
             <span class="k">print</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;idx&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s">&#39;%H:%M:%S&#39;</span><span class="p">),</span>
             <span class="k">del</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;idx&#39;</span><span class="p">]</span>

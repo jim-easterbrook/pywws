@@ -169,7 +169,7 @@ class class pywws.WeatherStation.weather_station(ws_type='1080', library='auto')
 
    Connect to weather station and prepare to read data.
 
-   live_data()
+   live_data(logged_only=False)
 
    inc_ptr(ptr)
 
