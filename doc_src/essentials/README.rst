@@ -4,7 +4,7 @@ README
 Python software for USB Wireless WeatherStations (pywws).
   http://code.google.com/p/pywws/
 
-(C) 2008-11 Jim Easterbrook (jim@jim-easterbrook.me.uk)
+(C) 2008-12 Jim Easterbrook (jim@jim-easterbrook.me.uk)
 derived from previous work by
 Michael Pendec (michael.pendec@gmail.com) and
 Svend Skafte (svend@skafte.net)
@@ -32,11 +32,18 @@ Licence terms:
 
 Dependencies:
 
-* libusb (http://libusb.sf.net) version 0.1.12
-  (note: libusb 1 is not supported)
 * Python (http://www.python.org/) version 2.4 or higher
   (note: Python 3 is not supported)
-* PyUSB (http://pyusb.berlios.de/) version 0.4.x
+* USB library option 1:
+
+  * libusb (http://libusb.sf.net) version 0.1.12
+    (note: libusb 1 is not supported)
+  * PyUSB (http://pyusb.berlios.de/) version 0.4.x
+* USB library option 2:
+
+  * hidapi (https://github.com/signal11/hidapi)
+  * cython-hidapi (https://github.com/gbishop/cython-hidapi)
+  * cython (http://cython.org/)
 * For graph drawing:
 
   * gnuplot (http://www.gnuplot.info/) v4.2 or higher
@@ -88,10 +95,9 @@ Getting started:
 
 #. Unzip / untar all the files to a convenient directory
 #. Install Python, if not already installed
-#. Install libusb, if not already installed
-#. Install PyUSB, if not already installed
+#. Install USB library option 1 or 2, if not already installed
 
-   Note: steps 2..4 may require installation of other software on some
+   Note: steps 2..3 may require installation of other software on some
    platforms, and you might have to compile / build some packages.
 #. Change your current directory to your pywws installation directory, for example::
 
@@ -174,7 +180,7 @@ Getting started:
 
 #. If you want to upload to Weather Underground, try::
 
-      python pywws/ToUnderground.py -vvv /data/weather
+      python pywws/toservice.py -vvv /data/weather underground
 
    You'll need to edit /data/weather/weather.ini with your Wunderground
    details, for example::
