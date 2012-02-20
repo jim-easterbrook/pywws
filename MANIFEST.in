@@ -1,5 +1,6 @@
 include *.py *.txt MANIFEST.in makefile
 include pywws/*.py
+include pywws/services/*.ini
 recursive-include doc_src *
 recursive-include doc/html *
 recursive-include doc/text *
