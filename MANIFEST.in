@@ -1,8 +1,10 @@
 include *.py *.txt MANIFEST.in makefile
 include pywws/*.py
+recursive-include doc_src *
 recursive-include doc/html *
 recursive-include doc/text *
 recursive-include example_templates *
 recursive-include example_graph_templates *
+recursive-include example_modules *
 recursive-include languages *
 recursive-include locale *
