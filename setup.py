@@ -10,4 +10,5 @@ setup(name='pywws',
       author_email='jim@jim-easterbrook.me.uk',
       url='http://code.google.com/p/pywws/',
       packages=['pywws'],
+      package_data={'pywws' : ['services/*.ini']},
       )
