@@ -60,7 +60,7 @@
 <dt>Python software for USB Wireless WeatherStations (pywws).</dt>
 <dd><a class="reference external" href="http://code.google.com/p/pywws/">http://code.google.com/p/pywws/</a></dd>
 </dl>
-<p>(C) 2008-11 Jim Easterbrook (<a class="reference external" href="mailto:jim&#37;&#52;&#48;jim-easterbrook&#46;me&#46;uk">jim<span>&#64;</span>jim-easterbrook<span>&#46;</span>me<span>&#46;</span>uk</a>)
+<p>(C) 2008-12 Jim Easterbrook (<a class="reference external" href="mailto:jim&#37;&#52;&#48;jim-easterbrook&#46;me&#46;uk">jim<span>&#64;</span>jim-easterbrook<span>&#46;</span>me<span>&#46;</span>uk</a>)
 derived from previous work by
 Michael Pendec (<a class="reference external" href="mailto:michael&#46;pendec&#37;&#52;&#48;gmail&#46;com">michael<span>&#46;</span>pendec<span>&#64;</span>gmail<span>&#46;</span>com</a>) and
 Svend Skafte (<a class="reference external" href="mailto:svend&#37;&#52;&#48;skafte&#46;net">svend<span>&#64;</span>skafte<span>&#46;</span>net</a>)</p>
@@ -85,11 +85,20 @@ with this softare; if not, write to the Free Software Foundation, Inc.,
 </dl>
 <p>Dependencies:</p>
 <ul class="simple">
-<li>libusb (<a class="reference external" href="http://libusb.sf.net">http://libusb.sf.net</a>) version 0.1.12
-(note: libusb 1 is not supported)</li>
 <li>Python (<a class="reference external" href="http://www.python.org/">http://www.python.org/</a>) version 2.4 or higher
 (note: Python 3 is not supported)</li>
+<li>USB library option 1:<ul>
+<li>libusb (<a class="reference external" href="http://libusb.sf.net">http://libusb.sf.net</a>) version 0.1.12
+(note: libusb 1 is not supported)</li>
 <li>PyUSB (<a class="reference external" href="http://pyusb.berlios.de/">http://pyusb.berlios.de/</a>) version 0.4.x</li>
+</ul>
+</li>
+<li>USB library option 2:<ul>
+<li>hidapi (<a class="reference external" href="https://github.com/signal11/hidapi">https://github.com/signal11/hidapi</a>)</li>
+<li>cython-hidapi (<a class="reference external" href="https://github.com/gbishop/cython-hidapi">https://github.com/gbishop/cython-hidapi</a>)</li>
+<li>cython (<a class="reference external" href="http://cython.org/">http://cython.org/</a>)</li>
+</ul>
+</li>
 <li>For graph drawing:<ul>
 <li>gnuplot (<a class="reference external" href="http://www.gnuplot.info/">http://www.gnuplot.info/</a>) v4.2 or higher</li>
 </ul>
@@ -145,10 +154,8 @@ names may be slightly different, e.g. python-usb instead of pyusb.</p>
 </li>
 <li><p class="first">Install Python, if not already installed</p>
 </li>
-<li><p class="first">Install libusb, if not already installed</p>
-</li>
-<li><p class="first">Install PyUSB, if not already installed</p>
-<p>Note: steps 2..4 may require installation of other software on some
+<li><p class="first">Install USB library option 1 or 2, if not already installed</p>
+<p>Note: steps 2..3 may require installation of other software on some
 platforms, and you might have to compile / build some packages.</p>
 </li>
 <li><p class="first">Change your current directory to your pywws installation directory, for example:</p>
@@ -237,7 +244,7 @@ python pywws/ToTwitter.py /data/weather tweet.txt</pre>
 <p>For more detail, see doc/guides/twitter: <a class="reference internal" href="../guides/twitter.html"><em>How to configure pywws to post messages to Twitter</em></a>.</p>
 </li>
 <li><p class="first">If you want to upload to Weather Underground, try:</p>
-<div class="highlight-python"><pre>python pywws/ToUnderground.py -vvv /data/weather</pre>
+<div class="highlight-python"><pre>python pywws/toservice.py -vvv /data/weather underground</pre>
 </div>
 <p>You&#8217;ll need to edit /data/weather/weather.ini with your Wunderground
 details, for example:</p>

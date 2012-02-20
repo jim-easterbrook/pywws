@@ -5,7 +5,7 @@ README
 Python software for USB Wireless WeatherStations (pywws).
    http://code.google.com/p/pywws/
 
-(C) 2008-11 Jim Easterbrook (jim@jim-easterbrook.me.uk) derived from
+(C) 2008-12 Jim Easterbrook (jim@jim-easterbrook.me.uk) derived from
 previous work by Michael Pendec (michael.pendec@gmail.com) and Svend
 Skafte (svend@skafte.net)
 
@@ -33,13 +33,23 @@ Licence terms:
 
 Dependencies:
 
-* libusb (http://libusb.sf.net) version 0.1.12 (note: libusb 1 is not
-  supported)
-
 * Python (http://www.python.org/) version 2.4 or higher (note: Python
   3 is not supported)
 
-* PyUSB (http://pyusb.berlios.de/) version 0.4.x
+* USB library option 1:
+
+  * libusb (http://libusb.sf.net) version 0.1.12 (note: libusb 1 is
+    not supported)
+
+  * PyUSB (http://pyusb.berlios.de/) version 0.4.x
+
+* USB library option 2:
+
+  * hidapi (https://github.com/signal11/hidapi)
+
+  * cython-hidapi (https://github.com/gbishop/cython-hidapi)
+
+  * cython (http://cython.org/)
 
 * For graph drawing:
 
@@ -120,28 +130,26 @@ Getting started:
 
 2. Install Python, if not already installed
 
-3. Install libusb, if not already installed
+3. Install USB library option 1 or 2, if not already installed
 
-4. Install PyUSB, if not already installed
-
-   Note: steps 2..4 may require installation of other software on some
+   Note: steps 2..3 may require installation of other software on some
    platforms, and you might have to compile / build some packages.
 
-5. Change your current directory to your pywws installation directory,
+4. Change your current directory to your pywws installation directory,
    for example:
 
       cd ${HOME}/weather/pywws-11.10_r429
 
-6. Run TestWeatherStation.py:
+5. Run TestWeatherStation.py:
 
       python TestWeatherStation.py
 
    it should complain about not being able to connect to a weather
    station
 
-7. Connect the weather station's USB port to your computer
+6. Connect the weather station's USB port to your computer
 
-8. Run TestWeatherStation.py again - you should get a load of data. If
+7. Run TestWeatherStation.py again - you should get a load of data. If
    this fails it might be a 'permissions' problem. Try running as
    root:
 
@@ -155,43 +163,43 @@ Getting started:
 
       python TestWeatherStation.py -d -h 5
 
-9. Choose somewhere to store readings, e.g. /data/weather
+8. Choose somewhere to store readings, e.g. /data/weather
 
-10. Get some data from the weather station:
+9. Get some data from the weather station:
 
-       python pywws/LogData.py /data/weather
+      python pywws/LogData.py /data/weather
 
-    This will take a while the first time you run it, as it fetches
-    all the data stored in the weather station.
+   This will take a while the first time you run it, as it fetches all
+   the data stored in the weather station.
 
-11. If you have an EasyWeather.dat file, now is the time to convert
+10. If you have an EasyWeather.dat file, now is the time to convert
     it:
 
        python EWtoPy.py EasyWeather.dat /data/weather
 
-12. Process the raw data to make hourly and daily summaries:
+11. Process the raw data to make hourly and daily summaries:
 
        python pywws/Process.py /data/weather
 
-13. Generate some tables:
+12. Generate some tables:
 
        python pywws/Template.py /data/weather \
                example_templates/24hrs.txt 24hrs.txt
        python pywws/Template.py /data/weather \
                example_templates/6hrs.txt 6hrs.txt
 
-14. If you want to create graphs, install gnuplot, then:
+13. If you want to create graphs, install gnuplot, then:
 
        python pywws/Plot.py /data/weather /tmp \
                example_graph_templates/24hrs.png.xml 24hrs.png
        python pywws/Plot.py /data/weather /tmp \
                example_graph_templates/7days.png.xml 7days.png
 
-15. Have a look at the files you've just made, then write a web page
+14. Have a look at the files you've just made, then write a web page
     that incorporates them. (Use server side includes for the .txt
     files).
 
-16. Edit /data/weather/weather.ini and add details of your website for
+15. Edit /data/weather/weather.ini and add details of your website for
     example:
 
        [ftp]
@@ -201,12 +209,12 @@ Getting started:
        password = secret
        directory = public_html/weather/data/
 
-17. Try uploading the files:
+16. Try uploading the files:
 
        python pywws/Upload.py /data/weather \
                24hrs.txt 6hrs.txt 24hrs.png 7days.png
 
-18. If you want to upload to Twitter, install tweepy and simplejson,
+17. If you want to upload to Twitter, install tweepy and simplejson,
     then:
 
        python TwitterAuth.py /data/weather
@@ -221,9 +229,9 @@ Getting started:
     For more detail, see doc/guides/twitter: *How to configure pywws
     to post messages to Twitter*.
 
-19. If you want to upload to Weather Underground, try:
+18. If you want to upload to Weather Underground, try:
 
-       python pywws/ToUnderground.py -vvv /data/weather
+       python pywws/toservice.py -vvv /data/weather underground
 
     You'll need to edit /data/weather/weather.ini with your
     Wunderground details, for example:
@@ -232,7 +240,7 @@ Getting started:
        password = undergroundpassword
        station = undergroundstation
 
-20. Create directories for your graph templates and text templates,
+19. Create directories for your graph templates and text templates,
     e.g. '~/weather/graph_templates/' and '~/weather/templates/', copy
     the templates you like to them, and run Hourly.py manually:
 
@@ -241,11 +249,11 @@ Getting started:
     You can now edit /data/weather/weather.ini to point to your
     template directories if Hourly.py didn't find them.
 
-21. Set up a cron job to run Hourly.py every hour or every few hours
+20. Set up a cron job to run Hourly.py every hour or every few hours
     or every day, according to your needs, at a minute or two past the
     hour.
 
-22. Edit templates, weather.ini and other files to adjust everything
+21. Edit templates, weather.ini and other files to adjust everything
     to your taste.
 
 Comments or questions? Please subscribe to the pywws mailing list

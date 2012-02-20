@@ -25,12 +25,22 @@ How to get started with pywws
    * Python 2.4+ - http://python.org/ (Note: Python 3 is not
      supported.)
 
-   * libusb 0.1.12 - http://libusb.sf.net/ (Note: libusb 1 is not
-     supported.)
+   * USB library option 1:
 
-   * PyUSB 0.4.x - http://pyusb.berlios.de/
+     * libusb 0.1.12 - http://libusb.sf.net/ (Note: libusb 1 is not
+       supported.)
 
-   You should be able to install these using your operating system's
+     * PyUSB 0.4.x - http://pyusb.berlios.de/
+
+   * USB library option 2:
+
+     * hidapi - https://github.com/signal11/hidapi
+
+     * cython-hidapi - https://github.com/gbishop/cython-hidapi
+
+     * cython - http://cython.org/
+
+   You may be able to install these using your operating system's
    package manager. This is a lot easier than downloading and
    compiling the source files from the project websites. Note that
    some Linux distributions may use different names for some of the

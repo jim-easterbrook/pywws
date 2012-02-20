@@ -5,6 +5,14 @@ Change Log
    Python software for USB Wireless WeatherStations (pywws).
    http://code.google.com/p/pywws/
 
+   Changes in v12.02:
+       1/ Separated out low level USB communications to enable use of different
+          libraries. Now works on recent versions of Mac OS.
+       2/ Added humidity, pressure & wind data to summary data.
+       3/ Merged Weather Underground and UK Met Office uploaders into one combined
+          module. Added more 'service' uploaders.
+       4/ Various bug fixes and software structure improvements.
+
    Changes in v11.10:
        1/ Complete restructuring of documentation.
        2/ Added a user defined 'calibration' process.
