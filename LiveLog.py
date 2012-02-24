@@ -21,6 +21,7 @@ import time
 
 from pywws import DataStore
 from pywws import Localisation
+from pywws.LogData import Catchup
 from pywws.Logger import ApplicationLogger
 from pywws import Process
 from pywws import Tasks
@@ -87,45 +88,25 @@ def LiveLog(data_dir):
     if last_stored == None:
         last_stored = datetime.min
     if datetime.utcnow() < last_stored:
-        logger.error('Computer time is earlier than last stored data')
-        return 4
+        raise ValueError('Computer time is earlier than last stored data')
     last_stored += two_minutes
     # get live data
     hour = timedelta(hours=1)
-    next_hour = datetime.utcnow().replace(minute=0, second=0, microsecond=0) + hour
-    for data, ptr, logged in ws.live_data(logged_only=
-                                          (not tasks.has_live_tasks())):
+    next_hour = datetime.utcnow().replace(
+                                    minute=0, second=0, microsecond=0) + hour
+    next_ptr = None
+    for data, ptr, logged in ws.live_data(
+                                    logged_only=(not tasks.has_live_tasks())):
         now = data['idx']
         if logged:
-            # store logged data
-            raw_data[now] = data
-            count = 1
-            # catchup any missing data
-            if data['delay'] is None:
-                last_date = datetime.min
+            if ptr == next_ptr:
+                # data is contiguous with last logged value
+                raw_data[now] = data
             else:
-                last_date = now - timedelta(minutes=data['delay'])
-            if last_date > last_stored:
-                last_ptr = ws.dec_ptr(ptr)
-                fixed_block = ws.get_fixed_block(unbuffered=True)
-                # data_count includes record currently being updated every 48 seconds
-                max_count = fixed_block['data_count'] - 1
-                while last_date > last_stored and count < max_count:
-                    data = ws.get_data(last_ptr)
-                    if data['delay'] is None or data['delay'] > 30:
-                        logger.error('invalid data at %04x, %s',
-                                     last_ptr, last_date.isoformat(' '))
-                        last_date -= timedelta(minutes=fixed_block['read_period'])
-                    else:
-                        raw_data[last_date] = data
-                        count += 1
-                        last_date -= timedelta(minutes=data['delay'])
-                    last_ptr = ws.dec_ptr(last_ptr)
-            last_stored = now + two_minutes
-            if count > 1:
-                logger.info("%d records written", count)
+                # catch up missing data
+                Catchup(ws, logger, raw_data, now, ptr)
+            next_ptr = ws.inc_ptr(ptr)
             # process new data
-            raw_data.flush()
             Process.Process(params, raw_data, calib_data,
                             hourly_data, daily_data, monthly_data)
             # do tasks

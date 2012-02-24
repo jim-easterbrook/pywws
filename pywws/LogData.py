@@ -53,6 +53,33 @@ from Logger import ApplicationLogger
 from TimeZone import Local
 import WeatherStation
 
+def Catchup(ws, logger, raw_data, last_date, last_ptr):
+    fixed_block = ws.get_fixed_block(unbuffered=True)
+    # get time to go back to
+    last_stored = raw_data.before(datetime.max)
+    if last_stored == None:
+        last_stored = datetime.min
+    if datetime.utcnow() < last_stored:
+        raise ValueError('Computer time is earlier than last stored data')
+    last_stored += timedelta(seconds=fixed_block['read_period'] * 30)
+    # data_count includes record currently being updated every 48 seconds
+    max_count = fixed_block['data_count'] - 1
+    count = 0
+    while last_date > last_stored and count < max_count:
+        data = ws.get_data(last_ptr)
+        if data['delay'] is None or data['delay'] > 30:
+            logger.error('invalid data at %04x, %s',
+                         last_ptr, last_date.isoformat(' '))
+            last_date -= timedelta(minutes=fixed_block['read_period'])
+        else:
+            raw_data[last_date] = data
+            count += 1
+            last_date -= timedelta(minutes=data['delay'])
+        last_ptr = ws.dec_ptr(last_ptr)
+    if count > 0:
+        logger.info("%d catchup records", count)
+    raw_data.flush()
+
 def LogData(params, raw_data, sync=None, clear=False):
     logger = logging.getLogger('pywws.LogData')
     # connect to weather station
@@ -69,13 +96,6 @@ def LogData(params, raw_data, sync=None, clear=False):
     # get sync config value
     if sync is None:
         sync = int(params.get('config', 'logdata sync', '1'))
-    # get time to go back to
-    last_stored = raw_data.before(datetime.max)
-    if last_stored == None:
-        last_stored = datetime.min
-    if datetime.utcnow() < last_stored:
-        logger.error('Computer time is earlier than last stored data')
-        return 4
     # check clocks
     s_time = DataStore.safestrptime(fixed_block['date_time'], '%Y-%m-%d %H:%M')
     c_time = datetime.now().replace(second=0, microsecond=0)
@@ -99,7 +119,6 @@ def LogData(params, raw_data, sync=None, clear=False):
         last_date = data['idx']
         logger.debug('Reading time %s', last_date.strftime('%H:%M:%S'))
         if logged:
-            fixed_block = ws.get_fixed_block(unbuffered=True)
             break
         if sync < 1 and last_date.second > 5 and last_date.second < 55:
             last_date = last_date.replace(second=0) - timedelta(minutes=data['delay'])
@@ -107,23 +126,7 @@ def LogData(params, raw_data, sync=None, clear=False):
             break
     # go back through stored data, until we catch up with what we've already got
     logger.info('Fetching data')
-    last_stored += timedelta(minutes=fixed_block['read_period'] / 2)
-    count = 0
-    # data_count includes record currently being updated every 48 seconds
-    max_count = fixed_block['data_count'] - 1
-    while last_date > last_stored and count < max_count:
-        data = ws.get_data(last_ptr)
-        if data['delay'] is None or data['delay'] > 30:
-            logger.error('invalid data at %04x, %s',
-                         last_ptr, last_date.isoformat(' '))
-            last_date -= timedelta(minutes=fixed_block['read_period'])
-        else:
-            raw_data[last_date] = data
-            count += 1
-            last_date -= timedelta(minutes=data['delay'])
-        last_ptr = ws.dec_ptr(last_ptr)
-    logger.info("%d records written", count)
-    raw_data.flush()
+    Catchup(ws, logger, raw_data, last_date, last_ptr)
     if clear:
         logger.info('Clearing weather station memory')
         ptr = ws.fixed_format['data_count'][0]
