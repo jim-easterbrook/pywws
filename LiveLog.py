@@ -21,41 +21,11 @@ import time
 
 from pywws import DataStore
 from pywws import Localisation
-from pywws.LogData import Catchup
+from pywws.LogData import Catchup, CheckFixedBlock
 from pywws.Logger import ApplicationLogger
 from pywws import Process
 from pywws import Tasks
 from pywws import WeatherStation
-
-def CheckFixedBlock(ws, params, logger):
-    fixed_block = ws.get_fixed_block(unbuffered=True)
-    if not fixed_block:
-        return None
-    # check clocks
-    s_time = DataStore.safestrptime(fixed_block['date_time'], '%Y-%m-%d %H:%M')
-    c_time = datetime.now().replace(second=0, microsecond=0)
-    diff = abs(s_time - c_time)
-    if diff > timedelta(minutes=2):
-        logger.warning(
-            "Computer and weather station clocks disagree by %s (H:M:S).", str(diff))
-    # store weather station type
-    params.set('fixed', 'ws type', ws.ws_type)
-    # store info from fixed block
-    pressure_offset = fixed_block['rel_pressure'] - fixed_block['abs_pressure']
-    old_offset = eval(params.get('fixed', 'pressure offset', 'None'))
-    if old_offset and abs(old_offset - pressure_offset) > 0.01:
-        # re-read fixed block, as can get incorrect values
-        logger.warning('Re-read fixed block')
-        fixed_block = ws.get_fixed_block(unbuffered=True)
-        if not fixed_block:
-            return None
-        pressure_offset = fixed_block['rel_pressure'] - fixed_block['abs_pressure']
-    if old_offset and abs(old_offset - pressure_offset) > 0.01:
-        logger.warning(
-            'Pressure offset change: %g -> %g', old_offset, pressure_offset)
-    params.set('fixed', 'pressure offset', '%g' % (pressure_offset))
-    params.flush()
-    return fixed_block
 
 def LiveLog(data_dir):
     logger = logging.getLogger('pywws.LiveLog')

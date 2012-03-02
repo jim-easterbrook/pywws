@@ -80,22 +80,10 @@ def Catchup(ws, logger, raw_data, last_date, last_ptr):
         logger.info("%d catchup records", count)
     raw_data.flush()
 
-def LogData(params, raw_data, sync=None, clear=False):
-    logger = logging.getLogger('pywws.LogData')
-    # connect to weather station
-    ws_type = params.get('config', 'ws type', '1080')
-    if ws_type:
-        params._config.remove_option('config', 'ws type')
-        params.set('fixed', 'ws type', ws_type)
-    ws_type = params.get('fixed', 'ws type', '1080')
-    ws = WeatherStation.weather_station(ws_type=ws_type)
-    fixed_block = ws.get_fixed_block()
+def CheckFixedBlock(ws, params, logger):
+    fixed_block = ws.get_fixed_block(unbuffered=True)
     if not fixed_block:
-        logger.error("Invalid data from weather station")
-        return 3
-    # get sync config value
-    if sync is None:
-        sync = int(params.get('config', 'logdata sync', '1'))
+        return None
     # check clocks
     s_time = DataStore.safestrptime(fixed_block['date_time'], '%Y-%m-%d %H:%M')
     c_time = datetime.now().replace(second=0, microsecond=0)
@@ -109,10 +97,36 @@ def LogData(params, raw_data, sync=None, clear=False):
     pressure_offset = fixed_block['rel_pressure'] - fixed_block['abs_pressure']
     old_offset = eval(params.get('fixed', 'pressure offset', 'None'))
     if old_offset and abs(old_offset - pressure_offset) > 0.01:
+        # re-read fixed block, as can get incorrect values
+        logger.warning('Re-read fixed block')
+        fixed_block = ws.get_fixed_block(unbuffered=True)
+        if not fixed_block:
+            return None
+        pressure_offset = fixed_block['rel_pressure'] - fixed_block['abs_pressure']
+    if old_offset and abs(old_offset - pressure_offset) > 0.01:
         logger.warning(
             'Pressure offset change: %g -> %g', old_offset, pressure_offset)
     params.set('fixed', 'pressure offset', '%g' % (pressure_offset))
+    params.set('fixed', 'fixed block', str(fixed_block))
     params.flush()
+    return fixed_block
+
+def LogData(params, raw_data, sync=None, clear=False):
+    logger = logging.getLogger('pywws.LogData')
+    # connect to weather station
+    ws_type = params.get('config', 'ws type', '1080')
+    if ws_type:
+        params._config.remove_option('config', 'ws type')
+        params.set('fixed', 'ws type', ws_type)
+    ws_type = params.get('fixed', 'ws type', '1080')
+    ws = WeatherStation.weather_station(ws_type=ws_type)
+    fixed_block = CheckFixedBlock(ws, params, logger)
+    if not fixed_block:
+        logger.error("Invalid data from weather station")
+        return 3
+    # get sync config value
+    if sync is None:
+        sync = int(params.get('config', 'logdata sync', '1'))
     # get address and date-time of last complete logged data
     logger.info('Synchronising to weather station')
     for data, last_ptr, logged in ws.live_data(logged_only=(sync > 0)):
