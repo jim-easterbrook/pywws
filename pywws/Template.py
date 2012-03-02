@@ -63,6 +63,7 @@ class Template(object):
         wind_chill = WeatherStation.wind_chill
         apparent_temp = WeatherStation.apparent_temp
         pressure_offset = eval(self.params.get('fixed', 'pressure offset'))
+        fixed_block = eval(self.params.get('fixed', 'fixed block'))
         # start off with no time rounding
         round_time = None
         # start off in hourly data mode
