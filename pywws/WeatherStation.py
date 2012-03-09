@@ -225,12 +225,6 @@ class CUSBDrive(object):
             except ImportError:
                 if library != 'auto':
                     raise
-        if not USBDevice and library in ('auto', 'hidapi'):
-            try:
-                from device_hidapi import USBDevice
-            except ImportError:
-                if library != 'auto':
-                    raise
         if not USBDevice:
             from device_pyusb import USBDevice
         self.logger.info('using %s', USBDevice.__module__)
