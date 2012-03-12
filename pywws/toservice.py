@@ -212,80 +212,55 @@ class ToService(object):
             self.server_rf = self.server
             self.fixed_data_rf = self.fixed_data
         # list of data to be sent
-        self.data_items = list()
-        for name, value in service_params.items('data'):
-            if name == 'dateutc':
-                self.data_items.append(
-                    ('idx', self.get_one, value, '%s', lambda x: x.isoformat(' ')))
-            if name == 'YYYYMMDDhhmm':
-                self.data_items.append(
-                    ('idx', self.get_one, value, '%s',
-                     lambda x: x.replace(tzinfo=utc).astimezone(
-                         Local).strftime('%Y%m%d%H%M')))
-            if name == 'tempc':
-                self.data_items.append(
-                    ('temp_out', self.get_one, value, '%.1f', None))
-            if name == 'tempf':
-                self.data_items.append(
-                    ('temp_out', self.get_one, value, '%.1f',
-                     conversions.temp_f))
-            if name == 'dewptc':
-                self.data_items.append(
-                    ('temp_out', self.dew_pt, value, '%.1f', None))
-            if name == 'dewptf':
-                self.data_items.append(
-                    ('temp_out', self.dew_pt, value, '%.1f',
-                     conversions.temp_f))
-            if name == 'winddir':
-                self.data_items.append(
-                    ('wind_dir', self.get_one, value, '%.0f',
-                     conversions.winddir_degrees))
-            if name == 'humidity':
-                self.data_items.append(
-                    ('hum_out', self.get_one, value, '%.d', None))
-            if name == 'windspeedms':
-                self.data_items.append(
-                    ('wind_ave', self.get_one, value, '%.1f', None))
-            if name == 'windspeedmph':
-                self.data_items.append(
-                    ('wind_ave', self.get_one, value, '%.2f',
-                     conversions.wind_mph))
-            if name == 'windgustms':
-                self.data_items.append(
-                    ('wind_gust', self.get_one, value, '%.1f', None))
-            if name == 'windgustmph':
-                self.data_items.append(
-                    ('wind_gust', self.get_one, value, '%.2f',
-                     conversions.wind_mph))
-            if name == 'baromhpa':
-                self.data_items.append(
-                    ('rel_pressure', self.get_one, value, '%.1f', None))
-            if name == 'baromin':
-                self.data_items.append(
-                    ('rel_pressure', self.get_one, value, '%.4f',
-                     conversions.pressure_inhg))
-            if name == 'rainmm':
-                self.data_items.append(
-                    ('rain', self.rain_hour, value, '%.1f', None))
-            if name == 'rainin':
-                self.data_items.append(
-                    ('rain', self.rain_hour, value, '%g',
-                     conversions.rain_inch))
-            if name == 'dailyrainmm':
-                self.data_items.append(
-                    ('rain', self.rain_day, value, '%.1f', None))
-            if name == 'dailyrainin':
-                self.data_items.append(
-                    ('rain', self.rain_day, value, '%g',
-                     conversions.rain_inch))
-            if  self.params.get('fixed', 'ws type') == '3080':
-                if name == 'uv':
-                    self.data_items.append(
-                        ('uv', self.get_one, value, '%d', None))
-                if name == 'solarradiation':
-                    self.data_items.append(
-                        ('illuminance', self.get_one, value, '%.2f',
-                         conversions.illuminance_wm2))
+        self.data_format = {
+            'dateutc' : (
+                'idx', self.get_one, '%s', lambda x: x.isoformat(' ')),
+            'YYYYMMDDhhmm' : (
+                'idx', self.get_one, '%s', lambda x: x.replace(
+                    tzinfo=utc).astimezone(Local).strftime('%Y%m%d%H%M')),
+            'tempc' : (
+                'temp_out', self.get_one, '%.1f', None),
+            'tempf' : (
+                'temp_out', self.get_one, '%.1f', conversions.temp_f),
+            'dewptc' : (
+                'temp_out', self.dew_pt, '%.1f', None),
+            'dewptf' : (
+                'temp_out', self.dew_pt, '%.1f', conversions.temp_f),
+            'winddir' : (
+                'wind_dir', self.get_one, '%.0f', conversions.winddir_degrees),
+            'humidity' : (
+                'hum_out', self.get_one, '%.d', None),
+            'windspeedms' : (
+                'wind_ave', self.get_one, '%.1f', None),
+            'windspeedmph' : (
+                'wind_ave', self.get_one, '%.2f', conversions.wind_mph),
+            'windgustms' : (
+                'wind_gust', self.get_one, '%.1f', None),
+            'windgustmph' : (
+                'wind_gust', self.get_one, '%.2f', conversions.wind_mph),
+            'baromhpa' : (
+                'rel_pressure', self.get_one, '%.1f', None),
+            'baromin' : (
+                'rel_pressure', self.get_one, '%.4f', conversions.pressure_inhg),
+            'rainmm' : (
+                'rain', self.rain_hour, '%.1f', None),
+            'rainin' : (
+                'rain', self.rain_hour, '%g', conversions.rain_inch),
+            'dailyrainmm' : (
+                'rain', self.rain_day, '%.1f', None),
+            'dailyrainin' : (
+                'rain', self.rain_day, '%g', conversions.rain_inch),
+            'uv' : (
+                'uv', self.get_one, '%d', None),
+            'solarradiation' : (
+                'illuminance', self.get_one, '%.2f', conversions.illuminance_wm2),
+            }
+        self.data_items = service_params.items('data')
+        if self.params.get('fixed', 'ws type') != '3080':
+            for i in reversed(range(len(self.data_items))):
+                name, value = self.data_items[i]
+                if name in ('uv', 'solarradiation'):
+                    del self.data_items[i]
 
     def get_one(self, data, key):
         return data[key]
@@ -338,7 +313,8 @@ class ToService(object):
             return None
         # convert data
         result = dict(fixed_data)
-        for key, compute, name, fmt, conv in self.data_items:
+        for idx, name in self.data_items:
+            key, compute, fmt, conv = self.data_format[idx]
             value = compute(current, key)
             if conv:
                 value = conv(value)
