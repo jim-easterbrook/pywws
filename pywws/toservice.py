@@ -229,6 +229,9 @@ class ToService(object):
                 self.data_items.append(
                     ('temp_out', self.get_one, value, '%.1f',
                      conversions.temp_f))
+            if name == 'dewptc':
+                self.data_items.append(
+                    ('temp_out', self.dew_pt, value, '%.1f', None))
             if name == 'dewptf':
                 self.data_items.append(
                     ('temp_out', self.dew_pt, value, '%.1f',
@@ -247,6 +250,9 @@ class ToService(object):
                 self.data_items.append(
                     ('wind_ave', self.get_one, value, '%.2f',
                      conversions.wind_mph))
+            if name == 'windgustms':
+                self.data_items.append(
+                    ('wind_gust', self.get_one, value, '%.1f', None))
             if name == 'windgustmph':
                 self.data_items.append(
                     ('wind_gust', self.get_one, value, '%.2f',
@@ -265,6 +271,9 @@ class ToService(object):
                 self.data_items.append(
                     ('rain', self.rain_hour, value, '%g',
                      conversions.rain_inch))
+            if name == 'dailyrainmm':
+                self.data_items.append(
+                    ('rain', self.rain_day, value, '%.1f', None))
             if name == 'dailyrainin':
                 self.data_items.append(
                     ('rain', self.rain_day, value, '%g',
