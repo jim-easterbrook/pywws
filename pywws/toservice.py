@@ -211,6 +211,7 @@ class ToService(object):
         else:
             self.server_rf = self.server
             self.fixed_data_rf = self.fixed_data
+        self.expected_result = eval(service_params.get('config', 'result'))
         # list of data to be sent
         self.data_format = {
             'dateutc' : (
@@ -361,16 +362,13 @@ class ToService(object):
                 wudata = urllib.urlopen(server, coded_data)
                 response = wudata.readlines()
                 wudata.close()
+                if response == self.expected_result:
+                    self.old_response = response
+                    return True
                 if response != self.old_response:
                     for line in response:
                         self.logger.error(line.strip())
-                    self.old_response = response
-                if not response:
-                    # Met office returns empty array on success
-                    return True
-                if response[0] == 'success\n':
-                    # Weather Underground returns 'success' string
-                    return True
+                self.old_response = response
             except Exception, ex:
                 e = str(ex)
                 if e != self.old_ex:
