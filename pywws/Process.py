@@ -185,7 +185,8 @@ class HourAcc(object):
         if 'illuminance' in data and not 'illuminance' in self.copy_keys:
             self.copy_keys.append('illuminance')
             self.copy_keys.append('uv')
-        if data['hum_out'] is not None and data['temp_out'] is not None:
+        # if near the end of the hour, ignore 'lost contact' readings
+        if data['idx'].minute < 45 or data['temp_out'] is not None:
             for key in self.copy_keys:
                 self.retval[key] = data[key]
 
