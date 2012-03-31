@@ -358,14 +358,14 @@ class weather_station(object):
                 self.logger.warning('live_data missed')
                 next_live += live_interval
                 live_overdue += live_interval
-            if no_op_count > 1 and next_log and next_log < now - 12.0:
-                self.logger.warning('live_data log extended')
-                next_log += 60.0
             if (new_data['delay'] is not None and
                 new_data['delay'] < read_period):
                 # pointer won't have changed
                 new_ptr = old_ptr
             else:
+                if no_op_count > 1 and next_log and next_log < now - 12.0:
+                    self.logger.warning('live_data log extended')
+                    next_log += 60.0
                 new_ptr = self.current_pos()
                 # make sure changes because of logging interval aren't
                 # mistaken for new live data
@@ -388,7 +388,12 @@ class weather_station(object):
                     if result['delay']:
                         pred += float(result['delay'] * 60) - log_interval
                     result['idx'] = datetime.utcfromtimestamp(int(pred))
-                    if now > pred:
+                    if now > pred + 30.0:
+                        # woke up very late
+                        self.logger.warning('live_data lost log sync')
+                        result = None
+                        next_log = None
+                    elif now > pred:
                         # woke up late
                         next_log = pred + log_interval
                     elif now > pred - 4.0:
@@ -402,7 +407,7 @@ class weather_station(object):
                     result = None
                 if result:
                     yield result, old_ptr, True
-                if (new_ptr != self.data_start and
+                if (result and new_ptr != self.data_start and
                     (new_ptr - old_ptr) != self.reading_len[self.ws_type]):
                     for k in self.reading_len:
                         if (new_ptr - old_ptr) == self.reading_len[k]:
@@ -484,26 +489,30 @@ class weather_station(object):
         earlier may be returned."""
         if unbuffered:
             self._data_pos = None
+        # round down ptr to a 'block boundary'
         idx = ptr - (ptr % 0x20)
         ptr -= idx
         count = self.reading_len[self.ws_type]
-        if ptr + count <= 0x20:
-            # reading doesn't straddle a block boundary
-            if self._data_pos != idx:
-                self._data_pos = idx
-                self._data_block = self._read_block(idx)
-        elif self._data_pos == idx + 0x20:
-            # reuse last block read
-            self._data_pos = idx
-            self._data_block = self._read_block(idx) + self._data_block[0:0x20]
-        elif self._data_pos != idx:
-            # read two blocks
-            self._data_pos = idx
-            self._data_block = self._read_block(idx) + self._read_block(idx + 0x20)
-        elif len(self._data_block) <= 0x20:
-            # 'top up' current block
-            self._data_block += self._read_block(idx + 0x20)
-        return self._data_block[ptr:ptr + count]
+        if self._data_pos == idx:
+            # cache contains useful data
+            result = self._data_block[ptr:ptr + count]
+            if len(result) >= count:
+                return result
+        else:
+            result = list()
+        if ptr + count > 0x20:
+            # need part of next block, which may be in cache
+            if self._data_pos != idx + 0x20:
+                self._data_pos = idx + 0x20
+                self._data_block = self._read_block(self._data_pos)
+            result += self._data_block[0:ptr + count - 0x20]
+            if len(result) >= count:
+                return result
+        # read current block
+        self._data_pos = idx
+        self._data_block = self._read_block(self._data_pos)
+        result = self._data_block[ptr:ptr + count] + result
+        return result
 
     def get_data(self, ptr, unbuffered=False):
         """Get decoded data from circular buffer.
