@@ -256,13 +256,7 @@ class CUSBDrive(object):
             ]
         if not self.dev.write_data(buf):
             return None
-        result = list()
-        for i in range(4):
-            buf = self.dev.read_data()
-            if buf is None:
-                return None
-            result += buf
-        return result
+        return self.dev.read_data(32)
 
     def write_byte(self, address, data):
         """Write a single byte to the weather station.
@@ -292,7 +286,7 @@ class CUSBDrive(object):
             ]
         if not self.dev.write_data(buf):
             return False
-        buf = self.dev.read_data()
+        buf = self.dev.read_data(8)
         if buf is None:
             return False
         for byte in buf:
@@ -542,14 +536,14 @@ class weather_station(object):
             format = format[key]
         return _decode(self._fixed_block, format)
 
-    def _read_block(self, ptr):
+    def _read_block(self, ptr, retry=True):
         # Read block repeatedly until it's stable. This avoids getting corrupt
         # data when the block is read as the station is updating it.
         old_block = None
         while True:
             new_block = self.cusb.read_block(ptr)
             if new_block:
-                if new_block == old_block:
+                if (new_block == old_block) or not retry:
                     break
                 if old_block != None:
                     self.logger.debug('_read_block changing %06x', ptr)

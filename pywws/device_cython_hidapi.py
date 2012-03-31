@@ -97,7 +97,7 @@ class USBDevice(object):
         if not self.hid:
             raise IOError("Weather station device not found")
 
-    def read_data(self):
+    def read_data(self, size):
         """Receive 8 bytes from the device.
 
         If the read fails for any reason, :obj:`None` is returned.
@@ -107,9 +107,15 @@ class USBDevice(object):
         :rtype: list(int)
 
         """
-        result = self.hid.read(8)
-        if len(result) < 8:
-            self.logger.error('read_data failed')
+        result = list()
+        for i in range((size + 7) / 8):
+            count = min(size, 8)
+            buf = self.hid.read(count)
+            if len(buf) < count:
+                self.logger.error('read_data failed')
+                return None
+            result += buf
+            size -= count
         return result
 
     def write_data(self, buf):

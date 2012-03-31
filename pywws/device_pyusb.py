@@ -116,7 +116,7 @@ class USBDevice(object):
                     return device
         return None
 
-    def read_data(self):
+    def read_data(self, size):
         """Receive 8 bytes from the device.
 
         If the read fails for any reason, :obj:`None` is returned.
@@ -126,11 +126,11 @@ class USBDevice(object):
         :rtype: list(int)
 
         """
-        result = self.devh.interruptRead(0x81, 8, 1200)
-        if result is None or len(result) < 8:
+        result = self.devh.interruptRead(0x81, size, 1200)
+        if result is None or len(result) < size:
             self.logger.error('_read_data failed')
             return None
-        return result
+        return list(result)
 
     def write_data(self, buf):
         """Send 8 bytes to the device.
