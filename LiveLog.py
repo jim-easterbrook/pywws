@@ -33,7 +33,7 @@ def LiveLog(data_dir):
     # localise application
     Localisation.SetApplicationLanguage(params)
     # connect to weather station
-    ws_type = params.get('config', 'ws type', '1080')
+    ws_type = params.get('config', 'ws type')
     if ws_type:
         params._config.remove_option('config', 'ws type')
         params.set('fixed', 'ws type', ws_type)

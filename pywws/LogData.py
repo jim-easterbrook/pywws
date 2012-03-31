@@ -119,7 +119,7 @@ def CheckFixedBlock(ws, params, logger):
 def LogData(params, raw_data, sync=None, clear=False):
     logger = logging.getLogger('pywws.LogData')
     # connect to weather station
-    ws_type = params.get('config', 'ws type', '1080')
+    ws_type = params.get('config', 'ws type')
     if ws_type:
         params._config.remove_option('config', 'ws type')
         params.set('fixed', 'ws type', ws_type)

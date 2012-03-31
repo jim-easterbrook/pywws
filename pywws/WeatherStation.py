@@ -305,16 +305,8 @@ class weather_station(object):
         self._fixed_block = None
         self._data_block = None
         self._data_pos = None
+        self._current_ptr = None
         self.ws_type = ws_type
-        # test 'fixed block' for data that only the 3080 stores
-        if self.get_fixed_block(['max', 'illuminance', 'val']):
-            if self.ws_type != '3080':
-                self.logger.warning('type change %s -> %s', self.ws_type, '3080')
-                self.ws_type = '3080'
-        else:
-            if self.ws_type != '1080':
-                self.logger.warning('type change %s -> %s', self.ws_type, '1080')
-                self.ws_type = '1080'
 
     def live_data(self, logged_only=False):
         # There are two things we want to synchronise to - the data is
@@ -407,18 +399,10 @@ class weather_station(object):
                     result = None
                 if result:
                     yield result, old_ptr, True
-                if (result and new_ptr != self.data_start and
-                    (new_ptr - old_ptr) != self.reading_len[self.ws_type]):
-                    for k in self.reading_len:
-                        if (new_ptr - old_ptr) == self.reading_len[k]:
-                            self.logger.warning(
-                                'live_data type change %s -> %s', self.ws_type, k)
-                            self.ws_type = k
-                            break
-                    else:
-                        self.logger.error(
-                            'live_data unexpected ptr change %06x -> %06x',
-                            old_ptr, new_ptr)
+                if result and new_ptr != self.inc_ptr(old_ptr):
+                    self.logger.error(
+                        'live_data unexpected ptr change %06x -> %06x',
+                        old_ptr, new_ptr)
                 old_ptr = new_ptr
                 old_data['delay'] = 0
                 no_op_count = 0
@@ -524,8 +508,19 @@ class weather_station(object):
 
     def current_pos(self):
         """Get circular buffer location where current data is being written."""
-        return _decode(
+        new_ptr = _decode(
             self._read_fixed_block(0x0020), self.lo_fix_format['current_pos'])
+        if new_ptr == self._current_ptr:
+            return self._current_ptr
+        if self._current_ptr and new_ptr != self.inc_ptr(self._current_ptr):
+            for k in self.reading_len:
+                if (new_ptr - self._current_ptr) == self.reading_len[k]:
+                    self.logger.warning(
+                        'type change %s -> %s', self.ws_type, k)
+                    self.ws_type = k
+                    break
+        self._current_ptr = new_ptr
+        return self._current_ptr
 
     def get_raw_fixed_block(self, unbuffered=False):
         """Get the raw "fixed block" of settings and min/max data."""
