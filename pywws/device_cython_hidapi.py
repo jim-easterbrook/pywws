@@ -77,7 +77,6 @@ API
 __docformat__ = "restructuredtext en"
 
 import hid
-import logging
 
 class USBDevice(object):
     def __init__(self, idVendor, idProduct):
@@ -92,15 +91,19 @@ class USBDevice(object):
         :type idProduct: int
 
         """
-        self.logger = logging.getLogger('pywws.device_hidapi.USBDevice')
         self.hid = hid.device(idVendor, idProduct)
         if not self.hid:
             raise IOError("Weather station device not found")
 
     def read_data(self, size):
-        """Receive 8 bytes from the device.
+        """Receive data from the device.
 
-        If the read fails for any reason, :obj:`None` is returned.
+        If the read fails for any reason, an :obj:`IOError` exception
+        is raised.
+
+        :param size: the number of bytes to read.
+
+        :type size: int
 
         :return: the data received.
 
@@ -108,18 +111,17 @@ class USBDevice(object):
 
         """
         result = list()
-        for i in range((size + 7) / 8):
+        while size > 0:
             count = min(size, 8)
             buf = self.hid.read(count)
             if len(buf) < count:
-                self.logger.error('read_data failed')
-                return None
+                raise IOError('pywws.device_cython_hidapi.USBDevice.read_data failed')
             result += buf
             size -= count
         return result
 
     def write_data(self, buf):
-        """Send 8 bytes to the device.
+        """Send data to the device.
 
         :param buf: the data to send.
 

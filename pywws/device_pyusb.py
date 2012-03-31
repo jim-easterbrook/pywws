@@ -30,7 +30,7 @@ check before downloading sources and compiling them yourself.
     These should be available as packages for your operating system,
     but their names may vary. For example, on Ubuntu Linux::
 
-        sudo apt-get install libusb-0.1-4 python-usb
+        sudo apt-get install libusb-0.1 python-usb
 
     On some embedded linux systems::
 
@@ -60,7 +60,6 @@ API
 
 __docformat__ = "restructuredtext en"
 
-import logging
 import platform
 import usb
 
@@ -77,7 +76,6 @@ class USBDevice(object):
         :type idProduct: int
 
         """
-        self.logger = logging.getLogger('pywws.device_libusb.USBDevice')
         dev = self._find_device(idVendor, idProduct)
         if not dev:
             raise IOError("Weather station device not found")
@@ -117,9 +115,14 @@ class USBDevice(object):
         return None
 
     def read_data(self, size):
-        """Receive 8 bytes from the device.
+        """Receive data from the device.
 
-        If the read fails for any reason, :obj:`None` is returned.
+        If the read fails for any reason, an :obj:`IOError` exception
+        is raised.
+
+        :param size: the number of bytes to read.
+
+        :type size: int
 
         :return: the data received.
 
@@ -128,12 +131,14 @@ class USBDevice(object):
         """
         result = self.devh.interruptRead(0x81, size, 1200)
         if result is None or len(result) < size:
-            self.logger.error('_read_data failed')
-            return None
+            raise IOError('pywws.device_libusb.USBDevice.read_data failed')
         return list(result)
 
     def write_data(self, buf):
-        """Send 8 bytes to the device.
+        """Send data to the device.
+
+        If the write fails for any reason, an :obj:`IOError` exception
+        is raised.
 
         :param buf: the data to send.
 
@@ -147,7 +152,6 @@ class USBDevice(object):
         result = self.devh.controlMsg(
             usb.ENDPOINT_OUT + usb.TYPE_CLASS + usb.RECIP_INTERFACE,
             usb.REQ_SET_CONFIGURATION, buf, value=0x200, timeout=50)
-        if result != 8:
-            self.logger.error('_write_data failed')
-            return False
+        if result != len(buf):
+            raise IOError('pywws.device_libusb.USBDevice.write_data failed')
         return True
