@@ -36,7 +36,6 @@ import datetime
 import getopt
 import sys
 
-from pywws.DataStore import safestrptime
 from pywws.Logger import ApplicationLogger
 from pywws import WeatherStation
 
@@ -118,7 +117,7 @@ def main(argv=None):
         fixed_block = ws.get_fixed_block()
         print "Recent history"
         ptr = fixed_block['current_pos']
-        date = safestrptime(fixed_block['date_time'], '%Y-%m-%d %H:%M')
+        date = datetime.datetime.now().replace(second=0, microsecond=0)
         for i in range(history_count):
             if decode:
                 data = ws.get_data(ptr)
