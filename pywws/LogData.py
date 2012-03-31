@@ -85,12 +85,17 @@ def CheckFixedBlock(ws, params, logger):
     if not fixed_block:
         return None
     # check clocks
-    s_time = DataStore.safestrptime(fixed_block['date_time'], '%Y-%m-%d %H:%M')
-    c_time = datetime.now().replace(second=0, microsecond=0)
-    diff = abs(s_time - c_time)
-    if diff > timedelta(minutes=2):
-        logger.warning(
-            "Computer and weather station clocks disagree by %s (H:M:S).", str(diff))
+    try:
+        s_time = DataStore.safestrptime(
+            fixed_block['date_time'], '%Y-%m-%d %H:%M')
+    except Exception:
+        s_time = None
+    if s_time:
+        c_time = datetime.now().replace(second=0, microsecond=0)
+        diff = abs(s_time - c_time)
+        if diff > timedelta(minutes=2):
+            logger.warning(
+                "Computer and weather station clocks disagree by %s (H:M:S).", str(diff))
     # store weather station type
     params.set('fixed', 'ws type', ws.ws_type)
     # store info from fixed block
