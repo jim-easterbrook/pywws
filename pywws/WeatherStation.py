@@ -475,7 +475,7 @@ class weather_station(object):
                         next_live += live_interval
                     elif now > next_live - 2.0:
                         # woke up just in time
-                        next_live = now + live_interval
+                        next_live += live_interval - 2.0
                     else:
                         self.logger.warning('live_data lost sync')
                         result = None
