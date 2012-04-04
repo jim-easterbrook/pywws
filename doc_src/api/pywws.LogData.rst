@@ -7,5 +7,8 @@ pywws.LogData
 
    .. autosummary::
    
+      Catchup
+      CheckFixedBlock
       LogData
       main
+   

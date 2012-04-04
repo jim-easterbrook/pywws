@@ -8,9 +8,9 @@
 This program / module gets data from the weather station's memory and
 stores it to file. Each time it is run it fetches all data that is
 newer than the last stored data, so it only needs to be run every hour
-or so. As the weather station stores at least two weeks' readings,
-LogData.py could be run quite infrequently if you don't need
-up-to-date data.
+or so. As the weather station typically stores two weeks' readings
+(depending on the logging interval), LogData.py could be run quite
+infrequently if you don't need up-to-date data.
 
 There is no date or time information in the raw weather station data,
 so LogData.py creates a time stamp for each reading. It uses the
@@ -22,9 +22,11 @@ its clock set accurately by `ntp
 Synchronisation with the weather station is achieved by waiting for a
 change in the current data. There are two levels of synchronisation,
 set by the config file or a command line option. Level 0 is quicker,
-but sets the seconds value of the logged data time stamps to zero.
-Level 1 waits until the weather station stores a new logged record,
-and gets time stamps accurate to a couple of seconds.
+but is only accurate to around twelve seconds. Level 1 waits until the
+weather station stores a new logged record, and gets time stamps
+accurate to a couple of seconds. Note that this could take a long
+time, if the logging interval is greater than the recommended five
+minutes.
 
 """
 
@@ -131,16 +133,42 @@ def LogData(params, raw_data, sync=None, clear=False):
         return 3
     # get sync config value
     if sync is None:
-        sync = int(params.get('config', 'logdata sync', '1'))
+        if fixed_block['read_period'] <= 5:
+            sync = int(params.get('config', 'logdata sync', '1'))
+        else:
+            sync = int(params.get('config', 'logdata sync', '0'))
     # get address and date-time of last complete logged data
     logger.info('Synchronising to weather station')
+    range_hi = datetime.max
+    range_lo = datetime.min
+    last_delay = ws.get_data(ws.current_pos())['delay']
+    if last_delay == 0:
+        prev_date = datetime.min
+    else:
+        prev_date = datetime.utcnow()
     for data, last_ptr, logged in ws.live_data(logged_only=(sync > 0)):
         last_date = data['idx']
         logger.debug('Reading time %s', last_date.strftime('%H:%M:%S'))
         if logged:
             break
-        if sync < 1 and last_date.second > 5 and last_date.second < 55:
-            last_date = last_date.replace(second=0) - timedelta(minutes=data['delay'])
+        hi = last_date - timedelta(minutes=data['delay'])
+        if last_date - prev_date > timedelta(seconds=50):
+            lo = hi - timedelta(seconds=60)
+        elif data['delay'] == last_delay:
+            lo = hi - timedelta(seconds=60)
+            hi = hi - timedelta(seconds=48)
+        else:
+            lo = hi - timedelta(seconds=48)
+        last_delay = data['delay']
+        prev_date = last_date
+        range_hi = min(range_hi, hi)
+        range_lo = max(range_lo, lo)
+        err = (range_hi - range_lo) / 2
+        last_date = range_lo + err
+        logger.debug('est log time %s +- %ds (%s..%s)',
+                     last_date.strftime('%H:%M:%S'), err.seconds,
+                     lo.strftime('%H:%M:%S'), hi.strftime('%H:%M:%S'))
+        if sync < 1 and err < timedelta(seconds=15):
             last_ptr = ws.dec_ptr(last_ptr)
             break
     # go back through stored data, until we catch up with what we've already got
