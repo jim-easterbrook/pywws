@@ -2,6 +2,12 @@
 pywws.WeatherStation
 ********************
 
+Get data from WH1080/WH3080 compatible weather stations.
+
+Derived from wwsr.c by Michael Pendec (michael.pendec@gmail.com),
+wwsrdump.c by Svend Skafte (svend@skafte.net), modified by Dave Wells,
+and other sources.
+
 
 Introduction
 ============
@@ -13,14 +19,15 @@ Michael Pendec's C program wwsr.
 The weather station memory has two parts: a "fixed block" of 256 bytes
 and a circular buffer of 65280 bytes. As each weather reading takes 16
 bytes the station can store 4080 readings, or 14 days of 5-minute
-interval readings. As data is read in 32-byte chunks, but each weather
-reading is 16 bytes, a small cache is used to reduce USB traffic. The
-caching behaviour can be over-ridden with the ``unbuffered`` parameter
-to ``get_data`` and ``get_raw_data``.
+interval readings. (The 3080 type stations store 20 bytes per reading,
+so store a maximum of 3264.) As data is read in 32-byte chunks, but
+each weather reading is 16 or 20 bytes, a small cache is used to
+reduce USB traffic. The caching behaviour can be over-ridden with the
+``unbuffered`` parameter to ``get_data`` and ``get_raw_data``.
 
 Decoding the data is controlled by the static dictionaries
 ``reading_format``, ``lo_fix_format`` and ``fixed_format``. The keys
-are names of data items and the values can be an ``(offset, type and
+are names of data items and the values can be an ``(offset, type,
 multiplier)`` tuple or another dictionary. So, for example, the
 reading_format dictionary entry ``'rain' : (13, 'us', 0.3)`` means
 that the rain value is an unsigned short (two bytes), 13 bytes from
@@ -53,12 +60,6 @@ TestWeatherStation program.
 Detailed API
 ============
 
-Get data from WH1080/WH3080 compatible weather stations.
-
-Derived from wwsr.c by Michael Pendec (michael.pendec@gmail.com),
-wwsrdump.c by Svend Skafte (svend@skafte.net), modified by Dave Wells,
-and other sources.
-
 -[ Functions ]-
 
 +------------+--------------------------------------------------------------------------------------------+
@@ -71,14 +72,11 @@ and other sources.
 | t``(temp,  |                                                                                            |
 | hum)       |                                                                                            |
 +------------+--------------------------------------------------------------------------------------------+
-| ``findDevi |                                                                                            |
-| ce``       |                                                                                            |
-+------------+--------------------------------------------------------------------------------------------+
 | ``get_wind | Return an array to convert wind direction integer to a string.                             |
 | _dir_text` |                                                                                            |
 | `()        |                                                                                            |
 +------------+--------------------------------------------------------------------------------------------+
-| ``pressure | Convert pressure trend to a string, see                                                    |
+| ``pressure | Convert pressure trend to a string, as used by the UK met                                  |
 | _trend_tex |                                                                                            |
 | t``(trend) |                                                                                            |
 +------------+--------------------------------------------------------------------------------------------+
@@ -121,8 +119,7 @@ pywws.WeatherStation.get_wind_dir_text()
 
 pywws.WeatherStation.pressure_trend_text(trend)
 
-   Convert pressure trend to a string, see
-   http://www.reedsonline.com/weather/weather-terms.htm.
+   Convert pressure trend to a string, as used by the UK met office.
 
 class class pywws.WeatherStation.CUSBDrive(library)
 

@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pywws.WeatherStation &mdash; pywws v12.02 documentation</title>
+    <title>pywws.WeatherStation &mdash; pywws v12.04 documentation</title>
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '12.02',
+        VERSION:     '12.04',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="shortcut icon" href="../_static/pywws_logo.ico"/>
-    <link rel="top" title="pywws v12.02 documentation" href="../index.html" />
+    <link rel="top" title="pywws v12.04 documentation" href="../index.html" />
     <link rel="up" title="Python programs and modules" href="index.html" />
     <link rel="next" title="pywws.device_cython_hidapi" href="pywws.device_cython_hidapi.html" />
     <link rel="prev" title="pywws.YoWindow" href="pywws.YoWindow.html" /> 
@@ -44,7 +44,7 @@
         <li class="right" >
           <a href="pywws.YoWindow.html" title="pywws.YoWindow"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">pywws v12.02 documentation</a> &raquo;</li>
+        <li><a href="../index.html">pywws v12.04 documentation</a> &raquo;</li>
           <li><a href="index.html" accesskey="U">Python programs and modules</a> &raquo;</li> 
       </ul>
     </div>  
@@ -54,32 +54,56 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="pywws-weatherstation">
-<h1>pywws.WeatherStation<a class="headerlink" href="#pywws-weatherstation" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="introduction">
-<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
-<p>This is the module that actually talks to the weather station base unit. I don&#8217;t have much understanding of USB, so copied a lot from Michael Pendec&#8217;s C program wwsr.</p>
-<p>The weather station memory has two parts: a &#8220;fixed block&#8221; of 256 bytes and a circular buffer of 65280 bytes. As each weather reading takes 16 bytes the station can store 4080 readings, or 14 days of 5-minute interval readings. As data is read in 32-byte chunks, but each weather reading is 16 bytes, a small cache is used to reduce USB traffic. The caching behaviour can be over-ridden with the <tt class="docutils literal"><span class="pre">unbuffered</span></tt> parameter to <tt class="docutils literal"><span class="pre">get_data</span></tt> and <tt class="docutils literal"><span class="pre">get_raw_data</span></tt>.</p>
-<p>Decoding the data is controlled by the static dictionaries <tt class="docutils literal"><span class="pre">reading_format</span></tt>, <tt class="docutils literal"><span class="pre">lo_fix_format</span></tt> and <tt class="docutils literal"><span class="pre">fixed_format</span></tt>. The keys are names of data items and the values can be an <tt class="docutils literal"><span class="pre">(offset,</span> <span class="pre">type</span> <span class="pre">and</span> <span class="pre">multiplier)</span></tt> tuple or another dictionary. So, for example, the reading_format dictionary entry <tt class="docutils literal"><span class="pre">'rain'</span> <span class="pre">:</span> <span class="pre">(13,</span> <span class="pre">'us',</span> <span class="pre">0.3)</span></tt> means that the rain value is an unsigned short (two bytes), 13 bytes from the start of the block, and should be multiplied by 0.3 to get a useful value.</p>
-<p>The use of nested dictionaries in the <tt class="docutils literal"><span class="pre">fixed_format</span></tt> dictionary allows useful subsets of data to be decoded. For example, to decode the entire block <tt class="docutils literal"><span class="pre">get_fixed_block</span></tt> is called with no parameters:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">ws</span> <span class="o">=</span> <span class="n">WeatherStation</span><span class="o">.</span><span class="n">weather_station</span><span class="p">()</span>
-<span class="k">print</span> <span class="n">ws</span><span class="o">.</span><span class="n">get_fixed_block</span><span class="p">()</span>
-</pre></div>
-</div>
-<p>To get the stored minimum external temperature, <tt class="docutils literal"><span class="pre">get_fixed_block</span></tt> is called with a sequence of keys:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">ws</span> <span class="o">=</span> <span class="n">WeatherStation</span><span class="o">.</span><span class="n">weather_station</span><span class="p">()</span>
-<span class="k">print</span> <span class="n">ws</span><span class="o">.</span><span class="n">get_fixed_block</span><span class="p">([</span><span class="s">&#39;min&#39;</span><span class="p">,</span> <span class="s">&#39;temp_out&#39;</span><span class="p">,</span> <span class="s">&#39;val&#39;</span><span class="p">])</span>
-</pre></div>
-</div>
-<p>Often there is no requirement to read and decode the entire fixed block, as its first 64 bytes contain the most useful data: the interval between stored readings, the buffer address where the current reading is stored, and the current date &amp; time. The <tt class="docutils literal"><span class="pre">get_lo_fix_block</span></tt> method provides easy access to these.</p>
-<p>For more examples of using the WeatherStation module, see the TestWeatherStation program.</p>
-</div>
-<div class="section" id="module-pywws.WeatherStation">
-<span id="detailed-api"></span><h2>Detailed API<a class="headerlink" href="#module-pywws.WeatherStation" title="Permalink to this headline">¶</a></h2>
+  <div class="section" id="module-pywws.WeatherStation">
+<span id="pywws-weatherstation"></span><h1>pywws.WeatherStation<a class="headerlink" href="#module-pywws.WeatherStation" title="Permalink to this headline">¶</a></h1>
 <p>Get data from WH1080/WH3080 compatible weather stations.</p>
 <p>Derived from wwsr.c by Michael Pendec (<a class="reference external" href="mailto:michael&#46;pendec&#37;&#52;&#48;gmail&#46;com">michael<span>&#46;</span>pendec<span>&#64;</span>gmail<span>&#46;</span>com</a>),
 wwsrdump.c by Svend Skafte (<a class="reference external" href="mailto:svend&#37;&#52;&#48;skafte&#46;net">svend<span>&#64;</span>skafte<span>&#46;</span>net</a>), modified by Dave Wells,
 and other sources.</p>
+<div class="section" id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p>This is the module that actually talks to the weather station base
+unit. I don&#8217;t have much understanding of USB, so copied a lot from
+Michael Pendec&#8217;s C program wwsr.</p>
+<p>The weather station memory has two parts: a &#8220;fixed block&#8221; of 256 bytes
+and a circular buffer of 65280 bytes. As each weather reading takes 16
+bytes the station can store 4080 readings, or 14 days of 5-minute
+interval readings. (The 3080 type stations store 20 bytes per reading,
+so store a maximum of 3264.) As data is read in 32-byte chunks, but
+each weather reading is 16 or 20 bytes, a small cache is used to
+reduce USB traffic. The caching behaviour can be over-ridden with the
+<tt class="docutils literal"><span class="pre">unbuffered</span></tt> parameter to <tt class="docutils literal"><span class="pre">get_data</span></tt> and <tt class="docutils literal"><span class="pre">get_raw_data</span></tt>.</p>
+<p>Decoding the data is controlled by the static dictionaries
+<tt class="docutils literal"><span class="pre">reading_format</span></tt>, <tt class="docutils literal"><span class="pre">lo_fix_format</span></tt> and <tt class="docutils literal"><span class="pre">fixed_format</span></tt>. The keys
+are names of data items and the values can be an <tt class="docutils literal"><span class="pre">(offset,</span> <span class="pre">type,</span>
+<span class="pre">multiplier)</span></tt> tuple or another dictionary. So, for example, the
+reading_format dictionary entry <tt class="docutils literal"><span class="pre">'rain'</span> <span class="pre">:</span> <span class="pre">(13,</span> <span class="pre">'us',</span> <span class="pre">0.3)</span></tt> means
+that the rain value is an unsigned short (two bytes), 13 bytes from
+the start of the block, and should be multiplied by 0.3 to get a
+useful value.</p>
+<p>The use of nested dictionaries in the <tt class="docutils literal"><span class="pre">fixed_format</span></tt> dictionary
+allows useful subsets of data to be decoded. For example, to decode
+the entire block <tt class="docutils literal"><span class="pre">get_fixed_block</span></tt> is called with no parameters:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">ws</span> <span class="o">=</span> <span class="n">WeatherStation</span><span class="o">.</span><span class="n">weather_station</span><span class="p">()</span>
+<span class="k">print</span> <span class="n">ws</span><span class="o">.</span><span class="n">get_fixed_block</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>To get the stored minimum external temperature, <tt class="docutils literal"><span class="pre">get_fixed_block</span></tt> is
+called with a sequence of keys:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">ws</span> <span class="o">=</span> <span class="n">WeatherStation</span><span class="o">.</span><span class="n">weather_station</span><span class="p">()</span>
+<span class="k">print</span> <span class="n">ws</span><span class="o">.</span><span class="n">get_fixed_block</span><span class="p">([</span><span class="s">&#39;min&#39;</span><span class="p">,</span> <span class="s">&#39;temp_out&#39;</span><span class="p">,</span> <span class="s">&#39;val&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>Often there is no requirement to read and decode the entire fixed
+block, as its first 64 bytes contain the most useful data: the
+interval between stored readings, the buffer address where the current
+reading is stored, and the current date &amp; time. The
+<tt class="docutils literal"><span class="pre">get_lo_fix_block</span></tt> method provides easy access to these.</p>
+<p>For more examples of using the WeatherStation module, see the
+TestWeatherStation program.</p>
+</div>
+<div class="section" id="detailed-api">
+<h2>Detailed API<a class="headerlink" href="#detailed-api" title="Permalink to this headline">¶</a></h2>
 <p class="rubric">Functions</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -93,14 +117,11 @@ and other sources.</p>
 <tr><td><a class="reference internal" href="#pywws.WeatherStation.dew_point" title="pywws.WeatherStation.dew_point"><tt class="xref py py-obj docutils literal"><span class="pre">dew_point</span></tt></a>(temp,&nbsp;hum)</td>
 <td>Compute dew point, using formula from</td>
 </tr>
-<tr><td><tt class="xref py py-obj docutils literal"><span class="pre">findDevice</span></tt></td>
-<td></td>
-</tr>
 <tr><td><a class="reference internal" href="#pywws.WeatherStation.get_wind_dir_text" title="pywws.WeatherStation.get_wind_dir_text"><tt class="xref py py-obj docutils literal"><span class="pre">get_wind_dir_text</span></tt></a>()</td>
 <td>Return an array to convert wind direction integer to a string.</td>
 </tr>
 <tr><td><a class="reference internal" href="#pywws.WeatherStation.pressure_trend_text" title="pywws.WeatherStation.pressure_trend_text"><tt class="xref py py-obj docutils literal"><span class="pre">pressure_trend_text</span></tt></a>(trend)</td>
-<td>Convert pressure trend to a string, see</td>
+<td>Convert pressure trend to a string, as used by the UK met</td>
 </tr>
 <tr><td><a class="reference internal" href="#pywws.WeatherStation.wind_chill" title="pywws.WeatherStation.wind_chill"><tt class="xref py py-obj docutils literal"><span class="pre">wind_chill</span></tt></a>(temp,&nbsp;wind)</td>
 <td>Compute wind chill, using formula from</td>
@@ -152,8 +173,8 @@ and other sources.</p>
 <dl class="function">
 <dt id="pywws.WeatherStation.pressure_trend_text">
 <tt class="descclassname">pywws.WeatherStation.</tt><tt class="descname">pressure_trend_text</tt><big>(</big><em>trend</em><big>)</big><a class="reference internal" href="../_modules/pywws/WeatherStation.html#pressure_trend_text"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.WeatherStation.pressure_trend_text" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert pressure trend to a string, see
-<a class="reference external" href="http://www.reedsonline.com/weather/weather-terms.htm">http://www.reedsonline.com/weather/weather-terms.htm</a>.</p>
+<dd><p>Convert pressure trend to a string, as used by the UK met
+office.</p>
 </dd></dl>
 
 <dl class="class">
@@ -293,7 +314,7 @@ array of (ptr, value) pairs.</p>
   <ul>
 <li><a class="reference internal" href="#">pywws.WeatherStation</a><ul>
 <li><a class="reference internal" href="#introduction">Introduction</a></li>
-<li><a class="reference internal" href="#module-pywws.WeatherStation">Detailed API</a></li>
+<li><a class="reference internal" href="#detailed-api">Detailed API</a></li>
 </ul>
 </li>
 </ul>
@@ -336,12 +357,12 @@ array of (ptr, value) pairs.</p>
         <li class="right" >
           <a href="pywws.YoWindow.html" title="pywws.YoWindow"
              >previous</a> |</li>
-        <li><a href="../index.html">pywws v12.02 documentation</a> &raquo;</li>
+        <li><a href="../index.html">pywws v12.04 documentation</a> &raquo;</li>
           <li><a href="index.html" >Python programs and modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2011, Jim Easterbrook.
+        &copy; Copyright 2009-12, Jim Easterbrook.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.1.
     </div>
   </body>

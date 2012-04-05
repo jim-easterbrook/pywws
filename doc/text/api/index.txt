@@ -24,6 +24,9 @@ Contents:
 | herStation |                                                                                            |
 | ``         |                                                                                            |
 +------------+--------------------------------------------------------------------------------------------+
+| ``USBQuali | Test quality of USB connection to weather station                                          |
+| tyTest``   |                                                                                            |
++------------+--------------------------------------------------------------------------------------------+
 | ``EWtoPy`` | Convert EasyWeather.dat data to pywws format.                                              |
 +------------+--------------------------------------------------------------------------------------------+
 | ``pywws.Ta | Routines to perform common tasks such as plotting gaphs or uploading files.                |
@@ -117,6 +120,7 @@ Contents:
 * TwitterAuth
 * SetWeatherStation
 * TestWeatherStation
+* USBQualityTest
 * EWtoPy
   * Introduction
   * Detailed API

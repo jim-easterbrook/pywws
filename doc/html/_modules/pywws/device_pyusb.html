@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pywws.device_pyusb &mdash; pywws v12.02 documentation</title>
+    <title>pywws.device_pyusb &mdash; pywws v12.04 documentation</title>
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '12.02',
+        VERSION:     '12.04',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="shortcut icon" href="../../_static/pywws_logo.ico"/>
-    <link rel="top" title="pywws v12.02 documentation" href="../../index.html" />
+    <link rel="top" title="pywws v12.04 documentation" href="../../index.html" />
     <link rel="up" title="Module code" href="../index.html" /> 
   </head>
   <body>
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">pywws v12.02 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">pywws v12.04 documentation</a> &raquo;</li>
           <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -79,7 +79,7 @@
 <span class="sd">    These should be available as packages for your operating system,</span>
 <span class="sd">    but their names may vary. For example, on Ubuntu Linux::</span>
 
-<span class="sd">        sudo apt-get install libusb-0.1-4 python-usb</span>
+<span class="sd">        sudo apt-get install libusb-0.1 python-usb</span>
 
 <span class="sd">    On some embedded linux systems::</span>
 
@@ -109,7 +109,6 @@
 
 <span class="n">__docformat__</span> <span class="o">=</span> <span class="s">&quot;restructuredtext en&quot;</span>
 
-<span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">platform</span>
 <span class="kn">import</span> <span class="nn">usb</span>
 
@@ -126,7 +125,6 @@
 <span class="sd">        :type idProduct: int</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s">&#39;pywws.device_libusb.USBDevice&#39;</span><span class="p">)</span>
         <span class="n">dev</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_find_device</span><span class="p">(</span><span class="n">idVendor</span><span class="p">,</span> <span class="n">idProduct</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">dev</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s">&quot;Weather station device not found&quot;</span><span class="p">)</span>
@@ -165,24 +163,31 @@
                     <span class="k">return</span> <span class="n">device</span>
         <span class="k">return</span> <span class="bp">None</span>
 
-<div class="viewcode-block" id="USBDevice.read_data"><a class="viewcode-back" href="../../api/pywws.device_pyusb.html#pywws.device_pyusb.USBDevice.read_data">[docs]</a>    <span class="k">def</span> <span class="nf">read_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Receive 8 bytes from the device.</span>
+<div class="viewcode-block" id="USBDevice.read_data"><a class="viewcode-back" href="../../api/pywws.device_pyusb.html#pywws.device_pyusb.USBDevice.read_data">[docs]</a>    <span class="k">def</span> <span class="nf">read_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Receive data from the device.</span>
 
-<span class="sd">        If the read fails for any reason, :obj:`None` is returned.</span>
+<span class="sd">        If the read fails for any reason, an :obj:`IOError` exception</span>
+<span class="sd">        is raised.</span>
+
+<span class="sd">        :param size: the number of bytes to read.</span>
+
+<span class="sd">        :type size: int</span>
 
 <span class="sd">        :return: the data received.</span>
 
 <span class="sd">        :rtype: list(int)</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">devh</span><span class="o">.</span><span class="n">interruptRead</span><span class="p">(</span><span class="mh">0x81</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">1200</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">8</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;_read_data failed&#39;</span><span class="p">)</span>
-            <span class="k">return</span> <span class="bp">None</span>
-        <span class="k">return</span> <span class="n">result</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">devh</span><span class="o">.</span><span class="n">interruptRead</span><span class="p">(</span><span class="mh">0x81</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="mi">1200</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">size</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s">&#39;pywws.device_libusb.USBDevice.read_data failed&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="USBDevice.write_data"><a class="viewcode-back" href="../../api/pywws.device_pyusb.html#pywws.device_pyusb.USBDevice.write_data">[docs]</a>    <span class="k">def</span> <span class="nf">write_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">buf</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Send 8 bytes to the device.</span>
+        <span class="sd">&quot;&quot;&quot;Send data to the device.</span>
+
+<span class="sd">        If the write fails for any reason, an :obj:`IOError` exception</span>
+<span class="sd">        is raised.</span>
 
 <span class="sd">        :param buf: the data to send.</span>
 
@@ -196,9 +201,8 @@
         <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">devh</span><span class="o">.</span><span class="n">controlMsg</span><span class="p">(</span>
             <span class="n">usb</span><span class="o">.</span><span class="n">ENDPOINT_OUT</span> <span class="o">+</span> <span class="n">usb</span><span class="o">.</span><span class="n">TYPE_CLASS</span> <span class="o">+</span> <span class="n">usb</span><span class="o">.</span><span class="n">RECIP_INTERFACE</span><span class="p">,</span>
             <span class="n">usb</span><span class="o">.</span><span class="n">REQ_SET_CONFIGURATION</span><span class="p">,</span> <span class="n">buf</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mh">0x200</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">result</span> <span class="o">!=</span> <span class="mi">8</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;_write_data failed&#39;</span><span class="p">)</span>
-            <span class="k">return</span> <span class="bp">False</span>
+        <span class="k">if</span> <span class="n">result</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">buf</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s">&#39;pywws.device_libusb.USBDevice.write_data failed&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">True</span></div></div>
 </pre></div>
 
@@ -233,12 +237,12 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">pywws v12.02 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">pywws v12.04 documentation</a> &raquo;</li>
           <li><a href="../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2011, Jim Easterbrook.
+        &copy; Copyright 2009-12, Jim Easterbrook.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.1.
     </div>
   </body>

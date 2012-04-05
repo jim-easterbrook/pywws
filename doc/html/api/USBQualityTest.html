@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pywws.Forecast &mdash; pywws v12.04 documentation</title>
+    <title>USBQualityTest &mdash; pywws v12.04 documentation</title>
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
@@ -25,8 +25,8 @@
     <link rel="shortcut icon" href="../_static/pywws_logo.ico"/>
     <link rel="top" title="pywws v12.04 documentation" href="../index.html" />
     <link rel="up" title="Python programs and modules" href="index.html" />
-    <link rel="next" title="pywws.ZambrettiCore" href="pywws.ZambrettiCore.html" />
-    <link rel="prev" title="pywws.Template" href="pywws.Template.html" /> 
+    <link rel="next" title="EWtoPy" href="EWtoPy.html" />
+    <link rel="prev" title="TestWeatherStation" href="TestWeatherStation.html" /> 
   </head>
   <body>
     <div class="related">
@@ -39,10 +39,10 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="pywws.ZambrettiCore.html" title="pywws.ZambrettiCore"
+          <a href="EWtoPy.html" title="EWtoPy"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="pywws.Template.html" title="pywws.Template"
+          <a href="TestWeatherStation.html" title="TestWeatherStation"
              accesskey="P">previous</a> |</li>
         <li><a href="../index.html">pywws v12.04 documentation</a> &raquo;</li>
           <li><a href="index.html" accesskey="U">Python programs and modules</a> &raquo;</li> 
@@ -54,14 +54,34 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="module-pywws.Forecast">
-<span id="pywws-forecast"></span><h1>pywws.Forecast<a class="headerlink" href="#module-pywws.Forecast" title="Permalink to this headline">¶</a></h1>
-<p>Predict future weather using recent data.</p>
-<p>usage: python Forecast.py [options] data_dir
-options are:</p>
-<blockquote>
--h | &#8211;help  display this help</blockquote>
-<p>data_dir is the root directory of the weather data</p>
+  <div class="section" id="module-USBQualityTest">
+<span id="usbqualitytest"></span><h1>USBQualityTest<a class="headerlink" href="#module-USBQualityTest" title="Permalink to this headline">¶</a></h1>
+<p>Test quality of USB connection to weather station</p>
+<div class="highlight-python"><pre>usage: python USBQualityTest.py [options]
+options are:
+ -h | --help           display this help
+ -v | --verbose        increase amount of reassuring messages
+                       (repeat for even more messages e.g. -vvv)</pre>
+</div>
+<p>The USB link to my weather station is not 100% reliable. The data
+read from the station by the computer is occasionally corrupted,
+perhaps by interference. I&#8217;ve been trying to solve this by putting
+ferrite beads around the USB cable and relocating possible
+interference sources such as external hard drives. All without any
+success so far.</p>
+<p>This program tests the USB connection for errors by continuously
+reading the entire weather station memory (except for those parts that
+may be changing) looking for errors. Each 32-byte block is read twice,
+and if the two readings differ a warning message is displayed. Also
+displayed are the number of blocks read, and the number of errors
+found.</p>
+<p>I typically get one or two errors per hour, so the test needs to be
+run for several hours to produce a useful measurement. Note that other
+software that accesses the weather station (such as <a class="reference internal" href="Hourly.html"><em>Hourly</em></a> or
+<a class="reference internal" href="LiveLog.html"><em>LiveLog</em></a>) must not be run while the test is in progress.</p>
+<p>If you run this test and get no errors at all, please let me know.
+There is something good about your setup and I&#8217;d love to know what it
+is!</p>
 <p class="rubric">Functions</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -69,22 +89,14 @@ options are:</p>
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr><td><a class="reference internal" href="#pywws.Forecast.Zambretti" title="pywws.Forecast.Zambretti"><tt class="xref py py-obj docutils literal"><span class="pre">Zambretti</span></tt></a>(params,&nbsp;hourly_data)</td>
-<td></td>
-</tr>
-<tr><td><a class="reference internal" href="#pywws.Forecast.main" title="pywws.Forecast.main"><tt class="xref py py-obj docutils literal"><span class="pre">main</span></tt></a>([argv])</td>
+<tr><td><a class="reference internal" href="#USBQualityTest.main" title="USBQualityTest.main"><tt class="xref py py-obj docutils literal"><span class="pre">main</span></tt></a>([argv])</td>
 <td></td>
 </tr>
 </tbody>
 </table>
 <dl class="function">
-<dt id="pywws.Forecast.Zambretti">
-<tt class="descclassname">pywws.Forecast.</tt><tt class="descname">Zambretti</tt><big>(</big><em>params</em>, <em>hourly_data</em><big>)</big><a class="reference internal" href="../_modules/pywws/Forecast.html#Zambretti"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.Forecast.Zambretti" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="pywws.Forecast.main">
-<tt class="descclassname">pywws.Forecast.</tt><tt class="descname">main</tt><big>(</big><em>argv=None</em><big>)</big><a class="reference internal" href="../_modules/pywws/Forecast.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.Forecast.main" title="Permalink to this definition">¶</a></dt>
+<dt id="USBQualityTest.main">
+<tt class="descclassname">USBQualityTest.</tt><tt class="descname">main</tt><big>(</big><em>argv=None</em><big>)</big><a class="reference internal" href="../_modules/USBQualityTest.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#USBQualityTest.main" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>
@@ -96,11 +108,11 @@ options are:</p>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
   <h4>Previous topic</h4>
-  <p class="topless"><a href="pywws.Template.html"
-                        title="previous chapter">pywws.Template</a></p>
+  <p class="topless"><a href="TestWeatherStation.html"
+                        title="previous chapter">TestWeatherStation</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="pywws.ZambrettiCore.html"
-                        title="next chapter">pywws.ZambrettiCore</a></p>
+  <p class="topless"><a href="EWtoPy.html"
+                        title="next chapter">EWtoPy</a></p>
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
@@ -128,10 +140,10 @@ options are:</p>
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="pywws.ZambrettiCore.html" title="pywws.ZambrettiCore"
+          <a href="EWtoPy.html" title="EWtoPy"
              >next</a> |</li>
         <li class="right" >
-          <a href="pywws.Template.html" title="pywws.Template"
+          <a href="TestWeatherStation.html" title="TestWeatherStation"
              >previous</a> |</li>
         <li><a href="../index.html">pywws v12.04 documentation</a> &raquo;</li>
           <li><a href="index.html" >Python programs and modules</a> &raquo;</li> 

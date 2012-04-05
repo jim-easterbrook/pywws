@@ -35,8 +35,6 @@ data_dir is the root directory of the weather data (e.g.
 | argv])     |                                                                                            |
 +------------+--------------------------------------------------------------------------------------------+
 
-LiveLog.CheckFixedBlock(ws, params, logger)
-
 LiveLog.LiveLog(data_dir)
 
 LiveLog.main(argv=None)
