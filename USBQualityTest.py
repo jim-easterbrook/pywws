@@ -1,11 +1,37 @@
 #!/usr/bin/env python
 
-"""Test quality of USB connection to weather station.
+"""Test quality of USB connection to weather station
 
 ::
 
 %s
+
+The USB link to my weather station is not 100%% reliable. The data
+read from the station by the computer is occasionally corrupted,
+perhaps by interference. I've been trying to solve this by putting
+ferrite beads around the USB cable and relocating possible
+interference sources such as external hard drives. All without any
+success so far.
+
+This program tests the USB connection for errors by continuously
+reading the entire weather station memory (except for those parts that
+may be changing) looking for errors. Each 32-byte block is read twice,
+and if the two readings differ a warning message is displayed. Also
+displayed are the number of blocks read, and the number of errors
+found.
+
+I typically get one or two errors per hour, so the test needs to be
+run for several hours to produce a useful measurement. Note that other
+software that accesses the weather station (such as :doc:`Hourly` or
+:doc:`LiveLog`) must not be run while the test is in progress.
+
+If you run this test and get no errors at all, please let me know.
+There is something good about your setup and I'd love to know what it
+is!
+
 """
+
+__docformat__ = "restructuredtext en"
 
 __usage__ = """
  usage: python USBQualityTest.py [options]
@@ -16,7 +42,6 @@ __usage__ = """
 """
 
 __doc__ %= __usage__
-
 __usage__ = __doc__.split('\n')[0] + __usage__
 
 import getopt
@@ -71,8 +96,8 @@ def main(argv=None):
         result_2 = ws._read_block(ptr, retry=False)
         if result_1 != result_2:
             logger.warning('read_block changing %06x', ptr)
-            logger.warning('old %s', str(result_1))
-            logger.warning('new %s', str(result_2))
+            logger.warning('  %s', str(result_1))
+            logger.warning('  %s', str(result_2))
             bad_count += 1
         total_count += 1
         print "\r %d/%d " % (bad_count, total_count),
