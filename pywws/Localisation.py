@@ -171,8 +171,12 @@ def SetTranslation(lang):
     path = os.path.join(os.path.dirname(sys.argv[0]), '..', 'locale')
     if not os.path.exists(path):
         path = os.path.join(os.path.dirname(sys.argv[0]), 'locale')
+    codeset = locale.getpreferredencoding()
+    if codeset == 'ASCII':
+        codeset = 'UTF-8'
     try:
-        translation = gettext.translation('pywws', path, languages=langs)
+        translation = gettext.translation(
+            'pywws', path, languages=langs, codeset=codeset)
     except IOError:
         return False
     return True
