@@ -21,7 +21,7 @@ import sys
 
 from conversions import *
 import DataStore
-from Forecast import Zambretti
+from Forecast import Zambretti, ZambrettiCode
 import Localisation
 from Logger import ApplicationLogger
 from TimeZone import Local, utc

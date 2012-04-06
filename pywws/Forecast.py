@@ -18,7 +18,7 @@ import Localisation
 from TimeZone import Local, utc
 import ZambrettiCore
 
-def Zambretti(params, hourly_data):
+def ZambrettiCode(params, hourly_data):
     north = eval(params.get('Zambretti', 'north', 'True'))
     baro_upper = eval(params.get('Zambretti', 'baro upper', '1050.0'))
     baro_lower = eval(params.get('Zambretti', 'baro lower', '950.0'))
@@ -32,9 +32,13 @@ def Zambretti(params, hourly_data):
         trend = 0.0
     else:
         trend = hourly_data['pressure_trend'] / 3.0
-    return Localisation.translation.ugettext(ZambrettiCore.Zambretti(
+    return ZambrettiCore.ZambrettiCode(
         hourly_data['rel_pressure'], hourly_data['idx'].month, wind, trend,
-        north=north, baro_top=baro_upper, baro_bottom=baro_lower)[0])
+        north=north, baro_top=baro_upper, baro_bottom=baro_lower)
+
+def Zambretti(params, hourly_data):
+    code = ZambrettiCode(params, hourly_data)
+    return Localisation.translation.ugettext(ZambrettiCore.ZambrettiText(code))
 
 def main(argv=None):
     if argv is None:
@@ -62,11 +66,13 @@ def main(argv=None):
     idx = hourly_data.before(datetime.max)
     print 'Zambretti (current):', Zambretti(params, hourly_data[idx])
     idx = idx.replace(tzinfo=utc).astimezone(Local)
-    if idx.hour < 9:
+    if idx.hour < 8 or (idx.hour == 8 and idx.minute < 30):
         idx -= timedelta(hours=24)
     idx = idx.replace(hour=9, minute=0, second=0)
     idx = hourly_data.nearest(idx.astimezone(utc).replace(tzinfo=None))
-    print 'Zambretti  (at 9am):', Zambretti(params, hourly_data[idx])
+    lcl = idx.replace(tzinfo=utc).astimezone(Local)
+    print 'Zambretti (at %s):' % lcl.strftime('%H:%M %Z'), Zambretti(
+        params, hourly_data[idx])
     return 0
 
 if __name__ == "__main__":

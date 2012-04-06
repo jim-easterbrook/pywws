@@ -33,8 +33,8 @@ forecast_text = {
 
 del _
 
-def Zambretti(pressure, month, wind, trend,
-              north=True, baro_top=1050.0, baro_bottom=950.0):
+def ZambrettiCode(pressure, month, wind, trend,
+                  north=True, baro_top=1050.0, baro_bottom=950.0):
     """Simple implementation of Zambretti forecaster algorithm.
     Inspired by beteljuice.com Java algorithm, as converted to Python by
     honeysucklecottage.me.uk, and further information
@@ -70,9 +70,11 @@ def Zambretti(pressure, month, wind, trend,
                'X', 'X', 'X', 'Z')
     # clip to range of lookup table
     F = min(max(int(F + 0.5), 0), len(LUT) - 1)
-    # convert to text
-    letter = LUT[F]
-    return forecast_text[letter[0]], letter
+    # convert to letter code
+    return LUT[F]
+
+def ZambrettiText(letter):
+    return forecast_text[letter]
 
 if __name__ == "__main__":
     import WeatherStation
@@ -93,5 +95,5 @@ if __name__ == "__main__":
                     wind_txt = wind_dir[wind]
                 print '%4d %4s %4s  %3s' % (
                     pressure, trend_txt, wind_txt,
-                    Zambretti(pressure, month, wind, trend)[1])
+                    ZambrettiCode(pressure, month, wind, trend))
         print ''
