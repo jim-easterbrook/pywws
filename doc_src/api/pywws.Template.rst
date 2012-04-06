@@ -21,11 +21,15 @@ Processing instructions
   * ``#timezone name#``: convert all datetime values to time zone ``name`` before output. Permitted values for name are ``utc`` or ``local``.
   * ``#roundtime expr#``: switch time rounding on or off, according to ``expr``. When time rounding is on, 30 seconds is added to each time value used. This is useful if you are only printing out hours and minutes, e.g. with a "%H:%M" format, and want time values such as 10:23:58 to appear as "10:24". Use ``"True"`` or ``"False"`` for expr.
   * ``#jump count#``: jump ``count`` values. The data index is adjusted by ``count`` hours or days. Negative values jump back in time.
+
     It is a good idea to put jumps within a loop at the end, just before the ``#endloop#`` instruction. The loop can then terminate cleanly if it has run out of data.
-  * ``#goto date-time#``: go to ``date-time``. The data index is adjusted to the record immediately after ``date-time``. This must be in UTC, not your local time zone, and exactly match the ISO date format, for example ``2010-11-01 12:00:00`` is noon on 1st November 2010.
+  * ``#goto date-time#``: go to ``date-time``. The data index is adjusted to the record immediately after ``date-time``. This can be in UTC or your local time zone, according to the setting of ``timezone``, and must exactly match the ISO date format, for example ``"2010-11-01 12:00:00"`` is noon on 1st November 2010.
+
+    Parts of ``date-time`` can be replaced with strftime style % format characters to specify the current loop index. For example, ``"%Y-%m-01 12:00:00"`` is noon on 1st of this month.
   * ``#loop count#``: start a loop that will repeat ``count`` times. ``count`` must be one or more.
   * ``#endloop#``: end a loop started by ``#loop count#``. The template processing will go back to the line containing the ``#loop count#`` instruction. Don't try to nest loops.
   * ``#key fmt_string no_value_string conversion#``: output a data value. ``key`` is the data key, e.g. ``temp_out`` for outdoor temperature. ``fmt_string`` is a printf-like format string (actually Python's % operator) except for datetime values, when it is input to datetime's ``strftime()`` method. ``no_value_string`` is output instead of ``fmt_string`` when the data value is absent, e.g. if the station lost contact with the outside sensor. ``conversion`` is a Python expression to convert the data, e.g. to convert wind speed from m/s to mph you could use ``"x * 3.6 / 1.609344"``.
+
     All these values need double quotes " if they contain spaces or other potentially difficult characters. All except ``key`` are optional, but note that if you want to specify a conversion, you also need to specify ``fmt_string`` and ``no_value_string``.
   * ``#calc expression fmt_string no_value_string conversion#``: output a value computed from one or more data items. ``expression`` is any valid Python expression, e.g. ``"dew_point(data['temp_out'], data['hum_out'])"`` to compute the outdoor dew point. ``fmt_string``, ``no_value_string`` and ``conversion`` are as described above. Note that it is probably more efficient to incorporate any conversion into expression.
 

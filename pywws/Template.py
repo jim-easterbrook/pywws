@@ -87,7 +87,7 @@ class Template(object):
             for i in range(len(parts)):
                 if i % 2 == 0:
                     # not a processing directive
-                    if parts[i] != '\n':
+                    if i == 0 or parts[i] != '\n':
                         yield parts[i]
                     continue
                 command = shlex.split(parts[i])
@@ -96,6 +96,8 @@ class Template(object):
                     yield '#'
                 elif command[0] in data.keys() + ['calc']:
                     # output a value
+                    if not valid_data:
+                        continue
                     # format is: key fmt_string no_value_string conversion
                     # get value
                     if command[0] == 'calc':
@@ -171,7 +173,13 @@ class Template(object):
                     data = data_set[idx]
                 elif command[0] == 'goto':
                     prevdata = data
-                    new_idx = data_set.after(DataStore.safestrptime(command[1]))
+                    time_str = command[1]
+                    if '%' in time_str:
+                        lcl = idx.replace(tzinfo=utc).astimezone(time_zone)
+                        time_str = lcl.strftime(time_str)
+                    new_idx = DataStore.safestrptime(time_str)
+                    new_idx = new_idx.replace(tzinfo=time_zone).astimezone(utc)
+                    new_idx = data_set.after(new_idx.replace(tzinfo=None))
                     if new_idx:
                         idx = new_idx
                         data = data_set[idx]
