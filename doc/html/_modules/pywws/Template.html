@@ -70,7 +70,7 @@
 
 <span class="kn">from</span> <span class="nn">conversions</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="kn">import</span> <span class="nn">DataStore</span>
-<span class="kn">from</span> <span class="nn">Forecast</span> <span class="kn">import</span> <span class="n">Zambretti</span>
+<span class="kn">from</span> <span class="nn">Forecast</span> <span class="kn">import</span> <span class="n">Zambretti</span><span class="p">,</span> <span class="n">ZambrettiCode</span>
 <span class="kn">import</span> <span class="nn">Localisation</span>
 <span class="kn">from</span> <span class="nn">Logger</span> <span class="kn">import</span> <span class="n">ApplicationLogger</span>
 <span class="kn">from</span> <span class="nn">TimeZone</span> <span class="kn">import</span> <span class="n">Local</span><span class="p">,</span> <span class="n">utc</span>
@@ -136,7 +136,7 @@
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">)):</span>
                 <span class="k">if</span> <span class="n">i</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                     <span class="c"># not a processing directive</span>
-                    <span class="k">if</span> <span class="n">parts</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">!=</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">parts</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">!=</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">:</span>
                         <span class="k">yield</span> <span class="n">parts</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
                     <span class="k">continue</span>
                 <span class="n">command</span> <span class="o">=</span> <span class="n">shlex</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">parts</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
@@ -145,6 +145,8 @@
                     <span class="k">yield</span> <span class="s">&#39;#&#39;</span>
                 <span class="k">elif</span> <span class="n">command</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="o">+</span> <span class="p">[</span><span class="s">&#39;calc&#39;</span><span class="p">]:</span>
                     <span class="c"># output a value</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">valid_data</span><span class="p">:</span>
+                        <span class="k">continue</span>
                     <span class="c"># format is: key fmt_string no_value_string conversion</span>
                     <span class="c"># get value</span>
                     <span class="k">if</span> <span class="n">command</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;calc&#39;</span><span class="p">:</span>
@@ -220,7 +222,13 @@
                     <span class="n">data</span> <span class="o">=</span> <span class="n">data_set</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
                 <span class="k">elif</span> <span class="n">command</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;goto&#39;</span><span class="p">:</span>
                     <span class="n">prevdata</span> <span class="o">=</span> <span class="n">data</span>
-                    <span class="n">new_idx</span> <span class="o">=</span> <span class="n">data_set</span><span class="o">.</span><span class="n">after</span><span class="p">(</span><span class="n">DataStore</span><span class="o">.</span><span class="n">safestrptime</span><span class="p">(</span><span class="n">command</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+                    <span class="n">time_str</span> <span class="o">=</span> <span class="n">command</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="s">&#39;%&#39;</span> <span class="ow">in</span> <span class="n">time_str</span><span class="p">:</span>
+                        <span class="n">lcl</span> <span class="o">=</span> <span class="n">idx</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="n">utc</span><span class="p">)</span><span class="o">.</span><span class="n">astimezone</span><span class="p">(</span><span class="n">time_zone</span><span class="p">)</span>
+                        <span class="n">time_str</span> <span class="o">=</span> <span class="n">lcl</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="n">time_str</span><span class="p">)</span>
+                    <span class="n">new_idx</span> <span class="o">=</span> <span class="n">DataStore</span><span class="o">.</span><span class="n">safestrptime</span><span class="p">(</span><span class="n">time_str</span><span class="p">)</span>
+                    <span class="n">new_idx</span> <span class="o">=</span> <span class="n">new_idx</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="n">time_zone</span><span class="p">)</span><span class="o">.</span><span class="n">astimezone</span><span class="p">(</span><span class="n">utc</span><span class="p">)</span>
+                    <span class="n">new_idx</span> <span class="o">=</span> <span class="n">data_set</span><span class="o">.</span><span class="n">after</span><span class="p">(</span><span class="n">new_idx</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="bp">None</span><span class="p">))</span>
                     <span class="k">if</span> <span class="n">new_idx</span><span class="p">:</span>
                         <span class="n">idx</span> <span class="o">=</span> <span class="n">new_idx</span>
                         <span class="n">data</span> <span class="o">=</span> <span class="n">data_set</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>

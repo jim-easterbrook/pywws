@@ -5,7 +5,17 @@ User guides
 Contents:
 
 * How to get started with pywws
+* How to set up 'hourly' logging with pywws
+  * Introduction
+  * Getting started
+  * Configuring periodic tasks
+  * Run as a cron job
 * How to set up 'live' logging with pywws
+  * Introduction
+  * Getting started
+  * Configuring periodic tasks
+  * Run in the background
+  * Automatic restarting
 * How to configure pywws to post messages to Twitter
 * How to make a language file for pywws
 * weather.ini - configuration file format

@@ -82,8 +82,8 @@
 
 <span class="k">del</span> <span class="n">_</span>
 
-<div class="viewcode-block" id="Zambretti"><a class="viewcode-back" href="../../api/pywws.ZambrettiCore.html#pywws.ZambrettiCore.Zambretti">[docs]</a><span class="k">def</span> <span class="nf">Zambretti</span><span class="p">(</span><span class="n">pressure</span><span class="p">,</span> <span class="n">month</span><span class="p">,</span> <span class="n">wind</span><span class="p">,</span> <span class="n">trend</span><span class="p">,</span>
-              <span class="n">north</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">baro_top</span><span class="o">=</span><span class="mf">1050.0</span><span class="p">,</span> <span class="n">baro_bottom</span><span class="o">=</span><span class="mf">950.0</span><span class="p">):</span>
+<div class="viewcode-block" id="ZambrettiCode"><a class="viewcode-back" href="../../api/pywws.ZambrettiCore.html#pywws.ZambrettiCore.ZambrettiCode">[docs]</a><span class="k">def</span> <span class="nf">ZambrettiCode</span><span class="p">(</span><span class="n">pressure</span><span class="p">,</span> <span class="n">month</span><span class="p">,</span> <span class="n">wind</span><span class="p">,</span> <span class="n">trend</span><span class="p">,</span>
+                  <span class="n">north</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">baro_top</span><span class="o">=</span><span class="mf">1050.0</span><span class="p">,</span> <span class="n">baro_bottom</span><span class="o">=</span><span class="mf">950.0</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Simple implementation of Zambretti forecaster algorithm.</span>
 <span class="sd">    Inspired by beteljuice.com Java algorithm, as converted to Python by</span>
 <span class="sd">    honeysucklecottage.me.uk, and further information</span>
@@ -119,9 +119,11 @@
                <span class="s">&#39;X&#39;</span><span class="p">,</span> <span class="s">&#39;X&#39;</span><span class="p">,</span> <span class="s">&#39;X&#39;</span><span class="p">,</span> <span class="s">&#39;Z&#39;</span><span class="p">)</span>
     <span class="c"># clip to range of lookup table</span>
     <span class="n">F</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">F</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">),</span> <span class="mi">0</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">LUT</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
-    <span class="c"># convert to text</span>
-    <span class="n">letter</span> <span class="o">=</span> <span class="n">LUT</span><span class="p">[</span><span class="n">F</span><span class="p">]</span>
-    <span class="k">return</span> <span class="n">forecast_text</span><span class="p">[</span><span class="n">letter</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">letter</span>
+    <span class="c"># convert to letter code</span>
+    <span class="k">return</span> <span class="n">LUT</span><span class="p">[</span><span class="n">F</span><span class="p">]</span>
+</div>
+<div class="viewcode-block" id="ZambrettiText"><a class="viewcode-back" href="../../api/pywws.ZambrettiCore.html#pywws.ZambrettiCore.ZambrettiText">[docs]</a><span class="k">def</span> <span class="nf">ZambrettiText</span><span class="p">(</span><span class="n">letter</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">forecast_text</span><span class="p">[</span><span class="n">letter</span><span class="p">]</span>
 </div>
 <span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&quot;__main__&quot;</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">WeatherStation</span>
@@ -142,7 +144,7 @@
                     <span class="n">wind_txt</span> <span class="o">=</span> <span class="n">wind_dir</span><span class="p">[</span><span class="n">wind</span><span class="p">]</span>
                 <span class="k">print</span> <span class="s">&#39;</span><span class="si">%4d</span><span class="s"> </span><span class="si">%4s</span><span class="s"> </span><span class="si">%4s</span><span class="s">  </span><span class="si">%3s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span>
                     <span class="n">pressure</span><span class="p">,</span> <span class="n">trend_txt</span><span class="p">,</span> <span class="n">wind_txt</span><span class="p">,</span>
-                    <span class="n">Zambretti</span><span class="p">(</span><span class="n">pressure</span><span class="p">,</span> <span class="n">month</span><span class="p">,</span> <span class="n">wind</span><span class="p">,</span> <span class="n">trend</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span>
+                    <span class="n">ZambrettiCode</span><span class="p">(</span><span class="n">pressure</span><span class="p">,</span> <span class="n">month</span><span class="p">,</span> <span class="n">wind</span><span class="p">,</span> <span class="n">trend</span><span class="p">))</span>
         <span class="k">print</span> <span class="s">&#39;&#39;</span>
 </pre></div>
 

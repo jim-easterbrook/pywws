@@ -22,6 +22,8 @@ data_dir is the root directory of the weather data
 | argv])     |                                                                                            |
 +------------+--------------------------------------------------------------------------------------------+
 
+pywws.Forecast.ZambrettiCode(params, hourly_data)
+
 pywws.Forecast.Zambretti(params, hourly_data)
 
 pywws.Forecast.main(argv=None)

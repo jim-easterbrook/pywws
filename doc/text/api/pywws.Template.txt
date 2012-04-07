@@ -54,15 +54,21 @@ Processing instructions
 
    * ``#jump count#``: jump ``count`` values. The data index is
      adjusted by ``count`` hours or days. Negative values jump back in
-     time. It is a good idea to put jumps within a loop at the end,
-     just before the ``#endloop#`` instruction. The loop can then
-     terminate cleanly if it has run out of data.
+     time.
+
+     It is a good idea to put jumps within a loop at the end, just
+     before the ``#endloop#`` instruction. The loop can then terminate
+     cleanly if it has run out of data.
 
    * ``#goto date-time#``: go to ``date-time``. The data index is
-     adjusted to the record immediately after ``date-time``. This must
-     be in UTC, not your local time zone, and exactly match the ISO
-     date format, for example ``2010-11-01 12:00:00`` is noon on 1st
-     November 2010.
+     adjusted to the record immediately after ``date-time``. This can
+     be in UTC or your local time zone, according to the setting of
+     ``timezone``, and must exactly match the ISO date format, for
+     example ``"2010-11-01 12:00:00"`` is noon on 1st November 2010.
+
+     Parts of ``date-time`` can be replaced with strftime style %
+     format characters to specify the current loop index. For example,
+     ``"%Y-%m-01 12:00:00"`` is noon on 1st of this month.
 
    * ``#loop count#``: start a loop that will repeat ``count`` times.
      ``count`` must be one or more.
@@ -80,11 +86,12 @@ Processing instructions
      data value is absent, e.g. if the station lost contact with the
      outside sensor. ``conversion`` is a Python expression to convert
      the data, e.g. to convert wind speed from m/s to mph you could
-     use ``"x * 3.6 / 1.609344"``. All these values need double quotes
-     " if they contain spaces or other potentially difficult
-     characters. All except ``key`` are optional, but note that if you
-     want to specify a conversion, you also need to specify
-     ``fmt_string`` and ``no_value_string``.
+     use ``"x * 3.6 / 1.609344"``.
+
+     All these values need double quotes " if they contain spaces or
+     other potentially difficult characters. All except ``key`` are
+     optional, but note that if you want to specify a conversion, you
+     also need to specify ``fmt_string`` and ``no_value_string``.
 
    * ``#calc expression fmt_string no_value_string conversion#``:
      output a value computed from one or more data items.

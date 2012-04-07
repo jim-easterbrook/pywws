@@ -18,6 +18,7 @@ Contents:
   * Change Log
 * User guides
   * How to get started with pywws
+  * How to set up 'hourly' logging with pywws
   * How to set up 'live' logging with pywws
   * How to configure pywws to post messages to Twitter
   * How to make a language file for pywws
