@@ -1,8 +1,7 @@
 #hourly#
 #timezone local#
 #roundtime True#
-#loop 12#
-#calc "(None, data['idx'])[data['idx'].hour == 8]" "<p>Today's weather forecast, computed at %H:%M %Z: "#
-#calc "(None, Zambretti(params, data))[data['idx'].hour == 8]" "%s.<br />NB: this forecast is highly experimental and should not be relied upon.</p>"#
-#jump -1#
-#endloop#
+#jump -8#
+#goto "%Y-%m-%d 08:30:00"#
+#idx "<p>12 hour weather forecast, computed on %a, %d %b at %H:%M %Z: "#
+#calc "Zambretti(params, data)" "%s.<br />NB: this forecast is highly experimental and should not be relied upon.</p>"#
