@@ -104,20 +104,21 @@ class Calib(object):
     :py:meth:`calib` method as its own.
 
     """
+    calibrator = None
     def __init__(self, params):
         global usercalib
         self.logger = logging.getLogger('pywws.Calib')
-        user_module = params.get('paths', 'user_calib', None)
-        if user_module:
-            self.logger.info('Using user calibration')
-            if not usercalib:
+        if not Calib.calibrator:
+            user_module = params.get('paths', 'user_calib', None)
+            if user_module:
+                self.logger.info('Using user calibration')
                 path, module = os.path.split(user_module)
                 sys.path.insert(0, path)
                 module = os.path.splitext(module)[0]
                 usercalib = __import__(
                     module, globals(), locals(), ['Calib'])
-            self.calibrator = usercalib.Calib(params)
-        else:
-            self.logger.info('Using default calibration')
-            self.calibrator = DefaultCalib(params)
-        self.calib = self.calibrator.calib
+                Calib.calibrator = usercalib.Calib(params)
+            else:
+                self.logger.info('Using default calibration')
+                Calib.calibrator = DefaultCalib(params)
+        self.calib = Calib.calibrator.calib
