@@ -9,3 +9,4 @@ recursive-include example_graph_templates *
 recursive-include example_modules *
 recursive-include languages *
 recursive-include locale *
+global-exclude *~
