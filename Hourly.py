@@ -3,15 +3,29 @@
 """Get weather data, process it, prepare graphs & text files and
 upload to a web site.
 
-Typically run every hour from cron.
-Comment out or remove the bits you don't need.
+Typically run every hour from cron. ::
 
-usage: python Hourly.py [options] data_dir
-options are:
-\t-h or --help\t\tdisplay this help
-\t-v or --verbose\t\tincrease amount of reassuring messages
-data_dir is the root directory of the weather data (e.g. $(HOME)/weather/data)
+%s
+
+This script does little more than call other modules in sequence to
+get data from the weather station, process it, plot some graphs,
+generate some text files and upload the results to a web site.
+
+For more information on using ``Hourly.py``, see
+:doc:`../guides/hourlylogging`.
+
 """
+
+__docformat__ = "restructuredtext en"
+__usage__ = """
+ usage: python Hourly.py [options] data_dir
+ options are:
+  -h or --help     display this help
+  -v or --verbose  increase amount of reassuring messages
+ data_dir is the root directory of the weather data (e.g. $(HOME)/weather/data)
+"""
+__doc__ %= __usage__
+__usage__ = __doc__.split('\n')[0] + __usage__
 
 import getopt
 import os
@@ -54,20 +68,20 @@ def main(argv=None):
         opts, args = getopt.getopt(argv[1:], "hv", ['help', 'verbose'])
     except getopt.error, msg:
         print >>sys.stderr, 'Error: %s\n' % msg
-        print >>sys.stderr, __doc__.strip()
+        print >>sys.stderr, __usage__.strip()
         return 1
     # process options
     verbose = 0
     for o, a in opts:
         if o == '-h' or o == '--help':
-            print __doc__.strip()
+            print __usage__.strip()
             return 0
         elif o == '-v' or o == '--verbose':
             verbose += 1
     # check arguments
     if len(args) != 1:
         print >>sys.stderr, 'Error: 1 argument required\n'
-        print >>sys.stderr, __doc__.strip()
+        print >>sys.stderr, __usage__.strip()
         return 2
     logger = ApplicationLogger(verbose)
     return Hourly(args[0])
