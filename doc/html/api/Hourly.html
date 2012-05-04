@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Hourly &mdash; pywws v12.04 documentation</title>
+    <title>Hourly &mdash; pywws v12.05 documentation</title>
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '12.04',
+        VERSION:     '12.05',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="shortcut icon" href="../_static/pywws_logo.ico"/>
-    <link rel="top" title="pywws v12.04 documentation" href="../index.html" />
+    <link rel="top" title="pywws v12.05 documentation" href="../index.html" />
     <link rel="up" title="Python programs and modules" href="index.html" />
     <link rel="next" title="LiveLog" href="LiveLog.html" />
     <link rel="prev" title="pywws.Logger" href="pywws.Logger.html" /> 
@@ -44,7 +44,7 @@
         <li class="right" >
           <a href="pywws.Logger.html" title="pywws.Logger"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">pywws v12.04 documentation</a> &raquo;</li>
+        <li><a href="../index.html">pywws v12.05 documentation</a> &raquo;</li>
           <li><a href="index.html" accesskey="U">Python programs and modules</a> &raquo;</li> 
       </ul>
     </div>  
@@ -54,34 +54,22 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="hourly">
-<h1>Hourly<a class="headerlink" href="#hourly" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="introduction">
-<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
-<p>This script does nothing more than call other modules in sequence to get data from the weather station, process it, plot some graphs, generate some text files and upload the results to a web site.</p>
-<p>The first time Hourly.py is run it will create the following entries in <tt class="docutils literal"><span class="pre">weather.ini</span></tt>. Edit these to suit your installation and preferences. The &#8220;work&#8221; directory is used to store temporary files when plotting graphs.</p>
-<div class="highlight-python"><pre>[paths]
-templates = ~/weather/templates/
-graph_templates = ~/weather/graph_templates/
-work = /tmp/weather</pre>
-</div>
-<p>Once you have it working to your satisfaction, it&#8217;s probably worth setting up a cron job to call it every hour or few hours or day, according to your needs. I run it on the hour, so my crontab entry is:</p>
-<div class="highlight-python"><pre>0 * * * *       /home/jim/weather/Hourly.py</pre>
-</div>
-<p>The only unusual feature of this script is that if any errors occur (such as not being able to connect to the website when uploading) then those parts will be repeated, up to three times in total.</p>
-</div>
-<div class="section" id="module-Hourly">
-<span id="detailed-api"></span><h2>Detailed API<a class="headerlink" href="#module-Hourly" title="Permalink to this headline">¶</a></h2>
+  <div class="section" id="module-Hourly">
+<span id="hourly"></span><h1>Hourly<a class="headerlink" href="#module-Hourly" title="Permalink to this headline">¶</a></h1>
 <p>Get weather data, process it, prepare graphs &amp; text files and
 upload to a web site.</p>
-<p>Typically run every hour from cron.
-Comment out or remove the bits you don&#8217;t need.</p>
-<p>usage: python Hourly.py [options] data_dir
-options are:</p>
-<blockquote>
--h or &#8211;help            display this help
--v or &#8211;verbose         increase amount of reassuring messages</blockquote>
-<p>data_dir is the root directory of the weather data (e.g. $(HOME)/weather/data)</p>
+<p>Typically run every hour from cron.</p>
+<div class="highlight-python"><pre>usage: python Hourly.py [options] data_dir
+options are:
+ -h or --help     display this help
+ -v or --verbose  increase amount of reassuring messages
+data_dir is the root directory of the weather data (e.g. $(HOME)/weather/data)</pre>
+</div>
+<p>This script does little more than call other modules in sequence to
+get data from the weather station, process it, plot some graphs,
+generate some text files and upload the results to a web site.</p>
+<p>For more information on using <tt class="docutils literal"><span class="pre">Hourly.py</span></tt>, see
+<a class="reference internal" href="../guides/hourlylogging.html"><em>How to set up &#8216;hourly&#8217; logging with pywws</em></a>.</p>
 <p class="rubric">Functions</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -108,7 +96,6 @@ options are:</p>
 <dd></dd></dl>
 
 </div>
-</div>
 
 
           </div>
@@ -116,15 +103,6 @@ options are:</p>
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="../index.html">Table Of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">Hourly</a><ul>
-<li><a class="reference internal" href="#introduction">Introduction</a></li>
-<li><a class="reference internal" href="#module-Hourly">Detailed API</a></li>
-</ul>
-</li>
-</ul>
-
   <h4>Previous topic</h4>
   <p class="topless"><a href="pywws.Logger.html"
                         title="previous chapter">pywws.Logger</a></p>
@@ -163,7 +141,7 @@ options are:</p>
         <li class="right" >
           <a href="pywws.Logger.html" title="pywws.Logger"
              >previous</a> |</li>
-        <li><a href="../index.html">pywws v12.04 documentation</a> &raquo;</li>
+        <li><a href="../index.html">pywws v12.05 documentation</a> &raquo;</li>
           <li><a href="index.html" >Python programs and modules</a> &raquo;</li> 
       </ul>
     </div>

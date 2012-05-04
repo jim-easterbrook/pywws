@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>TwitterAuth &mdash; pywws v12.04 documentation</title>
+    <title>TwitterAuth &mdash; pywws v12.05 documentation</title>
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '12.04',
+        VERSION:     '12.05',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="shortcut icon" href="../_static/pywws_logo.ico"/>
-    <link rel="top" title="pywws v12.04 documentation" href="../index.html" />
+    <link rel="top" title="pywws v12.05 documentation" href="../index.html" />
     <link rel="up" title="Python programs and modules" href="index.html" />
     <link rel="next" title="SetWeatherStation" href="SetWeatherStation.html" />
     <link rel="prev" title="Reprocess" href="Reprocess.html" /> 
@@ -44,7 +44,7 @@
         <li class="right" >
           <a href="Reprocess.html" title="Reprocess"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">pywws v12.04 documentation</a> &raquo;</li>
+        <li><a href="../index.html">pywws v12.05 documentation</a> &raquo;</li>
           <li><a href="index.html" accesskey="U">Python programs and modules</a> &raquo;</li> 
       </ul>
     </div>  
@@ -56,12 +56,20 @@
             
   <div class="section" id="module-TwitterAuth">
 <span id="twitterauth"></span><h1>TwitterAuth<a class="headerlink" href="#module-TwitterAuth" title="Permalink to this headline">¶</a></h1>
-<p>Authorise pywws to post to your Twitter account.</p>
-<p>usage: python TwitterAuth.py [options] data_dir
-options are:</p>
-<blockquote>
--h or &#8211;help       display this help</blockquote>
-<p>data_dir is the root directory of the weather data</p>
+<p>Authorise pywws to post to your Twitter account</p>
+<div class="highlight-python"><pre>usage: python TwitterAuth.py [options] data_dir
+options are:
+ -h or --help       display this help
+data_dir is the root directory of the weather data</pre>
+</div>
+<p>This program authorises <a class="reference internal" href="pywws.ToTwitter.html#module-pywws.ToTwitter"><tt class="xref py py-mod docutils literal"><span class="pre">pywws.ToTwitter</span></tt></a> to post to a Twitter
+account. You need to create an account before running
+<a class="reference internal" href="#module-TwitterAuth"><tt class="xref py py-mod docutils literal"><span class="pre">TwitterAuth</span></tt></a>. It opens a web browser window (or gives you a
+URL to copy to your web browser) where you log in to your Twitter
+account. If the login is successful the browser will display a 7 digit
+number which you then copy to <a class="reference internal" href="#module-TwitterAuth"><tt class="xref py py-mod docutils literal"><span class="pre">TwitterAuth</span></tt></a>.</p>
+<p>See <a class="reference internal" href="../guides/twitter.html"><em>How to configure pywws to post messages to Twitter</em></a> for more detail on using Twitter with
+pywws.</p>
 <p class="rubric">Functions</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -133,7 +141,7 @@ options are:</p>
         <li class="right" >
           <a href="Reprocess.html" title="Reprocess"
              >previous</a> |</li>
-        <li><a href="../index.html">pywws v12.04 documentation</a> &raquo;</li>
+        <li><a href="../index.html">pywws v12.05 documentation</a> &raquo;</li>
           <li><a href="index.html" >Python programs and modules</a> &raquo;</li> 
       </ul>
     </div>

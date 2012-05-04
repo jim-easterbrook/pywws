@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>TwitterAuth &mdash; pywws v12.04 documentation</title>
+    <title>TwitterAuth &mdash; pywws v12.05 documentation</title>
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '12.04',
+        VERSION:     '12.05',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="shortcut icon" href="../_static/pywws_logo.ico"/>
-    <link rel="top" title="pywws v12.04 documentation" href="../index.html" />
+    <link rel="top" title="pywws v12.05 documentation" href="../index.html" />
     <link rel="up" title="Module code" href="index.html" /> 
   </head>
   <body>
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../index.html">pywws v12.04 documentation</a> &raquo;</li>
+        <li><a href="../index.html">pywws v12.05 documentation</a> &raquo;</li>
           <li><a href="index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -48,14 +48,32 @@
             
   <h1>Source code for TwitterAuth</h1><div class="highlight"><pre>
 <span class="c">#!/usr/bin/env python</span>
-<span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">Authorise pywws to post to your Twitter account.</span>
+<span class="sd">&quot;&quot;&quot;Authorise pywws to post to your Twitter account</span>
+<span class="sd">::</span>
 
-<span class="sd">usage: python TwitterAuth.py [options] data_dir</span>
-<span class="sd">options are:</span>
-<span class="sd">  -h or --help       display this help</span>
-<span class="sd">data_dir is the root directory of the weather data</span>
+<span class="sd">%s</span>
+
+<span class="sd">This program authorises :py:mod:`pywws.ToTwitter` to post to a Twitter</span>
+<span class="sd">account. You need to create an account before running</span>
+<span class="sd">:py:mod:`TwitterAuth`. It opens a web browser window (or gives you a</span>
+<span class="sd">URL to copy to your web browser) where you log in to your Twitter</span>
+<span class="sd">account. If the login is successful the browser will display a 7 digit</span>
+<span class="sd">number which you then copy to :py:mod:`TwitterAuth`.</span>
+
+<span class="sd">See :doc:`../guides/twitter` for more detail on using Twitter with</span>
+<span class="sd">pywws.</span>
+
 <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="n">__docformat__</span> <span class="o">=</span> <span class="s">&quot;restructuredtext en&quot;</span>
+<span class="n">__usage__</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;</span>
+<span class="s"> usage: python TwitterAuth.py [options] data_dir</span>
+<span class="s"> options are:</span>
+<span class="s">  -h or --help       display this help</span>
+<span class="s"> data_dir is the root directory of the weather data</span>
+<span class="s">&quot;&quot;&quot;</span>
+<span class="n">__doc__</span> <span class="o">%=</span> <span class="n">__usage__</span>
+<span class="n">__usage__</span> <span class="o">=</span> <span class="n">__doc__</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">__usage__</span>
 
 <span class="kn">import</span> <span class="nn">getopt</span>
 <span class="kn">import</span> <span class="nn">sys</span>
@@ -92,17 +110,17 @@
         <span class="n">opts</span><span class="p">,</span> <span class="n">args</span> <span class="o">=</span> <span class="n">getopt</span><span class="o">.</span><span class="n">getopt</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="s">&quot;h&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s">&#39;help&#39;</span><span class="p">])</span>
     <span class="k">except</span> <span class="n">getopt</span><span class="o">.</span><span class="n">error</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span>
         <span class="k">print</span> <span class="o">&gt;&gt;</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&#39;Error: </span><span class="si">%s</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">msg</span>
-        <span class="k">print</span> <span class="o">&gt;&gt;</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">,</span> <span class="n">__doc__</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">print</span> <span class="o">&gt;&gt;</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">,</span> <span class="n">__usage__</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
         <span class="k">return</span> <span class="mi">1</span>
     <span class="c"># process options</span>
     <span class="k">for</span> <span class="n">o</span><span class="p">,</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">opts</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">o</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;-h&#39;</span><span class="p">,</span> <span class="s">&#39;--help&#39;</span><span class="p">):</span>
-            <span class="k">print</span> <span class="n">__doc__</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="k">print</span> <span class="n">__usage__</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
             <span class="k">return</span> <span class="mi">0</span>
     <span class="c"># check arguments</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
         <span class="k">print</span> <span class="o">&gt;&gt;</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&quot;Error: 1 argument required&quot;</span>
-        <span class="k">print</span> <span class="o">&gt;&gt;</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">,</span> <span class="n">__doc__</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">print</span> <span class="o">&gt;&gt;</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">,</span> <span class="n">__usage__</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
         <span class="k">return</span> <span class="mi">2</span>
     <span class="k">return</span> <span class="n">TwitterAuth</span><span class="p">(</span><span class="n">DataStore</span><span class="o">.</span><span class="n">params</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span></div>
 <span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&quot;__main__&quot;</span><span class="p">:</span>
@@ -140,7 +158,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../index.html">pywws v12.04 documentation</a> &raquo;</li>
+        <li><a href="../index.html">pywws v12.05 documentation</a> &raquo;</li>
           <li><a href="index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>

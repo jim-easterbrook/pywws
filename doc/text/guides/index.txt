@@ -8,11 +8,13 @@ Contents:
 * How to set up 'hourly' logging with pywws
   * Introduction
   * Getting started
+  * Configuring file locations
   * Configuring periodic tasks
   * Run as a cron job
 * How to set up 'live' logging with pywws
   * Introduction
   * Getting started
+  * Configuring file locations
   * Configuring periodic tasks
   * Run in the background
   * Automatic restarting

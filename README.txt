@@ -5,9 +5,9 @@ README
 Python software for USB Wireless WeatherStations (pywws).
    http://code.google.com/p/pywws/
 
-(C) 2008-12 Jim Easterbrook (jim@jim-easterbrook.me.uk) derived from
-previous work by Michael Pendec (michael.pendec@gmail.com) and Svend
-Skafte (svend@skafte.net)
+Copyright 2008-12 Jim Easterbrook (jim@jim-easterbrook.me.uk), derived
+from previous work by Michael Pendec (michael.pendec@gmail.com) and
+Svend Skafte (svend@skafte.net)
 
 This software is not released through any official channels, and
 therefore do not expect any support.
@@ -87,6 +87,8 @@ This software collection currently includes the following files:
 * TestWeatherStation.py      -- test communication with weather
   station
 
+* USBQualityTest.py          -- test for USB communication errors
+
 * Hourly.py                  -- run from cron or
 
 * LiveLog.py                 -- run continuously
@@ -100,8 +102,8 @@ This software collection currently includes the following files:
 
 * setup.py                   -- builds distributions
 
-* makefile                   -- compiles language files and converts
-  documentation from HTML to text
+* makefile                   -- compiles language files and generates
+  HTML documentation
 
 * pywws/*.py                -- the pywws software modules
 
@@ -113,10 +115,13 @@ This software collection currently includes the following files:
 
 * doc/html/*                -- HTML documentation of most of the above
 
-* doc/txt/*                 -- plain text documentation
+* doc/text/*                -- plain text documentation
 
-* languages/*               -- language source files and utility
-  scripts
+* doc_src/*                 -- documentation source files
+
+* languages/*               -- language source files
+
+* locale/*                  -- compiled language files
 
 Upgrading from earlier versions:
    Back up your data, then run Reprocess.py to regenerate summary
@@ -163,7 +168,7 @@ Getting started:
 
       python TestWeatherStation.py -d -h 5
 
-8. Choose somewhere to store readings, e.g. /data/weather
+8. Choose somewhere to store readings, e.g. ``/data/weather``
 
 9. Get some data from the weather station:
 
@@ -183,21 +188,18 @@ Getting started:
 
 12. Generate some tables:
 
-       python pywws/Template.py /data/weather \
-               example_templates/24hrs.txt 24hrs.txt
-       python pywws/Template.py /data/weather \
-               example_templates/6hrs.txt 6hrs.txt
+       python pywws/Template.py /data/weather example_templates/24hrs.txt 24hrs.txt
+       python pywws/Template.py /data/weather example_templates/6hrs.txt 6hrs.txt
 
 13. If you want to create graphs, install gnuplot, then:
 
-       python pywws/Plot.py /data/weather /tmp \
-               example_graph_templates/24hrs.png.xml 24hrs.png
-       python pywws/Plot.py /data/weather /tmp \
-               example_graph_templates/7days.png.xml 7days.png
+       python pywws/Plot.py /data/weather /tmp example_graph_templates/24hrs.png.xml 24hrs.png
+       python pywws/Plot.py /data/weather /tmp example_graph_templates/7days.png.xml 7days.png
 
 14. Have a look at the files you've just made, then write a web page
     that incorporates them. (Use server side includes for the .txt
-    files).
+    files). If you'd prefer to use a 'ready made' template you can
+    download one from http://weatherbyyou.com/pywws/.
 
 15. Edit /data/weather/weather.ini and add details of your website for
     example:
@@ -211,8 +213,7 @@ Getting started:
 
 16. Try uploading the files:
 
-       python pywws/Upload.py /data/weather \
-               24hrs.txt 6hrs.txt 24hrs.png 7days.png
+       python pywws/Upload.py /data/weather 24hrs.txt 6hrs.txt 24hrs.png 7days.png
 
 17. If you want to upload to Twitter, install tweepy and simplejson,
     then:
@@ -222,8 +223,7 @@ Getting started:
     This will open a web browser (or give you a URL) where you log in
     to your Twitter account and authorise pywws to post. Then:
 
-       python pywws/Template.py /data/weather \
-               example_templates/tweet.txt tweet.txt
+       python pywws/Template.py /data/weather example_templates/tweet.txt tweet.txt
        python pywws/ToTwitter.py /data/weather tweet.txt
 
     For more detail, see doc/guides/twitter: *How to configure pywws

@@ -5,6 +5,13 @@ Change Log
    Python software for USB Wireless WeatherStations (pywws).
    http://code.google.com/p/pywws/
 
+   Changes in v12.05:
+       1/ Made 'fixed block' data available to template calculations.
+       2/ Fixed buggy auto-detection of 3080 weather stations.
+       3/ Added a function to generate the Zambretti forecast code letter.
+       4/ Added a program to test USB communication reliablility.
+       5/ Various bug fixes and software structure improvements.
+
    Changes in v12.02:
        1/ Separated out low level USB communications to enable use of different
           libraries. Now works on recent versions of Mac OS.

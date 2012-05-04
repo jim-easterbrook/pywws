@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>How to get started with pywws &mdash; pywws v12.04 documentation</title>
+    <title>How to get started with pywws &mdash; pywws v12.05 documentation</title>
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '12.04',
+        VERSION:     '12.05',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="shortcut icon" href="../_static/pywws_logo.ico"/>
-    <link rel="top" title="pywws v12.04 documentation" href="../index.html" />
+    <link rel="top" title="pywws v12.05 documentation" href="../index.html" />
     <link rel="up" title="User guides" href="index.html" />
     <link rel="next" title="How to set up ‘hourly’ logging with pywws" href="hourlylogging.html" />
     <link rel="prev" title="User guides" href="index.html" /> 
@@ -44,7 +44,7 @@
         <li class="right" >
           <a href="index.html" title="User guides"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">pywws v12.04 documentation</a> &raquo;</li>
+        <li><a href="../index.html">pywws v12.05 documentation</a> &raquo;</li>
           <li><a href="index.html" accesskey="U">User guides</a> &raquo;</li> 
       </ul>
     </div>  
@@ -58,14 +58,11 @@
 <h1>How to get started with pywws<a class="headerlink" href="#how-to-get-started-with-pywws" title="Permalink to this headline">¶</a></h1>
 <ol class="arabic">
 <li><p class="first">Download and unpack the pywws software.</p>
-<p>Create a directory for all your weather related files and change to it.
-For example (on a Linux or similar operating system):</p>
+<p>Create a directory for all your weather related files and change to it. For example (on a Linux or similar operating system):</p>
 <div class="highlight-python"><pre>mkdir ~/weather
 cd ~/weather</pre>
 </div>
-<p>Visit the pywws website <a class="reference external" href="http://code.google.com/p/pywws/">http://code.google.com/p/pywws/</a> and download one
-of the .tar.gz or .zip files. Put it in your weather directory, then
-extract all the files, for example:</p>
+<p>Visit the pywws website <a class="reference external" href="http://code.google.com/p/pywws/">http://code.google.com/p/pywws/</a> and download one of the .tar.gz or .zip files. Put it in your weather directory, then extract all the files, for example:</p>
 <div class="highlight-python"><pre>tar zxvf pywws-10.08_r235.tar.gz</pre>
 </div>
 <p>or:</p>
@@ -87,21 +84,14 @@ extract all the files, for example:</p>
 </ul>
 </li>
 </ul>
-<p>You may be able to install these using your operating system&#8217;s package
-manager. This is a lot easier than downloading and compiling the source
-files from the project websites. Note that some Linux distributions may
-use different names for some of the packages, e.g. in Ubuntu, pyusb is
-python-usb.</p>
+<p>You may be able to install these using your operating system&#8217;s package manager. This is a lot easier than downloading and compiling the source files from the project websites. Note that some Linux distributions may use different names for some of the packages, e.g. in Ubuntu, pyusb is python-usb.</p>
 </li>
 <li><p class="first">Test the weather station connection.</p>
-<p>Connect the weather station (if not already connected) then run the
-TestWeatherStation.py program. Change to the pywws source directory first.
-For example:</p>
+<p>Connect the weather station (if not already connected) then run the <a class="reference internal" href="../api/TestWeatherStation.html#module-TestWeatherStation"><tt class="xref py py-mod docutils literal"><span class="pre">TestWeatherStation</span></tt></a> program. Change to the pywws source directory first. For example:</p>
 <div class="highlight-python"><pre>cd ~/weather/pywws-10.08_r235
 python TestWeatherStation.py</pre>
 </div>
-<p>If everything is working correctly, this should dump a load of numbers to
-the screen, for example:</p>
+<p>If everything is working correctly, this should dump a load of numbers to the screen, for example:</p>
 <div class="highlight-python"><pre>0000 55 aa ff ff ff ff ff ff ff ff ff ff ff ff ff ff 05 20 01 51 11 00 00 00 81 00 00 0f 00 00 60 55
 0020 ea 27 a0 27 00 00 00 00 00 00 00 10 10 12 13 45 41 23 c8 00 32 80 47 2d 2c 01 2c 81 5e 01 1e 80
 0040 96 00 c8 80 a0 28 80 25 a0 28 80 25 03 36 00 05 6b 00 00 0a 00 f4 01 18 03 00 00 00 00 00 00 00
@@ -111,114 +101,77 @@ the screen, for example:</p>
 00c0 08 31 14 30 10 05 14 15 27 10 01 26 20 47 09 01 23 05 13 10 01 26 20 47 09 01 23 05 13 10 02 22
 00e0 11 06 10 02 22 11 06 08 07 07 19 32 08 12 13 22 32 08 09 07 08 48 01 12 05 04 43 10 02 22 14 43</pre>
 </div>
-<p>There are several reasons why this might not work. Most likely is a
-&#8216;permissions&#8217; problem. This can be tested by running the command as root:</p>
+<p>There are several reasons why this might not work. Most likely is a &#8216;permissions&#8217; problem. This can be tested by running the command as root:</p>
 <div class="highlight-python"><pre>sudo python TestWeatherStation.py</pre>
 </div>
-<p>If this works then you may be able to allow your normal user account to
-access the weather station by setting up a &#8216;udev&#8217; rule. See the
-compatibility wiki page <a class="reference external" href="http://code.google.com/p/pywws/wiki/Compatibility">http://code.google.com/p/pywws/wiki/Compatibility</a>
-for more details.</p>
-<p>If you have any other problem, please ask for help on the pywws mailing
-list: <a class="reference external" href="http://groups.google.com/group/pywws">http://groups.google.com/group/pywws</a></p>
+<p>If this works then you may be able to allow your normal user account to access the weather station by setting up a &#8216;udev&#8217; rule. See the compatibility wiki page <a class="reference external" href="http://code.google.com/p/pywws/wiki/Compatibility">http://code.google.com/p/pywws/wiki/Compatibility</a> for more details.</p>
+<p>If you have any other problem, please ask for help on the pywws mailing list: <a class="reference external" href="http://groups.google.com/group/pywws">http://groups.google.com/group/pywws</a></p>
 </li>
 <li><p class="first">Log your weather station data.</p>
-<p>First, choose a directory to store all your weather station data. This
-will be written to quite frequently, so a disk drive is preferable to a
-memory stick, as these have a limited number of writes. In most cases your
-home directory is suitable, for example:</p>
+<p>First, choose a directory to store all your weather station data. This will be written to quite frequently, so a disk drive is preferable to a memory stick, as these have a limited number of writes. In most cases your home directory is suitable, for example:</p>
 <div class="highlight-python"><pre>mkdir ~/weather/data</pre>
 </div>
-<p>This directory is referred to elsewhere in the pywws documentation as your
-data directory.</p>
-<p>Make sure your computer has the right date &amp; time, and time zone, as these
-are used to label the weather station data. If you haven&#8217;t already done
-so, it&#8217;s worth setting up NTP to synchronise your computer to a &#8216;time
-server&#8217;.</p>
-<p>Make sure your weather station has the correct offset between &#8216;absolute&#8217;
-and &#8216;relative&#8217; atmospheric pressure. See the instruction book for details
-on how to set this.</p>
-<p>The first time you run LogData.py it will take several minutes, as it will
-copy all the data stored in your station&#8217;s memory. The LogData.py program
-has a &#8216;verbose&#8217; option that increases the amount of messages it displays
-while running. This is useful when running it manually, for example:</p>
+<p>This directory is referred to elsewhere in the pywws documentation as your data directory.</p>
+<p>Make sure your computer has the right date &amp; time, and time zone, as these are used to label the weather station data. If you haven&#8217;t already done so, it&#8217;s worth setting up NTP to synchronise your computer to a &#8216;time server&#8217;.</p>
+<p>Make sure your weather station has the correct offset between &#8216;absolute&#8217; and &#8216;relative&#8217; atmospheric pressure. See the instruction book for details on how to set this.</p>
+<p>The first time you run <a class="reference internal" href="../api/pywws.LogData.html#module-pywws.LogData"><tt class="xref py py-mod docutils literal"><span class="pre">pywws.LogData</span></tt></a> it will take several minutes, as it will copy all the data stored in your station&#8217;s memory. The <a class="reference internal" href="../api/pywws.LogData.html#module-pywws.LogData"><tt class="xref py py-mod docutils literal"><span class="pre">pywws.LogData</span></tt></a> program has a &#8216;verbose&#8217; option that increases the amount of messages it displays while running. This is useful when running it manually, for example:</p>
 <div class="highlight-python"><pre>python pywws/LogData.py -vvv ~/weather/data</pre>
 </div>
-<p>(Replace ~/weather/data with your data directory, if it&#8217;s different.)</p>
+<p>(Replace <tt class="docutils literal"><span class="pre">~/weather/data</span></tt> with your data directory, if it&#8217;s different.)</p>
 <p>You should now have some data files you can look at. For example:</p>
 <div class="highlight-python"><pre>more ~/weather/data/weather/raw/2010/2010-10/2010-10-12.txt</pre>
 </div>
 <p>(Replace the year, month and day with ones that you have data for.)</p>
 </li>
 <li><p class="first">Convert old EasyWeather data (optional).</p>
-<p>If you had been running EasyWeather before deciding to use pywws, you can
-convert the data EasyWeather had logged to the pywws format. Find your
-EasyWeather.dat file and then convert it:</p>
+<p>If you had been running EasyWeather before deciding to use pywws, you can convert the data EasyWeather had logged to the pywws format. Find your EasyWeather.dat file and then convert it:</p>
 <div class="highlight-python"><pre>python EWtoPy.py EasyWeather.dat ~/weather/data</pre>
 </div>
 </li>
 <li><p class="first">Set some configuration options.</p>
-<p>After running LogData.py there should be a configuration file in your data
-directory called &#8216;weather.ini&#8217;. Open this with a text editor. You should
-find something like the following:</p>
+<p>After running <a class="reference internal" href="../api/pywws.LogData.html#module-pywws.LogData"><tt class="xref py py-mod docutils literal"><span class="pre">pywws.LogData</span></tt></a> there should be a configuration file in your data directory called &#8216;weather.ini&#8217;. Open this with a text editor. You should find something like the following:</p>
 <div class="highlight-python"><pre>[fixed]
-pressure offset = 7.4</pre>
-</div>
-<p>The line <tt class="docutils literal"><span class="pre">[fixed]</span></tt> marks the start of a section (called &#8216;[fixed]&#8217;), and the
-following line is an entry called &#8216;pressure offset&#8217; in that section. This
-stores the difference between absolute and relative atmospheric pressure
-that was read from the weather station.</p>
-<p>You need to add a new section called &#8216;[config]&#8217; with an entry called &#8216;day
-end hour&#8217;. This tells pywws what convention you want to use when
-calculating daily summary data. In the UK, the &#8216;meteorological day&#8217; is
-usually from 09:00 to 09:00 GMT (10:00 to 10:00 BST during summer), so I
-use a day end hour value of 9. In other countries a value of 24 (or 0)
-might be more suitable. Note that the value is set in local winter time.
-You do not need to change it when daylight savings time is in effect.</p>
-<p>After editing, your weather.ini file should look something like this:</p>
-<div class="highlight-python"><pre>[fixed]
+ws type = 1080
 pressure offset = 7.4
+fixed block = {...}
 
 [config]
+logdata sync = 1</pre>
+</div>
+<p>The line <tt class="docutils literal"><span class="pre">[fixed]</span></tt> marks the start of a section (called &#8216;[fixed]&#8217;), and the following lines are entries in that section. The <tt class="docutils literal"><span class="pre">ws</span> <span class="pre">type</span></tt> entry can be set to <tt class="docutils literal"><span class="pre">1080</span></tt> or <tt class="docutils literal"><span class="pre">3080</span></tt>. If your station&#8217;s console displays illuminance and UV information, set it to <tt class="docutils literal"><span class="pre">3080</span></tt>. The <tt class="docutils literal"><span class="pre">pressure</span> <span class="pre">offset</span></tt> entry stores the difference between absolute and relative atmospheric pressure that was read from the weather station. The <tt class="docutils literal"><span class="pre">fixed</span> <span class="pre">block</span></tt> entry stores a large amount of data from the station&#8217;s &#8216;fixed block&#8217; memory.</p>
+<p>You need to add a new entry in the <tt class="docutils literal"><span class="pre">[config]</span></tt> section called <tt class="docutils literal"><span class="pre">day</span> <span class="pre">end</span> <span class="pre">hour</span></tt>. This tells pywws what convention you want to use when calculating daily summary data. In the UK, the &#8216;meteorological day&#8217; is usually from 09:00 to 09:00 GMT (10:00 to 10:00 BST during summer), so I use a day end hour value of 9. In other countries a value of 24 (or 0) might be more suitable. Note that the value is set in local winter time. You should not need to change it when daylight savings time is in effect.</p>
+<p>After editing, your weather.ini file should look something like this:</p>
+<div class="highlight-python"><pre>[fixed]
+ws type = 1080
+pressure offset = 7.4
+fixed block = {...}
+
+[config]
+logdata sync = 1
 day end hour = 9</pre>
 </div>
 <p>For more detail on the configuration file options, see <a class="reference internal" href="weather_ini.html"><em>weather.ini - configuration file format</em></a>.</p>
 </li>
 <li><p class="first">Process the raw data.</p>
-<p>LogData.py just copies the raw data from the weather station. To do
-something useful with that data you probably need hourly, daily and
-monthly summaries. These are created by the Process.py program. For
-example:</p>
+<p><a class="reference internal" href="../api/pywws.LogData.html#module-pywws.LogData"><tt class="xref py py-mod docutils literal"><span class="pre">pywws.LogData</span></tt></a> just copies the raw data from the weather station. To do something useful with that data you probably need hourly, daily and monthly summaries. These are created by the <a class="reference internal" href="../api/pywws.Process.html#module-pywws.Process"><tt class="xref py py-mod docutils literal"><span class="pre">pywws.Process</span></tt></a> program. For example:</p>
 <div class="highlight-python"><pre>python pywws/Process.py ~/weather/data</pre>
 </div>
 <p>You should now have some processed files to look at:</p>
 <div class="highlight-python"><pre>more ~/weather/data/weather/daily/2010/2010-10-01.txt</pre>
 </div>
-<p>If you ever change your &#8216;day end hour&#8217; configuration setting, you will
-need to reprocess all your weather data. You can do this by running the
-Reprocess.py program:</p>
+<p>If you ever change your <tt class="docutils literal"><span class="pre">day</span> <span class="pre">end</span> <span class="pre">hour</span></tt> configuration setting, you will need to reprocess all your weather data. You can do this by running the <a class="reference internal" href="../api/Reprocess.html#module-Reprocess"><tt class="xref py py-mod docutils literal"><span class="pre">Reprocess</span></tt></a> program:</p>
 <div class="highlight-python"><pre>python Reprocess.py ~/weather/data</pre>
 </div>
 </li>
 <li><p class="first">Set the weather station logging interval.</p>
-<p>Your weather station probably left the factory with a 30 minute logging
-interval. This enables the station to store about 11 weeks of data. Most
-pywws users set up their computers to read data from the station every
-hour, and only need the station to store enough data to cover computer
-failures. The shortest interval that can be set is 5 minutes, which still
-allows 2 weeks of storage. Use the SetWeatherStation.py program to set the
-interval:</p>
+<p>Your weather station probably left the factory with a 30 minute logging interval. This enables the station to store about 11 weeks of data. Most pywws users set up their computers to read data from the station every hour, and only need the station to store enough data to cover computer failures. The recommended interval is 5 minutes, which still allows 2 weeks of storage. Use the <a class="reference internal" href="../api/SetWeatherStation.html#module-SetWeatherStation"><tt class="xref py py-mod docutils literal"><span class="pre">SetWeatherStation</span></tt></a> program to set the interval:</p>
 <div class="highlight-python"><pre>python SetWeatherStation.py -r 5</pre>
 </div>
-<p>You are now ready to set up hourly or live logging, as described in
-another HOWTO file.</p>
+<p>You are now ready to set up regular or continuous logging, as described in <a class="reference internal" href="hourlylogging.html"><em>How to set up &#8216;hourly&#8217; logging with pywws</em></a> or <a class="reference internal" href="livelogging.html"><em>How to set up &#8216;live&#8217; logging with pywws</em></a>.</p>
 </li>
 <li><p class="first">Read the documentation.</p>
-<p>The doc directory in your pywws source directory contains HTML and plain
-text versions of the documentation. The HTML files can be read with any
-web browser. Start with index.html and follow links from there.</p>
-<p>Comments or questions? Please subscribe to the pywws mailing list
-<a class="reference external" href="http://groups.google.com/group/pywws">http://groups.google.com/group/pywws</a> and let us know.</p>
+<p>The doc directory in your pywws source directory contains HTML and plain text versions of the documentation. The HTML files can be read with any web browser. Start with the index (<a class="reference internal" href="../index.html"><em>pywws documentation</em></a>) and follow links from there.</p>
+<p>Comments or questions? Please subscribe to the pywws mailing list <a class="reference external" href="http://groups.google.com/group/pywws">http://groups.google.com/group/pywws</a> and let us know.</p>
 </li>
 </ol>
 </div>
@@ -267,7 +220,7 @@ web browser. Start with index.html and follow links from there.</p>
         <li class="right" >
           <a href="index.html" title="User guides"
              >previous</a> |</li>
-        <li><a href="../index.html">pywws v12.04 documentation</a> &raquo;</li>
+        <li><a href="../index.html">pywws v12.05 documentation</a> &raquo;</li>
           <li><a href="index.html" >User guides</a> &raquo;</li> 
       </ul>
     </div>

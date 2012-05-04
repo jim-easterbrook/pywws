@@ -2,13 +2,22 @@
 TwitterAuth
 ***********
 
-Authorise pywws to post to your Twitter account.
+Authorise pywws to post to your Twitter account
 
-usage: python TwitterAuth.py [options] data_dir options are:
+   usage: python TwitterAuth.py [options] data_dir
+   options are:
+    -h or --help       display this help
+   data_dir is the root directory of the weather data
 
-   -h or --help       display this help
+This program authorises ``pywws.ToTwitter`` to post to a Twitter
+account. You need to create an account before running ``TwitterAuth``.
+It opens a web browser window (or gives you a URL to copy to your web
+browser) where you log in to your Twitter account. If the login is
+successful the browser will display a 7 digit number which you then
+copy to ``TwitterAuth``.
 
-data_dir is the root directory of the weather data
+See *How to configure pywws to post messages to Twitter* for more
+detail on using Twitter with pywws.
 
 -[ Functions ]-
 

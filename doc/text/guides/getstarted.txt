@@ -49,8 +49,8 @@ How to get started with pywws
 3. Test the weather station connection.
 
    Connect the weather station (if not already connected) then run the
-   TestWeatherStation.py program. Change to the pywws source directory
-   first. For example:
+   ``TestWeatherStation`` program. Change to the pywws source
+   directory first. For example:
 
       cd ~/weather/pywws-10.08_r235
       python TestWeatherStation.py
@@ -102,15 +102,15 @@ How to get started with pywws
    'absolute' and 'relative' atmospheric pressure. See the instruction
    book for details on how to set this.
 
-   The first time you run LogData.py it will take several minutes, as
-   it will copy all the data stored in your station's memory. The
-   LogData.py program has a 'verbose' option that increases the amount
-   of messages it displays while running. This is useful when running
-   it manually, for example:
+   The first time you run ``pywws.LogData`` it will take several
+   minutes, as it will copy all the data stored in your station's
+   memory. The ``pywws.LogData`` program has a 'verbose' option that
+   increases the amount of messages it displays while running. This is
+   useful when running it manually, for example:
 
       python pywws/LogData.py -vvv ~/weather/data
 
-   (Replace ~/weather/data with your data directory, if it's
+   (Replace ``~/weather/data`` with your data directory, if it's
    different.)
 
    You should now have some data files you can look at. For example:
@@ -129,35 +129,46 @@ How to get started with pywws
 
 6. Set some configuration options.
 
-   After running LogData.py there should be a configuration file in
-   your data directory called 'weather.ini'. Open this with a text
-   editor. You should find something like the following:
+   After running ``pywws.LogData`` there should be a configuration
+   file in your data directory called 'weather.ini'. Open this with a
+   text editor. You should find something like the following:
 
       [fixed]
+      ws type = 1080
       pressure offset = 7.4
+      fixed block = {...}
+
+      [config]
+      logdata sync = 1
 
    The line ``[fixed]`` marks the start of a section (called
-   '[fixed]'), and the following line is an entry called 'pressure
-   offset' in that section. This stores the difference between
-   absolute and relative atmospheric pressure that was read from the
-   weather station.
+   '[fixed]'), and the following lines are entries in that section.
+   The ``ws type`` entry can be set to ``1080`` or ``3080``. If your
+   station's console displays illuminance and UV information, set it
+   to ``3080``. The ``pressure offset`` entry stores the difference
+   between absolute and relative atmospheric pressure that was read
+   from the weather station. The ``fixed block`` entry stores a large
+   amount of data from the station's 'fixed block' memory.
 
-   You need to add a new section called '[config]' with an entry
-   called 'day end hour'. This tells pywws what convention you want to
-   use when calculating daily summary data. In the UK, the
-   'meteorological day' is usually from 09:00 to 09:00 GMT (10:00 to
-   10:00 BST during summer), so I use a day end hour value of 9. In
-   other countries a value of 24 (or 0) might be more suitable. Note
-   that the value is set in local winter time. You do not need to
-   change it when daylight savings time is in effect.
+   You need to add a new entry in the ``[config]`` section called
+   ``day end hour``. This tells pywws what convention you want to use
+   when calculating daily summary data. In the UK, the 'meteorological
+   day' is usually from 09:00 to 09:00 GMT (10:00 to 10:00 BST during
+   summer), so I use a day end hour value of 9. In other countries a
+   value of 24 (or 0) might be more suitable. Note that the value is
+   set in local winter time. You should not need to change it when
+   daylight savings time is in effect.
 
    After editing, your weather.ini file should look something like
    this:
 
       [fixed]
+      ws type = 1080
       pressure offset = 7.4
+      fixed block = {...}
 
       [config]
+      logdata sync = 1
       day end hour = 9
 
    For more detail on the configuration file options, see *weather.ini
@@ -165,10 +176,10 @@ How to get started with pywws
 
 7. Process the raw data.
 
-   LogData.py just copies the raw data from the weather station. To do
-   something useful with that data you probably need hourly, daily and
-   monthly summaries. These are created by the Process.py program. For
-   example:
+   ``pywws.LogData`` just copies the raw data from the weather
+   station. To do something useful with that data you probably need
+   hourly, daily and monthly summaries. These are created by the
+   ``pywws.Process`` program. For example:
 
       python pywws/Process.py ~/weather/data
 
@@ -176,9 +187,9 @@ How to get started with pywws
 
       more ~/weather/data/weather/daily/2010/2010-10-01.txt
 
-   If you ever change your 'day end hour' configuration setting, you
+   If you ever change your ``day end hour`` configuration setting, you
    will need to reprocess all your weather data. You can do this by
-   running the Reprocess.py program:
+   running the ``Reprocess`` program:
 
       python Reprocess.py ~/weather/data
 
@@ -188,21 +199,22 @@ How to get started with pywws
    logging interval. This enables the station to store about 11 weeks
    of data. Most pywws users set up their computers to read data from
    the station every hour, and only need the station to store enough
-   data to cover computer failures. The shortest interval that can be
-   set is 5 minutes, which still allows 2 weeks of storage. Use the
-   SetWeatherStation.py program to set the interval:
+   data to cover computer failures. The recommended interval is 5
+   minutes, which still allows 2 weeks of storage. Use the
+   ``SetWeatherStation`` program to set the interval:
 
       python SetWeatherStation.py -r 5
 
-   You are now ready to set up hourly or live logging, as described in
-   another HOWTO file.
+   You are now ready to set up regular or continuous logging, as
+   described in *How to set up 'hourly' logging with pywws* or *How to
+   set up 'live' logging with pywws*.
 
 9. Read the documentation.
 
    The doc directory in your pywws source directory contains HTML and
    plain text versions of the documentation. The HTML files can be
-   read with any web browser. Start with index.html and follow links
-   from there.
+   read with any web browser. Start with the index (*pywws
+   documentation*) and follow links from there.
 
    Comments or questions? Please subscribe to the pywws mailing list
    http://groups.google.com/group/pywws and let us know.

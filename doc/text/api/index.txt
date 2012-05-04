@@ -13,7 +13,7 @@ Contents:
 | ``Reproces | Regenerate hourly and daily summary data.                                                  |
 | s``        |                                                                                            |
 +------------+--------------------------------------------------------------------------------------------+
-| ``TwitterA | Authorise pywws to post to your Twitter account.                                           |
+| ``TwitterA | Authorise pywws to post to your Twitter account                                            |
 | uth``      |                                                                                            |
 +------------+--------------------------------------------------------------------------------------------+
 | ``SetWeath | Set some weather station parameters.                                                       |
@@ -60,7 +60,7 @@ Contents:
 | ``pywws.Up | Upload files to a directory by ftp.                                                        |
 | load``     |                                                                                            |
 +------------+--------------------------------------------------------------------------------------------+
-| ``pywws.To | Post a message to Twitter.                                                                 |
+| ``pywws.To | Post a message to Twitter                                                                  |
 | Twitter``  |                                                                                            |
 +------------+--------------------------------------------------------------------------------------------+
 | ``pywws.To | Post weather update to the UK Met Office 'WOW' site                                        |
@@ -111,8 +111,6 @@ Contents:
 +------------+--------------------------------------------------------------------------------------------+
 
 * Hourly
-  * Introduction
-  * Detailed API
 * LiveLog
 * Reprocess
   * Introduction
@@ -202,8 +200,6 @@ Contents:
   * Introduction
   * Detailed API
 * pywws.ToTwitter
-  * Introduction
-  * Detailed API
 * pywws.ToMetOffice
   * Introduction
   * Configuration

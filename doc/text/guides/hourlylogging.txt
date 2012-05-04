@@ -38,12 +38,35 @@ interval) you should see a 'live_data new ptr' message, followed by
 fetching any new data from the weather station and processing it.
 
 
+Configuring file locations
+==========================
+
+Open your weather.ini file with a text editor. You should have a
+``[paths]`` section similar to the following (where ``xxx`` is your
+user name):
+
+   [paths]
+   work = /tmp/weather
+   templates = /home/xxx/weather/templates/
+   graph_templates = /home/xxx/weather/graph_templates/
+
+Edit these to suit your installation and preferences. ``work`` is a
+temporary directory used to store intermediate files, ``templates`` is
+the directory where you keep your text template files and
+``graph_templates`` is the directory where you keep your graph
+template files. Don't use the pywws example directories for these, as
+they will get over-written when you upgrade pywws.
+
+Copy your text and graph templates to the appropriate directories. You
+may find some of the examples provided with pywws useful to get
+started.
+
+
 Configuring periodic tasks
 ==========================
 
-Open your weather.ini file with a text editor. You should have
-``[logged]``, ``[hourly]``, ``[12 hourly]`` and ``[daily]`` sections
-similar to the following:
+In weather.ini you should have ``[logged]``, ``[hourly]``, ``[12
+hourly]`` and ``[daily]`` sections similar to the following:
 
    [logged]
    services = []

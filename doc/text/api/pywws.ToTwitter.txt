@@ -2,40 +2,18 @@
 pywws.ToTwitter
 ***************
 
+Post a message to Twitter
 
-Introduction
-============
+   usage: python ToTwitter.py [options] data_dir file
+   options are:
+    -h | --help  display this help
+   data_dir is the root directory of the weather data
+   file is the text file to be uploaded
 
-This module posts a brief message to Twitter. Account details are
-stored in the file ``weather.ini`` in your data directory. The only
-way to set these details is to edit the file. Run ToTwitter.py once to
-set the default values, which you can then change. Here is what you're
-likely to find when you edit weather.ini.
-
-   [twitter]
-   username = twitterusername
-   password = twitterpassword
-
-The example template ``tweet.txt`` can be used to create your message.
-Note that the message will be truncated to 140 characters if it is too
-long.
-
-
-Detailed API
-============
-
-Post a message to Twitter.
-
-usage: python ToTwitter.py [options] data_dir file options are:
-
-   --help
-
-   display this help
-
-data_dir is the root directory of the weather data file is the text
-file to be uploaded
-
-Authorisation data is read from the weather.ini file in data_dir.
+This module posts a brief message to Twitter. Before posting to
+Twitter you need to set up an account and then authorise pywws by
+running the ``TwitterAuth`` program. See *How to configure pywws to
+post messages to Twitter* for detailed instructions.
 
 -[ Functions ]-
 

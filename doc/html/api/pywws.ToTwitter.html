@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pywws.ToTwitter &mdash; pywws v12.04 documentation</title>
+    <title>pywws.ToTwitter &mdash; pywws v12.05 documentation</title>
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '12.04',
+        VERSION:     '12.05',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="shortcut icon" href="../_static/pywws_logo.ico"/>
-    <link rel="top" title="pywws v12.04 documentation" href="../index.html" />
+    <link rel="top" title="pywws v12.05 documentation" href="../index.html" />
     <link rel="up" title="Python programs and modules" href="index.html" />
     <link rel="next" title="pywws.ToMetOffice" href="pywws.ToMetOffice.html" />
     <link rel="prev" title="pywws.Upload" href="pywws.Upload.html" /> 
@@ -44,7 +44,7 @@
         <li class="right" >
           <a href="pywws.Upload.html" title="pywws.Upload"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">pywws v12.04 documentation</a> &raquo;</li>
+        <li><a href="../index.html">pywws v12.05 documentation</a> &raquo;</li>
           <li><a href="index.html" accesskey="U">Python programs and modules</a> &raquo;</li> 
       </ul>
     </div>  
@@ -54,37 +54,19 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="pywws-totwitter">
-<h1>pywws.ToTwitter<a class="headerlink" href="#pywws-totwitter" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="introduction">
-<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
-<p>This module posts a brief message to <a class="reference external" href="https://twitter.com/">Twitter</a>. Account details are stored in the file <tt class="docutils literal"><span class="pre">weather.ini</span></tt> in your data directory. The only way to set these details is to edit the file. Run ToTwitter.py once to set the default values, which you can then change. Here is what you&#8217;re likely to find when you edit weather.ini.</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="p">[</span><span class="n">twitter</span><span class="p">]</span>
-<span class="n">username</span> <span class="o">=</span> <span class="n">twitterusername</span>
-<span class="n">password</span> <span class="o">=</span> <span class="n">twitterpassword</span>
-</pre></div>
+  <div class="section" id="module-pywws.ToTwitter">
+<span id="pywws-totwitter"></span><h1>pywws.ToTwitter<a class="headerlink" href="#module-pywws.ToTwitter" title="Permalink to this headline">¶</a></h1>
+<p>Post a message to Twitter</p>
+<div class="highlight-python"><pre>usage: python ToTwitter.py [options] data_dir file
+options are:
+ -h | --help  display this help
+data_dir is the root directory of the weather data
+file is the text file to be uploaded</pre>
 </div>
-<p>The example template <tt class="docutils literal"><span class="pre">tweet.txt</span></tt> can be used to create your message. Note that the message will be truncated to 140 characters if it is too long.</p>
-</div>
-<div class="section" id="module-pywws.ToTwitter">
-<span id="detailed-api"></span><h2>Detailed API<a class="headerlink" href="#module-pywws.ToTwitter" title="Permalink to this headline">¶</a></h2>
-<p>Post a message to Twitter.</p>
-<p>usage: python ToTwitter.py [options] data_dir file
-options are:</p>
-<blockquote>
-<table class="docutils option-list" frame="void" rules="none">
-<col class="option" />
-<col class="description" />
-<tbody valign="top">
-<tr><td class="option-group">
-<kbd><span class="option">--help</span></kbd></td>
-<td>display this help</td></tr>
-</tbody>
-</table>
-</blockquote>
-<p>data_dir is the root directory of the weather data
-file is the text file to be uploaded</p>
-<p>Authorisation data is read from the weather.ini file in data_dir.</p>
+<p>This module posts a brief message to <a class="reference external" href="https://twitter.com/">Twitter</a>. Before posting to Twitter you need to set up
+an account and then authorise pywws by running the
+<a class="reference internal" href="TwitterAuth.html#module-TwitterAuth"><tt class="xref py py-mod docutils literal"><span class="pre">TwitterAuth</span></tt></a> program. See <a class="reference internal" href="../guides/twitter.html"><em>How to configure pywws to post messages to Twitter</em></a> for
+detailed instructions.</p>
 <p class="rubric">Functions</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -130,7 +112,6 @@ file is the text file to be uploaded</p>
 <dd></dd></dl>
 
 </div>
-</div>
 
 
           </div>
@@ -138,15 +119,6 @@ file is the text file to be uploaded</p>
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="../index.html">Table Of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">pywws.ToTwitter</a><ul>
-<li><a class="reference internal" href="#introduction">Introduction</a></li>
-<li><a class="reference internal" href="#module-pywws.ToTwitter">Detailed API</a></li>
-</ul>
-</li>
-</ul>
-
   <h4>Previous topic</h4>
   <p class="topless"><a href="pywws.Upload.html"
                         title="previous chapter">pywws.Upload</a></p>
@@ -185,7 +157,7 @@ file is the text file to be uploaded</p>
         <li class="right" >
           <a href="pywws.Upload.html" title="pywws.Upload"
              >previous</a> |</li>
-        <li><a href="../index.html">pywws v12.04 documentation</a> &raquo;</li>
+        <li><a href="../index.html">pywws v12.05 documentation</a> &raquo;</li>
           <li><a href="index.html" >Python programs and modules</a> &raquo;</li> 
       </ul>
     </div>

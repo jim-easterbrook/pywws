@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>How to set up ‘live’ logging with pywws &mdash; pywws v12.04 documentation</title>
+    <title>How to set up ‘live’ logging with pywws &mdash; pywws v12.05 documentation</title>
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '12.04',
+        VERSION:     '12.05',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="shortcut icon" href="../_static/pywws_logo.ico"/>
-    <link rel="top" title="pywws v12.04 documentation" href="../index.html" />
+    <link rel="top" title="pywws v12.05 documentation" href="../index.html" />
     <link rel="up" title="User guides" href="index.html" />
     <link rel="next" title="How to configure pywws to post messages to Twitter" href="twitter.html" />
     <link rel="prev" title="How to set up ‘hourly’ logging with pywws" href="hourlylogging.html" /> 
@@ -44,7 +44,7 @@
         <li class="right" >
           <a href="hourlylogging.html" title="How to set up ‘hourly’ logging with pywws"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">pywws v12.04 documentation</a> &raquo;</li>
+        <li><a href="../index.html">pywws v12.05 documentation</a> &raquo;</li>
           <li><a href="index.html" accesskey="U">User guides</a> &raquo;</li> 
       </ul>
     </div>  
@@ -68,9 +68,20 @@
 </div>
 <p>Within five minutes (assuming you have set a 5 minute logging interval) you should see a &#8216;live_data new ptr&#8217; message, followed by fetching any new data from the weather station and processing it. Let LiveLog.py run for a minute or two longer, then kill the process by typing &#8216;&lt;Ctrl&gt;C&#8217;.</p>
 </div>
+<div class="section" id="configuring-file-locations">
+<h2>Configuring file locations<a class="headerlink" href="#configuring-file-locations" title="Permalink to this headline">¶</a></h2>
+<p>Open your weather.ini file with a text editor. You should have a <tt class="docutils literal"><span class="pre">[paths]</span></tt> section similar to the following (where <tt class="docutils literal"><span class="pre">xxx</span></tt> is your user name):</p>
+<div class="highlight-python"><pre>[paths]
+work = /tmp/weather
+templates = /home/xxx/weather/templates/
+graph_templates = /home/xxx/weather/graph_templates/</pre>
+</div>
+<p>Edit these to suit your installation and preferences. <tt class="docutils literal"><span class="pre">work</span></tt> is a temporary directory used to store intermediate files, <tt class="docutils literal"><span class="pre">templates</span></tt> is the directory where you keep your text template files and <tt class="docutils literal"><span class="pre">graph_templates</span></tt> is the directory where you keep your graph template files. Don&#8217;t use the pywws example directories for these, as they will get over-written when you upgrade pywws.</p>
+<p>Copy your text and graph templates to the appropriate directories. You may find some of the examples provided with pywws useful to get started.</p>
+</div>
 <div class="section" id="configuring-periodic-tasks">
 <h2>Configuring periodic tasks<a class="headerlink" href="#configuring-periodic-tasks" title="Permalink to this headline">¶</a></h2>
-<p>Open your weather.ini file with a text editor. You should have a <tt class="docutils literal"><span class="pre">[live]</span></tt> section similar to the following:</p>
+<p>In weather.ini you should have a <tt class="docutils literal"><span class="pre">[live]</span></tt> section similar to the following:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="p">[</span><span class="n">live</span><span class="p">]</span>
 <span class="n">services</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="n">twitter</span> <span class="o">=</span> <span class="p">[]</span>
@@ -160,6 +171,7 @@ echo $! &gt;$pidfile</pre>
 <li><a class="reference internal" href="#">How to set up &#8216;live&#8217; logging with pywws</a><ul>
 <li><a class="reference internal" href="#introduction">Introduction</a></li>
 <li><a class="reference internal" href="#getting-started">Getting started</a></li>
+<li><a class="reference internal" href="#configuring-file-locations">Configuring file locations</a></li>
 <li><a class="reference internal" href="#configuring-periodic-tasks">Configuring periodic tasks</a></li>
 <li><a class="reference internal" href="#run-in-the-background">Run in the background</a></li>
 <li><a class="reference internal" href="#automatic-restarting">Automatic restarting</a></li>
@@ -205,7 +217,7 @@ echo $! &gt;$pidfile</pre>
         <li class="right" >
           <a href="hourlylogging.html" title="How to set up ‘hourly’ logging with pywws"
              >previous</a> |</li>
-        <li><a href="../index.html">pywws v12.04 documentation</a> &raquo;</li>
+        <li><a href="../index.html">pywws v12.05 documentation</a> &raquo;</li>
           <li><a href="index.html" >User guides</a> &raquo;</li> 
       </ul>
     </div>

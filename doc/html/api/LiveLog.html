@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>LiveLog &mdash; pywws v12.04 documentation</title>
+    <title>LiveLog &mdash; pywws v12.05 documentation</title>
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '12.04',
+        VERSION:     '12.05',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="shortcut icon" href="../_static/pywws_logo.ico"/>
-    <link rel="top" title="pywws v12.04 documentation" href="../index.html" />
+    <link rel="top" title="pywws v12.05 documentation" href="../index.html" />
     <link rel="up" title="Python programs and modules" href="index.html" />
     <link rel="next" title="Reprocess" href="Reprocess.html" />
     <link rel="prev" title="Hourly" href="Hourly.html" /> 
@@ -44,7 +44,7 @@
         <li class="right" >
           <a href="Hourly.html" title="Hourly"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">pywws v12.04 documentation</a> &raquo;</li>
+        <li><a href="../index.html">pywws v12.05 documentation</a> &raquo;</li>
           <li><a href="index.html" accesskey="U">Python programs and modules</a> &raquo;</li> 
       </ul>
     </div>  
@@ -58,22 +58,15 @@
 <span id="livelog"></span><h1>LiveLog<a class="headerlink" href="#module-LiveLog" title="Permalink to this headline">¶</a></h1>
 <p>Get weather data, store it, and process it.</p>
 <p>Run this continuously, having set what tasks are to be done.</p>
-<p>usage: python LiveLog.py [options] data_dir
-options are:</p>
-<blockquote>
-<table class="docutils option-list" frame="void" rules="none">
-<col class="option" />
-<col class="description" />
-<tbody valign="top">
-<tr><td class="option-group">
-<kbd><span class="option">-h</span></kbd></td>
-<td>or &#8211;help      display this help</td></tr>
-</tbody>
-</table>
-<p>-l file or &#8211;log file  write log information to file
--v      or &#8211;verbose   increase amount of reassuring messages</p>
-</blockquote>
-<p>data_dir is the root directory of the weather data (e.g. /data/weather)</p>
+<div class="highlight-python"><pre>usage: python LiveLog.py [options] data_dir
+options are:
+ -h      or --help      display this help
+ -l file or --log file  write log information to file
+ -v      or --verbose   increase amount of reassuring messages
+data_dir is the root directory of the weather data (e.g. /data/weather)</pre>
+</div>
+<p>For more information on using <tt class="docutils literal"><span class="pre">LiveLog.py</span></tt>, see
+<a class="reference internal" href="../guides/livelogging.html"><em>How to set up &#8216;live&#8217; logging with pywws</em></a>.</p>
 <p class="rubric">Functions</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -81,9 +74,6 @@ options are:</p>
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr><td><tt class="xref py py-obj docutils literal"><span class="pre">CheckFixedBlock</span></tt>(ws,&nbsp;params,&nbsp;logger)</td>
-<td></td>
-</tr>
 <tr><td><a class="reference internal" href="#LiveLog.LiveLog" title="LiveLog.LiveLog"><tt class="xref py py-obj docutils literal"><span class="pre">LiveLog</span></tt></a>(data_dir)</td>
 <td></td>
 </tr>
@@ -148,7 +138,7 @@ options are:</p>
         <li class="right" >
           <a href="Hourly.html" title="Hourly"
              >previous</a> |</li>
-        <li><a href="../index.html">pywws v12.04 documentation</a> &raquo;</li>
+        <li><a href="../index.html">pywws v12.05 documentation</a> &raquo;</li>
           <li><a href="index.html" >Python programs and modules</a> &raquo;</li> 
       </ul>
     </div>
