@@ -1,15 +1,27 @@
 #!/usr/bin/env python
-"""
-Post a message to Twitter.
+"""Post a message to Twitter
+::
 
-usage: python ToTwitter.py [options] data_dir file
-options are:
-\t--help\t\tdisplay this help
-data_dir is the root directory of the weather data
-file is the text file to be uploaded
+%s
 
-Authorisation data is read from the weather.ini file in data_dir.
+This module posts a brief message to `Twitter
+<https://twitter.com/>`_. Before posting to Twitter you need to set up
+an account and then authorise pywws by running the
+:py:mod:`TwitterAuth` program. See :doc:`../guides/twitter` for
+detailed instructions.
+
 """
+
+__docformat__ = "restructuredtext en"
+__usage__ = """
+ usage: python ToTwitter.py [options] data_dir file
+ options are:
+  -h | --help  display this help
+ data_dir is the root directory of the weather data
+ file is the text file to be uploaded
+"""
+__doc__ %= __usage__
+__usage__ = __doc__.split('\n')[0] + __usage__
 
 import getopt
 import logging
@@ -71,20 +83,20 @@ def main(argv=None):
     if argv is None:
         argv = sys.argv
     try:
-        opts, args = getopt.getopt(argv[1:], "", ['help'])
+        opts, args = getopt.getopt(argv[1:], "h", ['help'])
     except getopt.error, msg:
         print >>sys.stderr, 'Error: %s\n' % msg
-        print >>sys.stderr, __doc__.strip()
+        print >>sys.stderr, __usage__.strip()
         return 1
     # process options
     for o, a in opts:
-        if o == '--help':
-            print __doc__.strip()
+        if o in ('-h', '--help'):
+            print __usage__.strip()
             return 0
     # check arguments
     if len(args) != 2:
         print >>sys.stderr, "Error: 2 arguments required"
-        print >>sys.stderr, __doc__.strip()
+        print >>sys.stderr, __usage__.strip()
         return 2
     logger = ApplicationLogger(1)
     params = DataStore.params(args[0])

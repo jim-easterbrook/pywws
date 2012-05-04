@@ -1,12 +1,30 @@
 #!/usr/bin/env python
-"""
-Authorise pywws to post to your Twitter account.
+"""Authorise pywws to post to your Twitter account
+::
 
-usage: python TwitterAuth.py [options] data_dir
-options are:
-  -h or --help       display this help
-data_dir is the root directory of the weather data
+%s
+
+This program authorises :py:mod:`pywws.ToTwitter` to post to a Twitter
+account. You need to create an account before running
+:py:mod:`TwitterAuth`. It opens a web browser window (or gives you a
+URL to copy to your web browser) where you log in to your Twitter
+account. If the login is successful the browser will display a 7 digit
+number which you then copy to :py:mod:`TwitterAuth`.
+
+See :doc:`../guides/twitter` for more detail on using Twitter with
+pywws.
+
 """
+
+__docformat__ = "restructuredtext en"
+__usage__ = """
+ usage: python TwitterAuth.py [options] data_dir
+ options are:
+  -h or --help       display this help
+ data_dir is the root directory of the weather data
+"""
+__doc__ %= __usage__
+__usage__ = __doc__.split('\n')[0] + __usage__
 
 import getopt
 import sys
@@ -43,17 +61,17 @@ def main(argv=None):
         opts, args = getopt.getopt(argv[1:], "h", ['help'])
     except getopt.error, msg:
         print >>sys.stderr, 'Error: %s\n' % msg
-        print >>sys.stderr, __doc__.strip()
+        print >>sys.stderr, __usage__.strip()
         return 1
     # process options
     for o, a in opts:
         if o in ('-h', '--help'):
-            print __doc__.strip()
+            print __usage__.strip()
             return 0
     # check arguments
     if len(args) != 1:
         print >>sys.stderr, "Error: 1 argument required"
-        print >>sys.stderr, __doc__.strip()
+        print >>sys.stderr, __usage__.strip()
         return 2
     return TwitterAuth(DataStore.params(args[0]))
 if __name__ == "__main__":
