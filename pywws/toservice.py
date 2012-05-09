@@ -359,7 +359,10 @@ class ToService(object):
         # have three tries before giving up
         for n in range(3):
             try:
-                wudata = urllib.urlopen(server, coded_data)
+                if sys.hexversion <= 0x020406ff:
+                    wudata = urllib.urlopen('%s?%s' % (server, coded_data))
+                else:
+                    wudata = urllib.urlopen(server, coded_data)
                 response = wudata.readlines()
                 wudata.close()
                 if response == self.expected_result:
