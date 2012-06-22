@@ -27,6 +27,10 @@ from Logger import ApplicationLogger
 from TimeZone import Local, utc
 import WeatherStation
 
+SECOND = timedelta(seconds=1)
+HOUR = timedelta(hours=1)
+DAY = timedelta(hours=24)
+
 class Template(object):
     def __init__(self, params, calib_data, hourly_data, daily_data, monthly_data):
         self.logger = logging.getLogger('pywws.Template')
@@ -35,10 +39,13 @@ class Template(object):
         self.hourly_data = hourly_data
         self.daily_data = daily_data
         self.monthly_data = monthly_data
+        self.midnight = None
+        self.rain_midnight = None
+
     def process(self, live_data, template_file):
         def jump(idx, count):
             while count > 0:
-                new_idx = data_set.after(idx + timedelta(seconds=1))
+                new_idx = data_set.after(idx + SECOND)
                 if new_idx == None:
                     break
                 idx = new_idx
@@ -50,6 +57,7 @@ class Template(object):
                 idx = new_idx
                 count += 1
             return idx, count == 0
+
         params = self.params
         if not live_data:
             idx = self.calib_data.before(datetime.max)
@@ -62,6 +70,8 @@ class Template(object):
         dew_point = WeatherStation.dew_point
         wind_chill = WeatherStation.wind_chill
         apparent_temp = WeatherStation.apparent_temp
+        rain_hour = self._rain_hour
+        rain_day = self._rain_day
         pressure_offset = eval(self.params.get('fixed', 'pressure offset'))
         fixed_block = eval(self.params.get('fixed', 'fixed block'))
         # start off with no time rounding
@@ -199,17 +209,40 @@ class Template(object):
                     return
         tmplt.close()
         return
+
     def make_text(self, template_file, live_data=None):
         result = ''
         for text in self.process(live_data, template_file):
             result += text
         return result
+
     def make_file(self, template_file, output_file, live_data=None):
         of = open(output_file, 'w')
         for text in self.process(live_data, template_file):
             of.write(text)
         of.close()
         return 0
+
+    def _rain_hour(self, data):
+        rain_hour = self.calib_data[self.calib_data.nearest(data['idx'] - HOUR)]['rain']
+        return max(0.0, data['rain'] - rain_hour)
+
+    def _rain_day(self, data):
+        if not self.midnight:
+            self.midnight = datetime.utcnow().replace(tzinfo=utc).astimezone(
+                Local).replace(hour=0, minute=0, second=0).astimezone(
+                    utc).replace(tzinfo=None)
+        while data['idx'] < self.midnight:
+            self.midnight -= DAY
+            self.rain_midnight = None
+        while data['idx'] >= self.midnight + DAY:
+            self.midnight += DAY
+            self.rain_midnight = None
+        if self.rain_midnight is None:
+            self.rain_midnight = self.calib_data[
+                self.calib_data.nearest(self.midnight)]['rain']
+        return max(0.0, data['rain'] - self.rain_midnight)
+
 def main(argv=None):
     if argv is None:
         argv = sys.argv
@@ -237,5 +270,6 @@ def main(argv=None):
         DataStore.calib_store(args[0]), DataStore.hourly_store(args[0]),
         DataStore.daily_store(args[0]), DataStore.monthly_store(args[0])
         ).make_file(args[1], args[2])
+
 if __name__ == "__main__":
     sys.exit(main())
