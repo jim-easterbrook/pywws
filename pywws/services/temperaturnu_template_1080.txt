@@ -1,0 +1,5 @@
+#live#
+{
+               'softwaretype' : 'pywws',
+#temp_out     "'t'            : '%.1f',"#
+}

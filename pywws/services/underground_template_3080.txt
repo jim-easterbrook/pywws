@@ -1,0 +1,17 @@
+#live#
+{
+               'action'         : 'updateraw',
+               'softwaretype'   : 'pywws',
+#idx          "'dateutc'        : '%Y-%m-%d %H:%M:%S',"#
+#wind_dir     "'winddir'        : '%.0f',"#
+#wind_ave     "'windspeedmph'   : '%.2f'," "" "wind_mph(x)"#
+#wind_gust    "'windgustmph'    : '%.2f'," "" "wind_mph(x)"#
+#hum_out      "'humidity'       : '%.d',"#
+#temp_out     "'tempf'          : '%.1f'," "" "temp_f(x)"#
+#rel_pressure "'baromin'        : '%.4f'," "" "pressure_inhg(x)"#
+#illuminance  "'solarradiation' : '%.2f'," "" "illuminance_wm2(x)"#
+#uv           "'UV'             : '%d',"#
+#calc "temp_f(dew_point(data['temp_out'], data['hum_out']))" "'dewptf' : '%.1f',"#
+#calc "rain_inch(rain_hour(data))" "'rainin' : '%g',"#
+#calc "rain_inch(rain_day(data))" "'dailyrainin' : '%g',"#
+}

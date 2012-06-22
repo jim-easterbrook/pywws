@@ -136,15 +136,11 @@ import urllib
 import urllib2
 from datetime import datetime, timedelta
 
-import conversions
 import DataStore
 from Logger import ApplicationLogger
-from TimeZone import Local, utc
-from WeatherStation import dew_point
+import Template
 
 FIVE_MINS = timedelta(minutes=5)
-HOUR = timedelta(hours=1)
-DAY = timedelta(hours=24)
 
 class ToService(object):
     """Upload weather data to weather services such as Weather
@@ -180,12 +176,6 @@ class ToService(object):
         self.old_ex = None
         # set default socket timeout, so urlopen calls don't hang forever
         socket.setdefaulttimeout(30)
-        # compute local midnight
-        self.midnight = datetime.utcnow().replace(tzinfo=utc).astimezone(
-            Local).replace(hour=0, minute=0, second=0).astimezone(
-                utc).replace(tzinfo=None)
-        # other init
-        self.rain_midnight = None
         # open params file
         service_params = SafeConfigParser()
         service_params.optionxform = str
@@ -201,6 +191,13 @@ class ToService(object):
                 value = self.params.get(
                     self.config_section, value[1:], 'unknown')
             self.fixed_data[name] = value
+        # create templater
+        self.templater = Template.Template(
+            self.params, self.data, self.data, None, None)
+        self.template_file = os.path.join(
+            os.path.dirname(__file__), 'services',
+            '%s_template_%s.txt' % (service_name,
+                                    self.params.get('fixed', 'ws type')))
         # get other parameters
         self.catchup = eval(service_params.get('config', 'catchup'))
         rapid_fire = eval(service_params.get('config', 'rapidfire'))
@@ -213,78 +210,6 @@ class ToService(object):
             self.server_rf = self.server
             self.fixed_data_rf = self.fixed_data
         self.expected_result = eval(service_params.get('config', 'result'))
-        # list of data to be sent
-        self.data_format = {
-            'dateutc' : (
-                'idx', self.get_one, '%s', lambda x: x.isoformat(' ')),
-            'YYYYMMDDhhmm' : (
-                'idx', self.get_one, '%s', lambda x: x.replace(
-                    tzinfo=utc).astimezone(Local).strftime('%Y%m%d%H%M')),
-            'tempc' : (
-                'temp_out', self.get_one, '%.1f', None),
-            'tempf' : (
-                'temp_out', self.get_one, '%.1f', conversions.temp_f),
-            'dewptc' : (
-                'temp_out', self.dew_pt, '%.1f', None),
-            'dewptf' : (
-                'temp_out', self.dew_pt, '%.1f', conversions.temp_f),
-            'winddir' : (
-                'wind_dir', self.get_one, '%.0f', conversions.winddir_degrees),
-            'humidity' : (
-                'hum_out', self.get_one, '%.d', None),
-            'windspeedms' : (
-                'wind_ave', self.get_one, '%.1f', None),
-            'windspeedmph' : (
-                'wind_ave', self.get_one, '%.2f', conversions.wind_mph),
-            'windgustms' : (
-                'wind_gust', self.get_one, '%.1f', None),
-            'windgustmph' : (
-                'wind_gust', self.get_one, '%.2f', conversions.wind_mph),
-            'baromhpa' : (
-                'rel_pressure', self.get_one, '%.1f', None),
-            'baromin' : (
-                'rel_pressure', self.get_one, '%.4f', conversions.pressure_inhg),
-            'rainmm' : (
-                'rain', self.rain_hour, '%.1f', None),
-            'rainin' : (
-                'rain', self.rain_hour, '%g', conversions.rain_inch),
-            'dailyrainmm' : (
-                'rain', self.rain_day, '%.1f', None),
-            'dailyrainin' : (
-                'rain', self.rain_day, '%g', conversions.rain_inch),
-            'uv' : (
-                'uv', self.get_one, '%d', None),
-            'solarradiation' : (
-                'illuminance', self.get_one, '%.2f', conversions.illuminance_wm2),
-            }
-        self.data_items = service_params.items('data')
-        if self.params.get('fixed', 'ws type') != '3080':
-            for i in reversed(range(len(self.data_items))):
-                name, value = self.data_items[i]
-                if name in ('uv', 'solarradiation'):
-                    del self.data_items[i]
-
-    def get_one(self, data, key):
-        return data[key]
-
-    def dew_pt(self, data, key):
-        return dew_point(data['temp_out'], data['hum_out'])
-
-    def rain_hour(self, data, key):
-        rain_hour = self.data[self.data.nearest(data['idx'] - HOUR)]['rain']
-        return max(0.0, data['rain'] - rain_hour)
-
-    def rain_day(self, data, key):
-        while data['idx'] < self.midnight:
-            self.midnight -= DAY
-            self.rain_midnight = None
-        while data['idx'] >= self.midnight + DAY:
-            self.midnight += DAY
-            self.rain_midnight = None
-        if self.rain_midnight is None:
-            self.rain_midnight = self.data[
-                self.data.nearest(self.midnight)]['rain']
-        return max(0.0, data['rain'] - self.rain_midnight)
 
     def translate_data(self, current, fixed_data):
         """Convert a weather data record to upload format.
@@ -315,13 +240,8 @@ class ToService(object):
             return None
         # convert data
         result = dict(fixed_data)
-        for idx, name in self.data_items:
-            key, compute, fmt, conv = self.data_format[idx]
-            value = compute(current, key)
-            if conv:
-                value = conv(value)
-            if value is not None:
-                result[name] = fmt % value
+        template_data = self.templater.make_text(self.template_file, current)
+        result.update(eval(template_data))
         return result
 
     def send_data(self, data, server, fixed_data):

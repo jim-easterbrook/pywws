@@ -1,0 +1,13 @@
+#live#
+#roundtime True#
+{
+               'test'                    : 'true',
+               'niederschlagsmenge_zeit' : '60',
+#idx          "'dateum'                  : '%Y%m%d%H%M',"#
+#hum_out      "'feuchtigkeit'            : '%.d',"#
+#temp_out     "'temperatur'              : '%.1f',"#
+#wind_dir     "'windrichtung'            : '%.0f',"#
+#wind_ave     "'windstaerke'             : '%.1f',"#
+#rel_pressure "'luftdruck'               : '%.1f',"#
+#calc "rain_hour(data)" "'niederschlagsmenge' : '%.1f',"#
+}
