@@ -3,7 +3,7 @@
                'action'       : 'updateraw',
                'softwaretype' : 'pywws',
 #idx          "'dateutc'      : '%Y-%m-%d %H:%M:%S',"#
-#wind_dir     "'winddir'      : '%.0f',"#
+#wind_dir     "'winddir'      : '%.0f'," "" "winddir_degrees(x)"#
 #wind_ave     "'windspeedmph' : '%.2f'," "" "wind_mph(x)"#
 #wind_gust    "'windgustmph'  : '%.2f'," "" "wind_mph(x)"#
 #hum_out      "'humidity'     : '%.d',"#
