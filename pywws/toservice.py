@@ -133,6 +133,7 @@ import os
 import socket
 import sys
 import urllib
+import urllib2
 from datetime import datetime, timedelta
 
 import conversions
@@ -178,7 +179,7 @@ class ToService(object):
         self.old_response = None
         self.old_ex = None
         # set default socket timeout, so urlopen calls don't hang forever
-        socket.setdefaulttimeout(10)
+        socket.setdefaulttimeout(30)
         # compute local midnight
         self.midnight = datetime.utcnow().replace(tzinfo=utc).astimezone(
             Local).replace(hour=0, minute=0, second=0).astimezone(
@@ -362,7 +363,13 @@ class ToService(object):
                 if sys.hexversion <= 0x020406ff:
                     wudata = urllib.urlopen('%s?%s' % (server, coded_data))
                 else:
-                    wudata = urllib.urlopen(server, coded_data)
+                    try:
+                        wudata = urllib2.urlopen(server, coded_data)
+                    except urllib2.HTTPError, ex:
+                        if ex.code == 400:
+                            wudata = ex
+                        else:
+                            raise
                 response = wudata.readlines()
                 wudata.close()
                 if response == self.expected_result:
