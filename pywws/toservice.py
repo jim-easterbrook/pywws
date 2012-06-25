@@ -130,6 +130,7 @@ from ConfigParser import SafeConfigParser
 import getopt
 import logging
 import os
+import re
 import socket
 import sys
 import urllib
@@ -292,9 +293,13 @@ class ToService(object):
                             raise
                 response = wudata.readlines()
                 wudata.close()
-                if response == self.expected_result:
-                    self.old_response = response
-                    return True
+                if len(response) == len(self.expected_result):
+                    for actual, expected in zip(response, self.expected_result):
+                        if not re.match(expected, actual):
+                            break
+                    else:
+                        self.old_response = response
+                        return True
                 if response != self.old_response:
                     for line in response:
                         self.logger.error(line.strip())
