@@ -125,12 +125,21 @@ def LogData(params, raw_data, sync=None, clear=False):
     if ws_type:
         params._config.remove_option('config', 'ws type')
         params.set('fixed', 'ws type', ws_type)
-    ws_type = params.get('fixed', 'ws type', '1080')
+    ws_type = params.get('fixed', 'ws type', 'Unknown')
     ws = WeatherStation.weather_station(ws_type=ws_type)
     fixed_block = CheckFixedBlock(ws, params, logger)
     if not fixed_block:
         logger.error("Invalid data from weather station")
         return 3
+    # check for valid weather station type
+    if ws.ws_type not in ('1080', '3080'):
+        print "Unknown weather station type. Please edit weather.ini"
+        print "and set 'ws type' to '1080' or '3080', as appropriate."
+        if fixed_block['lux_wm2_coeff'] == 0.0:
+            print "Your station is probably a '1080' type."
+        else:
+            print "Your station is probably a '3080' type."
+        sys.exit(1)
     # get sync config value
     if sync is None:
         if fixed_block['read_period'] <= 5:
