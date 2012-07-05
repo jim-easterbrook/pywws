@@ -142,7 +142,7 @@ def pressure_trend_text(trend):
     return _('steady')
 
 # get meaning for status integer
-unknown         = 0x80
+rain_overflow   = 0x80
 lost_connection = 0x40
 unknown         = 0x20
 unknown         = 0x10
@@ -695,16 +695,9 @@ class weather_station(object):
     fixed_format = {
         'rel_pressure'  : (32, 'us', 0.1),
         'abs_pressure'  : (34, 'us', 0.1),
-        'unknown_03'    : (36, 'pb', None),
-        'unknown_04'    : (37, 'pb', None),
-        'unknown_05'    : (38, 'pb', None),
-        'unknown_06'    : (39, 'pb', None),
-        'unknown_07'    : (40, 'pb', None),
-        'unknown_08'    : (41, 'pb', None),
-        'unknown_09'    : (42, 'pb', None),
+        'lux_wm2_coeff' : (36, 'us', 0.1),
         'date_time'     : (43, 'dt', None),
         'unknown_18'    : (97, 'pb', None),
-        'unknown_19'    : (140, 'pb', None),
         'alarm'         : {
             'hum_in'        : {'hi' : (48, 'ub', None), 'lo'  : (49, 'ub', None)},
             'temp_in'       : {'hi' : (50, 'ss', 0.1), 'lo'  : (52, 'ss', 0.1)},
