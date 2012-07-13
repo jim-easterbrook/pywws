@@ -22,20 +22,23 @@ Dependencies:
 
 * Python (http://www.python.org/) version 2.4 or higher
   (note: Python 3 is not supported)
-* USB library option 1:
+* USB library:
 
-  * libusb (http://libusb.sf.net) version 0.1.12
-    (note: libusb 1 is not supported)
-  * PyUSB (http://pyusb.berlios.de/) version 0.4.x
-* USB library option 2:
+  * option 1 (best for small systems such as routers):
 
-  * hidapi (https://github.com/signal11/hidapi)
-  * cython-hidapi (https://github.com/gbishop/cython-hidapi)
-  * cython (http://cython.org/)
+     * libusb (http://www.libusb.org/) version 0.1.12
+       (note: libusb 1 is not supported)
+     * PyUSB (http://sourceforge.net/apps/trac/pyusb/) version 0.4.x
+  * option 2 (best for Linux PCs and Macs):
+
+     * hidapi (https://github.com/signal11/hidapi)
+       (note: hidapi on Linux can use libusb version 1.0)
+     * cython-hidapi (https://github.com/gbishop/cython-hidapi)
+     * cython (http://cython.org/)
 * For graph drawing:
 
   * gnuplot (http://www.gnuplot.info/) v4.2 or higher
-* For secure website uploading (sftp)
+* For secure website uploading (sftp):
 
   * paramiko (http://www.lag.net/paramiko/)
   * pycrypto (http://www.dlitz.net/software/pycrypto/)
@@ -43,6 +46,7 @@ Dependencies:
 
   * tweepy (http://code.google.com/p/tweepy/)
   * simplejson (http://pypi.python.org/pypi/simplejson)
+    (note: simplejson is included in Python 2.6 or higher)
 * To create new language translations:
 
   * gettext (http://www.gnu.org/s/gettext/)
@@ -79,90 +83,6 @@ Upgrading from earlier versions:
   Back up your data, then run Reprocess.py to regenerate summary data.
 
 Getting started:
-  (For more detail, see doc/guides/getstarted: :doc:`../guides/getstarted`.)
-
-#. Unzip / untar all the files to a convenient directory
-#. Install Python, if not already installed
-#. Install USB library option 1 or 2, if not already installed
-
-   Note: steps 2..3 may require installation of other software on some platforms, and you might have to compile / build some packages.
-#. Change your current directory to your pywws installation directory, for example::
-
-     cd ${HOME}/weather/pywws-11.10_r429
-
-#. Run TestWeatherStation.py::
-
-     python TestWeatherStation.py
-
-   it should complain about not being able to connect to a weather station
-#. Connect the weather station's USB port to your computer
-#. Run TestWeatherStation.py again - you should get a load of data. If this fails it might be a 'permissions' problem. Try running as root::
-
-     sudo python TestWeatherStation.py
-
-   If this works then you may be able to set up a 'udev' rule for the weather station. See http://code.google.com/p/pywws/wiki/Compatibility for details.
-
-   Try options to decode data and show history::
-
-      python TestWeatherStation.py -d -h 5
-#. Choose somewhere to store readings, e.g. ``/data/weather``
-#. Get some data from the weather station::
-
-     python pywws/LogData.py /data/weather
-
-   This will take a while the first time you run it, as it fetches all the data stored in the weather station.
-#. If you have an EasyWeather.dat file, now is the time to convert it::
-
-     python EWtoPy.py EasyWeather.dat /data/weather
-#. Process the raw data to make hourly and daily summaries::
-
-     python pywws/Process.py /data/weather
-#. Generate some tables::
-
-     python pywws/Template.py /data/weather example_templates/24hrs.txt 24hrs.txt
-     python pywws/Template.py /data/weather example_templates/6hrs.txt 6hrs.txt
-#. If you want to create graphs, install gnuplot, then::
-
-     python pywws/Plot.py /data/weather /tmp example_graph_templates/24hrs.png.xml 24hrs.png
-     python pywws/Plot.py /data/weather /tmp example_graph_templates/7days.png.xml 7days.png
-#. Have a look at the files you've just made, then write a web page that incorporates them. (Use server side includes for the .txt files). If you'd prefer to use a 'ready made' template you can download one from http://weatherbyyou.com/pywws/.
-#. Edit /data/weather/weather.ini and add details of your website for example::
-
-     [ftp]
-     secure = False
-     site = ftp.username.isp.co.uk
-     user = username
-     password = secret
-     directory = public_html/weather/data/
-#. Try uploading the files::
-
-     python pywws/Upload.py /data/weather 24hrs.txt 6hrs.txt 24hrs.png 7days.png
-#. If you want to upload to Twitter, install tweepy and simplejson, then::
-
-     python TwitterAuth.py /data/weather
-
-   This will open a web browser (or give you a URL) where you log in to your Twitter account and authorise pywws to post. Then::
-
-     python pywws/Template.py /data/weather example_templates/tweet.txt tweet.txt
-     python pywws/ToTwitter.py /data/weather tweet.txt
-
-   For more detail, see doc/guides/twitter: :doc:`../guides/twitter`.
-
-#. If you want to upload to Weather Underground, try::
-
-      python pywws/toservice.py -vvv /data/weather underground
-
-   You'll need to edit /data/weather/weather.ini with your Wunderground details, for example::
-
-      [underground]
-      password = undergroundpassword
-      station = undergroundstation
-#. Create directories for your graph templates and text templates, e.g. '~/weather/graph_templates/' and '~/weather/templates/', copy the templates you like to them, and run Hourly.py manually::
-
-     python Hourly.py /data/weather
-
-   You can now edit /data/weather/weather.ini to point to your template directories if Hourly.py didn't find them.
-#. Set up a cron job to run Hourly.py every hour or every few hours or every day, according to your needs, at a minute or two past the hour.
-#. Edit templates, weather.ini and other files to adjust everything to your taste.
+  See doc/guides/getstarted: :doc:`../guides/getstarted`.
 
 Comments or questions? Please subscribe to the pywws mailing list http://groups.google.com/group/pywws and let us know.

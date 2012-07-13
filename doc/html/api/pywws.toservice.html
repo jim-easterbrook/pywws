@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pywws.toservice &mdash; pywws v12.05 documentation</title>
+    <title>pywws.toservice &mdash; pywws v12.07 documentation</title>
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '12.05',
+        VERSION:     '12.07',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="shortcut icon" href="../_static/pywws_logo.ico"/>
-    <link rel="top" title="pywws v12.05 documentation" href="../index.html" />
+    <link rel="top" title="pywws v12.07 documentation" href="../index.html" />
     <link rel="up" title="Python programs and modules" href="index.html" />
     <link rel="next" title="pywws.YoWindow" href="pywws.YoWindow.html" />
     <link rel="prev" title="pywws.ToUnderground" href="pywws.ToUnderground.html" /> 
@@ -44,7 +44,7 @@
         <li class="right" >
           <a href="pywws.ToUnderground.html" title="pywws.ToUnderground"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">pywws v12.05 documentation</a> &raquo;</li>
+        <li><a href="../index.html">pywws v12.07 documentation</a> &raquo;</li>
           <li><a href="index.html" accesskey="U">Python programs and modules</a> &raquo;</li> 
       </ul>
     </div>  
@@ -72,10 +72,11 @@ simple HTTP &#8216;POST&#8217; request, with the data encoded as a sequence of
 <tt class="docutils literal"><span class="pre">key=value</span></tt> pairs separated by <tt class="docutils literal"><span class="pre">&amp;</span></tt> characters.</p>
 <p>This module enables pywws to upload readings to these organisations.
 It is highly customisable using configuration files. Each &#8216;service&#8217;
-requires a configuration file in <tt class="docutils literal"><span class="pre">pywws/services</span></tt> (that should not
-need to be edited by the user) and a section in <tt class="docutils literal"><span class="pre">weather.ini</span></tt>
-containing user specific data such as your site ID and password.</p>
-<p>There are currently five services for which configuration files have
+requires a configuration file and two templates in <tt class="docutils literal"><span class="pre">pywws/services</span></tt>
+(that should not need to be edited by the user) and a section in
+<tt class="docutils literal"><span class="pre">weather.ini</span></tt> containing user specific data such as your site ID and
+password.</p>
+<p>There are currently six services for which configuration files have
 been written.</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -93,6 +94,10 @@ been written.</p>
 <tr><td><a class="reference external" href="http://wow.metoffice.gov.uk/">UK Met Office</a></td>
 <td><tt class="docutils literal"><span class="pre">metoffice</span></tt></td>
 <td><a class="reference download internal" href="../_downloads/metoffice.ini"><tt class="xref download docutils literal"><span class="pre">../../pywws/services/metoffice.ini</span></tt></a></td>
+</tr>
+<tr><td><a class="reference external" href="http://openweathermap.org/">Open Weather Map</a></td>
+<td><tt class="docutils literal"><span class="pre">openweathermap</span></tt></td>
+<td><a class="reference download internal" href="../_downloads/openweathermap.ini"><tt class="xref download docutils literal"><span class="pre">../../pywws/services/openweathermap.ini</span></tt></a></td>
 </tr>
 <tr><td><a class="reference external" href="http://stacjapogody.waw.pl/index.php?id=mapastacji">Stacja Pogody</a></td>
 <td><tt class="docutils literal"><span class="pre">stacjapogodywawpl</span></tt></td>
@@ -135,8 +140,8 @@ section, for example:</p>
 <p>Now you can test your configuration:</p>
 <div class="highlight-python"><pre>python pywws/toservice.py -vvv data_dir service_name</pre>
 </div>
-<p>This should show you the data string that is uploaded and any response
-such as a &#8216;success&#8217; message.</p>
+<p>This should show you the data string that is uploaded. Any failure
+should generate an error message.</p>
 </div>
 <div class="section" id="upload-old-data">
 <h2>Upload old data<a class="headerlink" href="#upload-old-data" title="Permalink to this headline">¶</a></h2>
@@ -174,11 +179,73 @@ section, depending on how often you want to send data. For example:</p>
 </div>
 <p>Note that the <tt class="docutils literal"><span class="pre">[live]</span></tt> section is only used when running
 <tt class="docutils literal"><span class="pre">LiveLog.py</span></tt>. It is a good idea to repeat any service selected in
-<tt class="docutils literal"><span class="pre">[live]</span></tt> in the <tt class="docutils literal"><span class="pre">[hourly]</span></tt> section in case you switch to running
-<tt class="docutils literal"><span class="pre">Hourly.py</span></tt>.</p>
-<p>Restart your regular pywws program (<tt class="docutils literal"><span class="pre">Hourly.py</span></tt> or <tt class="docutils literal"><span class="pre">LiveLog.py</span></tt>)
+<tt class="docutils literal"><span class="pre">[live]</span></tt> in the <tt class="docutils literal"><span class="pre">[logged]</span></tt> or <tt class="docutils literal"><span class="pre">[hourly]</span></tt> section in case you
+switch to running <a class="reference internal" href="Hourly.html#module-Hourly"><tt class="xref py py-mod docutils literal"><span class="pre">Hourly</span></tt></a>.</p>
+<p>Restart your regular pywws program (<a class="reference internal" href="Hourly.html#module-Hourly"><tt class="xref py py-mod docutils literal"><span class="pre">Hourly</span></tt></a> or <a class="reference internal" href="LiveLog.html#module-LiveLog"><tt class="xref py py-mod docutils literal"><span class="pre">LiveLog</span></tt></a>)
 and visit the appropriate web site to see regular updates from your
 weather station.</p>
+</div>
+<div class="section" id="notes-on-the-services">
+<h2>Notes on the services<a class="headerlink" href="#notes-on-the-services" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id1">
+<h3>UK Met Office<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<ul>
+<li><p class="first">Create account: <a class="reference external" href="https://register.metoffice.gov.uk/WaveRegistrationClient/public/register.do?service=weatherobservations">https://register.metoffice.gov.uk/WaveRegistrationClient/public/register.do?service=weatherobservations</a></p>
+</li>
+<li><p class="first">API: <a class="reference external" href="http://wow.metoffice.gov.uk/support?category=dataformats#automatic">http://wow.metoffice.gov.uk/support?category=dataformats#automatic</a></p>
+</li>
+<li><p class="first">Example <tt class="docutils literal"><span class="pre">weather.ini</span></tt> section:</p>
+<div class="highlight-python"><pre>[metoffice]
+site id = 12345678
+aws pin = 987654</pre>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="id2">
+<h3>Open Weather Map<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<ul>
+<li><p class="first">Create account: <a class="reference external" href="http://openweathermap.org/login">http://openweathermap.org/login</a></p>
+</li>
+<li><p class="first">API: <a class="reference external" href="http://openweathermap.org/API">http://openweathermap.org/API</a></p>
+</li>
+<li><p class="first">Example <tt class="docutils literal"><span class="pre">weather.ini</span></tt> section:</p>
+<div class="highlight-python"><pre>[openweathermap]
+lat = 51.501
+long = -0.142
+alt = 10
+user = Elizabeth Windsor
+password = corgi
+id = Buck House</pre>
+</div>
+</li>
+</ul>
+<p>The default behaviour is to use your user name to identify the weather
+station. However, it&#8217;s possible for a user to have more than one
+weather station, so there is an undocumented <tt class="docutils literal"><span class="pre">name</span></tt> parameter in the
+API that can be used to identify the station. This appears as <tt class="docutils literal"><span class="pre">id</span></tt>
+in <tt class="docutils literal"><span class="pre">weather.ini</span></tt>. Make sure you don&#8217;t choose a name that is already
+in use.</p>
+</div>
+<div class="section" id="id3">
+<h3>Weather Underground<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<ul>
+<li><p class="first">Create account: <a class="reference external" href="http://www.wunderground.com/members/signup.asp">http://www.wunderground.com/members/signup.asp</a></p>
+</li>
+<li><p class="first">API: <a class="reference external" href="http://wiki.wunderground.com/index.php/">http://wiki.wunderground.com/index.php/</a><a href="#id4"><span class="problematic" id="id5">PWS_</span></a>-_Upload_Protocol</p>
+</li>
+<li><p class="first">Example <tt class="docutils literal"><span class="pre">weather.ini</span></tt> section:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">[</span><span class="n">underground</span><span class="p">]</span>
+<span class="n">station</span> <span class="o">=</span> <span class="n">ABCDEFGH1</span>
+<span class="n">password</span> <span class="o">=</span> <span class="n">xxxxxxx</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="api">
+<h2>API<a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h2>
 <p class="rubric">Classes</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -209,26 +276,6 @@ Underground.</p>
 </tr>
 </tbody>
 </table>
-<dl class="method">
-<dt id="pywws.toservice.ToService.get_one">
-<tt class="descname">get_one</tt><big>(</big><em>data</em>, <em>key</em><big>)</big><a class="reference internal" href="../_modules/pywws/toservice.html#ToService.get_one"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.toservice.ToService.get_one" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pywws.toservice.ToService.dew_pt">
-<tt class="descname">dew_pt</tt><big>(</big><em>data</em>, <em>key</em><big>)</big><a class="reference internal" href="../_modules/pywws/toservice.html#ToService.dew_pt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.toservice.ToService.dew_pt" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pywws.toservice.ToService.rain_hour">
-<tt class="descname">rain_hour</tt><big>(</big><em>data</em>, <em>key</em><big>)</big><a class="reference internal" href="../_modules/pywws/toservice.html#ToService.rain_hour"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.toservice.ToService.rain_hour" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pywws.toservice.ToService.rain_day">
-<tt class="descname">rain_day</tt><big>(</big><em>data</em>, <em>key</em><big>)</big><a class="reference internal" href="../_modules/pywws/toservice.html#ToService.rain_day"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.toservice.ToService.rain_day" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 <dl class="method">
 <dt id="pywws.toservice.ToService.translate_data">
 <tt class="descname">translate_data</tt><big>(</big><em>current</em>, <em>fixed_data</em><big>)</big><a class="reference internal" href="../_modules/pywws/toservice.html#ToService.translate_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywws.toservice.ToService.translate_data" title="Permalink to this definition">¶</a></dt>
@@ -374,6 +421,13 @@ It should be a &#8216;calibrated&#8217; data record, as stored in
 <li><a class="reference internal" href="#configuration">Configuration</a></li>
 <li><a class="reference internal" href="#upload-old-data">Upload old data</a></li>
 <li><a class="reference internal" href="#add-service-s-upload-to-regular-tasks">Add service(s) upload to regular tasks</a></li>
+<li><a class="reference internal" href="#notes-on-the-services">Notes on the services</a><ul>
+<li><a class="reference internal" href="#id1">UK Met Office</a></li>
+<li><a class="reference internal" href="#id2">Open Weather Map</a></li>
+<li><a class="reference internal" href="#id3">Weather Underground</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#api">API</a></li>
 </ul>
 </li>
 </ul>
@@ -416,7 +470,7 @@ It should be a &#8216;calibrated&#8217; data record, as stored in
         <li class="right" >
           <a href="pywws.ToUnderground.html" title="pywws.ToUnderground"
              >previous</a> |</li>
-        <li><a href="../index.html">pywws v12.05 documentation</a> &raquo;</li>
+        <li><a href="../index.html">pywws v12.07 documentation</a> &raquo;</li>
           <li><a href="index.html" >Python programs and modules</a> &raquo;</li> 
       </ul>
     </div>

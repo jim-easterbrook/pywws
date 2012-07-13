@@ -216,6 +216,11 @@ Contents:
   * Configuration
   * Upload old data
   * Add service(s) upload to regular tasks
+  * Notes on the services
+    * UK Met Office
+    * Open Weather Map
+    * Weather Underground
+  * API
 * pywws.YoWindow
 * pywws.WeatherStation
   * Introduction

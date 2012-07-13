@@ -25,14 +25,14 @@ How to get started with pywws
    * Python 2.4+ - http://python.org/ (Note: Python 3 is not
      supported.)
 
-   * USB library option 1:
+   * USB library option 1 (best for small systems such as routers):
 
-     * libusb 0.1.12 - http://libusb.sf.net/ (Note: libusb 1 is not
+     * libusb 0.1.12 - http://www.libusb.org/ (Note: libusb 1 is not
        supported.)
 
-     * PyUSB 0.4.x - http://pyusb.berlios.de/
+     * PyUSB 0.4.x - http://sourceforge.net/apps/trac/pyusb/
 
-   * USB library option 2:
+   * USB library option 2 (best for Linux PCs and Macs):
 
      * hidapi - https://github.com/signal11/hidapi
 
@@ -102,11 +102,17 @@ How to get started with pywws
    'absolute' and 'relative' atmospheric pressure. See the instruction
    book for details on how to set this.
 
-   The first time you run ``pywws.LogData`` it will take several
-   minutes, as it will copy all the data stored in your station's
-   memory. The ``pywws.LogData`` program has a 'verbose' option that
-   increases the amount of messages it displays while running. This is
-   useful when running it manually, for example:
+   The first time you run ``pywws.LogData`` it will create a
+   configuration file in your data directory called 'weather.ini' and
+   then stop. You need to edit the configuration file and change the
+   line ``ws type = Unknown`` to ``ws type = 1080`` or ``ws type =
+   3080``. (If your weather station console displays solar illuminance
+   you have a 3080 type, all others are 1080.) Then run
+   ``pywws.LogData`` again. This may take several minutes, as it will
+   copy all the data stored in your station's memory. The
+   ``pywws.LogData`` program has a 'verbose' option that increases the
+   amount of messages it displays while running. This is useful when
+   running it manually, for example:
 
       python pywws/LogData.py -vvv ~/weather/data
 

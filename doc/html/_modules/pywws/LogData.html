@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pywws.LogData &mdash; pywws v12.05 documentation</title>
+    <title>pywws.LogData &mdash; pywws v12.07 documentation</title>
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '12.05',
+        VERSION:     '12.07',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="shortcut icon" href="../../_static/pywws_logo.ico"/>
-    <link rel="top" title="pywws v12.05 documentation" href="../../index.html" />
+    <link rel="top" title="pywws v12.07 documentation" href="../../index.html" />
     <link rel="up" title="Module code" href="../index.html" /> 
   </head>
   <body>
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">pywws v12.05 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">pywws v12.07 documentation</a> &raquo;</li>
           <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -174,12 +174,21 @@
     <span class="k">if</span> <span class="n">ws_type</span><span class="p">:</span>
         <span class="n">params</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">remove_option</span><span class="p">(</span><span class="s">&#39;config&#39;</span><span class="p">,</span> <span class="s">&#39;ws type&#39;</span><span class="p">)</span>
         <span class="n">params</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s">&#39;fixed&#39;</span><span class="p">,</span> <span class="s">&#39;ws type&#39;</span><span class="p">,</span> <span class="n">ws_type</span><span class="p">)</span>
-    <span class="n">ws_type</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;fixed&#39;</span><span class="p">,</span> <span class="s">&#39;ws type&#39;</span><span class="p">,</span> <span class="s">&#39;1080&#39;</span><span class="p">)</span>
+    <span class="n">ws_type</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;fixed&#39;</span><span class="p">,</span> <span class="s">&#39;ws type&#39;</span><span class="p">,</span> <span class="s">&#39;Unknown&#39;</span><span class="p">)</span>
     <span class="n">ws</span> <span class="o">=</span> <span class="n">WeatherStation</span><span class="o">.</span><span class="n">weather_station</span><span class="p">(</span><span class="n">ws_type</span><span class="o">=</span><span class="n">ws_type</span><span class="p">)</span>
     <span class="n">fixed_block</span> <span class="o">=</span> <span class="n">CheckFixedBlock</span><span class="p">(</span><span class="n">ws</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">logger</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">fixed_block</span><span class="p">:</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&quot;Invalid data from weather station&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="mi">3</span>
+    <span class="c"># check for valid weather station type</span>
+    <span class="k">if</span> <span class="n">ws</span><span class="o">.</span><span class="n">ws_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;1080&#39;</span><span class="p">,</span> <span class="s">&#39;3080&#39;</span><span class="p">):</span>
+        <span class="k">print</span> <span class="s">&quot;Unknown weather station type. Please edit weather.ini&quot;</span>
+        <span class="k">print</span> <span class="s">&quot;and set &#39;ws type&#39; to &#39;1080&#39; or &#39;3080&#39;, as appropriate.&quot;</span>
+        <span class="k">if</span> <span class="n">fixed_block</span><span class="p">[</span><span class="s">&#39;lux_wm2_coeff&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>
+            <span class="k">print</span> <span class="s">&quot;Your station is probably a &#39;1080&#39; type.&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">print</span> <span class="s">&quot;Your station is probably a &#39;3080&#39; type.&quot;</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
     <span class="c"># get sync config value</span>
     <span class="k">if</span> <span class="n">sync</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">fixed_block</span><span class="p">[</span><span class="s">&#39;read_period&#39;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">5</span><span class="p">:</span>
@@ -298,7 +307,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">pywws v12.05 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">pywws v12.07 documentation</a> &raquo;</li>
           <li><a href="../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>

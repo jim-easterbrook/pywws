@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pywws.Template &mdash; pywws v12.05 documentation</title>
+    <title>pywws.Template &mdash; pywws v12.07 documentation</title>
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '12.05',
+        VERSION:     '12.07',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="shortcut icon" href="../../_static/pywws_logo.ico"/>
-    <link rel="top" title="pywws v12.05 documentation" href="../../index.html" />
+    <link rel="top" title="pywws v12.07 documentation" href="../../index.html" />
     <link rel="up" title="Module code" href="../index.html" /> 
   </head>
   <body>
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">pywws v12.05 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">pywws v12.07 documentation</a> &raquo;</li>
           <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -76,6 +76,10 @@
 <span class="kn">from</span> <span class="nn">TimeZone</span> <span class="kn">import</span> <span class="n">Local</span><span class="p">,</span> <span class="n">utc</span>
 <span class="kn">import</span> <span class="nn">WeatherStation</span>
 
+<span class="n">SECOND</span> <span class="o">=</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">HOUR</span> <span class="o">=</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">hours</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">DAY</span> <span class="o">=</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">hours</span><span class="o">=</span><span class="mi">24</span><span class="p">)</span>
+
 <div class="viewcode-block" id="Template"><a class="viewcode-back" href="../../api/pywws.Template.html#pywws.Template.Template">[docs]</a><span class="k">class</span> <span class="nc">Template</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">calib_data</span><span class="p">,</span> <span class="n">hourly_data</span><span class="p">,</span> <span class="n">daily_data</span><span class="p">,</span> <span class="n">monthly_data</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s">&#39;pywws.Template&#39;</span><span class="p">)</span>
@@ -84,10 +88,13 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">hourly_data</span> <span class="o">=</span> <span class="n">hourly_data</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">daily_data</span> <span class="o">=</span> <span class="n">daily_data</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">monthly_data</span> <span class="o">=</span> <span class="n">monthly_data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">midnight</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rain_midnight</span> <span class="o">=</span> <span class="bp">None</span>
+
 <div class="viewcode-block" id="Template.process"><a class="viewcode-back" href="../../api/pywws.Template.html#pywws.Template.Template.process">[docs]</a>    <span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">live_data</span><span class="p">,</span> <span class="n">template_file</span><span class="p">):</span>
         <span class="k">def</span> <span class="nf">jump</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
             <span class="k">while</span> <span class="n">count</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">new_idx</span> <span class="o">=</span> <span class="n">data_set</span><span class="o">.</span><span class="n">after</span><span class="p">(</span><span class="n">idx</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+                <span class="n">new_idx</span> <span class="o">=</span> <span class="n">data_set</span><span class="o">.</span><span class="n">after</span><span class="p">(</span><span class="n">idx</span> <span class="o">+</span> <span class="n">SECOND</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">new_idx</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
                     <span class="k">break</span>
                 <span class="n">idx</span> <span class="o">=</span> <span class="n">new_idx</span>
@@ -99,6 +106,7 @@
                 <span class="n">idx</span> <span class="o">=</span> <span class="n">new_idx</span>
                 <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
             <span class="k">return</span> <span class="n">idx</span><span class="p">,</span> <span class="n">count</span> <span class="o">==</span> <span class="mi">0</span>
+
         <span class="n">params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">live_data</span><span class="p">:</span>
             <span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calib_data</span><span class="o">.</span><span class="n">before</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">max</span><span class="p">)</span>
@@ -111,6 +119,8 @@
         <span class="n">dew_point</span> <span class="o">=</span> <span class="n">WeatherStation</span><span class="o">.</span><span class="n">dew_point</span>
         <span class="n">wind_chill</span> <span class="o">=</span> <span class="n">WeatherStation</span><span class="o">.</span><span class="n">wind_chill</span>
         <span class="n">apparent_temp</span> <span class="o">=</span> <span class="n">WeatherStation</span><span class="o">.</span><span class="n">apparent_temp</span>
+        <span class="n">rain_hour</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rain_hour</span>
+        <span class="n">rain_day</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rain_day</span>
         <span class="n">pressure_offset</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;fixed&#39;</span><span class="p">,</span> <span class="s">&#39;pressure offset&#39;</span><span class="p">))</span>
         <span class="n">fixed_block</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;fixed&#39;</span><span class="p">,</span> <span class="s">&#39;fixed block&#39;</span><span class="p">))</span>
         <span class="c"># start off with no time rounding</span>
@@ -247,18 +257,41 @@
                         <span class="s">&quot;Unknown processing directive: #</span><span class="si">%s</span><span class="s">#&quot;</span><span class="p">,</span> <span class="n">parts</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
                     <span class="k">return</span>
         <span class="n">tmplt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-        <span class="k">return</span></div>
+        <span class="k">return</span>
+</div>
 <div class="viewcode-block" id="Template.make_text"><a class="viewcode-back" href="../../api/pywws.Template.html#pywws.Template.Template.make_text">[docs]</a>    <span class="k">def</span> <span class="nf">make_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">template_file</span><span class="p">,</span> <span class="n">live_data</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="n">result</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
         <span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="n">live_data</span><span class="p">,</span> <span class="n">template_file</span><span class="p">):</span>
             <span class="n">result</span> <span class="o">+=</span> <span class="n">text</span>
-        <span class="k">return</span> <span class="n">result</span></div>
+        <span class="k">return</span> <span class="n">result</span>
+</div>
 <div class="viewcode-block" id="Template.make_file"><a class="viewcode-back" href="../../api/pywws.Template.html#pywws.Template.Template.make_file">[docs]</a>    <span class="k">def</span> <span class="nf">make_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">template_file</span><span class="p">,</span> <span class="n">output_file</span><span class="p">,</span> <span class="n">live_data</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="n">of</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_file</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="n">live_data</span><span class="p">,</span> <span class="n">template_file</span><span class="p">):</span>
             <span class="n">of</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
         <span class="n">of</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-        <span class="k">return</span> <span class="mi">0</span></div></div>
+        <span class="k">return</span> <span class="mi">0</span>
+</div>
+    <span class="k">def</span> <span class="nf">_rain_hour</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="n">rain_hour</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calib_data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">calib_data</span><span class="o">.</span><span class="n">nearest</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;idx&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">HOUR</span><span class="p">)][</span><span class="s">&#39;rain&#39;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;rain&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">rain_hour</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_rain_day</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">midnight</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">midnight</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="n">utc</span><span class="p">)</span><span class="o">.</span><span class="n">astimezone</span><span class="p">(</span>
+                <span class="n">Local</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">hour</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">minute</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">second</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">astimezone</span><span class="p">(</span>
+                    <span class="n">utc</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
+        <span class="k">while</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;idx&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">midnight</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">midnight</span> <span class="o">-=</span> <span class="n">DAY</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rain_midnight</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">while</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;idx&#39;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">midnight</span> <span class="o">+</span> <span class="n">DAY</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">midnight</span> <span class="o">+=</span> <span class="n">DAY</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rain_midnight</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rain_midnight</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rain_midnight</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calib_data</span><span class="p">[</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">calib_data</span><span class="o">.</span><span class="n">nearest</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">midnight</span><span class="p">)][</span><span class="s">&#39;rain&#39;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;rain&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">rain_midnight</span><span class="p">)</span>
+</div>
 <div class="viewcode-block" id="main"><a class="viewcode-back" href="../../api/pywws.Template.html#pywws.Template.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">argv</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">argv</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
         <span class="n">argv</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span>
@@ -285,7 +318,8 @@
         <span class="n">params</span><span class="p">,</span>
         <span class="n">DataStore</span><span class="o">.</span><span class="n">calib_store</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">DataStore</span><span class="o">.</span><span class="n">hourly_store</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
         <span class="n">DataStore</span><span class="o">.</span><span class="n">daily_store</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">DataStore</span><span class="o">.</span><span class="n">monthly_store</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-        <span class="p">)</span><span class="o">.</span><span class="n">make_file</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">args</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span></div>
+        <span class="p">)</span><span class="o">.</span><span class="n">make_file</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">args</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+</div>
 <span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&quot;__main__&quot;</span><span class="p">:</span>
     <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
 </pre></div>
@@ -321,7 +355,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">pywws v12.05 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">pywws v12.07 documentation</a> &raquo;</li>
           <li><a href="../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>

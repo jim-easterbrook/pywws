@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pywws.WeatherStation &mdash; pywws v12.05 documentation</title>
+    <title>pywws.WeatherStation &mdash; pywws v12.07 documentation</title>
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '12.05',
+        VERSION:     '12.07',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="shortcut icon" href="../../_static/pywws_logo.ico"/>
-    <link rel="top" title="pywws v12.05 documentation" href="../../index.html" />
+    <link rel="top" title="pywws v12.07 documentation" href="../../index.html" />
     <link rel="up" title="Module code" href="../index.html" /> 
   </head>
   <body>
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">pywws v12.05 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">pywws v12.07 documentation</a> &raquo;</li>
           <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -191,7 +191,7 @@
     <span class="k">return</span> <span class="n">_</span><span class="p">(</span><span class="s">&#39;steady&#39;</span><span class="p">)</span>
 
 <span class="c"># get meaning for status integer</span></div>
-<span class="n">unknown</span>         <span class="o">=</span> <span class="mh">0x80</span>
+<span class="n">rain_overflow</span>   <span class="o">=</span> <span class="mh">0x80</span>
 <span class="n">lost_connection</span> <span class="o">=</span> <span class="mh">0x40</span>
 <span class="n">unknown</span>         <span class="o">=</span> <span class="mh">0x20</span>
 <span class="n">unknown</span>         <span class="o">=</span> <span class="mh">0x10</span>
@@ -744,16 +744,9 @@
     <span class="n">fixed_format</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s">&#39;rel_pressure&#39;</span>  <span class="p">:</span> <span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="s">&#39;us&#39;</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">),</span>
         <span class="s">&#39;abs_pressure&#39;</span>  <span class="p">:</span> <span class="p">(</span><span class="mi">34</span><span class="p">,</span> <span class="s">&#39;us&#39;</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">),</span>
-        <span class="s">&#39;unknown_03&#39;</span>    <span class="p">:</span> <span class="p">(</span><span class="mi">36</span><span class="p">,</span> <span class="s">&#39;pb&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span>
-        <span class="s">&#39;unknown_04&#39;</span>    <span class="p">:</span> <span class="p">(</span><span class="mi">37</span><span class="p">,</span> <span class="s">&#39;pb&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span>
-        <span class="s">&#39;unknown_05&#39;</span>    <span class="p">:</span> <span class="p">(</span><span class="mi">38</span><span class="p">,</span> <span class="s">&#39;pb&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span>
-        <span class="s">&#39;unknown_06&#39;</span>    <span class="p">:</span> <span class="p">(</span><span class="mi">39</span><span class="p">,</span> <span class="s">&#39;pb&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span>
-        <span class="s">&#39;unknown_07&#39;</span>    <span class="p">:</span> <span class="p">(</span><span class="mi">40</span><span class="p">,</span> <span class="s">&#39;pb&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span>
-        <span class="s">&#39;unknown_08&#39;</span>    <span class="p">:</span> <span class="p">(</span><span class="mi">41</span><span class="p">,</span> <span class="s">&#39;pb&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span>
-        <span class="s">&#39;unknown_09&#39;</span>    <span class="p">:</span> <span class="p">(</span><span class="mi">42</span><span class="p">,</span> <span class="s">&#39;pb&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span>
+        <span class="s">&#39;lux_wm2_coeff&#39;</span> <span class="p">:</span> <span class="p">(</span><span class="mi">36</span><span class="p">,</span> <span class="s">&#39;us&#39;</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">),</span>
         <span class="s">&#39;date_time&#39;</span>     <span class="p">:</span> <span class="p">(</span><span class="mi">43</span><span class="p">,</span> <span class="s">&#39;dt&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span>
         <span class="s">&#39;unknown_18&#39;</span>    <span class="p">:</span> <span class="p">(</span><span class="mi">97</span><span class="p">,</span> <span class="s">&#39;pb&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span>
-        <span class="s">&#39;unknown_19&#39;</span>    <span class="p">:</span> <span class="p">(</span><span class="mi">140</span><span class="p">,</span> <span class="s">&#39;pb&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span>
         <span class="s">&#39;alarm&#39;</span>         <span class="p">:</span> <span class="p">{</span>
             <span class="s">&#39;hum_in&#39;</span>        <span class="p">:</span> <span class="p">{</span><span class="s">&#39;hi&#39;</span> <span class="p">:</span> <span class="p">(</span><span class="mi">48</span><span class="p">,</span> <span class="s">&#39;ub&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span> <span class="s">&#39;lo&#39;</span>  <span class="p">:</span> <span class="p">(</span><span class="mi">49</span><span class="p">,</span> <span class="s">&#39;ub&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)},</span>
             <span class="s">&#39;temp_in&#39;</span>       <span class="p">:</span> <span class="p">{</span><span class="s">&#39;hi&#39;</span> <span class="p">:</span> <span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="s">&#39;ss&#39;</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">),</span> <span class="s">&#39;lo&#39;</span>  <span class="p">:</span> <span class="p">(</span><span class="mi">52</span><span class="p">,</span> <span class="s">&#39;ss&#39;</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)},</span>
@@ -844,7 +837,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">pywws v12.05 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">pywws v12.07 documentation</a> &raquo;</li>
           <li><a href="../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>

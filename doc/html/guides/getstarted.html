@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>How to get started with pywws &mdash; pywws v12.05 documentation</title>
+    <title>How to get started with pywws &mdash; pywws v12.07 documentation</title>
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '12.05',
+        VERSION:     '12.07',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="shortcut icon" href="../_static/pywws_logo.ico"/>
-    <link rel="top" title="pywws v12.05 documentation" href="../index.html" />
+    <link rel="top" title="pywws v12.07 documentation" href="../index.html" />
     <link rel="up" title="User guides" href="index.html" />
     <link rel="next" title="How to set up ‘hourly’ logging with pywws" href="hourlylogging.html" />
     <link rel="prev" title="User guides" href="index.html" /> 
@@ -44,7 +44,7 @@
         <li class="right" >
           <a href="index.html" title="User guides"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">pywws v12.05 documentation</a> &raquo;</li>
+        <li><a href="../index.html">pywws v12.07 documentation</a> &raquo;</li>
           <li><a href="index.html" accesskey="U">User guides</a> &raquo;</li> 
       </ul>
     </div>  
@@ -72,12 +72,12 @@ cd ~/weather</pre>
 <li><p class="first">Install dependencies.</p>
 <ul class="simple">
 <li>Python 2.4+ - <a class="reference external" href="http://python.org/">http://python.org/</a> (Note: Python 3 is not supported.)</li>
-<li>USB library option 1:<ul>
-<li>libusb 0.1.12 - <a class="reference external" href="http://libusb.sf.net/">http://libusb.sf.net/</a> (Note: libusb 1 is not supported.)</li>
-<li>PyUSB 0.4.x - <a class="reference external" href="http://pyusb.berlios.de/">http://pyusb.berlios.de/</a></li>
+<li>USB library option 1 (best for small systems such as routers):<ul>
+<li>libusb 0.1.12 - <a class="reference external" href="http://www.libusb.org/">http://www.libusb.org/</a> (Note: libusb 1 is not supported.)</li>
+<li>PyUSB 0.4.x - <a class="reference external" href="http://sourceforge.net/apps/trac/pyusb/">http://sourceforge.net/apps/trac/pyusb/</a></li>
 </ul>
 </li>
-<li>USB library option 2:<ul>
+<li>USB library option 2 (best for Linux PCs and Macs):<ul>
 <li>hidapi - <a class="reference external" href="https://github.com/signal11/hidapi">https://github.com/signal11/hidapi</a></li>
 <li>cython-hidapi - <a class="reference external" href="https://github.com/gbishop/cython-hidapi">https://github.com/gbishop/cython-hidapi</a></li>
 <li>cython - <a class="reference external" href="http://cython.org/">http://cython.org/</a></li>
@@ -114,7 +114,7 @@ python TestWeatherStation.py</pre>
 <p>This directory is referred to elsewhere in the pywws documentation as your data directory.</p>
 <p>Make sure your computer has the right date &amp; time, and time zone, as these are used to label the weather station data. If you haven&#8217;t already done so, it&#8217;s worth setting up NTP to synchronise your computer to a &#8216;time server&#8217;.</p>
 <p>Make sure your weather station has the correct offset between &#8216;absolute&#8217; and &#8216;relative&#8217; atmospheric pressure. See the instruction book for details on how to set this.</p>
-<p>The first time you run <a class="reference internal" href="../api/pywws.LogData.html#module-pywws.LogData"><tt class="xref py py-mod docutils literal"><span class="pre">pywws.LogData</span></tt></a> it will take several minutes, as it will copy all the data stored in your station&#8217;s memory. The <a class="reference internal" href="../api/pywws.LogData.html#module-pywws.LogData"><tt class="xref py py-mod docutils literal"><span class="pre">pywws.LogData</span></tt></a> program has a &#8216;verbose&#8217; option that increases the amount of messages it displays while running. This is useful when running it manually, for example:</p>
+<p>The first time you run <a class="reference internal" href="../api/pywws.LogData.html#module-pywws.LogData"><tt class="xref py py-mod docutils literal"><span class="pre">pywws.LogData</span></tt></a> it will create a configuration file in your data directory called &#8216;weather.ini&#8217; and then stop. You need to edit the configuration file and change the line <tt class="docutils literal"><span class="pre">ws</span> <span class="pre">type</span> <span class="pre">=</span> <span class="pre">Unknown</span></tt> to <tt class="docutils literal"><span class="pre">ws</span> <span class="pre">type</span> <span class="pre">=</span> <span class="pre">1080</span></tt> or <tt class="docutils literal"><span class="pre">ws</span> <span class="pre">type</span> <span class="pre">=</span> <span class="pre">3080</span></tt>. (If your weather station console displays solar illuminance you have a 3080 type, all others are 1080.) Then run <a class="reference internal" href="../api/pywws.LogData.html#module-pywws.LogData"><tt class="xref py py-mod docutils literal"><span class="pre">pywws.LogData</span></tt></a> again. This may take several minutes, as it will copy all the data stored in your station&#8217;s memory. The <a class="reference internal" href="../api/pywws.LogData.html#module-pywws.LogData"><tt class="xref py py-mod docutils literal"><span class="pre">pywws.LogData</span></tt></a> program has a &#8216;verbose&#8217; option that increases the amount of messages it displays while running. This is useful when running it manually, for example:</p>
 <div class="highlight-python"><pre>python pywws/LogData.py -vvv ~/weather/data</pre>
 </div>
 <p>(Replace <tt class="docutils literal"><span class="pre">~/weather/data</span></tt> with your data directory, if it&#8217;s different.)</p>
@@ -220,7 +220,7 @@ day end hour = 9</pre>
         <li class="right" >
           <a href="index.html" title="User guides"
              >previous</a> |</li>
-        <li><a href="../index.html">pywws v12.05 documentation</a> &raquo;</li>
+        <li><a href="../index.html">pywws v12.07 documentation</a> &raquo;</li>
           <li><a href="index.html" >User guides</a> &raquo;</li> 
       </ul>
     </div>
