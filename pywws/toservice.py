@@ -14,17 +14,20 @@ simple HTTP 'POST' request, with the data encoded as a sequence of
 
 This module enables pywws to upload readings to these organisations.
 It is highly customisable using configuration files. Each 'service'
-requires a configuration file in ``pywws/services`` (that should not
-need to be edited by the user) and a section in ``weather.ini``
-containing user specific data such as your site ID and password.
+requires a configuration file and two templates in ``pywws/services``
+(that should not need to be edited by the user) and a section in
+``weather.ini`` containing user specific data such as your site ID and
+password.
 
-There are currently five services for which configuration files have
+There are currently six services for which configuration files have
 been written.
 
 +-----------------------------------------------------------------------+-----------------------+--------------------------------------------------------+
 | organisation                                                          | service name          | config file                                            |
 +=======================================================================+=======================+========================================================+
 | `UK Met Office <http://wow.metoffice.gov.uk/>`_                       | ``metoffice``         | :download:`../../pywws/services/metoffice.ini`         |
++-----------------------------------------------------------------------+-----------------------+--------------------------------------------------------+
+| `Open Weather Map <http://openweathermap.org/>`_                      | ``openweathermap``    | :download:`../../pywws/services/openweathermap.ini`    |
 +-----------------------------------------------------------------------+-----------------------+--------------------------------------------------------+
 | `Stacja Pogody <http://stacjapogody.waw.pl/index.php?id=mapastacji>`_ | ``stacjapogodywawpl`` | :download:`../../pywws/services/stacjapogodywawpl.ini` |
 +-----------------------------------------------------------------------+-----------------------+--------------------------------------------------------+
@@ -62,8 +65,8 @@ Now you can test your configuration::
 
     python pywws/toservice.py -vvv data_dir service_name
 
-This should show you the data string that is uploaded and any response
-such as a 'success' message.
+This should show you the data string that is uploaded. Any failure
+should generate an error message.
 
 Upload old data
 ---------------
@@ -104,12 +107,62 @@ section, depending on how often you want to send data. For example::
 
 Note that the ``[live]`` section is only used when running
 ``LiveLog.py``. It is a good idea to repeat any service selected in
-``[live]`` in the ``[hourly]`` section in case you switch to running
-``Hourly.py``.
+``[live]`` in the ``[logged]`` or ``[hourly]`` section in case you
+switch to running :mod:`Hourly`.
 
-Restart your regular pywws program (``Hourly.py`` or ``LiveLog.py``)
+Restart your regular pywws program (:mod:`Hourly` or :mod:`LiveLog`)
 and visit the appropriate web site to see regular updates from your
 weather station.
+
+Notes on the services
+---------------------
+
+UK Met Office
+=============
+
+* Create account: https://register.metoffice.gov.uk/WaveRegistrationClient/public/register.do?service=weatherobservations
+* API: http://wow.metoffice.gov.uk/support?category=dataformats#automatic
+* Example ``weather.ini`` section::
+
+    [metoffice]
+    site id = 12345678
+    aws pin = 987654
+
+Open Weather Map
+================
+
+* Create account: http://openweathermap.org/login
+* API: http://openweathermap.org/API
+* Example ``weather.ini`` section::
+
+    [openweathermap]
+    lat = 51.501
+    long = -0.142
+    alt = 10
+    user = Elizabeth Windsor
+    password = corgi
+    id = Buck House
+
+The default behaviour is to use your user name to identify the weather
+station. However, it's possible for a user to have more than one
+weather station, so there is an undocumented ``name`` parameter in the
+API that can be used to identify the station. This appears as ``id``
+in ``weather.ini``. Make sure you don't choose a name that is already
+in use.
+
+Weather Underground
+===================
+
+* Create account: http://www.wunderground.com/members/signup.asp
+* API: http://wiki.wunderground.com/index.php/PWS_-_Upload_Protocol
+* Example ``weather.ini`` section::
+
+    [underground]
+    station = ABCDEFGH1
+    password = xxxxxxx
+
+API
+---
 
 """
 
