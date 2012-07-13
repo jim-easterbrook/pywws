@@ -1,6 +1,11 @@
 Python software for USB Wireless WeatherStations (pywws).
 http://code.google.com/p/pywws/
 
+Changes in v12.07:
+    1/ Added Open Weather Map to the services.
+    2/ Fixed problem with Weather Underground uploads that started on 1st June.
+    3/ Various bug fixes and software structure improvements.
+
 Changes in v12.05:
     1/ Made 'fixed block' data available to template calculations.
     2/ Fixed buggy auto-detection of 3080 weather stations.
