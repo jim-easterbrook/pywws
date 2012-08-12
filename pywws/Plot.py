@@ -384,7 +384,7 @@ def main(argv=None):
     Localisation.SetApplicationLanguage(params)
     return GraphPlotter(
         params,
-        DataStore.data_store(args[0]), DataStore.hourly_store(args[0]),
+        DataStore.calib_store(args[0]), DataStore.hourly_store(args[0]),
         DataStore.daily_store(args[0]), DataStore.monthly_store(args[0]),
         args[1]
         ).DoPlot(args[2], args[3])
