@@ -16,6 +16,7 @@ import codecs
 from datetime import datetime, timedelta
 import getopt
 import os
+import subprocess
 import sys
 import xml.dom.minidom
 
@@ -39,6 +40,7 @@ class BasePlotter(object):
         # create work directory
         if not os.path.isdir(self.work_dir):
             os.makedirs(self.work_dir)
+
     def DoPlot(self, input_file, output_file):
         # read XML graph description
         self.doc = xml.dom.minidom.parse(input_file)
@@ -151,16 +153,18 @@ class BasePlotter(object):
         of.close()
         self.doc.unlink()
         # run gnuplot on file
-        os.system('gnuplot %s' % cmd_file)
+        subprocess.check_call(['gnuplot', cmd_file])
         for file in self.tmp_files:
             os.unlink(file)
         return 0
+
     def GetChildren(self, node, name):
         result = []
         for child in node.childNodes:
             if child.localName == name:
                 result.append(child)
         return result
+
     def GetValue(self, node, name, default):
         for child in node.childNodes:
             if child.localName == name:
@@ -169,15 +173,20 @@ class BasePlotter(object):
                 else:
                     return ''
         return default
+
 class Record(object):
     pass
+
 class GraphPlotter(BasePlotter):
     def GetPlotList(self):
         return self.GetChildren(self.graph, 'plot')
+
     def GetDefaultRows(self):
         return self.plot_count
+
     def GetDefaultPlotSize(self):
         return 200 / self.cols, 600 / self.cols
+
     def GetPreamble(self):
         result = """set style fill solid
 set xdata time
@@ -202,6 +211,7 @@ set timefmt "%Y-%m-%dT%H:%M:%S"
             result += 'set xtics %d\n' % (eval(xtics) * 3600)
         result = result.encode(self.encoding)
         return result
+
     def PlotData(self, plot_no, plot, source):
         _ = Localisation.translation.ugettext
         subplot_list = self.GetChildren(plot, 'subplot')
