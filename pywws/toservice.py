@@ -9,8 +9,8 @@ Introduction
 ------------
 
 Several organisations allow weather stations to upload data using a
-simple HTTP 'POST' request, with the data encoded as a sequence of
-``key=value`` pairs separated by ``&`` characters.
+simple HTTP 'POST' or 'GET' request, with the data encoded as a
+sequence of ``key=value`` pairs separated by ``&`` characters.
 
 This module enables pywws to upload readings to these organisations.
 It is highly customisable using configuration files. Each 'service'
@@ -76,7 +76,7 @@ Edit your ``weather.ini`` file and remove the ``last update`` line
 from the appropriate section, then run ``toservice.py`` with the
 catchup option::
 
-    python pywws/toservice.py -cv data_dir service_name
+    python pywws/toservice.py -cvv data_dir service_name
 
 This may take 20 minutes or more, depending on how much data you have.
 
@@ -254,6 +254,7 @@ class ToService(object):
                                     self.params.get('fixed', 'ws type')))
         # get other parameters
         self.catchup = eval(service_params.get('config', 'catchup'))
+        self.use_get = eval(service_params.get('config', 'use get'))
         rapid_fire = eval(service_params.get('config', 'rapidfire'))
         if rapid_fire:
             self.server_rf = service_params.get('config', 'url-rf')
@@ -338,12 +339,15 @@ class ToService(object):
                     wudata = urllib.urlopen('%s?%s' % (server, coded_data))
                 else:
                     try:
-                        wudata = urllib2.urlopen(server, coded_data)
-                    except urllib2.HTTPError, ex:
-                        if ex.code == 400:
-                            wudata = ex
+                        if self.use_get:
+                            wudata = urllib2.urlopen(
+                                '%s?%s' % (server, coded_data))
                         else:
+                            wudata = urllib2.urlopen(server, coded_data)
+                    except urllib2.HTTPError, ex:
+                        if ex.code != 400:
                             raise
+                        wudata = ex
                 response = wudata.readlines()
                 wudata.close()
                 if len(response) == len(self.expected_result):
