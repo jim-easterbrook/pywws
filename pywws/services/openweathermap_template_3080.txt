@@ -1,6 +1,5 @@
 #live#
 {
-               'softwaretype' : 'pywws',
 #idx          "'datetimeutc'  : '%Y-%m-%d %H:%M:%S',"#
 #temp_out     "'temp'         : '%.1f',"#
 #wind_dir     "'wind_dir'     : '%.0f'," "" "winddir_degrees(x)"#

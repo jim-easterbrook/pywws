@@ -1,8 +1,6 @@
 #live#
 #roundtime True#
 {
-               'test'                    : 'true',
-               'niederschlagsmenge_zeit' : '60',
 #idx          "'dateum'                  : '%Y%m%d%H%M',"#
 #hum_out      "'feuchtigkeit'            : '%.d',"#
 #temp_out     "'temperatur'              : '%.1f',"#
