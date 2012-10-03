@@ -246,19 +246,25 @@ set timefmt "%Y-%m-%dT%H:%M:%S"
         # set bottom margin
         bmargin = eval(self.GetValue(plot, 'bmargin', '-1'))
         result += 'set bmargin %g\n' % (bmargin)
-        # set y range
+        # set y ranges and tics
         yrange = self.GetValue(plot, 'yrange', None)
+        y2range = self.GetValue(plot, 'y2range', None)
+        ytics = self.GetValue(plot, 'ytics', 'autofreq')
+        y2tics = self.GetValue(plot, 'y2tics', '')
+        if y2tics and not y2range:
+            y2range = yrange
+        elif y2range and not y2tics:
+            y2tics = 'autofreq'
         if yrange:
             result += 'set yrange [%s]\n' % (yrange.replace(',', ':'))
         else:
             result += 'set yrange [*:*]\n'
-        # set y2 range
-        y2range = self.GetValue(plot, 'y2range', None)
         if y2range:
             result += 'set y2range [%s]\n' % (y2range.replace(',', ':'))
-            result += 'unset ytics; set ytics nomirror; set y2tics\n'
+        if y2tics:
+            result += 'set ytics nomirror %s; set y2tics %s\n' % (ytics, y2tics)
         else:
-            result += 'unset y2tics; set ytics mirror\n'
+            result += 'unset y2tics; set ytics mirror %s\n' % (ytics)
         # set grid
         result += 'unset grid\n'
         grid = self.GetValue(plot, 'grid', None)

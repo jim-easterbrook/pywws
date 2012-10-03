@@ -48,7 +48,9 @@
   </plot>
   <plot>
     <title>Wind direction (°)</title>
-    <yrange>0, 380</yrange>
+    <yrange>0, 360</yrange>
+    <ytics>45</ytics>
+    <y2tics>('N' 0, 'E' 90, 'S' 180, 'W' 270, 'N' 360)</y2tics>
     <source>raw</source>
     <subplot>
       <style>x 2</style>
@@ -57,19 +59,24 @@
     </subplot>
   </plot>
   <plot>
+    <title>Rainfall (mm)</title>
     <yrange>0, 5</yrange>
+    <y2range>0, 15</y2range>
+    <ylabel>hourly</ylabel>
+    <y2label>total</y2label>
     <source>hourly</source>
     <subplot>
       <colour>5</colour>
       <style>box</style>
       <xcalc>data['idx'].replace(minute=30, second=0)</xcalc>
       <ycalc>data['rain']</ycalc>
-      <title>Hourly rainfall (mm)</title>
+      <title>Hourly</title>
     </subplot>
     <subplot>
       <colour>3</colour>
+      <axes>x1y2</axes>
       <ycalc>data['rain'] + last_ycalc</ycalc>
-      <title>Total rainfall (mm)</title>
+      <title>Total</title>
     </subplot>
   </plot>
   <plot>
