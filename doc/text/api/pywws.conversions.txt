@@ -2,8 +2,8 @@
 pywws.conversions
 *****************
 
-A set of functions to convert pywws native units (Centigrade, mm, m/s,
-hPa) to other popular units.
+conversions.py - a set of functions to convert pywws native units
+(Centigrade, mm, m/s, hPa) to other popular units
 
 -[ Functions ]-
 
@@ -51,6 +51,10 @@ pywws.conversions.temp_f(c)
 pywws.conversions.winddir_degrees(pts)
 
    Convert wind direction from 0..15 to degrees
+
+pywws.conversions.winddir_text(pts)
+
+   Convert wind direction from 0..15 to compass point text
 
 pywws.conversions.wind_kmph(ms)
 

@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pywws.conversions &mdash; pywws v12.07 documentation</title>
+    <title>pywws.conversions &mdash; pywws v12.10 documentation</title>
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '12.07',
+        VERSION:     '12.10',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="shortcut icon" href="../../_static/pywws_logo.ico"/>
-    <link rel="top" title="pywws v12.07 documentation" href="../../index.html" />
+    <link rel="top" title="pywws v12.10 documentation" href="../../index.html" />
     <link rel="up" title="Module code" href="../index.html" /> 
   </head>
   <body>
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">pywws v12.07 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">pywws v12.10 documentation</a> &raquo;</li>
           <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -47,10 +47,16 @@
           <div class="body">
             
   <h1>Source code for pywws.conversions</h1><div class="highlight"><pre>
+<span class="c">#!/usr/bin/env python</span>
+
+<span class="sd">&quot;&quot;&quot;conversions.py - a set of functions to convert pywws native units</span>
+<span class="sd">(Centigrade, mm, m/s, hPa) to other popular units</span>
+
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">A set of functions to convert pywws native units (Centigrade, mm, m/s, hPa) to</span>
-<span class="sd">other popular units.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c"># rename imports to prevent them being imported when</span>
+<span class="c"># doing &#39;from pywws.conversions import *&#39;</span>
+<span class="kn">import</span> <span class="nn">Localisation</span> <span class="kn">as</span> <span class="nn">_Localisation</span>
 
 <div class="viewcode-block" id="illuminance_wm2"><a class="viewcode-back" href="../../api/pywws.conversions.html#pywws.conversions.illuminance_wm2">[docs]</a><span class="k">def</span> <span class="nf">illuminance_wm2</span><span class="p">(</span><span class="n">lux</span><span class="p">):</span>
     <span class="s">&quot;Approximate conversion of illuminance in lux to solar radiation in W/m2&quot;</span>
@@ -82,6 +88,23 @@
         <span class="k">return</span> <span class="bp">None</span>
     <span class="k">return</span> <span class="n">pts</span> <span class="o">*</span> <span class="mf">22.5</span>
 </div>
+<span class="n">_winddir_text_array</span> <span class="o">=</span> <span class="bp">None</span>
+
+<div class="viewcode-block" id="winddir_text"><a class="viewcode-back" href="../../api/pywws.conversions.html#pywws.conversions.winddir_text">[docs]</a><span class="k">def</span> <span class="nf">winddir_text</span><span class="p">(</span><span class="n">pts</span><span class="p">):</span>
+    <span class="s">&quot;Convert wind direction from 0..15 to compass point text&quot;</span>
+    <span class="k">global</span> <span class="n">_winddir_text_array</span>
+    <span class="k">if</span> <span class="n">pts</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">None</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">_winddir_text_array</span><span class="p">:</span>
+        <span class="n">_</span> <span class="o">=</span> <span class="n">_Localisation</span><span class="o">.</span><span class="n">translation</span><span class="o">.</span><span class="n">gettext</span>
+        <span class="n">_winddir_text_array</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">_</span><span class="p">(</span><span class="s">&#39;N&#39;</span><span class="p">),</span> <span class="n">_</span><span class="p">(</span><span class="s">&#39;NNE&#39;</span><span class="p">),</span> <span class="n">_</span><span class="p">(</span><span class="s">&#39;NE&#39;</span><span class="p">),</span> <span class="n">_</span><span class="p">(</span><span class="s">&#39;ENE&#39;</span><span class="p">),</span>
+            <span class="n">_</span><span class="p">(</span><span class="s">&#39;E&#39;</span><span class="p">),</span> <span class="n">_</span><span class="p">(</span><span class="s">&#39;ESE&#39;</span><span class="p">),</span> <span class="n">_</span><span class="p">(</span><span class="s">&#39;SE&#39;</span><span class="p">),</span> <span class="n">_</span><span class="p">(</span><span class="s">&#39;SSE&#39;</span><span class="p">),</span>
+            <span class="n">_</span><span class="p">(</span><span class="s">&#39;S&#39;</span><span class="p">),</span> <span class="n">_</span><span class="p">(</span><span class="s">&#39;SSW&#39;</span><span class="p">),</span> <span class="n">_</span><span class="p">(</span><span class="s">&#39;SW&#39;</span><span class="p">),</span> <span class="n">_</span><span class="p">(</span><span class="s">&#39;WSW&#39;</span><span class="p">),</span>
+            <span class="n">_</span><span class="p">(</span><span class="s">&#39;W&#39;</span><span class="p">),</span> <span class="n">_</span><span class="p">(</span><span class="s">&#39;WNW&#39;</span><span class="p">),</span> <span class="n">_</span><span class="p">(</span><span class="s">&#39;NW&#39;</span><span class="p">),</span> <span class="n">_</span><span class="p">(</span><span class="s">&#39;NNW&#39;</span><span class="p">),</span>
+            <span class="p">)</span>
+    <span class="k">return</span> <span class="n">_winddir_text_array</span><span class="p">[</span><span class="n">pts</span><span class="p">]</span>
+</div>
 <div class="viewcode-block" id="wind_kmph"><a class="viewcode-back" href="../../api/pywws.conversions.html#pywws.conversions.wind_kmph">[docs]</a><span class="k">def</span> <span class="nf">wind_kmph</span><span class="p">(</span><span class="n">ms</span><span class="p">):</span>
     <span class="s">&quot;Convert wind from metres per second to kilometres per hour&quot;</span>
     <span class="k">if</span> <span class="n">ms</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
@@ -100,35 +123,35 @@
         <span class="k">return</span> <span class="bp">None</span>
     <span class="k">return</span> <span class="n">ms</span> <span class="o">*</span> <span class="mf">3.6</span> <span class="o">/</span> <span class="mf">1.852</span>
 </div>
+<span class="n">_bft_threshold</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="mf">0.3</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">,</span> <span class="mf">3.4</span><span class="p">,</span> <span class="mf">5.4</span><span class="p">,</span> <span class="mf">7.9</span><span class="p">,</span> <span class="mf">10.7</span><span class="p">,</span> <span class="mf">13.8</span><span class="p">,</span> <span class="mf">17.1</span><span class="p">,</span> <span class="mf">20.7</span><span class="p">,</span> <span class="mf">24.4</span><span class="p">,</span> <span class="mf">28.4</span><span class="p">,</span> <span class="mf">32.6</span><span class="p">)</span>
+
 <div class="viewcode-block" id="wind_bft"><a class="viewcode-back" href="../../api/pywws.conversions.html#pywws.conversions.wind_bft">[docs]</a><span class="k">def</span> <span class="nf">wind_bft</span><span class="p">(</span><span class="n">ms</span><span class="p">):</span>
     <span class="s">&quot;Convert wind from metres per second to Beaufort scale&quot;</span>
     <span class="k">if</span> <span class="n">ms</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">None</span>
-    <span class="k">if</span> <span class="n">ms</span> <span class="o">&lt;</span> <span class="mf">0.3</span><span class="p">:</span>
-        <span class="k">return</span> <span class="mi">0</span>
-    <span class="k">elif</span> <span class="n">ms</span> <span class="o">&lt;=</span> <span class="mf">1.5</span><span class="p">:</span>
-        <span class="k">return</span> <span class="mi">1</span>
-    <span class="k">elif</span> <span class="n">ms</span> <span class="o">&lt;=</span> <span class="mf">3.4</span><span class="p">:</span>
-        <span class="k">return</span> <span class="mi">2</span>
-    <span class="k">elif</span> <span class="n">ms</span> <span class="o">&lt;=</span> <span class="mf">5.4</span><span class="p">:</span>
-        <span class="k">return</span> <span class="mi">3</span>
-    <span class="k">elif</span> <span class="n">ms</span> <span class="o">&lt;=</span> <span class="mf">7.9</span><span class="p">:</span>
-        <span class="k">return</span> <span class="mi">4</span>
-    <span class="k">elif</span> <span class="n">ms</span> <span class="o">&lt;=</span> <span class="mf">10.7</span><span class="p">:</span>
-        <span class="k">return</span> <span class="mi">5</span>
-    <span class="k">elif</span> <span class="n">ms</span> <span class="o">&lt;=</span> <span class="mf">13.8</span><span class="p">:</span>
-        <span class="k">return</span> <span class="mi">6</span>
-    <span class="k">elif</span> <span class="n">ms</span> <span class="o">&lt;=</span> <span class="mf">17.1</span><span class="p">:</span>
-        <span class="k">return</span> <span class="mi">7</span>
-    <span class="k">elif</span> <span class="n">ms</span> <span class="o">&lt;=</span> <span class="mf">20.7</span><span class="p">:</span>
-        <span class="k">return</span> <span class="mi">8</span>
-    <span class="k">elif</span> <span class="n">ms</span> <span class="o">&lt;=</span> <span class="mf">24.4</span><span class="p">:</span>
-        <span class="k">return</span> <span class="mi">9</span>
-    <span class="k">elif</span> <span class="n">ms</span> <span class="o">&lt;=</span> <span class="mf">28.4</span><span class="p">:</span>
-        <span class="k">return</span> <span class="mi">10</span>
-    <span class="k">elif</span> <span class="n">ms</span> <span class="o">&lt;=</span> <span class="mf">32.6</span><span class="p">:</span>
-        <span class="k">return</span> <span class="mi">11</span>
-    <span class="k">return</span> <span class="mi">12</span></div>
+    <span class="k">for</span> <span class="n">bft</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">_bft_threshold</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="n">ms</span> <span class="o">&lt;</span> <span class="n">_bft_threshold</span><span class="p">[</span><span class="n">bft</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="n">bft</span>
+    <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">_bft_threshold</span><span class="p">)</span>
+</div>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="c"># run some simple tests</span>
+    <span class="k">print</span> <span class="s">&#39;Wind speed:&#39;</span>
+    <span class="k">print</span> <span class="s">&#39;</span><span class="si">%6s</span><span class="s"> </span><span class="si">%8s</span><span class="s"> </span><span class="si">%8s</span><span class="s"> </span><span class="si">%8s</span><span class="s"> </span><span class="si">%6s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="s">&#39;m/s&#39;</span><span class="p">,</span> <span class="s">&#39;km/h&#39;</span><span class="p">,</span> <span class="s">&#39;mph&#39;</span><span class="p">,</span> <span class="s">&#39;knots&#39;</span><span class="p">,</span> <span class="s">&#39;bft&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">ms</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="mi">22</span><span class="p">,</span> <span class="mi">26</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">34</span><span class="p">):</span>
+        <span class="k">print</span> <span class="s">&#39;</span><span class="si">%6g</span><span class="s"> </span><span class="si">%8.3f</span><span class="s"> </span><span class="si">%8.3f</span><span class="s"> </span><span class="si">%8.3f</span><span class="s"> </span><span class="si">%6d</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span>
+            <span class="n">ms</span><span class="p">,</span> <span class="n">wind_kmph</span><span class="p">(</span><span class="n">ms</span><span class="p">),</span> <span class="n">wind_mph</span><span class="p">(</span><span class="n">ms</span><span class="p">),</span> <span class="n">wind_kn</span><span class="p">(</span><span class="n">ms</span><span class="p">),</span> <span class="n">wind_bft</span><span class="p">(</span><span class="n">ms</span><span class="p">))</span>
+    <span class="k">print</span> <span class="s">&#39;Wind direction:&#39;</span>
+    <span class="k">for</span> <span class="n">pts</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">16</span><span class="p">):</span>
+        <span class="k">print</span> <span class="n">winddir_text</span><span class="p">(</span><span class="n">pts</span><span class="p">),</span>
+    <span class="k">print</span>
+    <span class="k">print</span> <span class="s">&#39;Wind direction, in Swedish:&#39;</span>
+    <span class="n">_Localisation</span><span class="o">.</span><span class="n">SetTranslation</span><span class="p">(</span><span class="s">&#39;sv&#39;</span><span class="p">)</span>
+    <span class="n">_winddir_text_array</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="k">for</span> <span class="n">pts</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">16</span><span class="p">):</span>
+        <span class="k">print</span> <span class="n">winddir_text</span><span class="p">(</span><span class="n">pts</span><span class="p">),</span>
+    <span class="k">print</span>
 </pre></div>
 
           </div>
@@ -162,7 +185,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">pywws v12.07 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">pywws v12.10 documentation</a> &raquo;</li>
           <li><a href="../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>

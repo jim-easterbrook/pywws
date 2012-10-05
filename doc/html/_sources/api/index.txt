@@ -25,8 +25,6 @@ Contents:
    pywws.ZambrettiCore
    pywws.Upload
    pywws.ToTwitter
-   pywws.ToMetOffice
-   pywws.ToUnderground
    pywws.toservice
    pywws.YoWindow
    pywws.WeatherStation

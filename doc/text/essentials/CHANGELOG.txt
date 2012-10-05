@@ -5,6 +5,11 @@ Change Log
    Python software for USB Wireless WeatherStations (pywws).
    http://code.google.com/p/pywws/
 
+   Changes in v12.10:
+       1/ Added a 'winddir_text' function for use in templates.
+       2/ Added <ytics> and <y2tics> options to graph plots.
+       3/ Various bug fixes.
+
    Changes in v12.07:
        1/ Added Open Weather Map to the services.
        2/ Fixed problem with Weather Underground uploads that started on 1st June.

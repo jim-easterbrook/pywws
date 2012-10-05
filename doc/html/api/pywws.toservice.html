@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pywws.toservice &mdash; pywws v12.07 documentation</title>
+    <title>pywws.toservice &mdash; pywws v12.10 documentation</title>
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '12.07',
+        VERSION:     '12.10',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,10 +23,10 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="shortcut icon" href="../_static/pywws_logo.ico"/>
-    <link rel="top" title="pywws v12.07 documentation" href="../index.html" />
+    <link rel="top" title="pywws v12.10 documentation" href="../index.html" />
     <link rel="up" title="Python programs and modules" href="index.html" />
     <link rel="next" title="pywws.YoWindow" href="pywws.YoWindow.html" />
-    <link rel="prev" title="pywws.ToUnderground" href="pywws.ToUnderground.html" /> 
+    <link rel="prev" title="pywws.ToTwitter" href="pywws.ToTwitter.html" /> 
   </head>
   <body>
     <div class="related">
@@ -42,9 +42,9 @@
           <a href="pywws.YoWindow.html" title="pywws.YoWindow"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="pywws.ToUnderground.html" title="pywws.ToUnderground"
+          <a href="pywws.ToTwitter.html" title="pywws.ToTwitter"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">pywws v12.07 documentation</a> &raquo;</li>
+        <li><a href="../index.html">pywws v12.10 documentation</a> &raquo;</li>
           <li><a href="index.html" accesskey="U">Python programs and modules</a> &raquo;</li> 
       </ul>
     </div>  
@@ -68,8 +68,8 @@ service_name is the service to upload to, e.g. underground</pre>
 <div class="section" id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
 <p>Several organisations allow weather stations to upload data using a
-simple HTTP &#8216;POST&#8217; request, with the data encoded as a sequence of
-<tt class="docutils literal"><span class="pre">key=value</span></tt> pairs separated by <tt class="docutils literal"><span class="pre">&amp;</span></tt> characters.</p>
+simple HTTP &#8216;POST&#8217; or &#8216;GET&#8217; request, with the data encoded as a
+sequence of <tt class="docutils literal"><span class="pre">key=value</span></tt> pairs separated by <tt class="docutils literal"><span class="pre">&amp;</span></tt> characters.</p>
 <p>This module enables pywws to upload readings to these organisations.
 It is highly customisable using configuration files. Each &#8216;service&#8217;
 requires a configuration file and two templates in <tt class="docutils literal"><span class="pre">pywws/services</span></tt>
@@ -149,7 +149,7 @@ should generate an error message.</p>
 Edit your <tt class="docutils literal"><span class="pre">weather.ini</span></tt> file and remove the <tt class="docutils literal"><span class="pre">last</span> <span class="pre">update</span></tt> line
 from the appropriate section, then run <tt class="docutils literal"><span class="pre">toservice.py</span></tt> with the
 catchup option:</p>
-<div class="highlight-python"><pre>python pywws/toservice.py -cv data_dir service_name</pre>
+<div class="highlight-python"><pre>python pywws/toservice.py -cvv data_dir service_name</pre>
 </div>
 <p>This may take 20 minutes or more, depending on how much data you have.</p>
 </div>
@@ -433,8 +433,8 @@ It should be a &#8216;calibrated&#8217; data record, as stored in
 </ul>
 
   <h4>Previous topic</h4>
-  <p class="topless"><a href="pywws.ToUnderground.html"
-                        title="previous chapter">pywws.ToUnderground</a></p>
+  <p class="topless"><a href="pywws.ToTwitter.html"
+                        title="previous chapter">pywws.ToTwitter</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="pywws.YoWindow.html"
                         title="next chapter">pywws.YoWindow</a></p>
@@ -468,9 +468,9 @@ It should be a &#8216;calibrated&#8217; data record, as stored in
           <a href="pywws.YoWindow.html" title="pywws.YoWindow"
              >next</a> |</li>
         <li class="right" >
-          <a href="pywws.ToUnderground.html" title="pywws.ToUnderground"
+          <a href="pywws.ToTwitter.html" title="pywws.ToTwitter"
              >previous</a> |</li>
-        <li><a href="../index.html">pywws v12.07 documentation</a> &raquo;</li>
+        <li><a href="../index.html">pywws v12.10 documentation</a> &raquo;</li>
           <li><a href="index.html" >Python programs and modules</a> &raquo;</li> 
       </ul>
     </div>

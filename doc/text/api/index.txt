@@ -63,14 +63,6 @@ Contents:
 | ``pywws.To | Post a message to Twitter                                                                  |
 | Twitter``  |                                                                                            |
 +------------+--------------------------------------------------------------------------------------------+
-| ``pywws.To | Post weather update to the UK Met Office 'WOW' site                                        |
-| MetOffice` |                                                                                            |
-| `          |                                                                                            |
-+------------+--------------------------------------------------------------------------------------------+
-| ``pywws.To | Post weather update to WeatherUnderground                                                  |
-| Undergroun |                                                                                            |
-| d``        |                                                                                            |
-+------------+--------------------------------------------------------------------------------------------+
 | ``pywws.to | Post weather update to services such as Weather Underground                                |
 | service``  |                                                                                            |
 +------------+--------------------------------------------------------------------------------------------+
@@ -102,7 +94,7 @@ Contents:
 | ``pywws.ca | Calibrate raw weather station data                                                         |
 | lib``      |                                                                                            |
 +------------+--------------------------------------------------------------------------------------------+
-| ``pywws.co | A set of functions to convert pywws native units (Centigrade, mm, m/s, hPa) to             |
+| ``pywws.co | conversions.py - a set of functions to convert pywws native units                          |
 | nversions` |                                                                                            |
 | `          |                                                                                            |
 +------------+--------------------------------------------------------------------------------------------+
@@ -151,6 +143,8 @@ Contents:
     * bmargin
     * yrange
     * y2range
+    * ytics
+    * y2tics
     * ylabel
     * ylabelangle
     * y2label
@@ -200,17 +194,6 @@ Contents:
   * Introduction
   * Detailed API
 * pywws.ToTwitter
-* pywws.ToMetOffice
-  * Introduction
-  * Configuration
-  * Upload old data
-  * Add Met Office upload to regular tasks
-  * Acknowledgment
-* pywws.ToUnderground
-  * Introduction
-  * Configuration
-  * Upload old data
-  * Add Weather Underground upload to regular tasks
 * pywws.toservice
   * Introduction
   * Configuration

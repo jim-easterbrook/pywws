@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pywws.Plot &mdash; pywws v12.07 documentation</title>
+    <title>pywws.Plot &mdash; pywws v12.10 documentation</title>
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '12.07',
+        VERSION:     '12.10',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="shortcut icon" href="../_static/pywws_logo.ico"/>
-    <link rel="top" title="pywws v12.07 documentation" href="../index.html" />
+    <link rel="top" title="pywws v12.10 documentation" href="../index.html" />
     <link rel="up" title="Python programs and modules" href="index.html" />
     <link rel="next" title="pywws.WindRose" href="pywws.WindRose.html" />
     <link rel="prev" title="pywws.calib" href="pywws.calib.html" /> 
@@ -44,7 +44,7 @@
         <li class="right" >
           <a href="pywws.calib.html" title="pywws.calib"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">pywws v12.07 documentation</a> &raquo;</li>
+        <li><a href="../index.html">pywws v12.10 documentation</a> &raquo;</li>
           <li><a href="index.html" accesskey="U">Python programs and modules</a> &raquo;</li> 
       </ul>
     </div>  
@@ -87,6 +87,8 @@
         bmargin
         yrange
         y2range
+        ytics
+        y2tics
         ylabel
         ylabelangle
         y2label
@@ -193,6 +195,14 @@
 <div class="section" id="y2range">
 <h3>y2range<a class="headerlink" href="#y2range" title="Permalink to this headline">¶</a></h3>
 <p>Sets the lower and upper limits of the right hand Y axis. Default is for the right hand Y axis to be the same as the left, but setting a different range is useful in dual axis plotting.</p>
+</div>
+<div class="section" id="ytics">
+<h3>ytics<a class="headerlink" href="#ytics" title="Permalink to this headline">¶</a></h3>
+<p>Controls the &#8220;tic&#8221; marks on the left hand Y axis. The value can be anything that&#8217;s understood by gnuplot. For example, to set the tic spacing to 45 use <tt class="docutils literal"><span class="pre">&lt;ytics&gt;45&lt;/ytics&gt;</span></tt>. More complex things are also possible, e.g. to label a wind direction graph with compass points, use <tt class="docutils literal"><span class="pre">&lt;y2tics&gt;('N'</span> <span class="pre">0,</span> <span class="pre">'E'</span> <span class="pre">90,</span> <span class="pre">'S'</span> <span class="pre">180,</span> <span class="pre">'W'</span> <span class="pre">270,</span> <span class="pre">'N'</span> <span class="pre">360)&lt;/y2tics&gt;</span></tt>.</p>
+</div>
+<div class="section" id="y2tics">
+<h3>y2tics<a class="headerlink" href="#y2tics" title="Permalink to this headline">¶</a></h3>
+<p>Controls the &#8220;tic&#8221; marks on the right hand axis. The format is the same as that for ytics. Default behaviour is to copy the left hand tic marks, but without labels.</p>
 </div>
 <div class="section" id="ylabel">
 <h3>ylabel<a class="headerlink" href="#ylabel" title="Permalink to this headline">¶</a></h3>
@@ -388,6 +398,8 @@ output_file is the name of the image file to be created e.g. 24hrs.png</p>
 <li><a class="reference internal" href="#bmargin">bmargin</a></li>
 <li><a class="reference internal" href="#yrange">yrange</a></li>
 <li><a class="reference internal" href="#y2range">y2range</a></li>
+<li><a class="reference internal" href="#ytics">ytics</a></li>
+<li><a class="reference internal" href="#y2tics">y2tics</a></li>
 <li><a class="reference internal" href="#ylabel">ylabel</a></li>
 <li><a class="reference internal" href="#ylabelangle">ylabelangle</a></li>
 <li><a class="reference internal" href="#y2label">y2label</a></li>
@@ -448,7 +460,7 @@ output_file is the name of the image file to be created e.g. 24hrs.png</p>
         <li class="right" >
           <a href="pywws.calib.html" title="pywws.calib"
              >previous</a> |</li>
-        <li><a href="../index.html">pywws v12.07 documentation</a> &raquo;</li>
+        <li><a href="../index.html">pywws v12.10 documentation</a> &raquo;</li>
           <li><a href="index.html" >Python programs and modules</a> &raquo;</li> 
       </ul>
     </div>

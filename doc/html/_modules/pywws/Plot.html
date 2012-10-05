@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pywws.Plot &mdash; pywws v12.07 documentation</title>
+    <title>pywws.Plot &mdash; pywws v12.10 documentation</title>
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '12.07',
+        VERSION:     '12.10',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="shortcut icon" href="../../_static/pywws_logo.ico"/>
-    <link rel="top" title="pywws v12.07 documentation" href="../../index.html" />
+    <link rel="top" title="pywws v12.10 documentation" href="../../index.html" />
     <link rel="up" title="Module code" href="../index.html" /> 
   </head>
   <body>
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">pywws v12.07 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">pywws v12.10 documentation</a> &raquo;</li>
           <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -65,6 +65,7 @@
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
 <span class="kn">import</span> <span class="nn">getopt</span>
 <span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">xml.dom.minidom</span>
 
@@ -88,6 +89,7 @@
         <span class="c"># create work directory</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">work_dir</span><span class="p">):</span>
             <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">work_dir</span><span class="p">)</span>
+
 <div class="viewcode-block" id="BasePlotter.DoPlot"><a class="viewcode-back" href="../../api/pywws.Plot.html#pywws.Plot.BasePlotter.DoPlot">[docs]</a>    <span class="k">def</span> <span class="nf">DoPlot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_file</span><span class="p">,</span> <span class="n">output_file</span><span class="p">):</span>
         <span class="c"># read XML graph description</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">doc</span> <span class="o">=</span> <span class="n">xml</span><span class="o">.</span><span class="n">dom</span><span class="o">.</span><span class="n">minidom</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">input_file</span><span class="p">)</span>
@@ -200,16 +202,18 @@
         <span class="n">of</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">doc</span><span class="o">.</span><span class="n">unlink</span><span class="p">()</span>
         <span class="c"># run gnuplot on file</span>
-        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s">&#39;gnuplot </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">cmd_file</span><span class="p">)</span>
+        <span class="n">subprocess</span><span class="o">.</span><span class="n">check_call</span><span class="p">([</span><span class="s">&#39;gnuplot&#39;</span><span class="p">,</span> <span class="n">cmd_file</span><span class="p">])</span>
         <span class="k">for</span> <span class="nb">file</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tmp_files</span><span class="p">:</span>
             <span class="n">os</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="nb">file</span><span class="p">)</span>
-        <span class="k">return</span> <span class="mi">0</span></div>
+        <span class="k">return</span> <span class="mi">0</span>
+</div>
 <div class="viewcode-block" id="BasePlotter.GetChildren"><a class="viewcode-back" href="../../api/pywws.Plot.html#pywws.Plot.BasePlotter.GetChildren">[docs]</a>    <span class="k">def</span> <span class="nf">GetChildren</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">childNodes</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">child</span><span class="o">.</span><span class="n">localName</span> <span class="o">==</span> <span class="n">name</span><span class="p">:</span>
                 <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">child</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">result</span></div>
+        <span class="k">return</span> <span class="n">result</span>
+</div>
 <div class="viewcode-block" id="BasePlotter.GetValue"><a class="viewcode-back" href="../../api/pywws.Plot.html#pywws.Plot.BasePlotter.GetValue">[docs]</a>    <span class="k">def</span> <span class="nf">GetValue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">default</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">childNodes</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">child</span><span class="o">.</span><span class="n">localName</span> <span class="o">==</span> <span class="n">name</span><span class="p">:</span>
@@ -217,16 +221,21 @@
                     <span class="k">return</span> <span class="n">child</span><span class="o">.</span><span class="n">childNodes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">return</span> <span class="s">&#39;&#39;</span>
-        <span class="k">return</span> <span class="n">default</span></div></div>
+        <span class="k">return</span> <span class="n">default</span>
+</div></div>
 <div class="viewcode-block" id="Record"><a class="viewcode-back" href="../../api/pywws.Plot.html#pywws.Plot.Record">[docs]</a><span class="k">class</span> <span class="nc">Record</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="k">pass</span></div>
+    <span class="k">pass</span>
+</div>
 <div class="viewcode-block" id="GraphPlotter"><a class="viewcode-back" href="../../api/pywws.Plot.html#pywws.Plot.GraphPlotter">[docs]</a><span class="k">class</span> <span class="nc">GraphPlotter</span><span class="p">(</span><span class="n">BasePlotter</span><span class="p">):</span>
 <div class="viewcode-block" id="GraphPlotter.GetPlotList"><a class="viewcode-back" href="../../api/pywws.Plot.html#pywws.Plot.GraphPlotter.GetPlotList">[docs]</a>    <span class="k">def</span> <span class="nf">GetPlotList</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">GetChildren</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="p">,</span> <span class="s">&#39;plot&#39;</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">GetChildren</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="p">,</span> <span class="s">&#39;plot&#39;</span><span class="p">)</span>
+</div>
 <div class="viewcode-block" id="GraphPlotter.GetDefaultRows"><a class="viewcode-back" href="../../api/pywws.Plot.html#pywws.Plot.GraphPlotter.GetDefaultRows">[docs]</a>    <span class="k">def</span> <span class="nf">GetDefaultRows</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_count</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_count</span>
+</div>
 <div class="viewcode-block" id="GraphPlotter.GetDefaultPlotSize"><a class="viewcode-back" href="../../api/pywws.Plot.html#pywws.Plot.GraphPlotter.GetDefaultPlotSize">[docs]</a>    <span class="k">def</span> <span class="nf">GetDefaultPlotSize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="mi">200</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">cols</span><span class="p">,</span> <span class="mi">600</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">cols</span></div>
+        <span class="k">return</span> <span class="mi">200</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">cols</span><span class="p">,</span> <span class="mi">600</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">cols</span>
+</div>
 <div class="viewcode-block" id="GraphPlotter.GetPreamble"><a class="viewcode-back" href="../../api/pywws.Plot.html#pywws.Plot.GraphPlotter.GetPreamble">[docs]</a>    <span class="k">def</span> <span class="nf">GetPreamble</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">result</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;set style fill solid</span>
 <span class="s">set xdata time</span>
@@ -250,7 +259,8 @@
         <span class="k">if</span> <span class="n">xtics</span><span class="p">:</span>
             <span class="n">result</span> <span class="o">+=</span> <span class="s">&#39;set xtics </span><span class="si">%d</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">eval</span><span class="p">(</span><span class="n">xtics</span><span class="p">)</span> <span class="o">*</span> <span class="mi">3600</span><span class="p">)</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">encoding</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">result</span></div>
+        <span class="k">return</span> <span class="n">result</span>
+</div>
 <div class="viewcode-block" id="GraphPlotter.PlotData"><a class="viewcode-back" href="../../api/pywws.Plot.html#pywws.Plot.GraphPlotter.PlotData">[docs]</a>    <span class="k">def</span> <span class="nf">PlotData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plot_no</span><span class="p">,</span> <span class="n">plot</span><span class="p">,</span> <span class="n">source</span><span class="p">):</span>
         <span class="n">_</span> <span class="o">=</span> <span class="n">Localisation</span><span class="o">.</span><span class="n">translation</span><span class="o">.</span><span class="n">ugettext</span>
         <span class="n">subplot_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">GetChildren</span><span class="p">(</span><span class="n">plot</span><span class="p">,</span> <span class="s">&#39;subplot&#39;</span><span class="p">)</span>
@@ -285,19 +295,25 @@
         <span class="c"># set bottom margin</span>
         <span class="n">bmargin</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">GetValue</span><span class="p">(</span><span class="n">plot</span><span class="p">,</span> <span class="s">&#39;bmargin&#39;</span><span class="p">,</span> <span class="s">&#39;-1&#39;</span><span class="p">))</span>
         <span class="n">result</span> <span class="o">+=</span> <span class="s">&#39;set bmargin </span><span class="si">%g</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">bmargin</span><span class="p">)</span>
-        <span class="c"># set y range</span>
+        <span class="c"># set y ranges and tics</span>
         <span class="n">yrange</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">GetValue</span><span class="p">(</span><span class="n">plot</span><span class="p">,</span> <span class="s">&#39;yrange&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+        <span class="n">y2range</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">GetValue</span><span class="p">(</span><span class="n">plot</span><span class="p">,</span> <span class="s">&#39;y2range&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+        <span class="n">ytics</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">GetValue</span><span class="p">(</span><span class="n">plot</span><span class="p">,</span> <span class="s">&#39;ytics&#39;</span><span class="p">,</span> <span class="s">&#39;autofreq&#39;</span><span class="p">)</span>
+        <span class="n">y2tics</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">GetValue</span><span class="p">(</span><span class="n">plot</span><span class="p">,</span> <span class="s">&#39;y2tics&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">y2tics</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">y2range</span><span class="p">:</span>
+            <span class="n">y2range</span> <span class="o">=</span> <span class="n">yrange</span>
+        <span class="k">elif</span> <span class="n">y2range</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">y2tics</span><span class="p">:</span>
+            <span class="n">y2tics</span> <span class="o">=</span> <span class="s">&#39;autofreq&#39;</span>
         <span class="k">if</span> <span class="n">yrange</span><span class="p">:</span>
             <span class="n">result</span> <span class="o">+=</span> <span class="s">&#39;set yrange [</span><span class="si">%s</span><span class="s">]</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">yrange</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;,&#39;</span><span class="p">,</span> <span class="s">&#39;:&#39;</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">result</span> <span class="o">+=</span> <span class="s">&#39;set yrange [*:*]</span><span class="se">\n</span><span class="s">&#39;</span>
-        <span class="c"># set y2 range</span>
-        <span class="n">y2range</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">GetValue</span><span class="p">(</span><span class="n">plot</span><span class="p">,</span> <span class="s">&#39;y2range&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">y2range</span><span class="p">:</span>
             <span class="n">result</span> <span class="o">+=</span> <span class="s">&#39;set y2range [</span><span class="si">%s</span><span class="s">]</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">y2range</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;,&#39;</span><span class="p">,</span> <span class="s">&#39;:&#39;</span><span class="p">))</span>
-            <span class="n">result</span> <span class="o">+=</span> <span class="s">&#39;unset ytics; set ytics nomirror; set y2tics</span><span class="se">\n</span><span class="s">&#39;</span>
+        <span class="k">if</span> <span class="n">y2tics</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">+=</span> <span class="s">&#39;set ytics nomirror </span><span class="si">%s</span><span class="s">; set y2tics </span><span class="si">%s</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">ytics</span><span class="p">,</span> <span class="n">y2tics</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">result</span> <span class="o">+=</span> <span class="s">&#39;unset y2tics; set ytics mirror</span><span class="se">\n</span><span class="s">&#39;</span>
+            <span class="n">result</span> <span class="o">+=</span> <span class="s">&#39;unset y2tics; set ytics mirror </span><span class="si">%s</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">ytics</span><span class="p">)</span>
         <span class="c"># set grid</span>
         <span class="n">result</span> <span class="o">+=</span> <span class="s">&#39;unset grid</span><span class="se">\n</span><span class="s">&#39;</span>
         <span class="n">grid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">GetValue</span><span class="p">(</span><span class="n">plot</span><span class="p">,</span> <span class="s">&#39;grid&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
@@ -433,7 +449,7 @@
     <span class="n">Localisation</span><span class="o">.</span><span class="n">SetApplicationLanguage</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">GraphPlotter</span><span class="p">(</span>
         <span class="n">params</span><span class="p">,</span>
-        <span class="n">DataStore</span><span class="o">.</span><span class="n">data_store</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">DataStore</span><span class="o">.</span><span class="n">hourly_store</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
+        <span class="n">DataStore</span><span class="o">.</span><span class="n">calib_store</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">DataStore</span><span class="o">.</span><span class="n">hourly_store</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
         <span class="n">DataStore</span><span class="o">.</span><span class="n">daily_store</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">DataStore</span><span class="o">.</span><span class="n">monthly_store</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
         <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
         <span class="p">)</span><span class="o">.</span><span class="n">DoPlot</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">args</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
@@ -473,7 +489,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">pywws v12.07 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">pywws v12.10 documentation</a> &raquo;</li>
           <li><a href="../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
