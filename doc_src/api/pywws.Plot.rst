@@ -39,6 +39,8 @@ The complete element hierarchy is shown below. ::
             bmargin
             yrange
             y2range
+            ytics
+            y2tics
             ylabel
             ylabelangle
             y2label
@@ -166,6 +168,16 @@ y2range
 ^^^^^^^
 
 Sets the lower and upper limits of the right hand Y axis. Default is for the right hand Y axis to be the same as the left, but setting a different range is useful in dual axis plotting.
+
+ytics
+^^^^^
+
+Controls the "tic" marks on the left hand Y axis. The value can be anything that's understood by gnuplot. For example, to set the tic spacing to 45 use ``<ytics>45</ytics>``. More complex things are also possible, e.g. to label a wind direction graph with compass points, use ``<y2tics>('N' 0, 'E' 90, 'S' 180, 'W' 270, 'N' 360)</y2tics>``.
+
+y2tics
+^^^^^^
+
+Controls the "tic" marks on the right hand axis. The format is the same as that for ytics. Default behaviour is to copy the left hand tic marks, but without labels.
 
 ylabel
 ^^^^^^
