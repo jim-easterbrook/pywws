@@ -1,7 +1,7 @@
 #live#
 #roundtime True#
 {
-#idx          "'dateum'                  : '%Y%m%d%H%M',"#
+#idx          "'datum'                   : '%Y%m%d%H%M',"#
 #hum_out      "'feuchtigkeit'            : '%.d',"#
 #temp_out     "'temperatur'              : '%.1f',"#
 #wind_dir     "'windrichtung'            : '%.0f'," "" "winddir_degrees(x)"#
