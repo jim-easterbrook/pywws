@@ -126,7 +126,7 @@ def LogData(params, raw_data, sync=None, clear=False):
         params._config.remove_option('config', 'ws type')
         params.set('fixed', 'ws type', ws_type)
     ws_type = params.get('fixed', 'ws type', 'Unknown')
-    ws = WeatherStation.weather_station(ws_type=ws_type)
+    ws = WeatherStation.weather_station(ws_type=ws_type, params=params)
     fixed_block = CheckFixedBlock(ws, params, logger)
     if not fixed_block:
         logger.error("Invalid data from weather station")
