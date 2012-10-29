@@ -457,6 +457,8 @@ class weather_station(object):
                         self.logger.warning('live_data lost sync')
                         result = None
                         next_live = None
+                else:
+                    result = None
                 if result:
                     yield result, old_ptr, False
             old_data = new_data
