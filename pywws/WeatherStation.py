@@ -346,6 +346,9 @@ class CUSBDrive(object):
 
 class weather_station(object):
     """Class that represents the weather station to user program."""
+    # avoid USB activity this number of seconds each side of time when
+    # station screen is believed to be writing to the memory
+    avoid = 3.0
     def __init__(self, ws_type='1080', library='auto', params=None):
         """Connect to weather station and prepare to read data."""
         self.logger = logging.getLogger('pywws.weather_station')
@@ -377,16 +380,7 @@ class weather_station(object):
         old_ptr = self.current_pos()
         old_data = self.get_data(old_ptr, unbuffered=True)
         now = time.time()
-        if self._station_clock:
-            next_log = now
-            if old_data['delay'] is None:
-                next_log -= (next_log - self._station_clock) % log_interval
-            else:
-                next_log -= (next_log - self._station_clock) % 60
-                next_log -= (old_data['delay'] + 1) * 60
-            next_log += log_interval
-        else:
-            next_log = None
+        next_log = None
         next_live = None
         while True:
             last_time = now
@@ -398,7 +392,7 @@ class weather_station(object):
             elif not logged_only:
                 pause = 0.0
             if next_log:
-                pause = min(pause, (next_log - 4.0) - now)
+                pause = min(pause, (next_log - (self.avoid + 2.0)) - now)
             elif (old_data['delay'] is None or
                   old_data['delay'] >= read_period - 1):
                 pause = 0.0
@@ -421,21 +415,22 @@ class weather_station(object):
                 # pointer won't have changed
                 new_ptr = old_ptr
             else:
-                if valid_now and next_log and next_log < now - 12.0:
+                if valid_now and next_log and now > next_log + 12.0:
                     self.logger.warning('live_data log extended')
                     next_log += 60.0
                 new_ptr = self.current_pos()
                 # make sure changes because of logging interval aren't
                 # mistaken for new live data
                 old_data['delay'] = new_data['delay']
-            live_overdue = (next_live and now > next_live + 6.0 and
-                            new_data == old_data)
+            live_overdue = (next_live and new_data == old_data and
+                            now > next_live + (self.avoid * 2.0) + 1.0)
             if (new_data != old_data or live_overdue) and not logged_only:
                 self.logger.debug('live data')
                 result = dict(new_data)
                 if live_overdue:
                     # overdue for new data
-                    self.logger.warning('live_data %.2fs overdue', now - next_live)
+                    self.logger.warning(
+                        'live_data %.2fs overdue', now - next_live)
                     result['idx'] = datetime.utcfromtimestamp(int(next_live))
                     next_live += live_interval
                 elif valid_now:
@@ -444,6 +439,11 @@ class weather_station(object):
                         self.logger.warning('live_data synchronised')
                     result['idx'] = datetime.utcfromtimestamp(int(now))
                     next_live = now + live_interval
+                    if self._station_clock and not next_log:
+                        next_log = now
+                        next_log -= (next_log - self._station_clock) % 60
+                        next_log -= result['delay'] * 60
+                        next_log += log_interval
                 elif next_live:
                     # found change immediately on wake up
                     result['idx'] = datetime.utcfromtimestamp(int(next_live))
@@ -454,7 +454,7 @@ class weather_station(object):
                         # woke up just in time
                         next_live += live_interval - 2.0
                     else:
-                        self.logger.warning('live_data lost sync')
+                        self.logger.warning('live_data lost sync %g', now - next_live)
                         result = None
                         next_live = None
                 else:
@@ -469,8 +469,8 @@ class weather_station(object):
                 new_data = self.get_data(old_ptr, unbuffered=True)
                 result = dict(new_data)
                 if valid_now:
-                    # don't expect this, as should be avoiding time
-                    # when data is logged
+                    # we know when the pointer changed, so set the
+                    # time to avoid
                     result['idx'] = datetime.utcfromtimestamp(int(now))
                     self._station_clock = now
                     self.logger.warning('setting station clock: %s',
@@ -484,20 +484,18 @@ class weather_station(object):
                     next_log = now + log_interval
                 elif next_log:
                     # found change immediately on waking up
-                    pred = next_log
-                    if result['delay']:
-                        pred += float(result['delay'] * 60) - log_interval
-                    result['idx'] = datetime.utcfromtimestamp(int(pred))
-                    if now > pred + 30.0:
+                    result['idx'] = datetime.utcfromtimestamp(int(next_log))
+                    if now > next_log + 30.0:
                         # woke up very late
                         self.logger.warning(
-                            'live_data lost log sync, %g late', now - pred)
+                            'live_data lost log sync, %g late', now - next_log)
                         result = None
                         next_log = None
                         self._station_clock = None
-                    elif now > pred:
-                        # woke up late
-                        next_log = pred + log_interval
+                    elif now > next_log:
+                        # normal behaviour when avoiding USB activity
+                        # at logging time
+                        next_log += log_interval
                     else:
                         self.logger.warning('live_data lost log sync')
                         result = None
@@ -613,8 +611,8 @@ class weather_station(object):
                 # station clock was last measured a day ago, so reset it
                 self._station_clock = None
                 return
-            pause = (3 - phase) % 60
-            if pause > 6:
+            pause = (self.avoid - phase) % 60
+            if pause > self.avoid * 2.0:
                 return
             self.logger.debug('avoid %s', str(pause))
             time.sleep(pause)
