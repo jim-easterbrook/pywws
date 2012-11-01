@@ -32,13 +32,15 @@ HOUR = timedelta(hours=1)
 DAY = timedelta(hours=24)
 
 class Template(object):
-    def __init__(self, params, calib_data, hourly_data, daily_data, monthly_data):
+    def __init__(self, params, calib_data, hourly_data, daily_data, monthly_data,
+                 use_locale=True):
         self.logger = logging.getLogger('pywws.Template')
         self.params = params
         self.calib_data = calib_data
         self.hourly_data = hourly_data
         self.daily_data = daily_data
         self.monthly_data = monthly_data
+        self.use_locale = use_locale
         self.midnight = None
         self.rain_midnight = None
 
@@ -136,7 +138,7 @@ class Template(object):
                             yield command[2]
                     elif isinstance(x, datetime):
                         yield x.strftime(fmt)
-                    elif sys.version_info < (2, 5):
+                    elif sys.version_info < (2, 5) or not self.use_locale:
                         yield fmt % (x)
                     elif sys.version_info < (2, 7) and '%%' in fmt:
                         yield locale.format_string(

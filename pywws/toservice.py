@@ -247,7 +247,7 @@ class ToService(object):
             self.fixed_data[name] = value
         # create templater
         self.templater = Template.Template(
-            self.params, self.data, self.data, None, None)
+            self.params, self.data, self.data, None, None, use_locale=False)
         self.template_file = os.path.join(
             os.path.dirname(__file__), 'services',
             '%s_template_%s.txt' % (service_name,
