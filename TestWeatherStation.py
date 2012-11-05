@@ -19,6 +19,7 @@ __usage__ = """
  usage: python TestWeatherStation.py [options]
  options are:
        --help           display this help
+  -c | --change         display any changes in "fixed block" data
   -d | --decode         display meaningful values instead of raw data
   -h | --history count  display the last "count" readings
   -l | --live           display 'live' data
@@ -35,6 +36,7 @@ __usage__ = __doc__.split('\n')[0] + __usage__
 import datetime
 import getopt
 import sys
+import time
 
 from pywws.Logger import ApplicationLogger
 from pywws import WeatherStation
@@ -49,8 +51,9 @@ def main(argv=None):
         argv = sys.argv
     try:
         opts, args = getopt.getopt(
-            argv[1:], "dh:lmuv",
-            ('help', 'decode', 'history=', 'live', 'logged', 'unknown', 'verbose'))
+            argv[1:], "cdh:lmuv",
+            ('help', 'change', 'decode', 'history=', 'live', 'logged',
+             'unknown', 'verbose'))
     except getopt.error, msg:
         print >>sys.stderr, 'Error: %s\n' % msg
         print >>sys.stderr, __usage__.strip()
@@ -61,6 +64,7 @@ def main(argv=None):
         print >>sys.stderr, __usage__.strip()
         return 2
     # process options
+    change = False
     history_count = 0
     decode = False
     live = False
@@ -71,6 +75,8 @@ def main(argv=None):
         if o == '--help':
             print __usage__.strip()
             return 0
+        elif o in ('-c', '--change'):
+            change = True
         elif o in ('-d', '--decode'):
             decode = True
         elif o in ('-h', '--history'):
@@ -126,6 +132,16 @@ def main(argv=None):
             else:
                 raw_dump(ptr, ws.get_raw_data(ptr))
             ptr = ws.dec_ptr(ptr)
+    if change:
+        while True:
+            new_fixed = ws.get_raw_fixed_block(unbuffered=True)
+            for ptr in range(len(new_fixed)):
+                if new_fixed[ptr] != raw_fixed[ptr]:
+                    print datetime.datetime.now().strftime('%H:%M:%S'),
+                    print ' %04x (%d)  %02x -> %02x' % (
+                        ptr, ptr, raw_fixed[ptr], new_fixed[ptr])
+            raw_fixed = new_fixed
+            time.sleep(0.5)
     if live:
         for data, ptr, logged in ws.live_data():
             print "%04x" % ptr,
