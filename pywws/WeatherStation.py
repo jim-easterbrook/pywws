@@ -349,6 +349,8 @@ class weather_station(object):
     # avoid USB activity this number of seconds each side of time when
     # station screen is believed to be writing to the memory
     avoid = 3.0
+    # minimum interval between polling for data change
+    min_pause = 0.5
     def __init__(self, ws_type='1080', library='auto', params=None):
         """Connect to weather station and prepare to read data."""
         self.logger = logging.getLogger('pywws.weather_station')
@@ -389,7 +391,7 @@ class weather_station(object):
             pause = 600.0
             if next_live:
                 pause = min(pause, (next_live - 2.0) - now)
-            elif not logged_only:
+            elif (not logged_only) or (self._station_clock and not next_log):
                 pause = 0.0
             if next_log:
                 pause = min(pause, (next_log - (self.avoid + 2.0)) - now)
@@ -399,14 +401,14 @@ class weather_station(object):
             elif not next_live:
                 pause = min(pause,
                             ((read_period - old_data['delay']) * 60.0) - 110.0)
-            pause = max(pause, 0.5)
+            pause = max(pause, self.min_pause)
             self.logger.debug('delay %s, pause %g', str(old_data['delay']), pause)
             time.sleep(pause)
             new_data = self.get_data(old_ptr, unbuffered=True)
             now = time.time()
             # 'good' time stamp if we haven't just woken up from long
             # pause and data read wasn't delayed
-            valid_now = now - last_time < 1.0
+            valid_now = now - last_time < self.min_pause + 1.0
             while next_live and next_live < now - live_interval:
                 self.logger.info('live_data missed')
                 next_live += live_interval
@@ -422,8 +424,15 @@ class weather_station(object):
                 # make sure changes because of logging interval aren't
                 # mistaken for new live data
                 old_data['delay'] = new_data['delay']
+            # set next_log if possible
+            if not next_log and (self._station_clock and valid_now and
+                                 new_data != old_data):
+                next_log = now
+                next_log -= (next_log - self._station_clock) % 60
+                next_log -= new_data['delay'] * 60
+                next_log += log_interval
             live_overdue = (next_live and new_data == old_data and
-                            now > next_live + (self.avoid * 2.0) + 1.0)
+                            now > next_live + (self.avoid * 2.0) + 2.0)
             if (new_data != old_data or live_overdue) and not logged_only:
                 self.logger.debug('live data')
                 result = dict(new_data)
@@ -439,11 +448,6 @@ class weather_station(object):
                         self.logger.warning('live_data synchronised')
                     result['idx'] = datetime.utcfromtimestamp(int(now))
                     next_live = now + live_interval
-                    if self._station_clock and not next_log:
-                        next_log = now
-                        next_log -= (next_log - self._station_clock) % 60
-                        next_log -= result['delay'] * 60
-                        next_log += log_interval
                 elif next_live:
                     # found change immediately on wake up
                     result['idx'] = datetime.utcfromtimestamp(int(next_live))
