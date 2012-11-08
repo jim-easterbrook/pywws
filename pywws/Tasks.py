@@ -114,7 +114,9 @@ class RegularTasks(object):
     def do_tasks(self):
         sections = ['logged']
         now = self.calib_data.before(datetime.max)
-        if not now:
+        if now:
+            now += timedelta(minutes=self.calib_data[now]['delay'])
+        else:
             now = datetime.utcnow()
         threshold = now.replace(minute=0, second=0, microsecond=0)
         last_update = self.params.get_datetime('hourly', 'last update')
