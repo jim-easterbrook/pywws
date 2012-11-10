@@ -1,9 +1,0 @@
-
-Essentials
-**********
-
-Contents:
-
-* README
-* GNU General Public License
-* Change Log
