@@ -15,3 +15,6 @@ develop-eggs
 
 # Editor backups
 *~
+
+# Compiled documentation
+doc
