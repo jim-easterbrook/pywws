@@ -11,7 +11,7 @@ clean :
 	rm -Rf doc/* code/pywws/locale/*
 
 .PHONY : doc
-doc :
+doc : code/pywws/version.py
 	$(MAKE) -C doc_src html text
 
 lang_src	:= $(wildcard code/languages/*.po)
