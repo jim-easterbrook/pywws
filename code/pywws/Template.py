@@ -117,8 +117,6 @@ class Template(object):
                         del command[1]
                     else:
                         x = data[command[0]]
-                    if command[0] == 'wind_dir' and data['wind_ave'] < 0.3:
-                        x = None
                     # adjust time
                     if isinstance(x, datetime):
                         if round_time:
