@@ -3,116 +3,237 @@
 # Copyright (C) 2010 THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # Pyttsen <weather@spacelab.se>, 2010.
-#
+# 
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-02-03 22:10+0100\n"
+"Report-Msgid-Bugs-To: jim@jim-easterbrook.me.uk\n"
+"POT-Creation-Date: 2012-11-16 11:57+0000\n"
 "PO-Revision-Date: 2010-02-03 22:11+0100\n"
 "Last-Translator: Pyttsen <weather@spacelab.se>\n"
 "Language-Team: Swedish\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../WeatherStation.py:25 ../WindRose.py:94
+#: code/pywws/Plot.py:226
+msgid "Time (%Z)"
+msgstr ""
+
+#: code/pywws/Plot.py:228
+msgid "Day"
+msgstr ""
+
+#: code/pywws/Plot.py:230
+msgid "Date"
+msgstr ""
+
+#: code/pywws/WeatherStation.py:114 code/pywws/WindRose.py:123
+#: code/pywws/conversions.py:52
 msgid "N"
 msgstr "N"
 
-#: ../WeatherStation.py:25
+#: code/pywws/WeatherStation.py:114 code/pywws/conversions.py:52
 msgid "NNE"
 msgstr "NNV"
 
-#: ../WeatherStation.py:25
+#: code/pywws/WeatherStation.py:114 code/pywws/conversions.py:52
 msgid "NE"
 msgstr "NO"
 
-#: ../WeatherStation.py:25
+#: code/pywws/WeatherStation.py:114 code/pywws/conversions.py:52
 msgid "ENE"
 msgstr "ONO"
 
-#: ../WeatherStation.py:26 ../WindRose.py:94
+#: code/pywws/WeatherStation.py:115 code/pywws/WindRose.py:123
+#: code/pywws/conversions.py:53
 msgid "E"
 msgstr "O"
 
-#: ../WeatherStation.py:26
+#: code/pywws/WeatherStation.py:115 code/pywws/conversions.py:53
 msgid "ESE"
 msgstr "OSO"
 
-#: ../WeatherStation.py:26
+#: code/pywws/WeatherStation.py:115 code/pywws/conversions.py:53
 msgid "SE"
 msgstr "SO"
 
-#: ../WeatherStation.py:26
+#: code/pywws/WeatherStation.py:115 code/pywws/conversions.py:53
 msgid "SSE"
 msgstr "SSO"
 
-#: ../WeatherStation.py:27 ../WindRose.py:94
+#: code/pywws/WeatherStation.py:116 code/pywws/WindRose.py:123
+#: code/pywws/conversions.py:54
 msgid "S"
 msgstr "S"
 
-#: ../WeatherStation.py:27
+#: code/pywws/WeatherStation.py:116 code/pywws/conversions.py:54
 msgid "SSW"
 msgstr "SSV"
 
-#: ../WeatherStation.py:27
+#: code/pywws/WeatherStation.py:116 code/pywws/conversions.py:54
 msgid "SW"
 msgstr "SV"
 
-#: ../WeatherStation.py:27
+#: code/pywws/WeatherStation.py:116 code/pywws/conversions.py:54
 msgid "WSW"
 msgstr "VSV"
 
-#: ../WeatherStation.py:28 ../WindRose.py:94
+#: code/pywws/WeatherStation.py:117 code/pywws/WindRose.py:123
+#: code/pywws/conversions.py:55
 msgid "W"
 msgstr "V"
 
-#: ../WeatherStation.py:28
+#: code/pywws/WeatherStation.py:117 code/pywws/conversions.py:55
 msgid "WNW"
 msgstr "VNV"
 
-#: ../WeatherStation.py:28
+#: code/pywws/WeatherStation.py:117 code/pywws/conversions.py:55
 msgid "NW"
 msgstr "NV"
 
-#: ../WeatherStation.py:28
+#: code/pywws/WeatherStation.py:117 code/pywws/conversions.py:55
 msgid "NNW"
 msgstr "NNV"
 
-#: ../WeatherStation.py:35
+#: code/pywws/WeatherStation.py:127
 msgid "rising very rapidly"
 msgstr "väldigt hastigt ökande"
 
-#: ../WeatherStation.py:37
+#: code/pywws/WeatherStation.py:129
 msgid "rising quickly"
 msgstr "hastigt ökande"
 
-#: ../WeatherStation.py:39
+#: code/pywws/WeatherStation.py:131
 msgid "rising"
 msgstr "ökande"
 
-#: ../WeatherStation.py:41
+#: code/pywws/WeatherStation.py:133
 msgid "rising slowly"
 msgstr "långsamt ökande"
 
-#: ../WeatherStation.py:43
+#: code/pywws/WeatherStation.py:135
 msgid "falling very rapidly"
 msgstr "väldigt hastigt fallande"
 
-#: ../WeatherStation.py:45
+#: code/pywws/WeatherStation.py:137
 msgid "falling quickly"
 msgstr "hastigt fallande"
 
-#: ../WeatherStation.py:47
+#: code/pywws/WeatherStation.py:139
 msgid "falling"
 msgstr "fallande"
 
-#: ../WeatherStation.py:49
+#: code/pywws/WeatherStation.py:141
 msgid "falling slowly"
 msgstr "långsamt fallande"
 
-#: ../WeatherStation.py:50
+#: code/pywws/WeatherStation.py:142
 msgid "steady"
 msgstr "stadigt"
+
+#: code/pywws/ZambrettiCore.py:6
+msgid "Settled fine"
+msgstr ""
+
+#: code/pywws/ZambrettiCore.py:7
+msgid "Fine weather"
+msgstr ""
+
+#: code/pywws/ZambrettiCore.py:8
+msgid "Becoming fine"
+msgstr ""
+
+#: code/pywws/ZambrettiCore.py:9
+msgid "Fine, becoming less settled"
+msgstr ""
+
+#: code/pywws/ZambrettiCore.py:10
+msgid "Fine, possible showers"
+msgstr ""
+
+#: code/pywws/ZambrettiCore.py:11
+msgid "Fairly fine, improving"
+msgstr ""
+
+#: code/pywws/ZambrettiCore.py:12
+msgid "Fairly fine, possible showers early"
+msgstr ""
+
+#: code/pywws/ZambrettiCore.py:13
+msgid "Fairly fine, showery later"
+msgstr ""
+
+#: code/pywws/ZambrettiCore.py:14
+msgid "Showery early, improving"
+msgstr ""
+
+#: code/pywws/ZambrettiCore.py:15
+msgid "Changeable, mending"
+msgstr ""
+
+#: code/pywws/ZambrettiCore.py:16
+msgid "Fairly fine, showers likely"
+msgstr ""
+
+#: code/pywws/ZambrettiCore.py:17
+msgid "Rather unsettled clearing later"
+msgstr ""
+
+#: code/pywws/ZambrettiCore.py:18
+msgid "Unsettled, probably improving"
+msgstr ""
+
+#: code/pywws/ZambrettiCore.py:19
+msgid "Showery, bright intervals"
+msgstr ""
+
+#: code/pywws/ZambrettiCore.py:20
+msgid "Showery, becoming less settled"
+msgstr ""
+
+#: code/pywws/ZambrettiCore.py:21
+msgid "Changeable, some rain"
+msgstr ""
+
+#: code/pywws/ZambrettiCore.py:22
+msgid "Unsettled, short fine intervals"
+msgstr ""
+
+#: code/pywws/ZambrettiCore.py:23
+msgid "Unsettled, rain later"
+msgstr ""
+
+#: code/pywws/ZambrettiCore.py:24
+msgid "Unsettled, some rain"
+msgstr ""
+
+#: code/pywws/ZambrettiCore.py:25
+msgid "Mostly very unsettled"
+msgstr ""
+
+#: code/pywws/ZambrettiCore.py:26
+msgid "Occasional rain, worsening"
+msgstr ""
+
+#: code/pywws/ZambrettiCore.py:27
+msgid "Rain at times, very unsettled"
+msgstr ""
+
+#: code/pywws/ZambrettiCore.py:28
+msgid "Rain at frequent intervals"
+msgstr ""
+
+#: code/pywws/ZambrettiCore.py:29
+msgid "Rain, very unsettled"
+msgstr ""
+
+#: code/pywws/ZambrettiCore.py:30
+msgid "Stormy, may improve"
+msgstr ""
+
+#: code/pywws/ZambrettiCore.py:31
+msgid "Stormy, much rain"
+msgstr ""

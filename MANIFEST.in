@@ -1,0 +1,10 @@
+include code/*.py *.txt MANIFEST.in makefile
+include code/pywws/*.py
+include code/languages/*.po
+recursive-include doc_src *
+recursive-include doc/html *
+recursive-include doc/text *
+recursive-include code/example_templates *
+recursive-include code/example_graph_templates *
+recursive-include code/example_modules *
+global-exclude *~

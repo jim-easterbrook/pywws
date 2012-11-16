@@ -18,3 +18,9 @@ develop-eggs
 
 # Compiled documentation
 doc
+
+# Miscellaneous
+MANIFEST
+code/languages/pywws.pot
+code/pywws/locale
+code/pywws/version.py

@@ -168,9 +168,7 @@ def SetTranslation(lang):
             lang = lang.split('.')[0]
         langs += [lang, lang[:2]]
     # get translation object
-    path = os.path.join(os.path.dirname(sys.argv[0]), '..', 'locale')
-    if not os.path.exists(path):
-        path = os.path.join(os.path.dirname(sys.argv[0]), 'locale')
+    path = os.path.join(os.path.dirname(__file__), 'locale')
     codeset = locale.getpreferredencoding()
     if codeset == 'ASCII':
         codeset = 'UTF-8'

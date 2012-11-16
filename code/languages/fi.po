@@ -6,229 +6,233 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: pywws\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-04-06 18:58+0100\n"
+"Report-Msgid-Bugs-To: jim@jim-easterbrook.me.uk\n"
+"POT-Creation-Date: 2012-11-16 11:57+0000\n"
 "PO-Revision-Date: 2012-11-16 05:02+0200\n"
 "Last-Translator: root <karte2@gmail.com>\n"
 "Language-Team: Finnish\n"
+"Language: fi\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: fi\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../Plot.py:205
+#: code/pywws/Plot.py:226
 msgid "Time (%Z)"
 msgstr "Aika"
 
-#: ../Plot.py:207
+#: code/pywws/Plot.py:228
 msgid "Day"
 msgstr "Päivä"
 
-#: ../Plot.py:209
+#: code/pywws/Plot.py:230
 msgid "Date"
 msgstr "Päivämäärä"
 
-#: ../WeatherStation.py:46 ../WindRose.py:118
+#: code/pywws/WeatherStation.py:114 code/pywws/WindRose.py:123
+#: code/pywws/conversions.py:52
 msgid "N"
 msgstr "P"
 
-#: ../WeatherStation.py:46
+#: code/pywws/WeatherStation.py:114 code/pywws/conversions.py:52
 msgid "NNE"
 msgstr "Pohjoiskoilinen"
 
-#: ../WeatherStation.py:46
+#: code/pywws/WeatherStation.py:114 code/pywws/conversions.py:52
 msgid "NE"
 msgstr "Koilinen"
 
-#: ../WeatherStation.py:46
+#: code/pywws/WeatherStation.py:114 code/pywws/conversions.py:52
 msgid "ENE"
 msgstr "Itäkoilinen"
 
-#: ../WeatherStation.py:47 ../WindRose.py:118
+#: code/pywws/WeatherStation.py:115 code/pywws/WindRose.py:123
+#: code/pywws/conversions.py:53
 msgid "E"
 msgstr "Itä"
 
-#: ../WeatherStation.py:47
+#: code/pywws/WeatherStation.py:115 code/pywws/conversions.py:53
 msgid "ESE"
 msgstr "Itäkaakko"
 
-#: ../WeatherStation.py:47
+#: code/pywws/WeatherStation.py:115 code/pywws/conversions.py:53
 msgid "SE"
 msgstr "Kaakko"
 
-#: ../WeatherStation.py:47
+#: code/pywws/WeatherStation.py:115 code/pywws/conversions.py:53
 msgid "SSE"
 msgstr "Eteläkaakko"
 
-#: ../WeatherStation.py:48 ../WindRose.py:118
+#: code/pywws/WeatherStation.py:116 code/pywws/WindRose.py:123
+#: code/pywws/conversions.py:54
 msgid "S"
 msgstr "Etelä"
 
-#: ../WeatherStation.py:48
+#: code/pywws/WeatherStation.py:116 code/pywws/conversions.py:54
 msgid "SSW"
 msgstr "Etelälounas"
 
-#: ../WeatherStation.py:48
+#: code/pywws/WeatherStation.py:116 code/pywws/conversions.py:54
 msgid "SW"
 msgstr "Lounas"
 
-#: ../WeatherStation.py:48
+#: code/pywws/WeatherStation.py:116 code/pywws/conversions.py:54
 msgid "WSW"
 msgstr "Länsilounas"
 
-#: ../WeatherStation.py:49 ../WindRose.py:118
+#: code/pywws/WeatherStation.py:117 code/pywws/WindRose.py:123
+#: code/pywws/conversions.py:55
 msgid "W"
 msgstr "Länsi"
 
-#: ../WeatherStation.py:49
+#: code/pywws/WeatherStation.py:117 code/pywws/conversions.py:55
 msgid "WNW"
 msgstr "Länsiluode"
 
-#: ../WeatherStation.py:49
+#: code/pywws/WeatherStation.py:117 code/pywws/conversions.py:55
 msgid "NW"
 msgstr "Luode"
 
-#: ../WeatherStation.py:49
+#: code/pywws/WeatherStation.py:117 code/pywws/conversions.py:55
 msgid "NNW"
 msgstr "Pohjoisluode"
 
-#: ../WeatherStation.py:56
+#: code/pywws/WeatherStation.py:127
 msgid "rising very rapidly"
 msgstr "Nousee erittäin nopeasti"
 
-#: ../WeatherStation.py:58
+#: code/pywws/WeatherStation.py:129
 msgid "rising quickly"
 msgstr "Nousee nopeasti"
 
-#: ../WeatherStation.py:60
+#: code/pywws/WeatherStation.py:131
 msgid "rising"
 msgstr "Nousee"
 
-#: ../WeatherStation.py:62
+#: code/pywws/WeatherStation.py:133
 msgid "rising slowly"
 msgstr "Nousee hitaasti"
 
-#: ../WeatherStation.py:64
+#: code/pywws/WeatherStation.py:135
 msgid "falling very rapidly"
 msgstr "Laskee erittäin nopeasti"
 
-#: ../WeatherStation.py:66
+#: code/pywws/WeatherStation.py:137
 msgid "falling quickly"
 msgstr "Laskee nopeasti"
 
-#: ../WeatherStation.py:68
+#: code/pywws/WeatherStation.py:139
 msgid "falling"
 msgstr "Laskee"
 
-#: ../WeatherStation.py:70
+#: code/pywws/WeatherStation.py:141
 msgid "falling slowly"
 msgstr "Laskee hitaasti"
 
-#: ../WeatherStation.py:71
+#: code/pywws/WeatherStation.py:142
 msgid "steady"
 msgstr "Vakaa"
 
-#: pywws/ZambrettiCore.py:37
+#: code/pywws/ZambrettiCore.py:6
 msgid "Settled fine"
 msgstr "Pysyy selkeänä"
 
-#: pywws/ZambrettiCore.py:37
+#: code/pywws/ZambrettiCore.py:7
 msgid "Fine weather"
 msgstr "Selkeää"
 
-#: pywws/ZambrettiCore.py:37
+#: code/pywws/ZambrettiCore.py:8
 msgid "Becoming fine"
 msgstr "Selkenee"
 
-#: pywws/ZambrettiCore.py:38
+#: code/pywws/ZambrettiCore.py:9
 msgid "Fine, becoming less settled"
 msgstr "Selkeää, muuttuu epävakaaksi"
 
-#: pywws/ZambrettiCore.py:38
+#: code/pywws/ZambrettiCore.py:10
 msgid "Fine, possible showers"
 msgstr "Selkeää, mahdollisesti kuurosateita"
 
-#: pywws/ZambrettiCore.py:39
+#: code/pywws/ZambrettiCore.py:11
 msgid "Fairly fine, improving"
 msgstr "Melko selkeää, selkenee"
 
-#: pywws/ZambrettiCore.py:39
+#: code/pywws/ZambrettiCore.py:12
 msgid "Fairly fine, possible showers early"
 msgstr "Melko selkeää, mahdollisesti kuurosateita"
 
-#: pywws/ZambrettiCore.py:40
+#: code/pywws/ZambrettiCore.py:13
 msgid "Fairly fine, showery later"
 msgstr "Melko selkeää, myöhemmin kuurosateita"
 
-#: pywws/ZambrettiCore.py:40
+#: code/pywws/ZambrettiCore.py:14
 msgid "Showery early, improving"
 msgstr "Kuurosateita, selkenee"
 
-#: pywws/ZambrettiCore.py:41
+#: code/pywws/ZambrettiCore.py:15
 msgid "Changeable, mending"
 msgstr "Vaihtelevaa"
 
-#: pywws/ZambrettiCore.py:41
+#: code/pywws/ZambrettiCore.py:16
 msgid "Fairly fine, showers likely"
 msgstr "Melko selkeää, mahdollisesti kuurosateita"
 
-#: pywws/ZambrettiCore.py:42
+#: code/pywws/ZambrettiCore.py:17
 msgid "Rather unsettled clearing later"
 msgstr "Melko epävakaista, myöhemmin selkenee"
 
-#: pywws/ZambrettiCore.py:42
+#: code/pywws/ZambrettiCore.py:18
 msgid "Unsettled, probably improving"
 msgstr "Epävakaista, mahdollisesti selkenee"
 
-#: pywws/ZambrettiCore.py:43
+#: code/pywws/ZambrettiCore.py:19
 msgid "Showery, bright intervals"
 msgstr "Kuurosateita, ajoittain selkeää"
 
-#: pywws/ZambrettiCore.py:43
+#: code/pywws/ZambrettiCore.py:20
 msgid "Showery, becoming less settled"
 msgstr "Kuurosateita, tulossa epävakaaksi"
 
-#: pywws/ZambrettiCore.py:44
+#: code/pywws/ZambrettiCore.py:21
 msgid "Changeable, some rain"
 msgstr "Vaihtelevaa, vähän sadetta"
 
-#: pywws/ZambrettiCore.py:44
+#: code/pywws/ZambrettiCore.py:22
 msgid "Unsettled, short fine intervals"
 msgstr "Epävakaista, ajoittain selkeää"
 
-#: pywws/ZambrettiCore.py:45
+#: code/pywws/ZambrettiCore.py:23
 msgid "Unsettled, rain later"
 msgstr "Epävakaista, myöhemmin sateita"
 
-#: pywws/ZambrettiCore.py:45
+#: code/pywws/ZambrettiCore.py:24
 msgid "Unsettled, some rain"
 msgstr "Epävakaista, sadetta"
 
-#: pywws/ZambrettiCore.py:46
+#: code/pywws/ZambrettiCore.py:25
 msgid "Mostly very unsettled"
 msgstr "Enimmäkseen hyvin epävakaista"
 
-#: pywws/ZambrettiCore.py:46
+#: code/pywws/ZambrettiCore.py:26
 msgid "Occasional rain, worsening"
 msgstr "Ajoittain sadetta, huononee"
 
-#: pywws/ZambrettiCore.py:47
+#: code/pywws/ZambrettiCore.py:27
 msgid "Rain at times, very unsettled"
 msgstr "Ajoittain sadetta, hyvin epävakaista"
 
-#: pywws/ZambrettiCore.py:47
+#: code/pywws/ZambrettiCore.py:28
 msgid "Rain at frequent intervals"
 msgstr "Toistuvaa sadetta"
 
-#: pywws/ZambrettiCore.py:48
+#: code/pywws/ZambrettiCore.py:29
 msgid "Rain, very unsettled"
 msgstr "Sadetta, hyvin epävakaista"
 
-#: pywws/ZambrettiCore.py:48
+#: code/pywws/ZambrettiCore.py:30
 msgid "Stormy, may improve"
 msgstr "Myrsky, mahdollisesti selkenee"
 
-#: pywws/ZambrettiCore.py:48
+#: code/pywws/ZambrettiCore.py:31
 msgid "Stormy, much rain"
 msgstr "Myrsky, paljon sadetta "
