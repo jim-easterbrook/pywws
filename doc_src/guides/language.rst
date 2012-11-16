@@ -45,16 +45,11 @@ How to make a language file for pywws
 #. Create a language file.
 
    The 'makefile' included with pywws can create a template file for you to
-   fill in. For example, to create a file for the French language::
+   fill in. For example, to create a file for the French language (code 'fr')::
 
-      make lang LANG=fr
+      make code/languages/fr.po
 
-   This will ask you to confirm your email address, then create a file
-   'languages/fr.po'. You should now edit this file, filling in every msgstr
-   line with a translation of the msgid line immediately above it. The reason
-   for including your email address is so that anyone who has questions about
-   your translation can get in touch with you. Feel free to put in an invalid
-   address if you are concerned about privacy.
+   This will ask you to confirm your email address, then create a file 'code/languages/fr.po'. You should now edit this file, filling in every 'msgstr' line with a translation of the 'msgid' line immediately above it. The reason for including your email address is to allow anyone who has questions about your translation to get in touch with you. Feel free to put in an invalid address if you are concerned about privacy.
 
    After you've edited your new language file it needs to be compiled so that
    pywws can use it. This is also done by the makefile::
@@ -82,7 +77,7 @@ How to make a language file for pywws
    translation file to be extended as well. This is fairly easy to do. First
    you need to remove the language master template file::
 
-      rm languages/pywws.pot
+      rm code/languages/pywws.pot
 
    Now run the make command again as in section 5 above. This should add the
    new strings to your language file, without changing the strings you've

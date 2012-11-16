@@ -21,7 +21,7 @@ Licence terms:
 Dependencies:
 
 * Python (http://www.python.org/) version 2.4 or higher
-  (note: Python 3 is not supported)
+  (note: Python 3 is not yet supported)
 * USB library:
 
   * option 1 (best for small systems such as routers):
@@ -55,29 +55,20 @@ Many of these dependencies are available as packages for most Linux distribution
 
 This software collection currently includes the following files:
 
-* README.txt                 -- you are reading it!
-* CHANGELOG.txt              -- development history
-* LICENCE.txt                -- GNU General Public License
-
-* TestWeatherStation.py      -- test communication with weather station
-* USBQualityTest.py          -- test for USB communication errors
-* Hourly.py                  -- run from cron or
-* LiveLog.py                 -- run continuously
-* EWtoPy.py                  -- converts EasyWeather.dat to DataStore format
-* Reprocess.py               -- regenerates summary data
-* TwitterAuth.py             -- authorise pywws to post to Twitter
-* setup.py                   -- builds distributions
-* makefile                   -- compiles language files and generates HTML documentation
-
-* pywws/\*.py                -- the pywws software modules
-* example_graph_templates/\* -- example graph XML "recipes"
-* example_templates/\*       -- example text templates
-* example_modules/\*         -- example calibration modules
-* doc/html/\*                -- HTML documentation of most of the above
-* doc/text/\*                -- plain text documentation
-* doc_src/\*                 -- documentation source files
-* languages/\*               -- language source files
-* locale/\*                  -- compiled language files
+* README.txt                      -- you are reading it!
+* CHANGELOG.txt                   -- development history
+* LICENCE.txt                     -- GNU General Public License
+* setup.py                        -- build & install pywws
+* makefile                        -- compiles language files and documentation
+* doc/html/\*                     -- HTML documentation of most of the above
+* doc/text/\*                     -- plain text documentation
+* doc_src/\*                      -- documentation source files
+* code/\*.py                      -- pywws Python scripts
+* code/pywws/\*.py                -- the pywws software modules
+* code/example_graph_templates/\* -- example graph XML "recipes"
+* code/example_templates/\*       -- example text templates
+* code/example_modules/\*         -- example calibration modules
+* code/languages/\*               -- language source files
 
 Upgrading from earlier versions:
   Back up your data, then run Reprocess.py to regenerate summary data.

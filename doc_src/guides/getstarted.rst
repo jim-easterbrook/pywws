@@ -8,13 +8,13 @@ How to get started with pywws
       mkdir ~/weather
       cd ~/weather
 
-   Visit the pywws website http://code.google.com/p/pywws/ and download one of the .tar.gz or .zip files. Put it in your weather directory, then extract all the files, for example::
+   Visit the pywws website https://github.com/jim-easterbrook/pywws/downloads and download one of the .tar.gz or .zip files. Put it in your weather directory, then extract all the files, for example::
 
-      tar zxvf pywws-10.08_r235.tar.gz
+      tar zxvf pywws-12.10_r547.tar.gz
 
    or::
 
-      unzip pywws-10.08_r235.zip
+      unzip pywws-12.10_r547.zip
 
 #. Install dependencies.
 
@@ -34,9 +34,9 @@ How to get started with pywws
 
 #. Test the weather station connection.
 
-   Connect the weather station (if not already connected) then run the :py:mod:`TestWeatherStation` program. Change to the pywws source directory first. For example::
+   Connect the weather station (if not already connected) then run the :py:mod:`TestWeatherStation` program. Change to the source code directory first. For example::
 
-      cd ~/weather/pywws-10.08_r235
+      cd ~/weather/pywws-12.10_r547/code
       python TestWeatherStation.py
 
    If everything is working correctly, this should dump a load of numbers to the screen, for example::
@@ -78,7 +78,7 @@ How to get started with pywws
 
    You should now have some data files you can look at. For example::
 
-      more ~/weather/data/weather/raw/2010/2010-10/2010-10-12.txt
+      more ~/weather/data/weather/raw/2012/2012-11/2012-11-16.txt
 
    (Replace the year, month and day with ones that you have data for.)
 
@@ -125,7 +125,7 @@ How to get started with pywws
 
    You should now have some processed files to look at::
 
-      more ~/weather/data/weather/daily/2010/2010-10-01.txt
+      more ~/weather/data/weather/daily/2012/2012-11-06.txt
 
    If you ever change your ``day end hour`` configuration setting, you will need to reprocess all your weather data. You can do this by running the :py:mod:`Reprocess` program::
 
