@@ -2,7 +2,7 @@
 pywws
 #####
 
-.. image:: http://www.jim-easterbrook.me.uk/weather/img_1504.jpg
+.. image:: img_1504.jpg
    :align: center
 
 Python software for USB Wireless WeatherStations
@@ -70,7 +70,8 @@ Contents
 .. toctree::
    :maxdepth: 2
 
-   Essentials <essentials/index>
+   Licence <essentials/LICENCE>
+   Change log <essentials/CHANGELOG>
    User guides <guides/index>
    Python programs and modules <api/index>
 
@@ -91,12 +92,12 @@ I would not have been able to get any information from the weather station witho
 Legalese
 ********
 
-pywws - Python software for USB Wireless WeatherStations.
-http://jim-easterbrook.github.com/pywws/
-Copyright (C) 2008-12 Jim Easterbrook jim@jim-easterbrook.me.uk
+| pywws - Python software for USB Wireless WeatherStations.
+| http://jim-easterbrook.github.com/pywws/
+| Copyright (C) 2008-12 Jim Easterbrook jim@jim-easterbrook.me.uk
 
 This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+You should have received a copy of the `GNU General Public License <essentials/LICENCE.html>`_ along with this program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
