@@ -3,7 +3,7 @@ pywws
 #####
 
 .. image:: img_1504.jpg
-   :align: center
+   :align: right
 
 Python software for USB Wireless WeatherStations
 

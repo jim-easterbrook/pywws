@@ -10,7 +10,7 @@ setup(name = 'pywws',
       description = 'Python software for wireless weather stations',
       author = 'Jim Easterbrook',
       author_email = 'jim@jim-easterbrook.me.uk',
-      url = 'http://code.google.com/p/pywws/',
+      url = 'http://jim-easterbrook.github.com/pywws/',
       long_description = """
 A collection of Python scripts to read, store and process data from
 popular USB wireless weather stations such as Elecsa AstroTouch 6975,

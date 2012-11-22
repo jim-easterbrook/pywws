@@ -1,5 +1,11 @@
 Python software for USB Wireless WeatherStations (pywws).
-http://code.google.com/p/pywws/
+http://jim-easterbrook.github.com/pywws/
+
+Changes in v12.11:
+    1/ Moved development from Google code to GitHub.
+    2/ Made software attempt to avoid USB activity at times when it is assumed
+       the weather station might be writing to its memory. This might solve
+       the USB lockup problem, but it's too early to tell.
 
 Changes in v12.10:
     1/ Added a 'winddir_text' function for use in templates.
