@@ -399,6 +399,7 @@ class weather_station(object):
             next_log += log_interval
         else:
             next_log = None
+            self._station_clock = None
         while True:
             last_time = now
             if not self._station_clock:
@@ -429,7 +430,7 @@ class weather_station(object):
             now = time.time()
             # 'good' time stamp if we haven't just woken up from long
             # pause and data read wasn't delayed
-            valid_now = now - last_time < self.min_pause + 0.1
+            valid_now = now - last_time < (self.min_pause * 2.0) - 0.1
             if (new_data['delay'] is not None and
                 new_data['delay'] < read_period):
                 # pointer won't have changed
