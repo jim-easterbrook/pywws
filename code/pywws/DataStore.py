@@ -237,12 +237,9 @@ class core_store(object):
         while day >= self._fst_day:
             if day < self._cache_lo or day >= self._cache_hi:
                 self._load(date.fromordinal(day))
-            self._cache_ptr = len(self._cache)
-            while self._cache_ptr > 0:
-                self._cache_ptr -= 1
-                result = self._cache[self._cache_ptr]['idx']
-                if result < idx:
-                    return result
+            self._cache_ptr = self._binary_search(idx, self._cache_ptr)
+            if self._cache_ptr > 0:
+                return self._cache[self._cache_ptr - 1]['idx']
             day = self._cache_lo - 1
         return None
     def after(self, idx):
@@ -257,21 +254,18 @@ class core_store(object):
         while day < self._lst_day:
             if day < self._cache_lo or day >= self._cache_hi:
                 self._load(date.fromordinal(day))
-            self._cache_ptr = 0
-            while self._cache_ptr < len(self._cache):
-                result = self._cache[self._cache_ptr]['idx']
-                if result >= idx:
-                    return result
-                self._cache_ptr += 1
+            self._cache_ptr = self._binary_search(idx, self._cache_ptr)
+            if self._cache_ptr < len(self._cache):
+                return self._cache[self._cache_ptr]['idx']
             day = self._cache_hi
         return None
     def nearest(self, idx):
         """Return datetime of record whose datetime is nearest idx."""
         hi = self.after(idx)
         lo = self.before(idx)
-        if hi == None:
+        if hi is None:
             return lo
-        if lo == None:
+        if lo is None:
             return hi
         if abs(hi - idx) < abs(lo - idx):
             return hi
@@ -280,15 +274,26 @@ class core_store(object):
         day = i.toordinal()
         if day < self._cache_lo or day >= self._cache_hi:
             self._load(i)
-        if (self._cache_ptr < len(self._cache) and
-            self._cache[self._cache_ptr]['idx'] < i):
-            self._cache_ptr += 1
-            while (self._cache_ptr < len(self._cache) and
-                   self._cache[self._cache_ptr]['idx'] < i):
-                self._cache_ptr += 1
-            return
-        while self._cache_ptr > 0 and self._cache[self._cache_ptr-1]['idx'] >= i:
-            self._cache_ptr -= 1
+        self._cache_ptr = self._binary_search(i, self._cache_ptr)
+    def _binary_search(self, idx, start):
+        hi = len(self._cache) - 1
+        if hi < 0 or self._cache[0]['idx'] >= idx:
+            return 0
+        if self._cache[hi]['idx'] < idx:
+            return hi + 1
+        lo = 0
+        start = min(start, hi)
+        if self._cache[start]['idx'] < idx:
+            lo = start
+        else:
+            hi = start
+        while hi > lo + 1:
+            mid = (lo + hi) / 2
+            if self._cache[mid]['idx'] < idx:
+                lo = mid
+            else:
+                hi = mid
+        return hi
     def _load(self, target_date):
         self.flush()
         self._cache = []
