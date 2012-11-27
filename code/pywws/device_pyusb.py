@@ -96,6 +96,12 @@ class USBDevice(object):
                 self.devh.claimInterface(0)
             except usb.USBError:
                 raise IOError("Claim interface failed")
+        # device may have data left over from an incomplete read
+        for i in range(4):
+            try:
+                self.devh.interruptRead(0x81, 8, 1200)
+            except usb.USBError:
+                break
 
     def __del__(self):
         if self.devh:
