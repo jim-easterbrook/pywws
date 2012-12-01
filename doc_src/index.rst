@@ -5,7 +5,9 @@ pywws
 .. image:: img_1504.jpg
    :align: right
 
-Python software for USB Wireless WeatherStations
+| Python software for USB Wireless WeatherStations
+| http://jim-easterbrook.github.com/pywws/
+| http://github.com/jim-easterbrook/pywws/
 
 ************
 Introduction
@@ -24,11 +26,11 @@ Requirements
 The software you'll need to run pywws depends on what you plan to do with it. In particular, there is a choice of USB library, to suit what's available on different operating systems.
 
    * `Python <http://python.org/>`_ version 2.4 or higher (note: Python 3 is not yet supported)
-   * USB library option 1:
+   * USB library option 1 (best for small systems such as routers):
 
      *  `libusb <http://www.libusb.org/>`_ version 0.1.12 (note: libusb 1 is not supported)
      *  `PyUSB <http://sourceforge.net/apps/trac/pyusb/>`_ version 0.4.x
-   * USB library option 2:
+   * USB library option 2 (best for Linux PCs and Macs):
 
      *  `hidapi <https://github.com/signal11/hidapi>`_
      *  `cython-hidapi <https://github.com/gbishop/cython-hidapi>`_
