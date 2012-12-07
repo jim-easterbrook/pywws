@@ -426,34 +426,23 @@ class weather_station(object):
             self.logger.debug(
                 'delay %s, pause %g', str(old_data['delay']), pause)
             time.sleep(pause)
+            # first look for data changes
             new_data = self.get_data(old_ptr, unbuffered=True)
             now = time.time()
             # 'good' time stamp if we haven't just woken up from long
             # pause and data read wasn't delayed
             valid_now = now - last_time < (self.min_pause * 2.0) - 0.1
-            if (new_data['delay'] is not None and
-                new_data['delay'] < read_period):
-                # pointer won't have changed
-                new_ptr = old_ptr
-            else:
-                new_ptr = self.current_pos()
             # make sure changes because of logging interval aren't
             # mistaken for new live data
             old_data['delay'] = new_data['delay']
-            if valid_now:
-                if new_ptr != old_ptr:
-                    # pointer has just changed, so definitely at a logging time
-                    self._station_clock = now
-                    self.logger.warning(
-                        'setting station clock %g', now % 60.0)
-                    if self.params:
-                        self.params.set(
-                            'fixed', 'station clock', str(self._station_clock))
-                        self.params.flush()
-                    if not next_log:
-                        self.logger.warning('live_data log synchronised')
-                    next_log = now
-                if new_data != old_data:
+            if next_live and not logged_only:
+                while now > next_live + live_interval:
+                    self.logger.info('live_data missed')
+                    next_live += live_interval
+            if new_data != old_data:
+                self.logger.debug('live_data new data')
+                result = dict(new_data)
+                if valid_now:
                     # data has just changed, so definitely at a 48s update time
                     self._sensor_clock = now
                     self.logger.warning(
@@ -465,36 +454,47 @@ class weather_station(object):
                     if not next_live:
                         self.logger.warning('live_data live synchronised')
                     next_live = now
-                while next_log and now > next_log + 12.0:
-                    self.logger.warning('live_data log extended')
-                    next_log += 60.0
-            if next_live and not logged_only:
-                while now > next_live + live_interval:
-                    self.logger.info('live_data missed')
-                    next_live += live_interval
-            if new_data != old_data:
-                self.logger.debug('live_data new data')
-                result = dict(new_data)
-                if next_live and now < next_live - self.min_pause:
+                elif next_live and now < next_live - self.min_pause:
                     self.logger.warning(
                         'live_data lost sync %g', now - next_live)
                     next_live = None
                     self._sensor_clock = None
-                if next_live:
+                if next_live and not logged_only:
                     result['idx'] = datetime.utcfromtimestamp(int(next_live))
                     next_live += live_interval
-                    if not logged_only:
-                        yield result, old_ptr, False
-            old_data = new_data
+                    yield result, old_ptr, False
+                old_data = new_data
+            # now look for pointer changes
+            if new_data['delay'] < read_period:
+                # pointer won't have changed
+                continue
+            new_ptr = self.current_pos()
+            now2 = time.time()
+            valid_now = now2 - last_time < (self.min_pause * 2.0) - 0.1
+            while valid_now and next_log and now2 > next_log + 12.0:
+                self.logger.warning('live_data log extended')
+                next_log += 60.0
             if new_ptr != old_ptr:
                 self.logger.debug('live_data new ptr: %06x', new_ptr)
                 # re-read data, to be absolutely sure it's the last
                 # logged data before the pointer was updated
                 new_data = self.get_data(old_ptr, unbuffered=True)
                 result = dict(new_data)
-                if next_log and now < next_log - self.min_pause:
+                if valid_now:
+                    # pointer has just changed, so definitely at a logging time
+                    self._station_clock = now2
                     self.logger.warning(
-                        'live_data lost log sync %g', now - next_log)
+                        'setting station clock %g', now2 % 60.0)
+                    if self.params:
+                        self.params.set(
+                            'fixed', 'station clock', str(self._station_clock))
+                        self.params.flush()
+                    if not next_log:
+                        self.logger.warning('live_data log synchronised')
+                    next_log = now2
+                elif next_log and now2 < next_log - self.min_pause:
+                    self.logger.warning(
+                        'live_data lost log sync %g', now2 - next_log)
                     next_log = None
                     self._station_clock = None
                 if next_log:
@@ -506,7 +506,6 @@ class weather_station(object):
                         'live_data unexpected ptr change %06x -> %06x',
                         old_ptr, new_ptr)
                 old_ptr = new_ptr
-                old_data['delay'] = 0
 
     def inc_ptr(self, ptr):
         """Get next circular buffer data pointer."""
