@@ -86,7 +86,7 @@ def wind_bft(ms):
             return bft
     return len(_bft_threshold)
 
-if __name__ == "__main__":
+def main(argv=None):
     # run some simple tests
     print 'Wind speed:'
     print '%6s %8s %8s %8s %6s' % ('m/s', 'km/h', 'mph', 'knots', 'bft')
@@ -103,3 +103,6 @@ if __name__ == "__main__":
     for pts in range(16):
         print winddir_text(pts),
     print
+
+if __name__ == "__main__":
+    main()

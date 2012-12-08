@@ -76,7 +76,7 @@ def ZambrettiCode(pressure, month, wind, trend,
 def ZambrettiText(letter):
     return forecast_text[letter]
 
-if __name__ == "__main__":
+def main(argv=None):
     import WeatherStation
     wind_dir = WeatherStation.get_wind_dir_text()
     for pressure in range(1030, 960, -10):
@@ -97,3 +97,6 @@ if __name__ == "__main__":
                     pressure, trend_txt, wind_txt,
                     ZambrettiCode(pressure, month, wind, trend))
         print ''
+
+if __name__ == "__main__":
+    main()
