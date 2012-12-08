@@ -12,6 +12,7 @@ Contents:
    TwitterAuth
    SetWeatherStation
    TestWeatherStation
+   TestModule
    USBQualityTest
    EWtoPy
    pywws.Tasks

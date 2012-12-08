@@ -25,12 +25,16 @@ Requirements
 
 The software you'll need to run pywws depends on what you plan to do with it. In particular, there is a choice of USB library, to suit what's available on different operating systems.
 
-   * `Python <http://python.org/>`_ version 2.4 or higher (note: Python 3 is not yet supported)
+   * `Python <http://python.org/>`_ version 2.4 or higher (note: Python 3 support is under development - some things may not work properly)
    * USB library option 1 (best for small systems such as routers):
 
-     *  `libusb <http://www.libusb.org/>`_ version 0.1.12 (note: libusb 1 is not supported)
      *  `PyUSB <http://sourceforge.net/apps/trac/pyusb/>`_ version 0.4.x
-   * USB library option 2 (best for Linux PCs and Macs):
+     *  `libusb <http://www.libusb.org/>`_ version 0.1.12
+   * USB library option 2:
+
+     *  `PyUSB <http://sourceforge.net/apps/trac/pyusb/>`_ version 1.0.x
+     *  `libusb <http://www.libusb.org/>`_ version 0.1 or version 1.0
+   * USB library option 3 (best for MacOS):
 
      *  `hidapi <https://github.com/signal11/hidapi>`_
      *  `cython-hidapi <https://github.com/gbishop/cython-hidapi>`_
@@ -55,6 +59,10 @@ Getting a copy of pywws
 ***********************
 
 The simplest way to obtain pywws is to download a zip or tar.gz file from the `download page <https://github.com/jim-easterbrook/pywws/downloads>`_ and then extract the files into a convenient directory on your computer. These "archive" files contain a snapshot release of the software - a new one is released every few months.
+
+If you are familiar with the Python Package Index you may prefer to download pywws from `PyPI <http://pypi.python.org/pypi/pywws/>`_, or use ``pip`` to install it directly::
+
+   sudo pip install pywws
 
 If you'd like to try the latest version of pywws, please use git to clone the `repository <https://github.com/jim-easterbrook/pywws>`_. After doing so you'll need to use make to compile the documentation and language localisation files.
 

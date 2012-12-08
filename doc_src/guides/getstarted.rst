@@ -18,19 +18,36 @@ How to get started with pywws
 
 #. Install dependencies.
 
-   * Python 2.4+ - http://python.org/ (Note: Python 3 is not supported.)
+   * Python 2.4+ - http://python.org/ (Note: Python 3 support is under development.)
 
    * USB library option 1 (best for small systems such as routers):
 
-     * libusb 0.1.12 - http://www.libusb.org/ (Note: libusb 1 is not supported.)
      * PyUSB 0.4.x - http://sourceforge.net/apps/trac/pyusb/
-   * USB library option 2 (best for Linux PCs and Macs):
+     * libusb 0.1.12 - http://www.libusb.org/
+   * USB library option 2:
+
+     * PyUSB 1.0.x - http://sourceforge.net/apps/trac/pyusb/
+     * libusb 0.1.x or 1.0.x - http://www.libusb.org/
+   * USB library option 3 (best for MacOS):
 
      * hidapi - https://github.com/signal11/hidapi
      * cython-hidapi - https://github.com/gbishop/cython-hidapi
      * cython - http://cython.org/
 
    You may be able to install these using your operating system's package manager. This is a lot easier than downloading and compiling the source files from the project websites. Note that some Linux distributions may use different names for some of the packages, e.g. in Ubuntu, pyusb is python-usb.
+
+   PyUSB can also be installed from PyPI using the ``pip`` command::
+
+      sudo pip install pyusb
+
+#. (Python 3 users only) Translate pywws to Python 3.
+
+   Change to your pywws directory then use ``make`` to convert Python 2 code to Python 3::
+
+      cd ~/weather/pywws
+      make python3
+
+   This should create a ``code3`` directory which you use instead of the ``code`` directory in the following instructions.
 
 #. Test the weather station connection.
 
@@ -72,7 +89,7 @@ How to get started with pywws
 
    The first time you run :py:mod:`pywws.LogData` it will create a configuration file in your data directory called 'weather.ini' and then stop. You need to edit the configuration file and change the line ``ws type = Unknown`` to ``ws type = 1080`` or ``ws type = 3080``. (If your weather station console displays solar illuminance you have a 3080 type, all others are 1080.) Then run :py:mod:`pywws.LogData` again. This may take several minutes, as it will copy all the data stored in your station's memory. The :py:mod:`pywws.LogData` program has a 'verbose' option that increases the amount of messages it displays while running. This is useful when running it manually, for example::
 
-      python pywws/LogData.py -vvv ~/weather/data
+      python TestModule.py LogData -vvv ~/weather/data
 
    (Replace ``~/weather/data`` with your data directory, if it's different.)
 
@@ -121,7 +138,7 @@ How to get started with pywws
 
    :py:mod:`pywws.LogData` just copies the raw data from the weather station. To do something useful with that data you probably need hourly, daily and monthly summaries. These are created by the :py:mod:`pywws.Process` program. For example::
 
-      python pywws/Process.py ~/weather/data
+      python TestModule.py Process ~/weather/data
 
    You should now have some processed files to look at::
 
