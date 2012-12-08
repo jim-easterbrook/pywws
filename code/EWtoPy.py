@@ -95,7 +95,7 @@ def main(argv=None):
         data['rain'] = int(items[18]) * 0.3
         data['status'] = int(items[35].split()[15], 16)
         # check against first_stored
-        if first_stored - date < timedelta(minutes=data['delay'] / 2):
+        if first_stored - date < timedelta(minutes=data['delay'] // 2):
             break
         ds[date] = data
         count += 1

@@ -186,7 +186,7 @@ def _decode(raw, format):
             return None
         return (hi * 256 * 256) + (md * 256) + lo
     def _bcd_decode(byte):
-        hi = (byte / 16) & 0x0F
+        hi = (byte // 16) & 0x0F
         lo = byte & 0x0F
         return (hi * 10) + lo
     def _date_time(raw, offset):
@@ -296,11 +296,11 @@ class CUSBDrive(object):
         """
         buf = [
             self.ReadCommand,
-            address / 256,
+            address // 256,
             address % 256,
             self.EndMark,
             self.ReadCommand,
-            address / 256,
+            address // 256,
             address % 256,
             self.EndMark,
             ]
@@ -326,7 +326,7 @@ class CUSBDrive(object):
         """
         buf = [
             self.WriteCommandWord,
-            address / 256,
+            address // 256,
             address % 256,
             self.EndMark,
             self.WriteCommandWord,

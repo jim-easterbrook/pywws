@@ -19,6 +19,9 @@ develop-eggs
 # Compiled documentation
 doc
 
+# generated Python 3
+code3
+
 # Miscellaneous
 MANIFEST
 code/languages/pywws.pot

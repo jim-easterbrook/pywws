@@ -7,7 +7,7 @@
 
 # rename imports to prevent them being imported when
 # doing 'from pywws.conversions import *'
-import Localisation as _Localisation
+from . import Localisation as _Localisation
 
 def illuminance_wm2(lux):
     "Approximate conversion of illuminance in lux to solar radiation in W/m2"

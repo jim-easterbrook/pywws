@@ -288,7 +288,7 @@ class core_store(object):
         else:
             hi = start
         while hi > lo + 1:
-            mid = (lo + hi) / 2
+            mid = (lo + hi) // 2
             if self._cache[mid]['idx'] < idx:
                 lo = mid
             else:
@@ -300,8 +300,11 @@ class core_store(object):
         self._cache_ptr = 0
         self._cache_path, self._cache_lo, self._cache_hi = self._get_cache_path(target_date)
         if os.path.exists(self._cache_path):
-            reader = csv.reader(
-                open(self._cache_path, 'rb', 1), quoting=csv.QUOTE_NONE)
+            if sys.version_info[0] >= 3:
+                csvfile = open(self._cache_path, 'r', newline='')
+            else:
+                csvfile = open(self._cache_path, 'rb')
+            reader = csv.reader(csvfile, quoting=csv.QUOTE_NONE)
             for row in reader:
                 result = {}
                 for key, value in zip(self.key_list, row):
@@ -322,8 +325,11 @@ class core_store(object):
         dir = os.path.dirname(self._cache_path)
         if not os.path.isdir(dir):
             os.makedirs(dir)
-        writer = csv.writer(
-            open(self._cache_path, 'wb', 1), quoting=csv.QUOTE_NONE)
+        if sys.version_info[0] >= 3:
+            csvfile = open(self._cache_path, 'w', newline='')
+        else:
+            csvfile = open(self._cache_path, 'wb')
+        writer = csv.writer(csvfile, quoting=csv.QUOTE_NONE)
         for data in self._cache:
             row = []
             for key in self.key_list[0:len(data)]:

@@ -65,7 +65,7 @@ import sys
 from calib import Calib
 import DataStore
 from Logger import ApplicationLogger
-from TimeZone import Local, utc
+from .TimeZone import Local, utc
 import WeatherStation
 
 SECOND = timedelta(seconds=1)
@@ -204,7 +204,7 @@ class HourAcc(object):
             # get direction of total vector
             dir_ave = (math.degrees(math.atan2(Ve, Vn)) + 180.0) * 16.0 / 360.0
             self.retval['wind_dir'] = int(dir_ave + 0.5) % 16
-            wind_ave = self.wind_acc / self.wind_count
+            wind_ave = self.wind_acc / float(self.wind_count)
             self.retval['wind_ave'] = wind_ave
         else:
             self.retval['wind_dir'] = None
@@ -313,7 +313,7 @@ class DayAcc(object):
             # get direction of total vector
             dir_ave = (math.degrees(math.atan2(Ve, Vn)) + 180.0) * 16.0 / 360.0
             self.retval['wind_dir'] = int(dir_ave + 0.5) % 16
-            wind_ave = self.wind_acc / self.wind_count
+            wind_ave = self.wind_acc / float(self.wind_count)
             self.retval['wind_ave'] = wind_ave
         else:
             self.retval['wind_dir'] = None
@@ -471,7 +471,7 @@ class MonthAcc(object):
             # get direction of total vector
             dir_ave = (math.degrees(math.atan2(Ve, Vn)) + 180.0) * 16.0 / 360.0
             result['wind_dir'] = int(dir_ave + 0.5) % 16
-            wind_ave = self.wind_acc / self.wind_count
+            wind_ave = self.wind_acc / float(self.wind_count)
             result['wind_ave'] = wind_ave
         else:
             result['wind_dir'] = None
@@ -683,12 +683,12 @@ def Process(params, raw_data, calib_data, hourly_data, daily_data, monthly_data)
     time_offset = Local.utcoffset(last_raw) - Local.dst(last_raw)
     # set daytime end hour, in UTC
     day_end_hour = eval(params.get('config', 'day end hour', '21'))
-    day_end_hour = (day_end_hour - (time_offset.seconds / 3600)) % 24
+    day_end_hour = (day_end_hour - (time_offset.seconds // 3600)) % 24
     # divide 24 hours of UTC day into day and night
     daytime = []
     for i in range(24):
         daytime.append(True)
-    night_hour = (21 - (time_offset.seconds / 3600)) % 24
+    night_hour = (21 - (time_offset.seconds // 3600)) % 24
     for i in range(12):
         daytime[night_hour] = False
         night_hour = (night_hour + 1) % 24

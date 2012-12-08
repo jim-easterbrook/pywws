@@ -24,7 +24,7 @@ import DataStore
 from Forecast import Zambretti, ZambrettiCode
 import Localisation
 from Logger import ApplicationLogger
-from TimeZone import Local, utc
+from .TimeZone import Local, utc
 import WeatherStation
 
 SECOND = timedelta(seconds=1)

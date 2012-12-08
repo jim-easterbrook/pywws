@@ -23,7 +23,7 @@ from pywws.Logger import ApplicationLogger
 from pywws import WeatherStation
 
 def bcd_encode(value):
-    hi = value / 10
+    hi = value // 10
     lo = value % 10
     return (hi * 16) + lo
 def main(argv=None):
@@ -72,7 +72,7 @@ def main(argv=None):
     if pressure:
         ptr = ws.fixed_format['rel_pressure'][0]
         data.append((ptr,   pressure % 256))
-        data.append((ptr+1, pressure / 256))
+        data.append((ptr+1, pressure // 256))
     # set read period
     if read_period:
         data.append((ws.fixed_format['read_period'][0], read_period))

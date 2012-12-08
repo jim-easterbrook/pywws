@@ -5,6 +5,11 @@ import sys
 sys.path.append('code')
 from pywws.version import version
 
+if sys.version_info[0] >= 3:
+    code_dir = 'code3'
+else:
+    code_dir = 'code'
+
 setup(name = 'pywws',
       version = version,
       description = 'Python software for wireless weather stations',
@@ -30,9 +35,9 @@ pages showing recent weather readings, typically updated every hour.
           'Programming Language :: Python :: 2 :: Only',
           ],
       packages = ['pywws'],
-      package_dir = {'': 'code'},
+      package_dir = {'': code_dir},
       package_data = {
           'pywws' : ['services/*', 'locale/*/LC_MESSAGES/*'],
           },
-      scripts = ['code/Hourly.py', 'code/LiveLog.py'],
+      scripts = ['%s/Hourly.py' % code_dir, '%s/LiveLog.py' % code_dir],
       )

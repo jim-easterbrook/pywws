@@ -51,7 +51,7 @@ import sys
 import time
 
 import DataStore
-from Logger import ApplicationLogger
+from .Logger import ApplicationLogger
 from TimeZone import Local
 import WeatherStation
 

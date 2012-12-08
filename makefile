@@ -10,12 +10,28 @@ dist :
 clean :
 	rm -Rf doc/* code/pywws/locale/*
 
-.PHONY : doc
 doc : code/pywws/version.py
 	$(MAKE) -C doc_src html text
 
+sources	:= $(wildcard code/*) $(wildcard code/pywws/*) \
+	   $(wildcard code/pywws/services/*) $(wildcard code/pywws/locale/*/*/*)
+sources	:= $(filter %.py %.mo %.txt %.ini, $(sources))
+python3 : $(sources:code/%=code3/%)
+
 lang_src	:= $(wildcard code/languages/*.po)
 lang : $(lang_src:code/languages/%.po=code/pywws/locale/%/LC_MESSAGES/pywws.mo)
+
+.PHONY : doc dist
+
+# convert to Python3
+code3/%.py : code/%.py
+	mkdir -p $(dir $@)
+	cp $< $@
+	2to3 -w -n $@
+
+code3/% : code/%
+	mkdir -p $(dir $@)
+	cp $< $@
 
 # create a version file
 .PHONY : code/pywws/version.py

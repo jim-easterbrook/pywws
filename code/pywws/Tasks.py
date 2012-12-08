@@ -8,7 +8,7 @@ import os
 
 from calib import Calib
 import Plot
-import Template
+from . import Template
 from TimeZone import Local
 from toservice import ToService
 import Upload
@@ -53,7 +53,7 @@ class RegularTasks(object):
         time_offset = Local.utcoffset(now) - Local.dst(now)
         # get daytime end hour, in UTC
         self.day_end_hour = eval(params.get('config', 'day end hour', '21'))
-        self.day_end_hour = (self.day_end_hour - (time_offset.seconds / 3600)) % 24
+        self.day_end_hour = (self.day_end_hour - (time_offset.seconds // 3600)) % 24
         # convert config from underground/metoffice to new services
         for section in ('live', 'logged', 'hourly', '12 hourly', 'daily'):
             services = eval(self.params.get(section, 'services', '[]'))

@@ -33,7 +33,7 @@ class RosePlotter(BasePlotter):
     def GetDefaultRows(self):
         return int(math.sqrt(self.plot_count))
     def GetDefaultPlotSize(self):
-        return 600 / self.rows, 600 / self.rows
+        return 600 // self.rows, 600 // self.rows
     def GetPreamble(self):
         result = """set polar
 set angles degrees
@@ -92,7 +92,7 @@ unset border
         for n in range(16):
             total += histograms[0][n]
         for n in range(16):
-            histograms[0][n] = total / 16
+            histograms[0][n] = total // 16
         # integrate histograms
         for i in range(1, len(thresh)):
             for n in range(16):

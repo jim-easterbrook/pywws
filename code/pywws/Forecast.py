@@ -13,7 +13,7 @@ from datetime import datetime, timedelta
 import getopt
 import sys
 
-import DataStore
+from . import DataStore
 import Localisation
 from TimeZone import Local, utc
 import ZambrettiCore

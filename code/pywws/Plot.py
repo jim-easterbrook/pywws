@@ -23,7 +23,7 @@ import xml.dom.minidom
 from conversions import *
 import DataStore
 import Localisation
-from TimeZone import Local
+from .TimeZone import Local
 from WeatherStation import dew_point, wind_chill, apparent_temp
 
 class BasePlotter(object):
@@ -88,7 +88,7 @@ class BasePlotter(object):
         of = open(cmd_file, 'w')
         # write gnuplot set up
         self.rows = self.GetDefaultRows()
-        self.cols = (self.plot_count + self.rows - 1) / self.rows
+        self.cols = (self.plot_count + self.rows - 1) // self.rows
         self.rows, self.cols = eval(self.GetValue(
             self.graph, 'layout', '%d, %d' % (self.rows, self.cols)))
         w, h = self.GetDefaultPlotSize()
@@ -185,7 +185,7 @@ class GraphPlotter(BasePlotter):
         return self.plot_count
 
     def GetDefaultPlotSize(self):
-        return 200 / self.cols, 600 / self.cols
+        return 200 // self.cols, 600 // self.cols
 
     def GetPreamble(self):
         result = """set style fill solid
@@ -324,7 +324,7 @@ set timefmt "%Y-%m-%dT%H:%M:%S"
                 idx += self.utcoffset
                 if not subplot.cummulative and subplot.last_idx:
                     if source == self.raw_data:
-                        interval = timedelta(minutes=((data['delay']*3)+1)/2)
+                        interval = timedelta(minutes=((data['delay']*3)+1)//2)
                     if idx - subplot.last_idx > interval:
                         # missing data
                         subplot.dat.write('%s ?\n' % (idx.isoformat()))
