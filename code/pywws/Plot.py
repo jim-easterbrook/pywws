@@ -20,7 +20,9 @@ import subprocess
 import sys
 import xml.dom.minidom
 
-from .conversions import *
+from .conversions import (
+    illuminance_wm2, pressure_inhg, rain_inch, temp_f,
+    winddir_degrees, winddir_text, wind_kmph, wind_mph, wind_kn, wind_bft)
 from . import DataStore
 from . import Localisation
 from .TimeZone import Local
