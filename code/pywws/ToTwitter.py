@@ -28,9 +28,9 @@ import logging
 import sys
 import tweepy
 
-import DataStore
-import Localisation
-from Logger import ApplicationLogger
+from . import DataStore
+from . import Localisation
+from .Logger import ApplicationLogger
 
 consumer_key = '62moSmU9ERTs0LK0g2xHAg'
 consumer_secret = 'ygdXpjr0rDagU3dqULPqXF8GFgUOD6zYDapoHAH9ck'

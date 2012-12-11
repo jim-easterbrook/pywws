@@ -15,10 +15,10 @@ import logging
 import sys
 from datetime import datetime, timedelta
 
-import DataStore
-from Logger import ApplicationLogger
-from TimeZone import Local, utc
-from WeatherStation import apparent_temp
+from . import DataStore
+from .Logger import ApplicationLogger
+from .TimeZone import Local, utc
+from .WeatherStation import apparent_temp
 
 class YoWindow(object):
     """

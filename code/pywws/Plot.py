@@ -20,11 +20,11 @@ import subprocess
 import sys
 import xml.dom.minidom
 
-from conversions import *
-import DataStore
-import Localisation
+from .conversions import *
+from . import DataStore
+from . import Localisation
 from .TimeZone import Local
-from WeatherStation import dew_point, wind_chill, apparent_temp
+from .WeatherStation import dew_point, wind_chill, apparent_temp
 
 class BasePlotter(object):
     def __init__(self, params, raw_data, hourly_data,

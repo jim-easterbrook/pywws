@@ -62,11 +62,11 @@ import math
 import os
 import sys
 
-from calib import Calib
-import DataStore
-from Logger import ApplicationLogger
+from .calib import Calib
+from . import DataStore
+from .Logger import ApplicationLogger
 from .TimeZone import Local, utc
-import WeatherStation
+from . import WeatherStation
 
 SECOND = timedelta(seconds=1)
 TIME_ERR = timedelta(seconds=45)

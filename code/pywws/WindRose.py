@@ -20,12 +20,12 @@ import os
 import sys
 import xml.dom.minidom
 
-from conversions import *
-import DataStore
-import Localisation
-from Plot import BasePlotter
-from TimeZone import Local
-from WeatherStation import dew_point
+from .conversions import *
+from . import DataStore
+from . import Localisation
+from .Plot import BasePlotter
+from .TimeZone import Local
+from .WeatherStation import dew_point
 
 class RosePlotter(BasePlotter):
     def GetPlotList(self):

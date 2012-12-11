@@ -50,10 +50,10 @@ import os
 import sys
 import time
 
-import DataStore
+from . import DataStore
 from .Logger import ApplicationLogger
-from TimeZone import Local
-import WeatherStation
+from .TimeZone import Local
+from . import WeatherStation
 
 def Catchup(ws, logger, raw_data, last_date, last_ptr):
     fixed_block = ws.get_fixed_block(unbuffered=True)

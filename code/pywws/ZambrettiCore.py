@@ -77,7 +77,7 @@ def ZambrettiText(letter):
     return forecast_text[letter]
 
 def main(argv=None):
-    import WeatherStation
+    from . import WeatherStation
     wind_dir = WeatherStation.get_wind_dir_text()
     for pressure in range(1030, 960, -10):
         for trend_txt in ('S', 'R-S', 'R-W', 'F-W', 'F-S'):

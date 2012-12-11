@@ -64,7 +64,7 @@ import math
 import sys
 import time
 
-import Localisation
+from . import Localisation
 # import USBDevice later, when we know which USB library to use
 USBDevice = None
 
@@ -271,12 +271,12 @@ class CUSBDrive(object):
         self.logger = logging.getLogger('pywws.WeatherStation.CUSBDrive')
         if not USBDevice and library in ('auto', 'cython-hidapi'):
             try:
-                from device_cython_hidapi import USBDevice
+                from .device_cython_hidapi import USBDevice
             except ImportError:
                 if library != 'auto':
                     raise
         if not USBDevice:
-            from device_pyusb import USBDevice
+            from .device_pyusb import USBDevice
         self.logger.info('using %s', USBDevice.__module__)
         self.dev = USBDevice(0x1941, 0x8021)
 

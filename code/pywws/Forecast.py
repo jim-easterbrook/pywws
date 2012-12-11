@@ -14,9 +14,9 @@ import getopt
 import sys
 
 from . import DataStore
-import Localisation
-from TimeZone import Local, utc
-import ZambrettiCore
+from . import Localisation
+from .TimeZone import Local, utc
+from . import ZambrettiCore
 
 def ZambrettiCode(params, hourly_data):
     north = eval(params.get('Zambretti', 'north', 'True'))

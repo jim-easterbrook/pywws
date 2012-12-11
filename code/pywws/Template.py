@@ -19,13 +19,13 @@ import os
 import shlex
 import sys
 
-from conversions import *
-import DataStore
-from Forecast import Zambretti, ZambrettiCode
-import Localisation
-from Logger import ApplicationLogger
+from .conversions import *
+from . import DataStore
+from .Forecast import Zambretti, ZambrettiCode
+from . import Localisation
+from .Logger import ApplicationLogger
 from .TimeZone import Local, utc
-import WeatherStation
+from . import WeatherStation
 
 SECOND = timedelta(seconds=1)
 HOUR = timedelta(hours=1)

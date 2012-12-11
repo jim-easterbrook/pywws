@@ -6,14 +6,14 @@ from datetime import datetime, timedelta
 import logging
 import os
 
-from calib import Calib
-import Plot
+from .calib import Calib
+from . import Plot
 from . import Template
-from TimeZone import Local
-from toservice import ToService
-import Upload
-import WindRose
-import YoWindow
+from .TimeZone import Local
+from .toservice import ToService
+from . import Upload
+from . import WindRose
+from . import YoWindow
 
 class RegularTasks(object):
     def __init__(self, params, calib_data, hourly_data, daily_data, monthly_data):
@@ -173,7 +173,7 @@ class RegularTasks(object):
         return OK
 
     def do_twitter(self, template, data=None):
-        import ToTwitter
+        from . import ToTwitter
         twitter = ToTwitter.ToTwitter(self.params)
         self.logger.info("Templating %s", template)
         input_file = os.path.join(self.template_dir, template)

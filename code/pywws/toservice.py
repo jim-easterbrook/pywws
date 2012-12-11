@@ -190,9 +190,9 @@ import urllib
 import urllib2
 from datetime import datetime, timedelta
 
-import DataStore
-from Logger import ApplicationLogger
-import Template
+from . import DataStore
+from .Logger import ApplicationLogger
+from . import Template
 
 FIVE_MINS = timedelta(minutes=5)
 

@@ -27,7 +27,7 @@ lang : $(lang_src:code/languages/%.po=code/pywws/locale/%/LC_MESSAGES/pywws.mo)
 code3/%.py : code/%.py
 	mkdir -p $(dir $@)
 	cp $< $@
-	2to3 -w -n $@
+	2to3 -x import -w -n $@
 
 code3/% : code/%
 	mkdir -p $(dir $@)
