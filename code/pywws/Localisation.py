@@ -114,6 +114,9 @@ import time
 
 # set translation to be used if SetTranslation is not called
 translation = gettext.NullTranslations()
+# Python 3 translations don't have a ugettext method
+if not hasattr(translation, 'ugettext'):
+    translation.ugettext = translation.gettext
 
 def SetLocale(lang):
     """Set the 'locale' used by a program.
@@ -175,6 +178,9 @@ def SetTranslation(lang):
     try:
         translation = gettext.translation(
             'pywws', path, languages=langs, codeset=codeset)
+        # Python 3 translations don't have a ugettext method
+        if not hasattr(translation, 'ugettext'):
+            translation.ugettext = translation.gettext
     except IOError:
         return False
     return True
