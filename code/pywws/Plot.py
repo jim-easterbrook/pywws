@@ -87,7 +87,10 @@ class BasePlotter(object):
         self.tmp_files = []
         cmd_file = os.path.join(self.work_dir, 'plot.cmd')
         self.tmp_files.append(cmd_file)
-        of = open(cmd_file, 'w')
+        if sys.version_info[0] >= 3:
+            of = open(cmd_file, 'w', encoding=self.encoding)
+        else:
+            of = open(cmd_file, 'w')
         # write gnuplot set up
         self.rows = self.GetDefaultRows()
         self.cols = (self.plot_count + self.rows - 1) // self.rows
@@ -110,7 +113,8 @@ class BasePlotter(object):
         # set overall title
         title = self.GetValue(self.graph, 'title', '')
         if title:
-            title = title.encode(self.encoding)
+            if sys.version_info[0] < 3:
+                title = title.encode(self.encoding)
             title = 'title "%s"' % title
         of.write('set multiplot layout %d, %d %s\n' % (self.rows, self.cols, title))
         # do actual plots
@@ -119,12 +123,14 @@ class BasePlotter(object):
             plot = plot_list[plot_no]
             # set key / title location
             title = self.GetValue(plot, 'title', '')
-            title = title.encode(self.encoding)
+            if sys.version_info[0] < 3:
+                title = title.encode(self.encoding)
             of.write('set key horizontal title "%s"\n' % title)
             # optional yaxis labels
             ylabel = self.GetValue(plot, 'ylabel', '')
             if ylabel:
-                ylabel = ylabel.encode(self.encoding)
+                if sys.version_info[0] < 3:
+                    ylabel = ylabel.encode(self.encoding)
                 ylabelangle = self.GetValue(plot, 'ylabelangle', '')
                 if ylabelangle:
                     ylabelangle = ' rotate by %s' % (ylabelangle)
@@ -133,7 +139,8 @@ class BasePlotter(object):
                 of.write('set ylabel\n')
             y2label = self.GetValue(plot, 'y2label', '')
             if y2label:
-                y2label = y2label.encode(self.encoding)
+                if sys.version_info[0] < 3:
+                    y2label = y2label.encode(self.encoding)
                 y2labelangle = self.GetValue(plot, 'y2labelangle', '')
                 if y2labelangle:
                     y2labelangle = ' rotate by %s' % (y2labelangle)
@@ -211,7 +218,8 @@ set timefmt "%Y-%m-%dT%H:%M:%S"
         xtics = self.GetValue(self.graph, 'xtics', None)
         if xtics:
             result += 'set xtics %d\n' % (eval(xtics) * 3600)
-        result = result.encode(self.encoding)
+        if sys.version_info[0] < 3:
+            result = result.encode(self.encoding)
         return result
 
     def PlotData(self, plot_no, plot, source):
@@ -231,12 +239,14 @@ set timefmt "%Y-%m-%dT%H:%M:%S"
             else:
                 xlabel = _('Date')
             xlabel = self.GetValue(self.graph, 'xlabel', xlabel)
-            xlabel = xlabel.encode(self.encoding)
+            if sys.version_info[0] < 3:
+                xlabel = xlabel.encode(self.encoding)
             result += 'set xlabel "%s"\n' % (
                 self.x_lo.replace(tzinfo=Local).strftime(xlabel))
             dateformat = '%Y/%m/%d'
             dateformat = self.GetValue(self.graph, 'dateformat', dateformat)
-            dateformat = dateformat.encode(self.encoding)
+            if sys.version_info[0] < 3:
+                dateformat = dateformat.encode(self.encoding)
             ldat = self.x_lo.replace(tzinfo=Local).strftime(dateformat)
             rdat = self.x_hi.replace(tzinfo=Local).strftime(dateformat)
             if ldat != '':
@@ -376,7 +386,8 @@ set timefmt "%Y-%m-%dT%H:%M:%S"
             if subplot_no != subplot_count - 1:
                 result += ', \\'
             result += '\n'
-        result = result.encode(self.encoding)
+        if sys.version_info[0] < 3:
+            result = result.encode(self.encoding)
         return result
 
 def main(argv=None):
