@@ -91,7 +91,10 @@ class Template(object):
             return
         data = data_set[idx]
         # open template file file
-        tmplt = open(template_file, 'r')
+        if sys.version_info[0] >= 3:
+            tmplt = open(template_file, 'r', encoding='latin_1')
+        else:
+            tmplt = open(template_file, 'r')
         # do the text processing
         while True:
             line = tmplt.readline()

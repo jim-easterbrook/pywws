@@ -74,7 +74,10 @@ class ToTwitter(object):
         return False
 
     def UploadFile(self, file):
-        tweet_file = open(file, 'r')
+        if sys.version_info[0] >= 3:
+            tweet_file = open(file, 'r', encoding=self.charset)
+        else:
+            tweet_file = open(file, 'r')
         tweet = tweet_file.read(140)
         tweet_file.close()
         return self.Upload(tweet)
