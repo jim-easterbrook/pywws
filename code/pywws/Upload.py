@@ -70,7 +70,10 @@ def Upload(params, files):
                     ftp.put(file, target)
                 else:
                     if os.path.splitext(file)[1] in ('.txt', '.xml', '.html'):
-                        f = open(file, 'r')
+                        if sys.version_info[0] >= 3:
+                            f = open(file, 'rb')
+                        else:
+                            f = open(file, 'r')
                         ftp.storlines('STOR %s' % (target), f)
                     else:
                         f = open(file, 'rb')
