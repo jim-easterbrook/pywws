@@ -66,6 +66,8 @@ version = release.split('_')[0]
 # for a list of supported languages.
 #language = None
 
+locale_dirs = ['../translations']
+
 # There are two options for replacing |today|: either, you set today to some
 # non-false value, then it is used:
 #today = ''

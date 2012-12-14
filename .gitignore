@@ -22,8 +22,12 @@ doc
 # generated Python 3
 code3
 
+# translations
+translations/*.pot
+translations/.doctrees
+translations/*/LC_MESSAGES
+
 # Miscellaneous
 MANIFEST
-code/languages/pywws.pot
 code/pywws/locale
 code/pywws/version.py

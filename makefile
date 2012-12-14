@@ -1,25 +1,42 @@
-all : doc lang code/pywws/version.py
+ifdef LANG
+  LANG	:= $(firstword $(subst _, ,$(LANG)))
+else
+  LANG	:= en
+endif
+
+po_files	:= $(notdir $(wildcard translations/$(LANG)/*.po))
+translations	:= $(notdir $(wildcard translations/*))
+langs		:= $(filter-out %.pot, $(translations))
+
+all : lang code/pywws/version.py doc
 	python setup.py build
 
 install :
 	python setup.py install
 
-dist :
+dist : lang_all code/pywws/version.py doc
 	python setup.py sdist
 
 clean :
-	rm -Rf doc/* code/pywws/locale/*
+	rm -Rf doc/* code/pywws/locale/* translations/*/LC_MESSAGES \
+		code3 build
 
-doc : code/pywws/version.py
-	$(MAKE) -C doc_src html text
+lang : $(po_files:%.po=translations/$(LANG)/LC_MESSAGES/%.mo) \
+	$(po_files:%=code/pywws/locale/$(LANG)/LC_MESSAGES/pywws.mo)
+
+lang_all :
+	for lang in $(langs); do $(MAKE) LANG=$$lang lang; done
+
+pots	:= pywws api essentials guides index pywws
+lang_src : $(pots:%=translations/%.pot) $(pots:%=translations/$(LANG)/%.po)
+
+doc : lang code/pywws/version.py
+	$(MAKE) -C doc_src html text SPHINXOPTS="-D language=$(LANG)"
 
 sources	:= $(wildcard code/*) $(wildcard code/pywws/*) \
 	   $(wildcard code/pywws/services/*) $(wildcard code/pywws/locale/*/*/*)
 sources	:= $(filter %.py %.mo %.txt %.ini, $(sources))
 python3 : $(sources:code/%=code3/%)
-
-lang_src	:= $(wildcard code/languages/*.po)
-lang : $(lang_src:code/languages/%.po=code/pywws/locale/%/LC_MESSAGES/pywws.mo)
 
 .PHONY : doc dist
 
@@ -39,26 +56,35 @@ COMMIT	:= $(shell git rev-parse --short master)
 code/pywws/version.py :
 	date +"version = '%y.%m_$(COMMIT)'" >$@
 
+# copy pywws language file to code subdirectory
+code/pywws/locale/%.mo : translations/%.mo
+	mkdir -p $(dir $@)
+	cp $< $@
+
 # compile a language file
-code/pywws/locale/%/LC_MESSAGES/pywws.mo : code/languages/%.po
+translations/$(LANG)/LC_MESSAGES/%.mo : translations/$(LANG)/%.po
 	mkdir -p $(dir $@)
 	msgfmt --output-file=$@ $<
 
 # create or update a language file from extracted strings
-code/languages/%.po : code/languages/pywws.pot
+translations/$(LANG)/%.po : translations/%.pot
 	if [ -e $@ ]; then \
-	  cd $(dir $<) ; \
-	  msgmerge $(notdir $@ $<) --update ; \
-	  touch $(notdir $@) ; \
+	  msgmerge $@ $< --no-wrap --update && \
+	  touch $@ ; \
 	else \
-	  msginit --input=$< --output=- --locale=$* | \
-	  sed 's/PACKAGE/pywws/' | sed 's/ VERSION//' >$@ ; \
+	  mkdir -p $(dir $@) && \
+	  msginit --input=$< --output-file=$@ --no-wrap --locale=$(LANG) ; \
 	fi
 
-# extract marked strings from Python files
-code/languages/pywws.pot :
-	xgettext --language=Python --output=- \
+# extract marked strings from Python code
+translations/pywws.pot :
+	xgettext --language=Python --output=$@ --no-wrap \
 		--copyright-holder="Jim Easterbrook" \
+		--package-name=pywws --package-version=`date +"%y.%m"` \
 		--msgid-bugs-address="jim@jim-easterbrook.me.uk" \
-		code/*.py code/pywws/*.py | \
-	sed 's/PACKAGE VERSION/pywws/' >$@
+		code/*.py code/pywws/*.py
+
+# extract strings for translation from documentation source
+translations/%.pot :
+	cd doc_src; \
+	sphinx-build -b gettext . ../translations
