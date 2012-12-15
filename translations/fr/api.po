@@ -1,0 +1,3151 @@
+# French translations for pywws package.
+# Copyright (C) 2008-12, Jim Easterbrook
+# This file is distributed under the same license as the pywws package.
+# Jim Easterbrook <jim@jim-easterbrook.me.uk>, 2012.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: pywws 12.12\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-12-14 15:22\n"
+"PO-Revision-Date: 2012-12-15 11:22+0000\n"
+"Last-Translator: Jacques Desroches <jacques.desroches@meteoduquebec.com>\n"
+"Language-Team: French\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: fr\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+# cdfea54661684ec09af2c206fbba0488
+#: ../doc_src/api/EWtoPy.rst:2
+msgid "EWtoPy"
+msgstr ""
+
+# a606b4c8fbc443d2aedd6076c65c697e
+# e58576baffe14d2fb94d1c1b427289b3
+# 98771584aee148c58c73cbbd7de16c98
+# 54cfdb84051148468d34d5a18f948874
+# 0efd3a03189b431799c633f22c279f92
+# 87add0005bd94a0daa5808a587ebfd8e
+# ca67aa8c89ec4a95a6af9d3f695db4ac
+# e7c24318522c4f839b68c3a9e3c1b2c4
+# 6703148cebcd43cb8d3fe51bc55888b1
+# ee795fcc658d49bfa18a820d90eb9669
+# 5accc5155b9c410589e76b83d34cbab2
+# b337a8f33c964d688b53059b3ee9f805
+#: ../doc_src/api/EWtoPy.rst:5 ../doc_src/api/Reprocess.rst:5
+#: ../doc_src/api/pywws.DataStore.rst:5
+#: ../code/pywws/Localisation.py:docstring of pywws.Localisation:14
+#: ../doc_src/api/pywws.Plot.rst:5 ../doc_src/api/pywws.Template.rst:5
+#: ../doc_src/api/pywws.TimeZone.rst:5 ../doc_src/api/pywws.Upload.rst:5
+#: ../code/pywws/WeatherStation.py:docstring pywws.WeatherStation:8
+#: ../doc_src/api/pywws.WindRose.rst:5 ../code/pywws/device_pyusb.py:docstring
+#: pywws.device_pyusb:4 ../code/pywws/toservice.py:docstring
+#: pywws.toservice:15
+msgid "Introduction"
+msgstr ""
+
+# 368ad8e0d3764980a44a545ddc1734eb
+#: ../doc_src/api/EWtoPy.rst:7
+msgid "This program converts data from the format used by the EasyWeather program supplied with the weather station to the format used by pywws. It is useful if you've been using EasyWeather for a while before discovering pywws."
+msgstr ""
+
+# 7d3f72ded0014f7e9c213562c4f99529
+#: ../doc_src/api/EWtoPy.rst:9
+msgid "The ``EasyWeather.dat`` file is only used to provide data from before the start of the pywws data. As your weather station has its own memory, you should run LogData.py before EWtoPy.py to minimise use of the EasyWeather.dat file."
+msgstr ""
+
+# 2789785645e34b3380537008db285c9f
+#: ../doc_src/api/EWtoPy.rst:11
+msgid "EWtoPy.py converts the time stamps in EasyWeather.dat from local time to UTC. This can cause problems when daylight savings time ends, as local time appears to jump back one hour. The program attempts to detect this and correct the affected time stamps, but I have not been able to test this on a variety of time zones."
+msgstr ""
+
+# 8b2b6e8482434e05ab78ddec71f63002
+# b1e5453930b1441e88366a1050fe1053
+# c3347fa6cdb5455ca5354fa1cfc88080
+# 6297e40c8c0b4ad5918c397c9e378026
+# 18fe671dff5543aa99579976be3a3287
+# 0edc38e1d9f8415c93c3960ca18125d1
+# d5e68268858d46589d04bd0db27d9b53
+# 0196ac8c631b4806826dec25d33d49cf
+# e05b68c93104460dafd9fd8fe84d18a7
+#: ../doc_src/api/EWtoPy.rst:14 ../doc_src/api/Reprocess.rst:16
+#: ../doc_src/api/pywws.DataStore.rst:22 ../doc_src/api/pywws.Plot.rst:260
+#: ../doc_src/api/pywws.Template.rst:67 ../doc_src/api/pywws.TimeZone.rst:12
+#: ../doc_src/api/pywws.Upload.rst:24
+#: ../code/pywws/WeatherStation.py:docstring of pywws.WeatherStation:55
+#: ../doc_src/api/pywws.WindRose.rst:137
+msgid "Detailed API"
+msgstr ""
+
+# 0afc180d2fa04f0c89ae2e8379e7bf36
+# c50e3a9be244428285c6959eb7f7f664
+#: ../code/EWtoPy.py:docstring of EWtoPy:1 ../doc_src/<autosummary>:1
+msgid "Convert EasyWeather.dat data to pywws format."
+msgstr ""
+
+# e19f41a19b31418681e3bdc16465de8c
+#: ../code/EWtoPy.py:docstring of EWtoPy:3
+msgid "usage: python EWtoPy.py [options] EasyWeather_file data_dir options are:"
+msgstr ""
+
+# 3b84f541cb0f4efca446c8fa9818c8b4
+# a4eaf340ae024a22b36a35c6d870444e
+# 8708e67f8dea43cfb7245b7e303cae7c
+# 1e045b25f8ad4d4da2116fa8ecb82998
+#: ../code/EWtoPy.py:docstring of EWtoPy:5 ../code/pywws/Plot.py:docstring
+#: pywws.Plot:5 ../code/pywws/Upload.py:docstring pywws.Upload:5
+#: ../code/pywws/WindRose.py:docstring pywws.WindRose:5
+msgid "-h or --help            display this help"
+msgstr ""
+
+# 1c1849b5383447a3920261e39f9d65d5
+#: ../code/EWtoPy.py:docstring of EWtoPy:6
+msgid "EasyWeather_file is the input data file, e.g. EasyWeather.dat data_dir is the root directory of the weather data"
+msgstr ""
+
+# 92fb0c63417948219994dc1cba85dcb9
+#: ../code/EWtoPy.py:docstring of EWtoPy:9
+msgid "This program assumes that EasyWeather used your local time, and converts time stamps to UTC. This can create ambiguities when the clocks go back in October, which the program attempts to detect and correct."
+msgstr ""
+
+# 088684e25b464a399c159e81b6376272
+# cb34969b4b7041209481311215cbb24c
+# e67fec17c69441719bf870b73d0a5760
+# eca949caafe14a55a09dfa99b0798cea
+# 915d975bdbd64a1ab10e8e36968371aa
+# 61b4fd22375645deb61e288d935f5e5f
+# c37e1716d2ec4c708f3d7f8b72b48087
+# bbefb17a1e524c02b68fd10debee39f3
+# 1578c1ffdda64b10840f69afad3eff19
+# 5501763437974b3eb595b25399c66cba
+# cf433e39e42c4509b1c53708ba828866
+# eb6de737bb844e7ea970201fad7c9073
+# 18cd48c74d234ce495bbea739caa0925
+# d416a2ad8ae34b079fe86b1b2f1d76c2
+# c11d49379f8e4fe7a27ca81ce567dabc
+# 0790b89baf974aaf92588222acebd12c
+# a1d5a20db5f143b28fd576d1006ba7b3
+# 2011384196a34ca1be3ced8be87358e9
+# aec5dec5d54140ada37e7aa942835c18
+# 89a3476ca7824112917644e59526dfe5
+# d66d8050997640c59674931704b02a52
+# 1c45957982474fef867d47bc21a8c130
+# b4f649cf3d0d4546b6f42a725b111b68
+# 6052b79dbd3d40eea259cf583b2c6ce0
+#: ../doc_src/api/EWtoPy.rst:21 ../doc_src/api/Hourly.rst:7
+#: ../doc_src/api/LiveLog.rst:7 ../doc_src/api/Reprocess.rst:21
+#: ../doc_src/api/SetWeatherStation.rst:7 ../doc_src/api/TestModule.rst:7
+#: ../doc_src/api/TestWeatherStation.rst:7 ../doc_src/api/TwitterAuth.rst:7
+#: ../doc_src/api/USBQualityTest.rst:7 ../doc_src/api/pywws.DataStore.rst:27
+#: ../doc_src/api/pywws.Forecast.rst:9 ../doc_src/api/pywws.Localisation.rst:7
+#: ../doc_src/api/pywws.LogData.rst:7 ../doc_src/api/pywws.Logger.rst:9
+#: ../doc_src/api/pywws.Plot.rst:265 ../doc_src/api/pywws.Process.rst:7
+#: ../doc_src/api/pywws.Template.rst:72 ../doc_src/api/pywws.ToTwitter.rst:7
+#: ../doc_src/api/pywws.Upload.rst:29
+#: ../doc_src/api/pywws.WeatherStation.rst:7
+#: ../doc_src/api/pywws.WindRose.rst:142 ../doc_src/api/pywws.YoWindow.rst:7
+#: ../doc_src/api/pywws.ZambrettiCore.rst:7
+#: ../doc_src/api/pywws.conversions.rst:9
+msgid "Functions"
+msgstr ""
+
+# 46660e80e7ea48abaedb527f8502823b
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`main <EWtoPy.main>`\\ ([argv])"
+msgstr ""
+
+# 6a9a30f8dd1f41c995679942ef10a963
+#: ../doc_src/api/Hourly.rst:2
+msgid "Hourly"
+msgstr ""
+
+# de21f42ae91e4df08e529d99b8e442f2
+# 872b8c239b11468d85afb00027cc11aa
+#: ../code/Hourly.py:docstring of Hourly:1 ../doc_src/<autosummary>:1
+msgid "Get weather data, process it, prepare graphs & text files and upload to a web site."
+msgstr ""
+
+# cb42a523cca64283a85d9a8ca1dc9395
+#: ../code/Hourly.py:docstring of Hourly:4
+msgid "Typically run every hour from cron. ::"
+msgstr ""
+
+# db1674cb205a4039bbb6ebc007c6ffeb
+#: ../code/Hourly.py:docstring of Hourly:14
+msgid "This script does little more than call other modules in sequence to get data from the weather station, process it, plot some graphs, generate some text files and upload the results to a web site."
+msgstr ""
+
+# 1d6bb44eeae34ae7becd389957a9f56c
+#: ../code/Hourly.py:docstring of Hourly:18
+msgid "For more information on using ``Hourly.py``, see :doc:`../guides/hourlylogging`."
+msgstr ""
+
+# 451409f859384ce0bda834fec36d69da
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`Hourly <Hourly.Hourly>`\\ (data_dir)"
+msgstr ""
+
+# a67061a72b57426d89f11d217fba0455
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`main <Hourly.main>`\\ ([argv])"
+msgstr ""
+
+# c3a5f77737964ebaacdaea811a4d8b33
+#: ../doc_src/api/LiveLog.rst:2
+msgid "LiveLog"
+msgstr ""
+
+# 4f543b6f31ab4f43ba882e6d7f99d38f
+# 0f0c644c33874766a1afdf77363c5127
+#: ../code/LiveLog.py:docstring of LiveLog:1 ../doc_src/<autosummary>:1
+msgid "Get weather data, store it, and process it."
+msgstr ""
+
+# 76ce7fda985c43319c53ab4bc4820055
+#: ../code/LiveLog.py:docstring of LiveLog:3
+msgid "Run this continuously, having set what tasks are to be done. ::"
+msgstr ""
+
+# 40ecc20d2811439693d21ad50e7b64ae
+#: ../code/LiveLog.py:docstring of LiveLog:14
+msgid "For more information on using ``LiveLog.py``, see :doc:`../guides/livelogging`."
+msgstr ""
+
+# 535e933fddd146bcb14348a5b934927b
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`LiveLog <LiveLog.LiveLog>`\\ (data_dir)"
+msgstr ""
+
+# 697ef35289144949b5ee96a04a20c48f
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`main <LiveLog.main>`\\ ([argv])"
+msgstr ""
+
+# e96b7517aa2e44f894cfca4560878c76
+#: ../doc_src/api/Reprocess.rst:2
+msgid "Reprocess"
+msgstr ""
+
+# 670d244236714b9b91602cec2285c26b
+#: ../doc_src/api/Reprocess.rst:7
+msgid "This program recreates the hourly, daily and monthly summary data that is created by the Process.py program. It should be run whenever you upgrade to a newer version of pywws."
+msgstr ""
+
+# 19e8ced354024feaaef7bdcc0d659366
+#: ../doc_src/api/Reprocess.rst:9
+msgid "The program is very simple to use::"
+msgstr ""
+
+# 6ea71b6006924c63a5ff8edb70fbd7c6
+#: ../doc_src/api/Reprocess.rst:13
+msgid "where ``data_directory`` is the location of your stored data."
+msgstr ""
+
+# 2d59095d9bac47309979f3b1835a665a
+# 13b4f4a96d47467b80fb251dec199a34
+#: ../code/Reprocess.py:docstring of Reprocess:1 ../doc_src/<autosummary>:1
+msgid "Regenerate hourly and daily summary data."
+msgstr ""
+
+# 41daa9920cbd4b0db4df714dc2aaa020
+#: ../code/Reprocess.py:docstring of Reprocess:3
+msgid "usage: python Reprocess.py [options] data_dir options are:"
+msgstr ""
+
+# 135e3564ba634e07998c116731c1dd1c
+# a256db53cccf4a6aaa90a0f2380ad9e4
+#: ../code/Reprocess.py:docstring of Reprocess:5
+#: ../code/pywws/Template.py:docstring pywws.Template:5
+msgid "display this help"
+msgstr ""
+
+# 36d15134f42b48259652b35e2d2c4170
+# 85e4d2dfb32d41ab9bf1cb62716ce806
+#: ../code/Reprocess.py:docstring of Reprocess:6
+#: ../code/pywws/Forecast.py:docstring pywws.Forecast:6
+msgid "data_dir is the root directory of the weather data"
+msgstr ""
+
+# c8aa76d96b0a44338e9c0b783a782056
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`Reprocess <Reprocess.Reprocess>`\\ (data_dir)"
+msgstr ""
+
+# 64344b9099f04f7b9e455b40d0857c8b
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`main <Reprocess.main>`\\ ([argv])"
+msgstr ""
+
+# 77c2ce525b934bc7b3d464e132ec1f76
+#: ../doc_src/api/SetWeatherStation.rst:2
+msgid "SetWeatherStation"
+msgstr ""
+
+# e762c72fc22c484990fbb65175bd9b51
+# db0abce3b3e34a13b79663e267669281
+#: ../code/SetWeatherStation.py:docstring of SetWeatherStation:1
+#: ../doc_src/<autosummary>:1
+msgid "Set some weather station parameters."
+msgstr ""
+
+# 814e40a88fae42daa9d026739edcb3a5
+#: ../code/SetWeatherStation.py:docstring of SetWeatherStation:3
+msgid "usage: python SetWeatherStation.py [options] options are:"
+msgstr ""
+
+# 3ce55992331a41abb944eea26b2bc0a6
+#: ../code/SetWeatherStation.py:docstring of SetWeatherStation:7
+msgid "(unlikely to work)"
+msgstr ""
+
+# bc621475ba3646ff83925a42df1995d9
+#: ../code/SetWeatherStation.py:docstring of SetWeatherStation:8
+msgid "-p f | --pressure f     set relative pressure to n hPa -r n | --read_period n  set logging interval to n minutes -v   | --verbose        increase error message verbosity -z   | --zero_memory    clear the weather station logged readings"
+msgstr ""
+
+# b8eab3a9dfd7412c8c1c413a7920145f
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`bcd_encode <SetWeatherStation.bcd_encode>`\\ (value)"
+msgstr ""
+
+# 00a76940a38f4d4fae6ca06f77e7a166
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`main <SetWeatherStation.main>`\\ ([argv])"
+msgstr ""
+
+# 6efb8e22a01d490e8a148648a8bd1084
+#: ../doc_src/api/TestModule.rst:2
+msgid "TestModule"
+msgstr ""
+
+# b030786dc87e4244b712204259abfb86
+# 293dc85b514e444c807f3ffe9f968964
+#: ../code/TestModule.py:docstring of TestModule:1 ../doc_src/<autosummary>:1
+msgid "Test a pywws module."
+msgstr ""
+
+# 5863bce4047b4fceb43bd60b2e541eb2
+#: ../code/TestModule.py:docstring of TestModule:3
+msgid "Many of the modules in the pywws package include a simple test script that is run when that module is run as a script. Unfortunately Python 3 does not allow package modules to be run as scripts, producing a 'ValueError: Attempted relative import in non-package' error. This script allows module test scripts to be run. ::"
+msgstr ""
+
+# fed6079811d04a91a0894eff70e6cf0b
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`main <TestModule.main>`\\ ([argv])"
+msgstr ""
+
+# 4e7f6f6bab6a4178bda94025d2c149f3
+#: ../doc_src/api/TestWeatherStation.rst:2
+msgid "TestWeatherStation"
+msgstr ""
+
+# 9dd1213e29ef4b65af64c0d6cf1afb46
+# 5a4d3898808141a9bd4d622f04fbcde1
+#: ../code/TestWeatherStation.py:docstring of TestWeatherStation:1
+#: ../doc_src/<autosummary>:1
+msgid "Test connection to weather station."
+msgstr ""
+
+# 219b1d69ab5848528f4e2d0f5b9b4ea2
+#: ../code/TestWeatherStation.py:docstring of TestWeatherStation:3
+msgid "This is a simple utility to test communication with the weather station. If this doesn't work, then there's a problem that needs to be sorted out before trying any of the other programs. Likely problems include not properly installing `libusb <http://libusb.wiki.sourceforge.net/>`_ or `PyUSB <http://pyusb.berlios.de/>`_. Less likely problems include an incompatibility between libusb and some operating systems. The most unlikely problem is that you forgot to connect the weather station to your computer! ::"
+msgstr ""
+
+# 26e69114209445a3ab957bd78b632811
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`main <TestWeatherStation.main>`\\ ([argv])"
+msgstr ""
+
+# 4956886c87e44fc3a4783596c8a4d3e2
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`raw_dump <TestWeatherStation.raw_dump>`\\ (pos, data)"
+msgstr ""
+
+# 907454dd265841e48188208f13d5f0c7
+#: ../doc_src/api/TwitterAuth.rst:2
+msgid "TwitterAuth"
+msgstr ""
+
+# 3fc0b8f7296c457aa1526eb846c56c05
+#: ../code/TwitterAuth.py:docstring of TwitterAuth:1
+msgid "Authorise pywws to post to your Twitter account ::"
+msgstr ""
+
+# 00c96e76d8af4181861c05c540ae9485
+#: ../code/TwitterAuth.py:docstring of TwitterAuth:11
+msgid "This program authorises :py:mod:`pywws.ToTwitter` to post to a Twitter account. You need to create an account before running :py:mod:`TwitterAuth`. It opens a web browser window (or gives you a URL to copy to your web browser) where you log in to your Twitter account. If the login is successful the browser will display a 7 digit number which you then copy to :py:mod:`TwitterAuth`."
+msgstr ""
+
+# bb2cc673a06f4f30812bb13af228ed21
+#: ../code/TwitterAuth.py:docstring of TwitterAuth:18
+msgid "See :doc:`../guides/twitter` for more detail on using Twitter with pywws."
+msgstr ""
+
+# 421cd6648ee3464f97e87016e2f8d2b7
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`TwitterAuth <TwitterAuth.TwitterAuth>`\\ (params)"
+msgstr ""
+
+# eb702fcb1f434ccab93d431d70070da0
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`main <TwitterAuth.main>`\\ ([argv])"
+msgstr ""
+
+# b7ac80ade48c4eb894007fb8ce6f4f92
+#: ../doc_src/api/USBQualityTest.rst:2
+msgid "USBQualityTest"
+msgstr ""
+
+# 81ec6512ec544763932403a61686c9e9
+# a570534c85924d409aca39436e8f06da
+#: ../code/USBQualityTest.py:docstring of USBQualityTest:1
+#: ../doc_src/<autosummary>:1
+msgid "Test quality of USB connection to weather station"
+msgstr ""
+
+# ec2914f6de7a4286b20fa9fadd2e802b
+#: ../code/USBQualityTest.py:docstring of USBQualityTest:13
+msgid "The USB link to my weather station is not 100% reliable. The data read from the station by the computer is occasionally corrupted, perhaps by interference. I've been trying to solve this by putting ferrite beads around the USB cable and relocating possible interference sources such as external hard drives. All without any success so far."
+msgstr ""
+
+# f16cb97f203347fdb9ce70d8e12d7a9f
+#: ../code/USBQualityTest.py:docstring of USBQualityTest:20
+msgid "This program tests the USB connection for errors by continuously reading the entire weather station memory (except for those parts that may be changing) looking for errors. Each 32-byte block is read twice, and if the two readings differ a warning message is displayed. Also displayed are the number of blocks read, and the number of errors found."
+msgstr ""
+
+# 2a645fc346ae49f2b85ca0ee3328cb9d
+#: ../code/USBQualityTest.py:docstring of USBQualityTest:27
+msgid "I typically get one or two errors per hour, so the test needs to be run for several hours to produce a useful measurement. Note that other software that accesses the weather station (such as :doc:`Hourly` or :doc:`LiveLog`) must not be run while the test is in progress."
+msgstr ""
+
+# 172444bfccf84301a01293bfc6647a1b
+#: ../code/USBQualityTest.py:docstring of USBQualityTest:32
+msgid "If you run this test and get no errors at all, please let me know. There is something good about your setup and I'd love to know what it is!"
+msgstr ""
+
+# 31d1ee235fee4f44a70521e48ecfcfa4
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`main <USBQualityTest.main>`\\ ([argv])"
+msgstr ""
+
+# 943b47772caa4634b8b0b44ed6b4da88
+#: ../doc_src/api/index.rst:2
+msgid "Python programs and modules"
+msgstr ""
+
+# 0a0e81cb94b0490aaaf4a267bac37a26
+#: ../doc_src/api/index.rst:4
+msgid "Contents:"
+msgstr ""
+
+# a7855fbb1b7046b2be6e1d041ae1407d
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`Hourly <Hourly>`\\"
+msgstr ""
+
+# 74cb29fbeb564130a1b8b725155b88b3
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`LiveLog <LiveLog>`\\"
+msgstr ""
+
+# 18d78235b3c840e298caa84c3613e347
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`Reprocess <Reprocess>`\\"
+msgstr ""
+
+# 0168a5548b654bd99e3ed0b331cd83bd
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`TwitterAuth <TwitterAuth>`\\"
+msgstr ""
+
+# 344b20a663a241cebb27291eb98b670e
+#: ../doc_src/<autosummary>:1
+msgid "Authorise pywws to post to your Twitter account"
+msgstr ""
+
+# ba0756b506a9422b9ca1d79f8cb7a300
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`SetWeatherStation <SetWeatherStation>`\\"
+msgstr ""
+
+# dd933cbbc4274172a85f6090121b3170
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`TestWeatherStation <TestWeatherStation>`\\"
+msgstr ""
+
+# e50f1340a7d7486b89c8c1a1486a2a25
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`TestModule <TestModule>`\\"
+msgstr ""
+
+# 3f3609a43f2243a7b0a52cf7f470d509
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`USBQualityTest <USBQualityTest>`\\"
+msgstr ""
+
+# 9571ca64dc5e488a9491549bd8e36ff9
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`EWtoPy <EWtoPy>`\\"
+msgstr ""
+
+# 00b1f8ca0cc74bedb9afda296a5917e2
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`pywws.Tasks <pywws.Tasks>`\\"
+msgstr ""
+
+# 25523ba9a1c84c78b70b6e5c1ab4f27c
+# 5a1cc7882fd848fc84d1d63162237ad1
+#: ../doc_src/<autosummary>:1 ../code/pywws/Tasks.py:docstring of
+#: pywws.Tasks:1
+msgid "Routines to perform common tasks such as plotting gaphs or uploading files."
+msgstr ""
+
+# a2ecb88e96ec4862876ed0a8aa7cd4a2
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`pywws.LogData <pywws.LogData>`\\"
+msgstr ""
+
+# 00a79cf5a9ae4ca38c65ed483c0bde64
+#: ../doc_src/<autosummary>:1
+msgid "Save weather station history to file"
+msgstr ""
+
+# e808d9320da44d20824908b720a8c302
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`pywws.Process <pywws.Process>`\\"
+msgstr ""
+
+# 7b48ec3f53fd4e22b0d523ec69960f52
+#: ../doc_src/<autosummary>:1
+msgid "Generate hourly, daily & monthly summaries of raw weather station"
+msgstr ""
+
+# e67869805532468e843bddedeee3d7de
+# 5564879b88da4ecea55d57e4f9c4a8d2
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`pywws.calib <pywws.calib>`\\"
+msgstr ""
+
+# f0b2842a06ce46148d991063a0f4a626
+# d47501dbd96240d5bf9eeaed850f17de
+# 3e6201697cff493493c8260a728258c5
+#: ../doc_src/<autosummary>:1 ../code/pywws/calib.py:docstring of
+#: pywws.calib:2
+msgid "Calibrate raw weather station data"
+msgstr ""
+
+# 0472c7fb17924e239435a5b8523116c0
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`pywws.Plot <pywws.Plot>`\\"
+msgstr ""
+
+# 9d9729942e4a4d8e85f39ada51258b76
+# aa0e535089204103aeb5568bf87f8070
+#: ../doc_src/<autosummary>:1 ../code/pywws/Plot.py:docstring of pywws.Plot:1
+msgid "Plot graphs of weather data according to an XML recipe."
+msgstr ""
+
+# edb2964f20354bd3b67b02ef6ac6721b
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`pywws.WindRose <pywws.WindRose>`\\"
+msgstr ""
+
+# 03bd20c9b19642588ca687491dfdb16a
+# 3dad0e8eefb34dbead362fc93032d2a6
+#: ../doc_src/<autosummary>:1 ../code/pywws/WindRose.py:docstring of
+#: pywws.WindRose:1
+msgid "Plot a \"wind rose\"."
+msgstr ""
+
+# e417e62ddb4540808e38c12663ceb6f5
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`pywws.Template <pywws.Template>`\\"
+msgstr ""
+
+# daae43f2428249e998f8e901545b6602
+# 8d4ef5a6d9d248fbac104b95735e5b8c
+#: ../doc_src/<autosummary>:1 ../code/pywws/Template.py:docstring of
+#: pywws.Template:1
+msgid "Create text data file based on a template."
+msgstr ""
+
+# babb288069a04e78b45b1b7d26c622d7
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`pywws.Forecast <pywws.Forecast>`\\"
+msgstr ""
+
+# 1d958ac155d14d23b14b354e6d4cf328
+# 0907994feda940849b1595fd3d87f0f0
+#: ../doc_src/<autosummary>:1 ../code/pywws/Forecast.py:docstring of
+#: pywws.Forecast:1
+msgid "Predict future weather using recent data."
+msgstr ""
+
+# 8762ecf34c5043c49ff78b7f5a5c51e8
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`pywws.ZambrettiCore <pywws.ZambrettiCore>`\\"
+msgstr ""
+
+# ddd1f6e90e9249579ac262770d1b4b90
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`pywws.Upload <pywws.Upload>`\\"
+msgstr ""
+
+# a400f5eb81944e59afb02d8eabc1db3d
+# bc904b8d145c435f94b7b0ae3fc83e2d
+#: ../doc_src/<autosummary>:1 ../code/pywws/Upload.py:docstring of
+#: pywws.Upload:1
+msgid "Upload files to a directory by ftp."
+msgstr ""
+
+# 97f50077b7234430aef7f6d12ad41f9f
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`pywws.ToTwitter <pywws.ToTwitter>`\\"
+msgstr ""
+
+# 6747f2850e724e3f9fb6136c84d66178
+#: ../doc_src/<autosummary>:1
+msgid "Post a message to Twitter"
+msgstr ""
+
+# 7afd235771314aa4b56b63310f1c4d36
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`pywws.toservice <pywws.toservice>`\\"
+msgstr ""
+
+# 2bc7d3b2f8e1486f8b896475ef856abd
+#: ../doc_src/<autosummary>:1
+msgid "Post weather update to services such as Weather Underground"
+msgstr ""
+
+# 914059108a5347a2b06b1057dd5cd954
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`pywws.YoWindow <pywws.YoWindow>`\\"
+msgstr ""
+
+# 58abef250166413ea88db6048279eae9
+# baf232a0e6d74ba893dfed908e1a4cd8
+#: ../doc_src/<autosummary>:1 ../code/pywws/YoWindow.py:docstring of
+#: pywws.YoWindow:1
+msgid "Generate YoWindow XML file."
+msgstr ""
+
+# 79cabf9682924dbb9466267e6bcc5c87
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`pywws.WeatherStation <pywws.WeatherStation>`\\"
+msgstr ""
+
+# 5af1871965aa4757a6a11dcd3e1f44e6
+# 180a22628c01474c825c5c5a44c15457
+#: ../doc_src/<autosummary>:1 ../code/pywws/WeatherStation.py:docstring of
+#: pywws.WeatherStation:1
+msgid "Get data from WH1080/WH3080 compatible weather stations."
+msgstr ""
+
+# 14676e3d94694e59b97ec651f8c757bb
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`pywws.device_cython_hidapi <pywws.device_cython_hidapi>`\\"
+msgstr ""
+
+# ffc343b80dfd4d66af7f0a52fca15374
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`pywws.device_pyusb <pywws.device_pyusb>`\\"
+msgstr ""
+
+# f6403c0d840d45b49975654d2f738832
+# 37d2a0c4a7884352914c6dadbd6333e1
+#: ../doc_src/<autosummary>:1 ../code/pywws/device_pyusb.py:docstring of
+#: pywws.device_pyusb:1
+msgid "Low level USB interface to weather station, using PyUSB."
+msgstr ""
+
+# 6fc58f6c7f6e4253a1f65ae6e0754f6b
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`pywws.DataStore <pywws.DataStore>`\\"
+msgstr ""
+
+# 8a09a958f29d464280ee1a6270f1c1b5
+# 7e9c389d5ef54030aec766b536e35121
+#: ../doc_src/<autosummary>:1 ../code/pywws/DataStore.py:docstring of
+#: pywws.DataStore:1
+msgid "DataStore.py - stores readings in easy to access files"
+msgstr ""
+
+# 5d825de3fa08483981b007eec7c23716
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`pywws.TimeZone <pywws.TimeZone>`\\"
+msgstr ""
+
+# 35e29a2ef59b43689b2c3053fb554e1b
+#: ../doc_src/<autosummary>:1
+msgid "Provide a couple of datetime.tzinfo() objects representing local"
+msgstr ""
+
+# e83518b9ed1f4406882f5757db084f58
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`pywws.Localisation <pywws.Localisation>`\\"
+msgstr ""
+
+# 0d74d88b1669482bbc4ecc8de4aff6e5
+#: ../doc_src/<autosummary>:1
+msgid "Localisation.py - provide translations of strings into local"
+msgstr ""
+
+# 8df3743068464f22ac1e30f17d71db7b
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`pywws.conversions <pywws.conversions>`\\"
+msgstr ""
+
+# b951ce35f0504417b073150222448f17
+#: ../doc_src/<autosummary>:1
+msgid "conversions.py - a set of functions to convert pywws native units"
+msgstr ""
+
+# 659299293735483aba3bbdc4eeb1f0d2
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`pywws.Logger <pywws.Logger>`\\"
+msgstr ""
+
+# 50bd7467f97e42bdabe577b0a67e46e9
+# 99aa61021cb8459d827cbc9e9045e3d6
+#: ../doc_src/<autosummary>:1 ../code/pywws/Logger.py:docstring of
+#: pywws.Logger:1
+msgid "Common code for logging info and errors."
+msgstr ""
+
+# 24323810b5864567895b8ed9c383626d
+#: ../doc_src/api/pywws.DataStore.rst:2
+msgid "pywws.DataStore"
+msgstr ""
+
+# 8b1152feb06a4eea89c613579313d8d6
+#: ../doc_src/api/pywws.DataStore.rst:7
+msgid "This module is at the core of my weather station software. It stores data on disc, but without the overhead of a full scale database system. I have designed it to run on a small memory machine such as my Asus router. To minimise memory usage it only loads one day's worth of data at a time into memory."
+msgstr ""
+
+# 341cc00d9f954c36bde21aa9da7128e6
+#: ../doc_src/api/pywws.DataStore.rst:9
+msgid "From a \"user\" point of view, the data is accessed as a cross between a list and a dictionary. Each data record is indexed by a ``datetime`` object (dictionary behaviour), but records are stored in order and can be accessed as slices (list behaviour)."
+msgstr ""
+
+# 744fc2a1b4d546b1be8c76be53562225
+#: ../doc_src/api/pywws.DataStore.rst:11
+msgid "For example, to access the hourly data for Christmas day 2009, one might do the following::"
+msgstr ""
+
+# a8e90dc913074ae2a85a25916ea8a881
+#: ../doc_src/api/pywws.DataStore.rst:19
+msgid "The module provides five classes to store different data. ``data_store`` takes \"raw\" data from the weather station; ``calib_store``, ``hourly_store``, ``daily_store`` and ``monthly_store`` store processed data (see :doc:`pywws.Process`). All three are derived from the same ``core_store`` class, they only differ in the keys and types of data stored in each record."
+msgstr ""
+
+# b9d8076fcd02477cb74c031ae1bba637
+#: ../code/pywws/DataStore.py:docstring of pywws.DataStore:3
+msgid "A separate file is used for each day's data, to keep memory load reasonable. One day at a time is held in memory, and saved to disc when another day needs to be accessed."
+msgstr ""
+
+# be2998184ed6423195517abef2524b9d
+#: ../code/pywws/DataStore.py:docstring of pywws.DataStore:7
+msgid "Data is accessed in a cross between dictionary and list behaviour. The following are all valid: # get value nearest 9:30 on Christmas day data[data.nearest(datetime(2008, 12, 25, 9, 30))] # get entire array, equivalent to data[:] or just data data[datetime.min:datetime.max] # get last 12 hours of data data[datetime.utcnow() - timedelta(hours=12):]"
+msgstr ""
+
+# 64c2c6422fa04c4f8534a245e2a354c3
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`safestrptime <pywws.DataStore.safestrptime>`\\ (date_string[, format])"
+msgstr ""
+
+# 7e992b40bfb449f7919a171777af010c
+# 6dae0cd780cd45df85749207d89595e9
+# 93872c31e21742aea7cb43d289fecc36
+# 38b2a78c3d6c4a5981ffbcdb0e945fe1
+# 5cb2dd1bb5ba453c81d4d272e8bb4a3a
+# 79a6bd8ba30e4a2e97a6856111e208b1
+# f794387454b14875aa8c684ccbd0d124
+# 13b25536f75e40d99783602b938271ab
+# 25bef738abc14f35a5b5d0f843fab6f9
+# 1c88ae899db1474190395ca02c8bff87
+# 0683ffeb2cb247839fc85f29d29f545a
+# 53dc420973a4415c9fe739771fd1216c
+# 0eca7a077b7b46809733cf6443320415
+#: ../doc_src/api/pywws.DataStore.rst:33 ../doc_src/api/pywws.Plot.rst:271
+#: ../doc_src/api/pywws.Process.rst:17 ../doc_src/api/pywws.Tasks.rst:7
+#: ../doc_src/api/pywws.Template.rst:78 ../doc_src/api/pywws.TimeZone.rst:17
+#: ../doc_src/api/pywws.ToTwitter.rst:13
+#: ../doc_src/api/pywws.WeatherStation.rst:17
+#: ../doc_src/api/pywws.WindRose.rst:148 ../doc_src/api/pywws.YoWindow.rst:13
+#: ../doc_src/api/pywws.calib.rst:13 ../doc_src/api/pywws.device_pyusb.rst:13
+#: ../doc_src/api/pywws.toservice.rst:7
+msgid "Classes"
+msgstr ""
+
+# d3d53f02e37a46a59991fc7fa8661db8
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`data_store <pywws.DataStore.data_store>`\\ (root_dir)"
+msgstr ""
+
+# b72386eb6cb34f4db480df91228edf58
+# 839e0fcb366b43d28d7b77653af45caa
+#: ../doc_src/<autosummary>:1 ../code/pywws/DataStore.py:docstring of
+#: pywws.DataStore.data_store:1
+msgid "Stores raw weather station data."
+msgstr ""
+
+# 4f6e38e7c077448f931b84b6e8ec1360
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`calib_store <pywws.DataStore.calib_store>`\\ (root_dir)"
+msgstr ""
+
+# afe98afbff194cd19af1882892ce752b
+# f08742097eb5450bbc523330817ac832
+#: ../doc_src/<autosummary>:1 ../code/pywws/DataStore.py:docstring of
+#: pywws.DataStore.calib_store:1
+msgid "Stores 'calibrated' weather station data."
+msgstr ""
+
+# e67d0ef3628c4733810e9018376ae53f
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`hourly_store <pywws.DataStore.hourly_store>`\\ (root_dir)"
+msgstr ""
+
+# ea6f68558079446894948efd69d08445
+# f89c90091bb5403a8133c41386cca125
+#: ../doc_src/<autosummary>:1 ../code/pywws/DataStore.py:docstring of
+#: pywws.DataStore.hourly_store:1
+msgid "Stores hourly summary weather station data."
+msgstr ""
+
+# b8be1a0e38344671a3639caadc8b7df5
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`daily_store <pywws.DataStore.daily_store>`\\ (root_dir)"
+msgstr ""
+
+# 7d9f7ae361304ae3a16bbb70644a296f
+# a9ffc799d66f4f8b9ef18910acb12be1
+#: ../doc_src/<autosummary>:1 ../code/pywws/DataStore.py:docstring of
+#: pywws.DataStore.daily_store:1
+msgid "Stores daily summary weather station data."
+msgstr ""
+
+# 73d4d8b0544348cbb35e67fc9ff0e4b7
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`monthly_store <pywws.DataStore.monthly_store>`\\ (root_dir)"
+msgstr ""
+
+# 74a275b757fa416395f3ae61c19ffaea
+# b6dbf2ccbf42416b9304d9f10528865b
+#: ../doc_src/<autosummary>:1 ../code/pywws/DataStore.py:docstring of
+#: pywws.DataStore.monthly_store:1
+msgid "Stores monthly summary weather station data."
+msgstr ""
+
+# 904d63fbf9ce4723b718f9cb68757444
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`core_store <pywws.DataStore.core_store>`\\ (root_dir)"
+msgstr ""
+
+# c482b7e3b26a4ebbbd97a8f3c4099aed
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`params <pywws.DataStore.params>`\\ (root_dir)"
+msgstr ""
+
+# eb8392f9b12d44b1b05e184d8a800914
+# 5408464fbd624e89bc618cedbf4b3bd7
+#: ../doc_src/<autosummary>:1 ../code/pywws/DataStore.py:docstring of
+#: pywws.DataStore.params:1
+msgid "Parameters are stored in a file \"weather.ini\" in root_dir."
+msgstr ""
+
+# 9d350a0bd1834cef9fb7d69178599e6c
+#: ../code/pywws/DataStore.py:docstring of pywws.DataStore.params.get:1
+msgid "Get a parameter value and return a string."
+msgstr ""
+
+# 3dd7109a1efe4718b13ef9c9eb7eff8a
+#: ../code/pywws/DataStore.py:docstring of pywws.DataStore.params.get:3
+msgid "If default is specified and section or option are not defined in the weather.ini file, they are created and set to default, which is then the return value."
+msgstr ""
+
+# ef87a6c8f7644aa4b48f24cfc16834e0
+#: ../code/pywws/DataStore.py:docstring of pywws.DataStore.params.set:1
+msgid "Set option in section to string value."
+msgstr ""
+
+# 15bd04428ab14db98bf0afcbb0a84560
+#: ../code/pywws/DataStore.py:docstring of pywws.DataStore.core_store.before:1
+msgid "Return datetime of newest existing data record whose datetime is < idx."
+msgstr ""
+
+# 3878a6ed90b24abdb2fa3759ef30c662
+# fea909d77813486c9bfa83f522f60aa8
+#: ../code/pywws/DataStore.py:docstring of pywws.DataStore.core_store.before:4
+#: pywws.DataStore.core_store.after:4
+msgid "Might not even be in the same year! If no such record exists, return None."
+msgstr ""
+
+# 6a5b50c9334741acbf6412bb33facae1
+#: ../code/pywws/DataStore.py:docstring of pywws.DataStore.core_store.after:1
+msgid "Return datetime of oldest existing data record whose datetime is >= idx."
+msgstr ""
+
+# 7f064ea4c4d74d04b8a824c7b7212d36
+#: ../code/pywws/DataStore.py:docstring of
+#: pywws.DataStore.core_store.nearest:1
+msgid "Return datetime of record whose datetime is nearest idx."
+msgstr ""
+
+# 757b35ea80ae469a959160cdcf5b1978
+#: ../doc_src/api/pywws.Forecast.rst:2
+msgid "pywws.Forecast"
+msgstr ""
+
+# fffb8f791d5d40989a25876748a391e0
+#: ../code/pywws/Forecast.py:docstring of pywws.Forecast:3
+msgid "usage: python Forecast.py [options] data_dir options are:"
+msgstr ""
+
+# e99050e3c0f5467db55ac8a4133831f4
+#: ../code/pywws/Forecast.py:docstring of pywws.Forecast:5
+msgid "-h | --help  display this help"
+msgstr ""
+
+# 03682e9e2b834cbaacbcf7863dcaaa44
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`Zambretti <pywws.Forecast.Zambretti>`\\ (params, hourly_data)"
+msgstr ""
+
+# d6e53f7132bd4d8288c6a62999bdf281
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`main <pywws.Forecast.main>`\\ ([argv])"
+msgstr ""
+
+# b393a145d36d4ee98adecdda8d69091b
+#: ../doc_src/api/pywws.Localisation.rst:2
+msgid "pywws.Localisation"
+msgstr ""
+
+# dbdf3e92da9a4ba6bfad28a3505a1580
+#: ../code/pywws/Localisation.py:docstring of pywws.Localisation:1
+msgid "Localisation.py - provide translations of strings into local language"
+msgstr ""
+
+# aba1dc55a1f5475ba3797bf04e7e51c1
+#: ../code/pywws/Localisation.py:docstring of pywws.Localisation:16
+msgid "Some of the pywws modules, such as WindRose.py, can automatically use your local language for such things as wind directions. The Localisation.py module, mostly copied from examples in the Python documentation, enables this."
+msgstr ""
+
+# bfd2701092ef4ba5a751d2086c5e9648
+#: ../code/pywws/Localisation.py:docstring of pywws.Localisation:21
+msgid "Localisation of pywws is done in two parts - translating strings such as 'rising very rapidly', and changing the 'locale' which controls things like month names and number representation (e.g. '23,2' instead of '23.2'). On some computers it may not be possible to set the locale, but translated strings can still be used."
+msgstr ""
+
+# 56a09f53560c4cca8f6d045265cdf2a4
+#: ../code/pywws/Localisation.py:docstring of pywws.Localisation:28
+msgid "Using a different language"
+msgstr ""
+
+# 1ab43974ed1a4b79a8d82d3a93cb9763
+#: ../code/pywws/Localisation.py:docstring of pywws.Localisation:30
+msgid "The language used by pywws is set in the ``[config]`` section of the ``weather.ini`` file. This can be a two-letter language code, such as ``en`` (English), or can specify a national variant, such as ``fr_CA`` (Canadian French). It could also include a character set, for example ``de_DE.UTF-8``."
+msgstr ""
+
+# 6e3eec770adf433bb9873f87991de137
+#: ../code/pywws/Localisation.py:docstring of pywws.Localisation:36
+msgid "The choice of language is very system dependant, so Localisation.py can be run as a standalone program to test language codes. A good starting point might be your system's ``LANG`` environment variable, for example::"
+msgstr ""
+
+# 90ee50548dfb4ee6a5753a09a8a5151e
+#: ../code/pywws/Localisation.py:docstring of pywws.Localisation:55
+msgid "In most cases no more than a two-letter code is required::"
+msgstr ""
+
+# 4c24760df780433389931bb5c23f06cc
+#: ../code/pywws/Localisation.py:docstring of pywws.Localisation:69
+msgid "If you try an unsupported language, pywws falls back to English::"
+msgstr ""
+
+# d2b28ae6d4de4847a53d943cc7f1111d
+#: ../code/pywws/Localisation.py:docstring of pywws.Localisation:83
+msgid "Once you've found a suitable language code that works, you can configure pywws to use it by editing your ``weather.ini`` file::"
+msgstr ""
+
+# 96ac7a88d61b40e2822f7fa7cfa3bc9f
+#: ../code/pywws/Localisation.py:docstring of pywws.Localisation:90
+msgid "Creating a new translation"
+msgstr ""
+
+# 5fecfb33868f44f399d09865fa6e5f8e
+#: ../code/pywws/Localisation.py:docstring of pywws.Localisation:92
+msgid "If there is no translation file for your preferred language then you need to create one. See :doc:`../guides/language` for detailed instructions."
+msgstr ""
+
+# e1c91d6239504ea0bff41cf0353aad59
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`SetLocale <pywws.Localisation.SetLocale>`\\ (lang)"
+msgstr ""
+
+# a807393071ea4f52b16630d5c76b7bcb
+# 04a6745866b04d13b5f7bd83a477abd9
+#: ../doc_src/<autosummary>:1 ../code/pywws/Localisation.py:docstring of
+#: pywws.Localisation.SetLocale:1
+msgid "Set the 'locale' used by a program."
+msgstr ""
+
+# c9899c3518b8421c934efde6d025a412
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`SetTranslation <pywws.Localisation.SetTranslation>`\\ (lang)"
+msgstr ""
+
+# b9fa5288d71749669471ebe98694c3ca
+# 19685fb9aeb9494bb5b053e278552178
+#: ../doc_src/<autosummary>:1 ../code/pywws/Localisation.py:docstring of
+#: pywws.Localisation.SetTranslation:1
+msgid "Set the translation used by (some) pywws modules."
+msgstr ""
+
+# 1186d2457c2646e8889c99597c34ec93
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`SetApplicationLanguage <pywws.Localisation.SetApplicationLanguage>`\\ (params)"
+msgstr ""
+
+# 4f9e0106f11e4d528e3431ae49f288d2
+# e8938457c40c4f4c942f6061e8972f19
+#: ../doc_src/<autosummary>:1 ../code/pywws/Localisation.py:docstring of
+#: pywws.Localisation.SetApplicationLanguage:1
+msgid "Set the locale and translation for a pywws program."
+msgstr ""
+
+# 1cb41878dbfe4560a8e12f4cb8cdcec2
+#: ../code/pywws/Localisation.py:docstring of pywws.Localisation.SetLocale:3
+msgid "This affects the entire application, changing the way dates, currencies and numbers are represented. It should not be called from a library routine that may be used in another program."
+msgstr ""
+
+# a4e069772ad84725a4b8296d91f8ab1c
+#: ../code/pywws/Localisation.py:docstring of pywws.Localisation.SetLocale:7
+msgid "The ``lang`` parameter can be any string that is recognised by ``locale.setlocale()``, for example ``en``, ``en_GB`` or ``en_GB.UTF-8``."
+msgstr ""
+
+# ce1a557bdd734d288c4ff3c660af20a1
+#: ../code/pywws/Localisation.py:docstring of
+#: pywws.Localisation.SetTranslation:3
+msgid "This sets the translation object ``Localisation.translation`` to use a particular language."
+msgstr ""
+
+# 30369e3617af45cd9751adf469814b1c
+#: ../code/pywws/Localisation.py:docstring of
+#: pywws.Localisation.SetTranslation:6
+msgid "The ``lang`` parameter can be any string of the form ``en``, ``en_GB`` or ``en_GB.UTF-8``. Anything after a ``.`` character is ignored. In the case of a string such as ``en_GB``, the routine will search for an ``en_GB`` language file before searching for an ``en`` one."
+msgstr ""
+
+# 8c252578f9324c9f9f6c33f72df6df79
+#: ../code/pywws/Localisation.py:docstring of
+#: pywws.Localisation.SetApplicationLanguage:3
+msgid "This function reads the language from the configuration file, then calls :func:`SetLocale` and :func:`SetTranslation`."
+msgstr ""
+
+# e1f02a0ffe4747b3b8860badcabba607
+#: ../doc_src/api/pywws.LogData.rst:2
+msgid "pywws.LogData"
+msgstr ""
+
+# 717a4650d82a4a6990c668f3196b3e23
+#: ../code/pywws/LogData.py:docstring of pywws.LogData:1
+msgid "Save weather station history to file ::"
+msgstr ""
+
+# 04890e662f7a46bb900c96a33e71ce8c
+#: ../code/pywws/LogData.py:docstring of pywws.LogData:14
+msgid "This program / module gets data from the weather station's memory and stores it to file. Each time it is run it fetches all data that is newer than the last stored data, so it only needs to be run every hour or so. As the weather station typically stores two weeks' readings (depending on the logging interval), LogData.py could be run quite infrequently if you don't need up-to-date data."
+msgstr ""
+
+# 106333eb42334427b2d1b72ce5fa0348
+#: ../code/pywws/LogData.py:docstring of pywws.LogData:21
+msgid "There is no date or time information in the raw weather station data, so LogData.py creates a time stamp for each reading. It uses the computer's clock, rather than the weather station clock which can not be read accurately by the computer. A networked computer should have its clock set accurately by `ntp <http://en.wikipedia.org/wiki/Network_Time_Protocol>`_."
+msgstr ""
+
+# 958a4bdb22ff41d1812c6e2a51084887
+#: ../code/pywws/LogData.py:docstring of pywws.LogData:28
+msgid "Synchronisation with the weather station is achieved by waiting for a change in the current data. There are two levels of synchronisation, set by the config file or a command line option. Level 0 is quicker, but is only accurate to around twelve seconds. Level 1 waits until the weather station stores a new logged record, and gets time stamps accurate to a couple of seconds. Note that this could take a long time, if the logging interval is greater than the recommended five minutes."
+msgstr ""
+
+# 8ed4b7df497d4d1a9f8cc6f1e6de2401
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`Catchup <pywws.LogData.Catchup>`\\ (ws, logger, raw_data, last_date, ...)"
+msgstr ""
+
+# 256689d7a968452fb5b85edc80cd8126
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`CheckFixedBlock <pywws.LogData.CheckFixedBlock>`\\ (ws, params, logger)"
+msgstr ""
+
+# 976eb6d4d88343f3b0b16990d4bfdc51
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`LogData <pywws.LogData.LogData>`\\ (params, raw_data[, sync, clear])"
+msgstr ""
+
+# d5aa6c9e89144c41a2dc092cb8b979ff
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`main <pywws.LogData.main>`\\ ([argv])"
+msgstr ""
+
+# 39982bf568a3436cb9297b1cc22dc11c
+#: ../doc_src/api/pywws.Logger.rst:2
+msgid "pywws.Logger"
+msgstr ""
+
+# c5921413b39b466ebfac4cdfebc630c0
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`ApplicationLogger <pywws.Logger.ApplicationLogger>`\\ (verbose[, logfile])"
+msgstr ""
+
+# 7e2dc914dee34ef798718886f88490ec
+#: ../doc_src/api/pywws.Plot.rst:2
+msgid "pywws.Plot"
+msgstr ""
+
+# c56359384fcb41a3950684bbe824b9f4
+#: ../doc_src/api/pywws.Plot.rst:7
+msgid "Like Template.py this is one of the more difficult to use modules in the weather station software collection. It plots a graph (or set of graphs) of weather data. Almost everything about the graph is controlled by an XML file. I refer to these files as templates, but they aren't templates in the same sense as Template.py uses to create text files."
+msgstr ""
+
+# 6fa84012d12440deaf0506b3876dced7
+#: ../doc_src/api/pywws.Plot.rst:9
+msgid "Before writing your own graph template files, it might be useful to look at some of the examples in the example_graph_templates directory. If (like I was) you are unfamiliar with XML, I suggest reading the W3 Schools XML tutorial."
+msgstr ""
+
+# 846fb9c0be91492b8d74218a440460af
+# fbbaf7935ae945cbbd3f88ea2dd4b2f6
+#: ../doc_src/api/pywws.Plot.rst:12 ../doc_src/api/pywws.WindRose.rst:12
+msgid "XML graph file syntax"
+msgstr ""
+
+# 6e1d24559c53456faaa5a589ad61174d
+#: ../doc_src/api/pywws.Plot.rst:14
+msgid "Here is the simplest useful graph template. It plots the external temperature for the last 24 hours. ::"
+msgstr ""
+
+# 33baa3504fc647ab92aeeb0df9c5b796
+#: ../doc_src/api/pywws.Plot.rst:26
+msgid "In this example, the root element graph has one plot element, which has one subplot element. The subplot element contains a title element and a ycalc element. To plot more data on the same set of axes (for example dew point and temperature), we can add more subplot elements. To plot more than one set of axes (for example wind speed is measured in different units from temperature) in the same file we can add more plot elements."
+msgstr ""
+
+# 0f9fceaf7949483597c4c007d12dcb84
+# 946501051ba84b149ebfb646f15958cf
+#: ../doc_src/api/pywws.Plot.rst:28 ../doc_src/api/pywws.WindRose.rst:25
+msgid "The complete element hierarchy is shown below. ::"
+msgstr ""
+
+# 96eb10e31e8a4e58923f237f28f325ef
+# 26d909480129432ca3df47e798dead36
+#: ../doc_src/api/pywws.Plot.rst:69 ../doc_src/api/pywws.WindRose.rst:47
+msgid "graph"
+msgstr ""
+
+# fd450984761d4cc283886a2ec72fcf34
+# 8c9e432c1e6c4299a4d13f919e1db177
+#: ../doc_src/api/pywws.Plot.rst:71 ../doc_src/api/pywws.WindRose.rst:49
+msgid "This is the root element of the graph XML file. It does not have to be called \"graph\", but there must be exactly one root element."
+msgstr ""
+
+# f318255bc39e42368377239ac08f0289
+#: ../doc_src/api/pywws.Plot.rst:74
+msgid "plot"
+msgstr ""
+
+# f03de47a325a4b7a8066c47e285452af
+#: ../doc_src/api/pywws.Plot.rst:76
+msgid "Every graph element should contain at least one plot element. A separate graph is drawn for each plot element, but all share the same X axis."
+msgstr ""
+
+# 44702242a6bb4687afbd030771156b0f
+# abe5d0b4dad84762bed24fb564374dfa
+#: ../doc_src/api/pywws.Plot.rst:79 ../doc_src/api/pywws.WindRose.rst:57
+msgid "start"
+msgstr ""
+
+# 72fadb38dc67423cb993e8465ee63950
+#: ../doc_src/api/pywws.Plot.rst:81
+msgid "This element sets the date & time of the start of the X axis. It is used in the constructor of a Python datetime object. For example, to start the graph at noon (local time) on Christmas day 2008: ``<start>year=2008, month=12, day=25, hour=12</start>``. The default value is (stop - duration)."
+msgstr ""
+
+# d325cc3ffc3e4939a3eb0292c3682231
+# 22696934a5d8430997a31352089156f5
+#: ../doc_src/api/pywws.Plot.rst:84 ../doc_src/api/pywws.WindRose.rst:62
+msgid "stop"
+msgstr ""
+
+# b0d0fa7e059640969744f155f9de5322
+#: ../doc_src/api/pywws.Plot.rst:86
+msgid "This element sets the date & time of the end of the X axis. It is used in the constructor of a Python datetime object. For example, to end the graph at 10 am (local time) on new year's day: ``<stop>year=2009, month=1, day=1, hour=10</stop>``. The default value is (start + duration), unless start is not defined in which case the timestamp of the latest weather station hourly reading is used."
+msgstr ""
+
+# eaf3cdc932b94c2eb84639eab760e68a
+# d2cbdc02c8ab475b9e396b0b684b632d
+#: ../doc_src/api/pywws.Plot.rst:89 ../doc_src/api/pywws.WindRose.rst:67
+msgid "duration"
+msgstr ""
+
+# c39269e0a10b4b83bdfd79e16399ba29
+#: ../doc_src/api/pywws.Plot.rst:91
+msgid "This element sets the extent of the X axis of the graph, unless both start and stop are defined. It is used in the constructor of a Python timedelta object. For example, to plot one week: ``<duration>weeks=1</duration>``. The default value is hours=24."
+msgstr ""
+
+# e2e8ebb8a8fd4c67943f33f9b7e44416
+# 79798f885b744d549d9c68cbb92a2927
+#: ../doc_src/api/pywws.Plot.rst:94 ../doc_src/api/pywws.WindRose.rst:72
+msgid "layout"
+msgstr ""
+
+# 672bd41381ae44ac9b006adb9e376838
+#: ../doc_src/api/pywws.Plot.rst:96
+msgid "Controls the layout of the plots. Default is a single column. The layout element specifies rows and columns. For example: ``<layout>4, 2</layout>`` will use a grid of 4 rows and 2 columns."
+msgstr ""
+
+# 65f8c0b6367741a9b3acc5debd223045
+# b7aabda23b4347c083df75c00f552864
+#: ../doc_src/api/pywws.Plot.rst:99 ../doc_src/api/pywws.WindRose.rst:77
+msgid "size"
+msgstr ""
+
+# f6cb51f8712e4da1ae69980377e430b5
+#: ../doc_src/api/pywws.Plot.rst:101
+msgid "Sets the overall dimensions of the image file containing the graph. Default (in a single column layout) is a width of 600 pixels and height of 200 pixels for each plot, so a graph with four plot elements would be 600 x 800 pixels. Any size element must include both width and height. For example: ``<size>800, 600</size>`` will produce an image 800 pixels wide and 600 pixels high."
+msgstr ""
+
+# 2a8865690f5a46f28e38b381d8b532d2
+# 5b640e54d43f4749bf8c5dfefd8f8b8a
+#: ../doc_src/api/pywws.Plot.rst:104 ../doc_src/api/pywws.WindRose.rst:82
+msgid "fileformat"
+msgstr ""
+
+# ffaa7bf8980243e383de73825cb58218
+#: ../doc_src/api/pywws.Plot.rst:106
+msgid "Sets the image format of the file containing the graph. Default is png. Any string recognised by your installation of gnuplot should do. For example: ``<fileformat>gif</fileformat>`` will produce a GIF image."
+msgstr ""
+
+# ed68e8b6418449c7bf3bae94c72a28dc
+#: ../doc_src/api/pywws.Plot.rst:109
+msgid "terminal"
+msgstr ""
+
+# 27da9622d44845ceaf241ea061efdb9e
+#: ../doc_src/api/pywws.Plot.rst:111
+msgid "Allows complete control of gnuplot's 'terminal' settings. You may want to use this if you are plotting to an unusual image format. Any string recognised by your installation of gnuplot's 'set terminal' command should do. For example: ``<terminal>svg enhanced font \"arial,9\" size 600,800 dynamic rounded</terminal>``. This setting overwrites both size and fileformat."
+msgstr ""
+
+# 06a0fa49eec244f3ab53e0d2d75eb9fb
+#: ../doc_src/api/pywws.Plot.rst:114
+msgid "lmargin"
+msgstr ""
+
+# e0d28b303f974a7db09e28852a612e45
+#: ../doc_src/api/pywws.Plot.rst:116
+msgid "Sets the left margin of the plots, i.e. the distance from the left hand axis to the left hand edge of the image area. According to the gnuplot documentation the units of lmargin are character widths. The default value is 5, which should look OK in most circumstances."
+msgstr ""
+
+# 578de4dc49e341f79bf0dc7a1898be16
+#: ../doc_src/api/pywws.Plot.rst:119
+msgid "rmargin"
+msgstr ""
+
+# ebaeae9a4ea146bc80dad8f11dc49af3
+#: ../doc_src/api/pywws.Plot.rst:121
+msgid "Sets the right margin of the plots, i.e. the distance from the right hand axis to the right hand edge of the image area. According to the gnuplot documentation the units of rmargin are character widths. The default value is -1, which sets automatic adjustment."
+msgstr ""
+
+# 760bc90079ff4731bc8c5e42a23ef1b5
+#: ../doc_src/api/pywws.Plot.rst:124
+msgid "xformat"
+msgstr ""
+
+# 80bb3d554a044f4da71378940e2ea5b2
+#: ../doc_src/api/pywws.Plot.rst:126
+msgid "Sets the format of the time / date xtic labels. The value is a strftime style format string. Default depends on the graph duration: 24 hours or less is \"%H%M\", 24 hours to 7 days is \"%a %d\" and 7 days or more is \"%Y/%m/%d\"."
+msgstr ""
+
+# f555a66ed90742dfaf3a091256a15d92
+#: ../doc_src/api/pywws.Plot.rst:129
+msgid "xlabel"
+msgstr ""
+
+# 672ed581fc694457b668efbb20c8af96
+#: ../doc_src/api/pywws.Plot.rst:131
+msgid "Sets the X axis label. The value is a strftime style format string. Default depends on the graph duration: 24 hours or less is \"Time (%Z)\", 24 hours to 7 days is \"Day\" and 7 days or more is \"Date\". The datetime used to compute this is start, which may produce unexpected results when a graph spans DST start or end."
+msgstr ""
+
+# 25bcde9424c34c2e83732bea90278d26
+#: ../doc_src/api/pywws.Plot.rst:134
+msgid "dateformat"
+msgstr ""
+
+# 696979dfef984f2da23e9dc3e1565ffa
+#: ../doc_src/api/pywws.Plot.rst:136
+msgid "Sets the format of the date labels at each end of X axis. The value is a strftime style format string. Default is \"%Y/%m/%d\". The right hand label is only drawn if it differs from the left. To have no labels, set an empty format: ``<dateformat></dateformat>``"
+msgstr ""
+
+# ddb00c1c5e5340349e39168bbdffad53
+#: ../doc_src/api/pywws.Plot.rst:139
+msgid "xtics"
+msgstr ""
+
+# 02ab9937e73f406c99977ea76aad43be
+#: ../doc_src/api/pywws.Plot.rst:141
+msgid "Sets the spacing of the \"tic\" marks on the X axis. The value is an integer number of hours. The default is to allow gnuplot to set an appropriate interval."
+msgstr ""
+
+# 1904ca9261964ac5aaa280447326a7d1
+# 292ddbb6ea4b476cadf2ac45181cde68
+# 01550233169a43728a4bd19b283505e3
+# 994ad682f791499293d9f47eb841a17c
+# 558eebdf5bfe4529a62dda71547a6204
+#: ../doc_src/api/pywws.Plot.rst:144 ../doc_src/api/pywws.Plot.rst:218
+#: ../doc_src/api/pywws.Plot.rst:255 ../doc_src/api/pywws.WindRose.rst:92
+#: ../doc_src/api/pywws.WindRose.rst:132
+msgid "title"
+msgstr ""
+
+# 4282953bcef847fcab2c22f837976cba
+#: ../doc_src/api/pywws.Plot.rst:146
+msgid "Sets the title of the graph. A single line of text, for example: ``<title>Today's weather</title>``. This title appears at the very top of the graph, outside any plot area."
+msgstr ""
+
+# bd4ac5d8fcbd4dda8e6ee5763f5841eb
+#: ../doc_src/api/pywws.Plot.rst:149
+msgid "subplot"
+msgstr ""
+
+# 7efc28b7de2b4b5a8c220da8e6bd4923
+#: ../doc_src/api/pywws.Plot.rst:151
+msgid "Every plot element should contain at least one subplot element. A separate trace is drawn for each subplot element, but all share the same X and Y axes."
+msgstr ""
+
+# 1314314b9aaf4bf5aa99f1a6db99e65e
+#: ../doc_src/api/pywws.Plot.rst:154
+msgid "bmargin"
+msgstr ""
+
+# c8e820f150704ab6a7d8b37af70bc1ff
+#: ../doc_src/api/pywws.Plot.rst:156
+msgid "Sets the bottom margin, i.e. the spacing between the lower X axis and the edge of the graph (or the next plot). The default is to let gnuplot adjust this automatically, which works OK most of the time but you may wish to fine tune the value to suit your installation."
+msgstr ""
+
+# cbf040f2bac540aeb9e2e62b68e8b528
+#: ../doc_src/api/pywws.Plot.rst:158
+msgid "The permitted value is any non-negative real number. On my setup 0.9 is a good value, set as follows: ``<bmargin>0.9</bmargin>``."
+msgstr ""
+
+# 0713312bc3d64d688fc88c6a87787957
+# c459369d5d24456aa058296ce2a8bf6f
+#: ../doc_src/api/pywws.Plot.rst:161 ../doc_src/api/pywws.WindRose.rst:117
+msgid "yrange"
+msgstr ""
+
+# 2ee7b580ee5244118a0959fc54348f1f
+#: ../doc_src/api/pywws.Plot.rst:163
+msgid "Sets the lower and upper limits of the (left hand) Y axis. The value is anything understood by gnuplot, typically a pair of numbers. The default is to allow gnuplot to set appropriate values, which is unlikely to be what you want. For example, to plot typical UK temperatures with no value going off the graph: ``<yrange>-10, 30</yrange>``. Note that commas are converted to colons, so ``<yrange>-10:30</yrange>`` would be equivalent."
+msgstr ""
+
+# c564fe3eb4b34d2fa24c91c8d00acfc6
+#: ../doc_src/api/pywws.Plot.rst:165
+msgid "You can use an asterisk to have gnuplot choose a suitable value. For example, to have the upper value auto scale whilst fixing the lower value at zero, use ``<yrange>0:*</yrange>``."
+msgstr ""
+
+# a9ca98640f774f3da068ed7a54de338f
+#: ../doc_src/api/pywws.Plot.rst:168
+msgid "y2range"
+msgstr ""
+
+# a62a3ccb7ed54545bf329210c3b07ad1
+#: ../doc_src/api/pywws.Plot.rst:170
+msgid "Sets the lower and upper limits of the right hand Y axis. Default is for the right hand Y axis to be the same as the left, but setting a different range is useful in dual axis plotting."
+msgstr ""
+
+# 64f48712f5ea4ddc8c70eb9c2d617d11
+#: ../doc_src/api/pywws.Plot.rst:173
+msgid "ytics"
+msgstr ""
+
+# 564830818cb54c39a310f20bf80c6871
+#: ../doc_src/api/pywws.Plot.rst:175
+msgid "Controls the \"tic\" marks on the left hand Y axis. The value can be anything that's understood by gnuplot. For example, to set the tic spacing to 45 use ``<ytics>45</ytics>``. More complex things are also possible, e.g. to label a wind direction graph with compass points, use ``<y2tics>('N' 0, 'E' 90, 'S' 180, 'W' 270, 'N' 360)</y2tics>``."
+msgstr ""
+
+# 6f39b0495b224c16b711de3c2038aec4
+#: ../doc_src/api/pywws.Plot.rst:178
+msgid "y2tics"
+msgstr ""
+
+# 456f8804c5674944859e1387e5638412
+#: ../doc_src/api/pywws.Plot.rst:180
+msgid "Controls the \"tic\" marks on the right hand axis. The format is the same as that for ytics. Default behaviour is to copy the left hand tic marks, but without labels."
+msgstr ""
+
+# 96bc8b755abf4696a79d03d8f9d41f97
+#: ../doc_src/api/pywws.Plot.rst:183
+msgid "ylabel"
+msgstr ""
+
+# ad4fa8455b8e4db98d3164b6be38845a
+#: ../doc_src/api/pywws.Plot.rst:185
+msgid "Adds a label to the (left hand) Y axis. For example, when plotting temperature: ``<ylabel>°C</ylabel>``. If you use ylabel you will probably want to adjust lmargin."
+msgstr ""
+
+# b35a3dceb88a4b08b90d97b5b93723ae
+#: ../doc_src/api/pywws.Plot.rst:188
+msgid "ylabelangle"
+msgstr ""
+
+# 2114f0f92e4640daaab4e17803858985
+#: ../doc_src/api/pywws.Plot.rst:190
+msgid "Adjust the angle of the (left hand) Y axis label, if your version of gnuplot supports it. For example, to write the label horizontally: ``<ylabelangle>90</ylabelangle>``."
+msgstr ""
+
+# 94854e0e79c54e9cad5ee1443f6d3651
+#: ../doc_src/api/pywws.Plot.rst:193
+msgid "y2label"
+msgstr ""
+
+# 7e975d38d17e42e2a3bcb14ec3bd2cb0
+#: ../doc_src/api/pywws.Plot.rst:195
+msgid "Adds a label to the right hand Y axis. For example, when plotting humidity: ``<y2label>%</y2label>``. This is mostly used when plotting dual axis graphs. If you use y2label you will probably want to adjust rmargin."
+msgstr ""
+
+# 392cfc62f43b4c9b9cc9d58989dcd4f0
+#: ../doc_src/api/pywws.Plot.rst:198
+msgid "y2labelangle"
+msgstr ""
+
+# 3e1722ac736e4dd7aa6fb4c11c2651c8
+#: ../doc_src/api/pywws.Plot.rst:200
+msgid "Adjust the angle of the right hand Y axis label, if your version of gnuplot supports it. For example, to write the label horizontally: ``<y2labelangle>90</y2labelangle>``."
+msgstr ""
+
+# 2b303946e1d3457d9d03447276130510
+#: ../doc_src/api/pywws.Plot.rst:203
+msgid "grid"
+msgstr ""
+
+# 1136283a993949318ee9f321288ef4fd
+#: ../doc_src/api/pywws.Plot.rst:205
+msgid "Adds a grid to the plot. In most situations gnuplot's default grid is suitable, so no value is needed: ``<grid></grid>``. More control is possible using any of the options understood by gnuplot's set grid command. For example, to have horizontal grid lines only: ``<grid>ytics</grid>``."
+msgstr ""
+
+# 983ec6c5c7bc4e909fb03f82a5dbe1ee
+# f58c6f33752c47b9b4b3bce6ee06f5ca
+#: ../doc_src/api/pywws.Plot.rst:208 ../doc_src/api/pywws.WindRose.rst:127
+msgid "source"
+msgstr ""
+
+# 60084abaab0a4c6cb5a329e4bc1a62f5
+# 58041328e01142b8bd4e7f7daae635dd
+#: ../doc_src/api/pywws.Plot.rst:210 ../doc_src/api/pywws.WindRose.rst:129
+msgid "Select the weather data to be plotted. Permitted values are ``<source>raw</source>``, ``<source>hourly</source>``, ``<source>daily</source>`` and ``<source>monthly</source>``. Default is raw. Note that the different sources have different data dictionaries, so this choice affects ycalc."
+msgstr ""
+
+# f339996298ca4b73bd48b2148cc5119f
+#: ../doc_src/api/pywws.Plot.rst:213
+msgid "boxwidth"
+msgstr ""
+
+# c431fb3f3efa4230b7b0ff1e02486cb8
+#: ../doc_src/api/pywws.Plot.rst:215
+msgid "Sets the width of the \"boxes\" used when drawing bar graphs. The value is an integer expression yielding a number of seconds. Default depends on source: raw is 240, hourly is 2800 and daily is 2800 * 24."
+msgstr ""
+
+# dd1cf66797c5467eab431f0a1483efc4
+#: ../doc_src/api/pywws.Plot.rst:220
+msgid "Sets the title of the plot. A single line of text, for example: ``<title>Temperature (°C)</title>``. This title appears within the plot area, above any subplot titles."
+msgstr ""
+
+# 19a50fdc1bf7426791afa95e66aba090
+#: ../doc_src/api/pywws.Plot.rst:223
+msgid "command"
+msgstr ""
+
+# 7532ce2eadaa48509d0d4ec1c66d5545
+#: ../doc_src/api/pywws.Plot.rst:225
+msgid "Execute any gnuplot command, just before the main \"plot\" command. This option allows advanced users to have greater control over the graph appearance. The value is any valid gnuplot command, typically beginning with the word set. For example: ``<command>set key tmargin center horizontal width 1 noreverse enhanced autotitles box linetype -1 linewidth 1</command>``. (Don't ask me what this example does — I'm not an advanced user)."
+msgstr ""
+
+# f78b612e6ce248ff947b05635e14ed0c
+# 6eb705e30cb74901b8093632155b06a8
+#: ../doc_src/api/pywws.Plot.rst:228 ../doc_src/api/pywws.WindRose.rst:97
+msgid "xcalc"
+msgstr ""
+
+# d739d4c00dc34f8699d4faeb0e73d510
+#: ../doc_src/api/pywws.Plot.rst:230
+msgid "Controls the X axis positioning of plotted data values. The default value of data['idx'] is correct for most data, but there are some exceptions. For example, when plotting bar charts of hourly rainfall, it's nice to centre the bars on 30 minutes past the hour: ``<xcalc>data['idx'].replace(minute=30, second=0)</xcalc>``."
+msgstr ""
+
+# ef08b976a29a4aa485f6c6cf326927ef
+# 27c2c91449d8480eb73bc70a7e3b46b4
+#: ../doc_src/api/pywws.Plot.rst:233 ../doc_src/api/pywws.WindRose.rst:102
+msgid "ycalc"
+msgstr ""
+
+# 699a6e39c73443f9b7b2389639428ea7
+#: ../doc_src/api/pywws.Plot.rst:235
+msgid "Selects the data to be plotted. Any one line Python expression that returns a single float value can be used. At its simplest this just selects one value from the \"data\" dictionary, for example: ``<ycalc>data['temp_out']</ycalc>`` plots the external temperature. More complex expressions are possible, and some helper functions are provided. For example: ``<ycalc>dew_point(data['temp_out'], data['hum_out'])</ycalc>`` plots the external dew point, and ``<ycalc>data['wind_ave'] * 3.6 / 1.609344</ycalc>`` plots the average wind speed in miles per hour."
+msgstr ""
+
+# 443abc8175b847c798891dc0fc79367e
+#: ../doc_src/api/pywws.Plot.rst:237
+msgid "Cumulative plots are also possible. The result of each ycalc computation is stored and made available to the next computation in the variable last_ycalc. This can be used with any data, but is most useful with rainfall: ``<ycalc>data['rain'] + last_ycalc</ycalc>``."
+msgstr ""
+
+# a97c59c65ae14cdaaecf389473bd046b
+#: ../doc_src/api/pywws.Plot.rst:240
+msgid "axes"
+msgstr ""
+
+# 5d2e2eb45a3a4879a3abf8de3fde30a6
+#: ../doc_src/api/pywws.Plot.rst:242
+msgid "Selects which Y axis the data is plotted against. Default is the left hand axis, but the right hand axis can be chosen with: ``<axes>x1y2</axes>``. This can be used in conjunction with y2range to plot two unrelated quantities on one graph, for example temperature and humidity."
+msgstr ""
+
+# 8d447c8c3dd74b8197b4f66cf492d330
+#: ../doc_src/api/pywws.Plot.rst:245
+msgid "style"
+msgstr ""
+
+# 97818e916a874a6595cc7e6d797f033d
+#: ../doc_src/api/pywws.Plot.rst:247
+msgid "Sets the line style for the graph. Default is a smooth continuous line, thickness 1. To select a bar graph use: ``<style>box</style>``. To select points without a connecting line use: ``<style>+</style>`` or ``<style>x</style>``. To select a line thickness 3 (for example) use: ``<style>line 3</style>``. The thickness of points can be set in a similar fashion. For complete control (for advanced users) a full gnuplot style can be set: ``<style>smooth unique lc 5 lw 3</style>``."
+msgstr ""
+
+# 5bf9f301e60a48e29b459f231475c349
+# 91429d321eaf44afa372b4ca2df35048
+#: ../doc_src/api/pywws.Plot.rst:250 ../doc_src/api/pywws.WindRose.rst:112
+msgid "colour"
+msgstr ""
+
+# 0abd5cd67f5c44c3b22196e41f355a9a
+#: ../doc_src/api/pywws.Plot.rst:252
+msgid "Sets the colour of the subplot line or boxes. Any integer value is accepted. The mapping of colours to numbers is set by gnuplot. Default value is the previous colour plus one."
+msgstr ""
+
+# b30ac776ca3e48dfa70a990229677b6f
+#: ../doc_src/api/pywws.Plot.rst:257
+msgid "Sets the title of the subplot. A single line of text, for example: ``<title>Temperature (°C)</title>``. This title appears within the plot area, next to a short segment of the line colour used for the subplot."
+msgstr ""
+
+# 6b10ba0de12449d5ab72deeba95a9d98
+#: ../code/pywws/Plot.py:docstring of pywws.Plot:3
+msgid "usage: python Plot.py [options] data_dir temp_dir xml_file output_file options are:"
+msgstr ""
+
+# c231f9fe6c404ba5b78612849aad4482
+# 140a1e59f20e4bd8ad08b8a939eb8aa7
+#: ../code/pywws/Plot.py:docstring of pywws.Plot:6
+#: ../code/pywws/WindRose.py:docstring pywws.WindRose:6
+msgid "data_dir is the root directory of the weather data temp_dir is a workspace for temporary files e.g. /tmp xml_file is the name of the source file that describes the plot output_file is the name of the image file to be created e.g. 24hrs.png"
+msgstr ""
+
+# 2d3b980916584441ba83e0d20ca3a575
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`main <pywws.Plot.main>`\\ ([argv])"
+msgstr ""
+
+# b7a2338ea86b45c5b6c163261ee49fca
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`BasePlotter <pywws.Plot.BasePlotter>`\\ (params, raw_data, hourly_data, ...)"
+msgstr ""
+
+# 8f02d49ea0564edab7e8ec749282f747
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`GraphPlotter <pywws.Plot.GraphPlotter>`\\ (params, raw_data, hourly_data, ...)"
+msgstr ""
+
+# a12e2162bd634862bb083db558f29735
+#: ../doc_src/api/pywws.Process.rst:2
+msgid "pywws.Process"
+msgstr ""
+
+# c514a53840cd43f79c8f29460142d7dd
+#: ../code/pywws/Process.py:docstring of pywws.Process:1
+msgid "Generate hourly, daily & monthly summaries of raw weather station data ::"
+msgstr ""
+
+# a8d7b3388cbd48a5bd6342ceeb6b8f0a
+#: ../code/pywws/Process.py:docstring of pywws.Process:12
+msgid "This module takes raw weather station data (typically sampled every five or ten minutes) and generates hourly, daily and monthly summary data, which is useful when creating tables and graphs."
+msgstr ""
+
+# 6c2f2782a9ec4d63aa88b57a22ddc6c7
+#: ../code/pywws/Process.py:docstring of pywws.Process:16
+msgid "Before computing the data summaries, raw data is \"calibrated\" using a user-programmable function. See :doc:`pywws.calib` for details."
+msgstr ""
+
+# 2f9647d2d6914986947d3165fd466e09
+#: ../code/pywws/Process.py:docstring of pywws.Process:19
+msgid "The hourly data is derived from all the records in one hour, e.g. from 18:00:00 to 18:59:59, and is given the index of the last complete record in that hour."
+msgstr ""
+
+# dd1845f71a52404db61c1eefe8100c17
+#: ../code/pywws/Process.py:docstring of pywws.Process:23
+msgid "The daily data summarises the weather over a 24 hour period typically ending at 2100 or 0900 hours, local (non DST) time, though midnight is another popular convention. It is also indexed by the last complete record in the period. Daytime and nightime, as used when computing maximum and minimum temperatures, are assumed to start at 0900 and 2100 local time, or 1000 and 2200 when DST is in effect, regardless of the meteorological day."
+msgstr ""
+
+# bdccc9cfebee4ec1ba8d8f8bedae6a17
+#: ../code/pywws/Process.py:docstring of pywws.Process:31
+msgid "To adjust the meteorological day to your preference, or that used by your local official weather station, edit the \"day end hour\" line in your ``weather.ini`` file, then run Reprocess.py to regenerate the summaries."
+msgstr ""
+
+# b50051b6c7fc407e8f0d532554e354de
+#: ../code/pywws/Process.py:docstring of pywws.Process:36
+msgid "Monthly summary data is computed from the daily summary data. If the meteorological day does not end at midnight, then each month may begin and end up to 12 hours before or after midnight."
+msgstr ""
+
+# 6382999221eb4ce59d2563cc7c6a71fa
+#: ../code/pywws/Process.py:docstring of pywws.Process:40
+msgid "Wind speed data is averaged over the hour (or day) and the maximum gust speed during the hour (or day) is recorded. The predominant wind direction is calculated using vector arithmetic."
+msgstr ""
+
+# 03fb07f9b5ad4c71a36ea542e53a8898
+#: ../code/pywws/Process.py:docstring of pywws.Process:44
+msgid "Rainfall is converted from the raw \"total since last reset\" figure to a more useful total in the last hour, day or month."
+msgstr ""
+
+# 1a402a9048374b25b7d1c317634c8f02
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`Process <pywws.Process.Process>`\\ (params, raw_data, calib_data, ...)"
+msgstr ""
+
+# 07059c3825ed4871bb69bbdcef975127
+# f95620e8b54047a0a96e02ed2c281c9f
+#: ../doc_src/<autosummary>:1 ../code/pywws/Process.py:docstring of
+#: pywws.Process.Process:1
+msgid "Generate summaries from raw weather station data."
+msgstr ""
+
+# b1a89be648a24dab81115d864a4605ce
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`calibrate_data <pywws.Process.calibrate_data>`\\ (logger, params, raw_data, ...)"
+msgstr ""
+
+# 251f62ba26b640d69bbac45ce3853f6a
+# 79751fec28494d7d950bedab50c7cf70
+#: ../doc_src/<autosummary>:1 ../code/pywws/Process.py:docstring of
+#: pywws.Process.calibrate_data:1
+msgid "'Calibrate' raw data, using a user-supplied function."
+msgstr ""
+
+# cbba71b97858446a8527290ceb82840d
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`generate_hourly <pywws.Process.generate_hourly>`\\ (logger, calib_data, ...)"
+msgstr ""
+
+# 04b6096f25ee46fbbf27bfc05ef18a99
+# bfd1e9bcf51b4529a243cb3376874e10
+#: ../doc_src/<autosummary>:1 ../code/pywws/Process.py:docstring of
+#: pywws.Process.generate_hourly:1
+msgid "Generate hourly summaries from calibrated data."
+msgstr ""
+
+# f91488c7cfa54a74a1759900fe214b72
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`generate_daily <pywws.Process.generate_daily>`\\ (logger, day_end_hour, ...)"
+msgstr ""
+
+# 170ab24372724598a51169f79e61ace5
+# 45b99d781cec4c6c8b58e2e57103bc4c
+#: ../doc_src/<autosummary>:1 ../code/pywws/Process.py:docstring of
+#: pywws.Process.generate_daily:1
+msgid "Generate daily summaries from calibrated and hourly data."
+msgstr ""
+
+# 8377b3d087354dc6bc1db0110274ebd6
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`generate_monthly <pywws.Process.generate_monthly>`\\ (logger, day_end_hour, ...)"
+msgstr ""
+
+# ba4916c88cf94adb8604c1a0f0264888
+# 977662fea10a45d19d4e1595a9b378b7
+#: ../doc_src/<autosummary>:1 ../code/pywws/Process.py:docstring of
+#: pywws.Process.generate_monthly:1
+msgid "Generate monthly summaries from daily data."
+msgstr ""
+
+# 066a691689d547f1a5b1f6e5db35aacf
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`Average <pywws.Process.Average>`\\ ()"
+msgstr ""
+
+# 28d8b846393c4875b0cbbcc785e5f521
+# cfe68184239342e0b49478720a9145eb
+#: ../doc_src/<autosummary>:1 ../code/pywws/Process.py:docstring of
+#: pywws.Process.Average:1
+msgid "Compute average of multiple data values."
+msgstr ""
+
+# 1259cf056c6544649a7bc03129c29bf1
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`Maximum <pywws.Process.Maximum>`\\ ()"
+msgstr ""
+
+# 315886b667ca49fb8030cb0e1085d413
+# 2eb14af5b80449f68c1da910669efd3d
+#: ../doc_src/<autosummary>:1 ../code/pywws/Process.py:docstring of
+#: pywws.Process.Maximum:1
+msgid "Compute maximum value and timestamp of multiple data values."
+msgstr ""
+
+# f22aa83bed774f0d8ad15d62e618fed5
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`Minimum <pywws.Process.Minimum>`\\ ()"
+msgstr ""
+
+# b9ebcfcc81454546b2154f1eeab40c62
+# 049fc405293543748263bd515687d169
+#: ../doc_src/<autosummary>:1 ../code/pywws/Process.py:docstring of
+#: pywws.Process.Minimum:1
+msgid "Compute minimum value and timestamp of multiple data values."
+msgstr ""
+
+# abe48711180b4779b10630957194bfb5
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`HourAcc <pywws.Process.HourAcc>`\\ (last_rain)"
+msgstr ""
+
+# b1c4c81dbe9444fc951be2c09cebba19
+# 66a296a7470f41bfb362e016824ab5c1
+#: ../doc_src/<autosummary>:1 ../code/pywws/Process.py:docstring of
+#: pywws.Process.HourAcc:1
+msgid "'Accumulate' raw weather data to produce hourly summary."
+msgstr ""
+
+# 5ee0a7edb5294a819d97c08837b71caf
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`DayAcc <pywws.Process.DayAcc>`\\ (daytime)"
+msgstr ""
+
+# bd602072130d4fdc9e506adf169782b4
+# 872ddad80a8e4656adc2bda9dd3502f9
+#: ../doc_src/<autosummary>:1 ../code/pywws/Process.py:docstring of
+#: pywws.Process.DayAcc:1
+msgid "'Accumulate' weather data to produce daily summary."
+msgstr ""
+
+# 0bf6f8a0fdae43cbb26c5373e3c8f711
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`MonthAcc <pywws.Process.MonthAcc>`\\ ()"
+msgstr ""
+
+# a381696d486b4e6b95b4d6c47296c156
+# c4c27d95cfe7486482f75cdd1425b79a
+#: ../doc_src/<autosummary>:1 ../code/pywws/Process.py:docstring of
+#: pywws.Process.MonthAcc:1
+msgid "'Accumulate' daily weather data to produce monthly summary."
+msgstr ""
+
+# e32e4360b3a44155b15f02c5ebbaac4a
+#: ../code/pywws/Process.py:docstring of pywws.Process.HourAcc:3
+msgid "Compute average wind speed and maximum wind gust, find dominant wind direction and compute total rainfall."
+msgstr ""
+
+# 27866b45e19040f0913a88bafb0bc019
+#: ../code/pywws/Process.py:docstring of pywws.Process.DayAcc:3
+msgid "Compute average wind speed, maximum wind gust and daytime max & nighttime min temperatures, find dominant wind direction and compute total rainfall."
+msgstr ""
+
+# 4ed2a2ed2ddd455d9c40a1a622f8144c
+#: ../code/pywws/Process.py:docstring of pywws.Process.DayAcc:7
+msgid "Daytime is assumed to be 0900-2100 and nighttime to be 2100-0900, local time (1000-2200 and 2200-1000 during DST), regardless of the \"day end hour\" setting."
+msgstr ""
+
+# 7c165fd507594744a8cbd2881a09d5d3
+#: ../code/pywws/Process.py:docstring of pywws.Process.MonthAcc:3
+msgid "Compute daytime max & nighttime min temperatures."
+msgstr ""
+
+# 6de5dcd805af4b3db870451667034055
+#: ../code/pywws/Process.py:docstring of pywws.Process.Process:3
+msgid "The meteorological day end (typically 2100 or 0900 local time) is set in the preferences file ``weather.ini``. The default value is 2100 (2200 during DST), following the historical convention for weather station readings."
+msgstr ""
+
+# d42e4a6229724645bd143de16030e04a
+#: ../doc_src/api/pywws.Tasks.rst:2
+msgid "pywws.Tasks"
+msgstr ""
+
+# f412e847be81415393e873614348dd93
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`RegularTasks <pywws.Tasks.RegularTasks>`\\ (params, calib_data, ...)"
+msgstr ""
+
+# ad7a8147d6e74da186562aaeacf8317f
+#: ../doc_src/api/pywws.Template.rst:2
+msgid "pywws.Template"
+msgstr ""
+
+# b5e23fb7d0c54cb4a6fa6c55951a4eb7
+#: ../doc_src/api/pywws.Template.rst:7
+msgid "This is probably the most difficult to use module in the weather station software collection. It generates text files based on a \"template\" file plus the raw, hourly, daily & monthly weather station data. The template processing goes beyond simple substitution of values to include loops, jumps forwards or backwards in the data, processing of the data and substitution of missing values."
+msgstr ""
+
+# 231ee36eb0ee467babd77910dcfe35ec
+#: ../doc_src/api/pywws.Template.rst:9
+msgid "A template file can be any sort of text file (plain text, xml, html, etc.) to which \"processing instructions\" have been added. These processing instructions are delimited by hash ('#') characters. They are not copied to the output, but cause something else to happen: either a data value is inserted or one of a limited number of other actions is carried out."
+msgstr ""
+
+# f6a5e82e4ecf422b98b8c4103092527c
+#: ../doc_src/api/pywws.Template.rst:11
+msgid "Before writing your own template files, it might be useful to look at some of the examples in the example_templates directory."
+msgstr ""
+
+# dcaf0b37d1c64b5d81e030d384324a60
+#: ../doc_src/api/pywws.Template.rst:14
+msgid "Processing instructions"
+msgstr ""
+
+# 34d16629f6f24736b3777646bda202de
+#: ../doc_src/api/pywws.Template.rst:16
+msgid "``##``: output a single '#' character."
+msgstr ""
+
+# cfd2515aeb284c7082dd9359be068e72
+#: ../doc_src/api/pywws.Template.rst:17
+msgid "``#monthly#``: switch to \"monthly\" summary data. The index is reset to the most recent value."
+msgstr ""
+
+# 46e16631085b44e5bd00c84de1274eb1
+#: ../doc_src/api/pywws.Template.rst:18
+msgid "``#daily#``: switch to \"daily\" summary data. The index is reset to the most recent value."
+msgstr ""
+
+# e0ee1d4899d343db9ea946636b02fec6
+#: ../doc_src/api/pywws.Template.rst:19
+msgid "``#hourly#``: switch to \"hourly\" summary data. The index is reset to the most recent value."
+msgstr ""
+
+# 727635cfd3d74f30ae166f2f20d3c775
+#: ../doc_src/api/pywws.Template.rst:20
+msgid "``#raw#``: switch to \"raw\" data. The index is reset to the most recent value."
+msgstr ""
+
+# 286d9e85739e4e9eb9d657220f81a6e2
+#: ../doc_src/api/pywws.Template.rst:21
+msgid "``#timezone name#``: convert all datetime values to time zone ``name`` before output. Permitted values for name are ``utc`` or ``local``."
+msgstr ""
+
+# 03808816c0324822a72549a95340dab1
+#: ../doc_src/api/pywws.Template.rst:22
+msgid "``#roundtime expr#``: switch time rounding on or off, according to ``expr``. When time rounding is on, 30 seconds is added to each time value used. This is useful if you are only printing out hours and minutes, e.g. with a \"%H:%M\" format, and want time values such as 10:23:58 to appear as \"10:24\". Use ``\"True\"`` or ``\"False\"`` for expr."
+msgstr ""
+
+# 8b930332fd4c4321b573643bb8b4f2f3
+#: ../doc_src/api/pywws.Template.rst:23
+msgid "``#jump count#``: jump ``count`` values. The data index is adjusted by ``count`` hours or days. Negative values jump back in time."
+msgstr ""
+
+# 104fc1c6f5974fe4885471069e30cf82
+#: ../doc_src/api/pywws.Template.rst:25
+msgid "It is a good idea to put jumps within a loop at the end, just before the ``#endloop#`` instruction. The loop can then terminate cleanly if it has run out of data."
+msgstr ""
+
+# 5d98d0ec6ce0436fac377838f3fcd4e6
+#: ../doc_src/api/pywws.Template.rst:26
+msgid "``#goto date-time#``: go to ``date-time``. The data index is adjusted to the record immediately after ``date-time``. This can be in UTC or your local time zone, according to the setting of ``timezone``, and must exactly match the ISO date format, for example ``\"2010-11-01 12:00:00\"`` is noon on 1st November 2010."
+msgstr ""
+
+# cb222d99a0d04fc98bae555d79c30370
+#: ../doc_src/api/pywws.Template.rst:28
+msgid "Parts of ``date-time`` can be replaced with strftime style % format characters to specify the current loop index. For example, ``\"%Y-%m-01 12:00:00\"`` is noon on 1st of this month."
+msgstr ""
+
+# a39a033f492a4fd0a0dd5105f5008078
+#: ../doc_src/api/pywws.Template.rst:29
+msgid "``#loop count#``: start a loop that will repeat ``count`` times. ``count`` must be one or more."
+msgstr ""
+
+# f9057116b10f4f8eb8b3a7e6333ec594
+#: ../doc_src/api/pywws.Template.rst:30
+msgid "``#endloop#``: end a loop started by ``#loop count#``. The template processing will go back to the line containing the ``#loop count#`` instruction. Don't try to nest loops."
+msgstr ""
+
+# b340d4e50e9145909571b2ddda389b1b
+#: ../doc_src/api/pywws.Template.rst:31
+msgid "``#key fmt_string no_value_string conversion#``: output a data value. ``key`` is the data key, e.g. ``temp_out`` for outdoor temperature. ``fmt_string`` is a printf-like format string (actually Python's % operator) except for datetime values, when it is input to datetime's ``strftime()`` method. ``no_value_string`` is output instead of ``fmt_string`` when the data value is absent, e.g. if the station lost contact with the outside sensor. ``conversion`` is a Python expression to convert the data, e.g. to convert wind speed from m/s to mph you could use ``\"x * 3.6 / 1.609344\"``."
+msgstr ""
+
+# 2591b80f583e4581b50d5c3575a29a78
+#: ../doc_src/api/pywws.Template.rst:33
+msgid "All these values need double quotes \" if they contain spaces or other potentially difficult characters. All except ``key`` are optional, but note that if you want to specify a conversion, you also need to specify ``fmt_string`` and ``no_value_string``."
+msgstr ""
+
+# 304463ab1f734fce8bbd37f414fe4264
+#: ../doc_src/api/pywws.Template.rst:34
+msgid "``#calc expression fmt_string no_value_string conversion#``: output a value computed from one or more data items. ``expression`` is any valid Python expression, e.g. ``\"dew_point(data['temp_out'], data['hum_out'])\"`` to compute the outdoor dew point. ``fmt_string``, ``no_value_string`` and ``conversion`` are as described above. Note that it is probably more efficient to incorporate any conversion into expression."
+msgstr ""
+
+# 258c992f0c704e0b9e114a5920a389a5
+#: ../doc_src/api/pywws.Template.rst:37
+msgid "Example"
+msgstr ""
+
+# 801e6192702c44b0b1fb87ec5ada9944
+#: ../doc_src/api/pywws.Template.rst:39
+msgid "Here is an example snippet showing basic and advanced use of the template features. It is part of the 6hrs.txt example template file, which generates an HTML table of 7 hourly readings (which should span 6 hours). ::"
+msgstr ""
+
+# 2cd4fbca04ab482394023434ea66508c
+#: ../doc_src/api/pywws.Template.rst:58
+msgid "The first three lines of this snippet do the following: select hourly data, jump back 6 hours, start a loop with a count of 7. A jump forward of one hour appears just before the end of the repeated segment. As this last jump (of one hour) happens each time round the loop, a sequence of 7 data readings will be output. The last line marks the end of the loop — everything between the ``#loop 7#`` and ``#endloop#`` lines is output 7 times."
+msgstr ""
+
+# dec4ad9e000b492d956455a49ebb15d0
+#: ../doc_src/api/pywws.Template.rst:60
+msgid "The ``#temp_out ...#``, ``#hum_out ...#``, ``#rain ...#`` and ``#rel_pressure ...#`` instructions show basic data output. They each use a ``fmt_string`` to format the data appropriately. The ``#wind_ave ...#`` and ``#wind_gust ...#`` instructions show how to use a conversion expression to convert m/s to mph."
+msgstr ""
+
+# d38e5e5d9d064f18ac5c647e60b5e5c1
+#: ../doc_src/api/pywws.Template.rst:62
+msgid "The ``#wind_dir ...#`` and ``#pressure_trend ...#`` instructions show use of the built-in array ``wind_dir_text`` and function ``pressure_trend_text`` to convert numerical values into English text."
+msgstr ""
+
+# 797abd50d2e8434b8574f59369ed587e
+#: ../doc_src/api/pywws.Template.rst:64
+msgid "Finally we get to datetime values. The ``#idx \"%H%M\"#`` instruction simply outputs the time (in HHMM format) of the data's index. The ``#idx \"%Y/%m/%d\" \"\" \"[None, x][x.hour == 0 or loop_count == 7]\"#`` instruction is a bit more complicated. It outputs the date, but only on the first line or if the date has changed. It does this by indexing the array ``[None, x]`` with a boolean expression that is true when ``loop_count`` is 7 (i.e. on the first pass through the loop) or ``x.hour`` is zero (i.e. this is the first hour of the day)."
+msgstr ""
+
+# de708dcf91124b2ca677e9d6d595d2c6
+#: ../code/pywws/Template.py:docstring of pywws.Template:3
+msgid "usage: python Template.py [options] data_dir template_file output_file options are:"
+msgstr ""
+
+# ee9730bef1c243ffb7d3f8aee9bfda5b
+#: ../code/pywws/Template.py:docstring of pywws.Template:6
+msgid "data_dir is the root directory of the weather data template_file is the template text source file output_file is the name of the text file to be created"
+msgstr ""
+
+# ad2368a43ece44db86ed10a98e623196
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`main <pywws.Template.main>`\\ ([argv])"
+msgstr ""
+
+# 5fda88b6daae484abe41fb283e896c1e
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`Template <pywws.Template.Template>`\\ (params, calib_data, hourly_data, ...)"
+msgstr ""
+
+# 559ca92802774ebc8a0d3e3dea2c0610
+#: ../doc_src/api/pywws.TimeZone.rst:2
+msgid "pywws.TimeZone"
+msgstr ""
+
+# 4e671dcf6dec4594bfb42d43e245cb7c
+#: ../doc_src/api/pywws.TimeZone.rst:7
+msgid "This module provides two ``datetime.tzinfo`` objects representing UTC and local time zones. These are used to convert timestamps to and from UTC and local time. The weather station software stores data with UTC timestamps, to avoid problems with daylight savings time, but the template and plot programs output data with local times."
+msgstr ""
+
+# 5f9696d01a2c4024ae20ed7dec037dc3
+#: ../doc_src/api/pywws.TimeZone.rst:9
+msgid "The module is copied directly from the ``datetime.tzinfo`` module documentation."
+msgstr ""
+
+# f24a46a9135c4aeaba74e3f16b9c1579
+#: ../code/pywws/TimeZone.py:docstring of pywws.TimeZone:1
+msgid "Provide a couple of datetime.tzinfo() objects representing local time and UTC."
+msgstr ""
+
+# 3f67def1b7c94fd89c6d2886cf833665
+#: ../code/pywws/TimeZone.py:docstring of pywws.TimeZone:4
+msgid "Copied directly from the datetime module documentation."
+msgstr ""
+
+# 9ca28ad577a045c592cdd4f999c4ed94
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`LocalTimezone <pywws.TimeZone.LocalTimezone>`\\"
+msgstr ""
+
+# 4cd6d0b8f6724391a8edc476ff6e35ae
+# 284e92d7f4694597b95f92bd9356d509
+#: ../doc_src/<autosummary>:1 ../code/pywws/TimeZone.py:docstring of
+#: pywws.TimeZone.LocalTimezone:1
+msgid "Local time"
+msgstr ""
+
+# ae4ee7c0a5b34f8ba20638c2740446de
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`UTC <pywws.TimeZone.UTC>`\\"
+msgstr ""
+
+# 21456b955b36489ab19d308c824ad1f9
+# 06e9b031d66a4302997919083ac18579
+#: ../doc_src/<autosummary>:1 ../code/pywws/TimeZone.py:docstring of
+#: pywws.TimeZone.UTC:1
+msgid "UTC"
+msgstr ""
+
+# d0cbac5d139b40b1a056fd2a9ee3c7d6
+#: ../doc_src/api/pywws.ToTwitter.rst:2
+msgid "pywws.ToTwitter"
+msgstr ""
+
+# 7a92601bddab4b6997fae63a8736b90b
+#: ../code/pywws/ToTwitter.py:docstring of pywws.ToTwitter:1
+msgid "Post a message to Twitter ::"
+msgstr ""
+
+# c57d493ad6ab4f4db66ff91b79aac6bf
+#: ../code/pywws/ToTwitter.py:docstring of pywws.ToTwitter:12
+msgid "This module posts a brief message to `Twitter <https://twitter.com/>`_. Before posting to Twitter you need to set up an account and then authorise pywws by running the :py:mod:`TwitterAuth` program. See :doc:`../guides/twitter` for detailed instructions."
+msgstr ""
+
+# 973b729c12b147d6b8de06bc4e191fb0
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`main <pywws.ToTwitter.main>`\\ ([argv])"
+msgstr ""
+
+# d760aa8bf3f647a3839196677e379dbe
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`ToTwitter <pywws.ToTwitter.ToTwitter>`\\ (params)"
+msgstr ""
+
+# 2c75c1f295b64abfa7e693a2a1d2f615
+#: ../doc_src/api/pywws.Upload.rst:2
+msgid "pywws.Upload"
+msgstr ""
+
+# 5d53c08558fd4e568a16c2169bd44cde
+#: ../doc_src/api/pywws.Upload.rst:7
+msgid "This module uploads files to (typically) a website *via* ftp/sftp or copies files to a local directory (e.g. if you are running pywws on the your web server). Details of the upload destination are stored in the file ``weather.ini`` in your data directory. The only way to set these details is to edit the file. Run Upload.py once to set the default values, which you can then change. Here is what you're likely to find when you edit ``weather.ini``::"
+msgstr ""
+
+# e35d324a3110419a83b68c7dab27f0ff
+#: ../doc_src/api/pywws.Upload.rst:17
+msgid "These are, I hope, fairly obvious. The ``local site`` option lets you switch from uploading to a remote site to copying to a local site. If you set ``local site = True`` then you can delete the ``secure``, ``site``, ``user`` and ``password`` lines."
+msgstr ""
+
+# db228d3a67634b53b9436a44ebf82911
+#: ../doc_src/api/pywws.Upload.rst:19
+msgid "``directory`` is the name of a directory in which all the uploaded files will be put. This will depend on the structure of your web site and the sort of host you use. Your hosting provider should be able to tell you what ``site`` and ``user`` details to use. You should have already chosen a ``password``."
+msgstr ""
+
+# ff75828cb4ad4263bbbccbd970d503f0
+#: ../doc_src/api/pywws.Upload.rst:21
+msgid "The ``secure`` option lets you switch from normal ftp to sftp (ftp over ssh). Some hosting providers offer this as a more secure upload mechanism, so you should probably use it if available."
+msgstr ""
+
+# e0483ba530254a6799ef5df197d19dc5
+#: ../code/pywws/Upload.py:docstring of pywws.Upload:3
+msgid "usage: python Upload.py [options] data_dir file [file...] options are:"
+msgstr ""
+
+# 48092ec46acd4157bd7a71de84e00090
+#: ../code/pywws/Upload.py:docstring of pywws.Upload:6
+msgid "data_dir is the root directory of the weather data file is a file to be uploaded"
+msgstr ""
+
+# 307ff61faaa6497da031d9416e6cbd82
+#: ../code/pywws/Upload.py:docstring of pywws.Upload:9
+msgid "Login and ftp site details are read from the weather.ini file in data_dir."
+msgstr ""
+
+# 1871ff8611de4da38d8045e80726a734
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`Upload <pywws.Upload.Upload>`\\ (params, files)"
+msgstr ""
+
+# 87c41c2672ec4cd5bde0748874bff8e9
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`main <pywws.Upload.main>`\\ ([argv])"
+msgstr ""
+
+# 36a946f448304c5887d9fa1959e3428e
+#: ../doc_src/api/pywws.WeatherStation.rst:2
+msgid "pywws.WeatherStation"
+msgstr ""
+
+# 07ac1ba6c866442fabd3775153e69042
+#: ../code/pywws/WeatherStation.py:docstring of pywws.WeatherStation:3
+msgid "Derived from wwsr.c by Michael Pendec (michael.pendec@gmail.com), wwsrdump.c by Svend Skafte (svend@skafte.net), modified by Dave Wells, and other sources."
+msgstr ""
+
+# d258d3080f4f472f8bff9ec08dd789cf
+#: ../code/pywws/WeatherStation.py:docstring of pywws.WeatherStation:10
+msgid "This is the module that actually talks to the weather station base unit. I don't have much understanding of USB, so copied a lot from Michael Pendec's C program wwsr."
+msgstr ""
+
+# a66138b4078446a08db74efdb4210b63
+#: ../code/pywws/WeatherStation.py:docstring of pywws.WeatherStation:14
+msgid "The weather station memory has two parts: a \"fixed block\" of 256 bytes and a circular buffer of 65280 bytes. As each weather reading takes 16 bytes the station can store 4080 readings, or 14 days of 5-minute interval readings. (The 3080 type stations store 20 bytes per reading, so store a maximum of 3264.) As data is read in 32-byte chunks, but each weather reading is 16 or 20 bytes, a small cache is used to reduce USB traffic. The caching behaviour can be over-ridden with the ``unbuffered`` parameter to ``get_data`` and ``get_raw_data``."
+msgstr ""
+
+# 9c73a4397f0f4bf59db3898c3bbacdb8
+#: ../code/pywws/WeatherStation.py:docstring of pywws.WeatherStation:23
+msgid "Decoding the data is controlled by the static dictionaries ``reading_format``, ``lo_fix_format`` and ``fixed_format``. The keys are names of data items and the values can be an ``(offset, type, multiplier)`` tuple or another dictionary. So, for example, the reading_format dictionary entry ``'rain' : (13, 'us', 0.3)`` means that the rain value is an unsigned short (two bytes), 13 bytes from the start of the block, and should be multiplied by 0.3 to get a useful value."
+msgstr ""
+
+# 97f3ce0dd845470e87d6ea66fcfb12c1
+#: ../code/pywws/WeatherStation.py:docstring of pywws.WeatherStation:32
+msgid "The use of nested dictionaries in the ``fixed_format`` dictionary allows useful subsets of data to be decoded. For example, to decode the entire block ``get_fixed_block`` is called with no parameters::"
+msgstr ""
+
+# d8d5b388e4354b028362d23e519b5867
+#: ../code/pywws/WeatherStation.py:docstring of pywws.WeatherStation:39
+msgid "To get the stored minimum external temperature, ``get_fixed_block`` is called with a sequence of keys::"
+msgstr ""
+
+# df6223f667b74880a0bdd465132cb0d2
+#: ../code/pywws/WeatherStation.py:docstring of pywws.WeatherStation:45
+msgid "Often there is no requirement to read and decode the entire fixed block, as its first 64 bytes contain the most useful data: the interval between stored readings, the buffer address where the current reading is stored, and the current date & time. The ``get_lo_fix_block`` method provides easy access to these."
+msgstr ""
+
+# b27f9201625146d5b81e26fc57147255
+#: ../code/pywws/WeatherStation.py:docstring of pywws.WeatherStation:51
+msgid "For more examples of using the WeatherStation module, see the TestWeatherStation program."
+msgstr ""
+
+# c39d9f1b442e43dcbb47ddfef72b2ea4
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`apparent_temp <pywws.WeatherStation.apparent_temp>`\\ (temp, rh, wind)"
+msgstr ""
+
+# 2ab9277e5d7942d2bf191928c065c73e
+#: ../doc_src/<autosummary>:1
+msgid "Compute apparent temperature (real feel), using formula from"
+msgstr ""
+
+# e6486a4199dc4264bd705bc9ef1dc155
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`dew_point <pywws.WeatherStation.dew_point>`\\ (temp, hum)"
+msgstr ""
+
+# 01fa6d91ef034a4ca2a9e6d7c639e1bf
+#: ../doc_src/<autosummary>:1
+msgid "Compute dew point, using formula from"
+msgstr ""
+
+# 61872ce5f1a14a9fbf9ed5617670accb
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`get_wind_dir_text <pywws.WeatherStation.get_wind_dir_text>`\\ ()"
+msgstr ""
+
+# 63c311d664ae403fafbcf4b5f3931ab2
+# 6e5b59a4fa3048638a18bd81dc8f8865
+#: ../doc_src/<autosummary>:1 ../code/pywws/WeatherStation.py:docstring of
+#: pywws.WeatherStation.get_wind_dir_text:1
+msgid "Return an array to convert wind direction integer to a string."
+msgstr ""
+
+# 4ee2cbe71cdc4c6b99882b20d2eef475
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`pressure_trend_text <pywws.WeatherStation.pressure_trend_text>`\\ (trend)"
+msgstr ""
+
+# 0e95e08ceca840119c0d19676bd9a788
+#: ../doc_src/<autosummary>:1
+msgid "Convert pressure trend to a string, as used by the UK met"
+msgstr ""
+
+# 68599949c818457f9f0fd17db662021a
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`wind_chill <pywws.WeatherStation.wind_chill>`\\ (temp, wind)"
+msgstr ""
+
+# 44f7de4911f84f7ba4717dcec1cb4442
+#: ../doc_src/<autosummary>:1
+msgid "Compute wind chill, using formula from"
+msgstr ""
+
+# b12452ab88534e049b04578c4098df9a
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`CUSBDrive <pywws.WeatherStation.CUSBDrive>`\\ (library)"
+msgstr ""
+
+# 62f92189351e42a6a7380d1f875dec15
+# ddb8767881824c72a655c38d540e331d
+#: ../doc_src/<autosummary>:1 ../code/pywws/WeatherStation.py:docstring of
+#: pywws.WeatherStation.CUSBDrive:1
+msgid "Low level interface to weather station via USB."
+msgstr ""
+
+# a54f382c87ce4a02a47d51dac070bcda
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`weather_station <pywws.WeatherStation.weather_station>`\\ ([ws_type, library, params])"
+msgstr ""
+
+# 75b7ca85f34c463a87f523c7ac51d3e1
+# 1cc1faf1aec64eaebda586403b493348
+#: ../doc_src/<autosummary>:1 ../code/pywws/WeatherStation.py:docstring of
+#: pywws.WeatherStation.weather_station:1
+msgid "Class that represents the weather station to user program."
+msgstr ""
+
+# 6ae6355320a24bd18009b21ce616a466
+#: ../code/pywws/WeatherStation.py:docstring of
+#: pywws.WeatherStation.dew_point:1
+msgid "Compute dew point, using formula from http://en.wikipedia.org/wiki/Dew_point."
+msgstr ""
+
+# 5e9616f319ee49ab851a75a84057bb9d
+#: ../code/pywws/WeatherStation.py:docstring of
+#: pywws.WeatherStation.wind_chill:1
+msgid "Compute wind chill, using formula from http://en.wikipedia.org/wiki/wind_chill"
+msgstr ""
+
+# 394c34ddde6e48d68ba4d33003a9b525
+#: ../code/pywws/WeatherStation.py:docstring of
+#: pywws.WeatherStation.apparent_temp:1
+msgid "Compute apparent temperature (real feel), using formula from http://www.bom.gov.au/info/thermal_stress/"
+msgstr ""
+
+# 1b0e4946979a4c1a908c9233cf94252d
+#: ../code/pywws/WeatherStation.py:docstring of
+#: pywws.WeatherStation.pressure_trend_text:1
+msgid "Convert pressure trend to a string, as used by the UK met office."
+msgstr ""
+
+# 7fccb36a90ba4cc5a7c5bdd8d953f0d9
+#: ../code/pywws/WeatherStation.py:docstring of
+#: pywws.WeatherStation.CUSBDrive:3
+msgid "Loosely modeled on a C++ class obtained from http://site.ambientweatherstore.com/easyweather/ws_1080_2080_protocol.zip. I don't know the provenance of this, but it looks as if it may have come from the manufacturer."
+msgstr ""
+
+# a61c55c49c2a42048749a1ece079f562
+#: ../code/pywws/WeatherStation.py:docstring of
+#: pywws.WeatherStation.CUSBDrive.read_block:1
+msgid "Read 32 bytes from the weather station."
+msgstr ""
+
+# f9fc3825997d4af59dc10817f86de0f7
+#: ../code/pywws/WeatherStation.py:docstring of
+#: pywws.WeatherStation.CUSBDrive.read_block:3
+msgid "If the read fails for any reason, :obj:`None` is returned."
+msgstr ""
+
+# 4d959741137d4feeab68088bb6341fde
+#: ../code/pywws/WeatherStation.py:docstring of
+#: pywws.WeatherStation.CUSBDrive.write_byte:1
+msgid "Write a single byte to the weather station."
+msgstr ""
+
+# d22d62d21af24d15904a641702666a92
+#: ../code/pywws/WeatherStation.py:docstring of
+#: pywws.WeatherStation.weather_station:3
+msgid "Connect to weather station and prepare to read data."
+msgstr ""
+
+# c11e36e21a694ab681d91a914c55c4a4
+#: ../code/pywws/WeatherStation.py:docstring of
+#: pywws.WeatherStation.weather_station.inc_ptr:1
+msgid "Get next circular buffer data pointer."
+msgstr ""
+
+# 97e560f922a045fe810052a07f35799e
+#: ../code/pywws/WeatherStation.py:docstring of
+#: pywws.WeatherStation.weather_station.dec_ptr:1
+msgid "Get previous circular buffer data pointer."
+msgstr ""
+
+# 1b6df559342749f98932945cd4db30d8
+#: ../code/pywws/WeatherStation.py:docstring of
+#: pywws.WeatherStation.weather_station.get_raw_data:1
+msgid "Get raw data from circular buffer."
+msgstr ""
+
+# 73f1e3bd57354f598e16f6f6188326eb
+# 5f6ba4f9f7e74e78a17dbc609b554709
+#: ../code/pywws/WeatherStation.py:docstring of
+#: pywws.WeatherStation.weather_station.get_raw_data:3
+#: pywws.WeatherStation.weather_station.get_data:3
+msgid "If unbuffered is false then a cached value that was obtained earlier may be returned."
+msgstr ""
+
+# fffb5318c1bd404ebe0e643661a7a3c6
+#: ../code/pywws/WeatherStation.py:docstring of
+#: pywws.WeatherStation.weather_station.get_data:1
+msgid "Get decoded data from circular buffer."
+msgstr ""
+
+# e5b075588d8643cc89089385a5b921a2
+#: ../code/pywws/WeatherStation.py:docstring of
+#: pywws.WeatherStation.weather_station.current_pos:1
+msgid "Get circular buffer location where current data is being written."
+msgstr ""
+
+# 163736b5decc4cdab76c6c7e8f424edd
+#: ../code/pywws/WeatherStation.py:docstring of
+#: pywws.WeatherStation.weather_station.get_raw_fixed_block:1
+msgid "Get the raw \"fixed block\" of settings and min/max data."
+msgstr ""
+
+# 54ce6dd9ef894addb98ecc818f2d5463
+#: ../code/pywws/WeatherStation.py:docstring of
+#: pywws.WeatherStation.weather_station.get_fixed_block:1
+msgid "Get the decoded \"fixed block\" of settings and min/max data."
+msgstr ""
+
+# e97c777e58214283b52ecc6bfa36c0dc
+#: ../code/pywws/WeatherStation.py:docstring of
+#: pywws.WeatherStation.weather_station.get_fixed_block:3
+msgid "A subset of the entire block can be selected by keys."
+msgstr ""
+
+# 2ae312355e564d509c8e87d4f6c9b231
+#: ../code/pywws/WeatherStation.py:docstring of
+#: pywws.WeatherStation.weather_station.write_data:1
+msgid "Write a set of single bytes to the weather station. Data must be an array of (ptr, value) pairs."
+msgstr ""
+
+# 3c20cca4a6e04972b701fefd5ef79b39
+#: ../doc_src/api/pywws.WindRose.rst:2
+msgid "pywws.WindRose"
+msgstr ""
+
+# 3431bc3018194fc6ab549f0ea80dbe1b
+#: ../doc_src/api/pywws.WindRose.rst:7
+msgid "This routine plots one or more \"wind roses\" (see `Wikipedia <http://en.wikipedia.org/wiki/Wind_rose>`_ for a description). Like Plot.py almost everything is controlled by an XML \"recipe\" / template file."
+msgstr ""
+
+# 915f8dae5bd147f8a94a9c9658213082
+#: ../doc_src/api/pywws.WindRose.rst:9
+msgid "Before writing your own template files, it might be useful to look at some of the examples in the example_graph_templates directory. If (like I was) you are unfamiliar with XML, I suggest reading the `W3 Schools XML tutorial <http://www.w3schools.com/xml/>`_."
+msgstr ""
+
+# 51f90e2a530d4de6af5e99bcbe27b6c2
+#: ../doc_src/api/pywws.WindRose.rst:14
+msgid "Here is the simplest useful wind rose template. It plots wind over the last 24 hours. ::"
+msgstr ""
+
+# e97449ac5a7349febf6e627072d54cc8
+#: ../doc_src/api/pywws.WindRose.rst:23
+msgid "In this example, the root element graph has one windrose element which contains nothing more than a ycalc element."
+msgstr ""
+
+# c1798b38ae6b4b4c96352e21202aae6d
+#: ../doc_src/api/pywws.WindRose.rst:52
+msgid "windrose"
+msgstr ""
+
+# 670a59f35c874de6aa5991b3f0be83ae
+#: ../doc_src/api/pywws.WindRose.rst:54
+msgid "A separate plot is drawn for each windrose element, but all share the same time period."
+msgstr ""
+
+# 01e48e9ecda64238938de9462a9e5eca
+#: ../doc_src/api/pywws.WindRose.rst:59
+msgid "This element sets the date & time of the wind roses. It is used in the constructor of a Python datetime object. For example, to start at noon (local time) on Christmas day 2008: ``<start>year=2008, month=12, day=25, hour=12</start>``. The default value is (stop - duration)."
+msgstr ""
+
+# b72254c053614ff6a46256b12e5f4dcd
+#: ../doc_src/api/pywws.WindRose.rst:64
+msgid "This element sets the date & time of the end of the wind roses. It is used in the constructor of a Python datetime object. For example, to end at 10 am (local time) on new year's day 2009: ``<stop>year=2009, month=1, day=1, hour=10</stop>``. The default value is (start + duration), unless start is not defined in which case the timestamp of the latest weather station hourly reading is used."
+msgstr ""
+
+# 9f1b293d3d3e4e569e505e6cce409bff
+#: ../doc_src/api/pywws.WindRose.rst:69
+msgid "This element sets the duration of wind roses, unless both start and stop are defined. It is used in the constructor of a Python timedelta object. For example, to plot one week: ``<duration>weeks=1</duration>``. The default value is hours=24."
+msgstr ""
+
+# f8ec7859c816497e9492ab50f14e95d0
+#: ../doc_src/api/pywws.WindRose.rst:74
+msgid "Controls the layout of the plots. Default is a grid that is wider than it is tall. The layout element specifies rows and columns. For example: ``<layout>4, 2</layout>`` will use a grid of 4 rows and 2 columns."
+msgstr ""
+
+# ccbfab5a9e51420ba3627f6997f9781d
+#: ../doc_src/api/pywws.WindRose.rst:79
+msgid "Sets the overall dimensions of the image file containing the graph. Default is a height of 600 pixels and a width that depends on the layout. Any size element must include both width and height. For example: ``<size>800, 600</size>`` will produce an image 800 pixels wide and 600 pixels high."
+msgstr ""
+
+# 641f7e5a11634d4c920dc34288626977
+#: ../doc_src/api/pywws.WindRose.rst:84
+msgid "Sets the image format of the file containing the plots. Default is png. Any string recognised by your installation of gnuplot should do. For example: ``<fileformat>gif</fileformat>`` will produce a GIF image."
+msgstr ""
+
+# 6d7f1fc04e2942c887474a5027ca3348
+#: ../doc_src/api/pywws.WindRose.rst:87
+msgid "lmargin, rmargin, tmargin, bmargin"
+msgstr ""
+
+# 3c0c974f83cf40cb924eb0dd9ab0622f
+#: ../doc_src/api/pywws.WindRose.rst:89
+msgid "Over-rides the automatically computed left, right, top or bottom margin. Supply any positive real number, for example ``<lmargin>1.3</lmargin>``. Some experimentation may be necessary to find the best values."
+msgstr ""
+
+# 614f130f37714ae989acf2883081b042
+#: ../doc_src/api/pywws.WindRose.rst:94
+msgid "Sets the overall title of the plots. A single line of text, for example: ``<title>Today's weather</title>``. This title appears at the very top, outside any plot area."
+msgstr ""
+
+# 26280b4c62ff48c8b46bfbf0b574b058
+#: ../doc_src/api/pywws.WindRose.rst:99
+msgid "Selects if data is included in the wind rose. The value should be a valid Python logical expression. For example, to plot a rose for afternoon winds only: ``<xcalc>data['idx'].hour &gt;= 12</xcalc>``. This allows aggregation of afternoon wind data over several days. Remember that data is indexed in UTC, so you need to use an expression that takes account of your time zone. The default value is 'True'."
+msgstr ""
+
+# d53409e51eee4ea197a2829316975b32
+#: ../doc_src/api/pywws.WindRose.rst:104
+msgid "Selects the data to be plotted. Any one line Python expression that returns a single float value can be used. At its simplest this just selects one value from the \"data\" dictionary, for example: ``<ycalc>data['wind_ave']</ycalc>``. To convert to mph use: ``<ycalc>data['wind_ave'] * 3.6 / 1.609344</ycalc>``. You are unlikely to want to use anything other than 'wind_ave' here."
+msgstr ""
+
+# d434f711ce764873ba3649b19cda0eb6
+#: ../doc_src/api/pywws.WindRose.rst:107
+msgid "threshold"
+msgstr ""
+
+# ba32f9b2b5f8487e971519d7d6c0a0fd
+#: ../doc_src/api/pywws.WindRose.rst:109
+msgid "Sets the thresholds for each colour on the rose petals. Defaults are based on the Wikipedia example. The values should be a correctly ordered list of real numbers, for example: ``<threshold>0.5, 3.5, 7.5, 12.5, 18.5, 24.5, 31.5</threshold>`` approximates to the Beaufort scale, if ycalc has been set to convert windspeeds to mph."
+msgstr ""
+
+# 0439fcc76d6846a08809f238f899ad99
+#: ../doc_src/api/pywws.WindRose.rst:114
+msgid "Sets the colours of the threshold petal segments. Any sequence of integer values is accepted. The mapping of colours to numbers is set by gnuplot. Default value is 0, 1, 2, 3, etc."
+msgstr ""
+
+# 43923c93a30040e5a3f0acc5b56720e6
+#: ../doc_src/api/pywws.WindRose.rst:119
+msgid "Sets the upper limits of the axes. The rose shows what percentage of the time the wind came from a particular direction. For example, if you live somewhere with a very steady wind you might want to allow higher percentages than normal: ``<yrange>91</yrange>``. Auto-scaling is also possible, using an asterisk: ``<yrange>*</yrange>``"
+msgstr ""
+
+# d7d166f742c9486eb3a219192bf1ffbc
+#: ../doc_src/api/pywws.WindRose.rst:122
+msgid "points"
+msgstr ""
+
+# 89acfabe5f044c62a987ae3d6874d4cb
+#: ../doc_src/api/pywws.WindRose.rst:124
+msgid "Sets the text of the compass points. The defaults are 'N', 'S', 'E' & 'W'. For graphs in another language you can over-ride this, for example: ``<points>'No', 'Zu', 'Oo', 'We'</points>``. (The preferred way to do this is to create a language file, see Localisation.py.)"
+msgstr ""
+
+# c446a58265844167a9bbd4e4ab903e5a
+#: ../doc_src/api/pywws.WindRose.rst:134
+msgid "Sets the title of the plot. A single line of text, for example: ``<title>Morning winds</title>``. This title appears within the plot area, above the threshold colour key."
+msgstr ""
+
+# 44d84b965af24a00820f7be6cf9dc322
+#: ../code/pywws/WindRose.py:docstring of pywws.WindRose:3
+msgid "usage: python WindRose.py [options] data_dir temp_dir xml_file output_file options are:"
+msgstr ""
+
+# b0c131bd79234bdfb136b5deb01838ea
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`main <pywws.WindRose.main>`\\ ([argv])"
+msgstr ""
+
+# 4f31fe970bc94af391787c800e2b247f
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`RosePlotter <pywws.WindRose.RosePlotter>`\\ (params, raw_data, hourly_data, ...)"
+msgstr ""
+
+# 4d1451d2cd2049bda54c7f48b14310a5
+#: ../doc_src/api/pywws.YoWindow.rst:2
+msgid "pywws.YoWindow"
+msgstr ""
+
+# 6105d6ec0a4a4975a12049fe3df50e46
+#: ../code/pywws/YoWindow.py:docstring of pywws.YoWindow:3
+msgid "usage: python pywws/YoWindow.py [options] data_dir output_file options are:"
+msgstr ""
+
+# 3a75d078512e4a52b58d5a7c285b2d48
+#: ../code/pywws/YoWindow.py:docstring of pywws.YoWindow:5
+msgid "-h or --help     display this help -v or --verbose  increase amount of reassuring messages"
+msgstr ""
+
+# 21825ed1ede14ef69193c98e0cd37fbc
+#: ../code/pywws/YoWindow.py:docstring of pywws.YoWindow:7
+msgid "data_dir is the root directory of the weather data output_file is the YoWindow XML file to be written"
+msgstr ""
+
+# 646c2a3bb3344032ab42b8997a743ca0
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`main <pywws.YoWindow.main>`\\ ([argv])"
+msgstr ""
+
+# a982b6712fb04f9abfb09cd1f96ac0ed
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`YoWindow <pywws.YoWindow.YoWindow>`\\ (calib_data)"
+msgstr ""
+
+# 85556b64f3f1446e840b12309c7f7cb0
+#: ../doc_src/<autosummary>:1
+msgid "Class to write YoWindow XML file."
+msgstr ""
+
+# 7bd26e21b05c4ccca7c866e145075902
+#: ../code/pywws/YoWindow.py:docstring of pywws.YoWindow.YoWindow:1
+msgid "Class to write YoWindow XML file. For file spec see http://yowindow.com/doc/yowindow_pws_format.xml"
+msgstr ""
+
+# a958783c3eeb458db261dfc5f019bbbf
+#: ../doc_src/api/pywws.ZambrettiCore.rst:2
+msgid "pywws.ZambrettiCore"
+msgstr ""
+
+# bcb7710acfd04012ad435c2b19d4a8d5
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`Zambretti <Zambretti>`\\"
+msgstr ""
+
+# 4555a6fafe884e879b6af66da9365c28
+#: ../code/pywws/ZambrettiCore.py:docstring of
+#: pywws.ZambrettiCore.ZambrettiCode:1
+msgid "Simple implementation of Zambretti forecaster algorithm. Inspired by beteljuice.com Java algorithm, as converted to Python by honeysucklecottage.me.uk, and further information from http://www.meteormetrics.com/zambretti.htm"
+msgstr ""
+
+# 06718e9407864131a4ee4936e75bc7a2
+#: ../doc_src/api/pywws.calib.rst:2
+msgid "pywws.calib"
+msgstr ""
+
+# b5cfb9ca292b4e56a1ff61f0cea86c62
+#: ../code/pywws/calib.py:docstring of pywws.calib:4
+msgid "This module allows adjustment of raw data from the weather station as part of the 'processing' step (see :doc:`pywws.Process`). For example, if you have fitted a funnel to double your rain gauge's collection area, you can write a calibration routine to double the rain value."
+msgstr ""
+
+# 22253df0de874bb68ab57bab1d10c8e4
+#: ../code/pywws/calib.py:docstring of pywws.calib:10
+msgid "Generate relative atmospheric pressure."
+msgstr ""
+
+# 455d362f48f845879da83b9c29b83acc
+#: ../code/pywws/calib.py:docstring of pywws.calib:11
+msgid "Remove invalid wind direction values."
+msgstr ""
+
+# 38a401d8f4974122851fcc95089c8da6
+#: ../code/pywws/calib.py:docstring of pywws.calib:12
+msgid "Any user calibration you write must also do these."
+msgstr ""
+
+# 8fce31f454594d6d80ca2cd414c0532e
+#: ../code/pywws/calib.py:docstring of pywws.calib:15
+msgid "Writing your calibration module"
+msgstr ""
+
+# 5936fbed21bd412a91a2ef994484a52d
+#: ../code/pywws/calib.py:docstring of pywws.calib:17
+msgid "Firstly, decide where you want to keep your module. Like your text and graph templates, it's best to keep it separate from the pywws code, so it isn't affected by pywws upgrades. I suggest creating a ``modules`` directory in the same place as your ``templates`` directory."
+msgstr ""
+
+# 013431db5f074bdb8a0f2a013a281186
+#: ../code/pywws/calib.py:docstring of pywws.calib:22
+msgid "Create a plain text file in your ``modules`` directory, e.g. ``calib.py`` and copy the following text into it::"
+msgstr ""
+
+# 70ee748ca0d5405795b2b1a34b8dff59
+#: ../code/pywws/calib.py:docstring of pywws.calib:37
+msgid "The :class:`Calib` class has two methods. :py:meth:`Calib.__init__` is the constructor and is a good place to set any constants you need. :py:meth:`Calib.calib` generates a single set of 'calibrated' data from a single set of 'raw' data. There are a few rules to follow when writing this method:"
+msgstr ""
+
+# 4a1c123ca95b481481c71ac9f17052e5
+#: ../code/pywws/calib.py:docstring of pywws.calib:43
+msgid "Make sure you include the line ``result = dict(raw)``, which copies all the raw data to your result value, at the start."
+msgstr ""
+
+# b4f99d1e7e5c4e7299dd0b47eb67fbd1
+#: ../code/pywws/calib.py:docstring of pywws.calib:46
+msgid "Don't modify any of the raw data."
+msgstr ""
+
+# 67b81231c80842bbbcb2005184e9a31d
+#: ../code/pywws/calib.py:docstring of pywws.calib:48
+msgid "Make sure you set ``result['rel_pressure']``."
+msgstr ""
+
+# 897ef971ca9d41e78fc9fb73c6723644
+#: ../code/pywws/calib.py:docstring of pywws.calib:50
+msgid "Don't forget to ``return`` the result at the end."
+msgstr ""
+
+# f2fa0536d04d4b3993b7e05c377dc3f9
+#: ../code/pywws/calib.py:docstring of pywws.calib:52
+msgid "When you've finished writing your calibration module you can get pywws to use it by putting its location in your ``weather.ini`` file. It goes in the ``[paths]`` section, as shown in the example below::"
+msgstr ""
+
+# 5ee8412123984139ab060030ae92ed3c
+#: ../code/pywws/calib.py:docstring of pywws.calib:62
+msgid "Note that the ``user_calib`` value need not include the ``.py`` at the end of the file name."
+msgstr ""
+
+# 938f446debc54bf4b95e61555db576e8
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`Calib <pywws.calib.Calib>`\\ (params)"
+msgstr ""
+
+# f728884ed81e4153a4a6235e5f694dda
+# e20850d41b304935a48fafa248f0a731
+#: ../doc_src/<autosummary>:1 ../code/pywws/calib.py:docstring of
+#: pywws.calib.Calib:1
+msgid "Calibration class that implements default or user calibration."
+msgstr ""
+
+# ddb4fc498f3a4b259f61ccd189875960
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`DefaultCalib <pywws.calib.DefaultCalib>`\\ (params)"
+msgstr ""
+
+# 6b6019056b7a40b0b8018217da82518a
+# 4946f9a339ed494fb2e758184a47cd1e
+#: ../doc_src/<autosummary>:1 ../code/pywws/calib.py:docstring of
+#: pywws.calib.DefaultCalib:1
+msgid "Default calibration class."
+msgstr ""
+
+# ed838439314144ad8c05ab3207ea4a83
+#: ../code/pywws/calib.py:docstring of pywws.calib.DefaultCalib:3
+msgid "This class sets the relative pressure, using a pressure offset read from the weather station, and 'sanitises' the wind direction value. This is the bare minimum 'calibration' required."
+msgstr ""
+
+# 5196cae2b5124fceaf7bdb61581b6334
+#: ../code/pywws/calib.py:docstring of pywws.calib.Calib:3
+msgid "Other pywws modules use this method to create a calibration object. The constructor creates either a default calibration object or a user calibration object, depending on the ``user_calib`` value in the ``[paths]`` section of the ``params`` parameter. It then adopts the calibration object's :py:meth:`calib` method as its own."
+msgstr ""
+
+# 7059262399414d0fa82478dbf0b6d804
+#: ../doc_src/api/pywws.conversions.rst:2
+msgid "pywws.conversions"
+msgstr ""
+
+# 7012782a6ec9414495800462a73819eb
+#: ../code/pywws/conversions.py:docstring of pywws.conversions:1
+msgid "conversions.py - a set of functions to convert pywws native units (Centigrade, mm, m/s, hPa) to other popular units"
+msgstr ""
+
+# 6fa3fb2a42f442e6a0ad5acec3fb3037
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`pressure_inhg <pywws.conversions.pressure_inhg>`\\ (hPa)"
+msgstr ""
+
+# 613ca6268681415c86d007e0cfe5a9c3
+# 8128299e87dd4d60b26d816cc544dcd4
+#: ../doc_src/<autosummary>:1 ../code/pywws/conversions.py:docstring of
+#: pywws.conversions.pressure_inhg:1
+msgid "Convert pressure from hectopascals/millibar to inches of mercury"
+msgstr ""
+
+# 41f50a9ac3d5486d9299235090680610
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`rain_inch <pywws.conversions.rain_inch>`\\ (mm)"
+msgstr ""
+
+# ac388c4056914560bfe64845297ecd82
+# 3715596a379b41ff95bb59a8f0e63fcd
+#: ../doc_src/<autosummary>:1 ../code/pywws/conversions.py:docstring of
+#: pywws.conversions.rain_inch:1
+msgid "Convert rainfall from millimetres to inches"
+msgstr ""
+
+# a4ba3b37963941709349ac41b1581790
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`temp_f <pywws.conversions.temp_f>`\\ (c)"
+msgstr ""
+
+# e9cb94ece63748a296c646cd35e34af0
+# 9382c2efeadd49809fb4832e00c689d3
+#: ../doc_src/<autosummary>:1 ../code/pywws/conversions.py:docstring of
+#: pywws.conversions.temp_f:1
+msgid "Convert temperature from Celsius to Fahrenheit"
+msgstr ""
+
+# 5dcd4ce0302a4f88883c97fefbf26418
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`wind_bft <pywws.conversions.wind_bft>`\\ (ms)"
+msgstr ""
+
+# 4bb6df6100b74c6caaa206affc759001
+# 5a47ce5a9bc34026b0dc9f918ef7a528
+#: ../doc_src/<autosummary>:1 ../code/pywws/conversions.py:docstring of
+#: pywws.conversions.wind_bft:1
+msgid "Convert wind from metres per second to Beaufort scale"
+msgstr ""
+
+# 02c0bf5877184fba87f769bb83bc876d
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`wind_kmph <pywws.conversions.wind_kmph>`\\ (ms)"
+msgstr ""
+
+# e850c03e9253427b821fac5b6e5272c5
+# 93af508e55694b6084db49ce055f251a
+#: ../doc_src/<autosummary>:1 ../code/pywws/conversions.py:docstring of
+#: pywws.conversions.wind_kmph:1
+msgid "Convert wind from metres per second to kilometres per hour"
+msgstr ""
+
+# c0eb00db0fd64b19ab08f46355e32e5b
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`wind_kn <pywws.conversions.wind_kn>`\\ (ms)"
+msgstr ""
+
+# 169326ab4d554ced8ea575c1f68874c6
+# 38fe992ec8c041deb4dd46899d4ba06a
+#: ../doc_src/<autosummary>:1 ../code/pywws/conversions.py:docstring of
+#: pywws.conversions.wind_kn:1
+msgid "Convert wind from metres per second to knots"
+msgstr ""
+
+# 8cc01452be79419e841056194ca3ac20
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`wind_mph <pywws.conversions.wind_mph>`\\ (ms)"
+msgstr ""
+
+# dbec59a2421f4b93a6442a0a48074b50
+# d6a1a7314a2c4e3eae8e208a47a4039c
+#: ../doc_src/<autosummary>:1 ../code/pywws/conversions.py:docstring of
+#: pywws.conversions.wind_mph:1
+msgid "Convert wind from metres per second to miles per hour"
+msgstr ""
+
+# 8f01c73c0bdc462cb05f95a4466bffe3
+#: ../code/pywws/conversions.py:docstring of
+#: pywws.conversions.illuminance_wm2:1
+msgid "Approximate conversion of illuminance in lux to solar radiation in W/m2"
+msgstr ""
+
+# bc9a1ef117f14758ae565a4abb1274c8
+#: ../code/pywws/conversions.py:docstring of
+#: pywws.conversions.winddir_degrees:1
+msgid "Convert wind direction from 0..15 to degrees"
+msgstr ""
+
+# d3d7081f9c39476faf409e66f41b7dd1
+#: ../code/pywws/conversions.py:docstring of pywws.conversions.winddir_text:1
+msgid "Convert wind direction from 0..15 to compass point text"
+msgstr ""
+
+# c87606800f8a419889f5b822775ba0ba
+#: ../doc_src/api/pywws.device_cython_hidapi.rst:2
+msgid "pywws.device_cython_hidapi"
+msgstr ""
+
+# ff1079c5942149e4b6a794b2cf7505ad
+#: ../doc_src/api/pywws.device_pyusb.rst:2
+msgid "pywws.device_pyusb"
+msgstr ""
+
+# 059d53ce04684f0bb5f66ebe9eb9aa22
+#: ../code/pywws/device_pyusb.py:docstring of pywws.device_pyusb:6
+msgid "This module handles low level communication with the weather station via the `PyUSB <http://sourceforge.net/apps/trac/pyusb/>`_ library. An alternative module, :doc:`pywws.device_cython_hidapi`, uses the `cython-hidapi <https://github.com/gbishop/cython-hidapi>`_ library. The choice of which module to use depends on which libraries are available for you computer."
+msgstr ""
+
+# 4474415ac11841eb9f9996575edae799
+#: ../code/pywws/device_pyusb.py:docstring of pywws.device_pyusb:13
+msgid "Users of recent versions of Mac OS have no choice. The operating system makes it very difficult to access HID devices (such as the weather station) directly, so the ``hidapi`` library has to be used. ``cython-hidapi`` is a Python interface to that library."
+msgstr ""
+
+# 5f247af92045463b888941219f513f09
+#: ../code/pywws/device_pyusb.py:docstring of pywws.device_pyusb:18
+msgid "Users of OpenWRT and similar embedded Linux platforms will probably not be able to install ``cython-hidapi``, so are constrained to use ``libusb`` and its ``PyUSB`` Python interface."
+msgstr ""
+
+# 789756ce59d647b2a077321b29a5b5f0
+#: ../code/pywws/device_pyusb.py:docstring of pywws.device_pyusb:23
+msgid "Installation"
+msgstr ""
+
+# 7e8d38fb808441d399f27a68408231cf
+#: ../code/pywws/device_pyusb.py:docstring of pywws.device_pyusb:25
+msgid "Some of this software may already be installed on your machine, so do check before downloading sources and compiling them yourself."
+msgstr ""
+
+# fae8f472c6bf47668a8168a46a7d1a76
+#: ../code/pywws/device_pyusb.py:docstring of pywws.device_pyusb:28
+msgid "Install libusb and PyUSB."
+msgstr ""
+
+# 38f86c87d4d44ff0a6b8bed7bc17f30c
+#: ../code/pywws/device_pyusb.py:docstring of pywws.device_pyusb:30
+msgid "These should be available as packages for your operating system, but their names may vary. For example, on Ubuntu Linux::"
+msgstr ""
+
+# 54cec5b3881e4fa9b7747f6295167d8e
+#: ../code/pywws/device_pyusb.py:docstring of pywws.device_pyusb:35
+msgid "On some embedded linux systems::"
+msgstr ""
+
+# 9b3a99b658b145df8a061fb9f880af82
+#: ../code/pywws/device_pyusb.py:docstring of pywws.device_pyusb:40
+msgid "Testing"
+msgstr ""
+
+# 2f865559ca8f4a5ea5edf94ca8ae74d5
+#: ../code/pywws/device_pyusb.py:docstring of pywws.device_pyusb:42
+msgid "Run ``TestWeatherStation.py`` with increased verbosity so it reports which USB device access module is being used::"
+msgstr ""
+
+# 653d8889c8294f59af30e57723a065ab
+# 0a0d5f5f91554b3db82bd18dfff9f371
+#: ../code/pywws/device_pyusb.py:docstring of pywws.device_pyusb:57
+#: ../code/pywws/toservice.py:docstring pywws.toservice:171
+msgid "API"
+msgstr ""
+
+# 15a434437d9b4a3980bb39726fe2c043
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`USBDevice <pywws.device_pyusb.USBDevice>`\\ (idVendor, idProduct)"
+msgstr ""
+
+# 74bc531433b747328b5ca9fde6f23d1d
+# 7b73a8782fc9480e96a4eb38dc68dbec
+#: ../doc_src/<autosummary>:1 ../code/pywws/device_pyusb.py:docstring of
+#: pywws.device_pyusb.USBDevice:1
+msgid "Low level USB device access via PyUSB library."
+msgstr ""
+
+# b027e646e8e248cd98d329468e0efa46
+#: ../code/pywws/device_pyusb.py:docstring of
+#: pywws.device_pyusb.USBDevice.read_data:1
+msgid "Receive data from the device."
+msgstr ""
+
+# 9dd31bc7500a462ba542b53ccc37fecf
+#: ../code/pywws/device_pyusb.py:docstring of
+#: pywws.device_pyusb.USBDevice.read_data:3
+msgid "If the read fails for any reason, an :obj:`IOError` exception is raised."
+msgstr ""
+
+# 380cb3c501cf4bc28cf0cbd2c4268ec6
+#: ../code/pywws/device_pyusb.py:docstring of
+#: pywws.device_pyusb.USBDevice.write_data:1
+msgid "Send data to the device."
+msgstr ""
+
+# 08cc973f18314f6fac7b10010ec68917
+#: ../code/pywws/device_pyusb.py:docstring of
+#: pywws.device_pyusb.USBDevice.write_data:3
+msgid "If the write fails for any reason, an :obj:`IOError` exception is raised."
+msgstr ""
+
+# c4fc4eb8c02e4c7d8b980fa7b9008aae
+#: ../doc_src/api/pywws.toservice.rst:2
+msgid "pywws.toservice"
+msgstr ""
+
+# 80a0e0fadb6f44179c73009cfde2f250
+#: ../code/pywws/toservice.py:docstring of pywws.toservice:1
+msgid "Post weather update to services such as Weather Underground ::"
+msgstr ""
+
+# 784f0488cc8a4e5383678bb06469e73c
+#: ../code/pywws/toservice.py:docstring of pywws.toservice:17
+msgid "Several organisations allow weather stations to upload data using a simple HTTP 'POST' or 'GET' request, with the data encoded as a sequence of ``key=value`` pairs separated by ``&`` characters."
+msgstr ""
+
+# e4de0cc3080448c59bb28defd36bbb4d
+#: ../code/pywws/toservice.py:docstring of pywws.toservice:21
+msgid "This module enables pywws to upload readings to these organisations. It is highly customisable using configuration files. Each 'service' requires a configuration file and two templates in ``pywws/services`` (that should not need to be edited by the user) and a section in ``weather.ini`` containing user specific data such as your site ID and password."
+msgstr ""
+
+# 3a2af187218349db9277db8d2131ea4e
+#: ../code/pywws/toservice.py:docstring of pywws.toservice:28
+msgid "There are currently six services for which configuration files have been written."
+msgstr ""
+
+# 29f027c331f24cf3ba11ae586518f5b1
+#: ../code/pywws/toservice.py:docstring of pywws.toservice:32
+msgid "organisation"
+msgstr ""
+
+# 985f0bac430b4cd2ae64c3196c0bc16f
+#: ../code/pywws/toservice.py:docstring of pywws.toservice:32
+msgid "service name"
+msgstr ""
+
+# d9dcf9f1e7484793baf956ce5ab27ead
+#: ../code/pywws/toservice.py:docstring of pywws.toservice:32
+msgid "config file"
+msgstr ""
+
+# b62a5f60eaa44a8abf86e640d9c72b6b
+#: ../code/pywws/toservice.py:docstring of pywws.toservice:34
+msgid "`UK Met Office <http://wow.metoffice.gov.uk/>`_"
+msgstr ""
+
+# 8da55614c0de4187b7e94fab6475d90e
+#: ../code/pywws/toservice.py:docstring of pywws.toservice:34
+msgid "``metoffice``"
+msgstr ""
+
+# cf0b190a30324ab78c1e3a3789c5bfb1
+#: ../code/pywws/toservice.py:docstring of pywws.toservice:34
+msgid ":download:`../../code/pywws/services/metoffice.ini`"
+msgstr ""
+
+# ebf01c36e5cb41fdbf0ed9d931265e00
+#: ../code/pywws/toservice.py:docstring of pywws.toservice:36
+msgid "`Open Weather Map <http://openweathermap.org/>`_"
+msgstr ""
+
+# 9c652f44f9d64a769d205ebb6ad8fc4d
+#: ../code/pywws/toservice.py:docstring of pywws.toservice:36
+msgid "``openweathermap``"
+msgstr ""
+
+# 96c692b95eae4f39a5e64806336d3175
+#: ../code/pywws/toservice.py:docstring of pywws.toservice:36
+msgid ":download:`../../code/pywws/services/openweathermap.ini`"
+msgstr ""
+
+# 25ab195d85cc4ae1bbc286e652a3a71b
+#: ../code/pywws/toservice.py:docstring of pywws.toservice:38
+msgid "`Stacja Pogody <http://stacjapogody.waw.pl/index.php?id=mapastacji>`_"
+msgstr ""
+
+# b3213004f60c4ea7bd76eed3022a483f
+#: ../code/pywws/toservice.py:docstring of pywws.toservice:38
+msgid "``stacjapogodywawpl``"
+msgstr ""
+
+# 05f76cb528304e6788a6d9f633ce5ef7
+#: ../code/pywws/toservice.py:docstring of pywws.toservice:38
+msgid ":download:`../../code/pywws/services/stacjapogodywawpl.ini`"
+msgstr ""
+
+# e038b31a17cc47c9a32272b3c4677a30
+#: ../code/pywws/toservice.py:docstring of pywws.toservice:40
+msgid "`temperatur.nu <http://www.temperatur.nu/>`_"
+msgstr ""
+
+# ab87fe1dfafc4116884c900715877b5e
+#: ../code/pywws/toservice.py:docstring of pywws.toservice:40
+msgid "``temperaturnu``"
+msgstr ""
+
+# ca72199ac4cb4fe1b3c44146b4ddc75a
+#: ../code/pywws/toservice.py:docstring of pywws.toservice:40
+msgid ":download:`../../code/pywws/services/temperaturnu.ini`"
+msgstr ""
+
+# bb460b27acf846daa7de380f13399fb2
+#: ../code/pywws/toservice.py:docstring of pywws.toservice:42
+msgid "`Weather Underground <http://www.wunderground.com/>`_"
+msgstr ""
+
+# 3ae619d4097b42ba9171e63f378c0dc6
+#: ../code/pywws/toservice.py:docstring of pywws.toservice:42
+msgid "``underground``"
+msgstr ""
+
+# 3e0b7bc2d50d47f09253374dd7aa2341
+#: ../code/pywws/toservice.py:docstring of pywws.toservice:42
+msgid ":download:`../../code/pywws/services/underground.ini`"
+msgstr ""
+
+# 6dd2d26190cd47c3bb52c1d604de21ee
+#: ../code/pywws/toservice.py:docstring of pywws.toservice:44
+msgid "`wetter.com <http://www.wetter.com/community/>`_"
+msgstr ""
+
+# c1b553b8d687473aa3d440f7d0d805c4
+#: ../code/pywws/toservice.py:docstring of pywws.toservice:44
+msgid "``wetterarchivde``"
+msgstr ""
+
+# ac4936d0e00545e18a236f6af9bc4f2c
+#: ../code/pywws/toservice.py:docstring of pywws.toservice:44
+msgid ":download:`../../code/pywws/services/wetterarchivde.ini`"
+msgstr ""
+
+# e2649b7065bd49d7b34e124daecb3ee3
+#: ../code/pywws/toservice.py:docstring of pywws.toservice:48
+msgid "Configuration"
+msgstr ""
+
+# 92c15e3ba8be4077880bde9c133cb370
+#: ../code/pywws/toservice.py:docstring of pywws.toservice:50
+msgid "If you haven't already done so, visit the organisation's web site and create an account for your weather station. Make a note of any site ID and password details you are given."
+msgstr ""
+
+# ac21908f57644ebca2f15be574f76c77
+#: ../code/pywws/toservice.py:docstring of pywws.toservice:54
+msgid "Stop any pywws software that is running and then run ``toservice.py`` to create a section in ``weather.ini``::"
+msgstr ""
+
+# 46e98cc86aac4397bb198f7747897096
+#: ../code/pywws/toservice.py:docstring of pywws.toservice:59
+msgid "``service_name`` is a single word service name, such as ``metoffice``, ``data_dir`` is your weather data directory, as usual."
+msgstr ""
+
+# d44d541979424fbdb6ec5f4476bc3c8d
+#: ../code/pywws/toservice.py:docstring of pywws.toservice:62
+msgid "Edit ``weather.ini`` and find the section corresponding to the service name, e.g. ``[underground]``. Copy your site details into this section, for example::"
+msgstr ""
+
+# e54118f4a22c4aa4ba31af978f0be4d7
+#: ../code/pywws/toservice.py:docstring of pywws.toservice:70
+msgid "Now you can test your configuration::"
+msgstr ""
+
+# 8597007ee3b34d67b1ecdbe0ec4e12e6
+#: ../code/pywws/toservice.py:docstring of pywws.toservice:74
+msgid "This should show you the data string that is uploaded. Any failure should generate an error message."
+msgstr ""
+
+# 39e3bc3f7e4f4ed0a700eb58ee407d82
+#: ../code/pywws/toservice.py:docstring of pywws.toservice:78
+msgid "Upload old data"
+msgstr ""
+
+# 280f489522bc446883a5f6a36948f100
+#: ../code/pywws/toservice.py:docstring of pywws.toservice:80
+msgid "Now you can upload your last 7 days' data, if the service supports it. Edit your ``weather.ini`` file and remove the ``last update`` line from the appropriate section, then run ``toservice.py`` with the catchup option::"
+msgstr ""
+
+# 50d448d27ff84573a609a2fcad5c876e
+#: ../code/pywws/toservice.py:docstring of pywws.toservice:87
+msgid "This may take 20 minutes or more, depending on how much data you have."
+msgstr ""
+
+# 55d90054e86c45a6b4caa9d68665716b
+#: ../code/pywws/toservice.py:docstring of pywws.toservice:90
+msgid "Add service(s) upload to regular tasks"
+msgstr ""
+
+# 040dbee273bf4bd6a77a9174347c4594
+#: ../code/pywws/toservice.py:docstring of pywws.toservice:92
+msgid "Edit your ``weather.ini`` again, and add a list of services to the ``[live]``, ``[logged]``, ``[hourly]``, ``[12 hourly]`` or ``[daily]`` section, depending on how often you want to send data. For example::"
+msgstr ""
+
+# 50d0309bacd945ba9a6493e036f300dd
+#: ../code/pywws/toservice.py:docstring of pywws.toservice:114
+msgid "Note that the ``[live]`` section is only used when running ``LiveLog.py``. It is a good idea to repeat any service selected in ``[live]`` in the ``[logged]`` or ``[hourly]`` section in case you switch to running :mod:`Hourly`."
+msgstr ""
+
+# 4083d9b827164577bc32f763fa8a80ce
+#: ../code/pywws/toservice.py:docstring of pywws.toservice:119
+msgid "Restart your regular pywws program (:mod:`Hourly` or :mod:`LiveLog`) and visit the appropriate web site to see regular updates from your weather station."
+msgstr ""
+
+# 8c20b8d97d4f4a3c998b74a48757f5ea
+#: ../code/pywws/toservice.py:docstring of pywws.toservice:124
+msgid "Notes on the services"
+msgstr ""
+
+# 6e34f088816b494b9b12076e9495fefe
+#: ../code/pywws/toservice.py:docstring of pywws.toservice:127
+msgid "UK Met Office"
+msgstr ""
+
+# 3acb75414925461c8a7889e80cd16e15
+#: ../code/pywws/toservice.py:docstring of pywws.toservice:129
+msgid "Create account: https://register.metoffice.gov.uk/WaveRegistrationClient/public/register.do?service=weatherobservations"
+msgstr ""
+
+# 7e45223c5e704d3da09488bbe7a8262b
+#: ../code/pywws/toservice.py:docstring of pywws.toservice:130
+msgid "API: http://wow.metoffice.gov.uk/support?category=dataformats#automatic"
+msgstr ""
+
+# 6a9e065610e943f9bee47eef8e6229db
+# ace3a8fb79ae42ed867affbc221f0de1
+# d840320c02c7428294ab45ee931cd9f4
+#: ../code/pywws/toservice.py:docstring of pywws.toservice:131
+#: pywws.toservice:142 pywws.toservice:164
+msgid "Example ``weather.ini`` section::"
+msgstr ""
+
+# 2205e9428b2a4126bb428de919a35236
+#: ../code/pywws/toservice.py:docstring of pywws.toservice:138
+msgid "Open Weather Map"
+msgstr ""
+
+# 24c44d4e97104eb1815ba9ac3314787b
+#: ../code/pywws/toservice.py:docstring of pywws.toservice:140
+msgid "Create account: http://openweathermap.org/login"
+msgstr ""
+
+# 8d61f16acfbb458dab32457d22bacb8c
+#: ../code/pywws/toservice.py:docstring of pywws.toservice:141
+msgid "API: http://openweathermap.org/API"
+msgstr ""
+
+# 95b597e9e2ab48d1bf32cf7dafaa8807
+#: ../code/pywws/toservice.py:docstring of pywws.toservice:152
+msgid "The default behaviour is to use your user name to identify the weather station. However, it's possible for a user to have more than one weather station, so there is an undocumented ``name`` parameter in the API that can be used to identify the station. This appears as ``id`` in ``weather.ini``. Make sure you don't choose a name that is already in use."
+msgstr ""
+
+# df45279f435844928819da10bafcecb2
+#: ../code/pywws/toservice.py:docstring of pywws.toservice:160
+msgid "Weather Underground"
+msgstr ""
+
+# 7f10b0e4fb3a4c8e89b04a5358b3d924
+#: ../code/pywws/toservice.py:docstring of pywws.toservice:162
+msgid "Create account: http://www.wunderground.com/members/signup.asp"
+msgstr ""
+
+# 1b10c4bafa274c40a031df5ab9420d4c
+#: ../code/pywws/toservice.py:docstring of pywws.toservice:163
+msgid "API: http://wiki.wunderground.com/index.php/PWS_-_Upload_Protocol"
+msgstr ""
+
+# 26afdfd138e746139f022bb109521e28
+#: ../doc_src/<autosummary>:1
+msgid ":obj:`ToService <pywws.toservice.ToService>`\\ (params, calib_data[, service_name])"
+msgstr ""
+
+# dee69db8607c4d2e814e48d8ae239634
+#: ../doc_src/<autosummary>:1
+msgid "Upload weather data to weather services such as Weather"
+msgstr ""
+
+# 6b24285d56cd45c48a802cac37a1465e
+#: ../code/pywws/toservice.py:docstring of pywws.toservice.ToService:1
+msgid "Upload weather data to weather services such as Weather Underground."
+msgstr ""
+
+# f26a9dc6fb7a441db2f2caaeca25d1b8
+#: ../code/pywws/toservice.py:docstring of
+#: pywws.toservice.ToService.translate_data:1
+msgid "Convert a weather data record to upload format."
+msgstr ""
+
+# bcf54a793b0042a9ad7e007132e93421
+#: ../code/pywws/toservice.py:docstring of
+#: pywws.toservice.ToService.translate_data:3
+msgid "The :obj:`current` parameter contains the data to be uploaded. It should be a 'calibrated' data record, as stored in :class:`pywws.DataStore.calib_store`."
+msgstr ""
+
+# 8e4af46e52454858a24125ca7f01a62a
+# 0966dbd1d2ae4aa1807cbf7cd9af6897
+#: ../code/pywws/toservice.py:docstring of
+#: pywws.toservice.ToService.translate_data:7
+#: pywws.toservice.ToService.send_data:7
+msgid "The :obj:`fixed_data` parameter contains unvarying data that is site dependent, for example an ID code and authentication data."
+msgstr ""
+
+# 67115a407cb7413eb0928030b5d8977e
+#: ../code/pywws/toservice.py:docstring of
+#: pywws.toservice.ToService.send_data:1
+msgid "Upload a weather data record."
+msgstr ""
+
+# 94191a8411bd4706a03ecd2845a5e7c8
+# dc3e3a3efd8f4222acb42325c085e173
+#: ../code/pywws/toservice.py:docstring of
+#: pywws.toservice.ToService.send_data:3
+#: pywws.toservice.ToService.RapidFire:11
+msgid "The :obj:`data` parameter contains the data to be uploaded. It should be a 'calibrated' data record, as stored in :class:`pywws.DataStore.calib_store`."
+msgstr ""
+
+# 6fff34e2dd33466caa3a298136ca6df7
+#: ../code/pywws/toservice.py:docstring of pywws.toservice.ToService.Upload:1
+msgid "Upload one or more weather data records."
+msgstr ""
+
+# b8f32bf9baa240bfa7a666e217db2815
+#: ../code/pywws/toservice.py:docstring of pywws.toservice.ToService.Upload:3
+msgid "This method uploads either the most recent weather data record, or all records since the last upload (up to 7 days), according to the value of :obj:`catchup`."
+msgstr ""
+
+# 3b0e1008e68e4db69c05ce50472a60b6
+# 61908ca9986e4f159784b26297916c1a
+#: ../code/pywws/toservice.py:docstring of pywws.toservice.ToService.Upload:7
+#: pywws.toservice.ToService.RapidFire:8
+msgid "It sets the ``last update`` configuration value to the time stamp of the most recent record successfully uploaded."
+msgstr ""
+
+# e0ad58d313814d7db4ced65e17a77e11
+#: ../code/pywws/toservice.py:docstring of
+#: pywws.toservice.ToService.RapidFire:1
+msgid "Upload a 'Rapid Fire' weather data record."
+msgstr ""
+
+# 6eb5b7ba2048424cb010194c95e51242
+#: ../code/pywws/toservice.py:docstring of
+#: pywws.toservice.ToService.RapidFire:3
+msgid "This method uploads either a single data record (typically one obtained during 'live' logging), or all records since the last upload (up to 7 days), according to the value of :obj:`catchup`."
+msgstr ""

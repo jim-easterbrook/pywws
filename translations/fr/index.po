@@ -1,0 +1,275 @@
+# French translations for pywws package.
+# Copyright (C) 2008-12, Jim Easterbrook
+# This file is distributed under the same license as the pywws package.
+# Jim Easterbrook <jim@jim-easterbrook.me.uk>, 2012.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: pywws 12.12\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-12-14 15:22\n"
+"PO-Revision-Date: 2012-12-15 11:22+0000\n"
+"Last-Translator: Jacques Desroches <jacques.desroches@meteoduquebec.com>\n"
+"Language-Team: French\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: fr\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+# cd88ebee83774e018942a877ca1772e8
+#: ../doc_src/index.rst:3
+msgid "pywws"
+msgstr ""
+
+# 6a49ae8c2df04f35966f04532993d308
+#: ../doc_src/index.rst:8
+msgid "Python software for USB Wireless WeatherStations"
+msgstr ""
+
+# 574f7b6e121e48cc85000a5f3b181224
+# 95d0c8cdcb00404898bb5aaf87b1d452
+#: ../doc_src/index.rst:9 ../doc_src/index.rst:106
+msgid "http://jim-easterbrook.github.com/pywws/"
+msgstr ""
+
+# 2ae38bd4695f49ebafa120d4a2864db5
+#: ../doc_src/index.rst:10
+msgid "http://github.com/jim-easterbrook/pywws/"
+msgstr ""
+
+# 719f2538746b4613a98b5accfe7f5e89
+#: ../doc_src/index.rst:14
+msgid "Introduction"
+msgstr ""
+
+# aee02ed2f1c14f6b85fe42eb1c4a94d0
+#: ../doc_src/index.rst:16
+msgid "pywws is a collection of Python scripts to read, store and process data from popular USB wireless weather stations such as Elecsa AstroTouch 6975, Watson W-8681, WH-1080PC, WH1080, WH1081, WH3080 etc. I assume any model that is supplied with the EasyWeather Windows software is compatible, but cannot guarantee this."
+msgstr ""
+
+# fd044a4c520c42789b392fa7d0083110
+#: ../doc_src/index.rst:18
+msgid "The software has been developed to run in a low power, low memory environment such as a router. It can be used to create graphs and web pages showing recent weather readings, typically updated every hour. It can also send data to services such as `Weather Underground <http://www.wunderground.com/>`_ and post messages to `Twitter <https://twitter.com/>`_."
+msgstr ""
+
+# 77c52a1087c443a4ba2f553401b44490
+#: ../doc_src/index.rst:20
+msgid "I have written this software to meet my needs, but have tried to make it adaptable to other people's requirements. You may want to edit some or all of the modules, or write some new ones, to get it to do exactly what you want. One of the reasons for using Python is that it makes such alterations so easy. Don't be afraid, just jump in and have a go."
+msgstr ""
+
+# 0a70bb01d03248cd92072d1282978b3e
+#: ../doc_src/index.rst:24
+msgid "Requirements"
+msgstr "Fichiers prérequis"
+
+# 07099433fdad4e79bcdc2b9648cd729a
+#: ../doc_src/index.rst:26
+msgid "The software you'll need to run pywws depends on what you plan to do with it. In particular, there is a choice of USB library, to suit what's available on different operating systems."
+msgstr ""
+
+# 4aa48bb7ef8240398021cf555eccf358
+#: ../doc_src/index.rst:28
+msgid "`Python <http://python.org/>`_ version 2.4 or higher (note: Python 3 support is under development - some things may not work properly)"
+msgstr ""
+
+# a05a8bcfc4b54c5396ed83df44e086d5
+#: ../doc_src/index.rst:29
+msgid "USB library option 1 (best for small systems such as routers):"
+msgstr "Librarie USB - option 1 (préférable pour les petits systèmes, comme les "
+"routeurs):"
+
+# 81583b822bc34d23845bf9f8c28a710d
+#: ../doc_src/index.rst:31
+msgid "`PyUSB <http://sourceforge.net/apps/trac/pyusb/>`_ version 0.4.x"
+msgstr ""
+
+# 2ebbd09e376a43d9ba5c1c2c66f70181
+#: ../doc_src/index.rst:32
+msgid "`libusb <http://www.libusb.org/>`_ version 0.1.12"
+msgstr ""
+
+# cfd0828f50f541258d9d8ddb6b8e09ae
+#: ../doc_src/index.rst:33
+msgid "USB library option 2:"
+msgstr ""
+
+# 77650e70b8b24614babf55a9c7f49192
+#: ../doc_src/index.rst:35
+msgid "`PyUSB <http://sourceforge.net/apps/trac/pyusb/>`_ version 1.0.x"
+msgstr ""
+
+# 6a8d21d23e3741f8adbd0548bad98093
+#: ../doc_src/index.rst:36
+msgid "`libusb <http://www.libusb.org/>`_ version 0.1 or version 1.0"
+msgstr ""
+
+# 093e967fb4c44f68ab1d592f35e167b4
+#: ../doc_src/index.rst:37
+msgid "USB library option 3 (best for MacOS):"
+msgstr "Librarie USB - option 3 (préférable pour les Mac):"
+
+# 92eb7655655d40629c1973a35b0964fe
+#: ../doc_src/index.rst:39
+msgid "`hidapi <https://github.com/signal11/hidapi>`_"
+msgstr ""
+
+# 7bb3ebc015354a78a2d9c355af75c0a8
+#: ../doc_src/index.rst:40
+msgid "`cython-hidapi <https://github.com/gbishop/cython-hidapi>`_"
+msgstr ""
+
+# 1226a248130944588f973a3505ed6c4b
+#: ../doc_src/index.rst:41
+msgid "`cython <http://cython.org/>`_"
+msgstr ""
+
+# d5d527cf39ab4344a45c8bb241728eb1
+#: ../doc_src/index.rst:42
+msgid "For graph drawing:"
+msgstr ""
+
+# 39ffac2aa0f642b3b4e9658bfedbe231
+#: ../doc_src/index.rst:44
+msgid "`gnuplot <http://www.gnuplot.info/>`_ v4.2 or higher"
+msgstr ""
+
+# 7485387848ee4cddbdb0e6518c5f4a7e
+#: ../doc_src/index.rst:45
+msgid "For secure website uploading (sftp)"
+msgstr ""
+
+# f1547aecef534e29aeb0c5c0ef838580
+#: ../doc_src/index.rst:47
+msgid "`paramiko <http://www.lag.net/paramiko/>`_"
+msgstr ""
+
+# ef13a0a5f3dc4f6487fb319c773a9075
+#: ../doc_src/index.rst:48
+msgid "`pycrypto <http://www.dlitz.net/software/pycrypto/>`_"
+msgstr ""
+
+# 75dd83abe14d423c8438825a6ceba510
+#: ../doc_src/index.rst:49
+msgid "For Twitter updates:"
+msgstr ""
+
+# 38bd31ff60034aa693436a28b9f58af0
+#: ../doc_src/index.rst:51
+msgid "`tweepy <http://code.google.com/p/tweepy/>`_"
+msgstr ""
+
+# bd96a309b87e4c879306fbddf8ac4af5
+#: ../doc_src/index.rst:52
+msgid "`simplejson <http://pypi.python.org/pypi/simplejson>`_"
+msgstr ""
+
+# e6b4e8b6d6644101a4665b56fb3f1383
+#: ../doc_src/index.rst:53
+msgid "To create new language translations:"
+msgstr ""
+
+# a133f9d5697e4cadb09debd8f3afda4e
+#: ../doc_src/index.rst:55
+msgid "`gettext <http://www.gnu.org/s/gettext/>`_"
+msgstr ""
+
+# f640267057cd4181b8ad471b5111ca78
+#: ../doc_src/index.rst:59
+msgid "Getting a copy of pywws"
+msgstr ""
+
+# d0e00e01eab94bee9fe841ac3a02b17d
+#: ../doc_src/index.rst:61
+msgid "The simplest way to obtain pywws is to download a zip or tar.gz file from the `download page <https://github.com/jim-easterbrook/pywws/downloads>`_ and then extract the files into a convenient directory on your computer. These \"archive\" files contain a snapshot release of the software - a new one is released every few months."
+msgstr ""
+
+# 1e732d323c334d4697e3accad7763bb6
+#: ../doc_src/index.rst:63
+msgid "If you are familiar with the Python Package Index you may prefer to download pywws from `PyPI <http://pypi.python.org/pypi/pywws/>`_, or use ``pip`` to install it directly::"
+msgstr ""
+
+# b458884477d54bd0a9b99445d214fca5
+#: ../doc_src/index.rst:67
+msgid "If you'd like to try the latest version of pywws, please use git to clone the `repository <https://github.com/jim-easterbrook/pywws>`_. After doing so you'll need to use make to compile the documentation and language localisation files."
+msgstr ""
+
+# 0b3a80d922be4eeeaa369518bfe85fd1
+#: ../doc_src/index.rst:71
+msgid "Documentation"
+msgstr ""
+
+# c2731eb456ae42cd976bb447c5562216
+#: ../doc_src/index.rst:73
+msgid "Documentation is included with pywws downloads, and is also available online. A good starting place is the `how to get started guide <guides/getstarted.html>`_ which describes in more detail how to install pywws."
+msgstr ""
+
+# 29eb805323c5461cbe144e67b421e6cc
+#: ../doc_src/index.rst:75
+msgid "If you have questions not answered in the documentation, please join the `pywws Google mailing list / discussion group <http://groups.google.com/group/pywws>`_ and ask there."
+msgstr ""
+
+# 6659c20cdf1244fca2a951636dd69e84
+#: ../doc_src/index.rst:78
+msgid "Contents"
+msgstr ""
+
+# ffda77fefb5a40d4ba13a60357dfbf12
+#: ../doc_src/index.rst:89
+msgid "Indices and tables"
+msgstr ""
+
+# 02e95c27800942e3a6c6dbcbf589fad1
+#: ../doc_src/index.rst:91
+msgid ":ref:`genindex`"
+msgstr ""
+
+# 8e184652399443dfb3063d1955b2ea55
+#: ../doc_src/index.rst:92
+msgid ":ref:`modindex`"
+msgstr ""
+
+# 53ae38f4984c461cafa2840ced95c778
+#: ../doc_src/index.rst:93
+msgid ":ref:`search`"
+msgstr ""
+
+# aad7bc05013e456aaa670375d74d547e
+#: ../doc_src/index.rst:97
+msgid "Credits"
+msgstr ""
+
+# fe8af95a151b4e2496f9701daf323ec0
+#: ../doc_src/index.rst:99
+msgid "I would not have been able to get any information from the weather station without access to the source of Michael Pendec's \"wwsr\" program. I am also indebted to Dave Wells for decoding the `weather station's \"fixed block\" data <http://www.jim-easterbrook.me.uk/weather/mm/>`_."
+msgstr ""
+
+# 0c2cd35b864e48a986dc233a1a242a77
+#: ../doc_src/index.rst:103
+msgid "Legalese"
+msgstr ""
+
+# b24429c2feef4b42bb886afc03f5a27e
+#: ../doc_src/index.rst:105
+msgid "pywws - Python software for USB Wireless WeatherStations."
+msgstr ""
+
+# 32fc15039bf44bbfb7d3ac8dfdd923c7
+#: ../doc_src/index.rst:107
+msgid "Copyright (C) 2008-12 Jim Easterbrook jim@jim-easterbrook.me.uk"
+msgstr ""
+
+# ab190802fabb46b3822a10708fc960cd
+#: ../doc_src/index.rst:109
+msgid "This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version."
+msgstr ""
+
+# 987f995fe77b485e8de51bfea29e4a74
+#: ../doc_src/index.rst:111
+msgid "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details."
+msgstr ""
+
+# 89238fd6f030485985b3a239a7c256ea
+#: ../doc_src/index.rst:113
+msgid "You should have received a copy of the `GNU General Public License <essentials/LICENCE.html>`_ along with this program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA"
+msgstr ""
