@@ -66,7 +66,7 @@ How to use pywws in another language
 
 #. Test the pywws translation.
 
-   The Localisation.py module can be usede to do a quick test of your language file installation::
+   The Localisation.py module can be used to do a quick test of your language file installation::
 
       python code/RunModule.py Localisation -t fr
 
@@ -108,11 +108,11 @@ How to use pywws in another language
 
 #. Translating the documentation.
 
-   The same system used to translate the strings used in pywws can also be used to translate the documentation. The files 'index.po', 'essential.po', 'guides.po' and 'api.po' contain text strings (often whole paragraphs) extracted from the different parts of the documentation.
+   The system used to translate the strings used in pywws can also be used to translate the documentation. The files 'index.po', 'essential.po', 'guides.po' and 'api.po' contain text strings (often whole paragraphs) extracted from the different parts of the documentation.
 
-   These files can be edited in a similar way to 'pywws.po'. Fill in each 'msgstr' with a translation of the 'msgid' above it. Note that some strings (such as URLs) should not be translated. In these cases, leave the 'msgstr' blank.
+   These files can be edited in a similar way to 'pywws.po'. Fill in each 'msgstr' with a translation of the 'msgid' above it. Note that some strings (such as URLs) need not be translated. In these cases, leave the 'msgstr' blank.
 
-   Translating all of the pywws documentation is a lot of work. However, when the documentation is 'compiled' any untranslated strings revert to their English original. This means that a partial translation could still be useful - I suggest starting with 'index.po' (the documentation 'front page').
+   Translating all of the pywws documentation is a lot of work. However, when the documentation is 'compiled' any untranslated strings revert to their English original. This means that a partial translation could still be useful - I suggest starting with the documentation front page, 'index.po'.
 
    Comments or questions? Please subscribe to the pywws mailing list
    http://groups.google.com/group/pywws and let us know.
