@@ -66,6 +66,22 @@ How to use pywws in another language
 
 #. Test the pywws translation.
 
+   The Localisation.py module can be usede to do a quick test of your language file installation::
+
+      python code/RunModule.py Localisation -t fr
+
+   This should produce output something like this::
+
+      Locale changed from (None, None) to ('fr_FR', 'UTF-8')
+      Translation set OK
+      Locale
+        decimal point: 23,2
+        date & time: lundi, 17 décembre (17/12/2012 16:00:48)
+      Translations
+        'NNW' => 'NNO'
+        'rising very rapidly' => 'en hausse très rapide'
+        'Rain at times, very unsettled' => 'Quelques précipitations, très perturbé'
+
    Edit the language entry in your weather.ini file to use your language code
    (e.g. 'fr'), then try using Plot.py to plot a graph. The X-axis of the
    graph should now be labeled in your language, using the translation you
