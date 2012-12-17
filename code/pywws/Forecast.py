@@ -1,13 +1,21 @@
 #!/usr/bin/env python
 
-"""
-Predict future weather using recent data.
+"""Predict future weather using recent data
+::
 
-usage: python Forecast.py [options] data_dir
-options are:
- -h | --help  display this help
-data_dir is the root directory of the weather data
+%s
+
 """
+
+__docformat__ = "restructuredtext en"
+__usage__ = """
+ usage: python Forecast.py [options] data_dir
+ options are:
+  -h | --help  display this help
+ data_dir is the root directory of the weather data
+"""
+__doc__ %= __usage__
+__usage__ = __doc__.split('\n')[0] + __usage__
 
 from datetime import datetime, timedelta
 import getopt
@@ -47,17 +55,17 @@ def main(argv=None):
         opts, args = getopt.getopt(argv[1:], "h", ['help'])
     except getopt.error, msg:
         print >>sys.stderr, 'Error: %s\n' % msg
-        print >>sys.stderr, __doc__.strip()
+        print >>sys.stderr, __usage__.strip()
         return 1
     # process options
     for o, a in opts:
         if o in ('-h', '--help'):
-            print __doc__.strip()
+            print __usage__.strip()
             return 0
     # check arguments
     if len(args) != 1:
         print >>sys.stderr, "Error: 1 argument required"
-        print >>sys.stderr, __doc__.strip()
+        print >>sys.stderr, __usage__.strip()
         return 2
     data_dir = args[0]
     params = DataStore.params(data_dir)

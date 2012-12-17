@@ -1,14 +1,23 @@
 #!/usr/bin/env python
-"""
-Generate YoWindow XML file.
 
-usage: python pywws/YoWindow.py [options] data_dir output_file
-options are:
+"""Generate YoWindow XML file
+::
+
+%s
+
+"""
+
+__docformat__ = "restructuredtext en"
+__usage__ = """
+ usage: python pywws/YoWindow.py [options] data_dir output_file
+ options are:
   -h or --help     display this help
   -v or --verbose  increase amount of reassuring messages
-data_dir is the root directory of the weather data
-output_file is the YoWindow XML file to be written
+ data_dir is the root directory of the weather data
+ output_file is the YoWindow XML file to be written
 """
+__doc__ %= __usage__
+__usage__ = __doc__.split('\n')[0] + __usage__
 
 import getopt
 import logging
@@ -99,20 +108,20 @@ def main(argv=None):
         opts, args = getopt.getopt(argv[1:], "hv", ['help', 'verbose'])
     except getopt.error, msg:
         print >>sys.stderr, 'Error: %s\n' % msg
-        print >>sys.stderr, __doc__.strip()
+        print >>sys.stderr, __usage__.strip()
         return 1
     # process options
     verbose = 0
     for o, a in opts:
         if o == '-h' or o == '--help':
-            print __doc__.strip()
+            print __usage__.strip()
             return 0
         elif o == '-v' or o == '--verbose':
             verbose += 1
     # check arguments
     if len(args) != 2:
         print >>sys.stderr, "Error: 2 arguments required"
-        print >>sys.stderr, __doc__.strip()
+        print >>sys.stderr, __usage__.strip()
         return 2
     logger = ApplicationLogger(verbose)
     return YoWindow(DataStore.calib_store(args[0])).write_file(args[1])

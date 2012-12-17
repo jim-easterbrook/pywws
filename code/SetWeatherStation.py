@@ -1,17 +1,26 @@
 #!/usr/bin/env python
-"""
-Set some weather station parameters.
 
-usage: python SetWeatherStation.py [options]
-options are:
- -h   | --help           display this help
- -c   | --clock          set weather station clock to computer time
-                         (unlikely to work)
- -p f | --pressure f     set relative pressure to n hPa
- -r n | --read_period n  set logging interval to n minutes
- -v   | --verbose        increase error message verbosity
- -z   | --zero_memory    clear the weather station logged readings
+"""Set some weather station parameters
+::
+
+%s
+
 """
+
+__docformat__ = "restructuredtext en"
+__usage__ = """
+ usage: python SetWeatherStation.py [options]
+ options are:
+  -h   | --help           display this help
+  -c   | --clock          set weather station clock to computer time
+                          (unlikely to work)
+  -p f | --pressure f     set relative pressure to f hPa
+  -r n | --read_period n  set logging interval to n minutes
+  -v   | --verbose        increase error message verbosity
+  -z   | --zero_memory    clear the weather station logged reading count
+"""
+__doc__ %= __usage__
+__usage__ = __doc__.split('\n')[0] + __usage__
 
 from datetime import datetime, timedelta
 import getopt
@@ -36,7 +45,7 @@ def main(argv=None):
              'verbose', 'zero_memory'])
     except getopt.error, msg:
         print >>sys.stderr, 'Error: %s\n' % msg
-        print >>sys.stderr, __doc__.strip()
+        print >>sys.stderr, __usage__.strip()
         return 1
     # process options
     clock = False
@@ -46,7 +55,7 @@ def main(argv=None):
     zero_memory = False
     for o, a in opts:
         if o in ('-h', '--help'):
-            print __doc__.strip()
+            print __usage__.strip()
             return 0
         elif o in ('-c', '--clock'):
             clock = True
@@ -61,7 +70,7 @@ def main(argv=None):
     # check arguments
     if len(args) != 0:
         print >>sys.stderr, "Error: No arguments required"
-        print >>sys.stderr, __doc__.strip()
+        print >>sys.stderr, __usage__.strip()
         return 2
     logger = ApplicationLogger(verbose)
     # open connection to weather station

@@ -1,16 +1,24 @@
 #!/usr/bin/env python
 
-"""
-Plot graphs of weather data according to an XML recipe.
+"""Plot graphs of weather data according to an XML recipe
+::
 
-usage: python Plot.py [options] data_dir temp_dir xml_file output_file
-options are:
-\t-h or --help\t\tdisplay this help
-data_dir is the root directory of the weather data
-temp_dir is a workspace for temporary files e.g. /tmp
-xml_file is the name of the source file that describes the plot
-output_file is the name of the image file to be created e.g. 24hrs.png
+%s
+
 """
+
+__docformat__ = "restructuredtext en"
+__usage__ = """
+ usage: python Plot.py [options] data_dir temp_dir xml_file output_file
+ options are:
+  -h or --help    display this help
+ data_dir is the root directory of the weather data
+ temp_dir is a workspace for temporary files e.g. /tmp
+ xml_file is the name of the source file that describes the plot
+ output_file is the name of the image file to be created e.g. 24hrs.png
+"""
+__doc__ %= __usage__
+__usage__ = __doc__.split('\n')[0] + __usage__
 
 import codecs
 from datetime import datetime, timedelta
@@ -397,17 +405,17 @@ def main(argv=None):
         opts, args = getopt.getopt(argv[1:], "h", ['help'])
     except getopt.error, msg:
         print >>sys.stderr, 'Error: %s\n' % msg
-        print >>sys.stderr, __doc__.strip()
+        print >>sys.stderr, __usage__.strip()
         return 1
     # process options
     for o, a in opts:
         if o == '-h' or o == '--help':
-            print __doc__.strip()
+            print __usage__.strip()
             return 0
     # check arguments
     if len(args) != 4:
         print >>sys.stderr, 'Error: 4 arguments required\n'
-        print >>sys.stderr, __doc__.strip()
+        print >>sys.stderr, __usage__.strip()
         return 2
     params = DataStore.params(args[0])
     Localisation.SetApplicationLanguage(params)

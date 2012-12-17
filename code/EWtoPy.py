@@ -1,18 +1,27 @@
 #!/usr/bin/env python
-"""
-Convert EasyWeather.dat data to pywws format.
 
-usage: python EWtoPy.py [options] EasyWeather_file data_dir
-options are:
-\t-h or --help\t\tdisplay this help
-EasyWeather_file is the input data file, e.g. EasyWeather.dat
-data_dir is the root directory of the weather data
+"""Convert EasyWeather.dat data to pywws format
+::
+
+%s
 
 This program assumes that EasyWeather used your local time, and
 converts time stamps to UTC. This can create ambiguities when the
 clocks go back in October, which the program attempts to detect and
 correct.
+
 """
+
+__docformat__ = "restructuredtext en"
+__usage__ = """
+ usage: python EWtoPy.py [options] EasyWeather_file data_dir
+ options are:
+  -h or --help    display this help
+ EasyWeather_file is the input data file, e.g. EasyWeather.dat
+ data_dir is the root directory of the weather data
+"""
+__doc__ %= __usage__
+__usage__ = __doc__.split('\n')[0] + __usage__
 
 from datetime import datetime, timedelta
 import getopt
@@ -29,7 +38,7 @@ def main(argv=None):
         opts, args = getopt.getopt(argv[1:], "", ['help'])
     except getopt.error, msg:
         print >>sys.stderr, 'Error: %s\n' % msg
-        print >>sys.stderr, __doc__.strip()
+        print >>sys.stderr, __usage__.strip()
         return 1
     # process options
     for o, a in opts:
@@ -39,7 +48,7 @@ def main(argv=None):
     # check arguments
     if len(args) != 2:
         print >>sys.stderr, 'Error: 2 arguments required\n'
-        print >>sys.stderr, __doc__.strip()
+        print >>sys.stderr, __usage__.strip()
         return 2
     # process arguments
     in_name = args[0]
