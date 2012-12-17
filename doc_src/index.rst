@@ -53,24 +53,34 @@ The software you'll need to run pywws depends on what you plan to do with it. In
    * To create new language translations:
 
      *  `gettext <http://www.gnu.org/s/gettext/>`_
+   * To 'compile' the documentation:
+
+     *  `sphinx <http://sphinx-doc.org/>`_
 
 ***********************
 Getting a copy of pywws
 ***********************
 
-The simplest way to obtain pywws is to download a zip or tar.gz file from the `download page <https://github.com/jim-easterbrook/pywws/downloads>`_ and then extract the files into a convenient directory on your computer. These "archive" files contain a snapshot release of the software - a new one is released every few months.
+The simplest way to obtain pywws is to download a zip or tar.gz file from the `Python Package Index (PyPI) <http://pypi.python.org/pypi/pywws/>`_ and then extract the files into a convenient directory on your computer. These files contain a snapshot release of the software - a new one is issued every few months.
 
-If you are familiar with the Python Package Index you may prefer to download pywws from `PyPI <http://pypi.python.org/pypi/pywws/>`_, or use ``pip`` to install it directly::
+You could also use ``pip`` to install pywws directly from PyPI::
 
    sudo pip install pywws
 
-If you'd like to try the latest version of pywws, please use git to clone the `repository <https://github.com/jim-easterbrook/pywws>`_. After doing so you'll need to use make to compile the documentation and language localisation files.
+If you'd like to keep up to date with latest developments of pywws, you should use ``git`` to clone the pywws repository::
+
+   git clone https://github.com/jim-easterbrook/pywws.git
+
+After doing so you'll need to use ``make`` to compile the documentation and language localisation files (which will require the ``gettext`` and ``sphinx`` dependencies)::
+
+   cd pywws
+   make
 
 *************
 Documentation
 *************
 
-Documentation is included with pywws downloads, and is also available online. A good starting place is the `how to get started guide <guides/getstarted.html>`_ which describes in more detail how to install pywws.
+Documentation is included with pywws downloads, and is also available `online <http://jim-easterbrook.github.com/pywws/doc/html/>`_. A good starting place is the `how to get started guide <guides/getstarted.html>`_ which describes in more detail how to install pywws.
 
 If you have questions not answered in the documentation, please join the `pywws Google mailing list / discussion group <http://groups.google.com/group/pywws>`_ and ask there.
 
@@ -97,6 +107,8 @@ Credits
 *******
 
 I would not have been able to get any information from the weather station without access to the source of Michael Pendec's "wwsr" program. I am also indebted to Dave Wells for decoding the `weather station's "fixed block" data <http://www.jim-easterbrook.me.uk/weather/mm/>`_.
+
+Last of all, a big thank you to all the pywws users who have helped with questions and suggestions, and especially to those who have translated pywws and its documentation into other languages.
 
 ********
 Legalese

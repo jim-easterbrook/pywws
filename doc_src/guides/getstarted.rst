@@ -8,13 +8,13 @@ How to get started with pywws
       mkdir ~/weather
       cd ~/weather
 
-   Visit the pywws website https://github.com/jim-easterbrook/pywws/downloads and download one of the .tar.gz or .zip files. Put it in your weather directory, then extract all the files, for example::
+   Visit the Python Package Index http://pypi.python.org/pypi/pywws/ and download one of the .tar.gz or .zip files. Put it in your weather directory, then extract all the files, for example::
 
-      tar zxvf pywws-12.10_r547.tar.gz
+      tar zxvf pywws-12.11_95babb0.tar.gz
 
    or::
 
-      unzip pywws-12.10_r547.zip
+      unzip pywws-12.11_95babb0.zip
 
 #. Install dependencies.
 
@@ -44,7 +44,7 @@ How to get started with pywws
 
    Change to your pywws directory then use ``make`` to convert Python 2 code to Python 3::
 
-      cd ~/weather/pywws
+      cd ~/weather/pywws-12.11_95babb0
       make python3
 
    This should create a ``code3`` directory which you use instead of the ``code`` directory in the following instructions.
@@ -53,7 +53,7 @@ How to get started with pywws
 
    Connect the weather station (if not already connected) then run the :py:mod:`TestWeatherStation` program. Change to the source code directory first. For example::
 
-      cd ~/weather/pywws-12.10_r547/code
+      cd ~/weather/pywws-12.11_95babb0/code
       python TestWeatherStation.py
 
    If everything is working correctly, this should dump a load of numbers to the screen, for example::
@@ -89,13 +89,13 @@ How to get started with pywws
 
    The first time you run :py:mod:`pywws.LogData` it will create a configuration file in your data directory called 'weather.ini' and then stop. You need to edit the configuration file and change the line ``ws type = Unknown`` to ``ws type = 1080`` or ``ws type = 3080``. (If your weather station console displays solar illuminance you have a 3080 type, all others are 1080.) Then run :py:mod:`pywws.LogData` again. This may take several minutes, as it will copy all the data stored in your station's memory. The :py:mod:`pywws.LogData` program has a 'verbose' option that increases the amount of messages it displays while running. This is useful when running it manually, for example::
 
-      python TestModule.py LogData -vvv ~/weather/data
+      python RunModule.py LogData -vvv ~/weather/data
 
    (Replace ``~/weather/data`` with your data directory, if it's different.)
 
    You should now have some data files you can look at. For example::
 
-      more ~/weather/data/weather/raw/2012/2012-11/2012-11-16.txt
+      more ~/weather/data/weather/raw/2012/2012-12/2012-12-16.txt
 
    (Replace the year, month and day with ones that you have data for.)
 
@@ -138,11 +138,11 @@ How to get started with pywws
 
    :py:mod:`pywws.LogData` just copies the raw data from the weather station. To do something useful with that data you probably need hourly, daily and monthly summaries. These are created by the :py:mod:`pywws.Process` program. For example::
 
-      python TestModule.py Process ~/weather/data
+      python RunModule.py Process ~/weather/data
 
    You should now have some processed files to look at::
 
-      more ~/weather/data/weather/daily/2012/2012-11-06.txt
+      more ~/weather/data/weather/daily/2012/2012-12-16.txt
 
    If you ever change your ``day end hour`` configuration setting, you will need to reprocess all your weather data. You can do this by running the :py:mod:`Reprocess` program::
 
