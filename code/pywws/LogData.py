@@ -32,7 +32,7 @@ minutes.
 
 __docformat__ = "restructuredtext en"
 __usage__ = """
- usage: python LogData.py [options] data_dir
+ usage: python RunModule.py LogData [options] data_dir
  options are:
   -h   | --help     display this help
   -c   | --clear    clear weather station's memory full indicator

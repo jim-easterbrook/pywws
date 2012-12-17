@@ -9,7 +9,7 @@
 
 __docformat__ = "restructuredtext en"
 __usage__ = """
- usage: python pywws/YoWindow.py [options] data_dir output_file
+ usage: python RunModule.py YoWindow [options] data_dir output_file
  options are:
   -h or --help     display this help
   -v or --verbose  increase amount of reassuring messages

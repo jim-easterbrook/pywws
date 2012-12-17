@@ -168,7 +168,7 @@ API
 
 __docformat__ = "restructuredtext en"
 __usage__ = """
- usage: python toservice.py [options] data_dir service_name
+ usage: python RunModule.py toservice [options] data_dir service_name
  options are:
   -h or --help     display this help
   -c or --catchup  upload all data since last upload

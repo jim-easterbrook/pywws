@@ -3,7 +3,7 @@
 """
 Create text data file based on a template.
 
-usage: python Template.py [options] data_dir template_file output_file
+usage: python RunModule.py Template [options] data_dir template_file output_file
 options are:
 \t--help\t\tdisplay this help
 data_dir is the root directory of the weather data

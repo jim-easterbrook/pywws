@@ -46,7 +46,7 @@ a more useful total in the last hour, day or month.
 
 __docformat__ = "restructuredtext en"
 __usage__ = """
- usage: python Process.py [options] data_dir
+ usage: python RunModule.py Process [options] data_dir
  options are:
   -h or --help     display this help
  data_dir is the root directory of the weather data
