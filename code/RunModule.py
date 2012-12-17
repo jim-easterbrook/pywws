@@ -1,22 +1,21 @@
 #!/usr/bin/env python
 
-"""Test a pywws module.
+"""Run a pywws module.
 
-Many of the modules in the pywws package include a simple test script
-that is run when that module is run as a script. Unfortunately Python
-3 does not allow package modules to be run as scripts, producing a
+Many of the modules in the pywws package include a 'main' function
+that is run when that module is run as a script. Unfortunately running
+package modules as scripts has been deprecated, producing a
 'ValueError: Attempted relative import in non-package' error. This
-script allows module test scripts to be run. ::
+program allows pywws module scripts to be run. ::
 
 %s
 """
 
 __usage__ = """
- usage: python TestModule.py module [module_options]
+ usage: python RunModule.py module [module_options]
  module is a pywws module, e.g. ZambrettiCore
- module_options are any options to be passed to the module's test script
+ module_options are options and parameters to be passed to the module
 """
-
 __doc__ %= __usage__
 __usage__ = __doc__.split('\n')[0] + __usage__
 
