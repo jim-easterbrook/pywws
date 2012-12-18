@@ -400,6 +400,7 @@ class weather_station(object):
         else:
             next_log = None
             self._station_clock = None
+        did_nothing = False
         while True:
             last_time = now
             if not self._station_clock:
@@ -426,12 +427,14 @@ class weather_station(object):
             self.logger.debug(
                 'delay %s, pause %g', str(old_data['delay']), pause)
             time.sleep(pause)
+            did_nothing = True
             # first look for data changes
             new_data = self.get_data(old_ptr, unbuffered=True)
             now = time.time()
             # 'good' time stamp if we haven't just woken up from long
             # pause and data read wasn't delayed
-            valid_now = now - last_time < (self.min_pause * 2.0) - 0.1
+            valid_now = (did_nothing and
+                         now - last_time < (self.min_pause * 2.0) - 0.1)
             # make sure changes because of logging interval aren't
             # mistaken for new live data
             old_data['delay'] = new_data['delay']
@@ -441,6 +444,7 @@ class weather_station(object):
                     next_live += live_interval
             if new_data != old_data:
                 self.logger.debug('live_data new data')
+                did_nothing = False
                 result = dict(new_data)
                 if valid_now:
                     # data has just changed, so definitely at a 48s update time
@@ -470,12 +474,14 @@ class weather_station(object):
                 continue
             new_ptr = self.current_pos()
             now2 = time.time()
-            valid_now = now2 - last_time < (self.min_pause * 2.0) - 0.1
+            valid_now = (did_nothing and
+                         now2 - last_time < (self.min_pause * 2.0) - 0.1)
             while valid_now and next_log and now2 > next_log + 12.0:
                 self.logger.warning('live_data log extended')
                 next_log += 60.0
             if new_ptr != old_ptr:
                 self.logger.debug('live_data new ptr: %06x', new_ptr)
+                did_nothing = False
                 # re-read data, to be absolutely sure it's the last
                 # logged data before the pointer was updated
                 new_data = self.get_data(old_ptr, unbuffered=True)
