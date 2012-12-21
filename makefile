@@ -14,7 +14,7 @@ all : lang code/pywws/version.py doc
 install :
 	python setup.py install
 
-dist : lang_all code/pywws/version.py doc
+dist : lang_all code/pywws/version.py doc_all
 	python setup.py sdist
 
 clean :
@@ -32,6 +32,10 @@ lang_src : $(pots:%=translations/%.pot) $(pots:%=translations/$(LANG)/%.po)
 
 doc : lang code/pywws/version.py
 	$(MAKE) -C doc_src html text SPHINXOPTS="-D language=$(LANG)"
+
+doc_all :
+	$(MAKE) doc LANG=en
+	$(MAKE) doc LANG=fr
 
 sources	:= $(wildcard code/*) $(wildcard code/pywws/*) \
 	   $(wildcard code/pywws/services/*) $(wildcard code/pywws/locale/*/*/*)
