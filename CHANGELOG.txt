@@ -1,6 +1,12 @@
 Python software for USB Wireless WeatherStations (pywws).
 http://jim-easterbrook.github.com/pywws/
 
+Changes in v12.12:
+    1/ Added support for Python 3.
+    2/ Added French documentation translation.
+    3/ Used 'binary search' to speed up data access.
+    4/ Various bug fixes.
+
 Changes in v12.11:
     1/ Moved development from Google code to GitHub.
     2/ Made software attempt to avoid USB activity at times when it is assumed

@@ -19,7 +19,7 @@ dist : lang_all code/pywws/version.py doc
 
 clean :
 	rm -Rf doc/* code/pywws/locale/* translations/*/LC_MESSAGES \
-		code3 build
+		code3 build dist
 
 lang : $(po_files:%.po=translations/$(LANG)/LC_MESSAGES/%.mo) \
 	$(po_files:%=code/pywws/locale/$(LANG)/LC_MESSAGES/pywws.mo)
