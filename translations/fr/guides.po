@@ -2,20 +2,22 @@
 # Copyright (C) 2008-12, Jim Easterbrook
 # This file is distributed under the same license as the pywws package.
 # Jim Easterbrook <jim@jim-easterbrook.me.uk>, 2012.
-#
+# 
+# Jacques Desroches <jacques.desroches@100fil.ca>, 2012.
+# 
 msgid ""
 msgstr ""
 "Project-Id-Version: pywws 12.12\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-12-14 15:22\n"
-"PO-Revision-Date: 2012-12-15 11:22+0000\n"
-"Last-Translator: Jacques Desroches <jacques.desroches@meteoduquebec.com>\n"
-"Language-Team: French\n"
+"POT-Creation-Date: 2012-12-31 11:08\n"
+"PO-Revision-Date: 2012-12-29 10:11-0500\n"
+"Last-Translator: Jacques Desroches <jacques.desroches@100fil.ca>\n"
+"Language-Team: français <>\n"
+"Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: fr\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n"
 
 # 233cc6f5be924229b91ad5bd213d1231
 #: ../doc_src/guides/getstarted.rst:2
@@ -34,7 +36,8 @@ msgstr "Créer un dossier pour tous vos fichiers reliés à la météo et vous p
 
 # 36a3a527001049c582f0632ba07df1d1
 #: ../doc_src/guides/getstarted.rst:11
-msgid "Visit the pywws website https://github.com/jim-easterbrook/pywws/downloads and download one of the .tar.gz or .zip files. Put it in your weather directory, then extract all the files, for example::"
+#, fuzzy
+msgid "Visit the Python Package Index http://pypi.python.org/pypi/pywws/ and download one of the .tar.gz or .zip files. Put it in your weather directory, then extract all the files, for example::"
 msgstr "Visiter le site web de pywws https://github.com/jim-easterbrook/pywws/downloads et télécharger le fichier .tar.gz ou .zip. Enregistrez-le dans votre dossier \"weather\", puis extraire tous les fichiers de l'archive, par exemple::"
 
 # e882245ba30447ccb4b1854dbd910d1e
@@ -50,8 +53,8 @@ msgstr "Fichiers prérequis."
 
 # 2ae5b6ee2c2b492aa51cc31a6e0e22b0
 #: ../doc_src/guides/getstarted.rst:21
-msgid "Python 2.4+ - http://python.org/ (Note: Python 3 support is under development.)"
-msgstr "Python 2.4+ - http://python.org/ (Note: Le support de Python 3 est en développement)"
+msgid "Python 2.5+ - http://python.org/ (Note: Python 3 support is under development.)"
+msgstr "Python 2.5+ - http://python.org/ (Note: Le support de Python 3 est en développement)"
 
 # 54c366dccf8e4be7bffbad4ba11b301e
 #: ../doc_src/guides/getstarted.rst:23
@@ -106,7 +109,7 @@ msgstr ""
 # e10b7539210e44fb9126ec3f524413f4
 #: ../doc_src/guides/getstarted.rst:37
 msgid "You may be able to install these using your operating system's package manager. This is a lot easier than downloading and compiling the source files from the project websites. Note that some Linux distributions may use different names for some of the packages, e.g. in Ubuntu, pyusb is python-usb."
-msgstr "Vous serez peut-être en mesure de les installer sur votre PC via un gestionnaire de paquet. Cette solution est beaucoup plus facile que de télécharger et compiler les fichiers source à partir des sites de projet. Noter que des distributions Linux peuvent utiliser des noms différents pour certains paquets, ex. sur Ubuntu, pyusb se nomme python-usb."
+msgstr "Vous serez peut-être en mesure de les installer sur votre PC via un gestionnaire de paquet. Cette solution est beaucoup plus facile que de télécharger puis compiler les fichiers source à partir des sites de projet. Noter que des distributions Linux peuvent utiliser des noms différents pour certains paquets, ex. sur Ubuntu, pyusb se nomme python-usb."
 
 # abd742520d184e54bda92a4ce094ee7c
 #: ../doc_src/guides/getstarted.rst:39
@@ -136,7 +139,7 @@ msgstr "Tester la connexion de la station météo."
 # 9a2c5e66c100414098caa39a63a2d066
 #: ../doc_src/guides/getstarted.rst:54
 msgid "Connect the weather station (if not already connected) then run the :py:mod:`TestWeatherStation` program. Change to the source code directory first. For example::"
-msgstr "Brancher la station météo (si ce n'est déjà fait), puis exécuter le programme :py:mod:`TestWeatherStation`. En premier lieu, changer de répertoire pour le dossier source de pywws. Par exemple::"
+msgstr "Brancher la station météo (si ce n'est pas déjà fait), puis exécuter le programme :py:mod:`TestWeatherStation`. En premier lieu, changer de répertoire pour le dossier source de pywws. Par exemple::"
 
 # f0670ff9a8804e41bb5d47caaf6c5db4
 #: ../doc_src/guides/getstarted.rst:59
@@ -146,7 +149,7 @@ msgstr "Si tout fonctionne correctement, vous devriez voir apparaitre un lot de 
 # 96eb906d510448e4bcfe679a5886c8f4
 #: ../doc_src/guides/getstarted.rst:70
 msgid "There are several reasons why this might not work. Most likely is a 'permissions' problem. This can be tested by running the command as root::"
-msgstr "Si ce test ne fonctionne pas, plusieurs facteurs peuvent être en cause, mais le plus courant est un problème de  'permissions'; ce qui peut être vérifié en exécutant la commande suivante avec les droits 'root'::"
+msgstr "Si ce test ne fonctionne pas, plusieurs facteurs peuvent être en cause, mais le plus courant est un problème de 'permissions'; ce qui peut être vérifié en exécutant la commande suivante avec les droits 'root'::"
 
 # 034135722dc644e6bae87a4ee5beb351
 #: ../doc_src/guides/getstarted.rst:74
@@ -166,17 +169,17 @@ msgstr "Enregistrer les données de votre station météo."
 # 32dfd8e2e51f4c5786ca97a62957e2a9
 #: ../doc_src/guides/getstarted.rst:80
 msgid "First, choose a directory to store all your weather station data. This will be written to quite frequently, so a disk drive is preferable to a memory stick, as these have a limited number of writes. In most cases your home directory is suitable, for example::"
-msgstr "En premier lieu, choisissez un dossier pour entreposer toute les données de votre station météo. Ces données étant écrites très fréquemment, un disque rigide sera préférable a une mémoire Flash (USB), puisque ces dernières ont un nombre d'écriture limité. Dans la plupart des cas, le répertoire personnel est préférable, par exemple::"
+msgstr "En premier lieu, choisissez un dossier pour entreposer toute les données de votre station météo. Ces données étant écrites très fréquemment, un disque rigide sera préférable à une mémoire Flash (USB), puisque ces dernières ont un nombre d'écriture limité. Dans la plupart des cas, le répertoire personnel est préférable, par exemple::"
 
 # 0e358e064d5a4b4dbf4ba97edb3d510d
 #: ../doc_src/guides/getstarted.rst:84
 msgid "This directory is referred to elsewhere in the pywws documentation as your data directory."
-msgstr "Ce répertoire est référé dans la documentation pywws en tant que votre répertoire de données."
+msgstr "Ce répertoire est référé dans la documentation pywws en tant que votre 'répertoire de données'."
 
 # f29eb4d836a24745bb876ac22c891f68
 #: ../doc_src/guides/getstarted.rst:86
 msgid "Make sure your computer has the right date & time, and time zone, as these are used to label the weather station data. If you haven't already done so, it's worth setting up NTP to synchronise your computer to a 'time server'."
-msgstr "Assurez-vous que votre ordinateur ait l'heure & date précis, ainsi que le fuseau horaire approprié, puisqu'ils seront utilisés pour identifier les données de votre station météo. Si vous ne l'avez pas déjà fait, il pourrait être utile d'utiliser la synchronisation horaires par réseau (NTP) pour synchroniser votre ordinateur à un 'serveur de temps'."
+msgstr "Assurez-vous que votre ordinateur ait la date et l'heure précise, ainsi que le fuseau horaire approprié, puisqu'ils seront utilisés pour identifier les données de votre station météo. Si vous ne l'avez pas déjà fait, il pourrait être utile d'utiliser la synchronisation horaires par réseau (NTP) pour synchroniser votre ordinateur à un 'serveur de temps'."
 
 # 751d2586c96547689f4c3e4c87631f82
 #: ../doc_src/guides/getstarted.rst:88
@@ -186,7 +189,7 @@ msgstr "Assurez-vous que votre station météo a le bon décalage entre la press
 # 913ba116aaf6492f990b3b0fa758fea8
 #: ../doc_src/guides/getstarted.rst:90
 msgid "The first time you run :py:mod:`pywws.LogData` it will create a configuration file in your data directory called 'weather.ini' and then stop. You need to edit the configuration file and change the line ``ws type = Unknown`` to ``ws type = 1080`` or ``ws type = 3080``. (If your weather station console displays solar illuminance you have a 3080 type, all others are 1080.) Then run :py:mod:`pywws.LogData` again. This may take several minutes, as it will copy all the data stored in your station's memory. The :py:mod:`pywws.LogData` program has a 'verbose' option that increases the amount of messages it displays while running. This is useful when running it manually, for example::"
-msgstr "La première fois que vous exécutez :py:mod:`pywws.LogData` un fichier de configuration, nommé 'weather.ini', sera créé dans votre répertoire de données, puis s\"arrêtera. Vous devez éditer ce fichier de configuration et y modifier la ligne ``ws type = Unknown`` à ``ws type = 1080`` ou ``ws type = 3080``. (Si la console de votre station météo affiche la luminosité solaire, vous avec une station de type 3080, sinon, vous indiquez le type 1080.) Puis exécutez :py:mod:`pywws.LogData` de nouveau. Cette fois, l'exécution peut durer quelques minutes, puisqu'il copiera l'intégralité des données météo emmagasinées dans la mémoire de votre météo. Le programme :py:mod:`pywws.LogData` possède une option de 'verbose' qui augmente le nombre de messages affichés pendant l'exécution. Cette option est utile lors d'exécution manuelle, par exemple::"
+msgstr "La première fois que vous exécutez :py:mod:`pywws.LogData` un fichier de configuration, nommé 'weather.ini', sera créé dans votre répertoire de données, puis s\"arrêtera. Vous devez éditer ce fichier de configuration et y modifier la ligne ``ws type = Unknown`` à ``ws type = 1080`` ou ``ws type = 3080``. (Si la console de votre station météo affiche la luminosité solaire, vous avez une station de type 3080, sinon, vous indiquez le type 1080.) Puis exécutez :py:mod:`pywws.LogData` de nouveau. Cette fois, l'exécution peut durer quelques minutes, puisqu'il copiera l'intégralité des données météo emmagasinées dans la mémoire de votre station météo. Le programme :py:mod:`pywws.LogData` possède une option 'verbose' qui augmente le nombre de messages affichés pendant l'exécution. Cette option est utile lors d'exécution manuelle, par exemple::"
 
 # 7b6afbd4ae834e64882cf80df95d7833
 #: ../doc_src/guides/getstarted.rst:94
@@ -201,7 +204,7 @@ msgstr "Vous devriez maintenant avoir quelques fichiers de données à regarder.
 # b6b290739dcf454a8f4291d4f9e4f22d
 #: ../doc_src/guides/getstarted.rst:100
 msgid "(Replace the year, month and day with ones that you have data for.)"
-msgstr "(Remplacez l'année, mois et jour par la date pour laquelle vous devriez avoir des données.)"
+msgstr "(Remplacez année, mois et jour par la date pour laquelle vous devriez avoir des données.)"
 
 # 369c4a651e884d63b24142307e9719eb
 #: ../doc_src/guides/getstarted.rst:102
@@ -211,7 +214,7 @@ msgstr "Convertir les anciennes données de EasyWeather (optionnel)."
 # 7864eede5d904d87bae893a20181045f
 #: ../doc_src/guides/getstarted.rst:104
 msgid "If you had been running EasyWeather before deciding to use pywws, you can convert the data EasyWeather had logged to the pywws format. Find your EasyWeather.dat file and then convert it::"
-msgstr "Si vous utilisiez EasyWeather avant de décider d'utiliser pywws, vous pouvez convertir les données que EasyWeather a enregistré au format de pywws. Localisez votre fichier EasyWeather.dat et convertissez-le ainsi::"
+msgstr "Si vous utilisiez EasyWeather avant de décider d'utiliser pywws, vous pouvez convertir les données que EasyWeather a enregistré, vers format de pywws. Localisez votre fichier EasyWeather.dat et convertissez-le ainsi::"
 
 # 3b758c689c634b488159f4a8a418b66f
 #: ../doc_src/guides/getstarted.rst:108
@@ -231,7 +234,7 @@ msgstr "La ligne ``[fixed]`` marque le début de la section (nommée '[fixed]'),
 # b3cc25940f004d4fa53e6024b5bc10aa
 #: ../doc_src/guides/getstarted.rst:122
 msgid "You need to add a new entry in the ``[config]`` section called ``day end hour``. This tells pywws what convention you want to use when calculating daily summary data. In the UK, the 'meteorological day' is usually from 09:00 to 09:00 GMT (10:00 to 10:00 BST during summer), so I use a day end hour value of 9. In other countries a value of 24 (or 0) might be more suitable. Note that the value is set in local winter time. You should not need to change it when daylight savings time is in effect."
-msgstr "Vous devez ajouter une nouvelle entrée nommée ``day end hour`` dans la section ``[config]``. Ceci indique à pywws quelle convention vous souhaitez utiliser pour le calcul su commaire des données quotidiennes. En Grande-Bretagne, le 'jour météorologique' s'étale habituellement de 09:00 à 09:00 GMT (10:00 à 10:00 BST durant l'été), j'utilise donc 9 pour l'heure de fin du jour. Dans d'autres pays une caleur de 24 (ou 0) peut être souhaitable. Noter que cette valeur est définie à l'heure hivernale locale. Vous ne devriez pas avoir besoin de changer cette valeur pendant la saison chaude."
+msgstr "Vous devez ajouter une nouvelle entrée nommée ``day end hour`` dans la section ``[config]``. Ceci indique à pywws quelle convention vous souhaitez utiliser pour le calcul du sommaire des données quotidiennes. En Grande-Bretagne, le 'jour météorologique' s'étale habituellement de 09:00 à 09:00 GMT (10:00 à 10:00 BST durant l'été), j'utilise donc 9 pour l'heure de fin du jour. Dans d'autres pays une valeur de 24 (ou 0) peut être souhaitable. Noter que cette valeur est définie à l'heure hivernale locale. Vous ne devriez pas avoir besoin de changer cette valeur pendant la saison chaude."
 
 # ac054860cbc648ebafdb1401e7742428
 #: ../doc_src/guides/getstarted.rst:124
@@ -251,7 +254,7 @@ msgstr "Traitement des données brutes."
 # 945ea50dc5b344f1acc75967db246750
 #: ../doc_src/guides/getstarted.rst:139
 msgid ":py:mod:`pywws.LogData` just copies the raw data from the weather station. To do something useful with that data you probably need hourly, daily and monthly summaries. These are created by the :py:mod:`pywws.Process` program. For example::"
-msgstr ":py:mod:`pywws.LogData` ne fait que copier les données brutes à partir de la station météo. Pour faire quelque chose d'utile avec ces données vous avez probablement besoin des sommaires horaire, quotidien et mensuel. Ces sommaires sont produits à partir du programme :py:mod:`pywws.Process`. Par example::"
+msgstr ":py:mod:`pywws.LogData` ne fait que copier les données brutes à partir de la station météo. Pour faire quelque chose d'utile avec ces données vous avez probablement besoin des sommaires horaire, quotidien et mensuel. Ces sommaires sont produits à partir du programme :py:mod:`pywws.Process`. Par exemple::"
 
 # de980a48e287494b8bf7de08b7f2590d
 #: ../doc_src/guides/getstarted.rst:143
@@ -261,22 +264,22 @@ msgstr "Vous devriez avoir ainsi quelques fichiers traités à consulter::"
 # c2e9d68b6e454818ba67ba4bed89cd95
 #: ../doc_src/guides/getstarted.rst:147
 msgid "If you ever change your ``day end hour`` configuration setting, you will need to reprocess all your weather data. You can do this by running the :py:mod:`Reprocess` program::"
-msgstr "Si vous changez votre période de fin du jour avec l'option de configuration ``day end hour`` , vous devrez re-traiter toutes vos données météo. Pour ce faire, exécutez le programme :py:mod:`Reprocess`::"
+msgstr "Si vous changez votre période de fin du jour avec l'option de configuration ``day end hour``, vous devrez re-traiter toutes vos données météo. Pour ce faire, exécutez le programme :py:mod:`Reprocess`::"
 
 # 125ecd741fcb4fd9aac52f6eb78238d5
 #: ../doc_src/guides/getstarted.rst:151
 msgid "Set the weather station logging interval."
-msgstr "Fixer l'intervale d'enregistrement de la station météo."
+msgstr "Fixer l’intervalle d'enregistrement de la station météo."
 
 # c80bbbe136224daebbe602c1f44b4c48
 #: ../doc_src/guides/getstarted.rst:153
 msgid "Your weather station probably left the factory with a 30 minute logging interval. This enables the station to store about 11 weeks of data. Most pywws users set up their computers to read data from the station every hour, and only need the station to store enough data to cover computer failures. The recommended interval is 5 minutes, which still allows 2 weeks of storage. Use the :py:mod:`SetWeatherStation` program to set the interval::"
-msgstr "Votre station météo a probablement quitté l'usine avec un intervale d'enregistrement de 30 minutes. Ceci permet à la station d'enregistrer environ 11 semaines de données. La plupart des utilisateurs de pywws configurent leur ordinateur pour lire les données de la station à chaque heure, et souhaitent que la station contienne assez de données pour couvrir d'éventuelles panne d'ordinateur. l'intervale recommandé est de 5 minutes, ce qui représente 2 semaines de données. Utilisez le programme:py :mod:`SetWeatherStation` pour fixer l'intervale::"
+msgstr "Votre station météo a probablement quitté l'usine avec un intervalle d'enregistrement de 30 minutes. Ceci permet à la station d'enregistrer environ 11 semaines de données. La plupart des utilisateurs de pywws configurent leur ordinateur pour lire les données de la station à chaque heure, et souhaitent que la station contienne assez de données pour couvrir d'éventuelles panne d'ordinateur. L’intervalle recommandé est de 5 minutes, ce qui représente 2 semaines de données. Utilisez le programme:py :mod:`SetWeatherStation` pour fixer l’intervalle::"
 
 # 44fbe27601ab4749a32d11ebaa1ec55e
 #: ../doc_src/guides/getstarted.rst:157
 msgid "You are now ready to set up regular or continuous logging, as described in :doc:`hourlylogging` or :doc:`livelogging`."
-msgstr "Vous êtes maintenant prêt pour fixer une journalisation régulière ou continue, telle que décrit dans la section :doc:`hourlylogging` ou :doc:`livelogging`."
+msgstr "Vous êtes maintenant prêt pour fixer une journalisation régulière ou continue, tel que décrit dans la section :doc:`hourlylogging` ou :doc:`livelogging`."
 
 # 722a59a8767b4ab69a896003c05b2efe
 #: ../doc_src/guides/getstarted.rst:159
@@ -286,7 +289,7 @@ msgstr "Lire la documentation."
 # 6fb776839b0544e58de6e3dbe0f50016
 #: ../doc_src/guides/getstarted.rst:161
 msgid "The doc directory in your pywws source directory contains HTML and plain text versions of the documentation. The HTML files can be read with any web browser. Start with the index (:doc:`../index`) and follow links from there."
-msgstr "Le dossier doc du répertoire source de pywws contien une version HTML et une version en texte clair de la documentation. Les fichiers HTML peuvent être lus avec tous navigateurs. Débutez avec l'index (:doc:`../index`) et suivez les liens à partir de ce point."
+msgstr "Le dossier doc du répertoire source de pywws contient une version HTML et une version en texte clair de la documentation. Les fichiers HTML peuvent être lus avec tous navigateurs. Débutez avec l'index (:doc:`../index`) et suivez les liens à partir de ce point."
 
 # 7af4587890cc45fa9a57d979b577234c
 # 4a93dd5cc6454385bb77501880f610a8
@@ -294,7 +297,7 @@ msgstr "Le dossier doc du répertoire source de pywws contien une version HTML e
 # 2811f413c99c44fdbe90f2fa1446f56a
 # aa823c1804e844d2b697cb5e7a6c8ac9
 #: ../doc_src/guides/getstarted.rst:163
-#: ../doc_src/guides/hourlylogging.rst:109 ../doc_src/guides/language.rst:86
+#: ../doc_src/guides/hourlylogging.rst:109 ../doc_src/guides/language.rst:117
 #: ../doc_src/guides/livelogging.rst:119 ../doc_src/guides/twitter.rst:65
 msgid "Comments or questions? Please subscribe to the pywws mailing list http://groups.google.com/group/pywws and let us know."
 msgstr "Commentaires ou questions? SVP, souscrivez à la liste d'envoi de pywws http://groups.google.com/group/pywws et laissez-le nous savoir."
@@ -308,18 +311,18 @@ msgstr "Comment configurer la journalisation horaire avec pywws"
 # cd969bf6aa9c4f9ba467b6749761f9ff
 #: ../doc_src/guides/hourlylogging.rst:5 ../doc_src/guides/livelogging.rst:5
 msgid "Introduction"
-msgstr ""
+msgstr "Introduction"
 
 # 60fa44661fef4b58bcd1b394cf1da529
 # 643abcecc6b145639ca228f98a915518
 #: ../doc_src/guides/hourlylogging.rst:7 ../doc_src/guides/livelogging.rst:7
 msgid "There are two quite different modes of operation with pywws. Traditionally the :doc:`../api/Hourly` program would be run at regular intervals (usually an hour) from cron. This is suitable for fairly static websites, but more frequent updates can be useful for sites such as Weather Underground (http://www.wunderground.com/). The newer :doc:`../api/LiveLog` program runs continuously and can upload data every 48 seconds."
-msgstr "Pywws offre deux modes de fonctionnement très différents. Traditionellement le programme :doc:`../api/Hourly` devrait être exécuté à intervale régulier (habituellement une heure) à partir d'une tâche cron. Ceci convient aux sites Web plutôt statiques, mais des mises à jour plus fréquentes peuvent être utiles pour des sites comme Weather Underground (http://www.wunderground.com/). Le plus récent programme :doc:`../api/LiveLog` s'exécute continuellement et peut envoyer des données à chaque 48 secondes."
+msgstr "Pywws offre deux modes de fonctionnement très différents. Traditionnellement le programme :doc:`../api/Hourly` devrait être exécuté à intervale régulier (habituellement une heure) à partir d'une tâche cron. Ceci convient aux sites Web plutôt statiques, mais des mises à jour plus fréquentes peuvent être utiles pour des sites comme Weather Underground (http://www.wunderground.com/). Le plus récent programme :doc:`../api/LiveLog` s'exécute continuellement et peut envoyer des données à chaque 48 secondes."
 
 # 79cb06b1bc214449a26346b5573abccf
 #: ../doc_src/guides/hourlylogging.rst:9
 msgid "Note that although this document (and the program name) refers to 'hourly' logging, you can run the Hourly.py program as often or as infrequently as you like, but don't try to run it more often than half your logging frequency. For example, if your logging interval is 10 minutes, don't run Hourly.py more often than every 20 minutes."
-msgstr "Notez que bien que ce document (et le nom du programme) réfère à la journalisation horaire (hourly), vous pouvez exécuter le programme Hourly.py aussi souvent ou peu fréquemment que vous le souhaitez, mais n'essayez pas de l'exécuter plus souvent que le double de la fréquence d'historique. Par exemple, si votre intervale d'historique est de 10 minutes, n'exécutez pas Hourly.py plus fréquemment qu'aux 20 minutes."
+msgstr "Notez: bien que ce document (et le nom du programme) réfère à la journalisation horaire (hourly), vous pouvez exécuter le programme Hourly.py aussi souvent ou peu fréquemment que vous le souhaitez, mais n'essayez pas de l'exécuter plus souvent que le double de la fréquence d'historique. Par exemple, si votre intervalle d'historique est de 10 minutes, n'exécutez pas Hourly.py plus fréquemment qu'aux 20 minutes."
 
 # a7afeccda78746b2a1e079518d8bd16d
 # cf93db0b0be044469bb7062577b7cdd1
@@ -331,7 +334,7 @@ msgstr "Mise en route"
 # 330873f8953f4c079b080b541a0615c4
 #: ../doc_src/guides/hourlylogging.rst:14 ../doc_src/guides/livelogging.rst:12
 msgid "First of all, you need to install pywws and make sure it can get data from your weather station. See :doc:`getstarted` for details."
-msgstr "Avant tout, vous devez unstaller pywws et vous assurer qu'il recoit bien les informations de votre station météo. Voir :doc:`getstarted` pour plus de détails."
+msgstr "Avant tout, vous devez uns installer pywws et vous assurer qu'il reçoit bien les informations de votre station météo. Voir :doc:`getstarted` pour plus de détails."
 
 # 4144d270c9054697bde52e91fe243e6f
 #: ../doc_src/guides/hourlylogging.rst:16
@@ -341,13 +344,13 @@ msgstr "Essayez d'exécuter Hourly.py à partir de la ligne de commande, avec un
 # ca6ba50d507f48ecb078be8bb7886bdb
 #: ../doc_src/guides/hourlylogging.rst:20
 msgid "Within five minutes (assuming you have set a 5 minute logging interval) you should see a 'live_data new ptr' message, followed by fetching any new data from the weather station and processing it."
-msgstr "En moins de cinq minutes (assumant que vous avez un interval de relevé de 5 minutes) vous devriez voir le message 'live_data new ptr', suivi par la recherche et le traitement de nouvelles données de la station météorologique."
+msgstr "En moins de cinq minutes (assumant que votre intervalle de relevé soit de 5 minutes) vous devriez voir le message 'live_data new ptr', suivi par la recherche et le traitement de nouvelles données de la station météorologique."
 
 # 698131087f734d5e9dbc584a91ad00df
 # ae919ee44f954c97a62de46cc627c9cb
 #: ../doc_src/guides/hourlylogging.rst:23 ../doc_src/guides/livelogging.rst:21
 msgid "Configuring file locations"
-msgstr "Configurer la licalisation des fichiers"
+msgstr "Configurer l'emplacement des fichiers"
 
 # e4b36b1e68004e37b35441270e3d2b85
 # 74a2aaa768be49c997fa6afd8a58a0d0
@@ -365,7 +368,7 @@ msgstr "Éditez pour correspondre à votre installation et à vos préférences.
 # 24b4b0e2a2bd4cef89ea55cbd91cd4d6
 #: ../doc_src/guides/hourlylogging.rst:34 ../doc_src/guides/livelogging.rst:32
 msgid "Copy your text and graph templates to the appropriate directories. You may find some of the examples provided with pywws useful to get started."
-msgstr "Copiez vos fichiers de gabarits texte et graphes dans les dossiers appropriés. Vous pouvez trouver quelques exemples fournis avec pywws fort utiles pour démarrer."
+msgstr "Copiez vos fichiers de gabarits texte et graphes dans les dossiers appropriés. Vous pouvez trouver les quelques exemples fournis avec pywws fort utiles pour débuter."
 
 # 47806dedca314303a3d231e5e1bd7bd1
 # cec078c12bed4fbeb4230b36615d8030
@@ -376,7 +379,7 @@ msgstr "Configurer les tâches périodiques"
 # 30d4eec8d12041ab9a81bb7c734b06ef
 #: ../doc_src/guides/hourlylogging.rst:39
 msgid "In weather.ini you should have ``[logged]``, ``[hourly]``, ``[12 hourly]`` and ``[daily]`` sections similar to the following::"
-msgstr "Dans weather.ini vous devriez avoir les sections ``[logged]``, ``[hourly]``, ``[12 hourly]`` et ``[daily]`` similaire à celle-ci::"
+msgstr "Dans weather.ini vous devriez avoir les sections ``[logged]``, ``[hourly]``, ``[12 hourly]`` et ``[daily]`` similaires à celle-ci::"
 
 # 604060cc331046efb6365e106f083041
 #: ../doc_src/guides/hourlylogging.rst:50
@@ -386,7 +389,7 @@ msgstr "Ces sections spécifient ce que devrait faire Hourly.py à chaque exécu
 # 75befa1c94bc453b823d4c6951313ed6
 #: ../doc_src/guides/hourlylogging.rst:52
 msgid "The ``services`` entry is a list of online weather services to upload data to. The ``plot`` and ``text`` entries are lists of template files for plots and text files to be uploaded to your web site, and the ``twitter`` entry is a list of templates for messages to be posted to Twitter. Add the names of your template files and weather services to the appropriate entries, for example::"
-msgstr "Les entrées dans ``services`` sont une liste de services météo en ligne sur lesquels envoyer vos données météo. Les entrées ``plot`` et ``text`` sont des listes de fichiers gabarits graphes et texte à téléverser sur votre site web, et l'entrée ``twitter`` est une liste de gabarits pour les messages à poster sur Twitter. Ajoutez les coms de vos fichiers de gabarit et de services météo à l'entrée correspondante, par exemple::"
+msgstr "Les entrées dans ``services`` sont une liste de services météo en ligne sur lesquels envoyer vos données météo. Les entrées ``plot`` et ``text`` sont des listes de fichiers gabarits graphes et textes à téléverser sur votre site web, et l'entrée ``twitter`` est une liste de gabarits pour les messages à poster sur Twitter. Ajoutez le nom de vos fichiers de gabarit et de services météo à l'entrée correspondante, par exemple::"
 
 # 13ae60a99e184b588c608da60ced5e51
 #: ../doc_src/guides/hourlylogging.rst:78
@@ -401,12 +404,12 @@ msgstr "Exécuter en tant que tâche 'cron'"
 # 9a464e670d2c4b7a82131b54b22e72a9
 #: ../doc_src/guides/hourlylogging.rst:85
 msgid "Most UNIX/Linux systems have a 'cron' daemon that can run programs at certain times, even if you are not logged in to the computer. You edit a 'crontab' file to specify what to run and when to run  it. For example, to run Hourly.py every hour, at zero minutes past the hour::"
-msgstr "La plupart des systèmes UNIX/Linux possèdent un service 'cron' qui à pour tâche d'exécuter un programme spécifié à un intervale défini, même si vous n'êtes pas connecté à votre session. Vous éditez un fichier 'crontab' pour spécifier ce qui doit être exécuté et quand. Par exemple, pour exécuter Hourly.py à chaque heure, à zero minutes de l'heure::"
+msgstr "La plupart des systèmes UNIX/Linux possèdent un service 'cron' qui à pour but d'exécuter un programme spécifié à un intervalle défini, même si vous n'êtes pas connecté à votre session. Vous éditez un fichier 'crontab' pour spécifier ce qui doit être exécuté et quand. Par exemple, pour exécuter Hourly.py à chaque heure, à zéro minutes de l'heure::"
 
 # 4da73bccad0e43a9987c7907c252b2fc
 #: ../doc_src/guides/hourlylogging.rst:89
 msgid "This might work, but if it didn't you probably won't get any error messages to tell you what went wrong. It's much better to run a script that runs Hourly.py and then emails you any output it produces. Here's the script I use::"
-msgstr "Ceci devrait fonctionner, mais si ce n'Est pas le cas vous n'obtiendrez probablement pas de messages d'erreur vous indiquant ce qui ne va pas. Il est préférable d'exécuter un script qui lance Hourly.py puis vous envoi un courriel avec tout message qui aurait pu être produit. Voici le script que j'utilise::"
+msgstr "Ceci devrait fonctionner, mais si ce n'est pas le cas vous n'obtiendrez probablement pas de messages d'erreur vous indiquant ce qui ne va pas. Il est préférable d'exécuter un script qui lance Hourly.py puis vous envoi un courriel avec tout message qui aurait pu être produit. Voici le script que j'utilise::"
 
 # 7c32336e6ff4424d87bda794a7f6dfd5
 #: ../doc_src/guides/hourlylogging.rst:107
@@ -423,115 +426,162 @@ msgstr "Guides utilisateur"
 msgid "Contents:"
 msgstr "Contenu:"
 
-# ec7a1f80a5154cc3ad89953342048bc7
+# 564da3253c8b4f408107b3883c9dc1e8
 #: ../doc_src/guides/language.rst:2
-msgid "How to make a language file for pywws"
-msgstr "Comment faire un fichier de langage pour pywws"
+msgid "How to use pywws in another language"
+msgstr ""
 
 # fed87660b41742a2875fedf5507d05a2
 #: ../doc_src/guides/language.rst:4
 msgid "Introduction."
-msgstr ""
+msgstr "Introduction."
 
 # bb65f72c4a1f421e975b58a62c08c42d
 #: ../doc_src/guides/language.rst:6
 msgid "Some parts of pywws can be configured to use your local language instead of British English. This requires an appropriate language file which contains translations of the various strings used in pywws. The pywws project relies on users to provide these translations. This document describes how to create a language file."
-msgstr "Certaines parties de pywws peut être configurées pour utiliser votre langue locale en lieu de l'Anglais Britanique. Ceci requière un fichier de langage contenant la traduction des différentes phrases utilisées par pywws. Le projet repose sur les utilisateur qui fournissent ces traductions. Ce document décrit comment créer un fichier de langage."
+msgstr "Certaines parties de pywws peuvent être configurées pour utiliser votre langue locale au lieu de l'Anglais Britannique. Ceci requière un fichier de langage contenant la traduction des différentes phrases utilisées par pywws. Le projet repose sur les utilisateur qui fournissent ces traductions. Ce document décrit comment créer un fichier de langage."
+
+# 4a640ac111a1428bab5e1d67e4b630e9
+#: ../doc_src/guides/language.rst:12
+msgid "The pywws documentation can also be translated into other languages. This is a lot more work, but could be very useful to potential users who do not read English very well."
+msgstr ""
 
 # 42fec6c036814b13bddabcbe7645c2db
-#: ../doc_src/guides/language.rst:12
+#: ../doc_src/guides/language.rst:14
 msgid "Dependencies."
 msgstr "Prérequis."
 
 # f6505774f49141ce995849aafcfd1cc4
-#: ../doc_src/guides/language.rst:14
+#: ../doc_src/guides/language.rst:16
 msgid "As well as the pywws software you need to install the 'gettext' GNU internationalisation utilities package. This is available from the standard repositories for most Linux distributions, or you can download it from http://www.gnu.org/software/gettext/ if you need to compile it yourself."
 msgstr "En plus du logiciel pywws vous devez installer le paquet utilitaire GNU d'internationalisation 'gettext'. Celui-ci est disponible dans la plupart des dépôts standard des distributions Linux, ou vous pouvez le télécharger à partir de http://www.gnu.org/software/gettext/ si vous devez le compiler vous même."
 
-# a8403a9c53a34022953239b758fa929a
-#: ../doc_src/guides/language.rst:20
-msgid "Getting started."
-msgstr "Démarrage."
-
-# 0c127161635d4f5aa670361276c482e2
-#: ../doc_src/guides/language.rst:22
-msgid "Your pywws directory should already have a subdirectory called languages. This contains the existing set of language files, for example 'sv.po' contains the Swedish translations. If one of these languages is what you need, then edit your weather.ini file and add a 'language' entry to the '[config]' section, for example::"
-msgstr "Votre dossier pywws doit déjà contenir un sous-dossier nommé 'languages'. Celui-ci contien l'ensemble de fichiers de langue actuel, par exemple 'fr.po' contien la traduction française. Si une de ces langues est ce que vous désirez, alors editez votre fichier weather.ini et ajoutez une entrée 'language' à la section '[config]', par exemple::"
-
-# 24a470d7f7494c01a784464537eb4ed8
-#: ../doc_src/guides/language.rst:33
-msgid "If there isn't already a file for your language, the rest of this document tells you how to create one."
-msgstr "S'il n'y a pas déjà de fichier pour votre langage, le reste de ce document vous indique comment en créer un."
-
 # b9cc9d1a4a9040f1a407205591590301
-#: ../doc_src/guides/language.rst:36
+#: ../doc_src/guides/language.rst:22
 msgid "Choose your language code."
 msgstr "Choisir votre code de langage."
 
 # 7634c72dd5614d2eadb3afa03a15c8bd
-#: ../doc_src/guides/language.rst:38
+#: ../doc_src/guides/language.rst:24
 msgid "Computers use IETF language tags (see http://en.wikipedia.org/wiki/IETF_language_tag). For example, in the UK we use 'en_GB'. This has two parts: 'en' for English, and 'GB' for the British version of it. To find the correct code for your language, consult the list at http://www.gnu.org/software/gettext/manual/gettext.html#Language-Codes."
 msgstr "Les ordinateur utilisent les étiquettes d'identification de langues IETF (voir http://fr.wikipedia.org/wiki/%C3%89tiquette_d%27identification_de_langues_IETF). Par exemple, la Grande-Bretagne utilise 'en_GB' qui est composé de 2 parties: 'en' pour Anglais, et 'GB' la version Britanique. Pour trouver le code correspondant à votre langue, consultez la liste sur http://www.gnu.org/software/gettext/manual/gettext.html#Language-Codes."
 
+# a8403a9c53a34022953239b758fa929a
+#: ../doc_src/guides/language.rst:31
+msgid "Getting started."
+msgstr "Démarrage."
+
+# 0c127161635d4f5aa670361276c482e2
+#: ../doc_src/guides/language.rst:33
+#, fuzzy
+msgid "Your pywws directory should already have a subdirectory called translations. This contains the existing set of language files, for example 'translations/sv/pywws.po' contains the Swedish translations. If one of these languages is what you need, then edit your weather.ini file and add a 'language' entry to the '[config]' section, for example::"
+msgstr "Votre dossier pywws doit déjà contenir un sous-dossier nommé 'languages'. Celui-ci contient l'ensemble des fichiers de langue actuel, par exemple 'fr.po' contient la traduction française. Si une de ces langues est ce que vous désirez, alors éditez votre fichier weather.ini et ajoutez une entrée 'language' à la section '[config]', par exemple::"
+
+# c7708392d88049aa99d6eab031944065
+#: ../doc_src/guides/language.rst:44
+msgid "You may still need to compile and install your chosen language file. This is done by the 'makefile' included with pywws::"
+msgstr ""
+
+# 24a470d7f7494c01a784464537eb4ed8
+#: ../doc_src/guides/language.rst:48
+msgid "If there isn't already a file for your language, the rest of this document tells you how to create one."
+msgstr "S'il n'y a pas déjà de fichier pour votre langage, le reste de ce document vous indique comment en créer un."
+
 # 2ad47ef69e0a4ab5a8957dbb42e9e1fa
-#: ../doc_src/guides/language.rst:45
+#: ../doc_src/guides/language.rst:51
 msgid "Create a language file."
-msgstr "Créer un fichier de langage."
+msgstr "Créer un fichier de langue."
 
 # 638fe5250e8d4eb7ad6de83857ef6e9c
-#: ../doc_src/guides/language.rst:47
-msgid "The 'makefile' included with pywws can create a template file for you to fill in. For example, to create a file for the French language (code 'fr')::"
-msgstr "Le 'makefile' inclu avec pywws peut créer un fichier gabarit à remplir pour vous. Par exemple, pour créer un fichier pour la langue françaisee (code 'fr')::"
+#: ../doc_src/guides/language.rst:53
+#, fuzzy
+msgid "The 'makefile' included with pywws can create a file for you to fill in. For example, to create a source file for the French language (code 'fr')::"
+msgstr "Le 'makefile' inclu avec pywws peut créer pour vous un fichier gabarit à remplir. Par exemple, pour créer un fichier pour la langue française (code 'fr')::"
 
 # ac1de30611d64fca9029343f17878987
-#: ../doc_src/guides/language.rst:52
-msgid "This will ask you to confirm your email address, then create a file 'code/languages/fr.po'. You should now edit this file, filling in every 'msgstr' line with a translation of the 'msgid' line immediately above it. The reason for including your email address is to allow anyone who has questions about your translation to get in touch with you. Feel free to put in an invalid address if you are concerned about privacy."
-msgstr "Ce qui vous demandera de confirmer votre adresse courriel, puis créera un fichier 'code/languages/fr.po'. Vous devez maintenant éditer ce fichier et remplir chaque ligne 'msgstr' avec une traduction de la ligne 'msgid' immédiatement au-dessus. La raison d'inclure votre adresse courriel est de permettre à chacun ayant une question à propos de la traduction de vous rejoindre. Sentez vous libre de mettre une adresse invalide si vous êtes préoccupé du maintien de votre vie privée."
+#: ../doc_src/guides/language.rst:58
+#, fuzzy
+msgid "This will ask you to confirm your email address (several times, annoyingly), then create several '.po' files in the directory 'translations/fr'. You should now edit 'pywws.po', filling in every 'msgstr' line with a translation of the 'msgid' line immediately above it. The reason for including your email address is to allow anyone who has questions about your translation to get in touch with you. Feel free to put in an invalid address if you are concerned about privacy."
+msgstr "Ce qui vous demandera de confirmer votre adresse courriel, puis créera un fichier 'code/languages/fr.po'. Vous devez maintenant éditer ce fichier et remplir chaque ligne 'msgstr' avec une traduction de la ligne 'msgid' immédiatement au-dessus. La raison d'inclure votre adresse courriel est de permettre à chacun ayant une question à propos de la traduction de vous rejoindre. Sentez vous libre de mettre une adresse invalide si vous êtes préoccupé par le maintien de votre vie privée."
 
 # 5ac0f4fb70f1421fa5794da5d773998f
-#: ../doc_src/guides/language.rst:54
+#: ../doc_src/guides/language.rst:60
 msgid "After you've edited your new language file it needs to be compiled so that pywws can use it. This is also done by the makefile::"
-msgstr "Après avoir édité le nouveau fichier de langage, il doit être compilé pour que pywws puisse l'utiliser. Ce qui est fait aussi par le fichier makefile::"
+msgstr "Après avoir édité le nouveau fichier de langue, il doit être compilé pour que pywws puisse l'utiliser. Ce qui est fait aussi par le fichier makefile::"
 
 # 915e051dd0d64c4099b7c46ab396aa5c
-#: ../doc_src/guides/language.rst:59
+#: ../doc_src/guides/language.rst:65
 msgid "Don't forget to do this every time you edit a language file."
 msgstr "N'oubliez pas de faire celà à chaque fois que vous éditez un fichier de langue."
 
 # 869a1af716674a44a0ce76cc536496e5
-#: ../doc_src/guides/language.rst:61
+#: ../doc_src/guides/language.rst:67
 msgid "Test the pywws translation."
-msgstr "Tester la traduction pywws."
+msgstr "Tester la traduction de pywws."
+
+# 322b952aa84444cc98f14c4a78410e5b
+#: ../doc_src/guides/language.rst:69
+msgid "The Localisation.py module can be used to do a quick test of your language file installation::"
+msgstr ""
+
+# d57f73e09fcb41e5b2c0d24cc78087f1
+#: ../doc_src/guides/language.rst:73
+msgid "This should produce output something like this::"
+msgstr ""
 
 # 3f24ebac28b542dd8331692310b2f8d0
-#: ../doc_src/guides/language.rst:63
+#: ../doc_src/guides/language.rst:85
 msgid "Edit the language entry in your weather.ini file to use your language code (e.g. 'fr'), then try using Plot.py to plot a graph. The X-axis of the graph should now be labeled in your language, using the translation you provided for 'Time', 'Day' or 'Date'."
-msgstr "Éditez l'entrée de langue dans votre fichier weather.ini pour utiliser le code de langue (ex. 'fr'), puis essayer d'utiliser Plot.py pour dessiner un graphe. L'axe des X du graphe devrait maintenant être étiquetté dans votre langue, utilisant la traduction que vous avez fournis pour 'Time', 'Day' ou 'Date'."
+msgstr "Éditez l'entrée de langue dans votre fichier weather.ini pour utiliser le code de langue (ex. 'fr'), puis essayer d'utiliser Plot.py pour dessiner un graphe. L'axe des X du graphe devrait maintenant être étiquetée dans votre langue, utilisant la traduction que vous avez fournis pour 'Time', 'Day' ou 'Date'."
 
 # 5992103a65c14415916d1d48cae52118
-#: ../doc_src/guides/language.rst:68
+#: ../doc_src/guides/language.rst:90
 msgid "Send Jim the language file."
 msgstr "Envoyez le fichier de langue à Jim."
 
 # e66899506f134049a43767b3b6657208
-#: ../doc_src/guides/language.rst:70
-msgid "I'm sure you would like others to benefit from the work you've done in making a new language file for pywws. Please, please, please send a copy of your language file (for example fr.po) to jim@jim-easterbrook.me.uk."
-msgstr "Je suis sur que vous souhaitez que les autres bénificie du travail que vous avez fait en faisant ce nouveau fichier de langue pour pywws. SVP, Svp, svp envoyez une copie de votre fichier de langue (par exemple fr.po) à jim@jim-easterbrook.me.uk."
+#: ../doc_src/guides/language.rst:92
+#, fuzzy
+msgid "I'm sure you would like others to benefit from the work you've done in making a new language file for pywws. Please, please, please send a copy of your language file (for example pywws.po) to jim@jim-easterbrook.me.uk."
+msgstr "Je suis sûr que vous souhaitez que les autres bénéficient du travail que vous avez fait en faisant ce nouveau fichier de langue pour pywws. SVP, Svp, svp envoyez une copie de votre fichier de langue (par exemple fr.po) à jim@jim-easterbrook.me.uk."
 
 # 3d968d6c4c434ed389942e0aaeb17b8b
-#: ../doc_src/guides/language.rst:74
+#: ../doc_src/guides/language.rst:96
 msgid "Update the language file."
 msgstr "Mettre à jour le fichier de langue."
 
 # 2709f8e87a51411a9a29b9390b557a70
-#: ../doc_src/guides/language.rst:76
-msgid "As pywws is extended, new strings may be added which will require your translation file to be extended as well. This is fairly easy to do. First you need to remove the language master template file::"
-msgstr "Comme pywws évolue, de nouvelles phrases peuvent avoir été ajoutées et nécessiteront que votre fichier de traduction évolue lui aussi. Celà est très facile à faire. Premièrement, Vous devez enlever le fichier de gabarit de langue maître::"
+#: ../doc_src/guides/language.rst:98
+#, fuzzy
+msgid "As pywws is extended, new strings may be added which will require your translation file to be extended as well. This is fairly easy to do. First you need to remove the language master template file, then run the 'make lang_src' command again::"
+msgstr "Comme pywws évolue, de nouvelles phrases peuvent avoir été ajoutées et nécessiteront que votre fichier de traduction évolu lui aussi; ce qui est très facile à faire. Premièrement, Vous devez enlever le fichier de gabarit de langue maître::"
 
 # 81a8b80a3b034d38ac490b30062d415d
-#: ../doc_src/guides/language.rst:82
-msgid "Now run the make command again as in section 5 above. This should add the new strings to your language file, without changing the strings you've already translated."
+#: ../doc_src/guides/language.rst:105
+#, fuzzy
+msgid "This should add the new strings to your language file, without changing the strings you've already translated."
 msgstr "Maintenant, exécutez la commande 'make' de nouveau tel qu'indiqué dans la section 5 ci-dessus. Ceci devrait ajouter de nouvelles phrases à votre fichier de langage, sans changer les phrases que vous avez déjà traduites."
+
+# 722a59a8767b4ab69a896003c05b2efe
+#: ../doc_src/guides/language.rst:109
+#, fuzzy
+msgid "Translating the documentation."
+msgstr "Lire la documentation."
+
+# c19dd97c0fd7425aab40dd9b35a54c3c
+#: ../doc_src/guides/language.rst:111
+msgid "The system used to translate the strings used in pywws can also be used to translate the documentation. The files 'index.po', 'essential.po', 'guides.po' and 'api.po' contain text strings (often whole paragraphs) extracted from the different parts of the documentation."
+msgstr ""
+
+# 8bd11051e0864292b019117bbe9ff623
+#: ../doc_src/guides/language.rst:113
+msgid "These files can be edited in a similar way to 'pywws.po'. Fill in each 'msgstr' with a translation of the 'msgid' above it. Note that some strings (such as URLs) need not be translated. In these cases, leave the 'msgstr' blank."
+msgstr ""
+
+# 3510fb07a96244a6a4c183ec7cdf3eab
+#: ../doc_src/guides/language.rst:115
+msgid "Translating all of the pywws documentation is a lot of work. However, when the documentation is 'compiled' any untranslated strings revert to their English original. This means that a partial translation could still be useful - I suggest starting with the documentation front page, 'index.po'."
+msgstr ""
 
 # af56bcf2703a4372908843f37dbad728
 #: ../doc_src/guides/livelogging.rst:2
@@ -546,7 +596,7 @@ msgstr "Essayez d'exécuter LiveLog.py à partir de la ligne de commande, avec u
 # 5cfc876fce984cdcba32c848d910edca
 #: ../doc_src/guides/livelogging.rst:18
 msgid "Within five minutes (assuming you have set a 5 minute logging interval) you should see a 'live_data new ptr' message, followed by fetching any new data from the weather station and processing it. Let LiveLog.py run for a minute or two longer, then kill the process by typing '<Ctrl>C'."
-msgstr "En moins de cinq minutes (assumant que vous avez un interval de relevé de 5 minutes) vous devriez voir le message 'live_data new ptr', suivi par la recherche et le traitement de nouvelles données de la station météorologique. Laissez LiveLog.py fonctionner une ou deux minutes de plus, puis arrêtez le processus en tapant '<Ctrl>C'."
+msgstr "En moins de cinq minutes (assumant que vous avez un intervalle de relevé de 5 minutes) vous devriez voir le message 'live_data new ptr', suivi par la recherche et le traitement de nouvelles données de la station météorologique. Laissez LiveLog.py fonctionner une ou deux minutes de plus, puis arrêtez le processus en tapant '<Ctrl>C'."
 
 # 305a12e974ef46d6a4f484478c6cadce
 #: ../doc_src/guides/livelogging.rst:37
@@ -556,7 +606,7 @@ msgstr "Dans weather.ini vous devriez avoir une section ``[live]`` similaire à 
 # 5249269f01f94e3abc7cdc5d4d67e677
 #: ../doc_src/guides/livelogging.rst:45
 msgid "This section specifies what pywws should do every time it gets a new reading from the weather station, i.e. every 48 seconds. The ``services`` entry is a list of online weather services to upload data to, e.g. ``['underground']``. The ``plot`` and ``text`` entries are lists of template files for plots and text files to be uploaded to your web site, and the ``twitter`` entry is a list of templates for messages to be posted to Twitter. You should probably leave all of these blank except for ``services``."
-msgstr "Cette section spécifie ce que devrait faire pywws à chaque fois qu'il recoit une lecture de la station météo, ex. toutes les 48 secondes. Les entrées ``services`` est une liste de services météo en ligne sur lesquels envoyer vos données météo, ex. ``['underground']``. LEs entrées ``plot`` et ``text`` sont des listes de fichiers gabarits graphes et texte à téléverser sur votre site web, et l'entrée ``twitter`` est une liste de gabarits pour les messages à poster sur Twitter. Vous devriez probablement laisser toutes ces entrées vides, sauf pour ``services``."
+msgstr "Cette section spécifie ce que devrait faire pywws à chaque fois qu'il reçoit une lecture de la station météo, ex. toutes les 48 secondes. Les entrées ``services`` sont des listes de services météo en ligne sur lesquels envoyer vos données météo, ex. ``['underground']``. Les entrées ``plot`` et ``text`` sont des listes de fichiers gabarits de graphe et de texte à téléverser sur votre site web, et l'entrée ``twitter`` est une liste de gabarits pour les messages à poster sur Twitter. Vous devriez probablement laisser toutes ces entrées vides, sauf pour ``services``."
 
 # 679b14f6e3bc44dbbb4c97d8403065a6
 #: ../doc_src/guides/livelogging.rst:47
@@ -566,7 +616,7 @@ msgstr "Si vous utilisez YoWindow (http://yowindow.com/) vous pouvez ajouter l'e
 # 5b4f86402fec4059b61725b349a28742
 #: ../doc_src/guides/livelogging.rst:54
 msgid "If you don't already have them, create four more sections in your weather.ini file: ``[logged]``, ``[hourly]``, ``[12 hourly]`` and ``[daily]``. These sections should have similar entries to the ``[live]`` section, and specify what to do every time data is logged (5 to 30 minutes, depending on your logging interval), every hour, twice daily and once per day. Add the names of your template files to the appropriate entries, for example::"
-msgstr "Si vous ne les avez pas déjà, créeez quatre sections supplémentaires dans votre fichier weather.ini : ``[logged]``, ``[hourly]``, ``[12 hourly]`` et ``[daily]``. Ces sections doivent avoir des entrées similaires à la section ``[live]``, et spécifiez ce qui doit être fait chaque fois qu'une donnée est enregistrée (5 à 30 minutes, dépendant de votre intervale), chaque heure, deux fois par jour et chaque jour. Ajoutez les noms de vos fichiers de gabarit à l'entrée appropriée, par exemple::"
+msgstr "Si vous ne les avez pas déjà, créez quatre sections supplémentaires dans votre fichier weather.ini : ``[logged]``, ``[hourly]``, ``[12 hourly]`` et ``[daily]``. Ces sections doivent avoir des entrées similaires à la section ``[live]``, et spécifiez ce qui doit être fait chaque fois qu'une donnée est enregistrée (5 à 30 minutes, dépendant de votre intervalle), chaque heure, deux fois par jour et chaque jour. Ajoutez les noms de vos fichiers de gabarit à l'entrée appropriée, par exemple::"
 
 # 0cdc5fdc9e344c559db78a1d03c1c3a7
 #: ../doc_src/guides/livelogging.rst:81
@@ -576,7 +626,7 @@ msgstr "Exécuter en arrière-plan"
 # 015912161b054521aa59b4e2d9dc0513
 #: ../doc_src/guides/livelogging.rst:83
 msgid "In order to have LiveLog.py carry on running after you finish using your computer it needs to be run as a 'background job'. On most Linux / UNIX systems you can do this by putting an ampersand ('&') at the end of the command line. For example::"
-msgstr "Afin que LiveLog.py continue de fonctionner après avoir fini d'utiliser votre ordinateur, vous devez exécuter ce programme en tant que 'tâche en arrière^plan'. Sur la plupart des systèmes Linux / UNIX vous pouvez faire celà en ajoutant simplement le symbole ('&') à la fin de la ligne de commande. Par exemple::"
+msgstr "Afin que LiveLog.py continue de fonctionner après avoir fini d'utiliser votre ordinateur, vous devez exécuter ce programme en tant que 'tâche en arrière-plan'. Sur la plupart des systèmes Linux / UNIX vous pouvez faire celà en ajoutant simplement le symbole ('&') à la fin de la ligne de commande. Par exemple::"
 
 # 674ed79b04ab4c74a0e048248b51cab2
 #: ../doc_src/guides/livelogging.rst:87
@@ -591,12 +641,12 @@ msgstr "Redémarrage automatique"
 # 690e7b3f0b8a40d592f498030071dc0d
 #: ../doc_src/guides/livelogging.rst:94
 msgid "There are various ways of configuring a Linux system to start a program when the machine boots up. Typically these involve putting a file in /etc/init.d/, which requires root privileges. A slightly harder problem is ensuring a program restarts if it crashes. My solution to both problems is to run the following script from cron, every hour. ::"
-msgstr "Il y a une variété de manière de configurer un système Linux pour lancer un programme au démarrage de l'ordinateur. Typiquement ceci vous devez mettre un fichier dans /etc/init.d/, ce qui requière les privilèges 'root'. S'arrurer du redémarrage d'un programme après 'plamtage' est un problème légèrement plus difficile. Ma solution à ces problèmes est d'exécuter le script suivant à partir d'une tâche cron, à chaque heure. ::"
+msgstr "Il y a une variété de manières de configurer un système Linux pour lancer un programme au démarrage de l'ordinateur. Typiquement pour ce faire, vous devez mettre un fichier dans /etc/init.d/, ce qui requière les privilèges 'root'. S'arrurer du redémarrage d'un programme après 'plantage' est un problème légèrement plus difficile. Ma solution à ce problème est d'exécuter le script suivant à partir d'une tâche cron, à chaque heure. ::"
 
 # 7342fca8348f4e519989456b9ac8b1b8
 #: ../doc_src/guides/livelogging.rst:117
 msgid "This stores the process id of the running LiveLog.py in pidfile. If the process is running, the script does nothing. If the process has crashed, it emails the last 40 lines of the log file to me (using a script that creates a message and passes it to sendmail) and then restarts LiveLog.py. You'll need to edit this quite a lot to suit your file locations and so on, but it gives some idea of what to do."
-msgstr "Ce script enregistre l'identificateur de processus exécutant LiveLog.py dans le pidfile. Si le processus fonctionne, le script ne fait rien. Si le processus a bloqué, il m'envoi un courriel contenant les 40 dernières lignes du fichier d'historique (en utilisant un script qui crée un message et l'envoi par sendmail) puis redémarre LiveLog.py. Vous devrez éditer beaucoup pour adapter à vos emplacements de dossier et ainsi de suite, mais il donne une certaine idée de ce qui doit être fait."
+msgstr "Ce script enregistre l'identificateur de processus exécutant LiveLog.py dans le pidfile. Si le processus fonctionne, le script ne fait rien. Si le processus a bloqué, il m’envoie un courriel contenant les 40 dernières lignes du fichier d'historique (en utilisant un script qui crée un message et l'envoi par sendmail) puis redémarre LiveLog.py. Vous devrez éditer beaucoup pour adapter à vos emplacements de dossier et ainsi de suite, mais il donne une certaine idée de ce qui doit être fait."
 
 # e6fd78dd8492415f9f6fd3b1ca0e9f07
 #: ../doc_src/guides/twitter.rst:2
@@ -631,7 +681,7 @@ msgstr "Créer un compte Twitter."
 # e23df67ccd204f8db5a746f023b45bef
 #: ../doc_src/guides/twitter.rst:14
 msgid "You could post weather updates to your 'normal' Twitter account, but I think it's better to have a separate account just for weather reports. This could be useful to someone who lives in your area, but doesn't want to know what you had for breakfast."
-msgstr "Vous pouvez poster des mise-à-jour météo sur votre compte Twitter 'normal', mais je crois qu'il est préférable d'avoir un compte distinct réservé à vos relevés météo. Ce qui pourrait être fort utile à une perspmme vivant dans votre voisinage, mais ne souhaitant pas savoir ce que vous avez pris au petit déjeuner."
+msgstr "Vous pouvez poster des mise à jour météo sur votre compte Twitter 'normal', mais je crois qu'il est préférable d'avoir un compte distinct réservé à vos relevés météo. Ce qui pourrait être fort utile à une personne vivant dans votre voisinage, mais ne souhaitant pas savoir ce que vous avez pris au petit déjeuner."
 
 # c980446fe07941f5b4a4d4a98e5dbab7
 #: ../doc_src/guides/twitter.rst:16
@@ -661,7 +711,7 @@ msgstr "Ajouter vos données de localisation (optionel)."
 # 8979e213253c44508d9ceb99362ee6aa
 #: ../doc_src/guides/twitter.rst:28
 msgid "Edit your weather.ini file and add ``latitude`` and ``longitude`` entries to the ``[twitter]`` section. For example::"
-msgstr "Éditez cotre fichier weather.ini et ajoutez les entrées ``latitude`` et ``longitude`` à votre section  ``[twitter]``. Par exemple::"
+msgstr "Éditez votre fichier weather.ini et ajoutez les entrées ``latitude`` et ``longitude`` à votre section  ``[twitter]``. Par exemple::"
 
 # e184459bc4bc4befbe1d032945eddcf4
 #: ../doc_src/guides/twitter.rst:36
@@ -671,7 +721,7 @@ msgstr "Créer un gabarit."
 # 043a7792fab14f2db67c5ea86d0af061
 #: ../doc_src/guides/twitter.rst:38
 msgid "Twitter messages are generated using a template, just like creating files to upload to a website. Copy the example template 'tweet.txt' to your template directory, then test it::"
-msgstr "Les message pour Twitter sont générés en utilisant un gabarit, tout comme sont créés les fichiers à téléverser sur votre site web. Copiez le gabarit exemple 'tweet.txt' dans votre dossier de gabarit, puis testez-le::"
+msgstr "Les messages pour Twitter sont générés en utilisant un gabarit, tout comme sont créés les fichiers à téléverser sur votre site web. Copiez le gabarit exemple 'tweet.txt' dans votre dossier de gabarit, puis testez-le::"
 
 # 7276aeba738f47d6944a9b473120614a
 #: ../doc_src/guides/twitter.rst:43
@@ -716,7 +766,7 @@ msgstr "weather.ini - format du fichier de configuration"
 # dce33b5fb5a041759de14c208bae530f
 #: ../doc_src/guides/weather_ini.rst:4
 msgid "Nearly all configuration of pywws is via a single file in the data directory: weather.ini. This file has a structure similar to that of Microsoft Windows INI files. It is divided into \"sections\", each of which has a number of \"name = value\" entries. The order in which sections appear is not important."
-msgstr "Presque toute la configuration de pywws est fait via un seul fichier dans le répertoire de donnée: weather.ini. Ce fichier a été structuré de manière similaire aux fichiers INI de Microsoft Windows. Il est divisé en \"sections\", qui contiennent un nom d'entrée \"nom = valeur\". L'ordre d'apparition des sections n'a pas d'importance."
+msgstr "Presque toute la configuration de pywws est fait via un seul fichier dans le répertoire de donnée: weather.ini. Ce fichier a été structuré de manière similaire aux fichiers INI de Microsoft Windows. Il est divisé en 'sections', qui contiennent un nom d'entrée 'nom = valeur'. L'ordre d'apparition des sections n'a pas d'importance."
 
 # b0b3adddc6eb4fdaaed2d1d14375bdc3
 #: ../doc_src/guides/weather_ini.rst:10
@@ -801,7 +851,7 @@ msgstr "``gnuplot encoding`` est l'encodage de texte utilisé lors du tracé de 
 # 273b01693d9b45fab285d89e3fd1c009
 #: ../doc_src/guides/weather_ini.rst:43
 msgid "``language`` is used to localise pywws. It's optional, as pywws usually uses the computer's default language as set by the LANG environment variable. The available languages are those in the ``locale`` subdirectory of your pywws installation. If you set any other language, pywws will fall back to using English."
-msgstr "``language`` est utilisé pour traduire pywws. Il est optionnel, puisque pywws utilise habituellement la langue par défaut de l'ordinateur tel que configuré par la variable d'environnement LANG. Vous trouverez les langages disponibles dans le sous-dossier ``locale`` de votre installation pywws. Si vous configurez une langue qui n'est pas inclus, pywws affichera en anglais."
+msgstr "``language`` est utilisé pour traduire pywws. Il est optionnel, puisque pywws utilise habituellement la langue par défaut de l'ordinateur tel que configuré par la variable d'environnement LANG. Vous trouverez les langages disponibles dans le sous-dossier ``locale`` de votre installation pywws. Si vous configurez une langue qui n'est pas inclue, pywws affichera en anglais."
 
 # 880bdd3227d84d01b81dac4e355579e8
 #: ../doc_src/guides/weather_ini.rst:45
@@ -816,7 +866,7 @@ msgstr "paths: dossiers dans lesquels sont emmagasinés les gabarits, etc."
 # 53c9a5ca8b4744a5ac1c8c230a4380d7
 #: ../doc_src/guides/weather_ini.rst:57
 msgid "These three entries specify where your text templates and graph templates are stored, where temporary files should be created, and (if you have one) the location of your calibration module."
-msgstr "Ces trois entrées spécifient où sont emmagasiné vos gabarits de texte et de graphes, où doivent être créé les fichiers temporaires, et la localisation de votre module de calibration (si utilisé)."
+msgstr "Ces trois entrées spécifient où sont emmagasinés vos gabarits de texte et de graphes, où doivent être créé les fichiers temporaires, et la localisation de votre module de calibration (si utilisé)."
 
 # 76f30fefd525491e99325f11e9b5ab4e
 #: ../doc_src/guides/weather_ini.rst:60
@@ -836,7 +886,7 @@ msgstr "live: tâches à accomplir à chaque 48 secondes"
 # b3b8e8ca73b4437d93c0b47c358688d3
 #: ../doc_src/guides/weather_ini.rst:80
 msgid "This section specifies tasks that are to be carried out for every data sample during 'live logging', i.e. every 48 seconds. It is unlikely that you'd want to do anything other than upload to Weather Underground or update your YoWindow file this often."
-msgstr "Cette section spécifie les tâche devant être effectuées pour chaque échantillonage pendant la 'journalisation temps réel', c.à.d. chaque 48 secondes. Il est peu probable que vous vouliez faire autre chose que le téléversement à Weather Underground ou la mise-à-jour du fichier YoWindow aussi souvent."
+msgstr "Cette section spécifie les tâche devant être effectuées pour chaque échantillonnage pendant la 'journalisation temps réel', c.à.d. chaque 48 secondes. Il est peu probable que vous vouliez faire autre chose que le téléversement à Weather Underground ou la mise-à-jour du fichier YoWindow aussi souvent."
 
 # dc353e8450124231b612cf6b51ec90c6
 # 4835903f4767434d8dc34124ea8db42c
@@ -894,7 +944,7 @@ msgstr "hourly: tâches à réaliser à chaque heure"
 # ffba2ca2657b460f977a92e58ccaa0f7
 #: ../doc_src/guides/weather_ini.rst:118
 msgid "This section specifies tasks that are to be carried out every hour when 'live logging' or running an hourly cron job."
-msgstr "Cette section spécifie ;es tâches à réaliser à chaque heure en mode 'temps réel' ou exécutée en tant que tâche horaire cron."
+msgstr "Cette section spécifie les tâches à réaliser à chaque heure en mode 'temps réel' ou exécutées en tant que tâche horaire cron."
 
 # 69ab649094f748f8ab6f274ced7ff927
 #: ../doc_src/guides/weather_ini.rst:127
@@ -904,7 +954,7 @@ msgstr "12 hourly: tâches à réaliser à chaque 12 heures"
 # cc4a1f4003ff4efaaa4cf7f07998ee50
 #: ../doc_src/guides/weather_ini.rst:136
 msgid "This section specifies tasks that are to be carried out every 12 hours when 'live logging' or running an hourly cron job. Use it for things that don't change very often, such as monthly graphs."
-msgstr "Cette section spécifie ;es tâches à réaliser à chaque heure en mode 'temps réel' exécutée en tant que tâche horaire cron. Utilisez pour des choses qui ne changent pas vraiment souvent, tel que les graphes mensuels."
+msgstr "Cette section spécifie les tâches à réaliser à chaque heure en mode 'temps réel' exécutées en tant que tâche horaire cron. Utilisez pour des choses qui ne changent pas très souvent, tel que les graphes mensuels."
 
 # 8902317bacdc42c88ce88b7dff743b55
 #: ../doc_src/guides/weather_ini.rst:145
@@ -914,7 +964,7 @@ msgstr "daily: tâches à faire à chaque 24 heures"
 # 6004bb2170ea45d6bd41f0c90d80d804
 #: ../doc_src/guides/weather_ini.rst:154
 msgid "This section specifies tasks that are to be carried out every day when 'live logging' or running an hourly cron job. Use it for things that don't change very often, such as monthly or yearly graphs."
-msgstr "Cette section spécifie ;es tâches à réaliser à chaque heure en mode 'temps réel' exécutée en tant que tâche horaire cron. Utilisez pour des choses qui ne changent pas vraiment souvent, tel que les graphes mensuels ou annuels."
+msgstr "Cette section spécifie les tâches à réaliser à chaque heure en mode 'temps réel' exécutées en tant que tâche horaire cron. Utilisez pour des choses qui ne changent pas très souvent, tel que les graphes mensuels ou annuels."
 
 # 6155b498a90d471ea0862136c88a546d
 #: ../doc_src/guides/weather_ini.rst:163
@@ -929,12 +979,12 @@ msgstr "Ces entrées fournissent des détails sur votre site web (ou répertoire
 # c187b98cc8c34e79bc1478566c9d0798
 #: ../doc_src/guides/weather_ini.rst:176
 msgid "``local site`` specifies whether the files should be copied to a local directory or sent to a remote site. You may want to set this if you run your web server on the same machine as you are running pywws on."
-msgstr "``local site`` spécifie si les fichiers doivent être copiés dans un dossier local ou envoyé sur un site distant. Vou pouvez vouloir fixer ce paramètre si vous exécutez votre serveur web sur le même ordinateur qui exécute pywws."
+msgstr "``local site`` spécifie si les fichiers doivent être copiés dans un dossier local ou envoyé sur un site distant. Vous pouvez vouloir fixer ce paramètre si votre serveur web fonctionne sur le même ordinateur qui exécute pywws."
 
 # 8290864ffd7b41fe9faab9c9835b45f8
 #: ../doc_src/guides/weather_ini.rst:178
 msgid "``secure`` specifies whether to transfer files using SFTP (secure FTP) instead of the more common FTP. Your web site provider should be able to tell you if you can use SFTP."
-msgstr "``secure`` spécifie si le transfert des fichiers utilise SFTP (FTP securisé) au lieu de l'habituel FTP. Votre hébergeur doit être en mesure de vous dire si vous pouvez utiliser SFTP."
+msgstr "``secure`` spécifie si le transfert des fichiers utilise SFTP (FTP sécurisé) au lieu de l'habituel FTP. Votre hébergeur doit être en mesure de vous dire si vous pouvez utiliser SFTP."
 
 # 7c433e1184c34654918386eabb3353d4
 #: ../doc_src/guides/weather_ini.rst:180
@@ -949,7 +999,7 @@ msgstr "``user`` et ``password`` sont les informations de branchement pour votre
 # 6db5d71e4d894690b8daa1f1f54ee7cc
 #: ../doc_src/guides/weather_ini.rst:184
 msgid "``directory`` specifies where on the FTP site (or local file system) the files should be stored. Note that you may have to experiment with this a bit - you might need a '/' character at the start of the address."
-msgstr "``directory`` spécifie où sur le site FTP (ou le disque local) les fichiers doivent être envoyés. Notez que vous pourriez devoir expérimenter quelque peu  - vous pourriez devoir utiliser un caractère '/' au début de votre adresse."
+msgstr "``directory`` spécifie où sur le site FTP (ou le disque local) les fichiers doivent être envoyés. Notez que vous pourriez devoir expérimenter quelque peu  - vous pourriez par exemple devoir utiliser un caractère '/' au début de votre adresse."
 
 # c94ab13224084e36b43aa01482ed63fa
 #: ../doc_src/guides/weather_ini.rst:187
@@ -959,12 +1009,12 @@ msgstr "twitter: configuration pour poster sur Twitter"
 # f71d7bb87ca947ddac80b1f8457a3e64
 #: ../doc_src/guides/weather_ini.rst:196
 msgid "``secret`` and ``key`` are authentication data provided by Twitter. To set them, run the ``TwitterAuth.py`` program."
-msgstr "``secret`` et ``key`` sont les données d'authentication fournies par Twitter. Por les configurer, exécutez le programme ``TwitterAuth.py``."
+msgstr "``secret`` et ``key`` sont les données d'authentification fournies par Twitter. Pour les configurer, exécutez le programme ``TwitterAuth.py``."
 
 # 22bd08be0e9d4a48be914984931c58c4
 #: ../doc_src/guides/weather_ini.rst:198
 msgid "``latitude`` and ``longitude`` are optional location data. If you include them then your weather station tweets will have location information so users can see where your weather station is. It might also enable people to find your weather station tweets if they search by location."
-msgstr "``latitude`` et ``longitude`` sont vos données de localisation et sont are optionelles. Si vous les incluez dans vos 'tweets météo' vos utilisateurs pourront voir oz est située votre station. Ce qui pourrait aider les utilisateurs à trouver votre station s'ils cherchent par localisation."
+msgstr "``latitude`` et ``longitude`` sont vos données de localisation et sont optionnelles. Si vous les incluez dans vos 'tweets météo' vos utilisateurs pourront voir où est située votre station. Ce qui pourrait aider les utilisateurs à trouver votre station s'ils cherchent par localisation."
 
 # 3ded9565e1164bae98baac8128eb0167
 #: ../doc_src/guides/weather_ini.rst:201
@@ -974,7 +1024,7 @@ msgstr "underground, metoffice, temperaturnu etc: configuration pour poster sur 
 # 00d967e86fde4c248645667c32f24b9c
 #: ../doc_src/guides/weather_ini.rst:209
 msgid "These sections contain information such as passwords and station IDs needed to upload data to weather services. The names of the data entries depend on the service. The example shown is for Weather Underground."
-msgstr "Ces sections contiennent l'information nécessaire pour envoyer vos données sur ces services météo, tel que mot de passe et ID de votre station. Les noms de ces entrées de données dépend du service. L'exemple montré affiche les informations pour Weather Underground."
+msgstr "Ces sections contiennent l'information nécessaire pour envoyer vos données sur ces services météo, tel que mot de passe et ID de votre station. Le nom de ces entrées de données dépend du service. L'exemple montré affiche les informations pour Weather Underground."
 
 # cb55851a2c2944378add768c832ec78d
 #: ../doc_src/guides/weather_ini.rst:211
@@ -989,4 +1039,8 @@ msgstr "``password`` est votre mot de passe pour Weather Underground."
 # f52571723a9f44ba8075ccf7102145f6
 #: ../doc_src/guides/weather_ini.rst:215
 msgid "``last update`` is set by pywws when you upload to a weather service."
-msgstr "``last update`` est ficé par pywws lorsque vous téléversez à un service météo."
+msgstr "``last update`` est défini par pywws lorsque vous téléversez à un service météo."
+
+# ec7a1f80a5154cc3ad89953342048bc7
+#~ msgid "How to make a language file for pywws"
+#~ msgstr "Comment faire un fichier de langue pour pywws"

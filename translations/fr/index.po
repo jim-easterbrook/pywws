@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pywws 12.12\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-12-21 15:42\n"
+"POT-Creation-Date: 2012-12-31 11:08\n"
 "PO-Revision-Date: 2012-12-15 11:22+0000\n"
 "Last-Translator: Jacques Desroches <jacques.desroches@meteoduquebec.com>\n"
 "Language-Team: French\n"
@@ -85,8 +85,8 @@ msgstr "Les logiciels que vous aurez besoin pour exécuter pywws dépend de ce q
 
 # 4aa48bb7ef8240398021cf555eccf358
 #: ../doc_src/index.rst:33
-msgid "`Python <http://python.org/>`_ version 2.4 or higher (note: Python 3 support is under development - some things may not work properly)"
-msgstr "`Python <http://python.org/>`_ version 2.4 ou ultérieure (note: Le support de Python v3 est en cours de développement - certaines choses peuvent ne pas fonctionner correctement)"
+msgid "`Python <http://python.org/>`_ version 2.5 or higher (note: Python 3 support is under development - some things may not work properly)"
+msgstr "`Python <http://python.org/>`_ version 2.5 ou ultérieure (note: Le support de Python v3 est en cours de développement - certaines choses peuvent ne pas fonctionner correctement)"
 
 # a05a8bcfc4b54c5396ed83df44e086d5
 #: ../doc_src/index.rst:34
