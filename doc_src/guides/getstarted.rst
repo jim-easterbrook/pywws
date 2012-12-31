@@ -18,7 +18,7 @@ How to get started with pywws
 
 #. Install dependencies.
 
-   * Python 2.4+ - http://python.org/ (Note: Python 3 support is under development.)
+   * Python 2.5+ - http://python.org/ (Note: Python 3 support is under development.)
 
    * USB library option 1 (best for small systems such as routers):
 

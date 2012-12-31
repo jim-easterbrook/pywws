@@ -10,6 +10,7 @@ pywws
 | http://github.com/jim-easterbrook/pywws/
 
 This document is available in the following languages (non-English versions may not be complete or up to date):
+
    * `English <../../en/html/index.html>`_
    * `Français <../../fr/html/index.html>`_
 
@@ -28,7 +29,8 @@ Requirements
 ************
 
 The software you'll need to run pywws depends on what you plan to do with it. In particular, there is a choice of USB library, to suit what's available on different operating systems.
-   * `Python <http://python.org/>`_ version 2.4 or higher (note: Python 3 support is under development - some things may not work properly)
+
+   * `Python <http://python.org/>`_ version 2.5 or higher (note: Python 3 support is under development - some things may not work properly)
    * USB library option 1 (best for small systems such as routers):
 
      *  `PyUSB <http://sourceforge.net/apps/trac/pyusb/>`_ version 0.4.x
