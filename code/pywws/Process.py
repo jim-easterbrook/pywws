@@ -49,6 +49,7 @@ __usage__ = """
  usage: python RunModule.py Process [options] data_dir
  options are:
   -h or --help     display this help
+  -v or --verbose  increase number of informative messages
  data_dir is the root directory of the weather data
 """
 __doc__ %= __usage__
@@ -502,12 +503,14 @@ def calibrate_data(logger, params, raw_data, calib_data):
     del calib_data[start:]
     calib_data.flush()
     calibrator = Calib(params)
-    day = None
+    count = 0
     for data in raw_data[start:]:
         idx = data['idx']
-        if idx.day != day:
+        count += 1
+        if count % 10000 == 0:
             logger.info("calib: %s", idx.isoformat(' '))
-            day = idx.day
+        elif count % 500 == 0:
+            logger.debug("calib: %s", idx.isoformat(' '))
         calib_data[idx] = calibrator.calib(data)
     calib_data.flush()
     return start
@@ -542,9 +545,13 @@ def generate_hourly(logger, calib_data, hourly_data, process_from):
     stop = calib_data.before(datetime.max)
     hour_start = start
     acc = HourAcc(last_rain)
+    count = 0
     while hour_start <= stop:
-        if hour_start.hour == start.hour:
+        count += 1
+        if count % 1008 == 0:
             logger.info("hourly: %s", hour_start.isoformat(' '))
+        elif count % 24 == 0:
+            logger.debug("hourly: %s", hour_start.isoformat(' '))
         hour_end = hour_start + HOUR
         acc.reset()
         for data in calib_data[hour_start:hour_end]:
@@ -600,8 +607,13 @@ def generate_daily(logger, day_end_hour, daytime,
     stop = calib_data.before(datetime.max)
     day_start = start
     acc = DayAcc(daytime)
+    count = 0
     while day_start <= stop:
-        logger.info("daily: %s", day_start.isoformat(' '))
+        count += 1
+        if count % 30 == 0:
+            logger.info("daily: %s", day_start.isoformat(' '))
+        else:
+            logger.debug("daily: %s", day_start.isoformat(' '))
         day_end = day_start + DAY
         acc.reset()
         for data in calib_data[day_start:day_end]:
@@ -645,8 +657,13 @@ def generate_monthly(logger, day_end_hour, time_offset,
     stop = daily_data.before(datetime.max)
     month_start = start
     acc = MonthAcc()
+    count = 0
     while month_start <= stop:
-        logger.info("monthly: %s", month_start.isoformat(' '))
+        count += 1
+        if count % 12 == 0:
+            logger.info("monthly: %s", month_start.isoformat(' '))
+        else:
+            logger.debug("monthly: %s", month_start.isoformat(' '))
         month_end = month_start + WEEK
         if month_end.month < 12:
             month_end = month_end.replace(month=month_end.month+1)
@@ -708,22 +725,25 @@ def main(argv=None):
     if argv is None:
         argv = sys.argv
     try:
-        opts, args = getopt.getopt(argv[1:], "h", ['help'])
+        opts, args = getopt.getopt(argv[1:], "hv", ['help', 'verbose'])
     except getopt.error, msg:
         print >>sys.stderr, 'Error: %s\n' % msg
         print >>sys.stderr, __usage__.strip()
         return 1
     # process options
+    verbose = 0
     for o, a in opts:
         if o in ('-h', '--help'):
             print __usage__.strip()
             return 0
+        elif o in ('-v', '--verbose'):
+            verbose += 1
     # check arguments
     if len(args) != 1:
         print >>sys.stderr, 'Error: 1 argument required\n'
         print >>sys.stderr, __usage__.strip()
         return 2
-    logger = ApplicationLogger(1)
+    logger = ApplicationLogger(verbose)
     data_dir = args[0]
     return Process(DataStore.params(data_dir),
                    DataStore.data_store(data_dir),

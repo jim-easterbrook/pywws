@@ -5,7 +5,8 @@ Regenerate hourly and daily summary data.
 
 usage: python Reprocess.py [options] data_dir
 options are:
-\t--help\t\t\tdisplay this help
+ -h | --help     display this help
+ -v | --verbose  increase number of informative messages
 data_dir is the root directory of the weather data
 """
 
@@ -42,22 +43,25 @@ def main(argv=None):
     if argv is None:
         argv = sys.argv
     try:
-        opts, args = getopt.getopt(argv[1:], "", ['help'])
+        opts, args = getopt.getopt(argv[1:], "hv", ['help', 'verbose'])
     except getopt.error, msg:
         print >>sys.stderr, 'Error: %s\n' % msg
         print >>sys.stderr, __doc__.strip()
         return 1
     # process options
+    verbose = 0
     for o, a in opts:
-        if o == '--help':
+        if o in ('-h', '--help'):
             print __doc__.strip()
             return 0
+        elif o in ('-v', '--verbose'):
+            verbose += 1
     # check arguments
     if len(args) != 1:
         print >>sys.stderr, 'Error: 1 argument required\n'
         print >>sys.stderr, __doc__.strip()
         return 2
-    logger = ApplicationLogger(1)
+    logger = ApplicationLogger(verbose)
     data_dir = args[0]
     return Reprocess(data_dir)
 if __name__ == "__main__":
