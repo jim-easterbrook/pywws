@@ -211,7 +211,7 @@ msgstr "La façon la plus simple d'obtenir pywws est de télécharger le fichier
 # 88e33f9b9f8e4fa99b300117325bbedb
 #: ../doc_src/index.rst:71
 msgid "You could also use ``pip`` to install pywws directly from PyPI::"
-msgstr ""
+msgstr "Vous pouvez aussi utiliser ``pip`` pour installer pywws directement de PyPI::"
 
 # 7edb21e786b443aaa73cacff31c730de
 #: ../doc_src/index.rst:75
@@ -246,7 +246,7 @@ msgstr "Contentu"
 # ffda77fefb5a40d4ba13a60357dfbf12
 #: ../doc_src/index.rst:104
 msgid "Indices and tables"
-msgstr ""
+msgstr "Indexes et tables"
 
 # 02e95c27800942e3a6c6dbcbf589fad1
 #: ../doc_src/index.rst:106
@@ -286,7 +286,7 @@ msgstr "Termes"
 # b24429c2feef4b42bb886afc03f5a27e
 #: ../doc_src/index.rst:122
 msgid "pywws - Python software for USB Wireless WeatherStations."
-msgstr ""
+msgstr "pywws - Logiciel Python pour stations météo USB sans-fil."
 
 # 32fc15039bf44bbfb7d3ac8dfdd923c7
 #: ../doc_src/index.rst:124

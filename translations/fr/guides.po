@@ -429,7 +429,7 @@ msgstr "Contenu:"
 # 564da3253c8b4f408107b3883c9dc1e8
 #: ../doc_src/guides/language.rst:2
 msgid "How to use pywws in another language"
-msgstr ""
+msgstr "Comment utiliser pywws dans une autre langue"
 
 # fed87660b41742a2875fedf5507d05a2
 #: ../doc_src/guides/language.rst:4
@@ -444,7 +444,7 @@ msgstr "Certaines parties de pywws peuvent être configurées pour utiliser votr
 # 4a640ac111a1428bab5e1d67e4b630e9
 #: ../doc_src/guides/language.rst:12
 msgid "The pywws documentation can also be translated into other languages. This is a lot more work, but could be very useful to potential users who do not read English very well."
-msgstr ""
+msgstr "La documentation de pywws peut aussi être traduite dans d'autres langues. C'est beaucoup de travail, mais pourrait être très utile aux utilisateurs potentiels qui ne lisent pas très bien l'anglais."
 
 # 42fec6c036814b13bddabcbe7645c2db
 #: ../doc_src/guides/language.rst:14
@@ -480,7 +480,7 @@ msgstr "Votre dossier pywws doit déjà contenir un sous-dossier nommé 'languag
 # c7708392d88049aa99d6eab031944065
 #: ../doc_src/guides/language.rst:44
 msgid "You may still need to compile and install your chosen language file. This is done by the 'makefile' included with pywws::"
-msgstr ""
+msgstr "Vous devrez toujours compiler et installer votre fichier de langue choisie. Ce qui est fair par le fichier 'makefile' inclu avec pywws::"
 
 # 24a470d7f7494c01a784464537eb4ed8
 #: ../doc_src/guides/language.rst:48
@@ -522,12 +522,12 @@ msgstr "Tester la traduction de pywws."
 # 322b952aa84444cc98f14c4a78410e5b
 #: ../doc_src/guides/language.rst:69
 msgid "The Localisation.py module can be used to do a quick test of your language file installation::"
-msgstr ""
+msgstr "Le module Localisation.py peut être utilisé pour faire un test rapide de l'installation de votre fichier de langue::"
 
 # d57f73e09fcb41e5b2c0d24cc78087f1
 #: ../doc_src/guides/language.rst:73
 msgid "This should produce output something like this::"
-msgstr ""
+msgstr "Cela devrait afficher quelque chose comme ceci::"
 
 # 3f24ebac28b542dd8331692310b2f8d0
 #: ../doc_src/guides/language.rst:85
@@ -571,17 +571,18 @@ msgstr "Lire la documentation."
 # c19dd97c0fd7425aab40dd9b35a54c3c
 #: ../doc_src/guides/language.rst:111
 msgid "The system used to translate the strings used in pywws can also be used to translate the documentation. The files 'index.po', 'essential.po', 'guides.po' and 'api.po' contain text strings (often whole paragraphs) extracted from the different parts of the documentation."
-msgstr ""
+msgstr "Le système utilisé pour convertir les phrases utilisées dans pywws peut également servir à traduire la documentation. Les fichiers 'index.po', 'essential.po', 'guides.po' et 'api.po' contiennent des chaînes de texte (souvent des paragraphes entiers) extraits de différentes parties de la documentation."
 
 # 8bd11051e0864292b019117bbe9ff623
 #: ../doc_src/guides/language.rst:113
 msgid "These files can be edited in a similar way to 'pywws.po'. Fill in each 'msgstr' with a translation of the 'msgid' above it. Note that some strings (such as URLs) need not be translated. In these cases, leave the 'msgstr' blank."
-msgstr ""
+msgstr "Ces fichiers peuvent être édités de la même manière que 'pywws.po'. Remplissez chaque 'msgstr' avec une traduction de la phrase 'msgid' juste au-dessus. Notez que certaines chaînes (par exemple, URL) ne doivent pas être traduites. Dans ces cas, le 'msgstr' doit être laissé vide.
+"
 
 # 3510fb07a96244a6a4c183ec7cdf3eab
 #: ../doc_src/guides/language.rst:115
 msgid "Translating all of the pywws documentation is a lot of work. However, when the documentation is 'compiled' any untranslated strings revert to their English original. This means that a partial translation could still be useful - I suggest starting with the documentation front page, 'index.po'."
-msgstr ""
+msgstr "Traduire toute la documentation de pywws est beaucoup de travail. Toutefois, lorsque la documentation est compilée toutes les chaînes non traduites reprennent leur valeur anglaise originale. Cela signifie qu'une traduction partielle pourrait quand même être utile - Je suggère de commencer par la première page de la documentation, 'index.po'."
 
 # af56bcf2703a4372908843f37dbad728
 #: ../doc_src/guides/livelogging.rst:2

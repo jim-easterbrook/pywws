@@ -3093,14 +3093,14 @@ msgstr "Téléverse un enregistrement de données météo. "
 # b8f32bf9baa240bfa7a666e217db2815
 #: ../code/pywws/toservice.py:docstring of pywws.toservice.ToService.Upload:3
 msgid "This method uploads either the most recent weather data record, or all records since the last upload (up to 7 days), according to the value of :obj:`catchup`."
-msgstr ""
+msgstr "Cette méthode téléverse le plus récent enregistrement de données météo ou tous les enregistrements depuis le dernier téléchargement (jusqu'à 7 jours), selon la valeur de :obj:`catchup`."
 
 # 3b0e1008e68e4db69c05ce50472a60b6
 # 61908ca9986e4f159784b26297916c1a
 #: ../code/pywws/toservice.py:docstring of pywws.toservice.ToService.Upload:7
 #: pywws.toservice.ToService.RapidFire:8
 msgid "It sets the ``last update`` configuration value to the time stamp of the most recent record successfully uploaded."
-msgstr ""
+msgstr "Il définit la valeur de configuration ``last update`` à l'horodatage de l'enregistrement le plus récent correctement téléversé."
 
 # 67115a407cb7413eb0928030b5d8977e
 #: ../code/pywws/toservice.py:docstring of
@@ -3113,7 +3113,7 @@ msgstr "Téléverse un enregistrement de données météo. "
 #: ../code/pywws/toservice.py:docstring of
 #: pywws.toservice.ToService.RapidFire:3
 msgid "This method uploads either a single data record (typically one obtained during 'live' logging), or all records since the last upload (up to 7 days), according to the value of :obj:`catchup`."
-msgstr ""
+msgstr "Cette méthode téléverse un enregistrement de données unique (généralement celui qui est produit pendant l'enregistrement 'live') ou tous les enregistrements depuis le dernier téléversement (jusqu'à 7 jours), selon la valeur de :obj:`catchup`."
 
 # e19f41a19b31418681e3bdc16465de8c
 #~ msgid "usage: python EWtoPy.py [options] EasyWeather_file data_dir options are:"
