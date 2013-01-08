@@ -81,6 +81,11 @@ After doing so you'll need to use ``make`` to compile the documentation and lang
    cd pywws
    make
 
+Upgrading pywws
+===============
+
+Some new versions of pywws have changed what's stored in the hourly, daily or monthly summary data files. These new versions are incompatible with processed data from earlier versions. The ``Reprocess.py`` program regenerates all the summary data. It should be run after any major upgrade.
+
 *************
 Documentation
 *************
