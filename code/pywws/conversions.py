@@ -93,7 +93,7 @@ def cadhumidex(temp, humidity):
         return None
 
     #Formulas are adapted to not use e^(...) with no appriable change in accuracy (0.0227%)
-    fSaturationPressure = 6.112 * 10**( 7.5*temp / ( 237.7+temp ) ) * humidity/100
+    fSaturationPressure = 6.112*10**(7.5*temp/(237.7+temp))*humidity/100
     fHumidex = temp + 0.555*( fSaturationPressure-10 )
     
     
