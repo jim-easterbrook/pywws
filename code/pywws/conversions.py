@@ -87,9 +87,9 @@ def wind_bft(ms):
     return len(_bft_threshold)
     
 
-def cadhumidex(temp, humidity, dewpoint):
+def cadhumidex(temp, humidity):
     "Calculate Humidity Index as per Canadian Weather Standards"
-    if (temp is None) | (humidity is None) | (dewpoint is None):
+    if (temp is None) | (humidity is None):
         return None
 
     #Formulas are adapted to not use e^(...) with no appriable change in accuracy (0.0227%)
