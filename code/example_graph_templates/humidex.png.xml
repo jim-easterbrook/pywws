@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<graph>
+  <title>Humidity Index, Bands indicate apparent discomfort in standard on-site working conditions</title>
+  <size>1820, 1024</size>
+  <duration>hours=48</duration>
+  <xtics>2</xtics>
+  <xformat>%H%M</xformat>
+  <dateformat></dateformat>
+  <plot>
+    <yrange>29, 55</yrange>
+    <y2range>29, 55</y2range>
+    <ylabel></ylabel>
+    <y2label>Humidex</y2label>
+    <source>raw</source>
+    <subplot>
+      <title>Humidex</title>
+      <ycalc>cadhumidex(data['temp_out'],data['hum_out'])</ycalc>
+      <colour>4</colour>
+      <axes>x1y2</axes>
+    </subplot>
+    <subplot>
+      <title>HI > 54, Heat Stroke Probable</title>
+      <ycalc>54</ycalc>
+      <axes>x1y2</axes>
+      <colour>1</colour>
+    </subplot>
+    <subplot>
+      <title>HI > 45, Dangerous</title>
+      <ycalc>45</ycalc>
+      <axes>x1y2</axes>
+      <colour>8</colour>
+    </subplot>
+    <subplot>
+      <title>HI > 40, Intense</title>
+      <ycalc>40</ycalc>
+      <axes>x1y2</axes>
+      <colour>6</colour>
+    </subplot>
+    <subplot>
+      <title>HI > 35, Evident</title>
+      <ycalc>35</ycalc>
+      <axes>x1y2</axes>
+      <colour>2</colour>
+    </subplot>
+    <subplot>
+      <title>HI > 30, Noticeable</title>
+      <ycalc>30</ycalc>
+      <axes>x1y2</axes>
+      <colour>3</colour>
+    </subplot>
+  </plot>
+</graph>
