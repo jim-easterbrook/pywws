@@ -85,20 +85,16 @@ def wind_bft(ms):
         if ms < _bft_threshold[bft]:
             return bft
     return len(_bft_threshold)
-    
 
 def cadhumidex(temp, humidity):
     "Calculate Humidity Index as per Canadian Weather Standards"
-    if (temp is None) or (humidity is None):
+    if temp is None or humidity is None:
         return None
-
-    #Formulas are adapted to not use e^(...) with no appriable change in accuracy (0.0227%)
-    fSaturationPressure = 6.112*10**(7.5*temp/(237.7+temp))*humidity/100
-    fHumidex = temp+0.555*(fSaturationPressure-10)
-    
-    
-    return fHumidex
-
+    # Formulas are adapted to not use e^(...) with no appreciable
+    # change in accuracy (0.0227%)
+    saturation_pressure = (6.112 * (10.0**(7.5 * temp / (237.7 + temp))) *
+                           float(humidity) / 100.0)
+    return temp + (0.555 * (saturation_pressure - 10.0))
 
 def main(argv=None):
     # run some simple tests
