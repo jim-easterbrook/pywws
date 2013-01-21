@@ -576,8 +576,7 @@ msgstr "Le système utilisé pour convertir les phrases utilisées dans pywws pe
 # 8bd11051e0864292b019117bbe9ff623
 #: ../doc_src/guides/language.rst:113
 msgid "These files can be edited in a similar way to 'pywws.po'. Fill in each 'msgstr' with a translation of the 'msgid' above it. Note that some strings (such as URLs) need not be translated. In these cases, leave the 'msgstr' blank."
-msgstr "Ces fichiers peuvent être édités de la même manière que 'pywws.po'. Remplissez chaque 'msgstr' avec une traduction de la phrase 'msgid' juste au-dessus. Notez que certaines chaînes (par exemple, URL) ne doivent pas être traduites. Dans ces cas, le 'msgstr' doit être laissé vide.
-"
+msgstr "Ces fichiers peuvent être édités de la même manière que 'pywws.po'. Remplissez chaque 'msgstr' avec une traduction de la phrase 'msgid' juste au-dessus. Notez que certaines chaînes (par exemple, URL) ne doivent pas être traduites. Dans ces cas, le 'msgstr' doit être laissé vide."
 
 # 3510fb07a96244a6a4c183ec7cdf3eab
 #: ../doc_src/guides/language.rst:115
