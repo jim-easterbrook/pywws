@@ -2,7 +2,6 @@
 # Copyright (C) 2008-12, Jim Easterbrook
 # This file is distributed under the same license as the pywws package.
 # Jim Easterbrook <jim@jim-easterbrook.me.uk>, 2012.
-# 
 # Jacques Desroches <jacques.desroches@100fil.ca>, 2012.
 # 
 msgid ""
@@ -334,7 +333,7 @@ msgstr "Mise en route"
 # 330873f8953f4c079b080b541a0615c4
 #: ../doc_src/guides/hourlylogging.rst:14 ../doc_src/guides/livelogging.rst:12
 msgid "First of all, you need to install pywws and make sure it can get data from your weather station. See :doc:`getstarted` for details."
-msgstr "Avant tout, vous devez uns installer pywws et vous assurer qu'il reçoit bien les informations de votre station météo. Voir :doc:`getstarted` pour plus de détails."
+msgstr "Avant tout, vous devez installer pywws et vous assurer qu'il reçoit bien les informations de votre station météo. Voir :doc:`getstarted` pour plus de détails."
 
 # 4144d270c9054697bde52e91fe243e6f
 #: ../doc_src/guides/hourlylogging.rst:16
@@ -954,7 +953,7 @@ msgstr "12 hourly: tâches à réaliser à chaque 12 heures"
 # cc4a1f4003ff4efaaa4cf7f07998ee50
 #: ../doc_src/guides/weather_ini.rst:136
 msgid "This section specifies tasks that are to be carried out every 12 hours when 'live logging' or running an hourly cron job. Use it for things that don't change very often, such as monthly graphs."
-msgstr "Cette section spécifie les tâches à réaliser à chaque heure en mode 'temps réel' exécutées en tant que tâche horaire cron. Utilisez pour des choses qui ne changent pas très souvent, tel que les graphes mensuels."
+msgstr "Cette section spécifie les tâches à réaliser à chaque 12 heures en mode 'temps réel' exécutées en tant que tâche horaire cron. Utilisez pour des choses qui ne changent pas très souvent, tel que les graphes mensuels."
 
 # 8902317bacdc42c88ce88b7dff743b55
 #: ../doc_src/guides/weather_ini.rst:145
@@ -964,12 +963,12 @@ msgstr "daily: tâches à faire à chaque 24 heures"
 # 6004bb2170ea45d6bd41f0c90d80d804
 #: ../doc_src/guides/weather_ini.rst:154
 msgid "This section specifies tasks that are to be carried out every day when 'live logging' or running an hourly cron job. Use it for things that don't change very often, such as monthly or yearly graphs."
-msgstr "Cette section spécifie les tâches à réaliser à chaque heure en mode 'temps réel' exécutées en tant que tâche horaire cron. Utilisez pour des choses qui ne changent pas très souvent, tel que les graphes mensuels ou annuels."
+msgstr "Cette section spécifie les tâches à réaliser à chaque jour en mode 'temps réel' exécutées en tant que tâche horaire cron. Utilisez pour des choses qui ne changent pas très souvent, tel que les graphes mensuels ou annuels."
 
 # 6155b498a90d471ea0862136c88a546d
 #: ../doc_src/guides/weather_ini.rst:163
 msgid "ftp: configuration of uploading to a website"
-msgstr "ftp: configuration pour le téléversement du un site web"
+msgstr "ftp: configuration du téléversement à un site web"
 
 # e98957b90ddf42eba39dd1d89361593b
 #: ../doc_src/guides/weather_ini.rst:174

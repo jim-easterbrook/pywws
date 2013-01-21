@@ -2,7 +2,7 @@
 # Copyright (C) 2008-12, Jim Easterbrook
 # This file is distributed under the same license as the pywws package.
 # Jim Easterbrook <jim@jim-easterbrook.me.uk>, 2012.
-# Jacques Desroches <jacques.desroches@100fil.ca>, 2012.
+# Jacques Desroches <jacques.desroches@100fil.ca>, 2013.
 #
 msgid ""
 msgstr ""
@@ -59,7 +59,7 @@ msgstr "Le  fichier ``EasyWeather.dat`` n'est utilisé que pour fournir les donn
 # 2789785645e34b3380537008db285c9f
 #: ../doc_src/api/EWtoPy.rst:11
 msgid "EWtoPy.py converts the time stamps in EasyWeather.dat from local time to UTC. This can cause problems when daylight savings time ends, as local time appears to jump back one hour. The program attempts to detect this and correct the affected time stamps, but I have not been able to test this on a variety of time zones."
-msgstr "EWtoPy.py convertit les horodates EasyWeather.dat de l'heure locale en heure UTC. Cela peut causer des problèmes lorsque l'heure d'été se termine, puisque l'heure locale apparaît pour revenir en arrière d'une heure. Le programme tente de détecter et de corriger les horodates concernées, mais je n'ai pas pu tester cela sur une variété de fuseaux horaires."
+msgstr "EWtoPy.py convertit les horodates EasyWeather.dat de l'heure locale vers l'heure UTC. Cela peut causer des problèmes lorsque l'heure d'été se termine, puisque l'heure locale apparaît pour revenir en arrière d'une heure. Le programme tente de détecter et de corriger les horodates concernées, mais je n'ai pas pu tester cela sur une variété de fuseaux horaires."
 
 # 8b2b6e8482434e05ab78ddec71f63002
 # b1e5453930b1441e88366a1050fe1053
@@ -84,7 +84,7 @@ msgstr "API détaillé"
 #: ../code/EWtoPy.py:docstring of EWtoPy:1
 #, fuzzy
 msgid "Convert EasyWeather.dat data to pywws format ::"
-msgstr "Convertir les données du format EasyWeather.dat vers le format de pywws."
+msgstr "Converti les données du format EasyWeather.dat vers le format de pywws."
 
 # 92fb0c63417948219994dc1cba85dcb9
 #: ../code/EWtoPy.py:docstring of EWtoPy:12
@@ -192,7 +192,7 @@ msgstr "Exécuter en continu, ayant définit quelles sont les tâches à accompl
 # 40ecc20d2811439693d21ad50e7b64ae
 #: ../code/LiveLog.py:docstring of LiveLog:14
 msgid "For more information on using ``LiveLog.py``, see :doc:`../guides/livelogging`."
-msgstr "Pour plus d'informations sur l'utilisation ``LiveLog.py``, voir:doc:`../guides/ livelogging`."
+msgstr "Pour plus d'informations sur l'utilisation ``LiveLog.py``, voir :doc:`../guides/livelogging`."
 
 # 535e933fddd146bcb14348a5b934927b
 #: ../doc_src/<autosummary>:1
@@ -233,7 +233,7 @@ msgstr "Régénére les données sommaires horaires et quotidiennes."
 # 41daa9920cbd4b0db4df714dc2aaa020
 #: ../code/Reprocess.py:docstring of Reprocess:3
 msgid "usage: python Reprocess.py [options] data_dir options are:"
-msgstr "utilisation: python Reprocess.py [options] data_dir les options sont:"
+msgstr "utilisation: python Reprocess.py [options] data_dir. Les options sont:"
 
 # 135e3564ba634e07998c116731c1dd1c
 # a256db53cccf4a6aaa90a0f2380ad9e4
@@ -269,7 +269,7 @@ msgstr "RunModule"
 #: ../code/RunModule.py:docstring of RunModule:1 ../doc_src/<autosummary>:1
 #, fuzzy
 msgid "Run a pywws module."
-msgstr "Run un module pywws."
+msgstr "Exécute un module pywws."
 
 # 5863bce4047b4fceb43bd60b2e541eb2
 #: ../code/RunModule.py:docstring of RunModule:3
@@ -372,7 +372,7 @@ msgstr ""
 #: ../code/USBQualityTest.py:docstring of USBQualityTest:1
 #: ../doc_src/<autosummary>:1
 msgid "Test quality of USB connection to weather station"
-msgstr "Teste la qualité de la connexion USB à votre station météo"
+msgstr "Teste la qualité de la connexion USB avec votre station météo"
 
 # ec2914f6de7a4286b20fa9fadd2e802b
 #: ../code/USBQualityTest.py:docstring of USBQualityTest:13
@@ -382,17 +382,17 @@ msgstr "La liaison USB à ma station n'est pas fiable à 100%. Les données lues
 # f16cb97f203347fdb9ce70d8e12d7a9f
 #: ../code/USBQualityTest.py:docstring of USBQualityTest:20
 msgid "This program tests the USB connection for errors by continuously reading the entire weather station memory (except for those parts that may be changing) looking for errors. Each 32-byte block is read twice, and if the two readings differ a warning message is displayed. Also displayed are the number of blocks read, and the number of errors found."
-msgstr "Ce programme teste la connexion USB pour les erreurs de lecture continue de toute la mémoire de la station météo (sauf pour les parties qui peuvent être changeantes) à la recherche d'erreurs. Chaque bloc de 32 octets est lue deux fois, et si les deux lectures diffèrent, un message d'avertissement s'affiche. Sont également affichés le nombre de blocs lus, et le nombre d'erreurs rencontrées."
+msgstr "Ce programme teste la connexion USB en lisant de manière continue toute la mémoire de la station météo (sauf les parties qui peuvent être changeantes) à la recherche d'erreurs. Chaque bloc de 32 octets est lu deux fois, et si les deux lectures diffèrent, un message d'avertissement s'affiche. Sont également affichés le nombre de blocs lus, et le nombre d'erreurs rencontrées."
 
 # 2a645fc346ae49f2b85ca0ee3328cb9d
 #: ../code/USBQualityTest.py:docstring of USBQualityTest:27
 msgid "I typically get one or two errors per hour, so the test needs to be run for several hours to produce a useful measurement. Note that other software that accesses the weather station (such as :doc:`Hourly` or :doc:`LiveLog`) must not be run while the test is in progress."
-msgstr "En général, j'obtiens une ou deux erreurs par heure, donc le test doit être exécuté pendant plusieurs heures pour produire une mesure utile. Notez que d'autres logiciels qui accèdent à la station météo (tels que :doc:`Hourly` ou :doc:`LiveLog`) ne doivent pas être exécutés alors que le test est en cours."
+msgstr "En général, j'obtiens une ou deux erreurs par heure, donc le test doit être exécuté pendant plusieurs heures pour produire une mesure utile. Notez que les autres programmes qui accèdent à la station météo (tels que :doc:`Hourly` ou :doc:`LiveLog`) ne doivent pas être exécutés alors que le test est en cours."
 
 # 172444bfccf84301a01293bfc6647a1b
 #: ../code/USBQualityTest.py:docstring of USBQualityTest:32
 msgid "If you run this test and get no errors at all, please let me know. There is something good about your setup and I'd love to know what it is!"
-msgstr "Si vous exécutez ce test et obtenez aucune erreur du tout, s'il vous plaît faites le moi savoir. Il y a quelque chose de bon sur votre configuration et j'aimerais savoir ce que c'est"
+msgstr "Si vous exécutez ce test et obtenez absolument aucune erreur, s'il vous plaît faites le moi savoir. Il y a quelque chose de spécial dans votre configuration et j'aimerais bien savoir ce que c'est"
 
 # 31d1ee235fee4f44a70521e48ecfcfa4
 #: ../doc_src/<autosummary>:1
@@ -687,7 +687,7 @@ msgstr ""
 # b951ce35f0504417b073150222448f17
 #: ../doc_src/<autosummary>:1
 msgid "conversions.py - a set of functions to convert pywws native units"
-msgstr "conversions.py - un ensemble de fonctions pour convertir les unités pywws natives"
+msgstr "conversions.py est un ensemble de fonctions pour convertir les unités pywws natives"
 
 # 659299293735483aba3bbdc4eeb1f0d2
 #: ../doc_src/<autosummary>:1
@@ -1891,7 +1891,7 @@ msgstr "Enfin nous arrivons aux valeurs de datetime. L'instruction ``#idx \"%H%M
 #: ../code/pywws/Template.py:docstring of pywws.Template:3
 #, fuzzy
 msgid "usage: python RunModule.py Template [options] data_dir template_file output_file options are:"
-msgstr "usage: python Template.py [options] data_dir template_file output_file les options sont:"
+msgstr "usage: python Template.py [options] data_dir template_file output_file. Les options sont:"
 
 # ee9730bef1c243ffb7d3f8aee9bfda5b
 #: ../code/pywws/Template.py:docstring of pywws.Template:6
@@ -2512,7 +2512,7 @@ msgstr "Assurez-vous que vous définissez ``result['rel_pressure']``."
 # 897ef971ca9d41e78fc9fb73c6723644
 #: ../code/pywws/calib.py:docstring of pywws.calib:50
 msgid "Don't forget to ``return`` the result at the end."
-msgstr "N'oubliez pas de ``return`` le résultat à la fin."
+msgstr "N'oubliez pas de retourner (``return``) le résultat à la fin."
 
 # f2fa0536d04d4b3993b7e05c377dc3f9
 #: ../code/pywws/calib.py:docstring of pywws.calib:52
@@ -2566,7 +2566,7 @@ msgstr ""
 # 7012782a6ec9414495800462a73819eb
 #: ../code/pywws/conversions.py:docstring of pywws.conversions:1
 msgid "conversions.py - a set of functions to convert pywws native units (Centigrade, mm, m/s, hPa) to other popular units"
-msgstr "conversions.py - un ensemble de fonctions pour convertir les unités pywws natives (centigrades, mm, m / s, hPa), en d'autres unités de mesure populaires"
+msgstr "conversions.py est un ensemble de fonctions pour convertir les unités pywws natives (centigrades, mm, m / s, hPa), en d'autres unités de mesure populaires"
 
 # 6fa3fb2a42f442e6a0ad5acec3fb3037
 #: ../doc_src/<autosummary>:1
@@ -3132,7 +3132,7 @@ msgstr "Cette méthode téléverse un enregistrement de données unique (génér
 
 # 814e40a88fae42daa9d026739edcb3a5
 #~ msgid "usage: python SetWeatherStation.py [options] options are:"
-#~ msgstr "utilisation: python SetWeatherStation.py [options], les options sont:"
+#~ msgstr "utilisation: python SetWeatherStation.py [options]. Les options sont:"
 
 # 3ce55992331a41abb944eea26b2bc0a6
 #~ msgid "(unlikely to work)"
@@ -3144,7 +3144,7 @@ msgstr "Cette méthode téléverse un enregistrement de données unique (génér
 
 # fffb8f791d5d40989a25876748a391e0
 #~ msgid "usage: python Forecast.py [options] data_dir options are:"
-#~ msgstr "usage: python Forecast.py [options] data_dir, les options sont les suivantes:"
+#~ msgstr "usage: python Forecast.py [options] data_dir. Les options sont les suivantes:"
 
 # e99050e3c0f5467db55ac8a4133831f4
 #~ msgid "-h | --help  display this help"
@@ -3152,7 +3152,7 @@ msgstr "Cette méthode téléverse un enregistrement de données unique (génér
 
 # 6b10ba0de12449d5ab72deeba95a9d98
 #~ msgid "usage: python Plot.py [options] data_dir temp_dir xml_file output_file options are:"
-#~ msgstr "usage: python Plot.py [options] data_dir temp_dir xml_file output_file, les options sont:"
+#~ msgstr "usage: python Plot.py [options] data_dir temp_dir xml_file output_file. Les options sont:"
 
 # c231f9fe6c404ba5b78612849aad4482
 # 140a1e59f20e4bd8ad08b8a939eb8aa7
@@ -3161,7 +3161,7 @@ msgstr "Cette méthode téléverse un enregistrement de données unique (génér
 
 # e0483ba530254a6799ef5df197d19dc5
 #~ msgid "usage: python Upload.py [options] data_dir file [file...] options are:"
-#~ msgstr "usage: python Upload.py [options] data_dir file [fichier...], les options sont:"
+#~ msgstr "usage: python Upload.py [options] data_dir file [fichier...]. Les options sont:"
 
 # 48092ec46acd4157bd7a71de84e00090
 #~ msgid "data_dir is the root directory of the weather data file is a file to be uploaded"
@@ -3169,11 +3169,11 @@ msgstr "Cette méthode téléverse un enregistrement de données unique (génér
 
 # 44d84b965af24a00820f7be6cf9dc322
 #~ msgid "usage: python WindRose.py [options] data_dir temp_dir xml_file output_file options are:"
-#~ msgstr "usage: python WindRose.py [options] data_dir temp_dir xml_file output_file, les options sont:"
+#~ msgstr "usage: python WindRose.py [options] data_dir temp_dir xml_file output_file. Les options sont:"
 
 # 6105d6ec0a4a4975a12049fe3df50e46
 #~ msgid "usage: python pywws/YoWindow.py [options] data_dir output_file options are:"
-#~ msgstr "usage: python pywws/YoWindow.py [options] data_dir output_file, les options sont:"
+#~ msgstr "usage: python pywws/YoWindow.py [options] data_dir output_file. Les options sont:"
 
 # 3a75d078512e4a52b58d5a7c285b2d48
 #~ msgid "-h or --help     display this help -v or --verbose  increase amount of reassuring messages"
