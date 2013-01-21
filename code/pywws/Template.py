@@ -21,7 +21,8 @@ import sys
 
 from .conversions import (
     illuminance_wm2, pressure_inhg, rain_inch, temp_f,
-    winddir_degrees, winddir_text, wind_kmph, wind_mph, wind_kn, wind_bft)
+    winddir_degrees, winddir_text, wind_kmph, wind_mph, wind_kn, wind_bft,
+    cadhumidex)
 from . import DataStore
 from .Forecast import Zambretti, ZambrettiCode
 from . import Localisation
