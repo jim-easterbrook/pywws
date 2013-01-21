@@ -1,8 +1,10 @@
 Humidity Index (Humidex)
-=============================
+========================
+
+.. sectionauthor:: Rodney Persky
 
 Background
--------------
+----------
 
 Using your weather station can be fun, and reporting daily to various weather data sites can be very useful for your neighbours to check out the weather. However, at some point you may want to know how the weather effects your body, and if there is a way to tell when it's good or not to work outdoors.
 
@@ -39,14 +41,14 @@ There are also assumptions about the individuals body type and 'acclimatisation'
 * Experience will aid in knowing when to stop working
 
 Important References
----------------------
+--------------------
 
 Being Prepared for Summer - http://www.ec.gc.ca/meteo-weather/default.asp?lang=En&n=86C0425B-1
 
 How to use
-------------
+----------
 
-The function is descriptively named _cadhumidex_ and has the parameters temperature and humidity, essentially the function operates as a conversion and can be used in a straightforward manner::
+The function is descriptively named ``cadhumidex`` and has the parameters temperature and humidity, essentially the function operates as a conversion and can be used in a straightforward manner::
 
 <ycalc>cadhumidex(data['temp_out'],data['hum_out'])</ycalc>
 
@@ -106,7 +108,7 @@ Putting it together, I have added colours that follow basic warning colors and t
   </graph>
 
 Not running the latest update?
--------------------------------
+------------------------------
 
 If you are not running the latest update / do not want to, then this can be implemented using a longer <ycalc> as follows::
 

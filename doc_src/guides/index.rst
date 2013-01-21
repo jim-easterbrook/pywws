@@ -12,3 +12,4 @@ Contents:
    twitter
    language
    weather_ini
+   humidex

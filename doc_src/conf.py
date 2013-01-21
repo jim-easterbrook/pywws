@@ -49,7 +49,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'pywws'
-copyright = u'2008-12, Jim Easterbrook'
+copyright = u'2008-13, Jim Easterbrook'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -91,6 +91,7 @@ exclude_patterns = []
 # If true, sectionauthor and moduleauthor directives will be shown in the
 # output. They are ignored by default.
 #show_authors = False
+show_authors = True
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = 'sphinx'
