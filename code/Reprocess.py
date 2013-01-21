@@ -1,14 +1,22 @@
 #!/usr/bin/env python
 
-"""
-Regenerate hourly and daily summary data.
+"""Regenerate hourly and daily summary data
+::
 
-usage: python Reprocess.py [options] data_dir
-options are:
- -h | --help     display this help
- -v | --verbose  increase number of informative messages
-data_dir is the root directory of the weather data
+%s
+
 """
+
+__docformat__ = "restructuredtext en"
+__usage__ = """
+ usage: python Reprocess.py [options] data_dir
+ options are:
+  -h | --help     display this help
+  -v | --verbose  increase number of informative messages
+ data_dir is the root directory of the weather data
+"""
+__doc__ %= __usage__
+__usage__ = __doc__.split('\n')[0] + __usage__
 
 import getopt
 import os
@@ -46,20 +54,20 @@ def main(argv=None):
         opts, args = getopt.getopt(argv[1:], "hv", ['help', 'verbose'])
     except getopt.error, msg:
         print >>sys.stderr, 'Error: %s\n' % msg
-        print >>sys.stderr, __doc__.strip()
+        print >>sys.stderr, __usage__.strip()
         return 1
     # process options
     verbose = 0
     for o, a in opts:
         if o in ('-h', '--help'):
-            print __doc__.strip()
+            print __usage__.strip()
             return 0
         elif o in ('-v', '--verbose'):
             verbose += 1
     # check arguments
     if len(args) != 1:
         print >>sys.stderr, 'Error: 1 argument required\n'
-        print >>sys.stderr, __doc__.strip()
+        print >>sys.stderr, __usage__.strip()
         return 2
     logger = ApplicationLogger(verbose)
     data_dir = args[0]

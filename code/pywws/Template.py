@@ -1,15 +1,23 @@
 #!/usr/bin/env python
 
-"""
-Create text data file based on a template.
+"""Create text data file based on a template
+::
 
-usage: python RunModule.py Template [options] data_dir template_file output_file
-options are:
-\t--help\t\tdisplay this help
-data_dir is the root directory of the weather data
-template_file is the template text source file
-output_file is the name of the text file to be created
+%s
+
 """
+
+__docformat__ = "restructuredtext en"
+__usage__ = """
+ usage: python RunModule.py Template [options] data_dir template_file output_file
+ options are:
+  --help    display this help
+ data_dir is the root directory of the weather data
+ template_file is the template text source file
+ output_file is the name of the text file to be created
+"""
+__doc__ %= __usage__
+__usage__ = __doc__.split('\n')[0] + __usage__
 
 from datetime import datetime, timedelta
 import getopt
@@ -256,17 +264,17 @@ def main(argv=None):
         opts, args = getopt.getopt(argv[1:], "", ['help'])
     except getopt.error, msg:
         print >>sys.stderr, 'Error: %s\n' % msg
-        print >>sys.stderr, __doc__.strip()
+        print >>sys.stderr, __usage__.strip()
         return 1
     # check arguments
     if len(args) != 3:
         print >>sys.stderr, 'Error: 3 arguments required\n'
-        print >>sys.stderr, __doc__.strip()
+        print >>sys.stderr, __usage__.strip()
         return 2
     # process options
     for o, a in opts:
         if o == '--help':
-            print __doc__.strip()
+            print __usage__.strip()
             return 0
     logger = ApplicationLogger(1)
     params = DataStore.params(args[0])
