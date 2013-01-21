@@ -84,6 +84,8 @@ After doing so you'll need to use ``make`` to compile the documentation and lang
 Upgrading pywws
 ===============
 
+The method used to upgrade pywws depends on how you originally installed it. If you downloaded a zip or tar.gz file, you just need to do the same again, with the new version, then delete your old download when you've finished setting up the new one. (Note that upgrading is much easier if you do not keep your templates, user modules and weather data in the same directory as the downloaded files.) If you used ``pip`` you just need to repeat the command. ``git`` users just need to do a ``git pull`` command.
+
 Some new versions of pywws have changed what's stored in the hourly, daily or monthly summary data files. These new versions are incompatible with processed data from earlier versions. The ``Reprocess.py`` program regenerates all the summary data. It should be run after any major upgrade.
 
 *************
@@ -92,7 +94,7 @@ Documentation
 
 Documentation is included with pywws downloads, and is also available `online <http://jim-easterbrook.github.com/pywws/doc/html/>`_. A good starting place is the `how to get started guide <guides/getstarted.html>`_ which describes in more detail how to install pywws.
 
-If you have questions not answered in the documentation, please join the `pywws Google mailing list / discussion group <http://groups.google.com/group/pywws>`_ and ask there.
+If you have questions not answered in the documentation, please join the `pywws Google mailing list / discussion group <http://groups.google.com/group/pywws>`_ and ask there. Note that your first message to the group will not appear immediately -- new posters have to be approved by a moderator, to prevent spam messages.
 
 Contents
 ========

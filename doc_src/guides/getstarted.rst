@@ -75,6 +75,14 @@ How to get started with pywws
 
    If you have any other problem, please ask for help on the pywws mailing list: http://groups.google.com/group/pywws
 
+#. Set up your weather station.
+
+   If you haven't already done so, set your weather station to display the correct relative atmospheric pressure. (See the manual for details of how to do this.) pywws gets the offset between relative and absolute pressure from the station, so this needs to be set before using pywws.
+
+   You can get the correct relative pressure from your location by looking on the internet for weather reports from a nearby station, ideally an official one such as an airport. This is best done during calm weather when the pressure is almost constant over a large area.
+
+   If you change the offset at any time, you can update all your stored data by running the Reprocess.py program.
+
 #. Log your weather station data.
 
    First, choose a directory to store all your weather station data. This will be written to quite frequently, so a disk drive is preferable to a memory stick, as these have a limited number of writes. In most cases your home directory is suitable, for example::
@@ -84,8 +92,6 @@ How to get started with pywws
    This directory is referred to elsewhere in the pywws documentation as your data directory.
 
    Make sure your computer has the right date & time, and time zone, as these are used to label the weather station data. If you haven't already done so, it's worth setting up NTP to synchronise your computer to a 'time server'.
-
-   Make sure your weather station has the correct offset between 'absolute' and 'relative' atmospheric pressure. See the instruction book for details on how to set this.
 
    The first time you run :py:mod:`pywws.LogData` it will create a configuration file in your data directory called 'weather.ini' and then stop. You need to edit the configuration file and change the line ``ws type = Unknown`` to ``ws type = 1080`` or ``ws type = 3080``. (If your weather station console displays solar illuminance you have a 3080 type, all others are 1080.) Then run :py:mod:`pywws.LogData` again. This may take several minutes, as it will copy all the data stored in your station's memory. The :py:mod:`pywws.LogData` program has a 'verbose' option that increases the amount of messages it displays while running. This is useful when running it manually, for example::
 
