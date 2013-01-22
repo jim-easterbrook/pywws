@@ -95,16 +95,14 @@ How to use pywws in another language
 
 #. Update the language file.
 
-   As pywws is extended, new strings may be added which will require your
-   translation file to be extended as well. This is fairly easy to do. First
-   you need to remove the language master template file, then run the 'make lang_src' command again::
+   As pywws is extended, new strings may be added which will require your translation file to be extended as well. This is fairly easy to do. First you need to remove the language master template files, then run the 'make lang_src' command again::
 
-      rm translations/pywws.pot
+      rm translations/*.pot
       make lang_src LANG=fr
 
-   This should add the
-   new strings to your language file, without changing the strings you've
-   already translated.
+   This should add the new strings to your language file, without changing the strings you've already translated.
+   
+   If the English language source has changed since your last translation, some strings may be marked by gettext as ``#, fuzzy``. You should check that your translation is still correct for these strings -- the change may be trivial (e.g. a spelling correction) but it could be quite significant. When you've checked (and corrected if necessary) the translation, remove the ``#, fuzzy`` line.
 
 #. Translating the documentation.
 
@@ -112,7 +110,7 @@ How to use pywws in another language
 
    These files can be edited in a similar way to 'pywws.po'. Fill in each 'msgstr' with a translation of the 'msgid' above it. Note that some strings (such as URLs) need not be translated. In these cases, leave the 'msgstr' blank.
 
-   Translating all of the pywws documentation is a lot of work. However, when the documentation is 'compiled' any untranslated strings revert to their English original. This means that a partial translation could still be useful - I suggest starting with the documentation front page, 'index.po'.
+   Translating all of the pywws documentation is a lot of work. However, when the documentation is 'compiled' any untranslated strings revert to their English original. This means that a partial translation could still be useful -- I suggest starting with the documentation front page, 'index.po'.
 
    Comments or questions? Please subscribe to the pywws mailing list
    http://groups.google.com/group/pywws and let us know.
