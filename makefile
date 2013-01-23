@@ -19,7 +19,7 @@ dist : lang_all code/pywws/version.py doc_all
 
 clean :
 	rm -Rf doc/* code/pywws/locale/* translations/*/LC_MESSAGES \
-		code3 build dist
+		code3 build dist code/pywws/version.py
 
 lang : $(po_files:%.po=translations/$(LANG)/LC_MESSAGES/%.mo) \
 	$(po_files:%=code/pywws/locale/$(LANG)/LC_MESSAGES/pywws.mo)
@@ -28,7 +28,9 @@ lang_all :
 	for lang in $(langs); do $(MAKE) LANG=$$lang lang; done
 
 pots	:= pywws api essentials guides index pywws
-lang_src : $(pots:%=translations/%.pot) $(pots:%=translations/$(LANG)/%.po)
+lang_src : code/pywws/version.py \
+		$(pots:%=translations/%.pot) \
+		$(pots:%=translations/$(LANG)/%.po)
 
 doc : lang code/pywws/version.py
 	$(MAKE) -C doc_src html text SPHINXOPTS="-D language=$(LANG)"
