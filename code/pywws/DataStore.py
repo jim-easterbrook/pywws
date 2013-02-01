@@ -15,7 +15,7 @@ data[datetime.min:datetime.max]
 data[datetime.utcnow() - timedelta(hours=12):]
 """
 
-from ConfigParser import SafeConfigParser
+from ConfigParser import RawConfigParser
 import csv
 from datetime import date, datetime, timedelta
 import os
@@ -41,7 +41,7 @@ class params(object):
         self._path = os.path.join(root_dir, 'weather.ini')
         self._dirty = False
         # open config file
-        self._config = SafeConfigParser()
+        self._config = RawConfigParser()
         self._config.read(self._path)
     def __del__(self):
         self.flush()
