@@ -435,6 +435,10 @@ class weather_station(object):
             # make sure changes because of logging interval aren't
             # mistaken for new live data
             old_data['delay'] = new_data['delay']
+            if self.ws_type == '3080':
+                # ignore solar data which changes every 60 seconds
+                old_data['illuminance'] = new_data['illuminance']
+                old_data['uv'] = new_data['uv']
             if next_live and not logged_only:
                 while now > next_live + live_interval:
                     self.logger.info('live_data missed')
