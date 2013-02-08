@@ -116,25 +116,29 @@ How to get started with pywws
    After running :py:mod:`pywws.LogData` there should be a configuration file in your data directory called 'weather.ini'. Open this with a text editor. You should find something like the following::
 
       [fixed]
-      ws type = 1080
+      station clock = 1360322930.02
+      sensor clock = 1360322743.69
       pressure offset = 7.4
       fixed block = {...}
 
       [config]
+      ws type = 1080
       logdata sync = 1
 
-   The line ``[fixed]`` marks the start of a section (called '[fixed]'), and the following lines are entries in that section. The ``ws type`` entry can be set to ``1080`` or ``3080``. If your station's console displays illuminance and UV information, set it to ``3080``. The ``pressure offset`` entry stores the difference between absolute and relative atmospheric pressure that was read from the weather station. The ``fixed block`` entry stores a large amount of data from the station's 'fixed block' memory.
+   The line ``[fixed]`` marks the start of a section (called '[fixed]'), and the following lines are entries in that section. The ``pressure offset`` entry stores the difference between absolute and relative atmospheric pressure that was read from the weather station. The ``fixed block`` entry stores a large amount of data from the station's 'fixed block' memory.
 
    You need to add a new entry in the ``[config]`` section called ``day end hour``. This tells pywws what convention you want to use when calculating daily summary data. In the UK, the 'meteorological day' is usually from 09:00 to 09:00 GMT (10:00 to 10:00 BST during summer), so I use a day end hour value of 9. In other countries a value of 24 (or 0) might be more suitable. Note that the value is set in local winter time. You should not need to change it when daylight savings time is in effect.
 
    After editing, your weather.ini file should look something like this::
 
       [fixed]
-      ws type = 1080
+      station clock = 1360322930.02
+      sensor clock = 1360322743.69
       pressure offset = 7.4
       fixed block = {...}
 
       [config]
+      ws type = 1080
       logdata sync = 1
       day end hour = 9
 

@@ -44,11 +44,11 @@ def LiveLog(data_dir):
     # localise application
     Localisation.SetApplicationLanguage(params)
     # connect to weather station
-    ws_type = params.get('config', 'ws type')
+    ws_type = params.get('fixed', 'ws type')
     if ws_type:
-        params._config.remove_option('config', 'ws type')
-        params.set('fixed', 'ws type', ws_type)
-    ws_type = params.get('fixed', 'ws type', '1080')
+        params._config.remove_option('fixed', 'ws type')
+        params.set('config', 'ws type', ws_type)
+    ws_type = params.get('config', 'ws type', '1080')
     ws = WeatherStation.weather_station(ws_type=ws_type, params=params)
     fixed_block = CheckFixedBlock(ws, params, logger)
     if not fixed_block:

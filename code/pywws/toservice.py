@@ -251,7 +251,7 @@ class ToService(object):
         self.template_file = os.path.join(
             os.path.dirname(__file__), 'services',
             '%s_template_%s.txt' % (service_name,
-                                    self.params.get('fixed', 'ws type')))
+                                    self.params.get('config', 'ws type')))
         # get other parameters
         self.catchup = eval(service_params.get('config', 'catchup'))
         self.use_get = eval(service_params.get('config', 'use get'))

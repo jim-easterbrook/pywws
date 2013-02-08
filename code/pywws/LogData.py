@@ -99,7 +99,7 @@ def CheckFixedBlock(ws, params, logger):
             logger.warning(
                 "Computer and weather station clocks disagree by %s (H:M:S).", str(diff))
     # store weather station type
-    params.set('fixed', 'ws type', ws.ws_type)
+    params.set('config', 'ws type', ws.ws_type)
     # store info from fixed block
     pressure_offset = fixed_block['rel_pressure'] - fixed_block['abs_pressure']
     old_offset = eval(params.get('fixed', 'pressure offset', 'None'))
@@ -121,11 +121,11 @@ def CheckFixedBlock(ws, params, logger):
 def LogData(params, raw_data, sync=None, clear=False):
     logger = logging.getLogger('pywws.LogData')
     # connect to weather station
-    ws_type = params.get('config', 'ws type')
+    ws_type = params.get('fixed', 'ws type')
     if ws_type:
-        params._config.remove_option('config', 'ws type')
-        params.set('fixed', 'ws type', ws_type)
-    ws_type = params.get('fixed', 'ws type', 'Unknown')
+        params._config.remove_option('fixed', 'ws type')
+        params.set('config', 'ws type', ws_type)
+    ws_type = params.get('config', 'ws type', 'Unknown')
     ws = WeatherStation.weather_station(ws_type=ws_type, params=params)
     fixed_block = CheckFixedBlock(ws, params, logger)
     if not fixed_block:

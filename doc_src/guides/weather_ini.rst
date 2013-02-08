@@ -31,16 +31,19 @@ config: miscellaneous system configuration
 ::
 
  [config]
+ ws type = 1080
  day end hour = 21
  gnuplot encoding = iso_8859_1
  language = en
  logdata sync = 1
 
+``ws type`` is the "class" of weather station. It should be set to ``1080`` for most weather stations, or ``3080`` if your station console displays solar illuminance.
+ 
 ``day end hour`` is the end of the "`meteorological day <http://en.wikipedia.org/wiki/Meteorological_day>`_", in local time without daylight savings time. Typical values are 21, 9, or 24.
 
 ``gnuplot encoding`` is the text encoding used when plotting graphs. The default value of ``iso_8859_1`` allows the degree symbol, which is useful in a weather application! Other values might be needed if your language includes accented characters. The possible values depend on your gnuplot installation so some experimentation may be needed.
 
-``language`` is used to localise pywws. It's optional, as pywws usually uses the computer's default language as set by the LANG environment variable. The available languages are those in the ``locale`` subdirectory of your pywws installation. If you set any other language, pywws will fall back to using English.
+``language`` is used to localise pywws. It's optional, as pywws usually uses the computer's default language as set by the LANG environment variable. The available languages are those in the ``translations`` subdirectory of your pywws installation. If you set any other language, pywws will fall back to using English.
 
 ``logdata sync`` sets the quality of synchronisation used by :doc:`../api/pywws.LogData`. Set it to 0 for fast & inaccurate or 1 for slower but precise.
 
@@ -61,8 +64,10 @@ fixed: values copied from the weather station's "fixed block"
 ::
 
  [fixed]
+ station clock = 1360322930.02
+ sensor clock = 1360322743.69
  pressure offset = 7.4
- ws type = 1080
+ fixed block = {...}
 
 This section is written by pywws and should not be edited.
 
