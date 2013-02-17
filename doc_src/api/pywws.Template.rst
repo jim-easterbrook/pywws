@@ -14,6 +14,7 @@ Processing instructions
 -----------------------
 
   * ``##``: output a single '#' character.
+  * ``#! comment text#``: a comment, no output generated.
   * ``#monthly#``: switch to "monthly" summary data. The index is reset to the most recent value.
   * ``#daily#``: switch to "daily" summary data. The index is reset to the most recent value.
   * ``#hourly#``: switch to "hourly" summary data. The index is reset to the most recent value.

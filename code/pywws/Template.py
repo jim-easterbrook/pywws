@@ -116,6 +116,9 @@ class Template(object):
                     if i == 0 or parts[i] != '\n':
                         yield parts[i]
                     continue
+                if parts[i][0] == '!':
+                    # comment
+                    continue
                 command = shlex.split(parts[i])
                 if command == []:
                     # empty command == print a single '#'
