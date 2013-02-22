@@ -420,13 +420,18 @@ class weather_station(object):
             self._station_clock = None
         ptr_time = 0
         data_time = 0
+        last_log = now
         while True:
             if not self._station_clock:
                 next_log = None
             if not self._sensor_clock:
                 next_live = None
-            # wake up just before next reading is due
             now = time.time()
+            # if station stops logging data, don't keep reading USB
+            # until it locks up
+            if now - last_log > (read_period + 2) * 60:
+                raise IOError('station is not logging data')
+            # wake up just before next reading is due
             advance = now + max(self.avoid, self.min_pause) + self.min_pause
             pause = 600.0
             if next_live:
@@ -498,6 +503,7 @@ class weather_station(object):
             valid_time = ptr_time - last_ptr_time < (self.min_pause * 2.0) - 0.1
             if new_ptr != old_ptr:
                 self.logger.debug('live_data new ptr: %06x', new_ptr)
+                last_log = ptr_time
                 # re-read data, to be absolutely sure it's the last
                 # logged data before the pointer was updated
                 new_data = self.get_data(old_ptr, unbuffered=True)
