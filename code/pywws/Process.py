@@ -363,7 +363,8 @@ class MonthAcc(object):
     Compute daytime max & nighttime min temperatures.
 
     """
-    def __init__(self):
+    def __init__(self, rain_day_threshold):
+        self.rain_day_threshold = rain_day_threshold
         self.has_illuminance = False
         self.ave = {}
         self.min = {}
@@ -403,6 +404,7 @@ class MonthAcc(object):
         self.wind_count = 0
         self.wind_gust = (-1.0, None)
         self.rain = 0.0
+        self.rain_days = 0
         self.valid = False
 
     def add_daily(self, data):
@@ -453,6 +455,8 @@ class MonthAcc(object):
                     self.max_hi[i].add(value, data['%s_max_t' % i])
                     self.max_ave[i].add(value)
         self.rain += data['rain']
+        if data['rain'] >= self.rain_day_threshold:
+            self.rain_days += 1
         self.valid = True
 
     def result(self):
@@ -461,6 +465,7 @@ class MonthAcc(object):
         result = {}
         result['idx'] = self.idx
         result['rain'] = self.rain
+        result['rain_days'] = self.rain_days
         for i in ('temp_in', 'temp_out'):
             result['%s_ave' % i] = self.ave[i].result()
             result['%s_min_ave' % i] = self.min_ave[i].result()
@@ -646,7 +651,7 @@ def generate_daily(logger, day_end_hour, daytime,
     daily_data.flush()
     return start
 
-def generate_monthly(logger, day_end_hour, time_offset,
+def generate_monthly(logger, rain_day_threshold, day_end_hour, time_offset,
                      daily_data, monthly_data, process_from):
     """Generate monthly summaries from daily data."""
     start = monthly_data.before(datetime.max)
@@ -674,7 +679,7 @@ def generate_monthly(logger, day_end_hour, time_offset,
     monthly_data.flush()
     stop = daily_data.before(datetime.max)
     month_start = start
-    acc = MonthAcc()
+    acc = MonthAcc(rain_day_threshold)
     count = 0
     while month_start <= stop:
         count += 1
@@ -727,6 +732,8 @@ def Process(params, raw_data, calib_data, hourly_data, daily_data, monthly_data)
     for i in range(12):
         daytime[night_hour] = False
         night_hour = (night_hour + 1) % 24
+    # get other config
+    rain_day_threshold = eval(params.get('config', 'rain day threshold', '0.2'))
     # calibrate raw data
     start = calibrate_data(logger, params, raw_data, calib_data)
     # generate hourly data
@@ -735,7 +742,7 @@ def Process(params, raw_data, calib_data, hourly_data, daily_data, monthly_data)
     start = generate_daily(logger, day_end_hour, daytime,
                            calib_data, hourly_data, daily_data, start)
     # generate monthly data
-    generate_monthly(logger, day_end_hour, time_offset,
+    generate_monthly(logger, rain_day_threshold, day_end_hour, time_offset,
                      daily_data, monthly_data, start)
     return 0
 

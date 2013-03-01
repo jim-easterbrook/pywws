@@ -19,11 +19,13 @@
   <tr>
     <th rowspan="3">Month</th>
     <th colspan="6">Temperature</th>
-    <th rowspan="3">Rainfall</th>
+    <th colspan="2">Rainfall</th>
   </tr>
   <tr>
     <th colspan="3">daytime maximum</th>
     <th colspan="3">nighttime minimum</th>
+    <th rowspan="2">total</th>
+    <th rowspan="2">rainy days</th>
   </tr>
   <tr>
     <th>highest</th>
@@ -45,6 +47,7 @@
     <td>#temp_out_min_ave "%.1f &deg;C"#</td>
     <td>#temp_out_min_lo "%.1f &deg;C"#</td>
     <td>#rain "%0.1f mm"#</td>
+    <td>#rain_days "%d"#</td>
   </tr>
 #jump -1#
 #endloop#
