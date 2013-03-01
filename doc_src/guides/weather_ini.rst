@@ -54,6 +54,7 @@ config: miscellaneous system configuration
  gnuplot encoding = iso_8859_1
  language = en
  logdata sync = 1
+ rain day threshold = 0.2
 
 ``ws type`` is the "class" of weather station. It should be set to ``1080`` for most weather stations, or ``3080`` if your station console displays solar illuminance.
  
@@ -64,6 +65,8 @@ config: miscellaneous system configuration
 ``language`` is used to localise pywws. It's optional, as pywws usually uses the computer's default language as set by the LANG environment variable. The available languages are those in the ``translations`` subdirectory of your pywws installation. If you set any other language, pywws will fall back to using English.
 
 ``logdata sync`` sets the quality of synchronisation used by :doc:`../api/pywws.LogData`. Set it to 0 for fast & inaccurate or 1 for slower but precise.
+
+``rain day threshold`` is the amount of rain (in mm) that has to fall in one day for it to qualify as a rainy day in the monthly summary data.
 
 paths: directories in which templates etc. are stored
 -----------------------------------------------------
