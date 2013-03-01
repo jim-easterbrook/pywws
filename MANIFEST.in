@@ -1,7 +1,6 @@
 include code/*.py *.txt MANIFEST.in makefile
 include code/pywws/*.py
 recursive-include translations *.po
-recursive-include translations *.pot
 recursive-include doc_src *
 recursive-include doc/*/html *
 recursive-include doc/*/text *

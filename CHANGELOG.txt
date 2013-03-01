@@ -16,6 +16,13 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
+Changes in v13.03:
+    1/ Added 'rain days' to monthly data. (Reprocess required when upgrading.)
+    2/ Extended template syntax to include comments.
+    3/ Added 'humidity index' function.
+    4/ Added French translation of documentation.
+    5/ Various bug fixes.
+
 Changes in v12.12:
     1/ Added support for Python 3.
     2/ Added French documentation translation.
