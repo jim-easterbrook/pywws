@@ -63,10 +63,10 @@ If you haven't already done so, visit the organisation's web site and
 create an account for your weather station. Make a note of any site ID
 and password details you are given.
 
-Stop any pywws software that is running and then run ``toservice.py``
+Stop any pywws software that is running and then run ``toservice``
 to create a section in ``weather.ini``::
 
-    python pywws/toservice.py data_dir service_name
+    python RunModule.py toservice data_dir service_name
 
 ``service_name`` is a single word service name, such as ``metoffice``,
 ``data_dir`` is your weather data directory, as usual.
@@ -81,7 +81,7 @@ section, for example::
 
 Now you can test your configuration::
 
-    python pywws/toservice.py -vvv data_dir service_name
+    python RunModule.py toservice -vvv data_dir service_name
 
 This should show you the data string that is uploaded. Any failure
 should generate an error message.
@@ -91,10 +91,10 @@ Upload old data
 
 Now you can upload your last 7 days' data, if the service supports it.
 Edit your ``weather.ini`` file and remove the ``last update`` line
-from the appropriate section, then run ``toservice.py`` with the
+from the appropriate section, then run ``toservice`` with the
 catchup option::
 
-    python pywws/toservice.py -cvv data_dir service_name
+    python RunModule.py toservice -cvv data_dir service_name
 
 This may take 20 minutes or more, depending on how much data you have.
 

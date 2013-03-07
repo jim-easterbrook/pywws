@@ -54,9 +54,9 @@ can be run as a standalone program to test language codes. A good
 starting point might be your system's ``LANG`` environment variable,
 for example::
 
-    jim@brains:~/Documents/weather/devel$ echo $LANG
+    jim@brains:~/Documents/weather/pywws/code$ echo $LANG
     en_GB.UTF-8
-    jim@brains:~/Documents/weather/devel$ python pywws/Localisation.py -t en_GB.UTF-8
+    jim@brains:~/Documents/weather/pywws/code$ python -m pywws.Localisation -t en_GB.UTF-8
     Locale changed from (None, None) to ('en_GB', 'UTF8')
     Translation set OK
     Locale
@@ -66,11 +66,11 @@ for example::
       'NNW' => 'NNW'
       'rising very rapidly' => 'rising very rapidly'
       'Rain at times, very unsettled' => 'Rain at times, very unsettled'
-    jim@brains:~/Documents/weather/devel$
+    jim@brains:~/Documents/weather/pywws/code$
 
 In most cases no more than a two-letter code is required::
 
-    jim@brains:~/Documents/weather/devel$ python pywws/Localisation.py -t fr
+    jim@brains:~/Documents/weather/pywws/code$ python -m pywws.Localisation -t fr
     Locale changed from (None, None) to ('fr_FR', 'UTF8')
     Translation set OK
     Locale
@@ -80,11 +80,11 @@ In most cases no more than a two-letter code is required::
       'NNW' => 'NNO'
       'rising very rapidly' => 'en hausse très rapide'
       'Rain at times, very unsettled' => 'Quelques précipitations, très perturbé'
-    jim@brains:~/Documents/weather/devel$
+    jim@brains:~/Documents/weather/pywws/code$
 
 If you try an unsupported language, pywws falls back to English::
 
-    jim@brains:~/Documents/weather/devel$ python pywws/Localisation.py -t ja
+    jim@brains:~/Documents/weather/pywws/code$ python -m pywws.Localisation -t ja
     Failed to set locale: ja
     No translation file found for: ja
     Locale
@@ -94,7 +94,7 @@ If you try an unsupported language, pywws falls back to English::
       'NNW' => 'NNW'
       'rising very rapidly' => 'rising very rapidly'
       'Rain at times, very unsettled' => 'Rain at times, very unsettled'
-    jim@brains:~/Documents/weather/devel$
+    jim@brains:~/Documents/weather/pywws/code$
 
 Once you've found a suitable language code that works, you can
 configure pywws to use it by editing your ``weather.ini`` file::
