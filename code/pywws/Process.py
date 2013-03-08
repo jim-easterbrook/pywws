@@ -524,7 +524,6 @@ def calibrate_data(logger, params, raw_data, calib_data):
     if start is None:
         return start
     del calib_data[start:]
-    calib_data.flush()
     calibrator = Calib(params)
     count = 0
     for data in raw_data[start:]:
@@ -535,7 +534,6 @@ def calibrate_data(logger, params, raw_data, calib_data):
         elif count % 500 == 0:
             logger.debug("calib: %s", idx.isoformat(' '))
         calib_data[idx] = calibrator.calib(data)
-    calib_data.flush()
     return start
 
 def generate_hourly(logger, calib_data, hourly_data, process_from):
@@ -553,7 +551,6 @@ def generate_hourly(logger, calib_data, hourly_data, process_from):
         return start
     start = start.replace(minute=0, second=0)
     del hourly_data[start:]
-    hourly_data.flush()
     # preload pressure history, and find last valid rain
     prev = None
     pressure_history = deque()
@@ -604,7 +601,6 @@ def generate_hourly(logger, calib_data, hourly_data, process_from):
             # store new hourly data
             hourly_data[new_data['idx']] = new_data
         hour_start = hour_end
-    hourly_data.flush()
     return start
 
 def generate_daily(logger, day_end_hour, daytime,
@@ -626,7 +622,6 @@ def generate_daily(logger, day_end_hour, daytime,
         start = start - DAY
     start = start.replace(hour=day_end_hour, minute=0, second=0)
     del daily_data[start:]
-    daily_data.flush()
     stop = calib_data.before(datetime.max)
     day_start = start
     acc = DayAcc(daytime)
@@ -648,7 +643,6 @@ def generate_daily(logger, day_end_hour, daytime,
             new_data['start'] = day_start
             daily_data[new_data['idx']] = new_data
         day_start = day_end
-    daily_data.flush()
     return start
 
 def generate_monthly(logger, rain_day_threshold, day_end_hour, time_offset,
@@ -676,7 +670,6 @@ def generate_monthly(logger, rain_day_threshold, day_end_hour, time_offset,
         local_start -= DAY
     start = local_start - time_offset
     del monthly_data[start:]
-    monthly_data.flush()
     stop = daily_data.before(datetime.max)
     month_start = start
     acc = MonthAcc(rain_day_threshold)
@@ -701,7 +694,6 @@ def generate_monthly(logger, rain_day_threshold, day_end_hour, time_offset,
             new_data['start'] = month_start
             monthly_data[new_data['idx']] = new_data
         month_start = month_end
-    monthly_data.flush()
     return start
 
 def Process(params, raw_data, calib_data, hourly_data, daily_data, monthly_data):

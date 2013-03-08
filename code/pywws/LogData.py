@@ -98,7 +98,6 @@ def Catchup(ws, logger, raw_data, last_date, last_ptr):
         last_ptr = ws.dec_ptr(last_ptr)
     if count > 0:
         logger.info("%d catchup records", count)
-    raw_data.flush()
 
 def CheckFixedBlock(ws, params, logger):
     fixed_block = ws.get_fixed_block(unbuffered=True)
@@ -133,7 +132,6 @@ def CheckFixedBlock(ws, params, logger):
             'Pressure offset change: %g -> %g', old_offset, pressure_offset)
     params.set('fixed', 'pressure offset', '%g' % (pressure_offset))
     params.set('fixed', 'fixed block', str(fixed_block))
-    params.flush()
     return fixed_block
 
 def LogData(params, raw_data, sync=None, clear=False):

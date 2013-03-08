@@ -477,7 +477,6 @@ class weather_station(object):
                     if self.params:
                         self.params.set(
                             'fixed', 'sensor clock', str(self._sensor_clock))
-                        self.params.flush()
                     if not next_live:
                         self.logger.warning('live_data live synchronised')
                     next_live = data_time
@@ -516,7 +515,6 @@ class weather_station(object):
                     if self.params:
                         self.params.set(
                             'fixed', 'station clock', str(self._station_clock))
-                        self.params.flush()
                     if not next_log:
                         self.logger.warning('live_data log synchronised')
                     next_log = ptr_time

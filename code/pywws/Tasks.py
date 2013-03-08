@@ -72,15 +72,6 @@ class RegularTasks(object):
         # get daytime end hour, in UTC
         self.day_end_hour = eval(params.get('config', 'day end hour', '21'))
         self.day_end_hour = (self.day_end_hour - (time_offset.seconds // 3600)) % 24
-        # convert config from underground/metoffice to new services
-        for section in ('live', 'logged', 'hourly', '12 hourly', 'daily'):
-            services = eval(self.params.get(section, 'services', '[]'))
-            for svc in ('underground', 'metoffice'):
-                if self.params.get(section, svc) == 'True':
-                    if svc not in services:
-                        services.append(svc)
-                self.params._config.remove_option(section, svc)
-            self.params.set(section, 'services', str(services))
         # create service uploader objects
         for section in ('live', 'logged', 'hourly', '12 hourly', 'daily'):
             for service in eval(self.params.get(section, 'services', '[]')):
@@ -188,6 +179,13 @@ class RegularTasks(object):
         if OK:
             for section in sections:
                 self.params.set(section, 'last update', now.isoformat(' '))
+        if 'hourly' in sections:
+            # save any unsaved data
+            self.params.flush()
+            self.calib_data.flush()
+            self.hourly_data.flush()
+            self.daily_data.flush()
+            self.monthly_data.flush()
         return OK
 
     def do_twitter(self, template, data=None):

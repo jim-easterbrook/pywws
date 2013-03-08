@@ -116,7 +116,8 @@ def LiveLog(data_dir):
                 if not fixed_block:
                     logger.error("Invalid data from weather station")
                     return 3
-            params.flush()
+                # save any unsaved data
+                raw_data.flush()
         else:
             tasks.do_live(data)
     return 0
