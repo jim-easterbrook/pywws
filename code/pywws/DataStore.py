@@ -92,6 +92,8 @@ class params(object):
         """Set option in section to string value."""
         if not self._config.has_section(section):
             self._config.add_section(section)
+        elif self._config.get(section, option) == value:
+            return
         self._config.set(section, option, value)
         self._dirty = True
 class core_store(object):
@@ -154,7 +156,7 @@ class core_store(object):
         elif not isinstance(b, datetime):
             raise TypeError("slice indices must be %s or None" % (datetime))
         else:
-            lst_day = min(b.toordinal(), self._lst_day - 1)
+            lst_day = min(b.toordinal() + 1, self._lst_day)
         return a, b, lst_day
     def _get_slice(self, i):
         a, b, lst_day = self._slice(i)
@@ -164,7 +166,7 @@ class core_store(object):
         cache_hi = self._cache_hi
         cache_ptr = self._cache_ptr
         # iterate over complete caches
-        while cache_hi <= lst_day:
+        while cache_hi < lst_day:
             while cache_ptr < len(cache):
                 yield cache[cache_ptr]
                 cache_ptr += 1
@@ -217,7 +219,7 @@ class core_store(object):
         # go to start of slice
         self._set_cache_ptr(a)
         # delete to end of cache
-        while self._cache_hi <= lst_day:
+        while self._cache_hi < lst_day:
             del self._cache[self._cache_ptr:]
             self._cache_dirty = True
             self._load(date.fromordinal(self._cache_hi))
