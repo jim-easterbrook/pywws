@@ -21,7 +21,8 @@ Changes in v13.03:
     2/ Extended template syntax to include comments.
     3/ Added 'humidity index' function.
     4/ Added French translation of documentation.
-    5/ Various bug fixes.
+    5/ Reduced frequency of saving data files.
+    6/ Various bug fixes.
 
 Changes in v12.12:
     1/ Added support for Python 3.
