@@ -92,7 +92,8 @@ class params(object):
         """Set option in section to string value."""
         if not self._config.has_section(section):
             self._config.add_section(section)
-        elif self._config.get(section, option) == value:
+        elif (self._config.has_option(section, option) and
+              self._config.get(section, option) == value):
             return
         self._config.set(section, option, value)
         self._dirty = True
