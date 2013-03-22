@@ -18,7 +18,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-"""Upload files to a directory by ftp
+"""Upload files to a web server by ftp or copy them to a local directory
 ::
 
 %s
@@ -90,20 +90,20 @@ def Upload(params, files):
     OK = True
     for file in files:
         target = os.path.basename(file)
+        text_file = os.path.splitext(file)[1] in ('.txt', '.xml', '.html')
         # have three tries before giving up
         for n in range(3):
             try:
                 if secure:
                     ftp.put(file, target)
                 else:
-                    if os.path.splitext(file)[1] in ('.txt', '.xml', '.html'):
-                        if sys.version_info[0] >= 3:
-                            f = open(file, 'rb')
-                        else:
-                            f = open(file, 'r')
-                        ftp.storlines('STOR %s' % (target), f)
+                    if text_file and sys.version_info[0] < 3:
+                        f = open(file, 'r')
                     else:
                         f = open(file, 'rb')
+                    if text_file:
+                        ftp.storlines('STOR %s' % (target), f)
+                    else:
                         ftp.storbinary('STOR %s' % (target), f)
                     f.close()
                 break
@@ -111,10 +111,12 @@ def Upload(params, files):
                 logger.error(str(ex))
         else:
             OK = False
+            break
     ftp.close()
     if secure:
         transport.close()
     return OK
+
 def main(argv=None):
     if argv is None:
         argv = sys.argv
@@ -138,5 +140,6 @@ def main(argv=None):
     if Upload(DataStore.params(args[0]), args[1:]):
         return 0
     return 3
+
 if __name__ == "__main__":
     sys.exit(main())
