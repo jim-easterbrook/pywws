@@ -91,7 +91,7 @@ def dew_point(temp, hum):
     http://en.wikipedia.org/wiki/Dew_point.
 
     """
-    if temp == None or hum == None:
+    if temp is None or hum is None:
         return None
     a = 17.27
     b = 237.7
@@ -103,7 +103,7 @@ def wind_chill(temp, wind):
     http://en.wikipedia.org/wiki/wind_chill
 
     """
-    if temp == None or wind == None:
+    if temp is None or wind is None:
         return None
     wind_kph = wind * 3.6
     if wind_kph <= 4.8 or temp > 10.0:
@@ -117,7 +117,7 @@ def apparent_temp(temp, rh, wind):
     http://www.bom.gov.au/info/thermal_stress/
 
     """
-    if temp == None or rh == None or wind == None:
+    if temp is None or rh is None or wind is None:
         return None
     vap_press = (float(rh) / 100.0) * 6.105 * math.exp(
         17.27 * temp / (237.7 + temp))
@@ -427,10 +427,6 @@ class weather_station(object):
             if not self._sensor_clock:
                 next_live = None
             now = time.time()
-            # if station stops logging data, don't keep reading USB
-            # until it locks up
-            if now - last_log > (read_period + 2) * 60:
-                raise IOError('station is not logging data')
             # wake up just before next reading is due
             advance = now + max(self.avoid, self.min_pause) + self.min_pause
             pause = 600.0
@@ -533,6 +529,10 @@ class weather_station(object):
                         old_ptr, new_ptr)
                 old_ptr = new_ptr
                 old_data['delay'] = 0
+            elif valid_time and ptr_time > last_log + ((read_period + 2) * 60):
+                # if station stops logging data, don't keep reading
+                # USB until it locks up
+                raise IOError('station is not logging data')
             elif valid_time and next_log and ptr_time > next_log + 12.0:
                 self.logger.warning('live_data log extended')
                 next_log += 60.0
@@ -658,7 +658,7 @@ class weather_station(object):
             if new_block:
                 if (new_block == old_block) or not retry:
                     break
-                if old_block != None:
+                if old_block:
                     self.logger.debug('_read_block changing %06x', ptr)
                 old_block = new_block
         return new_block
