@@ -287,7 +287,13 @@ class CUSBDrive(object):
     def __init__(self, library):
         global USBDevice
         self.logger = logging.getLogger('pywws.WeatherStation.CUSBDrive')
-        if not USBDevice and library in ('auto', 'cython-hidapi'):
+        if not USBDevice and library in ('auto', 'ctypes-hidapi'):
+            try:
+                from .device_ctypes_hidapi import USBDevice
+            except ImportError:
+                if library != 'auto':
+                    raise
+        if not USBDevice and library == 'cython-hidapi':
             try:
                 from .device_cython_hidapi import USBDevice
             except ImportError:
