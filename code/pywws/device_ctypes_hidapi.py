@@ -22,20 +22,20 @@ Introduction
 ============
 
 This module handles low level communication with the weather station
-via the `cython-hidapi <https://github.com/gbishop/cython-hidapi>`_
-library. An alternative module, :doc:`pywws.device_pyusb`, uses the
-`PyUSB <http://sourceforge.net/apps/trac/pyusb/>`_ library. The choice
-of which module to use depends on which libraries are available for
-you computer.
+via `ctypes <http://docs.python.org/2/library/ctypes.html>`_ and the
+`hidapi <https://github.com/signal11/hidapi>`_ library. Alternative
+modules, :doc:`pywws.device_cython_hidapi` and
+:doc:`pywws.device_pyusb`, use other libraries. The choice of which
+module to use depends on which libraries are available for you
+computer.
 
-Users of recent versions of Mac OS have no choice. The operating
+Users of recent versions of Mac OS have less choice. The operating
 system makes it very difficult to access HID devices (such as the
 weather station) directly, so the ``hidapi`` library has to be used.
-``cython-hidapi`` is a Python interface to that library.
 
 Users of OpenWRT and similar embedded Linux platforms will probably
-not be able to install ``cython-hidapi``, so are constrained to use
-``libusb`` and its ``PyUSB`` Python interface.
+not be able to install ``ctypes`` or ``cython-hidapi``, so are
+constrained to use ``libusb`` and its ``PyUSB`` Python interface.
 
 Installation
 ============
@@ -52,23 +52,11 @@ check before downloading sources and compiling them yourself.
         cd hidapi
         more README.txt
 
-#.  Install cython.
+#.  Install ctypes.
 
     This should be available as a package for your operating system.
     For example::
-        sudo apt-get install cython
-
-#.  Install cython-hidapi.
-
-    This also needs to be downloaded and built::
-
-        git clone https://github.com/gbishop/cython-hidapi.git
-        cd cython-hidapi
-        python setup.py build
-        sudo python setup.py install
-
-    Replace ``setup.py`` with ``setup-mac.py`` or ``setup-windows.py``
-    if you are using Mac OS or Windows.
+        sudo zypper install python-ctypes
 
 Testing
 =======
@@ -77,7 +65,7 @@ Run ``TestWeatherStation.py`` with increased verbosity so it reports
 which USB device access module is being used::
 
     python TestWeatherStation.py -vv
-    18:10:27:pywws.WeatherStation.CUSBDrive:using pywws.device_cython_hidapi
+    18:10:27:pywws.WeatherStation.CUSBDrive:using pywws.device_ctypes_hidapi
     0000 55 aa ff ff ff ff ff ff ff ff ff ff ff ff ff ff 05 20 01 51 11 00 00 00 81 00 00 07 01 00 d0 56
     0020 61 1c 61 1c 00 00 00 00 00 00 00 12 02 14 18 09 41 23 c8 00 32 80 47 2d 2c 01 2c 81 5e 01 1e 80
     0040 a0 00 c8 80 a0 28 80 25 a0 28 80 25 03 36 00 05 6b 00 00 0a 00 f4 01 18 00 00 00 00 00 00 00 00
@@ -127,7 +115,7 @@ class USBDevice(object):
         # flush any unread input
         try:
             self.read_data(32)
-        except Exception:
+        except IOError:
             pass
 
     def read_data(self, size):
