@@ -169,6 +169,15 @@ unknown         = 0x04
 unknown         = 0x02
 unknown         = 0x01
 
+def decode_status(status):
+    result = {}
+    for key, mask in (('rain_overflow',   0x80),
+                      ('lost_connection', 0x40),
+                      ('unknown',         0x3f),
+                      ):
+        result[key] = status & mask
+    return result
+
 # decode weather station raw data formats
 def _decode(raw, format):
     def _signed_byte(raw, offset):
@@ -427,6 +436,7 @@ class weather_station(object):
         ptr_time = 0
         data_time = 0
         last_log = now - (old_data['delay'] * 60)
+        last_status = None
         while True:
             if not self._station_clock:
                 next_log = None
@@ -456,6 +466,11 @@ class weather_station(object):
             last_data_time = data_time
             new_data = self.get_data(old_ptr, unbuffered=True)
             data_time = time.time()
+            # log any change of status
+            if new_data['status'] != last_status:
+                self.logger.warning(
+                    'status %s', str(decode_status(new_data['status'])))
+            last_status = new_data['status']
             # 'good' time stamp if we haven't just woken up from long
             # pause and data read wasn't delayed
             valid_time = data_time - last_data_time < (self.min_pause * 2.0) - 0.1
