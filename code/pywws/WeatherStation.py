@@ -426,7 +426,7 @@ class weather_station(object):
             self._station_clock = None
         ptr_time = 0
         data_time = 0
-        last_log = now
+        last_log = now - (old_data['delay'] * 60)
         while True:
             if not self._station_clock:
                 next_log = None
@@ -535,11 +535,11 @@ class weather_station(object):
                         old_ptr, new_ptr)
                 old_ptr = new_ptr
                 old_data['delay'] = 0
-            elif valid_time and ptr_time > last_log + ((read_period + 2) * 60):
+            elif ptr_time > last_log + ((new_data['delay'] + 2) * 60):
                 # if station stops logging data, don't keep reading
                 # USB until it locks up
                 raise IOError('station is not logging data')
-            elif valid_time and next_log and ptr_time > next_log + 12.0:
+            elif valid_time and next_log and ptr_time > next_log + 6.0:
                 self.logger.warning('live_data log extended')
                 next_log += 60.0
 
