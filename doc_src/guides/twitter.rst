@@ -55,7 +55,7 @@ How to configure pywws to post messages to Twitter
 
    Twitter messages are generated using a template, just like creating files to upload to a website. Copy the example template 'tweet.txt' to your template directory, then test it::
 
-      python pywws/Template.py /data/weather ~/weather/templates/tweet.txt tweet.txt
+      python RunModule.py Template /data/weather ~/weather/templates/tweet.txt tweet.txt
       cat tweet.txt
 
    (Replace ``/data/weather`` and ``~/weather/templates`` with your data and template directories.) If you need to change the template (e.g. to change the units or language used) you can edit it now or later.
@@ -64,7 +64,7 @@ How to configure pywws to post messages to Twitter
 
    Now everything is prepared for :py:mod:`pywws.ToTwitter` to be run::
 
-      python pywws/ToTwitter.py /data/weather tweet.txt
+      python RunModule.py ToTwitter /data/weather tweet.txt
 
    If this works, your new Twitter account will have posted its first weather report. (You should delete the tweet.txt file now.)
 
