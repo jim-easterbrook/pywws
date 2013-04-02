@@ -38,21 +38,25 @@ How to get started with pywws
 
    * Python 2.5+ - http://python.org/ (Note: Python 3 support is under development.)
 
-   * USB library option 1 (best for small systems such as routers):
+   * USB library option 1 (preferred, except on MacOS):
 
-     * PyUSB 0.4.x - http://sourceforge.net/apps/trac/pyusb/
-     * libusb 0.1.12 - http://www.libusb.org/
-   * USB library option 2:
+     * PyUSB 1.0 - http://sourceforge.net/apps/trac/pyusb/
+     * libusb 0.1 or 1.0 - http://www.libusb.org/
+   * USB library option 2 (if PyUSB 1.0 is not available):
 
-     * PyUSB 1.0.x - http://sourceforge.net/apps/trac/pyusb/
-     * libusb 0.1.x or 1.0.x - http://www.libusb.org/
+     * PyUSB 0.4 - http://sourceforge.net/apps/trac/pyusb/
+     * libusb 0.1 - http://www.libusb.org/
    * USB library option 3 (best for MacOS):
+
+     * hidapi - https://github.com/signal11/hidapi
+     * ctypes - http://docs.python.org/2/library/ctypes.html
+   * USB library option 4:
 
      * hidapi - https://github.com/signal11/hidapi
      * cython-hidapi - https://github.com/gbishop/cython-hidapi
      * cython - http://cython.org/
 
-   You may be able to install these using your operating system's package manager. This is a lot easier than downloading and compiling the source files from the project websites. Note that some Linux distributions may use different names for some of the packages, e.g. in Ubuntu, pyusb is python-usb.
+   You may be able to install some of these using your operating system's package manager. This is a lot easier than downloading and compiling source files from the project websites. Note that some Linux distributions may use different names for some of the packages, e.g. in Ubuntu, pyusb is python-usb.
 
    PyUSB can also be installed from PyPI using the ``pip`` command::
 

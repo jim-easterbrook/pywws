@@ -49,15 +49,19 @@ Requirements
 The software you'll need to run pywws depends on what you plan to do with it. In particular, there is a choice of USB library, to suit what's available on different operating systems.
 
    * `Python <http://python.org/>`_ version 2.5 or higher (note: Python 3 support is under development - some things may not work properly)
-   * USB library option 1 (best for small systems such as routers):
+   * USB library option 1 (preferred, except on MacOS):
 
-     *  `PyUSB <http://sourceforge.net/apps/trac/pyusb/>`_ version 0.4.x
-     *  `libusb <http://www.libusb.org/>`_ version 0.1.12
-   * USB library option 2:
-
-     *  `PyUSB <http://sourceforge.net/apps/trac/pyusb/>`_ version 1.0.x
+     *  `PyUSB <http://sourceforge.net/apps/trac/pyusb/>`_ version 1.0
      *  `libusb <http://www.libusb.org/>`_ version 0.1 or version 1.0
+   * USB library option 2 (if PyUSB 1.0 is not available):
+
+     *  `PyUSB <http://sourceforge.net/apps/trac/pyusb/>`_ version 0.4
+     *  `libusb <http://www.libusb.org/>`_ version 0.1
    * USB library option 3 (best for MacOS):
+
+     *  `hidapi <https://github.com/signal11/hidapi>`_
+     *  `ctypes <http://docs.python.org/2/library/ctypes.html>`_
+   * USB library option 4:
 
      *  `hidapi <https://github.com/signal11/hidapi>`_
      *  `cython-hidapi <https://github.com/gbishop/cython-hidapi>`_
