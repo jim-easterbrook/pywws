@@ -93,6 +93,8 @@ class USBDevice(object):
         self.dev = usb.core.find(idVendor=idVendor, idProduct=idProduct)
         if not self.dev:
             raise IOError("Weather station device not found")
+        if self.dev.is_kernel_driver_active(0):
+            self.dev.detach_kernel_driver(0)
         self.dev.set_configuration()
         self.dev.reset()
 
