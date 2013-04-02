@@ -49,6 +49,7 @@ Contents:
    pywws.WeatherStation
    pywws.device_ctypes_hidapi
    pywws.device_cython_hidapi
+   pywws.device_pyusb1
    pywws.device_pyusb
    pywws.DataStore
    pywws.TimeZone

@@ -309,6 +309,11 @@ class CUSBDrive(object):
                 if library != 'auto':
                     raise
         if not USBDevice:
+            try:
+                from .device_pyusb1 import USBDevice
+            except ImportError:
+                pass
+        if not USBDevice:
             from .device_pyusb import USBDevice
         self.logger.info('using %s', USBDevice.__module__)
         self.dev = USBDevice(0x1941, 0x8021)
