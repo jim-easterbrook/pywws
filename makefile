@@ -51,7 +51,10 @@ lang_src : code/pywws/version.py \
 		$(pots:%=translations/$(LANG)/%.po)
 
 doc : lang code/pywws/version.py
-	$(MAKE) -C doc_src html text SPHINXOPTS="-D language=$(LANG)"
+	python setup.py build_sphinx \
+		--build-dir doc/html/$(LANG) --builder html
+	python setup.py build_sphinx \
+		--build-dir doc/text/$(LANG) --builder text
 
 doc_all :
 	$(MAKE) doc LANG=en

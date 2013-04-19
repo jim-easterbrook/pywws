@@ -19,9 +19,26 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 from distutils.core import setup
+import os
 import sys
 sys.path.append('code')
 from pywws.version import version
+
+cmdclass = {}
+
+# if sphinx is installed, add command to build documentation
+try:
+    from sphinx.setup_command import BuildDoc
+    cmdclass['build_sphinx'] = BuildDoc
+except ImportError:
+    pass
+
+# if Sphinx-PyPI-upload is installed, add command to upload documentation
+try:
+    from sphinx_pypi_upload import UploadDoc
+    cmdclass['upload_sphinx'] = UploadDoc
+except ImportError:
+    pass
 
 if sys.version_info[0] >= 3:
     code_dir = 'code3'
@@ -60,4 +77,5 @@ pages showing recent weather readings, typically updated every hour.
           'pywws' : ['services/*', 'locale/*/LC_MESSAGES/*'],
           },
       scripts = ['%s/Hourly.py' % code_dir, '%s/LiveLog.py' % code_dir],
+      cmdclass = cmdclass,
       )

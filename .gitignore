@@ -17,7 +17,9 @@ develop-eggs
 *~
 
 # Compiled documentation
-doc
+doc/html/en
+doc/html/fr
+doc/text
 
 # generated Python 3
 code3
