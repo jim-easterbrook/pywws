@@ -293,21 +293,19 @@ class CUSBDrive(object):
     WriteCommand     = 0xA0
     WriteCommandWord = 0xA2
 
-    def __init__(self, library):
+    def __init__(self):
         global USBDevice
         self.logger = logging.getLogger('pywws.WeatherStation.CUSBDrive')
-        if not USBDevice and library in ('auto', 'ctypes-hidapi'):
+        if not USBDevice:
             try:
                 from .device_ctypes_hidapi import USBDevice
             except ImportError:
-                if library != 'auto':
-                    raise
-        if not USBDevice and library == 'cython-hidapi':
+                pass
+        if not USBDevice:
             try:
                 from .device_cython_hidapi import USBDevice
             except ImportError:
-                if library != 'auto':
-                    raise
+                pass
         if not USBDevice:
             try:
                 from .device_pyusb1 import USBDevice
@@ -389,11 +387,11 @@ class weather_station(object):
     avoid = 3.0
     # minimum interval between polling for data change
     min_pause = 0.5
-    def __init__(self, ws_type='1080', library='auto', params=None):
+    def __init__(self, ws_type='1080', params=None):
         """Connect to weather station and prepare to read data."""
         self.logger = logging.getLogger('pywws.weather_station')
         # create basic IO object
-        self.cusb = CUSBDrive(library)
+        self.cusb = CUSBDrive()
         # init variables
         self.params = params
         self._fixed_block = None
