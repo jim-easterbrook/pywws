@@ -499,6 +499,8 @@ class weather_station(object):
                             'fixed', 'sensor clock', str(self._sensor_clock))
                     if not next_live:
                         self.logger.warning('live_data live synchronised')
+                    else:
+                        self.logger.error('unexpected sensor clock setting')
                     next_live = data_time
                 elif next_live and data_time < next_live - self.min_pause:
                     self.logger.warning(
@@ -553,6 +555,7 @@ class weather_station(object):
                         old_ptr, new_ptr)
                 old_ptr = new_ptr
                 old_data['delay'] = 0
+                data_time = 0
             elif ptr_time > last_log + ((new_data['delay'] + 2) * 60):
                 # if station stops logging data, don't keep reading
                 # USB until it locks up
@@ -663,7 +666,7 @@ class weather_station(object):
             if self._sensor_clock:
                 phase = time.time() - self._sensor_clock
                 if phase > 24 * 3600:
-                    # sensor clock was last measured 6 hrs ago, so reset it
+                    # sensor clock was last measured a day ago, so reset it
                     self._sensor_clock = None
                 else:
                     pause = min(pause, (self.avoid - phase) % 48)
