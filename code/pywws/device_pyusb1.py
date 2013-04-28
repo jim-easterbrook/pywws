@@ -97,7 +97,7 @@ class USBDevice(object):
             if self.dev.is_kernel_driver_active(0):
                 self.dev.detach_kernel_driver(0)
         except NotImplementedError:
-            pass
+            self.dev.detach_kernel_driver(0)
         self.dev.set_configuration()
         self.dev.reset()
 
