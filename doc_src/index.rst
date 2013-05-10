@@ -24,6 +24,7 @@ pywws
    :align: right
 
 | Python software for USB Wireless WeatherStations
+| http://pythonhosted.org/pywws
 | http://jim-easterbrook.github.com/pywws/
 | http://github.com/jim-easterbrook/pywws/
 
@@ -88,17 +89,19 @@ The software you'll need to run pywws depends on what you plan to do with it. In
 Getting a copy of pywws
 ***********************
 
-The simplest way to obtain pywws is to download a zip or tar.gz file from the `Python Package Index (PyPI) <http://pypi.python.org/pypi/pywws/>`_ and then extract the files into a convenient directory on your computer. These files contain a snapshot release of the software - a new one is issued every few months.
-
-You could also use ``pip`` to install pywws directly from PyPI::
+The simplest way to obtain pywws is to use ``pip`` to install it directly from the `Python Package Index (PyPI) <http://pypi.python.org/pypi/pywws/>`_.
+Note that this will probably require 'root' privileges, so will need to be run using ``sudo``::
 
    sudo pip install pywws
 
+If you don't have root privileges, or don't want to install pywws, you can download a zip or tar.gz file from PyPI and then extract the files into a convenient directory on your computer.
+
+The PyPI files contain a snapshot release of the software - a new one is issued every few months.
 If you'd like to keep up to date with latest developments of pywws, you should use ``git`` to clone the pywws repository::
 
    git clone https://github.com/jim-easterbrook/pywws.git
 
-After doing so you'll need to use ``make`` to compile the documentation and language localisation files (which will require the ``gettext`` and ``sphinx`` dependencies)::
+After doing so you should use ``make`` to compile the documentation and language localisation files (which will require the ``gettext`` and ``sphinx`` dependencies)::
 
    cd pywws
    make
@@ -106,15 +109,15 @@ After doing so you'll need to use ``make`` to compile the documentation and lang
 Upgrading pywws
 ===============
 
-The method used to upgrade pywws depends on how you originally installed it. If you downloaded a zip or tar.gz file, you just need to do the same again, with the new version, then delete your old download when you've finished setting up the new one. (Note that upgrading is much easier if you do not keep your templates, user modules and weather data in the same directory as the downloaded files.) If you used ``pip`` you just need to repeat the command. ``git`` users just need to do a ``git pull`` command.
+The method used to upgrade pywws depends on how you originally obtained it. If you downloaded a zip or tar.gz file, you just need to do the same again, with the new version, then delete your old download when you've finished setting up the new one. (Note that upgrading is much easier if you do not keep your templates, user modules and weather data in the same directory as the downloaded files.) If you used ``pip`` you just need to repeat the command. ``git`` users just need to do a ``git pull`` command.
 
-Some new versions of pywws have changed what's stored in the hourly, daily or monthly summary data files. These new versions are incompatible with processed data from earlier versions. The ``Reprocess.py`` program regenerates all the summary data. It should be run after any major upgrade.
+Some new versions of pywws have changed what's stored in the hourly, daily or monthly summary data files. These new versions are incompatible with processed data from earlier versions. The :py:mod:`pywws.Reprocess` module regenerates all the summary data. It should be run after any major upgrade.
 
 *************
 Documentation
 *************
 
-Documentation is included with pywws downloads, and is also available `online <http://jim-easterbrook.github.com/pywws/doc/html/>`_. A good starting place is the `how to get started guide <guides/getstarted.html>`_ which describes in more detail how to install pywws.
+Documentation is included with pywws downloads, and is also available `online <http://pythonhosted.org/pywws>`_. A good starting place is the `how to get started guide <guides/getstarted.html>`_ which describes in more detail how to install pywws.
 
 If you have questions not answered in the documentation, please join the `pywws Google mailing list / discussion group <http://groups.google.com/group/pywws>`_ and ask there. Note that your first message to the group will not appear immediately -- new posters have to be approved by a moderator, to prevent spam messages.
 
@@ -127,7 +130,7 @@ Contents
    Licence <essentials/LICENCE>
    Change log <essentials/CHANGELOG>
    User guides <guides/index>
-   Python programs and modules <api/index>
+   Python modules <api/index>
 
 Indices and tables
 ==================
@@ -149,7 +152,7 @@ Legalese
 ********
 
 | pywws - Python software for USB Wireless WeatherStations.
-| http://jim-easterbrook.github.com/pywws/
+| http://github.com/jim-easterbrook/pywws
 | Copyright (C) 2008-13 Jim Easterbrook jim@jim-easterbrook.me.uk
 
 This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
