@@ -18,6 +18,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
+import os
 from distutils.core import setup
 from pywws.version import version
 
@@ -43,6 +44,18 @@ try:
     cmdclass['upload_sphinx'] = UploadDoc
 except ImportError:
     pass
+
+# get lists of data files and scripts to install
+scripts = []
+for name in os.listdir('scripts'):
+    scripts.append(os.path.join('scripts', name))
+data_files = []
+for root, dirs, files in os.walk('examples'):
+    paths = []
+    for name in files:
+        paths.append(os.path.join(root, name))
+    if paths:
+        data_files.append(('share/pywws/%s' % root, paths))
 
 setup(name = 'pywws',
       version = version,
@@ -74,6 +87,7 @@ pages showing recent weather readings, typically updated every hour.
       package_data = {
           'pywws' : ['services/*', 'locale/*/LC_MESSAGES/*'],
           },
-      scripts = ['scripts/pywws-hourly.py', 'scripts/pywws-livelog.py'],
+      scripts = scripts,
+      data_files = data_files,
       cmdclass = cmdclass,
       )
