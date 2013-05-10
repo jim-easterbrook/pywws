@@ -22,7 +22,7 @@ How to set up 'live' logging with pywws
 Introduction
 ------------
 
-There are two quite different modes of operation with pywws. Traditionally the :doc:`../api/Hourly` program would be run at regular intervals (usually an hour) from cron. This is suitable for fairly static websites, but more frequent updates can be useful for sites such as Weather Underground (http://www.wunderground.com/). The newer :doc:`../api/LiveLog` program runs continuously and can upload data every 48 seconds.
+There are two quite different modes of operation with pywws. Traditionally the :doc:`../api/pywws.Hourly` program would be run at regular intervals (usually an hour) from cron. This is suitable for fairly static websites, but more frequent updates can be useful for sites such as Weather Underground (http://www.wunderground.com/). The newer :doc:`../api/pywws.LiveLog` program runs continuously and can upload data every 48 seconds.
 
 Getting started
 ---------------

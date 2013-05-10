@@ -26,31 +26,31 @@ po_files	:= $(notdir $(wildcard translations/$(LANG)/*.po))
 translations	:= $(notdir $(wildcard translations/*))
 langs		:= $(filter-out %.pot, $(translations))
 
-all : lang code/pywws/version.py doc
+all : lang pywws/version.py doc
 	python setup.py build
 
 install :
 	python setup.py install
 
-dist : lang_all code/pywws/version.py doc_all
+dist : lang_all pywws/version.py doc_all
 	python setup.py sdist
 
 clean :
-	rm -Rf doc/* code/pywws/locale/* translations/*/LC_MESSAGES \
-		build dist code/pywws/version.py
+	rm -Rf doc/* pywws/locale/* translations/*/LC_MESSAGES \
+		build dist pywws/version.py
 
 lang : $(po_files:%.po=translations/$(LANG)/LC_MESSAGES/%.mo) \
-	$(po_files:%=code/pywws/locale/$(LANG)/LC_MESSAGES/pywws.mo)
+	$(po_files:%=pywws/locale/$(LANG)/LC_MESSAGES/pywws.mo)
 
 lang_all :
 	for lang in $(langs); do $(MAKE) LANG=$$lang lang; done
 
 pots	:= pywws api essentials guides index pywws
-lang_src : code/pywws/version.py \
+lang_src : pywws/version.py \
 		$(pots:%=translations/%.pot) \
 		$(pots:%=translations/$(LANG)/%.po)
 
-doc : lang code/pywws/version.py
+doc : lang pywws/version.py
 	python setup.py build_sphinx \
 		--build-dir doc/html/$(LANG) --builder html
 	python setup.py build_sphinx \
@@ -63,13 +63,13 @@ doc_all :
 .PHONY : doc dist
 
 # create a version file
-.PHONY : code/pywws/version.py
+.PHONY : pywws/version.py
 COMMIT	:= $(shell git rev-parse --short master)
-code/pywws/version.py :
+pywws/version.py :
 	date +"version = '%y.%m_$(COMMIT)'" >$@
 
-# copy pywws language file to code subdirectory
-code/pywws/locale/%.mo : translations/%.mo
+# copy pywws language file to pywws subdirectory
+pywws/locale/%.mo : translations/%.mo
 	mkdir -p $(dir $@)
 	cp $< $@
 
@@ -94,7 +94,7 @@ translations/pywws.pot :
 		--copyright-holder="Jim Easterbrook" \
 		--package-name=pywws --package-version=`date +"%y.%m"` \
 		--msgid-bugs-address="jim@jim-easterbrook.me.uk" \
-		code/*.py code/pywws/*.py
+		*.py pywws/*.py
 
 # extract strings for translation from documentation source
 translations/%.pot :

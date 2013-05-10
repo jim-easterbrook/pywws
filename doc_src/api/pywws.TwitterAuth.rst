@@ -19,7 +19,7 @@
 TwitterAuth
 ===========
 
-.. automodule:: TwitterAuth
+.. automodule:: pywws.TwitterAuth
 
    .. rubric:: Functions
 

@@ -19,7 +19,7 @@
 USBQualityTest
 ==============
 
-.. automodule:: USBQualityTest
+.. automodule:: pywws.USBQualityTest
    
    .. rubric:: Functions
 

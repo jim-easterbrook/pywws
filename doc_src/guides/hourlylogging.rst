@@ -22,7 +22,7 @@ How to set up 'hourly' logging with pywws
 Introduction
 ------------
 
-There are two quite different modes of operation with pywws. Traditionally the :doc:`../api/Hourly` program would be run at regular intervals (usually an hour) from cron. This is suitable for fairly static websites, but more frequent updates can be useful for sites such as Weather Underground (http://www.wunderground.com/). The newer :doc:`../api/LiveLog` program runs continuously and can upload data every 48 seconds.
+There are two quite different modes of operation with pywws. Traditionally the :doc:`../api/pywws.Hourly` program would be run at regular intervals (usually an hour) from cron. This is suitable for fairly static websites, but more frequent updates can be useful for sites such as Weather Underground (http://www.wunderground.com/). The newer :doc:`../api/pywws.LiveLog` program runs continuously and can upload data every 48 seconds.
 
 Note that although this document (and the program name) refers to 'hourly' logging, you can run the Hourly.py program as often or as infrequently as you like, but don't try to run it more often than half your logging frequency. For example, if your logging interval is 10 minutes, don't run Hourly.py more often than every 20 minutes.
 

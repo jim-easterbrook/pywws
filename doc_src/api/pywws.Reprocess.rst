@@ -16,14 +16,28 @@
    along with this program; if not, write to the Free Software
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-SetWeatherStation
-=================
+Reprocess
+=========
 
-.. automodule:: SetWeatherStation
+Introduction
+------------
 
+This program recreates the hourly, daily and monthly summary data that is created by the Process.py program. It should be run whenever you upgrade to a newer version of pywws.
+
+The program is very simple to use::
+
+  python Reprocess.py data_directory
+
+where ``data_directory`` is the location of your stored data.
+
+Detailed API
+------------
+
+.. automodule:: pywws.Reprocess
+   
    .. rubric:: Functions
 
    .. autosummary::
    
-      bcd_encode
+      Reprocess
       main

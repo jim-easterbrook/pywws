@@ -24,15 +24,14 @@ Contents:
 .. autosummary::
    :toctree:
 
-   Hourly
-   LiveLog
-   Reprocess
-   TwitterAuth
-   SetWeatherStation
-   TestWeatherStation
-   RunModule
-   USBQualityTest
-   EWtoPy
+   pywws.Hourly
+   pywws.LiveLog
+   pywws.Reprocess
+   pywws.TwitterAuth
+   pywws.SetWeatherStation
+   pywws.TestWeatherStation
+   pywws.USBQualityTest
+   pywws.EWtoPy
    pywws.Tasks
    pywws.LogData
    pywws.Process
