@@ -19,8 +19,6 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 from distutils.core import setup
-import sys
-sys.path.insert(0, 'code')
 from pywws.version import version
 
 cmdclass = {}
@@ -73,7 +71,6 @@ pages showing recent weather readings, typically updated every hour.
           'Programming Language :: Python :: 3',
           ],
       packages = ['pywws'],
-      package_dir = {'': 'code'},
       package_data = {
           'pywws' : ['services/*', 'locale/*/LC_MESSAGES/*'],
           },
