@@ -37,7 +37,7 @@ dist : lang_all code/pywws/version.py doc_all
 
 clean :
 	rm -Rf doc/* code/pywws/locale/* translations/*/LC_MESSAGES \
-		code3 build dist code/pywws/version.py
+		build dist code/pywws/version.py
 
 lang : $(po_files:%.po=translations/$(LANG)/LC_MESSAGES/%.mo) \
 	$(po_files:%=code/pywws/locale/$(LANG)/LC_MESSAGES/pywws.mo)
@@ -60,22 +60,7 @@ doc_all :
 	$(MAKE) doc LANG=en
 	$(MAKE) doc LANG=fr
 
-sources	:= $(wildcard code/*) $(wildcard code/pywws/*) \
-	   $(wildcard code/pywws/services/*) $(wildcard code/pywws/locale/*/*/*)
-sources	:= $(filter %.py %.mo %.txt %.ini, $(sources))
-python3 : $(sources:code/%=code3/%)
-
 .PHONY : doc dist
-
-# convert to Python3
-code3/%.py : code/%.py
-	mkdir -p $(dir $@)
-	cp $< $@
-	2to3 -x import -w -n $@
-
-code3/% : code/%
-	mkdir -p $(dir $@)
-	cp $< $@
 
 # create a version file
 .PHONY : code/pywws/version.py

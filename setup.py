@@ -19,12 +19,18 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 from distutils.core import setup
-import os
 import sys
-sys.path.append('code')
+sys.path.insert(0, 'code')
 from pywws.version import version
 
 cmdclass = {}
+
+# if using Python 3, translate during build
+try:
+    from distutils.command.build_py import build_py_2to3 as build_py
+    cmdclass['build_py'] = build_py
+except ImportError:
+    pass
 
 # if sphinx is installed, add command to build documentation
 try:
@@ -39,11 +45,6 @@ try:
     cmdclass['upload_sphinx'] = UploadDoc
 except ImportError:
     pass
-
-if sys.version_info[0] >= 3:
-    code_dir = 'code3'
-else:
-    code_dir = 'code'
 
 setup(name = 'pywws',
       version = version,
@@ -72,7 +73,7 @@ pages showing recent weather readings, typically updated every hour.
           'Programming Language :: Python :: 3',
           ],
       packages = ['pywws'],
-      package_dir = {'': code_dir},
+      package_dir = {'': 'code'},
       package_data = {
           'pywws' : ['services/*', 'locale/*/LC_MESSAGES/*'],
           },
