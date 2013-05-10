@@ -31,7 +31,7 @@ For more information on using ``LiveLog.py``, see
 
 __docformat__ = "restructuredtext en"
 __usage__ = """
- usage: python LiveLog.py [options] data_dir
+ usage: python -m pywws.LiveLog [options] data_dir
  options are:
   -h      or --help      display this help
   -l file or --log file  write log information to file

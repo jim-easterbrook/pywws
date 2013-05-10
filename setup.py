@@ -76,6 +76,5 @@ pages showing recent weather readings, typically updated every hour.
       package_data = {
           'pywws' : ['services/*', 'locale/*/LC_MESSAGES/*'],
           },
-      scripts = ['%s/Hourly.py' % code_dir, '%s/LiveLog.py' % code_dir],
       cmdclass = cmdclass,
       )

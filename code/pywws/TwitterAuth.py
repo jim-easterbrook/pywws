@@ -37,7 +37,7 @@ pywws.
 
 __docformat__ = "restructuredtext en"
 __usage__ = """
- usage: python TwitterAuth.py [options] data_dir
+ usage: python -m pywws.TwitterAuth [options] data_dir
  options are:
   -h or --help       display this help
  data_dir is the root directory of the weather data

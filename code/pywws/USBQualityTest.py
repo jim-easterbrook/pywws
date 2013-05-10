@@ -52,7 +52,7 @@ is!
 __docformat__ = "restructuredtext en"
 
 __usage__ = """
- usage: python USBQualityTest.py [options]
+ usage: python -m pywws.USBQualityTest [options]
  options are:
   -h | --help           display this help
   -v | --verbose        increase amount of reassuring messages

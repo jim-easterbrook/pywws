@@ -27,7 +27,7 @@
 
 __docformat__ = "restructuredtext en"
 __usage__ = """
- usage: python SetWeatherStation.py [options]
+ usage: python -m pywws.SetWeatherStation [options]
  options are:
   -h   | --help           display this help
   -c   | --clock          set weather station clock to computer time

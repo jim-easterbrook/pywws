@@ -27,7 +27,7 @@
 
 __docformat__ = "restructuredtext en"
 __usage__ = """
- usage: python Reprocess.py [options] data_dir
+ usage: python -m pywws.Reprocess [options] data_dir
  options are:
   -h | --help     display this help
   -v | --verbose  increase number of informative messages

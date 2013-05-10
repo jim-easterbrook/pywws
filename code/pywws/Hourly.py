@@ -36,7 +36,7 @@ For more information on using ``Hourly.py``, see
 
 __docformat__ = "restructuredtext en"
 __usage__ = """
- usage: python Hourly.py [options] data_dir
+ usage: python -m pywws.Hourly [options] data_dir
  options are:
   -h or --help     display this help
   -v or --verbose  increase amount of reassuring messages

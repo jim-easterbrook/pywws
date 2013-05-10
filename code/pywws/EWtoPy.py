@@ -32,7 +32,7 @@ correct.
 
 __docformat__ = "restructuredtext en"
 __usage__ = """
- usage: python EWtoPy.py [options] EasyWeather_file data_dir
+ usage: python -m pywws.EWtoPy [options] EasyWeather_file data_dir
  options are:
   -h or --help    display this help
  EasyWeather_file is the input data file, e.g. EasyWeather.dat
@@ -53,15 +53,15 @@ def main(argv=None):
     if argv is None:
         argv = sys.argv
     try:
-        opts, args = getopt.getopt(argv[1:], "", ['help'])
+        opts, args = getopt.getopt(argv[1:], "h", ['help'])
     except getopt.error, msg:
         print >>sys.stderr, 'Error: %s\n' % msg
         print >>sys.stderr, __usage__.strip()
         return 1
     # process options
     for o, a in opts:
-        if o == '--help':
-            usage()
+        if o in ('-h', '--help'):
+            print >>sys.stderr, __usage__.strip()
             return 0
     # check arguments
     if len(args) != 2:
