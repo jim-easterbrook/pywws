@@ -36,7 +36,8 @@ dist : lang_all pywws/version.py doc_all
 	python setup.py sdist
 
 clean :
-	rm -Rf doc/* pywws/locale/* translations/*/LC_MESSAGES \
+	rm -Rf doc/text doc/html/en doc/html/fr \
+		pywws/locale/* translations/*/LC_MESSAGES \
 		build dist pywws/version.py
 
 lang : $(po_files:%.po=translations/$(LANG)/LC_MESSAGES/%.mo) \
