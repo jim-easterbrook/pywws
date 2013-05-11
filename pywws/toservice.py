@@ -66,7 +66,7 @@ and password details you are given.
 Stop any pywws software that is running and then run ``toservice``
 to create a section in ``weather.ini``::
 
-    python RunModule.py toservice data_dir service_name
+    python -m pywws.toservice data_dir service_name
 
 ``service_name`` is a single word service name, such as ``metoffice``,
 ``data_dir`` is your weather data directory, as usual.
@@ -81,7 +81,7 @@ section, for example::
 
 Now you can test your configuration::
 
-    python RunModule.py toservice -vvv data_dir service_name
+    python -m pywws.toservice -vvv data_dir service_name
 
 This should show you the data string that is uploaded. Any failure
 should generate an error message.
@@ -94,7 +94,7 @@ Edit your ``weather.ini`` file and remove the ``last update`` line
 from the appropriate section, then run ``toservice`` with the
 catchup option::
 
-    python RunModule.py toservice -cvv data_dir service_name
+    python -m pywws.toservice -cvv data_dir service_name
 
 This may take 20 minutes or more, depending on how much data you have.
 
@@ -186,7 +186,7 @@ API
 
 __docformat__ = "restructuredtext en"
 __usage__ = """
- usage: python RunModule.py toservice [options] data_dir service_name
+ usage: python -m pywws.toservice [options] data_dir service_name
  options are:
   -h or --help     display this help
   -c or --catchup  upload all data since last upload

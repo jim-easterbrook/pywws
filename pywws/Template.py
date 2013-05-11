@@ -27,7 +27,7 @@
 
 __docformat__ = "restructuredtext en"
 __usage__ = """
- usage: python RunModule.py Template [options] data_dir template_file output_file
+ usage: python -m pywws.Template [options] data_dir template_file output_file
  options are:
   --help    display this help
  data_dir is the root directory of the weather data

@@ -114,7 +114,7 @@ instructions.
 __docformat__ = "restructuredtext en"
 
 __usage__ = """
- usage: python RunModule.py Localisation [options]
+ usage: python -m pywws.Localisation [options]
  options are:
   -h       or  --help       display this help
   -t code  or  --test code  test use of a language code

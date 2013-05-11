@@ -27,7 +27,7 @@
 
 __docformat__ = "restructuredtext en"
 __usage__ = """
- usage: python RunModule.py Plot [options] data_dir temp_dir xml_file output_file
+ usage: python -m pywws.Plot [options] data_dir temp_dir xml_file output_file
  options are:
   -h or --help    display this help
  data_dir is the root directory of the weather data

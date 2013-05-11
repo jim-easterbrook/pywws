@@ -33,7 +33,7 @@ detailed instructions.
 
 __docformat__ = "restructuredtext en"
 __usage__ = """
- usage: python RunModule.py ToTwitter [options] data_dir file
+ usage: python -m pywws.ToTwitter [options] data_dir file
  options are:
   -h | --help  display this help
  data_dir is the root directory of the weather data

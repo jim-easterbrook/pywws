@@ -27,7 +27,7 @@
 
 __docformat__ = "restructuredtext en"
 __usage__ = """
- usage: python RunModule.py Forecast [options] data_dir
+ usage: python -m pywws.Forecast [options] data_dir
  options are:
   -h | --help  display this help
  data_dir is the root directory of the weather data

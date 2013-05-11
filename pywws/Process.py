@@ -64,7 +64,7 @@ a more useful total in the last hour, day or month.
 
 __docformat__ = "restructuredtext en"
 __usage__ = """
- usage: python RunModule.py Process [options] data_dir
+ usage: python -m pywws.Process [options] data_dir
  options are:
   -h or --help     display this help
   -v or --verbose  increase number of informative messages

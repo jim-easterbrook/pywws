@@ -27,7 +27,7 @@
 
 __docformat__ = "restructuredtext en"
 __usage__ = """
- usage: python RunModule.py Upload [options] data_dir file [file...]
+ usage: python -m pywws.Upload [options] data_dir file [file...]
  options are:
   -h or --help    display this help
  data_dir is the root directory of the weather data
