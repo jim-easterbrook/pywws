@@ -26,19 +26,19 @@ po_files	:= $(notdir $(wildcard translations/$(LANG)/*.po))
 translations	:= $(notdir $(wildcard translations/*))
 langs		:= $(filter-out %.pot, $(translations))
 
-all : lang pywws/version.py doc
+all : lang doc
 	python setup.py build
 
 install :
 	python setup.py install
 
-dist : lang_all pywws/version.py doc_all
+dist : lang_all doc_all
 	python setup.py sdist
 
 clean :
 	rm -Rf doc/text doc/html/en doc/html/fr \
 		pywws/locale/* translations/*/LC_MESSAGES \
-		build dist pywws/version.py
+		build dist
 
 lang : $(po_files:%.po=translations/$(LANG)/LC_MESSAGES/%.mo) \
 	$(po_files:%=pywws/locale/$(LANG)/LC_MESSAGES/pywws.mo)
@@ -47,11 +47,9 @@ lang_all :
 	for lang in $(langs); do $(MAKE) LANG=$$lang lang; done
 
 pots	:= pywws api essentials guides index pywws
-lang_src : pywws/version.py \
-		$(pots:%=translations/%.pot) \
-		$(pots:%=translations/$(LANG)/%.po)
+lang_src : $(pots:%=translations/%.pot) $(pots:%=translations/$(LANG)/%.po)
 
-doc : lang pywws/version.py
+doc : lang
 	python setup.py build_sphinx \
 		--build-dir doc/html/$(LANG) --builder html
 	python setup.py build_sphinx \
@@ -62,12 +60,6 @@ doc_all :
 	$(MAKE) doc LANG=fr
 
 .PHONY : doc dist
-
-# create a version file
-.PHONY : pywws/version.py
-COMMIT	:= $(shell git rev-parse --short master)
-pywws/version.py :
-	date +"version = '%y.%m_$(COMMIT)'" >$@
 
 # copy pywws language file to pywws subdirectory
 pywws/locale/%.mo : translations/%.mo

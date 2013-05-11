@@ -20,7 +20,7 @@
 
 import os
 from distutils.core import setup
-from pywws.version import version
+from pywws import version
 
 cmdclass = {}
 
@@ -58,11 +58,12 @@ for root, dirs, files in os.walk('examples'):
         data_files.append(('share/pywws/%s' % root, paths))
 
 setup(name = 'pywws',
-      version = version,
+      version = version.release,
       description = 'Python software for wireless weather stations',
       author = 'Jim Easterbrook',
       author_email = 'jim@jim-easterbrook.me.uk',
       url = 'http://jim-easterbrook.github.com/pywws/',
+      download_url = 'https://pypi.python.org/pypi/pywws/%s' % version,
       long_description = """
 A collection of Python scripts to read, store and process data from
 popular USB wireless weather stations such as Elecsa AstroTouch 6975,
@@ -83,6 +84,8 @@ pages showing recent weather readings, typically updated every hour.
           'Programming Language :: Python :: 2',
           'Programming Language :: Python :: 3',
           ],
+      license = 'GNU GPL',
+      platforms = ['POSIX', 'MacOS', 'Windows'],
       packages = ['pywws'],
       package_data = {
           'pywws' : ['services/*', 'locale/*/LC_MESSAGES/*'],

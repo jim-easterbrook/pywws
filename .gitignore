@@ -29,4 +29,3 @@ translations/*/LC_MESSAGES
 # Miscellaneous
 MANIFEST
 pywws/locale
-pywws/version.py
