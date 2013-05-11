@@ -97,7 +97,7 @@ It is convenient to create a soft link to this awkwardly named directory::
    cd ~/weather
    ln -s pywws-12.11_95babb0 pywws
 
-To get the latest development version of pywws, use ``git clone``, then use ``make`` to compile the language files and documentation::
+Alternatively, to get the latest development version of pywws use ``git clone``, then use ``make`` to compile the language files and documentation::
 
    cd ~/weather
    git clone https://github.com/jim-easterbrook/pywws.git
@@ -110,7 +110,7 @@ After downloading and extracting, or cloning the repos, you can then use ``setup
    python setup.py build
    sudo python setup.py install
 
-This is optional, and installs to the same directories as using ``pip`` would.
+This is optional, and installs into the same directories as using ``pip`` would.
 If you don't do this installation process, you will only be able to run pywws modules from your pywws directory.
 
 (Python 3 users only) Translate pywws to Python 3
@@ -127,7 +127,7 @@ If not, you need to use setup.py to do the translation and create a Python 3 ins
 Test the weather station connection
 -----------------------------------
 
-Finally you're ready to test you pywws installation.
+Finally you're ready to test your pywws installation.
 Connect the weather station (if not already connected) then run the :py:mod:`pywws.TestWeatherStation` module.
 If you have downloaded but not installed pywws, then don't forget to change to the pywws directory first.
 For example::
@@ -240,6 +240,7 @@ Open this with a text editor. You should find something like the following::
 The line ``[fixed]`` marks the start of a section (called '[fixed]'), and the following lines are entries in that section.
 The ``pressure offset`` entry stores the difference between absolute and relative atmospheric pressure that was read from the weather station.
 The ``fixed block`` entry stores a large amount of data from the station's 'fixed block' memory.
+None of these values should be edited.
 
 You need to add a new entry in the ``[config]`` section called ``day end hour``.
 This tells pywws what convention you want to use when calculating daily summary data.

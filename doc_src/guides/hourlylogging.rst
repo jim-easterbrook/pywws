@@ -22,34 +22,44 @@ How to set up 'hourly' logging with pywws
 Introduction
 ------------
 
-There are two quite different modes of operation with pywws. Traditionally the :doc:`../api/pywws.Hourly` program would be run at regular intervals (usually an hour) from cron. This is suitable for fairly static websites, but more frequent updates can be useful for sites such as Weather Underground (http://www.wunderground.com/). The newer :doc:`../api/pywws.LiveLog` program runs continuously and can upload data every 48 seconds.
+There are two quite different modes of operation with pywws.
+Traditionally :py:mod:`pywws.Hourly` would be run at regular intervals (usually an hour) from cron.
+This is suitable for fairly static websites, but more frequent updates can be useful for sites such as Weather Underground (http://www.wunderground.com/).
+The newer :py:mod:`pywws.LiveLog` program runs continuously and can upload data every 48 seconds.
 
-Note that although this document (and the program name) refers to 'hourly' logging, you can run the Hourly.py program as often or as infrequently as you like, but don't try to run it more often than half your logging frequency. For example, if your logging interval is 10 minutes, don't run Hourly.py more often than every 20 minutes.
+Note that although this document (and the program name) refers to 'hourly' logging, you can run  :py:mod:`pywws.Hourly` as often or as infrequently as you like, but don't try to run it more often than double your logging interval.
+For example, if your logging interval is 10 minutes, don't run :py:mod:`pywws.Hourly` more often than every 20 minutes.
 
 Getting started
 ---------------
 
-First of all, you need to install pywws and make sure it can get data from your weather station. See :doc:`getstarted` for details.
+First of all, you need to install pywws and make sure it can get data from your weather station.
+See :doc:`getstarted` for details.
 
-Try running Hourly.py from the command line, with a high level of verbosity so you can see what's happening::
+Try running :py:mod:`pywws.Hourly` from the command line, with a high level of verbosity so you can see what's happening::
 
-   python Hourly.py -vvv ~/weather/data
+   python -m pywws.Hourly -vvv ~/weather/data
 
 Within five minutes (assuming you have set a 5 minute logging interval) you should see a 'live_data new ptr' message, followed by fetching any new data from the weather station and processing it.
 
 Configuring file locations
 --------------------------
 
-Open your weather.ini file with a text editor. You should have a ``[paths]`` section similar to the following (where ``xxx`` is your user name)::
+Open your weather.ini file with a text editor.
+You should have a ``[paths]`` section similar to the following (where ``xxx`` is your user name)::
 
   [paths]
   work = /tmp/weather
   templates = /home/xxx/weather/templates/
   graph_templates = /home/xxx/weather/graph_templates/
 
-Edit these to suit your installation and preferences. ``work`` is a temporary directory used to store intermediate files, ``templates`` is the directory where you keep your text template files and ``graph_templates`` is the directory where you keep your graph template files. Don't use the pywws example directories for these, as they will get over-written when you upgrade pywws.
+Edit these to suit your installation and preferences.
+``work`` is a temporary directory used to store intermediate files, ``templates`` is the directory where you keep your text template files and ``graph_templates`` is the directory where you keep your graph template files.
+Don't use the pywws example directories for these, as they will get over-written when you upgrade pywws.
 
-Copy your text and graph templates to the appropriate directories. You may find some of the examples provided with pywws useful to get started.
+Copy your text and graph templates to the appropriate directories.
+You may find some of the examples provided with pywws useful to get started.
+If you installed pywws with ``pip`` the examples should be in ``/usr/share/pywws`` or ``/usr/local/share/pywws`` or similar.
 
 Configuring periodic tasks
 --------------------------
@@ -65,9 +75,12 @@ In weather.ini you should have ``[logged]``, ``[hourly]``, ``[12 hourly]`` and `
    [hourly]
    ...
 
-These specify what Hourly.py should do when it is run. Tasks in the ``[logged]`` section are done every time there is new logged data, tasks in the ``[hourly]`` section are done every hour, tasks in the ``[12 hourly]`` section are done twice daily and tasks in the ``[daily]`` section are done once per day.
+These specify what :py:mod:`pywws.Hourly` should do when it is run.
+Tasks in the ``[logged]`` section are done every time there is new logged data, tasks in the ``[hourly]`` section are done every hour, tasks in the ``[12 hourly]`` section are done twice daily and tasks in the ``[daily]`` section are done once per day.
 
-The ``services`` entry is a list of online weather services to upload data to. The ``plot`` and ``text`` entries are lists of template files for plots and text files to be uploaded to your web site, and the ``twitter`` entry is a list of templates for messages to be posted to Twitter. Add the names of your template files and weather services to the appropriate entries, for example::
+The ``services`` entry is a list of online weather services to upload data to.
+The ``plot`` and ``text`` entries are lists of template files for plots and text files to be uploaded to your web site, and the ``twitter`` entry is a list of templates for messages to be posted to Twitter.
+Add the names of your template files and weather services to the appropriate entries, for example::
 
    [logged]
    services = ['underground', 'metoffice']
@@ -93,18 +106,30 @@ The ``services`` entry is a list of online weather services to upload data to. T
    plot = ['28days.png.xml']
    text = ['allmonths.txt']
 
-You can test that all these are working by removing all ``last update`` lines from weather.ini then run Hourly.py again::
+You can test that all these are working by removing all ``last update`` lines from weather.ini then run :py:mod:`pywws.Hourly` again::
 
-   python Hourly.py -v ~/weather/data
+   python -m pywws.Hourly -v ~/weather/data
+
+Using a utility script
+----------------------
+
+The pywws installation includes a short script ``pywws-hourly.py`` that gets installed in ``/usr/bin`` or ``/usr/local/bin`` or similar.
+You should be able to use this script to run :py:mod:`pywws.Hourly`::
+
+   pywws-hourly.py -v ~/weather/data
 
 Run as a cron job
 -----------------
 
-Most UNIX/Linux systems have a 'cron' daemon that can run programs at certain times, even if you are not logged in to the computer. You edit a 'crontab' file to specify what to run and when to run  it. For example, to run Hourly.py every hour, at zero minutes past the hour::
+Most UNIX/Linux systems have a 'cron' daemon that can run programs at certain times, even if you are not logged in to the computer.
+You edit a 'crontab' file to specify what to run and when to run  it.
+For example, to run :py:mod:`pywws.Hourly` every hour, at zero minutes past the hour::
 
-   0 * * * *       python /home/jim/pywws/Hourly.py /home/jim/weather/data
+   0 * * * *       pywws-hourly.py /home/jim/weather/data
 
-This might work, but if it didn't you probably won't get any error messages to tell you what went wrong. It's much better to run a script that runs Hourly.py and then emails you any output it produces. Here's the script I use::
+This might work, but if it didn't you probably won't get any error messages to tell you what went wrong.
+It's much better to run a script that runs :py:mod:`pywws.Hourly` and then emails you any output it produces.
+Here's the script I use::
 
    #!/bin/sh
    #
@@ -116,8 +141,7 @@ This might work, but if it didn't you probably won't get any error messages to t
 
    log=/var/log/log-weather
 
-   cd /home/jim/weather/devel
-   python ./Hourly.py -v /data/weather >$log 2>&1
+   pywws-hourly.py -v /data/weather >$log 2>&1
 
    # mail the log file
    /home/jim/scripts/email-log.sh $log "weather log"
