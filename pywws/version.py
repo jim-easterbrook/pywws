@@ -25,7 +25,7 @@ import subprocess
 
 try:
     commit = subprocess.check_output(
-        ['git', 'rev-parse', '--short', 'master']).strip()
+        ['git', 'rev-parse', '--short', 'HEAD']).strip()
 except Exception:
     commit = 'unknown'
 version = date.today().strftime('%y.%m')
