@@ -19,10 +19,61 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 import os
+from distutils import log
+from distutils.cmd import Command
 from distutils.core import setup
-from pywws import version
+import subprocess
+
+import pywws.version
+
+# Custom distutils classes
+class build_lang(Command):
+    description = '"compile" .po files to .mo files'
+    user_options = [
+        ('source-dir=', 's', 'root directory of .po source files'),
+        ('build-dir=',  'b', 'root directory of .mo output files'),
+        ]
+
+    def initialize_options(self):
+        self.source_dir = None
+        self.build_dir = None
+
+    def finalize_options(self):
+        if self.build_dir is None:
+            self.build_dir = self.source_dir
+
+    def run(self):
+        if not self.source_dir:
+            log.error('no source directory specified')
+            return
+        for root, dirs, files in os.walk(self.source_dir):
+            targ_dir = os.path.join(
+                root.replace(self.source_dir, self.build_dir), 'LC_MESSAGES')
+            for name in files:
+                base, ext = os.path.splitext(name)
+                if ext.lower() != '.po':
+                    continue
+                src = os.path.join(root, name)
+                targ = os.path.join(targ_dir, base + '.mo')
+                if os.path.exists(targ):
+                    targ_date = os.stat(targ)[8]
+                else:
+                    targ_date = 0
+                src_date = os.stat(src)[8]
+                if targ_date > src_date:
+                    log.debug('skipping %s', targ)
+                    continue
+                if not os.path.isdir(targ_dir):
+                    log.info('creating directory %s', targ_dir)
+                    if not self.dry_run:
+                        os.makedirs(targ_dir)
+                log.info('compiling %s to %s', src, targ)
+                if not self.dry_run:
+                    subprocess.check_call([
+                        'msgfmt', '--output-file=%s' % targ, src])
 
 cmdclass = {}
+command_options = {}
 
 # if using Python 3, translate during build
 try:
@@ -31,10 +82,29 @@ try:
 except ImportError:
     pass
 
+if 'LANG' in os.environ:
+    lang = os.environ['LANG'].split('_')[0]
+else:
+    lang = 'en'
+
+# add command to build translation files
+cmdclass['build_lang'] = build_lang
+command_options['build_lang'] = {
+    'source_dir' : ('setup.py', 'translations'),
+    'build_dir'  : ('setup.py', 'translations'),
+    }
+
 # if sphinx is installed, add command to build documentation
 try:
     from sphinx.setup_command import BuildDoc
+    builder = 'html'
     cmdclass['build_sphinx'] = BuildDoc
+    command_options['build_sphinx'] = {
+        'all_files'  : ('setup.py', '1'),
+        'source_dir' : ('setup.py', 'doc_src'),
+        'build_dir'  : ('setup.py', 'doc/%s/%s' % (builder, lang)),
+        'builder'    : ('setup.py', builder),
+        }
 except ImportError:
     pass
 
@@ -42,6 +112,9 @@ except ImportError:
 try:
     from sphinx_pypi_upload import UploadDoc
     cmdclass['upload_sphinx'] = UploadDoc
+    command_options['upload_sphinx'] = {
+        'upload_dir' : ('setup.py', 'doc/html'),
+        }
 except ImportError:
     pass
 
@@ -57,8 +130,13 @@ for root, dirs, files in os.walk('examples'):
     if paths:
         data_files.append(('share/pywws/%s' % root, paths))
 
+# PyPI gets confused by git commit identifiers not being in sequence,
+# so add a 'minor' version number which will increase if there's a
+# second release (or third...) in the month
+version = '%s.0.%s' % (pywws.version.version, pywws.version.commit)
+
 setup(name = 'pywws',
-      version = version.release,
+      version = version,
       description = 'Python software for wireless weather stations',
       author = 'Jim Easterbrook',
       author_email = 'jim@jim-easterbrook.me.uk',
@@ -93,4 +171,5 @@ pages showing recent weather readings, typically updated every hour.
       scripts = scripts,
       data_files = data_files,
       cmdclass = cmdclass,
+      command_options = command_options,
       )

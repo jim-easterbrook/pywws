@@ -68,8 +68,7 @@ pywws/locale/%.mo : translations/%.mo
 
 # compile a language file
 translations/$(LANG)/LC_MESSAGES/%.mo : translations/$(LANG)/%.po
-	mkdir -p $(dir $@)
-	msgfmt --output-file=$@ $<
+	python setup.py build_lang
 
 # create or update a language file from extracted strings
 translations/$(LANG)/%.po : translations/%.pot
