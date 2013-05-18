@@ -22,9 +22,8 @@ doc/html/fr
 doc/text
 
 # translations
-translations/*.pot
-translations/.doctrees
 translations/*/LC_MESSAGES
+temp
 
 # Miscellaneous
 MANIFEST
