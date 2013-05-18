@@ -172,7 +172,7 @@ Weather Underground
 ===================
 
 * Create account: http://www.wunderground.com/members/signup.asp
-* API: http://wiki.wunderground.com/index.php/PWS_-_Upload_Protocol
+* API: `<http://wiki.wunderground.com/index.php/PWS_-_Upload_Protocol>`_
 * Example ``weather.ini`` section::
 
     [underground]
