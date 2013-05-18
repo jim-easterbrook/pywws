@@ -188,7 +188,7 @@ command_options['msgmerge'] = {
 cmdclass['msgfmt'] = msgfmt
 command_options['msgfmt'] = {
     'source_dir' : ('setup.py', 'translations'),
-    'build_dir'  : ('setup.py', 'translations'),
+    'build_dir'  : ('setup.py', 'pywws/locale'),
     }
 
 # if sphinx is installed, add commands to build documentation

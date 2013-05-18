@@ -22,9 +22,6 @@ else
   LANG	:= en
 endif
 
-po_files	:= $(notdir $(wildcard translations/$(LANG)/*.po))
-langs		:= $(notdir $(wildcard translations/*))
-
 all : lang doc
 	python setup.py build
 
@@ -35,14 +32,10 @@ dist : lang_all doc_all
 	python setup.py sdist
 
 clean :
-	rm -Rf doc/text doc/html/en doc/html/fr \
-		pywws/locale/* translations/*/LC_MESSAGES \
-		build dist
+	rm -Rf doc/text doc/html/en doc/html/fr pywws/locale/* build dist
 
-lang : $(po_files:%=pywws/locale/$(LANG)/LC_MESSAGES/pywws.mo)
-
-lang_all :
-	for lang in $(langs); do $(MAKE) LANG=$$lang lang; done
+lang :
+	python setup.py msgfmt
 
 doc : lang
 	python setup.py build_sphinx \
@@ -55,8 +48,3 @@ doc_all :
 	$(MAKE) doc LANG=fr
 
 .PHONY : doc dist
-
-# copy pywws language file to pywws subdirectory
-pywws/locale/%.mo : translations/%.mo
-	mkdir -p $(dir $@)
-	cp $< $@
