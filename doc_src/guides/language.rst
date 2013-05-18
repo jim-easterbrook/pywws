@@ -57,29 +57,30 @@ If one of these languages is what you need, then edit your weather.ini file and 
    language = sv
 
 You may still need to compile and install your chosen language file.
-This is done by the 'makefile' included with pywws::
+This is done with ``setup.py``::
 
-   make lang LANG=sv
+   python setup.py msgfmt
 
 If there isn't already a file for your language, the rest of this document tells you how to create one.
 
 Create a language file
 ----------------------
 
-The 'makefile' included with pywws can create a set of files for you to fill in.
-For example, to create source files for the French language (code ``fr``)::
+The first step is to create a file containing the strings you need to translate.
+For example, to create a source file for the French language (code ``fr``)::
 
-   make lang_src LANG=fr
+   python setup.py xgettext
+   python setup.py msgmerge --lang=fr
 
-This will ask you to confirm your email address (several times, annoyingly), then create several ``.po`` files in the directory ``translations/fr``.
+This will ask you to confirm your email address, then create a ``pywws.po`` file in the directory ``translations/fr``.
 You should now edit ``pywws.po``, filling in every ``msgstr`` line with a translation of the ``msgid`` line immediately above it.
 The reason for including your email address is to allow anyone who has questions about your translation to get in touch with you.
 Feel free to put in an invalid address if you are concerned about privacy.
 
 After you've edited your new language file it needs to be compiled so that pywws can use it.
-This is also done by the makefile::
+This is done with the ``msgfmt`` command::
 
-   make lang LANG=fr
+   python setup.py msgfmt
 
 Don't forget to do this every time you edit a language file.
 
@@ -105,41 +106,69 @@ This should produce output something like this::
 Edit the language entry in your ``weather.ini`` file to use your language code (e.g. ``fr``), then try using :py:mod:`~pywws.Plot` to plot a graph.
 The X-axis of the graph should now be labeled in your language, using the translation you provided for 'Time', 'Day' or 'Date'.
 
-Send Jim the language file
---------------------------
-
-I'm sure you would like others to benefit from the work you've done in making a new language file for pywws.
-Please, please, please send a copy of your language file(s) (for example ``pywws.po``) to jim@jim-easterbrook.me.uk.
-
-Update the language file
-------------------------
-
-As pywws is extended, new strings may be added which will require your translation files to be extended as well.
-This is fairly easy to do.
-First you need to remove the language master template files, then run the ``make lang_src`` command again::
-
-   rm translations/*.pot
-   make lang_src LANG=fr
-
-This should add the new strings to your language file, without changing the strings you've already translated.
-   
-If the English language source has changed since your last translation, some strings may be marked by gettext as ``#, fuzzy``.
-You should check that your translation is still correct for these strings -- the change may be trivial (e.g. a spelling correction) but it could be quite significant.
-When you've checked (and corrected if necessary) the translation, remove the ``#, fuzzy`` line.
-
 Translating the documentation
 -----------------------------
 
 The system used to translate the strings used in pywws can also be used to translate the documentation.
-The files ``index.po``, ``essential.po``, ``guides.po`` and ``api.po`` contain text strings (often whole paragraphs) extracted from the different parts of the documentation.
+The command to extract strings from the documentation is very similar::
+
+   python setup.py xgettext_doc
+
+Note that this requires the `sphinx <http://sphinx-doc.org/>`_ package used to 'compile' the documentation.
+After extracting the strings, create source files for your language.
+In this example the language is French, with the two letter code ``fr``::
+   
+   python setup.py msgmerge --lang=fr
+
+This creates four files (``index.po``, ``essential.po``, ``guides.po`` and ``api.po``) that contain text strings (often whole paragraphs) extracted from the different parts of the documentation.
 
 These files can be edited in a similar way to ``pywws.po``.
 Fill in each ``msgstr`` with a translation of the ``msgid`` above it.
-Note that some strings (such as URLs) need not be translated.
+Note that some strings (such as URLs and links to other parts of the documentation) should not be translated.
 In these cases, leave the ``msgstr`` blank.
 
 Translating all of the pywws documentation is a lot of work.
 However, when the documentation is 'compiled' any untranslated strings revert to their English original.
 This means that a partial translation could still be useful -- I suggest starting with the documentation front page, ``index.po``.
+
+Viewing your translated documentation
+-------------------------------------
+
+First convert your newly edited language files::
+
+   python setup.py msgfmt
+
+Then delete the old documentation (if it exists) and rebuild using your language::
+
+   rm -Rf doc/html/fr
+   LANG=fr python setup.py build_sphinx
+
+Note that the ``build_sphinx`` command doesn't have a ``--lang`` option, so the language is set by a temporary environment variable.
+
+Finally you can view the translated documentation by using a web browser to read the file ``doc/html/fr/index.html``.
+
+Update the language files
+-------------------------
+
+As pywws is extended, new strings may be added which will require your translation files to be extended as well.
+This is fairly easy to do.
+First you need to re-extract the strings to be translated, then merge them into your existing language files.
+This is done by repeating the commands used to create the files::
+
+   python setup.py xgettext
+   python setup.py xgettext_doc
+   python setup.py msgmerge --lang=fr
+
+This should add the new strings to your language files, without changing the strings you've already translated.
+
+If the English language source has changed since your last translation, some strings may be marked by gettext as ``#, fuzzy``.
+You should check that your translation is still correct for these strings -- the change may be trivial (e.g. a spelling correction) but it could be quite significant.
+When you've checked (and corrected if necessary) the translation, remove the ``#, fuzzy`` line.
+
+Send Jim the translation
+------------------------
+
+I'm sure you would like others to benefit from the work you've done in translating pywws.
+Please, please, please send a copy of your language file(s) (for example ``pywws.po``) to jim@jim-easterbrook.me.uk.
 
 Comments or questions? Please subscribe to the pywws mailing list http://groups.google.com/group/pywws and let us know.
