@@ -101,10 +101,13 @@ If you'd like to keep up to date with latest developments of pywws, you should u
 
    git clone https://github.com/jim-easterbrook/pywws.git
 
-After doing so you should use ``make`` to compile the documentation and language localisation files (which will require the ``gettext`` and ``sphinx`` dependencies)::
+After doing so you can compile the documentation and language localisation files (which will require the ``sphinx`` and ``gettext`` dependencies)::
 
    cd pywws
-   make
+   python setup.py build_sphinx
+   python setup.py msgfmt
+
+For more details, see :doc:`guides/getstarted`.
 
 Upgrading pywws
 ===============
@@ -117,7 +120,7 @@ Some new versions of pywws have changed what's stored in the hourly, daily or mo
 Documentation
 *************
 
-Documentation is included with pywws downloads, and is also available `online <http://pythonhosted.org/pywws>`_. A good starting place is the `how to get started guide <guides/getstarted.html>`_ which describes in more detail how to install pywws.
+Documentation is included with pywws downloads, and is also available `online <http://pythonhosted.org/pywws>`_. A good starting place is :doc:`guides/getstarted` which describes in more detail how to install pywws.
 
 If you have questions not answered in the documentation, please join the `pywws Google mailing list / discussion group <http://groups.google.com/group/pywws>`_ and ask there. Note that your first message to the group will not appear immediately -- new posters have to be approved by a moderator, to prevent spam messages.
 

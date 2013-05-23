@@ -97,12 +97,13 @@ It is convenient to create a soft link to this awkwardly named directory::
    cd ~/weather
    ln -s pywws-12.11_95babb0 pywws
 
-Alternatively, to get the latest development version of pywws use ``git clone``, then use ``make`` to compile the language files and documentation::
+Alternatively, to get the latest development version of pywws use ``git clone``, then use ``setup.py`` to compile the language files and documentation::
 
    cd ~/weather
    git clone https://github.com/jim-easterbrook/pywws.git
    cd pywws
-   make
+   python setup.py msgfmt
+   python setup.py build_sphinx
 
 After downloading and extracting, or cloning the repos, you can then use ``setup.py`` to build and install everything::
 
