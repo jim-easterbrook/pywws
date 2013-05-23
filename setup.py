@@ -177,11 +177,11 @@ else:
 cmdclass['xgettext'] = xgettext
 command_options['xgettext'] = {
     'source_dir'  : ('setup.py', 'pywws'),
-    'output_file' : ('setup.py', 'temp/gettext/pywws.pot'),
+    'output_file' : ('setup.py', 'build/gettext/pywws.pot'),
     }
 cmdclass['msgmerge'] = msgmerge
 command_options['msgmerge'] = {
-    'source_dir' : ('setup.py', 'temp/gettext'),
+    'source_dir' : ('setup.py', 'build/gettext'),
     'build_dir'  : ('setup.py', 'translations'),
     'lang'       : ('setup.py', lang),
     }
@@ -208,7 +208,7 @@ try:
     command_options['xgettext_doc'] = {
         'all_files'  : ('setup.py', '1'),
         'source_dir' : ('setup.py', 'doc_src'),
-        'build_dir'  : ('setup.py', 'temp'),
+        'build_dir'  : ('setup.py', 'build'),
         'builder'    : ('setup.py', 'gettext'),
         }
 except ImportError:
@@ -272,7 +272,7 @@ pages showing recent weather readings, typically updated every hour.
       platforms = ['POSIX', 'MacOS', 'Windows'],
       packages = ['pywws'],
       package_data = {
-          'pywws' : ['services/*', 'locale/*/LC_MESSAGES/*'],
+          'pywws' : ['services/*', 'locale/*/LC_MESSAGES/pywws.mo'],
           },
       scripts = scripts,
       data_files = data_files,

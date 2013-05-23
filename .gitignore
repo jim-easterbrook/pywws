@@ -21,10 +21,6 @@ doc/html/en
 doc/html/fr
 doc/text
 
-# translations
-translations/*/LC_MESSAGES
-temp
-
 # Miscellaneous
 MANIFEST
 pywws/locale
