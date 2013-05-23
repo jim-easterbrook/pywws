@@ -30,3 +30,6 @@ except Exception:
     commit = 'unknown'
 version = date.today().strftime('%y.%m')
 release = '%s_%s' % (version, commit)
+
+if __name__ == "__main__":
+    print release
