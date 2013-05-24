@@ -24,12 +24,13 @@ from datetime import date
 import subprocess
 
 try:
-    commit = subprocess.check_output(
-        ['git', 'rev-parse', '--short', 'HEAD']).strip()
+    p = subprocess.Popen(
+        ['git', 'rev-parse', '--short', 'HEAD'], stdout=subprocess.PIPE)
+    commit = p.communicate()[0].strip()
 except Exception:
     commit = 'unknown'
 version = date.today().strftime('%y.%m')
 release = '%s_%s' % (version, commit)
 
 if __name__ == "__main__":
-    print release
+    print(release)
