@@ -173,7 +173,7 @@ if 'LANG' in os.environ:
 else:
     lang = 'en'
 
-# add command to build translation files
+# add commands to create & build translation files
 cmdclass['xgettext'] = xgettext
 command_options['xgettext'] = {
     'source_dir'  : ('setup.py', 'pywws'),
@@ -223,6 +223,12 @@ try:
         }
 except ImportError:
     pass
+
+# set options for building distributions
+command_options['sdist'] = {
+    'formats'        : ('setup.py', 'gztar zip'),
+    'force_manifest' : ('setup.py', '1'),
+    }
 
 # get lists of data files and scripts to install
 scripts = []
