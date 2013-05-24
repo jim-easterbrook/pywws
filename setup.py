@@ -188,7 +188,7 @@ command_options['msgmerge'] = {
 cmdclass['msgfmt'] = msgfmt
 command_options['msgfmt'] = {
     'source_dir' : ('setup.py', 'translations'),
-    'build_dir'  : ('setup.py', 'pywws/locale'),
+    'build_dir'  : ('setup.py', 'pywws/lang'),
     }
 
 # if sphinx is installed, add commands to build documentation
@@ -278,7 +278,7 @@ pages showing recent weather readings, typically updated every hour.
       platforms = ['POSIX', 'MacOS', 'Windows'],
       packages = ['pywws'],
       package_data = {
-          'pywws' : ['services/*', 'locale/*/LC_MESSAGES/pywws.mo'],
+          'pywws' : ['services/*', 'lang/*/LC_MESSAGES/pywws.mo'],
           },
       scripts = scripts,
       data_files = data_files,
