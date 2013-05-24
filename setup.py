@@ -18,13 +18,33 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-import os
+from datetime import date
 from distutils import log
 from distutils.cmd import Command
 from distutils.core import setup
+import os
 import subprocess
 
 import pywws.version
+
+# regenerate version file, if required
+try:
+    p = subprocess.Popen(
+        ['git', 'rev-parse', '--short', 'HEAD'], stdout=subprocess.PIPE)
+    commit = p.communicate()[0].strip().decode('ASCII')
+    if p.returncode:
+        commit = pywws.version.commit
+except OSError:
+    commit = pywws.version.commit
+if commit != pywws.version.commit:
+    pywws.version.version = date.today().strftime('%y.%m')
+    pywws.version.release = str(int(pywws.version.release) + 1)
+    pywws.version.commit = commit
+    vf = open('pywws/version.py', 'w')
+    vf.write("version = '%s'\n" % pywws.version.version)
+    vf.write("release = '%s'\n" % pywws.version.release)
+    vf.write("commit = '%s'\n" % pywws.version.commit)
+    vf.close()
 
 # Custom distutils classes
 class xgettext(Command):
@@ -242,10 +262,7 @@ for root, dirs, files in os.walk('examples'):
     if paths:
         data_files.append(('share/pywws/%s' % root, paths))
 
-# PyPI gets confused by git commit identifiers not being in sequence,
-# so add a 'minor' version number which will increase if there's a
-# second release (or third...) in the month
-version = '%s.0.%s' % (pywws.version.version, pywws.version.commit)
+version = '%s_r%s' % (pywws.version.version, pywws.version.release)
 
 setup(name = 'pywws',
       version = version,
