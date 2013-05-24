@@ -255,9 +255,12 @@ class Template(object):
         codeset = locale.getpreferredencoding()
         if codeset == 'ASCII':
             codeset = 'latin_1'
-        of = open(output_file, 'w')
+        if sys.version_info[0] >= 3:
+            of = open(output_file, 'w', encoding=codeset)
+        else:
+            of = open(output_file, 'w')
         for text in self.process(live_data, template_file):
-            if isinstance(text, unicode):
+            if sys.version_info[0] < 3 and isinstance(text, unicode):
                 text = text.encode(codeset)
             of.write(text)
         of.close()
