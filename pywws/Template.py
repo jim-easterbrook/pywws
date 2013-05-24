@@ -45,16 +45,16 @@ import os
 import shlex
 import sys
 
-from .conversions import (
+from pywws.conversions import (
     illuminance_wm2, pressure_inhg, rain_inch, temp_f,
     winddir_degrees, winddir_text, wind_kmph, wind_mph, wind_kn, wind_bft,
     cadhumidex)
-from . import DataStore
-from .Forecast import Zambretti, ZambrettiCode
-from . import Localisation
-from .Logger import ApplicationLogger
-from .TimeZone import Local, utc
-from . import WeatherStation
+from pywws import DataStore
+from pywws.Forecast import Zambretti, ZambrettiCode
+from pywws import Localisation
+from pywws.Logger import ApplicationLogger
+from pywws.TimeZone import Local, utc
+from pywws import WeatherStation
 
 SECOND = timedelta(seconds=1)
 HOUR = timedelta(hours=1)
@@ -252,8 +252,13 @@ class Template(object):
         return result
 
     def make_file(self, template_file, output_file, live_data=None):
+        codeset = locale.getpreferredencoding()
+        if codeset == 'ASCII':
+            codeset = 'latin_1'
         of = open(output_file, 'w')
         for text in self.process(live_data, template_file):
+            if isinstance(text, unicode):
+                text = text.encode(codeset)
             of.write(text)
         of.close()
         return 0
