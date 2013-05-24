@@ -1,7 +1,7 @@
 include *.txt MANIFEST.in
 recursive-include translations *.po
 recursive-include doc_src *
-recursive-include doc/*/html *
-recursive-include doc/*/text *
+recursive-include doc *
 global-exclude *~
-exclude doc/*/html/.buildinfo
+exclude doc/html/*/html/.buildinfo
+prune doc/html/*/doctrees
