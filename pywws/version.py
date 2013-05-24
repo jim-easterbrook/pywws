@@ -26,8 +26,10 @@ import subprocess
 try:
     p = subprocess.Popen(
         ['git', 'rev-parse', '--short', 'HEAD'], stdout=subprocess.PIPE)
-    commit = p.communicate()[0].strip()
-except Exception:
+    commit = p.communicate()[0].strip().decode('ASCII')
+    if p.returncode:
+        commit = 'unknown'
+except OSError:
     commit = 'unknown'
 version = date.today().strftime('%y.%m')
 release = '%s_%s' % (version, commit)
