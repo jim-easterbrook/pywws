@@ -25,7 +25,7 @@
 
 # rename imports to prevent them being imported when
 # doing 'from pywws.conversions import *'
-from . import Localisation as _Localisation
+from pywws import Localisation as _Localisation
 
 def illuminance_wm2(lux):
     "Approximate conversion of illuminance in lux to solar radiation in W/m2"
@@ -114,7 +114,8 @@ def cadhumidex(temp, humidity):
                            float(humidity) / 100.0)
     return temp + (0.555 * (saturation_pressure - 10.0))
 
-def main(argv=None):
+def _main(argv=None):
+    global _winddir_text_array
     # run some simple tests
     print 'Wind speed:'
     print '%6s %8s %8s %8s %6s' % ('m/s', 'km/h', 'mph', 'knots', 'bft')
@@ -133,4 +134,4 @@ def main(argv=None):
     print
 
 if __name__ == "__main__":
-    main()
+    _main()
