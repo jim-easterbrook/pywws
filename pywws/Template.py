@@ -37,6 +37,7 @@ __usage__ = """
 __doc__ %= __usage__
 __usage__ = __doc__.split('\n')[0] + __usage__
 
+import codecs
 from datetime import datetime, timedelta
 import getopt
 import locale
@@ -45,10 +46,7 @@ import os
 import shlex
 import sys
 
-from pywws.conversions import (
-    illuminance_wm2, pressure_inhg, rain_inch, temp_f,
-    winddir_degrees, winddir_text, wind_kmph, wind_mph, wind_kn, wind_bft,
-    cadhumidex)
+from pywws.conversions import *
 from pywws import DataStore
 from pywws.Forecast import Zambretti, ZambrettiCode
 from pywws import Localisation
@@ -72,6 +70,8 @@ class Template(object):
         self.use_locale = use_locale
         self.midnight = None
         self.rain_midnight = None
+        # get character encoding of template input & output
+        self.encoding = params.get('config', 'template encoding', 'iso-8859-1')
 
     def process(self, live_data, template_file):
         def jump(idx, count):
@@ -119,7 +119,7 @@ class Template(object):
         data = data_set[idx]
         # open template file file
         if sys.version_info[0] >= 3:
-            tmplt = open(template_file, 'r', encoding='latin_1')
+            tmplt = open(template_file, 'r', encoding=self.encoding)
         else:
             tmplt = open(template_file, 'r')
         # do the text processing
@@ -171,13 +171,13 @@ class Template(object):
                             yield command[2]
                     elif isinstance(x, datetime):
                         yield x.strftime(fmt)
-                    elif sys.version_info < (2, 5) or not self.use_locale:
+                    elif not self.use_locale:
                         yield fmt % (x)
-                    elif sys.version_info < (2, 7) and '%%' in fmt:
+                    elif sys.version_info >= (2, 7) or '%%' not in fmt:
+                        yield locale.format_string(fmt, x)
+                    else:
                         yield locale.format_string(
                             fmt.replace('%%', '##'), x).replace('##', '%')
-                    else:
-                        yield locale.format_string(fmt, x)
                 elif command[0] == 'monthly':
                     data_set = self.monthly_data
                     idx, valid_data = jump(datetime.max, -1)
@@ -252,16 +252,13 @@ class Template(object):
         return result
 
     def make_file(self, template_file, output_file, live_data=None):
-        codeset = locale.getpreferredencoding()
-        if codeset == 'ASCII':
-            codeset = 'latin_1'
         if sys.version_info[0] >= 3:
-            of = open(output_file, 'w', encoding=codeset)
+            of = open(output_file, 'w', encoding=self.encoding)
         else:
             of = open(output_file, 'w')
         for text in self.process(live_data, template_file):
             if sys.version_info[0] < 3 and isinstance(text, unicode):
-                text = text.encode(codeset)
+                text = text.encode(self.encoding)
             of.write(text)
         of.close()
         return 0
