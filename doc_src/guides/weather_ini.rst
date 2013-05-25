@@ -52,6 +52,7 @@ config: miscellaneous system configuration
  ws type = 1080
  day end hour = 21
  gnuplot encoding = iso_8859_1
+ template encoding = iso-8859-1
  language = en
  logdata sync = 1
  rain day threshold = 0.2
@@ -61,6 +62,10 @@ config: miscellaneous system configuration
 ``day end hour`` is the end of the "`meteorological day <http://en.wikipedia.org/wiki/Meteorological_day>`_", in local time without daylight savings time. Typical values are 21, 9, or 24.
 
 ``gnuplot encoding`` is the text encoding used when plotting graphs. The default value of ``iso_8859_1`` allows the degree symbol, which is useful in a weather application! Other values might be needed if your language includes accented characters. The possible values depend on your gnuplot installation so some experimentation may be needed.
+
+``template encoding`` is the text encoding used for templates.
+The default value is ``iso-8859-1``, which is the encoding used in the example templates.
+If you create templates with a different character set, you should change this value to match your templates.
 
 ``language`` is used to localise pywws. It's optional, as pywws usually uses the computer's default language as set by the LANG environment variable. The available languages are those in the ``translations`` subdirectory of your pywws installation. If you set any other language, pywws will fall back to using English.
 
