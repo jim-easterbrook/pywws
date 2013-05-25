@@ -42,14 +42,15 @@ __usage__ = """
 __doc__ %= __usage__
 __usage__ = __doc__.split('\n')[0] + __usage__
 
+import codecs
 import getopt
 import logging
 import sys
 import tweepy
 
-from . import DataStore
-from . import Localisation
-from .Logger import ApplicationLogger
+from pywws import DataStore
+from pywws import Localisation
+from pywws.Logger import ApplicationLogger
 
 consumer_key = '62moSmU9ERTs0LK0g2xHAg'
 consumer_secret = 'ygdXpjr0rDagU3dqULPqXF8GFgUOD6zYDapoHAH9ck'
@@ -58,11 +59,8 @@ class ToTwitter(object):
     def __init__(self, params):
         self.logger = logging.getLogger('pywws.ToTwitter')
         self.old_ex = None
-        self.charset = Localisation.translation.charset()
-        # assume that systems with no declared charset actually use iso-8859-1
-        # so tweets can contain the very useful degree symbol
-        if self.charset in (None, 'ASCII'):
-            self.charset = 'iso-8859-1'
+        # get character encoding of template output
+        self.encoding = params.get('config', 'template encoding', 'iso-8859-1')
         # get parameters
         key = params.get('twitter', 'key')
         secret = params.get('twitter', 'secret')
@@ -81,7 +79,7 @@ class ToTwitter(object):
         for i in range(3):
             try:
                 status = self.api.update_status(
-                    tweet.decode(self.charset), lat=self.lat, long=self.long)
+                    tweet, lat=self.lat, long=self.long)
                 return True
             except Exception, ex:
                 e = str(ex)
@@ -93,10 +91,7 @@ class ToTwitter(object):
         return False
 
     def UploadFile(self, file):
-        if sys.version_info[0] >= 3:
-            tweet_file = open(file, 'r', encoding=self.charset)
-        else:
-            tweet_file = open(file, 'r')
+        tweet_file = codecs.open(file, 'r', encoding=self.encoding)
         tweet = tweet_file.read(140)
         tweet_file.close()
         return self.Upload(tweet)
