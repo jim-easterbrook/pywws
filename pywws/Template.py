@@ -248,6 +248,8 @@ class Template(object):
     def make_text(self, template_file, live_data=None):
         result = ''
         for text in self.process(live_data, template_file):
+            if sys.version_info[0] < 3 and isinstance(text, unicode):
+                text = text.encode(self.encoding)
             result += text
         return result
 
