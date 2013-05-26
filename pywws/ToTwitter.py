@@ -76,6 +76,8 @@ class ToTwitter(object):
     def Upload(self, tweet):
         if not tweet:
             return 0
+        if not isinstance(tweet, unicode):
+            tweet = tweet.decode(self.encoding)
         for i in range(3):
             try:
                 status = self.api.update_status(
