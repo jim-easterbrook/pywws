@@ -284,9 +284,9 @@ class ToService(object):
             '%s_template_%s.txt' % (service_name,
                                     self.params.get('config', 'ws type')))
         # get other parameters
-        self.catchup = eval(service_params.get('config', 'catchup'))
-        self.use_get = eval(service_params.get('config', 'use get'))
-        rapid_fire = eval(service_params.get('config', 'rapidfire'))
+        self.catchup = eval(service_params.get('config', 'catchup', '0'))
+        self.use_get = eval(service_params.get('config', 'use get', 'True'))
+        rapid_fire = eval(service_params.get('config', 'rapidfire', 'False'))
         if rapid_fire:
             self.server_rf = service_params.get('config', 'url-rf')
             self.fixed_data_rf = dict(self.fixed_data)
