@@ -152,6 +152,18 @@ def altitude_feet(meters):
         return None
     return meters * 3.2808399;
 
+def max_dec_length(input, max_length=0):
+    """Converts a number to an integer that has `max_length` maximum digits"""
+    if isinstance(input, (float, complex)):
+        input = long(input)
+    if not isinstance(input, (int, long)):
+        return None
+    if max_length <=0:
+        return input
+    if input >= pow(10, max_length):
+        return None
+    return input
+
 def _main(argv=None):
     global _winddir_text_array
     # run some simple tests
