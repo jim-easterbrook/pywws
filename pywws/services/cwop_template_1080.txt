@@ -36,6 +36,6 @@
 #calc "rain_inch(data['rain']) * 100" "p%03d" "p..." "max_dec_length(x, 3)"#
 #calc "rain_inch(rain_day(data)) * 100" "P%03d" "P..." "max_dec_length(x, 3)"#
 #hum_out "h%02d" "" "x % 100" "h.."#
-#rel_pressure "b%05d" "b......" "max_dec_length(x / 10, 5)"#
+#rel_pressure "b%05d" "b......" "max_dec_length(x * 10, 5)"#
 #calc "'pywws' if not location_is_set() else '.pywws-WH1080'"
 #altitude " /A=%06d" "" "max_dec_length(altitude_feet(x), 6)"#
