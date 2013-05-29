@@ -27,17 +27,17 @@
 #calc "latitude_loran(data['latitude'])"
 #calc "longitude_loran(data['longitude'])"
 #calc "'_' if location_is_set() else 'c'"
-#wind_dir "%03d" "..." "winddir_degrees(x) % 1000"#
+#wind_dir "%03d" "..." "max_dec_length(winddir_degrees(x), 3)"#
 #calc "'/' if location_is_set() else 's'"
-#wind_ave "%03d" "..." "wind_mph(x) % 1000"#
-#wind_gust "g%03d" "g..." "wind_mph(x) % 1000"#
-#calc "temp_f(data['temp_out'])" "t%03d" "t..." "(x % 1000) if x > 0 else x"#
-#calc "rain_inch(rain_hour(data)) * 100" "r%03d" "r..." "x % 1000"#
-#calc "rain_inch(data['rain']) * 100" "p%03d" "p..." "x % 1000"#
-#calc "rain_inch(rain_day(data)) * 100" "P%03d" "P..." "x % 1000"#
+#wind_ave "%03d" "..." "max_dec_length(wind_mph(x), 3)"#
+#wind_gust "g%03d" "g..." "max_dec_length(wind_mph(x), 3)"#
+#calc "temp_f(data['temp_out'])" "t%03d" "t..." "max_dec_length(x, 3) if x > 0 else max_dec_length(x, 2)"#
+#calc "rain_inch(rain_hour(data)) * 100" "r%03d" "r..." "max_dec_length(x, 3)"#
+#calc "rain_inch(data['rain']) * 100" "p%03d" "p..." "max_dec_length(x, 3)"#
+#calc "rain_inch(rain_day(data)) * 100" "P%03d" "P..." "max_dec_length(x, 3)"#
 #hum_out "h%02d" "" "x % 100" "h.."#
-#rel_pressure "b%05d" "b......" "(x / 10) % 100000"#
+#rel_pressure "b%05d" "b......" "max_dec_length(x / 10, 5)"#
 #calc "'L' if illuminance_wm2(data['illuminance']) < 1000 else 'l'"
-#calc "illuminance_wm2(data['illuminance'])" "%03d" "..." "x if x < 1000 else (x-1000) if (x - 1000) < 999 else None"
+#calc "illuminance_wm2(data['illuminance'])" "%03d" "..." "max_dec_length(x if x < 1000 else (x-1000), 3)"
 #calc "'pywws' if not location_is_set() else '.pywws-WH3080'"
 #altitude " /A=%06d" "" "altitude_feet(x) % 1000000"#
