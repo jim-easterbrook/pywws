@@ -17,10 +17,11 @@ develop-eggs
 *~
 
 # Compiled documentation
-doc/html/en
-doc/html/fr
+doc/html
 doc/text
 
 # Miscellaneous
 MANIFEST
 pywws/lang
+translations
+
