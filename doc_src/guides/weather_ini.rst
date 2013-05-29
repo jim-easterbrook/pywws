@@ -50,6 +50,9 @@ config: miscellaneous system configuration
 
  [config]
  ws type = 1080
+ altitude = 13
+ latitude = 51.506419
+ longitude = -0.099843
  day end hour = 21
  gnuplot encoding = iso_8859_1
  template encoding = iso-8859-1
@@ -58,7 +61,13 @@ config: miscellaneous system configuration
  rain day threshold = 0.2
 
 ``ws type`` is the "class" of weather station. It should be set to ``1080`` for most weather stations, or ``3080`` if your station console displays solar illuminance.
- 
+
+``altitude`` altitude of weather station, in meters.
+
+``latitude`` of weather station in decimal format.
+
+``longitude`` of weather station in decimal format.
+
 ``day end hour`` is the end of the "`meteorological day <http://en.wikipedia.org/wiki/Meteorological_day>`_", in local time without daylight savings time. Typical values are 21, 9, or 24.
 
 ``gnuplot encoding`` is the text encoding used when plotting graphs. The default value of ``iso_8859_1`` allows the degree symbol, which is useful in a weather application! Other values might be needed if your language includes accented characters. The possible values depend on your gnuplot installation so some experimentation may be needed.
