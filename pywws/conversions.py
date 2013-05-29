@@ -119,6 +119,7 @@ class Coordinate:
     LONGITUDE = 2
 
 def coordinates_loran(type, coord):
+    """Converts decimal coordinates to LORAN format"""
     if type not in (Coordinate.LATITUDE, Coordinate.LONGITUDE):
         return None
     decimals = abs(coord) % 1
@@ -131,21 +132,22 @@ def coordinates_loran(type, coord):
         direction = 'E' if coord > 0 else 'W'
         degrees = "%03d" % degrees
 
-    print type
-    print str(degrees) + minutes + direction
     return str(degrees) + minutes + direction
 
 def latitude_loran(coord):
+    """Converts decimal latitude to LORAN format"""
     if not isinstance(coord, (int, long, float, complex)):
         return None
     return coordinates_loran(Coordinate.LATITUDE, coord)
 
 def longitude_loran(coord):
+    """Converts decimal longitude to LORAN format"""
     if not isinstance(coord, (int, long, float, complex)):
         return None
     return coordinates_loran(Coordinate.LONGITUDE, coord)
 
 def altitude_feet(meters):
+    """Converts altitude in meters latitude to feet"""
     if not isinstance(meters, (int, long, float, complex)):
         return None
     return meters * 3.2808399;
