@@ -33,7 +33,7 @@
 #wind_gust "g%03d" "g..." "wind_mph(x) % 1000"#
 #calc "temp_f(data['temp_out'])" "t%03d" "t..." "(x % 1000) if x > 0 else x"#
 #calc "rain_inch(rain_hour(data)) * 100" "r%03d" "r..." "x % 1000"#
-#calc "rain_inch(data['rain'])" "p%03d" "p..." "x % 1000"#
+#calc "rain_inch(data['rain']) * 100" "p%03d" "p..." "x % 1000"#
 #calc "rain_inch(rain_day(data)) * 100" "P%03d" "P..." "x % 1000"#
 #hum_out "h%02d" "" "x % 100" "h.."#
 #rel_pressure "b%05d" "b......" "(x / 10) % 100000"#
