@@ -47,6 +47,8 @@ been written.
 +-----------------------------------------------------------------------+-----------------------+-------------------------------------------------------+
 | `Open Weather Map <http://openweathermap.org/>`_                      | ``openweathermap``    | :download:`../../pywws/services/openweathermap.ini`   |
 +-----------------------------------------------------------------------+-----------------------+-------------------------------------------------------+
+| `PWS Weather <www.pwsweather.com>`_                                   | ``pwsweather``        | :download:`../../pywws/services/pwsweather.ini`       |
++-----------------------------------------------------------------------+-----------------------+-------------------------------------------------------+
 | `Stacja Pogody <http://stacjapogody.waw.pl/index.php?id=mapastacji>`_ | ``stacjapogodywawpl`` | :download:`../../pywws/services/stacjapogodywawpl.ini`|
 +-----------------------------------------------------------------------+-----------------------+-------------------------------------------------------+
 | `temperatur.nu <http://www.temperatur.nu/>`_                          | ``temperaturnu``      | :download:`../../pywws/services/temperaturnu.ini`     |
@@ -167,6 +169,17 @@ in use.
 Make sure that the ``[config]`` section in ``weather.ini`` contains the
 ``altitude``, ``latitude`` and ``longitude`` parameters or it won't work
 as expected.
+
+PWS Weather
+===================
+
+* Create account: http://www.pwsweather.com/register.php
+* API based on WU protocol: `<http://wiki.wunderground.com/index.php/PWS_-_Upload_Protocol>`_
+* Example ``weather.ini`` section::
+
+    [pwsweather]
+    station = ABCDEFGH1
+    password = xxxxxxx
 
 Weather Underground
 ===================
