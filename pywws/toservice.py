@@ -154,9 +154,6 @@ Open Weather Map
 * Example ``weather.ini`` section::
 
     [openweathermap]
-    lat = 51.501
-    long = -0.142
-    alt = 10
     user = Elizabeth Windsor
     password = corgi
     id = Buck House
@@ -167,6 +164,9 @@ weather station, so there is an undocumented ``name`` parameter in the
 API that can be used to identify the station. This appears as ``id``
 in ``weather.ini``. Make sure you don't choose a name that is already
 in use.
+Make sure that the ``[config]`` section in ``weather.ini`` contains the
+``altitude``, ``latitude`` and ``longitude`` parameters or it won't work
+as expected.
 
 Weather Underground
 ===================
