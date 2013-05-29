@@ -1,0 +1,43 @@
+#! pywws - Python software for USB Wireless Weather Stations                       #
+#! http://github.com/jim-easterbrook/pywws                                         #
+#! Copyright (C) 2008-13  Jim Easterbrook  jim@jim-easterbrook.me.uk               #
+#!                                                                                 #
+#! This program is free software; you can redistribute it and/or                   #
+#! modify it under the terms of the GNU General Public License                     #
+#! as published by the Free Software Foundation; either version 2                  #
+#! of the License, or (at your option) any later version.                          #
+#!                                                                                 #
+#! This program is distributed in the hope that it will be useful,                 #
+#! but WITHOUT ANY WARRANTY; without even the implied warranty of                  #
+#! MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                   #
+#! GNU General Public License for more details.                                    #
+#!                                                                                 #
+#! You should have received a copy of the GNU General Public License               #
+#! along with this program; if not, write to the Free Software                     #
+#! Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA. #
+#!
+#! Author: Marco Trevisan <mail@3v1n0.net>
+#!
+#! These rules follows the APRS protocol (http://is.gd/APRSProtocol), to define
+#! a command line that can be sent to the CWOP servers.
+#! Everything must be contained into one line.
+#!
+#live#
+#calc "data['idx'].strftime('%d%H%Mz') if location_is_set() else data['idx'].strftime('%m%d%H%M')"
+#calc "latitude_loran(data['latitude'])"
+#calc "longitude_loran(data['longitude'])"
+#calc "'_' if location_is_set() else 'c'"
+#wind_dir "%03d" "..." "winddir_degrees(x) % 1000"#
+#calc "'/' if location_is_set() else 's'"
+#wind_ave "%03d" "..." "wind_mph(x) % 1000"#
+#wind_gust "g%03d" "g..." "wind_mph(x) % 1000"#
+#calc "temp_f(data['temp_out'])" "t%03d" "t..." "(x % 1000) if x > 0 else x"#
+#calc "rain_inch(rain_hour(data)) * 100" "r%03d" "r..." "x % 1000"#
+#calc "rain_inch(data['rain'])" "p%03d" "p..." "x % 1000"#
+#calc "rain_inch(rain_day(data)) * 100" "P%03d" "P..." "x % 1000"#
+#hum_out "h%02d" "" "x % 100" "h.."#
+#rel_pressure "b%05d" "b......" "(x / 10) % 100000"#
+#calc "'L' if illuminance_wm2(data['illuminance']) < 1000 else 'l'"
+#calc "illuminance_wm2(data['illuminance'])" "%03d" "..." "x if x < 1000 else (x-1000) if (x - 1000) < 999 else None"
+#calc "'pywws' if not location_is_set() else '.pywws-WH3080'"
+#altitude " /A=%06d" "" "altitude_feet(x) % 1000000"#
