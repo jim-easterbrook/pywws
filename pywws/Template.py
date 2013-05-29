@@ -106,6 +106,9 @@ class Template(object):
             new_data = data_set[idx]
             return populate_data(new_data)
 
+        def location_is_set():
+            return data['latitude'] and data['longitude']
+
         params = self.params
         if not live_data:
             idx = self.calib_data.before(datetime.max)
