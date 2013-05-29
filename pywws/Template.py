@@ -73,6 +73,13 @@ class Template(object):
         # get character encoding of template input & output
         self.encoding = params.get('config', 'template encoding', 'iso-8859-1')
 
+    def get_option(self, option, default=None, cast_type=None):
+        if self.params.has_option('config', option):
+            val = self.params.get('config', option, default)
+            return cast_type(val) if cast_type else val
+
+        return None
+
     def process(self, live_data, template_file):
         def jump(idx, count):
             while count > 0:
@@ -89,6 +96,16 @@ class Template(object):
                 count += 1
             return idx, count == 0
 
+        def populate_data(data):
+            data['altitude'] = self.get_option('altitude', cast_type=int)
+            data['latitude'] = self.get_option('latitude', cast_type=float)
+            data['longitude'] = self.get_option('longitude', cast_type=float)
+            return data
+
+        def use_data_set(idx):
+            new_data = data_set[idx]
+            return populate_data(new_data)
+
         params = self.params
         if not live_data:
             idx = self.calib_data.before(datetime.max)
@@ -103,6 +120,7 @@ class Template(object):
         apparent_temp = WeatherStation.apparent_temp
         rain_hour = self._rain_hour
         rain_day = self._rain_day
+        get_option = self.get_option
         pressure_offset = eval(self.params.get('fixed', 'pressure offset'))
         fixed_block = eval(self.params.get('fixed', 'fixed block'))
         # start off with no time rounding
@@ -116,7 +134,7 @@ class Template(object):
         if not valid_data:
             self.logger.error("No summary data - run Process.py first")
             return
-        data = data_set[idx]
+        data = use_data_set(idx)
         # open template file file
         if sys.version_info[0] >= 3:
             tmplt = open(template_file, 'r', encoding=self.encoding)
@@ -181,24 +199,24 @@ class Template(object):
                 elif command[0] == 'monthly':
                     data_set = self.monthly_data
                     idx, valid_data = jump(datetime.max, -1)
-                    data = data_set[idx]
+                    data = use_data_set(idx)
                 elif command[0] == 'daily':
                     data_set = self.daily_data
                     idx, valid_data = jump(datetime.max, -1)
-                    data = data_set[idx]
+                    data = use_data_set(idx)
                 elif command[0] == 'hourly':
                     data_set = self.hourly_data
                     idx, valid_data = jump(datetime.max, -1)
-                    data = data_set[idx]
+                    data = use_data_set(idx)
                 elif command[0] == 'raw':
                     data_set = self.calib_data
                     idx, valid_data = jump(datetime.max, -1)
-                    data = data_set[idx]
+                    data = use_data_set(idx)
                 elif command[0] == 'live':
                     data_set = self.calib_data
                     idx = datetime.max
                     valid_data = True
-                    data = live_data
+                    data = populate_data(live_data)
                 elif command[0] == 'timezone':
                     if command[1] == 'utc':
                         time_zone = utc
@@ -215,7 +233,7 @@ class Template(object):
                 elif command[0] == 'jump':
                     prevdata = data
                     idx, valid_data = jump(idx, int(command[1]))
-                    data = data_set[idx]
+                    data = use_data_set(idx)
                 elif command[0] == 'goto':
                     prevdata = data
                     time_str = command[1]
@@ -227,7 +245,7 @@ class Template(object):
                     new_idx = data_set.after(new_idx.replace(tzinfo=None))
                     if new_idx:
                         idx = new_idx
-                        data = data_set[idx]
+                        data = use_data_set(idx)
                         valid_data = True
                     else:
                         valid_data = False
