@@ -114,6 +114,57 @@ def cadhumidex(temp, humidity):
                            float(humidity) / 100.0)
     return temp + (0.555 * (saturation_pressure - 10.0))
 
+class Coordinate:
+    LATITUDE = 1
+    LONGITUDE = 2
+
+def coordinates_loran(type, coord):
+    """Converts decimal coordinates to LORAN format"""
+    if type not in (Coordinate.LATITUDE, Coordinate.LONGITUDE):
+        return None
+    decimals = abs(coord) % 1
+    degrees = abs(int(coord))
+    minutes = "%.2f" % (decimals * 60)
+
+    if type == Coordinate.LATITUDE:
+        direction = 'N' if coord > 0 else 'S'
+    elif type == Coordinate.LONGITUDE:
+        direction = 'E' if coord > 0 else 'W'
+        degrees = "%03d" % degrees
+
+    return str(degrees) + minutes + direction
+
+def latitude_loran(coord):
+    """Converts decimal latitude to LORAN format"""
+    if not isinstance(coord, (int, long, float, complex)):
+        return None
+    return coordinates_loran(Coordinate.LATITUDE, coord)
+
+def longitude_loran(coord):
+    """Converts decimal longitude to LORAN format"""
+    if not isinstance(coord, (int, long, float, complex)):
+        return None
+    return coordinates_loran(Coordinate.LONGITUDE, coord)
+
+def altitude_feet(meters):
+    """Converts altitude in meters latitude to feet"""
+    if not isinstance(meters, (int, long, float, complex)):
+        return None
+    return meters * 3.2808399;
+
+def max_dec_length(input, max_length=0):
+    """Converts a number to an integer that has `max_length` maximum digits"""
+    if isinstance(input, (float, complex)):
+        input = long(input)
+    if not isinstance(input, (int, long)):
+        return None
+    if input < 0:
+        max_length -= 1
+    if max_length > 0:
+        if abs(input) >= pow(10, max_length):
+            return None
+    return input
+
 def _main(argv=None):
     global _winddir_text_array
     # run some simple tests

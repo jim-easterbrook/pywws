@@ -72,6 +72,18 @@ class Template(object):
         self.rain_midnight = None
         # get character encoding of template input & output
         self.encoding = params.get('config', 'template encoding', 'iso-8859-1')
+        self.local_data = {
+            'altitude': self.get_option('altitude', cast_type=int),
+            'latitude': self.get_option('latitude', cast_type=float),
+            'longitude': self.get_option('longitude', cast_type=float)
+        }
+
+    def get_option(self, option, default=None, cast_type=None):
+        if self.params.has_option('config', option):
+            val = self.params.get('config', option, default)
+            return cast_type(val) if cast_type else val
+
+        return None
 
     def process(self, live_data, template_file):
         def jump(idx, count):
@@ -89,6 +101,9 @@ class Template(object):
                 count += 1
             return idx, count == 0
 
+        def location_is_set():
+            return self.local_data['latitude'] and self.local_data['longitude']
+
         params = self.params
         if not live_data:
             idx = self.calib_data.before(datetime.max)
@@ -103,6 +118,8 @@ class Template(object):
         apparent_temp = WeatherStation.apparent_temp
         rain_hour = self._rain_hour
         rain_day = self._rain_day
+        rain_24 = self._rain_24
+        get_option = self.get_option
         pressure_offset = eval(self.params.get('fixed', 'pressure offset'))
         fixed_block = eval(self.params.get('fixed', 'fixed block'))
         # start off with no time rounding
@@ -117,6 +134,7 @@ class Template(object):
             self.logger.error("No summary data - run Process.py first")
             return
         data = data_set[idx]
+        local_data = self.local_data
         # open template file file
         if sys.version_info[0] >= 3:
             tmplt = open(template_file, 'r', encoding=self.encoding)
@@ -141,7 +159,7 @@ class Template(object):
                 if command == []:
                     # empty command == print a single '#'
                     yield '#'
-                elif command[0] in data.keys() + ['calc']:
+                elif command[0] in (data.keys() + self.local_data.keys() + ['calc']):
                     # output a value
                     if not valid_data:
                         continue
@@ -151,7 +169,10 @@ class Template(object):
                         x = eval(command[1])
                         del command[1]
                     else:
-                        x = data[command[0]]
+                        if command[0] in local_data.keys():
+                            x = self.local_data[command[0]]
+                        else:
+                            x = data[command[0]]
                     # adjust time
                     if isinstance(x, datetime):
                         if round_time:
@@ -268,6 +289,10 @@ class Template(object):
     def _rain_hour(self, data):
         rain_hour = self.calib_data[self.calib_data.nearest(data['idx'] - HOUR)]['rain']
         return max(0.0, data['rain'] - rain_hour)
+
+    def _rain_24(self, data):
+        rain_24 = self.calib_data[self.calib_data.nearest(data['idx'] - DAY)]['rain']
+        return max(0.0, data['rain'] - rain_24)
 
     def _rain_day(self, data):
         if not self.midnight:

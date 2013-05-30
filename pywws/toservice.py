@@ -37,13 +37,15 @@ requires a configuration file and two templates in ``pywws/services``
 ``weather.ini`` containing user specific data such as your site ID and
 password.
 
-There are currently six services for which configuration files have
+There are currently eight services for which configuration files have
 been written.
 
 +-----------------------------------------------------------------------+-----------------------+-------------------------------------------------------+
 | organisation                                                          | service name          | config file                                           |
 +=======================================================================+=======================+=======================================================+
 | `UK Met Office <http://wow.metoffice.gov.uk/>`_                       | ``metoffice``         | :download:`../../pywws/services/metoffice.ini`        |
++-----------------------------------------------------------------------+-----------------------+-------------------------------------------------------+
+| `Citizen Weather Observer Program <http://www.wxqa.com/>`_            | ``cwop``              | :download:`../../pywws/services/cwop.ini`             |
 +-----------------------------------------------------------------------+-----------------------+-------------------------------------------------------+
 | `Open Weather Map <http://openweathermap.org/>`_                      | ``openweathermap``    | :download:`../../pywws/services/openweathermap.ini`   |
 +-----------------------------------------------------------------------+-----------------------+-------------------------------------------------------+
@@ -148,6 +150,23 @@ UK Met Office
     site id = 12345678
     aws pin = 987654
 
+Citizen Weather Observer Program
+================================
+* Create account: http://www.wxqa.com/SIGN-UP.html
+* API: http://www.wxqa.com/faq.html and http://is.gd/APRSProtocol
+* Example ``weather.ini`` section::
+
+    [cwop]
+    station = EW12345
+    password = -1
+
+Providing a ``password`` field is not requested, unless you're a registered
+amateur radio operator.
+Make sure that the ``[config]`` section in ``weather.ini`` contains the
+``latitude`` and ``longitude`` parameters or it won't work as expected
+(it will only send positionless informations); setting the proper ``altitude``
+value is also welcome.
+
 Open Weather Map
 ================
 
@@ -156,9 +175,6 @@ Open Weather Map
 * Example ``weather.ini`` section::
 
     [openweathermap]
-    lat = 51.501
-    long = -0.142
-    alt = 10
     user = Elizabeth Windsor
     password = corgi
     id = Buck House
@@ -169,6 +185,9 @@ weather station, so there is an undocumented ``name`` parameter in the
 API that can be used to identify the station. This appears as ``id``
 in ``weather.ini``. Make sure you don't choose a name that is already
 in use.
+Make sure that the ``[config]`` section in ``weather.ini`` contains the
+``altitude``, ``latitude`` and ``longitude`` parameters or it won't work
+as expected.
 
 PWS Weather
 ===================
@@ -224,6 +243,7 @@ from datetime import datetime, timedelta
 from . import DataStore
 from .Logger import ApplicationLogger
 from . import Template
+from . import version as VERSION
 
 FIVE_MINS = timedelta(minutes=5)
 
@@ -284,7 +304,7 @@ class ToService(object):
             '%s_template_%s.txt' % (service_name,
                                     self.params.get('config', 'ws type')))
         # get other parameters
-        self.catchup = eval(service_params.get('config', 'catchup'))
+        self.catchup = service_params.getint('config', 'catchup')
         self.use_get = eval(service_params.get('config', 'use get'))
         rapid_fire = eval(service_params.get('config', 'rapidfire'))
         if rapid_fire:
@@ -295,6 +315,15 @@ class ToService(object):
         else:
             self.server_rf = self.server
             self.fixed_data_rf = self.fixed_data
+
+        self.use_aprs = False
+        if service_params.has_option('config', 'use aprs'):
+            self.use_aprs = eval(service_params.get('config', 'use aprs'))
+
+        self.min_wait = 0
+        if service_params.has_option('config', 'minwait'):
+            self.min_wait = service_params.getint('config', 'minwait')
+
         self.expected_result = eval(service_params.get('config', 'result'))
 
     def translate_data(self, current, fixed_data):
@@ -328,6 +357,72 @@ class ToService(object):
         result = dict(fixed_data)
         template_data = self.templater.make_text(self.template_file, current)
         result.update(eval(template_data))
+
+        if self.use_aprs:
+            if 'APRS_PACKETS' not in result.keys() or len(result['APRS_PACKETS']) < 1:
+                return None
+            if result['ID'] == 'unknown':
+                return None
+            if result['PASSWORD'] == 'unknown':
+                result['PASSWORD'] = '-1';
+
+        return result
+
+    def do_http_request(self, server, coded_data):
+        """Perform an HTTP Request to the server with data"""
+        coded_data = urllib.urlencode(coded_data)
+        if sys.hexversion <= 0x020406ff:
+            wudata = urllib.urlopen('%s?%s' % (server, coded_data))
+        else:
+            try:
+                if self.use_get:
+                    wudata = urllib2.urlopen(
+                        '%s?%s' % (server, coded_data))
+                else:
+                    wudata = urllib2.urlopen(server, coded_data)
+            except urllib2.HTTPError, ex:
+                if ex.code != 400:
+                    raise
+                wudata = ex
+        response = wudata.readlines()
+        wudata.close()
+
+        return response
+
+    def do_aprs_request(self, server, coded_data):
+        """Connects to APRS server and sends data packets"""
+        result = []
+        host, port = server.split(':')
+        sock = socket.socket()
+        self.logger.debug('Connecting to server %s' % server)
+        try:
+            sock.connect((host, int(port)))
+            self.logger.debug('Connected to server %s' % server)
+        except socket.error, e:
+            self.logger.error('APRS connection to %s failed: %s' % (server, e))
+            return result
+
+        sock.sendall('user %s pass %s vers pywws %s\r\n' %
+            (coded_data['ID'], coded_data['PASSWORD'], VERSION.version))
+
+        sock.recv(4096)
+
+        for command in coded_data['APRS_PACKETS']:
+            command = coded_data['ID'] + '>APRS,TCPIP*:' + command + '\r\n'
+            self.logger.debug('Sending message %s' % command)
+            try:
+                sent = sock.sendall(command)
+            except socket.error, e:
+                self.logger.error('APRS data sending failed on packet %s: %s' % (command, e))
+                break
+
+            result = ['Success']
+
+        try:
+            sock.close()
+        except:
+            pass
+
         return result
 
     def send_data(self, data, server, fixed_data):
@@ -362,25 +457,14 @@ class ToService(object):
         if not coded_data:
             return True
         self.logger.debug(coded_data)
-        coded_data = urllib.urlencode(coded_data)
         # have three tries before giving up
         for n in range(3):
             try:
-                if sys.hexversion <= 0x020406ff:
-                    wudata = urllib.urlopen('%s?%s' % (server, coded_data))
+                if not self.use_aprs:
+                    response = self.do_http_request(server, coded_data)
                 else:
-                    try:
-                        if self.use_get:
-                            wudata = urllib2.urlopen(
-                                '%s?%s' % (server, coded_data))
-                        else:
-                            wudata = urllib2.urlopen(server, coded_data)
-                    except urllib2.HTTPError, ex:
-                        if ex.code != 400:
-                            raise
-                        wudata = ex
-                response = wudata.readlines()
-                wudata.close()
+                    response = self.do_aprs_request(server, coded_data)
+
                 if len(response) == len(self.expected_result):
                     for actual, expected in zip(response, self.expected_result):
                         if not re.match(expected, actual):
@@ -397,6 +481,16 @@ class ToService(object):
                 if e != self.old_ex:
                     self.logger.error(e)
                     self.old_ex = e
+        return False
+
+    def need_to_wait(self, last_update):
+        if not last_update:
+            return False
+        waited = (datetime.utcnow() - last_update).total_seconds()
+        if waited < self.min_wait:
+            self.logger.debug('Not allowed to upload yet, need to wait %ds'
+                % (self.min_wait - waited))
+            return True
         return False
 
     def Upload(self, catchup):
@@ -418,10 +512,10 @@ class ToService(object):
         :rtype: bool
         
         """
+        last_update = self.params.get_datetime(self.config_section, 'last update')
+
         if catchup and self.catchup > 0:
             start = datetime.utcnow() - timedelta(days=self.catchup)
-            last_update = self.params.get_datetime(
-                self.config_section, 'last update')
             if last_update:
                 start = max(start, last_update + timedelta(minutes=1))
             count = 0
@@ -434,8 +528,13 @@ class ToService(object):
             if count:
                 self.logger.info('%d records sent', count)
         else:
+            # check if we are allowed to send data to service
+            if self.need_to_wait(last_update):
+                return False
+
             # upload most recent data
             last_update = self.data.before(datetime.max)
+
             if not self.send_data(
                     self.data[last_update], self.server, self.fixed_data):
                 return False
@@ -472,18 +571,20 @@ class ToService(object):
         
         """
         last_log = self.data.before(datetime.max)
+        last_update = self.params.get_datetime(self.config_section, 'last update')
         if not last_log or last_log < data['idx'] - FIVE_MINS:
             # logged data is not (yet) up to date
             return True
         if catchup and self.catchup > 0:
-            last_update = self.params.get_datetime(
-                self.config_section, 'last update')
             if not last_update:
                 last_update = datetime.min
             if last_update <= last_log - FIVE_MINS:
                 # last update was well before last logged data
                 if not self.Upload(True):
                     return False
+        # check if we are allowed to send data to service
+        if self.need_to_wait(last_update):
+            return False
         if not self.send_data(data, self.server_rf, self.fixed_data_rf):
             return False
         self.params.set(

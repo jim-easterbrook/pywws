@@ -24,6 +24,9 @@
 #wind_gust    "'wind_gust'    : '%.1f',"#
 #hum_out      "'humidity'     : '%.d',"#
 #rel_pressure "'pressure'     : '%.1f',"#
+#altitude     "'alt'          : '%.d',"#
+#latitude     "'lat'          : '%f',"#
+#longitude    "'long'         : '%f',"#
 #calc "rain_hour(data)" "'rain_1h' : '%.1f',"#
 #calc "rain_day(data)" "'rain_today' : '%.1f',"#
 #calc "dew_point(data['temp_out'], data['hum_out'])" "'dewpoint' : '%.1f',"#

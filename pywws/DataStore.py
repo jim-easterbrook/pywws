@@ -70,6 +70,8 @@ class params(object):
         of = open(self._path, 'w')
         self._config.write(of)
         of.close()
+    def has_option(self, section, option):
+        return self._config.has_option(section, option)
     def get(self, section, option, default=None):
         """
         Get a parameter value and return a string.
@@ -78,7 +80,7 @@ class params(object):
         in the weather.ini file, they are created and set to default,
         which is then the return value.
         """
-        if not self._config.has_option(section, option):
+        if not self.has_option(section, option):
             if default:
                 self.set(section, option, default)
             return default
