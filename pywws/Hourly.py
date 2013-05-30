@@ -59,6 +59,7 @@ from pywws import Tasks
 def Hourly(data_dir):
     # get file locations
     params = DataStore.params(data_dir)
+    status = DataStore.status(data_dir)
     # localise application
     Localisation.SetApplicationLanguage(params)
     # open data file stores
@@ -68,13 +69,13 @@ def Hourly(data_dir):
     daily_data = DataStore.daily_store(data_dir)
     monthly_data = DataStore.monthly_store(data_dir)
     # get weather station data
-    LogData.LogData(params, raw_data)
+    LogData.LogData(params, status, raw_data)
     # do the processing
-    Process.Process(
-        params, raw_data, calib_data, hourly_data, daily_data, monthly_data)
+    Process.Process(params, status,
+                    raw_data, calib_data, hourly_data, daily_data, monthly_data)
     # do tasks
     if not Tasks.RegularTasks(
-        params, calib_data, hourly_data, daily_data, monthly_data
+        params, status, calib_data, hourly_data, daily_data, monthly_data
         ).do_tasks():
         return 1
     return 0

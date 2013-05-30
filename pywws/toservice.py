@@ -221,9 +221,9 @@ import urllib
 import urllib2
 from datetime import datetime, timedelta
 
-from . import DataStore
-from .Logger import ApplicationLogger
-from . import Template
+from pywws import DataStore
+from pywws.Logger import ApplicationLogger
+from pywws import Template
 
 FIVE_MINS = timedelta(minutes=5)
 
@@ -232,12 +232,16 @@ class ToService(object):
     Underground.
 
     """
-    def __init__(self, params, calib_data, service_name=None):
+    def __init__(self, params, status, calib_data, service_name=None):
         """
 
         :param params: pywws configuration.
 
         :type params: :class:`pywws.DataStore.params`
+        
+        :param status: pywws status store.
+
+        :type status: :class:`pywws.DataStore.status`
         
         :param calib_data: 'calibrated' data.
 
@@ -256,6 +260,7 @@ class ToService(object):
             self.logger = logging.getLogger(
                 'pywws.%s' % self.__class__.__name__)
         self.params = params
+        self.status = status
         self.data = calib_data
         self.old_response = None
         self.old_ex = None
@@ -278,7 +283,8 @@ class ToService(object):
             self.fixed_data[name] = value
         # create templater
         self.templater = Template.Template(
-            self.params, self.data, self.data, None, None, use_locale=False)
+            self.params, self.status, self.data, self.data, None, None,
+            use_locale=False)
         self.template_file = os.path.join(
             os.path.dirname(__file__), 'services',
             '%s_template_%s.txt' % (service_name,
@@ -423,13 +429,19 @@ class ToService(object):
             last_update = self.params.get_datetime(
                 self.config_section, 'last update')
             if last_update:
+                self.params.unset(self.config_section, 'last update')
+                self.status.set('last update', self.config_section,
+                                last_update.isoformat(' '))
+            last_update = self.status.get_datetime(
+                'last update', self.config_section)
+            if last_update:
                 start = max(start, last_update + timedelta(minutes=1))
             count = 0
             for data in self.data[start:]:
                 if not self.send_data(data, self.server, self.fixed_data):
                     return False
-                self.params.set(
-                    self.config_section, 'last update', data['idx'].isoformat(' '))
+                self.status.set('last update', self.config_section,
+                                data['idx'].isoformat(' '))
                 count += 1
             if count:
                 self.logger.info('%d records sent', count)
@@ -439,8 +451,8 @@ class ToService(object):
             if not self.send_data(
                     self.data[last_update], self.server, self.fixed_data):
                 return False
-            self.params.set(
-                self.config_section, 'last update', last_update.isoformat(' '))
+            self.status.set(
+                'last update', self.config_section, last_update.isoformat(' '))
         return True
 
     def RapidFire(self, data, catchup):
@@ -478,6 +490,12 @@ class ToService(object):
         if catchup and self.catchup > 0:
             last_update = self.params.get_datetime(
                 self.config_section, 'last update')
+            if last_update:
+                self.params.unset(self.config_section, 'last update')
+                self.status.set('last update', self.config_section,
+                                last_update.isoformat(' '))
+            last_update = self.status.get_datetime(
+                'last update', self.config_section)
             if not last_update:
                 last_update = datetime.min
             if last_update <= last_log - FIVE_MINS:
@@ -486,8 +504,8 @@ class ToService(object):
                     return False
         if not self.send_data(data, self.server_rf, self.fixed_data_rf):
             return False
-        self.params.set(
-            self.config_section, 'last update', data['idx'].isoformat(' '))
+        self.status.set(
+            'last update', self.config_section, data['idx'].isoformat(' '))
         return True
 
 def main(argv=None):
@@ -518,8 +536,8 @@ def main(argv=None):
         return 2
     logger = ApplicationLogger(verbose)
     return ToService(
-        DataStore.params(args[0]), DataStore.calib_store(args[0]),
-        service_name=args[1]
+        DataStore.params(args[0]), DataStore.status(args[0]),
+        DataStore.calib_store(args[0]), service_name=args[1]
         ).Upload(catchup)
 
 if __name__ == "__main__":

@@ -42,8 +42,8 @@ Create a plain text file in your ``modules`` directory, e.g.
 ``calib.py`` and copy the following text into it::
 
     class Calib(object):
-        def __init__(self, params):
-            self.pressure_offset = eval(params.get('fixed', 'pressure offset'))
+        def __init__(self, status):
+            self.pressure_offset = eval(status.get('fixed', 'pressure offset'))
         def calib(self, raw):
             result = dict(raw)
             # sanitise data
@@ -98,8 +98,8 @@ class DefaultCalib(object):
     value. This is the bare minimum 'calibration' required.
 
     """
-    def __init__(self, params):
-        self.pressure_offset = eval(params.get('fixed', 'pressure offset'))
+    def __init__(self, status):
+        self.pressure_offset = eval(status.get('fixed', 'pressure offset'))
     def calib(self, raw):
         result = dict(raw)
         # sanitise data
@@ -123,7 +123,7 @@ class Calib(object):
 
     """
     calibrator = None
-    def __init__(self, params):
+    def __init__(self, params, status):
         global usercalib
         self.logger = logging.getLogger('pywws.Calib')
         if not Calib.calibrator:
@@ -135,8 +135,8 @@ class Calib(object):
                 module = os.path.splitext(module)[0]
                 usercalib = __import__(
                     module, globals(), locals(), ['Calib'])
-                Calib.calibrator = usercalib.Calib(params)
+                Calib.calibrator = usercalib.Calib(status)
             else:
                 self.logger.info('Using default calibration')
-                Calib.calibrator = DefaultCalib(params)
+                Calib.calibrator = DefaultCalib(status)
         self.calib = Calib.calibrator.calib

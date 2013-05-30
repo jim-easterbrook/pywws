@@ -56,14 +56,14 @@ from .TimeZone import Local
 from .WeatherStation import dew_point, wind_chill, apparent_temp
 
 class BasePlotter(object):
-    def __init__(self, params, raw_data, hourly_data,
+    def __init__(self, params, status, raw_data, hourly_data,
                  daily_data, monthly_data, work_dir):
         self.raw_data = raw_data
         self.hourly_data = hourly_data
         self.daily_data = daily_data
         self.monthly_data = monthly_data
         self.work_dir = work_dir
-        self.pressure_offset = eval(params.get('fixed', 'pressure offset'))
+        self.pressure_offset = eval(status.get('fixed', 'pressure offset'))
         # set language related stuff
         self.encoding = params.get('config', 'gnuplot encoding', 'iso_8859_1')
         # create work directory
@@ -437,9 +437,10 @@ def main(argv=None):
         print >>sys.stderr, __usage__.strip()
         return 2
     params = DataStore.params(args[0])
+    status = DataStore.status(args[0])
     Localisation.SetApplicationLanguage(params)
     return GraphPlotter(
-        params,
+        params, status,
         DataStore.calib_store(args[0]), DataStore.hourly_store(args[0]),
         DataStore.daily_store(args[0]), DataStore.monthly_store(args[0]),
         args[1]

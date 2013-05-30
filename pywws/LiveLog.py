@@ -59,16 +59,18 @@ from pywws import WeatherStation
 def LiveLog(data_dir):
     logger = logging.getLogger('pywws.LiveLog')
     params = DataStore.params(data_dir)
+    status = DataStore.status(data_dir)
     # localise application
     Localisation.SetApplicationLanguage(params)
     # connect to weather station
     ws_type = params.get('fixed', 'ws type')
     if ws_type:
-        params._config.remove_option('fixed', 'ws type')
+        params.unset('fixed', 'ws type')
         params.set('config', 'ws type', ws_type)
     ws_type = params.get('config', 'ws type', '1080')
-    ws = WeatherStation.weather_station(ws_type=ws_type, params=params)
-    fixed_block = CheckFixedBlock(ws, params, logger)
+    ws = WeatherStation.weather_station(
+        ws_type=ws_type, params=params, status=status)
+    fixed_block = CheckFixedBlock(ws, params, status, logger)
     if not fixed_block:
         logger.error("Invalid data from weather station")
         return 3
@@ -80,7 +82,7 @@ def LiveLog(data_dir):
     monthly_data = DataStore.monthly_store(data_dir)
     # create a RegularTasks object
     tasks = Tasks.RegularTasks(
-        params, calib_data, hourly_data, daily_data, monthly_data)
+        params, status, calib_data, hourly_data, daily_data, monthly_data)
     # get time of last logged data
     two_minutes = timedelta(minutes=2)
     last_stored = raw_data.before(datetime.max)
@@ -106,13 +108,13 @@ def LiveLog(data_dir):
                 Catchup(ws, logger, raw_data, now, ptr)
             next_ptr = ws.inc_ptr(ptr)
             # process new data
-            Process.Process(params, raw_data, calib_data,
+            Process.Process(params, status, raw_data, calib_data,
                             hourly_data, daily_data, monthly_data)
             # do tasks
             tasks.do_tasks()
             if now >= next_hour:
                 next_hour += hour
-                fixed_block = CheckFixedBlock(ws, params, logger)
+                fixed_block = CheckFixedBlock(ws, params, status, logger)
                 if not fixed_block:
                     logger.error("Invalid data from weather station")
                     return 3

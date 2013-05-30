@@ -59,10 +59,12 @@ HOUR = timedelta(hours=1)
 DAY = timedelta(hours=24)
 
 class Template(object):
-    def __init__(self, params, calib_data, hourly_data, daily_data, monthly_data,
+    def __init__(self, params, status,
+                 calib_data, hourly_data, daily_data, monthly_data,
                  use_locale=True):
         self.logger = logging.getLogger('pywws.Template')
         self.params = params
+        self.status = status
         self.calib_data = calib_data
         self.hourly_data = hourly_data
         self.daily_data = daily_data
@@ -103,8 +105,8 @@ class Template(object):
         apparent_temp = WeatherStation.apparent_temp
         rain_hour = self._rain_hour
         rain_day = self._rain_day
-        pressure_offset = eval(self.params.get('fixed', 'pressure offset'))
-        fixed_block = eval(self.params.get('fixed', 'fixed block'))
+        pressure_offset = eval(self.status.get('fixed', 'pressure offset'))
+        fixed_block = eval(self.status.get('fixed', 'fixed block'))
         # start off with no time rounding
         round_time = None
         # start off in hourly data mode
@@ -306,9 +308,10 @@ def main(argv=None):
             return 0
     logger = ApplicationLogger(1)
     params = DataStore.params(args[0])
+    status = DataStore.status(args[0])
     Localisation.SetApplicationLanguage(params)
     return Template(
-        params,
+        params, status,
         DataStore.calib_store(args[0]), DataStore.hourly_store(args[0]),
         DataStore.daily_store(args[0]), DataStore.monthly_store(args[0])
         ).make_file(args[1], args[2])

@@ -51,18 +51,20 @@ def safestrptime(date_string, format=None):
                                date_string[11:13],
                                date_string[14:16],
                                date_string[17:19])))
-class params(object):
-    def __init__(self, root_dir):
-        """Parameters are stored in a file "weather.ini" in root_dir."""
+
+class ParamStore(object):
+    def __init__(self, root_dir, file_name):
         if not os.path.isdir(root_dir):
             os.makedirs(root_dir)
-        self._path = os.path.join(root_dir, 'weather.ini')
+        self._path = os.path.join(root_dir, file_name)
         self._dirty = False
         # open config file
         self._config = RawConfigParser()
         self._config.read(self._path)
+
     def __del__(self):
         self.flush()
+
     def flush(self):
         if not self._dirty:
             return
@@ -70,24 +72,27 @@ class params(object):
         of = open(self._path, 'w')
         self._config.write(of)
         of.close()
+
     def get(self, section, option, default=None):
-        """
-        Get a parameter value and return a string.
+        """Get a parameter value and return a string.
 
         If default is specified and section or option are not defined
-        in the weather.ini file, they are created and set to default,
-        which is then the return value.
+        in the file, they are created and set to default, which is
+        then the return value.
+
         """
         if not self._config.has_option(section, option):
-            if default:
+            if default is not None:
                 self.set(section, option, default)
             return default
         return self._config.get(section, option)
+
     def get_datetime(self, section, option, default=None):
         result = self.get(section, option, default)
         if result:
             return safestrptime(result)
         return result
+
     def set(self, section, option, value):
         """Set option in section to string value."""
         if not self._config.has_section(section):
@@ -97,6 +102,28 @@ class params(object):
             return
         self._config.set(section, option, value)
         self._dirty = True
+
+    def unset(self, section, option):
+        """Remove option from section."""
+        if not self._config.has_section(section):
+            return
+        if self._config.has_option(section, option):
+            self._config.remove_option(section, option)
+            self._dirty = True
+        if not self._config.options(section):
+            self._config.remove_section(section)
+            self._dirty = True
+
+class params(ParamStore):
+    def __init__(self, root_dir):
+        """Parameters are stored in a file "weather.ini" in root_dir."""
+        ParamStore.__init__(self, root_dir, 'weather.ini')
+
+class status(ParamStore):
+    def __init__(self, root_dir):
+        """Status is stored in a file "status.ini" in root_dir."""
+        ParamStore.__init__(self, root_dir, 'status.ini')
+
 class core_store(object):
     def __init__(self, root_dir):
         self._root_dir = root_dir

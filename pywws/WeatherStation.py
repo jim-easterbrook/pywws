@@ -387,22 +387,26 @@ class weather_station(object):
     avoid = 3.0
     # minimum interval between polling for data change
     min_pause = 0.5
-    def __init__(self, ws_type='1080', params=None):
+    def __init__(self, ws_type='1080', params=None, status=None):
         """Connect to weather station and prepare to read data."""
         self.logger = logging.getLogger('pywws.weather_station')
         # create basic IO object
         self.cusb = CUSBDrive()
         # init variables
         self.params = params
+        self.status = status
         self._fixed_block = None
         self._data_block = None
         self._data_pos = None
         self._current_ptr = None
         if self.params:
+            self.params.unset('fixed', 'station clock')
+            self.params.unset('fixed', 'sensor clock')
+        if self.status:
             self._station_clock = eval(
-                self.params.get('fixed', 'station clock', 'None'))
+                self.status.get('clock', 'station', 'None'))
             self._sensor_clock = eval(
-                self.params.get('fixed', 'sensor clock', 'None'))
+                self.status.get('clock', 'sensor', 'None'))
         else:
             self._station_clock = None
             self._sensor_clock = None
@@ -494,9 +498,9 @@ class weather_station(object):
                     self._sensor_clock = data_time
                     self.logger.warning(
                         'setting sensor clock %g', data_time % live_interval)
-                    if self.params:
-                        self.params.set(
-                            'fixed', 'sensor clock', str(self._sensor_clock))
+                    if self.status:
+                        self.status.set(
+                            'clock', 'sensor', str(self._sensor_clock))
                     if not next_live:
                         self.logger.warning('live_data live synchronised')
                     else:
@@ -534,9 +538,9 @@ class weather_station(object):
                     self._station_clock = ptr_time
                     self.logger.warning(
                         'setting station clock %g', ptr_time % 60.0)
-                    if self.params:
-                        self.params.set(
-                            'fixed', 'station clock', str(self._station_clock))
+                    if self.status:
+                        self.status.set(
+                            'clock', 'station', str(self._station_clock))
                     if not next_log:
                         self.logger.warning('live_data log synchronised')
                     next_log = ptr_time

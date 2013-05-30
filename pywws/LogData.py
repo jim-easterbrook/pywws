@@ -68,10 +68,10 @@ import os
 import sys
 import time
 
-from . import DataStore
-from .Logger import ApplicationLogger
-from .TimeZone import Local
-from . import WeatherStation
+from pywws import DataStore
+from pywws.Logger import ApplicationLogger
+from pywws.TimeZone import Local
+from pywws import WeatherStation
 
 def Catchup(ws, logger, raw_data, last_date, last_ptr):
     fixed_block = ws.get_fixed_block(unbuffered=True)
@@ -99,7 +99,7 @@ def Catchup(ws, logger, raw_data, last_date, last_ptr):
     if count > 0:
         logger.info("%d catchup records", count)
 
-def CheckFixedBlock(ws, params, logger):
+def CheckFixedBlock(ws, params, status, logger):
     fixed_block = ws.get_fixed_block(unbuffered=True)
     if not fixed_block:
         return None
@@ -119,7 +119,7 @@ def CheckFixedBlock(ws, params, logger):
     params.set('config', 'ws type', ws.ws_type)
     # store info from fixed block
     pressure_offset = fixed_block['rel_pressure'] - fixed_block['abs_pressure']
-    old_offset = eval(params.get('fixed', 'pressure offset', 'None'))
+    old_offset = eval(status.get('fixed', 'pressure offset', 'None'))
     if old_offset and abs(old_offset - pressure_offset) > 0.01:
         # re-read fixed block, as can get incorrect values
         logger.warning('Re-read fixed block')
@@ -130,20 +130,23 @@ def CheckFixedBlock(ws, params, logger):
     if old_offset and abs(old_offset - pressure_offset) > 0.01:
         logger.warning(
             'Pressure offset change: %g -> %g', old_offset, pressure_offset)
-    params.set('fixed', 'pressure offset', '%g' % (pressure_offset))
-    params.set('fixed', 'fixed block', str(fixed_block))
+    params.unset('fixed', 'pressure offset')
+    params.unset('fixed', 'fixed block')
+    status.set('fixed', 'pressure offset', '%g' % (pressure_offset))
+    status.set('fixed', 'fixed block', str(fixed_block))
     return fixed_block
 
-def LogData(params, raw_data, sync=None, clear=False):
+def LogData(params, status, raw_data, sync=None, clear=False):
     logger = logging.getLogger('pywws.LogData')
     # connect to weather station
     ws_type = params.get('fixed', 'ws type')
     if ws_type:
-        params._config.remove_option('fixed', 'ws type')
+        params.unset('fixed', 'ws type')
         params.set('config', 'ws type', ws_type)
     ws_type = params.get('config', 'ws type', 'Unknown')
-    ws = WeatherStation.weather_station(ws_type=ws_type, params=params)
-    fixed_block = CheckFixedBlock(ws, params, logger)
+    ws = WeatherStation.weather_station(
+        ws_type=ws_type, params=params, status=status)
+    fixed_block = CheckFixedBlock(ws, params, status, logger)
     if not fixed_block:
         logger.error("Invalid data from weather station")
         return 3
@@ -244,8 +247,8 @@ def main(argv=None):
     logger = ApplicationLogger(verbose)
     root_dir = args[0]
     return LogData(
-        DataStore.params(root_dir), DataStore.data_store(root_dir),
-        sync=sync, clear=clear)
+        DataStore.params(root_dir), DataStore.status(root_dir),
+        DataStore.data_store(root_dir), sync=sync, clear=clear)
 
 if __name__ == "__main__":
     sys.exit(main())

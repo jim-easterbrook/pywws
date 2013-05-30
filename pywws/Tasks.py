@@ -24,19 +24,21 @@ from datetime import datetime, timedelta
 import logging
 import os
 
-from .calib import Calib
-from . import Plot
-from . import Template
-from .TimeZone import Local
-from .toservice import ToService
-from . import Upload
-from . import WindRose
-from . import YoWindow
+from pywws.calib import Calib
+from pywws import Plot
+from pywws import Template
+from pywws.TimeZone import Local
+from pywws.toservice import ToService
+from pywws import Upload
+from pywws import WindRose
+from pywws import YoWindow
 
 class RegularTasks(object):
-    def __init__(self, params, calib_data, hourly_data, daily_data, monthly_data):
+    def __init__(self, params, status,
+                 calib_data, hourly_data, daily_data, monthly_data):
         self.logger = logging.getLogger('pywws.Tasks.RegularTasks')
         self.params = params
+        self.status = status
         self.calib_data = calib_data
         self.hourly_data = hourly_data
         self.daily_data = daily_data
@@ -48,18 +50,18 @@ class RegularTasks(object):
         self.graph_template_dir = self.params.get(
             'paths', 'graph_templates', os.path.expanduser('~/weather/graph_templates/'))
         # create calibration object
-        self.calibrator = Calib(self.params)
+        self.calibrator = Calib(self.params, self.status)
         # create templater object
         self.templater = Template.Template(
-            self.params, self.calib_data, self.hourly_data, self.daily_data,
-            self.monthly_data)
+            self.params, self.status, self.calib_data, self.hourly_data,
+            self.daily_data, self.monthly_data)
         # create plotter objects
         self.plotter = Plot.GraphPlotter(
-            self.params, self.calib_data, self.hourly_data, self.daily_data,
-            self.monthly_data, self.work_dir)
+            self.params, self.status, self.calib_data, self.hourly_data,
+            self.daily_data, self.monthly_data, self.work_dir)
         self.roseplotter = WindRose.RosePlotter(
-            self.params, self.calib_data, self.hourly_data, self.daily_data,
-            self.monthly_data, self.work_dir)
+            self.params, self.status, self.calib_data, self.hourly_data,
+            self.daily_data, self.monthly_data, self.work_dir)
         # directory of service uploaders
         self.services = dict()
         # create a YoWindow object
@@ -77,7 +79,8 @@ class RegularTasks(object):
             for service in eval(self.params.get(section, 'services', '[]')):
                 if service not in self.services:
                     self.services[service] = ToService(
-                        self.params, self.calib_data, service_name=service)
+                        self.params, self.status, self.calib_data,
+                        service_name=service)
 
     def has_live_tasks(self):
         yowindow_file = self.params.get('live', 'yowindow', '')
@@ -129,18 +132,30 @@ class RegularTasks(object):
             now = datetime.utcnow()
         threshold = now.replace(minute=0, second=0, microsecond=0)
         last_update = self.params.get_datetime('hourly', 'last update')
+        if last_update:
+            self.params.unset('hourly', 'last update')
+            self.status.set('last update', 'hourly', last_update.isoformat(' '))
+        last_update = self.status.get_datetime('last update', 'hourly')
         if (not last_update) or (last_update < threshold):
             # time to do hourly tasks
             sections.append('hourly')
             # set 12 hourly threshold
             threshold -= timedelta(hours=(threshold.hour - self.day_end_hour) % 12)
             last_update = self.params.get_datetime('12 hourly', 'last update')
+            if last_update:
+                self.params.unset('12 hourly', 'last update')
+                self.status.set('last update', '12 hourly', last_update.isoformat(' '))
+            last_update = self.status.get_datetime('last update', '12 hourly')
             if (not last_update) or (last_update < threshold):
                 # time to do 12 hourly tasks
                 sections.append('12 hourly')
             # set daily threshold
             threshold -= timedelta(hours=(threshold.hour - self.day_end_hour) % 24)
             last_update = self.params.get_datetime('daily', 'last update')
+            if last_update:
+                self.params.unset('daily', 'last update')
+                self.status.set('last update', 'daily', last_update.isoformat(' '))
+            last_update = self.status.get_datetime('last update', 'daily')
             if (not last_update) or (last_update < threshold):
                 # time to do daily tasks
                 sections.append('daily')
@@ -178,10 +193,11 @@ class RegularTasks(object):
                 os.unlink(file)
         if OK:
             for section in sections:
-                self.params.set(section, 'last update', now.isoformat(' '))
+                self.status.set('last update', section, now.isoformat(' '))
         if 'hourly' in sections:
             # save any unsaved data
             self.params.flush()
+            self.status.flush()
             self.calib_data.flush()
             self.hourly_data.flush()
             self.daily_data.flush()
