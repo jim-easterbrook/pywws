@@ -20,11 +20,11 @@
 
 #! These rules follows the APRS protocol (http://is.gd/APRSProtocol), to define
 #! command lines that can be sent to the CWOP servers.
-#! Every line is added as a list entry of the APRS_MESSAGES and they will be
+#! Every line is added as a list entry of the APRS_PACKETS and they will be
 #! sent to the server.
 #live#
 {
-"APRS_MESSAGES":
+"APRS_PACKETS":
 [
 #calc "'\"'"
 #calc "data['idx'].strftime('@%d%H%Mz') if location_is_set() else data['idx'].strftime('_%m%d%H%M')"

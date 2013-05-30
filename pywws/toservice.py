@@ -359,7 +359,7 @@ class ToService(object):
         result.update(eval(template_data))
 
         if self.use_aprs:
-            if 'APRS_MESSAGES' not in result.keys() or len(result['APRS_MESSAGES']) < 1:
+            if 'APRS_PACKETS' not in result.keys() or len(result['APRS_PACKETS']) < 1:
                 return None
             if result['ID'] == 'unknown':
                 return None
@@ -407,7 +407,7 @@ class ToService(object):
 
         sock.recv(4096)
 
-        for command in coded_data['APRS_MESSAGES']:
+        for command in coded_data['APRS_PACKETS']:
             command = coded_data['ID'] + '>APRS,TCPIP*:' + command + '\r\n'
             self.logger.debug('Sending message %s' % command)
             try:
