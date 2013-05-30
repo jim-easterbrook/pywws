@@ -118,6 +118,7 @@ class Template(object):
         apparent_temp = WeatherStation.apparent_temp
         rain_hour = self._rain_hour
         rain_day = self._rain_day
+        rain_24 = self._rain_24
         get_option = self.get_option
         pressure_offset = eval(self.params.get('fixed', 'pressure offset'))
         fixed_block = eval(self.params.get('fixed', 'fixed block'))
@@ -288,6 +289,10 @@ class Template(object):
     def _rain_hour(self, data):
         rain_hour = self.calib_data[self.calib_data.nearest(data['idx'] - HOUR)]['rain']
         return max(0.0, data['rain'] - rain_hour)
+
+    def _rain_24(self, data):
+        rain_24 = self.calib_data[self.calib_data.nearest(data['idx'] - DAY)]['rain']
+        return max(0.0, data['rain'] - rain_24)
 
     def _rain_day(self, data):
         if not self.midnight:
