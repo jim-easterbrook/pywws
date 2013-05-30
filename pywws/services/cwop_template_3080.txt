@@ -17,12 +17,16 @@
 #! Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA. #
 #!
 #! Author: Marco Trevisan <mail@3v1n0.net>
-#!
+
 #! These rules follows the APRS protocol (http://is.gd/APRSProtocol), to define
-#! a command line that can be sent to the CWOP servers.
-#! Everything must be contained into one line.
-#!
+#! command lines that can be sent to the CWOP servers.
+#! Every line is added as a list entry of the APRS_MESSAGES and they will be
+#! sent to the server.
 #live#
+{
+"APRS_MESSAGES":
+[
+#calc "'\"'"
 #calc "data['idx'].strftime('%d%H%Mz') if location_is_set() else data['idx'].strftime('%m%d%H%M')"
 #calc "latitude_loran(data['latitude'])"
 #calc "longitude_loran(data['longitude'])"
@@ -41,3 +45,5 @@
 #calc "illuminance_wm2(data['illuminance'])" "%03d" "..." "max_dec_length(x if x < 1000 else (x-1000), 3)"
 #calc "'pywws' if not location_is_set() else '.pywws-WH3080'"
 #altitude " /A=%06d" "" "altitude_feet(x) % 1000000"#
+]
+}
