@@ -373,28 +373,28 @@ class ToService(object):
     def do_aprs_request(self, server, coded_data):
         """Connects to APRS server and sends data packets"""
         result = []
-        host, port = server.split(":")
+        host, port = server.split(':')
         sock = socket.socket()
-        self.logger.debug("Connecting to server %s" % server)
+        self.logger.debug('Connecting to server %s' % server)
         try:
             sock.connect((host, int(port)))
-            self.logger.debug("Connected to server %s" % server)
+            self.logger.debug('Connected to server %s' % server)
         except socket.error, e:
-            self.logger.error("APRS connection to %s failed: %s" % (server, e))
+            self.logger.error('APRS connection to %s failed: %s' % (server, e))
             return result
 
-        sock.sendall("user %s pass %s vers pywws %s\r\n" %
+        sock.sendall('user %s pass %s vers pywws %s\r\n' %
             (coded_data['ID'], coded_data['PASSWORD'], VERSION.version))
 
         sock.recv(4096)
 
         for command in coded_data['APRS_MESSAGES']:
-            command = coded_data['ID'] + ">APRS,TCPIP*:" + command + "\r\n"
-            self.logger.debug("Sending message %s" % command)
+            command = coded_data['ID'] + '>APRS,TCPIP*:' + command + '\r\n'
+            self.logger.debug('Sending message %s' % command)
             try:
                 sent = sock.sendall(command)
             except socket.error, e:
-                self.logger.error("APRS data sending failed on packet %s: %s" % (command, e))
+                self.logger.error('APRS data sending failed on packet %s: %s' % (command, e))
                 break
 
             result = ['Success']
