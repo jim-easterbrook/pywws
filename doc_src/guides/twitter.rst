@@ -51,12 +51,12 @@ If successful, your ``weather.ini`` file will now have a ``[twitter]`` section w
 Add location data (optional)
 ----------------------------
 
-Edit your ``weather.ini`` file and add ``latitude`` and ``longitude`` entries to the ``[twitter]`` section.
+Edit your ``weather.ini`` file and make sure that ``latitude`` and ``longitude`` entries are present in the ``[config]`` section.
 For example::
 
-   [twitter]
-   secret = xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-   key = xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+   [config]
+   ws type = 1080
+   day end hour = 24
    latitude = 51.501
    longitude = -0.142
 

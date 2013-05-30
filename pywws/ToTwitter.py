@@ -66,8 +66,16 @@ class ToTwitter(object):
         secret = params.get('twitter', 'secret')
         if (not key) or (not secret):
             raise RuntimeError('Authentication data not found')
-        self.lat = params.get('twitter', 'latitude')
-        self.long = params.get('twitter', 'longitude')
+
+        self.lat = params.get('config', 'latitude')
+        self.long = params.get('config', 'longitude')
+
+        # added for backward compatibility
+        if not self.lat:
+            self.lat = params.get('twitter', 'latitude')
+        if not self.long:
+            self.long = params.get('twitter', 'longitude')
+
         # open API
         auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
         auth.set_access_token(key, secret)
