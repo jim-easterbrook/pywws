@@ -158,10 +158,11 @@ def max_dec_length(input, max_length=0):
         input = long(input)
     if not isinstance(input, (int, long)):
         return None
-    if max_length <=0:
-        return input
-    if input >= pow(10, max_length):
-        return None
+    if input < 0:
+        max_length -= 1
+    if max_length > 0:
+        if abs(input) >= pow(10, max_length):
+            return None
     return input
 
 def _main(argv=None):
