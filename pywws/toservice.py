@@ -37,13 +37,15 @@ requires a configuration file and two templates in ``pywws/services``
 ``weather.ini`` containing user specific data such as your site ID and
 password.
 
-There are currently six services for which configuration files have
+There are currently eight services for which configuration files have
 been written.
 
 +-----------------------------------------------------------------------+-----------------------+-------------------------------------------------------+
 | organisation                                                          | service name          | config file                                           |
 +=======================================================================+=======================+=======================================================+
 | `UK Met Office <http://wow.metoffice.gov.uk/>`_                       | ``metoffice``         | :download:`../../pywws/services/metoffice.ini`        |
++-----------------------------------------------------------------------+-----------------------+-------------------------------------------------------+
+| `Citizen Weather Observer Program <http://www.wxqa.com/>`_            | ``cwop``              | :download:`../../pywws/services/cwop.ini`             |
 +-----------------------------------------------------------------------+-----------------------+-------------------------------------------------------+
 | `Open Weather Map <http://openweathermap.org/>`_                      | ``openweathermap``    | :download:`../../pywws/services/openweathermap.ini`   |
 +-----------------------------------------------------------------------+-----------------------+-------------------------------------------------------+
@@ -147,6 +149,23 @@ UK Met Office
     [metoffice]
     site id = 12345678
     aws pin = 987654
+
+Citizen Weather Observer Program
+================================
+* Create account: http://www.wxqa.com/SIGN-UP.html
+* API: http://www.wxqa.com/faq.html and http://is.gd/APRSProtocol
+* Example ``weather.ini`` section::
+
+    [cwop]
+    station = EW12345
+    password = -1
+
+Providing a ``password`` field is not requested, unless you're a registered
+amateur radio operator.
+Make sure that the ``[config]`` section in ``weather.ini`` contains the
+``latitude`` and ``longitude`` parameters or it won't work as expected
+(it will only send positionless informations); setting the proper ``altitude``
+value is also welcome.
 
 Open Weather Map
 ================
