@@ -92,9 +92,9 @@ Upload old data
 ---------------
 
 Now you can upload your last 7 days' data, if the service supports it.
-Edit your ``weather.ini`` file and remove the ``last update`` line
-from the appropriate section, then run ``toservice`` with the
-catchup option::
+Edit your ``status.ini`` file and remove the appropriate line from the
+``last update`` section, then run ``toservice`` with the catchup
+option::
 
     python -m pywws.toservice -cvv data_dir service_name
 

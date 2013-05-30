@@ -25,16 +25,18 @@ Microsoft Windows INI files. It is divided into "sections", each of which
 has a number of "name = value" entries. The order in which sections appear
 is not important.
 
-Some entries in the file are set by pywws, while others need to be edited
-by the user. Any plain text editor can be used to do this. (Don't try to
-edit the file while any other pywws software is running.) In many cases
-pywws will initialise the entries to sensible values.
+Any plain text editor can be used to do edit the file.
+(Don't try to edit it while any other pywws software is running.)
+In many cases pywws will initialise the entries to sensible values.
+
+Another file, status.ini, is used to store some information that pywws uses internally.
+It is described at the end of this document.
+In normal use you should not need to edit it.
 
 The following sections are currently in use:
 
   * config: miscellaneous system configuration.
   * paths: directories in which templates etc. are stored.
-  * fixed: values copied from the weather station's "fixed block".
   * live: tasks to be done every 48 seconds.
   * logged: tasks to be done every time the station logs a data record.
   * hourly: tasks to be done every hour.
@@ -84,18 +86,6 @@ paths: directories in which templates etc. are stored
  work = /tmp/weather
 
 These three entries specify where your text templates and graph templates are stored, where temporary files should be created, and (if you have one) the location of your calibration module.
-
-fixed: values copied from the weather station's "fixed block"
--------------------------------------------------------------
-::
-
- [fixed]
- station clock = 1360322930.02
- sensor clock = 1360322743.69
- pressure offset = 7.4
- fixed block = {...}
-
-This section is written by pywws and should not be edited.
 
 live: tasks to be done every 48 seconds
 ---------------------------------------
@@ -235,7 +225,6 @@ underground, metoffice, temperaturnu etc: configuration of posting to 'services'
  [underground]
  station = IXYZABA5
  password = secret
- last update = 2010-09-27 19:45:24
 
 These sections contain information such as passwords and station IDs needed to upload data to weather services. The names of the data entries depend on the service. The example shown is for Weather Underground.
 
@@ -243,4 +232,54 @@ These sections contain information such as passwords and station IDs needed to u
 
 ``password`` is your Weather Underground password.
 
-``last update`` is set by pywws when you upload to a weather service.
+status.ini - status file format
+===============================
+
+This file is written by pywws and should not (usually) be edited.
+The following sections are currently in use:
+
+  * fixed: values copied from the weather station's "fixed block".
+  * clock: synchronisation information.
+  * last update: date and time of most recent task completions.
+
+fixed: values copied from the weather station's "fixed block"
+-------------------------------------------------------------
+::
+
+ [fixed]
+ pressure offset = 7.4
+ fixed block = {...}
+
+``pressure offset`` is the difference between absolute and relative air pressure.
+It is copied from the weather station, assuming you have set it up to display the correct relative pressure.
+
+``fixed block`` is all the data stored in the first 256 bytes of the station's memory.
+This includes maximum and minimum values, alarm threshold settings, display units and so on.
+
+clock: synchronisation information
+----------------------------------
+::
+
+ [clock]
+ station = 1360322930.02
+ sensor = 1360322743.69
+
+These values record the measured times when the station's clock logged some data and when the outside sensors transmitted a new set of data.
+They are used to try and prevent the USB interface crashing if the computer accesses the weather station at the same time as either of these events, a common problem with many EasyWeather compatible stations.
+The times are measured every 24 hours to allow for drift in the clocks.
+
+last update: date and time of most recent task completions
+----------------------------------------------------------
+::
+
+ [last update]
+ hourly = 2013-05-30 19:04:15
+ logged = 2013-05-30 19:04:15
+ daily = 2013-05-30 09:04:15
+ openweathermap = 2013-05-30 18:59:15
+ underground = 2013-05-30 18:58:34
+ metoffice = 2013-05-30 18:59:15
+ 12 hourly = 2013-05-30 09:04:15
+
+These record date & time of the last successful completion of various tasks.
+They are used to allow unsuccessful tasks (e.g. network failure preventing uploads) to be retried after a few minutes.

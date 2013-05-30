@@ -228,20 +228,9 @@ Set some configuration options
 After running :py:mod:`pywws.LogData` there should be a configuration file in your data directory called 'weather.ini'.
 Open this with a text editor. You should find something like the following::
 
-   [fixed]
-   station clock = 1360322930.02
-   sensor clock = 1360322743.69
-   pressure offset = 7.4
-   fixed block = {...}
-
    [config]
    ws type = 1080
    logdata sync = 1
-
-The line ``[fixed]`` marks the start of a section (called '[fixed]'), and the following lines are entries in that section.
-The ``pressure offset`` entry stores the difference between absolute and relative atmospheric pressure that was read from the weather station.
-The ``fixed block`` entry stores a large amount of data from the station's 'fixed block' memory.
-None of these values should be edited.
 
 You need to add a new entry in the ``[config]`` section called ``day end hour``.
 This tells pywws what convention you want to use when calculating daily summary data.
@@ -251,12 +240,6 @@ Note that the value is set in local winter time.
 You should not need to change it when daylight savings time is in effect.
 
 After editing, your weather.ini file should look something like this::
-
-   [fixed]
-   station clock = 1360322930.02
-   sensor clock = 1360322743.69
-   pressure offset = 7.4
-   fixed block = {...}
 
    [config]
    ws type = 1080
