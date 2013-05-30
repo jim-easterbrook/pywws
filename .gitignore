@@ -23,5 +23,5 @@ doc/text
 # Miscellaneous
 MANIFEST
 pywws/lang
-translations
-
+translations/*.pot
+translations/*/LC_MESSAGES
