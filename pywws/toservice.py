@@ -301,6 +301,10 @@ class ToService(object):
         if service_params.has_option('config', 'use aprs'):
             self.use_aprs = eval(service_params.get('config', 'use aprs'))
 
+        self.min_wait = 0
+        if service_params.has_option('config', 'minwait'):
+            self.min_wait = service_params.getint('config', 'minwait')
+
         self.expected_result = eval(service_params.get('config', 'result'))
 
     def translate_data(self, current, fixed_data):
@@ -479,10 +483,10 @@ class ToService(object):
         :rtype: bool
         
         """
+        last_update = self.params.get_datetime(self.config_section, 'last update')
+
         if catchup and self.catchup > 0:
             start = datetime.utcnow() - timedelta(days=self.catchup)
-            last_update = self.params.get_datetime(
-                self.config_section, 'last update')
             if last_update:
                 start = max(start, last_update + timedelta(minutes=1))
             count = 0
@@ -495,8 +499,17 @@ class ToService(object):
             if count:
                 self.logger.info('%d records sent', count)
         else:
+            # check if we are allowed to send data to service
+            if last_update:
+                last_update_delta = (datetime.utcnow() - last_update)
+                if last_update_delta.days == 0 and last_update_delta.seconds < self.min_wait:
+                    self.logger.debug('Not allowed to upload yet, need to wait %ds'
+                        % (self.min_wait - last_update_delta.seconds))
+                    return False
+
             # upload most recent data
             last_update = self.data.before(datetime.max)
+
             if not self.send_data(
                     self.data[last_update], self.server, self.fixed_data):
                 return False
