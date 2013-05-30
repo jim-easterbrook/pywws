@@ -224,6 +224,7 @@ from datetime import datetime, timedelta
 from . import DataStore
 from .Logger import ApplicationLogger
 from . import Template
+from . import version as VERSION
 
 FIVE_MINS = timedelta(minutes=5)
 
@@ -284,7 +285,7 @@ class ToService(object):
             '%s_template_%s.txt' % (service_name,
                                     self.params.get('config', 'ws type')))
         # get other parameters
-        self.catchup = eval(service_params.get('config', 'catchup'))
+        self.catchup = service_params.getint('config', 'catchup')
         self.use_get = eval(service_params.get('config', 'use get'))
         rapid_fire = eval(service_params.get('config', 'rapidfire'))
         if rapid_fire:
@@ -295,6 +296,11 @@ class ToService(object):
         else:
             self.server_rf = self.server
             self.fixed_data_rf = self.fixed_data
+
+        self.use_aprs = False
+        if service_params.has_option('config', 'use aprs'):
+            self.use_aprs = eval(service_params.get('config', 'use aprs'))
+
         self.expected_result = eval(service_params.get('config', 'result'))
 
     def translate_data(self, current, fixed_data):
@@ -328,6 +334,30 @@ class ToService(object):
         result = dict(fixed_data)
         template_data = self.templater.make_text(self.template_file, current)
         result.update(eval(template_data))
+
+        return result
+
+    def do_http_request(self, server, coded_data):
+        """Perform an HTTP Request to the server with data"""
+        coded_data = urllib.urlencode(coded_data)
+        if sys.hexversion <= 0x020406ff:
+            wudata = urllib.urlopen('%s?%s' % (server, coded_data))
+        else:
+            try:
+                if self.use_get:
+                    wudata = urllib2.urlopen(
+                        '%s?%s' % (server, coded_data))
+                else:
+                    wudata = urllib2.urlopen(server, coded_data)
+            except urllib2.HTTPError, ex:
+                if ex.code != 400:
+                    raise
+                wudata = ex
+        response = wudata.readlines()
+        wudata.close()
+
+        return response
+
         return result
 
     def send_data(self, data, server, fixed_data):
@@ -362,25 +392,14 @@ class ToService(object):
         if not coded_data:
             return True
         self.logger.debug(coded_data)
-        coded_data = urllib.urlencode(coded_data)
         # have three tries before giving up
         for n in range(3):
             try:
-                if sys.hexversion <= 0x020406ff:
-                    wudata = urllib.urlopen('%s?%s' % (server, coded_data))
+                if not self.use_aprs:
+                    response = self.do_http_request(server, coded_data)
                 else:
-                    try:
-                        if self.use_get:
-                            wudata = urllib2.urlopen(
-                                '%s?%s' % (server, coded_data))
-                        else:
-                            wudata = urllib2.urlopen(server, coded_data)
-                    except urllib2.HTTPError, ex:
-                        if ex.code != 400:
-                            raise
-                        wudata = ex
-                response = wudata.readlines()
-                wudata.close()
+                    pass
+
                 if len(response) == len(self.expected_result):
                     for actual, expected in zip(response, self.expected_result):
                         if not re.match(expected, actual):
