@@ -72,6 +72,11 @@ class Template(object):
         self.rain_midnight = None
         # get character encoding of template input & output
         self.encoding = params.get('config', 'template encoding', 'iso-8859-1')
+        self.local_data = {
+            'altitude': self.get_option('altitude', cast_type=int),
+            'latitude': self.get_option('latitude', cast_type=float),
+            'longitude': self.get_option('longitude', cast_type=float)
+        }
 
     def get_option(self, option, default=None, cast_type=None):
         if self.params.has_option('config', option):
@@ -96,18 +101,8 @@ class Template(object):
                 count += 1
             return idx, count == 0
 
-        def populate_data(data):
-            data['altitude'] = self.get_option('altitude', cast_type=int)
-            data['latitude'] = self.get_option('latitude', cast_type=float)
-            data['longitude'] = self.get_option('longitude', cast_type=float)
-            return data
-
-        def use_data_set(idx):
-            new_data = data_set[idx]
-            return populate_data(new_data)
-
         def location_is_set():
-            return data['latitude'] and data['longitude']
+            return self.local_data['latitude'] and self.local_data['longitude']
 
         params = self.params
         if not live_data:
@@ -137,7 +132,8 @@ class Template(object):
         if not valid_data:
             self.logger.error("No summary data - run Process.py first")
             return
-        data = use_data_set(idx)
+        data = data_set[idx]
+        local_data = self.local_data
         # open template file file
         if sys.version_info[0] >= 3:
             tmplt = open(template_file, 'r', encoding=self.encoding)
@@ -162,7 +158,7 @@ class Template(object):
                 if command == []:
                     # empty command == print a single '#'
                     yield '#'
-                elif command[0] in data.keys() + ['calc']:
+                elif command[0] in (data.keys() + self.local_data.keys() + ['calc']):
                     # output a value
                     if not valid_data:
                         continue
@@ -172,7 +168,10 @@ class Template(object):
                         x = eval(command[1])
                         del command[1]
                     else:
-                        x = data[command[0]]
+                        if command[0] in local_data.keys():
+                            x = self.local_data[command[0]]
+                        else:
+                            x = data[command[0]]
                     # adjust time
                     if isinstance(x, datetime):
                         if round_time:
@@ -202,24 +201,24 @@ class Template(object):
                 elif command[0] == 'monthly':
                     data_set = self.monthly_data
                     idx, valid_data = jump(datetime.max, -1)
-                    data = use_data_set(idx)
+                    data = data_set[idx]
                 elif command[0] == 'daily':
                     data_set = self.daily_data
                     idx, valid_data = jump(datetime.max, -1)
-                    data = use_data_set(idx)
+                    data = data_set[idx]
                 elif command[0] == 'hourly':
                     data_set = self.hourly_data
                     idx, valid_data = jump(datetime.max, -1)
-                    data = use_data_set(idx)
+                    data = data_set[idx]
                 elif command[0] == 'raw':
                     data_set = self.calib_data
                     idx, valid_data = jump(datetime.max, -1)
-                    data = use_data_set(idx)
+                    data = data_set[idx]
                 elif command[0] == 'live':
                     data_set = self.calib_data
                     idx = datetime.max
                     valid_data = True
-                    data = populate_data(live_data)
+                    data = live_data
                 elif command[0] == 'timezone':
                     if command[1] == 'utc':
                         time_zone = utc
@@ -236,7 +235,7 @@ class Template(object):
                 elif command[0] == 'jump':
                     prevdata = data
                     idx, valid_data = jump(idx, int(command[1]))
-                    data = use_data_set(idx)
+                    data = data_set[idx]
                 elif command[0] == 'goto':
                     prevdata = data
                     time_str = command[1]
@@ -248,7 +247,7 @@ class Template(object):
                     new_idx = data_set.after(new_idx.replace(tzinfo=None))
                     if new_idx:
                         idx = new_idx
-                        data = use_data_set(idx)
+                        data = data_set[idx]
                         valid_data = True
                     else:
                         valid_data = False

@@ -28,9 +28,9 @@
 [
 #calc "'\"'"
 #calc "data['idx'].strftime('@%d%H%Mz') if location_is_set() else data['idx'].strftime('_%m%d%H%M')"
-#calc "latitude_loran(data['latitude'])"
+#calc "latitude_loran(local_data['latitude'])"
 #calc "'/' if location_is_set() else ''"
-#calc "longitude_loran(data['longitude'])"
+#calc "longitude_loran(local_data['longitude'])"
 #calc "'_' if location_is_set() else 'c'"
 #wind_dir "%03d" "..." "max_dec_length(winddir_degrees(x), 3)"#
 #calc "'/' if location_is_set() else 's'"
