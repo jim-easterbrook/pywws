@@ -483,6 +483,16 @@ class ToService(object):
                     self.old_ex = e
         return False
 
+    def need_to_wait(self, last_update):
+        if not last_update:
+            return False
+        waited = (datetime.utcnow() - last_update).total_seconds()
+        if waited < self.min_wait:
+            self.logger.debug('Not allowed to upload yet, need to wait %ds'
+                % (self.min_wait - waited))
+            return True
+        return False
+
     def Upload(self, catchup):
         """Upload one or more weather data records.
 
@@ -519,12 +529,8 @@ class ToService(object):
                 self.logger.info('%d records sent', count)
         else:
             # check if we are allowed to send data to service
-            if last_update:
-                last_update_delta = (datetime.utcnow() - last_update)
-                if last_update_delta.days == 0 and last_update_delta.seconds < self.min_wait:
-                    self.logger.debug('Not allowed to upload yet, need to wait %ds'
-                        % (self.min_wait - last_update_delta.seconds))
-                    return False
+            if self.need_to_wait(last_update):
+                return False
 
             # upload most recent data
             last_update = self.data.before(datetime.max)
@@ -565,18 +571,20 @@ class ToService(object):
         
         """
         last_log = self.data.before(datetime.max)
+        last_update = self.params.get_datetime(self.config_section, 'last update')
         if not last_log or last_log < data['idx'] - FIVE_MINS:
             # logged data is not (yet) up to date
             return True
         if catchup and self.catchup > 0:
-            last_update = self.params.get_datetime(
-                self.config_section, 'last update')
             if not last_update:
                 last_update = datetime.min
             if last_update <= last_log - FIVE_MINS:
                 # last update was well before last logged data
                 if not self.Upload(True):
                     return False
+        # check if we are allowed to send data to service
+        if self.need_to_wait(last_update):
+            return False
         if not self.send_data(data, self.server_rf, self.fixed_data_rf):
             return False
         self.params.set(
