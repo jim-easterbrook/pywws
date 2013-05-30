@@ -23,12 +23,13 @@
 #! Every line is added as a list entry of the APRS_MESSAGES and they will be
 #! sent to the server.
 #live#
-#calc "data['idx'].strftime('%d%H%Mz') if location_is_set() else data['idx'].strftime('%m%d%H%M')"
 {
 "APRS_MESSAGES":
 [
 #calc "'\"'"
+#calc "data['idx'].strftime('@%d%H%Mz') if location_is_set() else data['idx'].strftime('_%m%d%H%M')"
 #calc "latitude_loran(data['latitude'])"
+#calc "'/' if location_is_set() else ''"
 #calc "longitude_loran(data['longitude'])"
 #calc "'_' if location_is_set() else 'c'"
 #wind_dir "%03d" "..." "max_dec_length(winddir_degrees(x), 3)"#
