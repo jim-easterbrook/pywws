@@ -37,9 +37,9 @@
 #wind_ave "%03d" "..." "max_dec_length(wind_mph(x), 3)"#
 #wind_gust "g%03d" "g..." "max_dec_length(wind_mph(x), 3)"#
 #calc "temp_f(data['temp_out'])" "t%03d" "t..." "max_dec_length(x, 3) if x > 0 else max_dec_length(x, 2)"#
-#calc "rain_inch(rain_hour(data))" "r%03d" "r..." "max_dec_length(x, 3)"#
-#calc "rain_inch(data['rain'])" "p%03d" "p..." "max_dec_length(x, 3)"#
-#calc "rain_inch(rain_day(data))" "P%03d" "P..." "max_dec_length(x, 3)"#
+#calc "rain_inch(rain_hour(data)) * 100" "r%03d" "r..." "max_dec_length(x, 3)"#
+#calc "rain_inch(rain_24(data)) * 100" "p%03d" "p..." "max_dec_length(x, 3)"#
+#calc "rain_inch(rain_day(data)) * 100" "P%03d" "P..." "max_dec_length(x, 3)"#
 #hum_out "h%02d" "" "x % 100" "h.."#
 #rel_pressure "b%05d" "b......" "max_dec_length(x * 10, 5)"#
 #calc "'L' if illuminance_wm2(data['illuminance']) < 1000 else 'l'"
