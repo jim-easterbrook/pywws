@@ -1,3 +1,3 @@
 version = '13.05'
-release = '1011'
-commit = 'ee19d05'
+release = '1012'
+commit = '5ac44aa'

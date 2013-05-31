@@ -1,0 +1,52 @@
+#! pywws - Python software for USB Wireless Weather Stations                       #
+#! http://github.com/jim-easterbrook/pywws                                         #
+#! Copyright (C) 2008-13  Jim Easterbrook  jim@jim-easterbrook.me.uk               #
+#!                                                                                 #
+#! This program is free software; you can redistribute it and/or                   #
+#! modify it under the terms of the GNU General Public License                     #
+#! as published by the Free Software Foundation; either version 2                  #
+#! of the License, or (at your option) any later version.                          #
+#!                                                                                 #
+#! This program is distributed in the hope that it will be useful,                 #
+#! but WITHOUT ANY WARRANTY; without even the implied warranty of                  #
+#! MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                   #
+#! GNU General Public License for more details.                                    #
+#!                                                                                 #
+#! You should have received a copy of the GNU General Public License               #
+#! along with this program; if not, write to the Free Software                     #
+#! Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA. #
+#live#
+<response>
+  <current_weather>
+    <temperature unit="c">
+#temp_out "      <current value=\"%.1f\"/>"#
+
+#calc "apparent_temp(data['temp_out'], data['hum_out'], data['wind_ave'])" "      <feels_like value=\"%.1f\"/>"#
+
+    </temperature>
+#hum_out "    <humidity value=\"%d\"/>"#
+
+    <pressure #rel_pressure "value=\"%.1f\""# #calc "hour_diff(data,'rel_pressure')" "trend=\"%.1f\""# unit="hPa"/>
+    <wind>
+#wind_ave "      <speed value=\"%.1f\" unit=\"m/s\"/>"#
+
+#wind_dir "      <direction value=\"%.0f\"/>" "" "winddir_degrees(x)"#
+
+#wind_gust "      <gusts value=\"%.1f\" unit=\"m/s\"/>"#
+
+    </wind>
+    <sky>
+      <precipitation>
+        <rain>
+#calc "rain_hour(data)" "          <rate value=\"%.1f\" unit=\"mm\"/>"#
+
+#calc "rain_day(data)" "          <daily_total value=\"%.1f\" unit=\"mm\"/>"#
+
+        </rain>
+      </precipitation>
+    </sky>
+    <auto_update>
+      <interval value="48"/>
+    </auto_update>
+  </current_weather>
+</response>
