@@ -103,6 +103,7 @@ class Template(object):
         dew_point = WeatherStation.dew_point
         wind_chill = WeatherStation.wind_chill
         apparent_temp = WeatherStation.apparent_temp
+        hour_diff = self._hour_diff
         rain_hour = self._rain_hour
         rain_day = self._rain_day
         pressure_offset = eval(self.status.get('fixed', 'pressure offset'))
@@ -266,6 +267,10 @@ class Template(object):
             of.write(text)
         of.close()
         return 0
+
+    def _hour_diff(self, data, key):
+        hour_ago = self.calib_data[self.calib_data.nearest(data['idx'] - HOUR)]
+        return data[key] - hour_ago[key]
 
     def _rain_hour(self, data):
         rain_hour = self.calib_data[self.calib_data.nearest(data['idx'] - HOUR)]['rain']
