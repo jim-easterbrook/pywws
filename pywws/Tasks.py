@@ -23,6 +23,7 @@
 from datetime import datetime, timedelta
 import logging
 import os
+import shutil
 
 from pywws.calib import Calib
 from pywws import Plot
@@ -49,6 +50,8 @@ class RegularTasks(object):
             'paths', 'templates', os.path.expanduser('~/weather/templates/'))
         self.graph_template_dir = self.params.get(
             'paths', 'graph_templates', os.path.expanduser('~/weather/graph_templates/'))
+        self.local_dir = self.params.get(
+            'paths', 'local_files', os.path.expanduser('~/weather/results/'))
         # create calibration object
         self.calibrator = Calib(self.params, self.status)
         # create templater object
@@ -96,26 +99,45 @@ class RegularTasks(object):
             return True
         return False
 
+    def _parse_templates(self, section, option):
+        for template in eval(self.params.get(section, option, '[]')):
+            if isinstance(template, (list, tuple)):
+                yield template
+            else:
+                yield template, ''
+
     def do_live(self, data):
         data = self.calibrator.calib(data)
         OK = True
         yowindow_file = self.params.get('live', 'yowindow', '')
         if yowindow_file:
             self.yowindow.write_file(yowindow_file, data)
-        for template in eval(self.params.get('live', 'twitter', '[]')):
+        for template, flags in self._parse_templates('live', 'twitter'):
             if not self.do_twitter(template, data):
                 OK = False
         for service in eval(self.params.get('live', 'services', '[]')):
-            self.services[service].RapidFire(data, True)
+            self.services[service].Upload(data)
         uploads = []
-        for template in eval(self.params.get('live', 'plot', '[]')):
+        local_files = []
+        for template, flags in self._parse_templates('live', 'plot'):
             upload = self.do_plot(template)
-            if upload and upload not in uploads:
+            if not upload:
+                continue
+            if 'L' in flags:
+                local_files.append(upload)
+            else:
                 uploads.append(upload)
-        for template in eval(self.params.get('live', 'text', '[]')):
+        for template, flags in self._parse_templates('live', 'text'):
             upload = self.do_template(template, data)
-            if upload not in uploads:
+            if 'L' in flags:
+                local_files.append(upload)
+            else:
                 uploads.append(upload)
+        if local_files:
+            if not os.path.isdir(self.local_dir):
+                os.makedirs(self.local_dir)
+            for file in local_files:
+                shutil.move(file, self.local_dir)
         if uploads:
             if not Upload.Upload(self.params, uploads):
                 OK = False
@@ -125,6 +147,7 @@ class RegularTasks(object):
 
     def do_tasks(self):
         sections = ['logged']
+        self.params.unset('logged', 'last update')
         now = self.calib_data.before(datetime.max)
         if now:
             now += timedelta(minutes=self.calib_data[now]['delay'])
@@ -161,7 +184,7 @@ class RegularTasks(object):
                 sections.append('daily')
         OK = True
         for section in sections:
-            for template in eval(self.params.get(section, 'twitter', '[]')):
+            for template, flags in self._parse_templates(section, 'twitter'):
                 if not self.do_twitter(template):
                     OK = False
         for section in sections:
@@ -177,15 +200,27 @@ class RegularTasks(object):
         for service in all_services:
             self.services[service].Upload(True)
         uploads = []
+        local_files = []
         for section in sections:
-            for template in eval(self.params.get(section, 'plot', '[]')):
+            for template, flags in self._parse_templates(section, 'plot'):
                 upload = self.do_plot(template)
-                if upload and upload not in uploads:
+                if not upload:
+                    continue
+                if 'L' in flags:
+                    local_files.append(upload)
+                else:
                     uploads.append(upload)
-            for template in eval(self.params.get(section, 'text', '[]')):
+            for template, flags in self._parse_templates(section, 'text'):
                 upload = self.do_template(template)
-                if upload not in uploads:
+                if 'L' in flags:
+                    local_files.append(upload)
+                else:
                     uploads.append(upload)
+        if local_files:
+            if not os.path.isdir(self.local_dir):
+                os.makedirs(self.local_dir)
+            for file in local_files:
+                shutil.move(file, self.local_dir)
         if uploads:
             if not Upload.Upload(self.params, uploads):
                 OK = False
@@ -205,7 +240,7 @@ class RegularTasks(object):
         return OK
 
     def do_twitter(self, template, data=None):
-        from . import ToTwitter
+        from pywws import ToTwitter
         twitter = ToTwitter.ToTwitter(self.params)
         self.logger.info("Templating %s", template)
         input_file = os.path.join(self.template_dir, template)
