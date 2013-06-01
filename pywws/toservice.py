@@ -65,8 +65,8 @@ If you haven't already done so, visit the organisation's web site and
 create an account for your weather station. Make a note of any site ID
 and password details you are given.
 
-Stop any pywws software that is running and then run ``toservice``
-to create a section in ``weather.ini``::
+Stop any pywws software that is running and then run ``toservice`` to
+create a section in ``weather.ini``::
 
     python -m pywws.toservice data_dir service_name
 
@@ -111,7 +111,7 @@ section, depending on how often you want to send data. For example::
     twitter = []
     plot = []
     text = []
-    services = ['underground']
+    services = ['underground_rf']
 
     [logged]
     twitter = []
@@ -126,13 +126,13 @@ section, depending on how often you want to send data. For example::
     services = ['underground']
 
 Note that the ``[live]`` section is only used when running
-``LiveLog.py``. It is a good idea to repeat any service selected in
-``[live]`` in the ``[logged]`` or ``[hourly]`` section in case you
-switch to running :mod:`Hourly`.
+:py:mod:`~pywws.LiveLog`. It is a good idea to repeat any service
+selected in ``[live]`` in the ``[logged]`` or ``[hourly]`` section in
+case you switch to running :py:mod:`~pywws.Hourly`.
 
-Restart your regular pywws program (:mod:`Hourly` or :mod:`LiveLog`)
-and visit the appropriate web site to see regular updates from your
-weather station.
+Restart your regular pywws program (:py:mod:`~pywws.Hourly` or
+:py:mod:`~pywws.LiveLog`) and visit the appropriate web site to see
+regular updates from your weather station.
 
 Notes on the services
 ---------------------
@@ -232,7 +232,7 @@ class ToService(object):
     Underground.
 
     """
-    def __init__(self, params, status, calib_data, service_name=None):
+    def __init__(self, params, status, calib_data, service_name):
         """
 
         :param params: pywws configuration.
@@ -247,21 +247,19 @@ class ToService(object):
 
         :type calib_data: :class:`pywws.DataStore.calib_store`
 
-        :keyword service_name: name of service to upload to.
+        :param service_name: name of service to upload to.
 
         :type service_name: string
     
         """
-        if service_name:
-            self.config_section = service_name
-            self.logger = logging.getLogger(
-                'pywws.ToService(%s)' % service_name)
-        else:
-            self.logger = logging.getLogger(
-                'pywws.%s' % self.__class__.__name__)
+        self.logger = logging.getLogger('pywws.ToService(%s)' % service_name)
         self.params = params
         self.status = status
         self.data = calib_data
+        self.service_name = service_name
+        # 'derived' services such as 'underground_rf' share their
+        # parent's config and templates
+        config_section = self.service_name.split('_')[0]
         self.old_response = None
         self.old_ex = None
         # set default socket timeout, so urlopen calls don't hang forever
@@ -270,37 +268,25 @@ class ToService(object):
         service_params = SafeConfigParser()
         service_params.optionxform = str
         service_params.readfp(open(os.path.join(
-            os.path.dirname(__file__), 'services',
-            '%s.ini' % (self.config_section))))
+            os.path.dirname(__file__), 'services', '%s.ini' % (self.service_name))))
         # get URL
         self.server = service_params.get('config', 'url')
         # get fixed part of upload data
         self.fixed_data = dict()
         for name, value in service_params.items('fixed'):
             if value[0] == '*':
-                value = self.params.get(
-                    self.config_section, value[1:], 'unknown')
+                value = self.params.get(config_section, value[1:], 'unknown')
             self.fixed_data[name] = value
         # create templater
         self.templater = Template.Template(
             self.params, self.status, self.data, self.data, None, None,
             use_locale=False)
         self.template_file = os.path.join(
-            os.path.dirname(__file__), 'services',
-            '%s_template_%s.txt' % (service_name,
-                                    self.params.get('config', 'ws type')))
+            os.path.dirname(__file__), 'services', '%s_template_%s.txt' % (
+                config_section, self.params.get('config', 'ws type')))
         # get other parameters
         self.catchup = eval(service_params.get('config', 'catchup'))
         self.use_get = eval(service_params.get('config', 'use get'))
-        rapid_fire = eval(service_params.get('config', 'rapidfire'))
-        if rapid_fire:
-            self.server_rf = service_params.get('config', 'url-rf')
-            self.fixed_data_rf = dict(self.fixed_data)
-            for name, value in service_params.items('fixed-rf'):
-                self.fixed_data_rf[name] = value
-        else:
-            self.server_rf = self.server
-            self.fixed_data_rf = self.fixed_data
         self.expected_result = eval(service_params.get('config', 'result'))
 
     def translate_data(self, current, fixed_data):
@@ -427,20 +413,20 @@ class ToService(object):
         if catchup and self.catchup > 0:
             start = datetime.utcnow() - timedelta(days=self.catchup)
             last_update = self.params.get_datetime(
-                self.config_section, 'last update')
+                self.service_name, 'last update')
             if last_update:
-                self.params.unset(self.config_section, 'last update')
-                self.status.set('last update', self.config_section,
+                self.params.unset(self.service_name, 'last update')
+                self.status.set('last update', self.service_name,
                                 last_update.isoformat(' '))
             last_update = self.status.get_datetime(
-                'last update', self.config_section)
+                'last update', self.service_name)
             if last_update:
                 start = max(start, last_update + timedelta(minutes=1))
             count = 0
             for data in self.data[start:]:
                 if not self.send_data(data, self.server, self.fixed_data):
                     return False
-                self.status.set('last update', self.config_section,
+                self.status.set('last update', self.service_name,
                                 data['idx'].isoformat(' '))
                 count += 1
             if count:
@@ -452,60 +438,7 @@ class ToService(object):
                     self.data[last_update], self.server, self.fixed_data):
                 return False
             self.status.set(
-                'last update', self.config_section, last_update.isoformat(' '))
-        return True
-
-    def RapidFire(self, data, catchup):
-        """Upload a 'Rapid Fire' weather data record.
-
-        This method uploads either a single data record (typically one
-        obtained during 'live' logging), or all records since the last
-        upload (up to 7 days), according to the value of
-        :obj:`catchup`.
-
-        It sets the ``last update`` configuration value to the time
-        stamp of the most recent record successfully uploaded.
-
-        The :obj:`data` parameter contains the data to be uploaded.
-        It should be a 'calibrated' data record, as stored in
-        :class:`pywws.DataStore.calib_store`.
-
-        :param data: the weather data record.
-
-        :type data: dict
-
-        :param catchup: upload all data since last upload.
-
-        :type catchup: bool
-
-        :return: success status
-
-        :rtype: bool
-        
-        """
-        last_log = self.data.before(datetime.max)
-        if not last_log or last_log < data['idx'] - FIVE_MINS:
-            # logged data is not (yet) up to date
-            return True
-        if catchup and self.catchup > 0:
-            last_update = self.params.get_datetime(
-                self.config_section, 'last update')
-            if last_update:
-                self.params.unset(self.config_section, 'last update')
-                self.status.set('last update', self.config_section,
-                                last_update.isoformat(' '))
-            last_update = self.status.get_datetime(
-                'last update', self.config_section)
-            if not last_update:
-                last_update = datetime.min
-            if last_update <= last_log - FIVE_MINS:
-                # last update was well before last logged data
-                if not self.Upload(True):
-                    return False
-        if not self.send_data(data, self.server_rf, self.fixed_data_rf):
-            return False
-        self.status.set(
-            'last update', self.config_section, data['idx'].isoformat(' '))
+                'last update', self.service_name, last_update.isoformat(' '))
         return True
 
 def main(argv=None):
@@ -537,8 +470,7 @@ def main(argv=None):
     logger = ApplicationLogger(verbose)
     return ToService(
         DataStore.params(args[0]), DataStore.status(args[0]),
-        DataStore.calib_store(args[0]), service_name=args[1]
-        ).Upload(catchup)
+        DataStore.calib_store(args[0]), args[1]).Upload(catchup)
 
 if __name__ == "__main__":
     sys.exit(main())

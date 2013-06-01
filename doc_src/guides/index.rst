@@ -27,6 +27,7 @@ Contents:
    getstarted
    hourlylogging
    livelogging
+   integration
    twitter
    language
    weather_ini

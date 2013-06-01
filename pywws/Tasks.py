@@ -116,7 +116,7 @@ class RegularTasks(object):
             if not self.do_twitter(template, data):
                 OK = False
         for service in eval(self.params.get('live', 'services', '[]')):
-            self.services[service].RapidFire(data, True)
+            self.services[service].Upload(data)
         uploads = []
         local_files = []
         for template, flags in self._parse_templates('live', 'plot'):
