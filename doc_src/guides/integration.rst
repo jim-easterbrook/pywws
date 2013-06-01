@@ -81,8 +81,8 @@ Once everything is working, you can add 'underground' to the ``[logged]`` tasks 
 
  [logged]
  services = ['underground']
-"RaidFire" updates
-^^^^^^^^^^^^^^^^^^
+"RapidFire" updates
+^^^^^^^^^^^^^^^^^^^
 Weather Underground has a second upload URL for real time updates as little as 2.5 seconds apart.
 If you run pywws in 'live logging' mode (see :doc:`livelogging`) you can use this to send updates every 48 seconds, by adding 'underground_rf' to the ``[live]`` tasks section in ``weather.ini``::
 

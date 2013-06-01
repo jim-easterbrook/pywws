@@ -90,9 +90,9 @@ For example::
 
    [hourly]
    services = []
-   twitter = ['tweet.txt']
    plot = ['7days.png.xml', '24hrs.png.xml', 'rose_12hrs.png.xml']
-   text = ['24hrs.txt', '6hrs.txt', '7days.txt', 'allmonths.txt ']
+   text = [('tweet.txt', 'T'), '24hrs.txt', '6hrs.txt', '7days.txt']
+Note the use of the ``'T'`` flag -- this tells pywws to tweet the template result instead of uploading it to your ftp site.
 
 You could change the ``[logged]``, ``[12 hourly]`` or ``[daily]`` sections instead, but I think ``[hourly]`` is most appropriate for Twitter updates.
 
