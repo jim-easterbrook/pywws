@@ -128,6 +128,10 @@ class RegularTasks(object):
             else:
                 uploads.append(upload)
         for template, flags in self._parse_templates('live', 'text'):
+            if 'T' in flags:
+                if not self.do_twitter(template, data):
+                    OK = False
+                continue
             upload = self.do_template(template, data)
             if 'L' in flags:
                 local_files.append(upload)
@@ -211,6 +215,10 @@ class RegularTasks(object):
                 else:
                     uploads.append(upload)
             for template, flags in self._parse_templates(section, 'text'):
+                if 'T' in flags:
+                    if not self.do_twitter(template):
+                        OK = False
+                    continue
                 upload = self.do_template(template)
                 if 'L' in flags:
                     local_files.append(upload)
