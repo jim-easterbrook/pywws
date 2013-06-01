@@ -39,7 +39,7 @@
 #monthly#
 #loop 10000#
   <tr>
-    <td class="right">#start "%B %Y"#</td>
+    <td class="right">#calc "data['start']+DAY" "%B %Y"#</td>
     <td>#temp_out_max_hi "%.1f &deg;C"#</td>
     <td>#temp_out_max_ave "%.1f &deg;C"#</td>
     <td>#temp_out_max_lo "%.1f &deg;C"#</td>
