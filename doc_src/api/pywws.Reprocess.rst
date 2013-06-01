@@ -26,7 +26,7 @@ This program recreates the hourly, daily and monthly summary data that is create
 
 The program is very simple to use::
 
-  python Reprocess.py data_directory
+  python -m pywws.Reprocess data_directory
 
 where ``data_directory`` is the location of your stored data.
 
