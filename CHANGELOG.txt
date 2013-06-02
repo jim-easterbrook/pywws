@@ -16,6 +16,16 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
+Changes in v13.06:
+    1/ Substantially rearranged directories, getting rid of 'code' and 'code3'.
+    2/ Removed 'makefile' - everything is now done via 'setup.py'.
+    3/ Removed 'RunModule.py' - use 'python -m pywws.module' now.
+    4/ Separated storage of config (weather.ini) and status (status.ini).
+    5/ Replaced toservice.py "rapid fire" mode with a separate config file for
+       Weather Underground rapid fire.
+    6/ Added 2 more low-level USB access modules.
+    7/ Various bug fixes and minor improvements.
+
 Changes in v13.03:
     1/ Added 'rain days' to monthly data. (Reprocess required when upgrading.)
     2/ Extended template syntax to include comments.

@@ -1,4 +1,4 @@
-include *.txt MANIFEST.in
+include *.txt MANIFEST.in README.md
 recursive-include translations *.po
 recursive-include doc_src *
 recursive-include doc *
