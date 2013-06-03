@@ -106,37 +106,45 @@ class RegularTasks(object):
             else:
                 yield template, ''
 
-    def do_live(self, data):
-        data = self.calibrator.calib(data)
+    def _do_common(self, sections, live_data=None):
         OK = True
-        yowindow_file = self.params.get('live', 'yowindow', '')
-        if yowindow_file:
-            self.yowindow.write_file(yowindow_file, data)
-        for template, flags in self._parse_templates('live', 'twitter'):
-            if not self.do_twitter(template, data):
-                OK = False
-        for service in eval(self.params.get('live', 'services', '[]')):
-            self.services[service].Upload(data)
+        for section in sections:
+            yowindow_file = self.params.get(section, 'yowindow', '')
+            if yowindow_file:
+                self.yowindow.write_file(yowindow_file)
+                break
+        for section in sections:
+            for template, flags in self._parse_templates(section, 'twitter'):
+                if not self.do_twitter(template):
+                    OK = False
+        all_services = []
+        for section in sections:
+            for service in eval(self.params.get(section, 'services', '[]')):
+                if service not in all_services:
+                    all_services.append(service)
+        for service in all_services:
+            self.services[service].Upload(live_data is None, live_data)
         uploads = []
         local_files = []
-        for template, flags in self._parse_templates('live', 'plot'):
-            upload = self.do_plot(template)
-            if not upload:
-                continue
-            if 'L' in flags:
-                local_files.append(upload)
-            else:
-                uploads.append(upload)
-        for template, flags in self._parse_templates('live', 'text'):
-            if 'T' in flags:
-                if not self.do_twitter(template, data):
-                    OK = False
-                continue
-            upload = self.do_template(template, data)
-            if 'L' in flags:
-                local_files.append(upload)
-            else:
-                uploads.append(upload)
+        for section in sections:
+            for template, flags in self._parse_templates(section, 'text'):
+                if 'T' in flags:
+                    if not self.do_twitter(template, live_data):
+                        OK = False
+                    continue
+                upload = self.do_template(template, live_data)
+                if 'L' in flags:
+                    local_files.append(upload)
+                else:
+                    uploads.append(upload)
+            for template, flags in self._parse_templates(section, 'plot'):
+                upload = self.do_plot(template)
+                if not upload:
+                    continue
+                if 'L' in flags:
+                    local_files.append(upload)
+                else:
+                    uploads.append(upload)
         if local_files:
             if not os.path.isdir(self.local_dir):
                 os.makedirs(self.local_dir)
@@ -148,6 +156,9 @@ class RegularTasks(object):
             for file in uploads:
                 os.unlink(file)
         return OK
+
+    def do_live(self, data):
+        return self._do_common(['live'], self.calibrator.calib(data))
 
     def do_tasks(self):
         sections = ['logged']
@@ -186,54 +197,7 @@ class RegularTasks(object):
             if (not last_update) or (last_update < threshold):
                 # time to do daily tasks
                 sections.append('daily')
-        OK = True
-        for section in sections:
-            for template, flags in self._parse_templates(section, 'twitter'):
-                if not self.do_twitter(template):
-                    OK = False
-        for section in sections:
-            yowindow_file = self.params.get(section, 'yowindow', '')
-            if yowindow_file:
-                self.yowindow.write_file(yowindow_file)
-                break
-        all_services = list()
-        for section in sections:
-            for service in eval(self.params.get(section, 'services', '[]')):
-                if service not in all_services:
-                    all_services.append(service)
-        for service in all_services:
-            self.services[service].Upload(True)
-        uploads = []
-        local_files = []
-        for section in sections:
-            for template, flags in self._parse_templates(section, 'plot'):
-                upload = self.do_plot(template)
-                if not upload:
-                    continue
-                if 'L' in flags:
-                    local_files.append(upload)
-                else:
-                    uploads.append(upload)
-            for template, flags in self._parse_templates(section, 'text'):
-                if 'T' in flags:
-                    if not self.do_twitter(template):
-                        OK = False
-                    continue
-                upload = self.do_template(template)
-                if 'L' in flags:
-                    local_files.append(upload)
-                else:
-                    uploads.append(upload)
-        if local_files:
-            if not os.path.isdir(self.local_dir):
-                os.makedirs(self.local_dir)
-            for file in local_files:
-                shutil.move(file, self.local_dir)
-        if uploads:
-            if not Upload.Upload(self.params, uploads):
-                OK = False
-            for file in uploads:
-                os.unlink(file)
+        OK = self._do_common(sections)
         if OK:
             for section in sections:
                 self.status.set('last update', section, now.isoformat(' '))

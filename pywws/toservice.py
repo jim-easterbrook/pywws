@@ -289,88 +289,43 @@ class ToService(object):
         self.use_get = eval(service_params.get('config', 'use get'))
         self.expected_result = eval(service_params.get('config', 'result'))
 
-    def translate_data(self, current, fixed_data):
-        """Convert a weather data record to upload format.
-
-        The :obj:`current` parameter contains the data to be uploaded.
-        It should be a 'calibrated' data record, as stored in
-        :class:`pywws.DataStore.calib_store`.
-
-        The :obj:`fixed_data` parameter contains unvarying data that
-        is site dependent, for example an ID code and authentication
-        data.
-
-        :param current: the weather data record.
-
-        :type current: dict
-
-        :param fixed_data: unvarying upload data.
-
-        :type fixed_data: dict
-
-        :return: converted data, or :obj:`None` if invalid data.
-
-        :rtype: dict(string)
-        
-        """
-        # check we have enough data
-        if current['temp_out'] is None or current['hum_out'] is None:
-            return None
-        # convert data
-        result = dict(fixed_data)
-        template_data = self.templater.make_text(self.template_file, current)
-        result.update(eval(template_data))
-        return result
-
-    def send_data(self, data, server, fixed_data):
+    def send_data(self, data):
         """Upload a weather data record.
 
         The :obj:`data` parameter contains the data to be uploaded.
         It should be a 'calibrated' data record, as stored in
         :class:`pywws.DataStore.calib_store`.
 
-        The :obj:`fixed_data` parameter contains unvarying data that
-        is site dependent, for example an ID code and authentication
-        data.
-
         :param data: the weather data record.
 
         :type data: dict
-
-        :param server: web address to upload to.
-
-        :type server: string
-
-        :param fixed_data: unvarying upload data.
-
-        :type fixed_data: dict
 
         :return: success status
 
         :rtype: bool
         
         """
-        coded_data = self.translate_data(data, fixed_data)
-        if not coded_data:
+        # check we have enough data
+        if data['temp_out'] is None or data['hum_out'] is None:
             return True
+        # convert data
+        coded_data = eval(self.templater.make_text(self.template_file, data))
+        coded_data.update(self.fixed_data)
         self.logger.debug(coded_data)
         coded_data = urllib.urlencode(coded_data)
         # have three tries before giving up
         for n in range(3):
             try:
-                if sys.hexversion <= 0x020406ff:
-                    wudata = urllib.urlopen('%s?%s' % (server, coded_data))
-                else:
-                    try:
-                        if self.use_get:
-                            wudata = urllib2.urlopen(
-                                '%s?%s' % (server, coded_data))
-                        else:
-                            wudata = urllib2.urlopen(server, coded_data)
-                    except urllib2.HTTPError, ex:
-                        if ex.code != 400:
-                            raise
-                        wudata = ex
+                try:
+                    if self.use_get:
+                        wudata = urllib2.urlopen(
+                            '%s?%s' % (self.server, coded_data))
+                    else:
+                        wudata = urllib2.urlopen(self.server, coded_data)
+                except urllib2.HTTPError, ex:
+                    if ex.code != 400:
+                        raise
+                    wudata = ex
                 response = wudata.readlines()
                 wudata.close()
                 if len(response) == len(self.expected_result):
@@ -391,7 +346,7 @@ class ToService(object):
                     self.old_ex = e
         return False
 
-    def Upload(self, catchup):
+    def Upload(self, catchup, live_data=None):
         """Upload one or more weather data records.
 
         This method uploads either the most recent weather data
@@ -424,18 +379,23 @@ class ToService(object):
                 start = max(start, last_update + timedelta(minutes=1))
             count = 0
             for data in self.data[start:]:
-                if not self.send_data(data, self.server, self.fixed_data):
+                if not self.send_data(data):
                     return False
                 self.status.set('last update', self.service_name,
                                 data['idx'].isoformat(' '))
                 count += 1
             if count:
                 self.logger.info('%d records sent', count)
+        elif live_data:
+            last_update = live_data['idx']
+            if not self.send_data(live_data):
+                return False
+            self.status.set(
+                'last update', self.service_name, last_update.isoformat(' '))
         else:
             # upload most recent data
             last_update = self.data.before(datetime.max)
-            if not self.send_data(
-                    self.data[last_update], self.server, self.fixed_data):
+            if not self.send_data(self.data[last_update]):
                 return False
             self.status.set(
                 'last update', self.service_name, last_update.isoformat(' '))
