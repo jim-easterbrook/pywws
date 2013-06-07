@@ -46,7 +46,7 @@ import codecs
 import getopt
 import logging
 import sys
-import tweepy
+import twitter
 
 from pywws import DataStore
 from pywws import Localisation
@@ -69,9 +69,9 @@ class ToTwitter(object):
         self.lat = params.get('twitter', 'latitude')
         self.long = params.get('twitter', 'longitude')
         # open API
-        auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
-        auth.set_access_token(key, secret)
-        self.api = tweepy.API(auth)
+        self.api = twitter.Api(
+            consumer_key=consumer_key, consumer_secret=consumer_secret,
+            access_token_key=key, access_token_secret=secret)
 
     def Upload(self, tweet):
         if not tweet:
@@ -80,13 +80,11 @@ class ToTwitter(object):
             tweet = tweet.decode(self.encoding)
         for i in range(3):
             try:
-                status = self.api.update_status(
-                    tweet, lat=self.lat, long=self.long)
+                status = self.api.PostUpdate(
+                    tweet, latitude=self.lat, longitude=self.long)
                 return True
             except Exception, ex:
                 e = str(ex)
-                if 'is a duplicate' in e:
-                    return True
                 if e != self.old_ex:
                     self.logger.error(e)
                     self.old_ex = e

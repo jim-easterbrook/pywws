@@ -22,11 +22,14 @@ How to configure pywws to post messages to Twitter
 Install dependencies
 --------------------
 
-* Python 2.5+ - http://python.org/ (Note: Python 3 is not supported.)
-* tweepy 2.0+ - https://github.com/tweepy/tweepy
-* simplejson - http://pypi.python.org/pypi/simplejson/
+* Python 2.5+ - http://python.org/ (Note: Python 3 is not yet supported.)
+* python-twitter 0.8.6+ - https://github.com/bear/python-twitter
+* simplejson - https://github.com/simplejson/simplejson
+* python-oauth2 - https://github.com/simplegeo/python-oauth2
+* httplib2 - http://code.google.com/p/httplib2/
 
-Note that simplejson is included in Python 2.6+
+These should all be available from the standard repositories of any reasonably up to date Linux distribution.
+They can also be installed from the `Python Package Index<https://pypi.python.org/pypi>`_.
 
 Create a Twitter account
 ------------------------
@@ -36,6 +39,9 @@ This could be useful to someone who lives in your area, but doesn't want to know
 
 Authorise pywws to post to your Twitter account
 -----------------------------------------------
+
+If you run pywws on a low power device such as a router, you may find it easier to run this authorisation step on another computer.
+Use an empty 'data' directory -- a ``weather.ini`` file will be created whose contents can be copied into your real ``weather.ini`` file using any text editor.
 
 Make sure no other pywws software is running, then run :py:mod:`~pywws.TwitterAuth`::
 

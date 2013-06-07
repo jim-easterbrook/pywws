@@ -76,8 +76,10 @@ The software you'll need to run pywws depends on what you plan to do with it. In
      *  `pycrypto <http://www.dlitz.net/software/pycrypto/>`_
    * For Twitter updates:
 
-     *  `tweepy <https://github.com/tweepy/tweepy>`_ v2.0 or higher
-     *  `simplejson <http://pypi.python.org/pypi/simplejson>`_
+     *  `python-twitter <https://github.com/bear/python-twitter>`_ v0.8.6 or higher
+     *  `simplejson <https://github.com/simplejson/simplejson>`_
+     *  `python-oauth2 <https://github.com/simplegeo/python-oauth2>`_
+     *  `httplib2 <http://code.google.com/p/httplib2/>`_
    * To create new language translations:
 
      *  `gettext <http://www.gnu.org/s/gettext/>`_

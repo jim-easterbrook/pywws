@@ -46,33 +46,47 @@ __doc__ %= __usage__
 __usage__ = __doc__.split('\n')[0] + __usage__
 
 import getopt
+import oauth2 as oauth
 import sys
-import tweepy
+import urlparse
 import webbrowser
 
 from pywws import DataStore
 from pywws.ToTwitter import consumer_key, consumer_secret
 
 def TwitterAuth(params):
-    auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
-    try:
-        redirect_url = auth.get_authorization_url()
-    except tweepy.TweepError:
-        print 'Failed to get request token.'
+    consumer = oauth.Consumer(consumer_key, consumer_secret)
+    client = oauth.Client(consumer)
+    # step 1 - obtain a request token
+    resp, content = client.request(
+        'https://api.twitter.com/oauth/request_token', 'POST')
+    if resp['status'] != '200':
+        print 'Failed to get request token. [%s]' % resp['status']
         return 1
+    request_token = dict(urlparse.parse_qsl(content))
+    # step 2 - redirect the user
+    redirect_url = 'https://api.twitter.com/oauth/authorize?oauth_token=%s' % (
+        request_token['oauth_token'])
     if not webbrowser.open(redirect_url, new=2, autoraise=0):
         print 'Please use a web browser to open the following URL'
         print redirect_url
     pin = raw_input('Please enter the PIN shown in your web browser: ').strip()
-    try:
-        auth.get_access_token(pin)
-    except tweepy.TweepError:
-        print 'Failed to get access token.'
+    # step 3 - convert the request token to an access token
+    token = oauth.Token(
+        request_token['oauth_token'], request_token['oauth_token_secret'])
+    token.set_verifier(pin)
+    client = oauth.Client(consumer, token)
+    resp, content = client.request(
+        'https://api.twitter.com/oauth/access_token', 'POST')
+    if resp['status'] != '200':
+        print 'Failed to get access token. [%s]' % resp['status']
         return 1
-    params.set('twitter', 'key', auth.access_token.key)
-    params.set('twitter', 'secret', auth.access_token.secret)
+    access_token = dict(urlparse.parse_qsl(content))
+    params.set('twitter', 'key', access_token['oauth_token'])
+    params.set('twitter', 'secret', access_token['oauth_token_secret'])
     print 'Success! Authorisation data has been stored in %s' % params._path
     return 0
+
 def main(argv=None):
     if argv is None:
         argv = sys.argv
@@ -93,5 +107,6 @@ def main(argv=None):
         print >>sys.stderr, __usage__.strip()
         return 2
     return TwitterAuth(DataStore.params(args[0]))
+
 if __name__ == "__main__":
     sys.exit(main())
