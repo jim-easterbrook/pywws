@@ -82,9 +82,25 @@ import math
 import sys
 import time
 
-from . import Localisation
-# import USBDevice later, when we know which USB library to use
+from pywws import Localisation
 USBDevice = None
+if not USBDevice:
+    try:
+        from pywws.device_ctypes_hidapi import USBDevice
+    except ImportError:
+        pass
+if not USBDevice:
+    try:
+        from pywws.device_cython_hidapi import USBDevice
+    except ImportError:
+        pass
+if not USBDevice:
+    try:
+        from pywws.device_pyusb1 import USBDevice
+    except ImportError:
+        pass
+if not USBDevice:
+    from pywws.device_pyusb import USBDevice
 
 def dew_point(temp, hum):
     """Compute dew point, using formula from
@@ -294,25 +310,7 @@ class CUSBDrive(object):
     WriteCommandWord = 0xA2
 
     def __init__(self):
-        global USBDevice
         self.logger = logging.getLogger('pywws.WeatherStation.CUSBDrive')
-        if not USBDevice:
-            try:
-                from .device_ctypes_hidapi import USBDevice
-            except ImportError:
-                pass
-        if not USBDevice:
-            try:
-                from .device_cython_hidapi import USBDevice
-            except ImportError:
-                pass
-        if not USBDevice:
-            try:
-                from .device_pyusb1 import USBDevice
-            except ImportError:
-                pass
-        if not USBDevice:
-            from .device_pyusb import USBDevice
         self.logger.info('using %s', USBDevice.__module__)
         self.dev = USBDevice(0x1941, 0x8021)
 
