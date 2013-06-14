@@ -21,7 +21,12 @@
 from datetime import date
 from distutils import log
 from distutils.cmd import Command
-from distutils.core import setup
+try:
+    from setuptools import setup
+    using_setuptools = True
+except ImportError:
+    from distutils.core import setup
+    using_setuptools = False
 import os
 import subprocess
 
@@ -234,15 +239,11 @@ try:
 except ImportError:
     pass
 
-# if Sphinx-PyPI-upload is installed, add command to upload documentation
-try:
-    from sphinx_pypi_upload import UploadDoc
-    cmdclass['upload_sphinx'] = UploadDoc
-    command_options['upload_sphinx'] = {
+# set options for uploading documentation to PyPI
+if using_setuptools:
+    command_options['upload_docs'] = {
         'upload_dir' : ('setup.py', 'doc/html'),
         }
-except ImportError:
-    pass
 
 # set options for building distributions
 command_options['sdist'] = {
