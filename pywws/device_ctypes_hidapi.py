@@ -148,9 +148,9 @@ class USBDevice(object):
             if n <= 0:
                 raise IOError(
                     'pywws.device_ctypes_hidapi.USBDevice.read_data failed')
-            for i in range(length):
+            for i in range(n):
                 result.append(ord(data[i]))
-            size -= length
+            size -= n
         return result
 
     def write_data(self, buf):
@@ -166,4 +166,5 @@ class USBDevice(object):
 
         """
         data = ''.join(map(chr, buf))
-        return hidapi.hid_write(self.device, ctypes.c_char_p(data), len(data))
+        return hidapi.hid_write(
+            self.device, ctypes.c_char_p(data), len(data)) >= 0
