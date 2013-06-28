@@ -85,6 +85,8 @@ class ToTwitter(object):
                 return True
             except Exception, ex:
                 e = str(ex)
+                if 'is a duplicate' in e:
+                    return True
                 if e != self.old_ex:
                     self.logger.error(e)
                     self.old_ex = e
