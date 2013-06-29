@@ -18,10 +18,26 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-"""Provide a couple of datetime.tzinfo() objects representing local
-time and UTC.
+"""Provide a couple of :py:class:`datetime.tzinfo` objects
+representing local time and UTC.
 
-Copied directly from the datetime module documentation."""
+Introduction
+------------
+
+This module provides two :py:class:`datetime.tzinfo` objects
+representing UTC and local time zones. These are used to convert
+timestamps to and from UTC and local time. The weather station
+software stores data with UTC timestamps, to avoid problems with
+daylight savings time, but the template and plot programs output data
+with local times.
+
+The module is copied directly from the :py:class:`datetime.tzinfo`
+module documentation.
+
+Detailed API
+------------
+
+"""
 
 from datetime import tzinfo, timedelta, datetime
 import time as _time
