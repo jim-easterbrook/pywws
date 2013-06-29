@@ -23,6 +23,18 @@
 
 %s
 
+Introduction
+------------
+
+This program recreates the calibrated, hourly, daily and monthly
+summary data that is created by the :py:mod:`pywws.Process` program.
+It should be run whenever you upgrade to a newer version of pywws (if
+the summary data format has changed), change your calibration module
+or alter your pressure offset.
+
+Detailed API
+------------
+
 """
 
 __docformat__ = "restructuredtext en"
