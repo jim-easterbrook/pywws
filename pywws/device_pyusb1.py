@@ -82,11 +82,11 @@ class USBDevice(object):
     def __init__(self, idVendor, idProduct):
         """Low level USB device access via PyUSB 1.0 library.
 
-        :param idVendor: the USB ``vendor ID` number, for example 0x1941.
+        :param idVendor: the USB "vendor ID" number, for example 0x1941.
 
         :type idVendor: int
 
-        :param idProduct: the USB ``product ID` number, for example 0x8021.
+        :param idProduct: the USB "product ID" number, for example 0x8021.
 
         :type idProduct: int
 

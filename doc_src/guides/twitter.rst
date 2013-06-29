@@ -29,7 +29,7 @@ Install dependencies
 * httplib2 - http://code.google.com/p/httplib2/
 
 These should all be available from the standard repositories of any reasonably up to date Linux distribution.
-They can also be installed from the `Python Package Index<https://pypi.python.org/pypi>`_.
+They can also be installed from the `Python Package Index <https://pypi.python.org/pypi>`_.
 
 Create a Twitter account
 ------------------------
@@ -98,6 +98,7 @@ For example::
    services = []
    plot = ['7days.png.xml', '24hrs.png.xml', 'rose_12hrs.png.xml']
    text = [('tweet.txt', 'T'), '24hrs.txt', '6hrs.txt', '7days.txt']
+
 Note the use of the ``'T'`` flag -- this tells pywws to tweet the template result instead of uploading it to your ftp site.
 
 You could change the ``[logged]``, ``[12 hourly]`` or ``[daily]`` sections instead, but I think ``[hourly]`` is most appropriate for Twitter updates.

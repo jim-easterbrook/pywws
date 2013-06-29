@@ -28,6 +28,7 @@ area, you can write a calibration routine to double the rain value.
 The default calibration does two things:
     #. Generate relative atmospheric pressure.
     #. Remove invalid wind direction values.
+
 Any user calibration you write must also do these.
 
 Writing your calibration module
