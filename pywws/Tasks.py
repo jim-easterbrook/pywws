@@ -134,16 +134,18 @@ class RegularTasks(object):
                     continue
                 upload = self.do_template(template, live_data)
                 if 'L' in flags:
-                    local_files.append(upload)
-                else:
+                    if upload not in local_files:
+                        local_files.append(upload)
+                elif upload not in uploads:
                     uploads.append(upload)
             for template, flags in self._parse_templates(section, 'plot'):
                 upload = self.do_plot(template)
                 if not upload:
                     continue
                 if 'L' in flags:
-                    local_files.append(upload)
-                else:
+                    if upload not in local_files:
+                        local_files.append(upload)
+                elif upload not in uploads:
                     uploads.append(upload)
         if local_files:
             if not os.path.isdir(self.local_dir):
