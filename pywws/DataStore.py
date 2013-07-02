@@ -19,18 +19,50 @@
 """
 DataStore.py - stores readings in easy to access files
 
-A separate file is used for each day's data, to keep memory load
-reasonable. One day at a time is held in memory, and saved to disc
-when another day needs to be accessed.
+Introduction
+------------
 
-Data is accessed in a cross between dictionary and list behaviour.
-The following are all valid:
-# get value nearest 9:30 on Christmas day
-data[data.nearest(datetime(2008, 12, 25, 9, 30))]
-# get entire array, equivalent to data[:] or just data
-data[datetime.min:datetime.max]
-# get last 12 hours of data
-data[datetime.utcnow() - timedelta(hours=12):]
+This module is at the core of pywws. It stores data on disc, but
+without the overhead of a full scale database system. I have designed
+it to run on a small memory machine such as my Asus router. To
+minimise memory usage it only loads one day's worth of raw data at a
+time into memory.
+
+From a "user" point of view, the data is accessed as a cross between a
+list and a dictionary. Each data record is indexed by a
+:py:class:`datetime.datetime` object (dictionary behaviour), but
+records are stored in order and can be accessed as slices (list
+behaviour).
+
+For example, to access the hourly data for Christmas day 2009, one
+might do the following::
+
+  from datetime import datetime
+  import DataStore
+  hourly = DataStore.hourly_store('weather_data')
+  for data in hourly[datetime(2009, 12, 25):datetime(2009, 12, 26)]:
+      print data['idx'], data['temp_out']
+
+Some more examples of data access::
+
+  # get value nearest 9:30 on Christmas day 2008
+  data[data.nearest(datetime(2008, 12, 25, 9, 30))]
+  # get entire array, equivalent to data[:]
+  data[datetime.min:datetime.max]
+  # get last 12 hours worth of data
+  data[datetime.utcnow() - timedelta(hours=12):]
+
+The module provides five classes to store different data.
+:py:class:`data_store` takes "raw" data from the weather station;
+:py:class:`calib_store`, :py:class:`hourly_store`,
+:py:class:`daily_store` and :py:class:`monthly_store` store processed
+data (see :py:mod:`pywws.Process`). All three are derived from the
+same ``core_store`` class, they only differ in the keys and types of
+data stored in each record.
+
+Detailed API
+------------
+
 """
 
 from ConfigParser import RawConfigParser
