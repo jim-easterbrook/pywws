@@ -114,6 +114,32 @@ def cadhumidex(temp, humidity):
                            float(humidity) / 100.0)
     return temp + (0.555 * (saturation_pressure - 10.0))
 
+def usaheatindex(temp, humidity, dew):
+    """Calculate Heat Index as per USA National Weather Service Standards
+
+    See http://en.wikipedia.org/wiki/Heat_index, formula 1. The
+    formula is not valid for T < 26.7C, Dew Point < 12C, or RH < 40%
+
+    """
+    if temp is None or humidity is None:
+        return None
+    if temp < 26.7 or humidity < 40 or dew < 12.0:
+        return None
+    T = (temp * 1.8) + 32.0
+    R = humidity
+    c_1 = -42.379
+    c_2 = 2.04901523
+    c_3 = 10.14333127
+    c_4 = -0.22475541
+    c_5 = -0.00683783
+    c_6 = -0.05481717
+    c_7 = 0.00122874
+    c_8 = 0.00085282
+    c_9 = -0.00000199
+    return ((c_1 + (c_2 * T) + (c_3 * R) + (c_4 * T * R) + (c_5 * (T**2)) +
+             (c_6 * (R**2)) + (c_7 * (T**2) * R) + (c_8 * T * (R**2)) +
+             (c_9 * (T**2) * (R**2))) - 32.0) / 1.8
+
 def _main(argv=None):
     global _winddir_text_array
     # run some simple tests
