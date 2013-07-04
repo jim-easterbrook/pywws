@@ -133,6 +133,7 @@ Contents
    :maxdepth: 2
 
    Licence <essentials/LICENCE>
+   Dependencies <essentials/dependencies>
    Change log <essentials/CHANGELOG>
    User guides <guides/index>
    Python modules <api/index>
