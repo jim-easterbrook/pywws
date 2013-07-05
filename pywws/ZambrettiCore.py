@@ -98,8 +98,7 @@ def ZambrettiText(letter):
     return forecast_text[letter]
 
 def main(argv=None):
-    from . import WeatherStation
-    wind_dir = WeatherStation.get_wind_dir_text()
+    from pywws import conversions
     for pressure in range(1030, 960, -10):
         for trend_txt in ('S', 'R-S', 'R-W', 'F-W', 'F-S'):
             trend, month = {
@@ -110,10 +109,10 @@ def main(argv=None):
                 'S'   : ( 0.0, 7),
                 }[trend_txt]
             for wind in (0, 2, 14, None, 4, 12, 6, 10, 8):
-                if wind == None:
+                if wind is None:
                     wind_txt = 'calm'
                 else:
-                    wind_txt = wind_dir[wind]
+                    wind_txt = conversions.winddir_text(wind)
                 print '%4d %4s %4s  %3s' % (
                     pressure, trend_txt, wind_txt,
                     ZambrettiCode(pressure, month, wind, trend))

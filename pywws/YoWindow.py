@@ -42,10 +42,10 @@ import logging
 import sys
 from datetime import datetime, timedelta
 
-from . import DataStore
-from .Logger import ApplicationLogger
-from .TimeZone import Local, utc
-from .WeatherStation import apparent_temp
+from pywws import DataStore
+from pywws.Logger import ApplicationLogger
+from pywws.TimeZone import Local, utc
+from pywws.conversions import apparent_temp
 
 class YoWindow(object):
     """

@@ -380,8 +380,8 @@ selects one value from the "data" dictionary, for example:
 More complex expressions are possible, and some helper functions are
 provided. For example: ``<ycalc>dew_point(data['temp_out'],
 data['hum_out'])</ycalc>`` plots the external dew point, and
-``<ycalc>data['wind_ave'] * 3.6 / 1.609344</ycalc>`` plots the average
-wind speed in miles per hour.
+``<ycalc>wind_mph(data['wind_ave'])</ycalc>`` plots the average wind
+speed in miles per hour.
 
 Cumulative plots are also possible. The result of each ycalc
 computation is stored and made available to the next computation in
@@ -453,7 +453,6 @@ from pywws.conversions import *
 from pywws import DataStore
 from pywws import Localisation
 from pywws.TimeZone import Local
-from pywws.WeatherStation import dew_point, wind_chill, apparent_temp
 
 class BasePlotter(object):
     def __init__(self, params, status, raw_data, hourly_data,

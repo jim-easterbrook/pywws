@@ -176,9 +176,9 @@ which generates an HTML table of 7 hourly readings (which should span
       <td>#idx "%%H%%M %%Z"#</td>
       <td>#temp_out "%%.1f °C"#</td>
       <td>#hum_out "%%d%%%%"#</td>
-      <td>#wind_dir "%%s" "-" "wind_dir_text[x]"#</td>
-      <td>#wind_ave "%%.0f mph" "" "x * 3.6 / 1.609344"#</td>
-      <td>#wind_gust "%%.0f mph" "" "x * 3.6 / 1.609344"#</td>
+      <td>#wind_dir "%%s" "-" "winddir_text(x)"#</td>
+      <td>#wind_ave "%%.0f mph" "" "wind_mph(x)"#</td>
+      <td>#wind_gust "%%.0f mph" "" "wind_mph(x)"#</td>
       <td>#rain "%%0.1f mm"#</td>
       <td>#rel_pressure "%%.0f hPa"#, #pressure_trend "%%s" "" "pressure_trend_text(x)"#</td>
     </tr>
@@ -200,8 +200,8 @@ use a ``fmt_string`` to format the data appropriately. The ``#wind_ave
 conversion expression to convert m/s to mph.
 
 The ``#wind_dir ...#`` and ``#pressure_trend ...#`` instructions show
-use of the built-in array ``wind_dir_text`` and function
-``pressure_trend_text`` to convert numerical values into English text.
+use of the built-in functions ``winddir_text`` and
+``pressure_trend_text`` to convert numerical values into text.
 
 Finally we get to datetime values. The ``#idx "%%H%%M"#`` instruction
 simply outputs the time (in HHMM format) of the data's index. The
@@ -238,13 +238,13 @@ import os
 import shlex
 import sys
 
-from pywws.conversions import *
+from pywws import conversions
+from conversions import *
 from pywws import DataStore
 from pywws.Forecast import Zambretti, ZambrettiCode
 from pywws import Localisation
 from pywws.Logger import ApplicationLogger
 from pywws.TimeZone import Local, utc
-from pywws import WeatherStation
 
 SECOND = timedelta(seconds=1)
 HOUR = timedelta(hours=1)
@@ -290,11 +290,10 @@ class Template(object):
                 self.logger.error("No calib data - run Process.py first")
                 return
             live_data = self.calib_data[idx]
-        pressure_trend_text = WeatherStation.pressure_trend_text
-        wind_dir_text = WeatherStation.get_wind_dir_text()
-        dew_point = WeatherStation.dew_point
-        wind_chill = WeatherStation.wind_chill
-        apparent_temp = WeatherStation.apparent_temp
+        # get conversions module to create its 'private' wind dir text
+        # array, then copy it to deprecated wind_dir_text variable
+        winddir_text(0)
+        wind_dir_text = conversions._winddir_text_array
         hour_diff = self._hour_diff
         rain_hour = self._rain_hour
         rain_day = self._rain_day

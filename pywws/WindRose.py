@@ -252,7 +252,6 @@ from pywws import DataStore
 from pywws import Localisation
 from pywws.Plot import BasePlotter
 from pywws.TimeZone import Local
-from pywws.WeatherStation import dew_point
 
 class RosePlotter(BasePlotter):
     def GetPlotList(self):

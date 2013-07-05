@@ -39,6 +39,30 @@ def pressure_inhg(hPa):
         return None
     return hPa / 33.86389
 
+def pressure_trend_text(trend):
+    """Convert pressure trend to a string, as used by the UK met
+    office.
+
+    """
+    _ = _Localisation.translation.gettext
+    if trend > 6.0:
+        return _('rising very rapidly')
+    elif trend > 3.5:
+        return _('rising quickly')
+    elif trend > 1.5:
+        return _('rising')
+    elif trend >= 0.1:
+        return _('rising slowly')
+    elif trend < -6.0:
+        return _('falling very rapidly')
+    elif trend < -3.5:
+        return _('falling quickly')
+    elif trend < -1.5:
+        return _('falling')
+    elif trend <= -0.1:
+        return _('falling slowly')
+    return _('steady')
+
 def rain_inch(mm):
     "Convert rainfall from millimetres to inches"
     if mm is None:
@@ -104,6 +128,18 @@ def wind_bft(ms):
             return bft
     return len(_bft_threshold)
 
+def dew_point(temp, hum):
+    """Compute dew point, using formula from
+    http://en.wikipedia.org/wiki/Dew_point.
+
+    """
+    if temp is None or hum is None:
+        return None
+    a = 17.27
+    b = 237.7
+    gamma = ((a * temp) / (b + temp)) + math.log(float(hum) / 100.0)
+    return (b * gamma) / (a - gamma)
+
 def cadhumidex(temp, humidity):
     "Calculate Humidity Index as per Canadian Weather Standards"
     if temp is None or humidity is None:
@@ -139,6 +175,31 @@ def usaheatindex(temp, humidity, dew):
     return ((c_1 + (c_2 * T) + (c_3 * R) + (c_4 * T * R) + (c_5 * (T**2)) +
              (c_6 * (R**2)) + (c_7 * (T**2) * R) + (c_8 * T * (R**2)) +
              (c_9 * (T**2) * (R**2))) - 32.0) / 1.8
+
+def wind_chill(temp, wind):
+    """Compute wind chill, using formula from
+    http://en.wikipedia.org/wiki/wind_chill
+
+    """
+    if temp is None or wind is None:
+        return None
+    wind_kph = wind * 3.6
+    if wind_kph <= 4.8 or temp > 10.0:
+        return temp
+    return min(13.12 + (temp * 0.6215) +
+               (((0.3965 * temp) - 11.37) * (wind_kph ** 0.16)),
+               temp)
+
+def apparent_temp(temp, rh, wind):
+    """Compute apparent temperature (real feel), using formula from
+    http://www.bom.gov.au/info/thermal_stress/
+
+    """
+    if temp is None or rh is None or wind is None:
+        return None
+    vap_press = (float(rh) / 100.0) * 6.105 * math.exp(
+        17.27 * temp / (237.7 + temp))
+    return temp + (0.33 * vap_press) - (0.70 * wind) - 4.00
 
 def _main(argv=None):
     global _winddir_text_array
