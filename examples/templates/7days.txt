@@ -38,7 +38,7 @@
     <td>#idx "%Y/%m/%d %H:%M %Z"#</td>
     <td>#temp_out_max "%.1f &deg;C"#</td>
     <td>#temp_out_min "%.1f &deg;C"#</td>
-    <td>#wind_dir "%s" "-" "wind_dir_text[x]"#</td>
+    <td>#wind_dir "%s" "-" "winddir_text(x)"#</td>
     <td>#wind_ave "%.0f mph" "" "wind_mph(x)"#</td>
     <td>#wind_gust "%.0f mph" "" "wind_mph(x)"#</td>
     <td>#rain "%0.1f mm"#</td>

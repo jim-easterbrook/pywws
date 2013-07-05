@@ -33,7 +33,7 @@
       <link>http://www.jim-easterbrook.me.uk/weather/7days/</link>
       <description>Temperature: #temp_out_min "%.1f°C (min)"#
 #temp_out_max ", %.1f°C (max)"#
-, Wind: #wind_dir "%s, " "" "wind_dir_text[x]"#
+, Wind: #wind_dir "%s, " "" "winddir_text(x)"#
 #wind_ave "%.0f mph (ave), " "" "wind_mph(x)"#
 #wind_gust "%.0f mph (gust), " "" "wind_mph(x)"#
 Rainfall #rain "%.1f mm"#</description>

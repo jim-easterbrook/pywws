@@ -32,7 +32,7 @@
       <geo:long>-.25</geo:long>
       <link>http://www.jim-easterbrook.me.uk/weather/24hrs/</link>
       <description>Temperature: #temp_out "%.1f°C" "-"#
-, Wind: #wind_dir "%s, " "" "wind_dir_text[x]"#
+, Wind: #wind_dir "%s, " "" "winddir_text(x)"#
 #wind_ave "%.0f mph (ave), " "" "wind_mph(x)"#
 #wind_gust "%.0f mph (gust)" "" "wind_mph(x)"#
 , Humidity: #hum_out "%d%%"#

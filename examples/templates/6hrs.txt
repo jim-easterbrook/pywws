@@ -51,7 +51,7 @@
     <td>#temp_out "%.1f &deg;C"#</td>
     <td>#calc "apparent_temp(data['temp_out'], data['hum_out'], data['wind_ave'])" "%.1f &deg;C"#</td>
     <td>#hum_out "%d%%"#</td>
-    <td>#wind_dir "%s" "-" "wind_dir_text[x]"#</td>
+    <td>#wind_dir "%s" "-" "winddir_text(x)"#</td>
     <td>#wind_ave "%.0f mph" "" "wind_mph(x)"#</td>
     <td>#wind_gust "%.0f mph" "" "wind_mph(x)"#</td>
     <td>#rain "%0.1f mm"#</td>
