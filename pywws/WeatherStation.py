@@ -78,7 +78,6 @@ __docformat__ = "restructuredtext en"
 
 from datetime import datetime
 import logging
-import math
 import sys
 import time
 

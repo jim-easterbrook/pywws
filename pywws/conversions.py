@@ -23,6 +23,8 @@
 
 """
 
+import math
+
 # rename imports to prevent them being imported when
 # doing 'from pywws.conversions import *'
 from pywws import Localisation as _Localisation
