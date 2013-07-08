@@ -81,11 +81,10 @@ import math
 import os
 import sys
 
-from .calib import Calib
-from . import DataStore
-from .Logger import ApplicationLogger
-from .TimeZone import Local, utc
-from . import WeatherStation
+from pywws.calib import Calib
+from pywws import DataStore
+from pywws.Logger import ApplicationLogger
+from pywws.TimeZone import Local, utc
 
 SECOND = timedelta(seconds=1)
 TIME_ERR = timedelta(seconds=45)

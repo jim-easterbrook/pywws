@@ -82,8 +82,8 @@ import os
 import shutil
 import sys
 
-from . import DataStore
-from .Logger import ApplicationLogger
+from pywws import DataStore
+from pywws.Logger import ApplicationLogger
 
 def Upload(params, files):
     logger = logging.getLogger('pywws.Upload')

@@ -39,10 +39,10 @@ from datetime import datetime, timedelta
 import getopt
 import sys
 
-from . import DataStore
-from . import Localisation
-from .TimeZone import Local, utc
-from . import ZambrettiCore
+from pywws import DataStore
+from pywws import Localisation
+from pywws.TimeZone import Local, utc
+from pywws import ZambrettiCore
 
 def ZambrettiCode(params, hourly_data):
     north = eval(params.get('Zambretti', 'north', 'True'))
