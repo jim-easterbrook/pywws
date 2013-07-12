@@ -162,7 +162,7 @@ def usaheatindex(temp, humidity, dew):
     if temp is None or humidity is None:
         return None
     if temp < 26.7 or humidity < 40 or dew < 12.0:
-        return None
+        return temp
     T = (temp * 1.8) + 32.0
     R = humidity
     c_1 = -42.379
