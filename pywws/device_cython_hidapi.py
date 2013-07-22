@@ -110,9 +110,9 @@ class USBDevice(object):
         :type idProduct: int
 
         """
+        if not hid.enumerate(idVendor, idProduct):
+            raise IOError("No weather station connected")
         self.hid = hid.device(idVendor, idProduct)
-        if not self.hid:
-            raise IOError("Weather station device not found")
 
     def read_data(self, size):
         """Receive data from the device.
