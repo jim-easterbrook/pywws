@@ -444,6 +444,7 @@ __usage__ = __doc__.split('\n')[0] + __usage__
 import codecs
 from datetime import datetime, timedelta
 import getopt
+import logging
 import os
 import subprocess
 import sys
@@ -452,11 +453,13 @@ import xml.dom.minidom
 from pywws.conversions import *
 from pywws import DataStore
 from pywws import Localisation
+from pywws.Logger import ApplicationLogger
 from pywws.TimeZone import Local
 
 class BasePlotter(object):
     def __init__(self, params, status, raw_data, hourly_data,
                  daily_data, monthly_data, work_dir):
+        self.logger = logging.getLogger('pywws.%s' % self.__class__.__name__)
         self.raw_data = raw_data
         self.hourly_data = hourly_data
         self.daily_data = daily_data
@@ -472,12 +475,18 @@ class BasePlotter(object):
     def DoPlot(self, input_file, output_file):
         # read XML graph description
         self.doc = xml.dom.minidom.parse(input_file)
-        self.graph = self.doc.childNodes[0]
+        self.graph = self.GetChildren(self.doc, 'graph')
+        if not self.graph:
+            self.logger.error('%s has no graph node' % input_file)
+            self.doc.unlink()
+            return 1
+        self.graph = self.graph[0]
         # get list of plots
         plot_list = self.GetPlotList()
         self.plot_count = len(plot_list)
         if self.plot_count < 1:
             # nothing to plot
+            self.logger.error('%s has no plot nodes' % input_file)
             self.doc.unlink()
             return 1
         # get start and end datetimes
@@ -835,6 +844,7 @@ def main(argv=None):
         print >>sys.stderr, 'Error: 4 arguments required\n'
         print >>sys.stderr, __usage__.strip()
         return 2
+    logger = ApplicationLogger(1)
     params = DataStore.params(args[0])
     status = DataStore.status(args[0])
     Localisation.SetApplicationLanguage(params)
