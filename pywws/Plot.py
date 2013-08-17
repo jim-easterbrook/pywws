@@ -486,7 +486,7 @@ class BasePlotter(object):
         self.plot_count = len(plot_list)
         if self.plot_count < 1:
             # nothing to plot
-            self.logger.error('%s has no plot nodes' % input_file)
+            self.logger.info('%s has no plot nodes' % input_file)
             self.doc.unlink()
             return 1
         # get start and end datetimes
