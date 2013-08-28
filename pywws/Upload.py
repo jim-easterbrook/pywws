@@ -85,6 +85,74 @@ import sys
 from pywws import DataStore
 from pywws.Logger import ApplicationLogger
 
+class _ftp(object):
+    def __init__(self, logger, site, user, password, directory):
+        global ftplib
+        import ftplib
+        self.logger = logger
+        self.site = site
+        self.user = user
+        self.password = password
+        self.directory = directory
+
+    def connect(self):
+        self.ftp = ftplib.FTP(self.site, self.user, self.password)
+        self.logger.debug(self.ftp.getwelcome())
+        self.ftp.cwd(self.directory)
+
+    def put(self, src, dest):
+        text_file = os.path.splitext(src)[1] in ('.txt', '.xml', '.html')
+        if text_file and sys.version_info[0] < 3:
+            f = open(src, 'r')
+        else:
+            f = open(src, 'rb')
+        if text_file:
+            self.ftp.storlines('STOR %s' % (dest), f)
+        else:
+            self.ftp.storbinary('STOR %s' % (dest), f)
+        f.close()
+
+    def close(self):
+        self.ftp.close()
+
+class _sftp(object):
+    def __init__(self, logger, site, user, password, directory):
+        global paramiko
+        import paramiko
+        self.logger = logger
+        self.site = site
+        self.user = user
+        self.password = password
+        self.directory = directory
+
+    def connect(self):
+        self.transport = paramiko.Transport((self.site, 22))
+        self.transport.connect(username=self.user, password=self.password)
+        self.ftp = paramiko.SFTPClient.from_transport(self.transport)
+        self.ftp.chdir(self.directory)
+
+    def put(self, src, dest):
+        self.ftp.put(src, dest)
+
+    def close(self):
+        self.ftp.close()
+        self.transport.close()
+
+class _copy(object):
+    def __init__(self, logger, directory):
+        self.logger = logger
+        self.directory = directory
+
+    def connect(self):
+        if not os.path.isdir(self.directory):
+            os.makedirs(self.directory)
+
+    def put(self, src, dest):
+        shutil.copy2(src, os.path.join(self.directory, dest))
+
+    def close(self):
+        pass
+
 def Upload(params, files):
     logger = logging.getLogger('pywws.Upload')
     if eval(params.get('ftp', 'local site', 'False')):
@@ -92,66 +160,38 @@ def Upload(params, files):
         # copy to local directory
         directory = params.get(
             'ftp', 'directory', os.path.expanduser('~/public_html/weather/data/'))
-        if not os.path.isdir(directory):
-            os.makedirs(directory)
-        for file in files:
-            shutil.copy2(file, directory)
-        return True
-    logger.info("Uploading to web site")
-    # get remote site details
-    secure = eval(params.get('ftp', 'secure', 'False'))
-    site = params.get('ftp', 'site', 'ftp.username.your_isp.co.uk')
-    user = params.get('ftp', 'user', 'username')
-    password = params.get('ftp', 'password', 'secret')
-    directory = params.get('ftp', 'directory', 'public_html/weather/data/')
-    # open connection
-    if secure:
-        import paramiko
-        try:
-            transport = paramiko.Transport((site, 22))
-            transport.connect(username=user, password=password)
-            ftp = paramiko.SFTPClient.from_transport(transport)
-            ftp.chdir(directory)
-        except Exception, ex:
-            logger.error(str(ex))
-            return False
+        uploader = _copy(logger, directory)
     else:
-        import ftplib
-        try:
-            ftp = ftplib.FTP(site, user, password)
-            logger.debug(ftp.getwelcome())
-            ftp.cwd(directory)
-        except Exception, ex:
-            logger.error(str(ex))
-            return False
+        logger.info("Uploading to web site")
+        # get remote site details
+        site = params.get('ftp', 'site', 'ftp.username.your_isp.co.uk')
+        user = params.get('ftp', 'user', 'username')
+        password = params.get('ftp', 'password', 'secret')
+        directory = params.get('ftp', 'directory', 'public_html/weather/data/')
+        if eval(params.get('ftp', 'secure', 'False')):
+            uploader = _sftp(logger, site, user, password, directory)
+        else:
+            uploader = _ftp(logger, site, user, password, directory)
+    # open connection
+    try:
+        uploader.connect()
+    except Exception, ex:
+        logger.error(str(ex))
+        return False
     OK = True
     for file in files:
         target = os.path.basename(file)
-        text_file = os.path.splitext(file)[1] in ('.txt', '.xml', '.html')
         # have three tries before giving up
         for n in range(3):
             try:
-                if secure:
-                    ftp.put(file, target)
-                else:
-                    if text_file and sys.version_info[0] < 3:
-                        f = open(file, 'r')
-                    else:
-                        f = open(file, 'rb')
-                    if text_file:
-                        ftp.storlines('STOR %s' % (target), f)
-                    else:
-                        ftp.storbinary('STOR %s' % (target), f)
-                    f.close()
+                uploader.put(file, target)
                 break
             except Exception, ex:
                 logger.error(str(ex))
         else:
             OK = False
             break
-    ftp.close()
-    if secure:
-        transport.close()
+    uploader.close()
     return OK
 
 def main(argv=None):
