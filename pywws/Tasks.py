@@ -65,6 +65,8 @@ class RegularTasks(object):
         self.roseplotter = WindRose.RosePlotter(
             self.params, self.status, self.calib_data, self.hourly_data,
             self.daily_data, self.monthly_data, self.work_dir)
+        # create FTP uploader object
+        self.uploader = Upload.Upload(self.params)
         # directory of service uploaders
         self.services = dict()
         # create a YoWindow object
@@ -153,7 +155,7 @@ class RegularTasks(object):
             for file in local_files:
                 shutil.move(file, self.local_dir)
         if uploads:
-            if not Upload.Upload(self.params, uploads):
+            if not self.uploader.upload(uploads):
                 OK = False
             for file in uploads:
                 os.unlink(file)

@@ -153,46 +153,64 @@ class _copy(object):
     def close(self):
         pass
 
-def Upload(params, files):
-    logger = logging.getLogger('pywws.Upload')
-    if eval(params.get('ftp', 'local site', 'False')):
-        logger.info("Copying to local directory")
-        # copy to local directory
-        directory = params.get(
-            'ftp', 'directory', os.path.expanduser('~/public_html/weather/data/'))
-        uploader = _copy(logger, directory)
-    else:
-        logger.info("Uploading to web site")
-        # get remote site details
-        site = params.get('ftp', 'site', 'ftp.username.your_isp.co.uk')
-        user = params.get('ftp', 'user', 'username')
-        password = params.get('ftp', 'password', 'secret')
-        directory = params.get('ftp', 'directory', 'public_html/weather/data/')
-        if eval(params.get('ftp', 'secure', 'False')):
-            uploader = _sftp(logger, site, user, password, directory)
+class Upload(object):
+    def __init__(self, params):
+        self.logger = logging.getLogger('pywws.Upload')
+        self.params = params
+        if eval(self.params.get('ftp', 'local site', 'False')):
+            self.logger.info("Copying to local directory")
+            # copy to local directory
+            directory = self.params.get(
+                'ftp', 'directory',
+                os.path.expanduser('~/public_html/weather/data/'))
+            self.uploader = _copy(self.logger, directory)
         else:
-            uploader = _ftp(logger, site, user, password, directory)
-    # open connection
-    try:
-        uploader.connect()
-    except Exception, ex:
-        logger.error(str(ex))
-        return False
-    OK = True
-    for file in files:
+            self.logger.info("Uploading to web site")
+            # get remote site details
+            site = self.params.get('ftp', 'site', 'ftp.username.your_isp.co.uk')
+            user = self.params.get('ftp', 'user', 'username')
+            password = self.params.get('ftp', 'password', 'secret')
+            directory = self.params.get(
+                'ftp', 'directory', 'public_html/weather/data/')
+            if eval(self.params.get('ftp', 'secure', 'False')):
+                self.uploader = _sftp(
+                    self.logger, site, user, password, directory)
+            else:
+                self.uploader = _ftp(
+                    self.logger, site, user, password, directory)
+
+    def connect(self):
+        try:
+            self.uploader.connect()
+        except Exception, ex:
+            self.logger.error(str(ex))
+            return False
+        return True
+
+    def upload_file(self, file):
         target = os.path.basename(file)
         # have three tries before giving up
         for n in range(3):
             try:
-                uploader.put(file, target)
-                break
+                self.uploader.put(file, target)
+                return True
             except Exception, ex:
-                logger.error(str(ex))
-        else:
-            OK = False
-            break
-    uploader.close()
-    return OK
+                self.logger.error(str(ex))
+        return False
+
+    def disconnect(self):
+        self.uploader.close()
+
+    def upload(self, files):
+        if not self.connect():
+            return False
+        OK = True
+        for file in files:
+            if not self.upload_file(file):
+                OK = False
+                break
+        self.disconnect()
+        return OK
 
 def main(argv=None):
     if argv is None:
@@ -214,7 +232,7 @@ def main(argv=None):
         print >>sys.stderr, __usage__.strip()
         return 2
     logger = ApplicationLogger(1)
-    if Upload(DataStore.params(args[0]), args[1:]):
+    if Upload(DataStore.params(args[0])).upload(args[1:]):
         return 0
     return 3
 
