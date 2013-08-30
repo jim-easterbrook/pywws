@@ -67,6 +67,9 @@ class RegularTasks(object):
             self.daily_data, self.monthly_data, self.work_dir)
         # create FTP uploader object
         self.uploader = Upload.Upload(self.params)
+        self.uploads_directory = os.path.join(self.work_dir, 'uploads')
+        if not os.path.isdir(self.uploads_directory):
+            os.makedirs(self.uploads_directory)
         # directory of service uploaders
         self.services = dict()
         # create a YoWindow object
@@ -155,10 +158,9 @@ class RegularTasks(object):
             for file in local_files:
                 shutil.move(file, self.local_dir)
         if uploads:
-            if not self.uploader.upload(uploads):
-                OK = False
             for file in uploads:
-                os.unlink(file)
+                shutil.move(file, self.uploads_directory)
+        self._do_uploads()
         return OK
 
     def do_live(self, data):
@@ -214,6 +216,20 @@ class RegularTasks(object):
             self.daily_data.flush()
             self.monthly_data.flush()
         return OK
+
+    def _do_uploads(self):
+        uploads = []
+        for name in os.listdir(self.uploads_directory):
+            path = os.path.join(self.uploads_directory, name)
+            if os.path.isfile(path):
+                uploads.append(path)
+        if not uploads:
+            return
+        self.uploader.connect()
+        for path in uploads:
+            if self.uploader.upload_file(path):
+                os.unlink(path)
+        self.uploader.disconnect()
 
     def do_twitter(self, template, data=None):
         from pywws import ToTwitter
