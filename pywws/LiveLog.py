@@ -71,9 +71,6 @@ def LiveLog(data_dir):
     ws = WeatherStation.weather_station(
         ws_type=ws_type, params=params, status=status)
     fixed_block = CheckFixedBlock(ws, params, status, logger)
-    if not fixed_block:
-        logger.error("Invalid data from weather station")
-        return 3
     # open data file stores
     raw_data = DataStore.data_store(data_dir)
     calib_data = DataStore.calib_store(data_dir)
@@ -115,9 +112,6 @@ def LiveLog(data_dir):
             if now >= next_hour:
                 next_hour += hour
                 fixed_block = CheckFixedBlock(ws, params, status, logger)
-                if not fixed_block:
-                    logger.error("Invalid data from weather station")
-                    return 3
                 # save any unsaved data
                 raw_data.flush()
         else:

@@ -101,8 +101,6 @@ def Catchup(ws, logger, raw_data, last_date, last_ptr):
 
 def CheckFixedBlock(ws, params, status, logger):
     fixed_block = ws.get_fixed_block(unbuffered=True)
-    if not fixed_block:
-        return None
     # check clocks
     try:
         s_time = DataStore.safestrptime(
@@ -147,9 +145,6 @@ def LogData(params, status, raw_data, sync=None, clear=False):
     ws = WeatherStation.weather_station(
         ws_type=ws_type, params=params, status=status)
     fixed_block = CheckFixedBlock(ws, params, status, logger)
-    if not fixed_block:
-        logger.error("Invalid data from weather station")
-        return 3
     # check for valid weather station type
     if ws.ws_type not in ('1080', '3080'):
         print "Unknown weather station type. Please edit weather.ini"
