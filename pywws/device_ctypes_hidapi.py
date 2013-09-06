@@ -167,5 +167,8 @@ class USBDevice(object):
 
         """
         data = ''.join(map(chr, buf))
-        return hidapi.hid_write(
-            self.device, ctypes.c_char_p(data), len(data)) >= 0
+        size = len(data)
+        if hidapi.hid_write(self.device, ctypes.c_char_p(data), size) != size:
+            raise IOError(
+                'pywws.device_ctypes_hidapi.USBDevice.write_data failed')
+        return True

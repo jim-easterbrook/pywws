@@ -134,7 +134,8 @@ class USBDevice(object):
             count = min(size, 8)
             buf = self.hid.read(count)
             if len(buf) < count:
-                raise IOError('pywws.device_cython_hidapi.USBDevice.read_data failed')
+                raise IOError(
+                    'pywws.device_cython_hidapi.USBDevice.read_data failed')
             result += buf
             size -= count
         return result
@@ -151,4 +152,7 @@ class USBDevice(object):
         :rtype: bool
 
         """
-        return self.hid.write(buf)
+        if self.hid.write(buf) != len(buf):
+            raise IOError(
+                'pywws.device_cython_hidapi.USBDevice.write_data failed')
+        return True
