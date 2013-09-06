@@ -96,6 +96,7 @@ class _ftp(object):
         self.directory = directory
 
     def connect(self):
+        self.logger.info("Uploading to web site with FTP")
         self.ftp = ftplib.FTP(self.site, self.user, self.password)
         self.logger.debug(self.ftp.getwelcome())
         self.ftp.cwd(self.directory)
@@ -126,6 +127,7 @@ class _sftp(object):
         self.directory = directory
 
     def connect(self):
+        self.logger.info("Uploading to web site with SFTP")
         self.transport = paramiko.Transport((self.site, 22))
         self.transport.connect(username=self.user, password=self.password)
         self.ftp = paramiko.SFTPClient.from_transport(self.transport)
@@ -144,6 +146,7 @@ class _copy(object):
         self.directory = directory
 
     def connect(self):
+        self.logger.info("Copying to local directory")
         if not os.path.isdir(self.directory):
             os.makedirs(self.directory)
 
@@ -158,14 +161,12 @@ class Upload(object):
         self.logger = logging.getLogger('pywws.Upload')
         self.params = params
         if eval(self.params.get('ftp', 'local site', 'False')):
-            self.logger.info("Copying to local directory")
             # copy to local directory
             directory = self.params.get(
                 'ftp', 'directory',
                 os.path.expanduser('~/public_html/weather/data/'))
             self.uploader = _copy(self.logger, directory)
         else:
-            self.logger.info("Uploading to web site")
             # get remote site details
             site = self.params.get('ftp', 'site', 'ftp.username.your_isp.co.uk')
             user = self.params.get('ftp', 'user', 'username')
