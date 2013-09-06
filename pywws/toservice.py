@@ -289,30 +289,46 @@ class ToService(object):
         self.use_get = eval(service_params.get('config', 'use get'))
         self.expected_result = eval(service_params.get('config', 'result'))
 
-    def send_data(self, data):
-        """Upload a weather data record.
+    def encode_data(self, data):
+        """Encode a weather data record.
 
-        The :obj:`data` parameter contains the data to be uploaded.
-        It should be a 'calibrated' data record, as stored in
+        The :obj:`data` parameter contains the data to be encoded. It
+        should be a 'calibrated' data record, as stored in
         :class:`pywws.DataStore.calib_store`.
 
         :param data: the weather data record.
 
         :type data: dict
 
+        :return: urlencoded data.
+
+        :rtype: string
+        
+        """
+        # check we have enough data
+        if data['temp_out'] is None or data['hum_out'] is None:
+            return None
+        # convert data
+        coded_data = eval(self.templater.make_text(self.template_file, data))
+        coded_data.update(self.fixed_data)
+        self.logger.debug(coded_data)
+        return urllib.urlencode(coded_data)
+
+    def send_data(self, coded_data):
+        """Upload a weather data record.
+
+        The :obj:`coded_data` parameter contains the data to be uploaded.
+        It should be a urlencoded string.
+
+        :param coded_data: the data to upload.
+
+        :type data: string
+
         :return: success status
 
         :rtype: bool
         
         """
-        # check we have enough data
-        if data['temp_out'] is None or data['hum_out'] is None:
-            return True
-        # convert data
-        coded_data = eval(self.templater.make_text(self.template_file, data))
-        coded_data.update(self.fixed_data)
-        self.logger.debug(coded_data)
-        coded_data = urllib.urlencode(coded_data)
         # have three tries before giving up
         for n in range(3):
             try:
@@ -346,6 +362,55 @@ class ToService(object):
                     self.old_ex = e
         return False
 
+    def next_data(self, catchup, live_data=None, max_records=0):
+        """Get weather data records to upload.
+
+        This method returns either the most recent weather data
+        record, or all records since the last upload (up to 7 days),
+        according to the value of :obj:`catchup`.
+
+        :param catchup: upload all data since last upload.
+
+        :type catchup: bool
+
+        :keyword live_data: a current 'live' data record.
+
+        :type live_data: dict
+
+        :keyword max_records: limit the number of catchup records
+        yielded.
+
+        :type max_records: int
+
+        :return: yields weather data records.
+
+        :rtype: dict
+        
+        """
+        if catchup and self.catchup > 0:
+            start = datetime.utcnow() - timedelta(days=self.catchup)
+            last_update = self.params.get_datetime(
+                self.service_name, 'last update')
+            if last_update:
+                self.params.unset(self.service_name, 'last update')
+                self.status.set('last update', self.service_name,
+                                last_update.isoformat(' '))
+            last_update = self.status.get_datetime(
+                'last update', self.service_name)
+            if last_update:
+                start = max(start, last_update + timedelta(minutes=1))
+            count = 0
+            for data in self.data[start:]:
+                yield data
+                count += 1
+                if max_records and count >= max_records:
+                    break
+        elif live_data:
+            yield live_data
+        else:
+            # use most recent logged data
+            yield self.data[self.data.before(datetime.max)]
+
     def Upload(self, catchup, live_data=None):
         """Upload one or more weather data records.
 
@@ -365,40 +430,18 @@ class ToService(object):
         :rtype: bool
         
         """
-        if catchup and self.catchup > 0:
-            start = datetime.utcnow() - timedelta(days=self.catchup)
-            last_update = self.params.get_datetime(
-                self.service_name, 'last update')
-            if last_update:
-                self.params.unset(self.service_name, 'last update')
-                self.status.set('last update', self.service_name,
-                                last_update.isoformat(' '))
-            last_update = self.status.get_datetime(
-                'last update', self.service_name)
-            if last_update:
-                start = max(start, last_update + timedelta(minutes=1))
-            count = 0
-            for data in self.data[start:]:
-                if not self.send_data(data):
-                    return False
-                self.status.set('last update', self.service_name,
-                                data['idx'].isoformat(' '))
-                count += 1
-            if count:
-                self.logger.info('%d records sent', count)
-        elif live_data:
-            last_update = live_data['idx']
-            if not self.send_data(live_data):
+        count = 0
+        for data in self.next_data(catchup, live_data):
+            coded_data = self.encode_data(data)
+            if not coded_data:
+                continue
+            if not self.send_data(coded_data):
                 return False
-            self.status.set(
-                'last update', self.service_name, last_update.isoformat(' '))
-        else:
-            # upload most recent data
-            last_update = self.data.before(datetime.max)
-            if not self.send_data(self.data[last_update]):
-                return False
-            self.status.set(
-                'last update', self.service_name, last_update.isoformat(' '))
+            self.status.set('last update', self.service_name,
+                            data['idx'].isoformat(' '))
+            count += 1
+        if count > 1:
+            self.logger.info('%d records sent', count)
         return True
 
 def main(argv=None):
