@@ -78,44 +78,47 @@ def LiveLog(data_dir):
     daily_data = DataStore.daily_store(data_dir)
     monthly_data = DataStore.monthly_store(data_dir)
     # create a RegularTasks object
+    asynch = eval(params.get('config', 'asynchronous', 'False'))
     tasks = Tasks.RegularTasks(
-        params, status, calib_data, hourly_data, daily_data, monthly_data)
+        params, status, calib_data, hourly_data, daily_data, monthly_data,
+        asynch=asynch)
     # get time of last logged data
-    two_minutes = timedelta(minutes=2)
     last_stored = raw_data.before(datetime.max)
     if last_stored == None:
         last_stored = datetime.min
     if datetime.utcnow() < last_stored:
         raise ValueError('Computer time is earlier than last stored data')
-    last_stored += two_minutes
+    last_stored += timedelta(minutes=2)
     # get live data
-    hour = timedelta(hours=1)
     next_hour = datetime.utcnow().replace(
-                                    minute=0, second=0, microsecond=0) + hour
+                            minute=0, second=0, microsecond=0) + Process.HOUR
     next_ptr = None
-    for data, ptr, logged in ws.live_data(
+    try:
+        for data, ptr, logged in ws.live_data(
                                     logged_only=(not tasks.has_live_tasks())):
-        now = data['idx']
-        if logged:
-            if ptr == next_ptr:
-                # data is contiguous with last logged value
-                raw_data[now] = data
+            now = data['idx']
+            if logged:
+                if ptr == next_ptr:
+                    # data is contiguous with last logged value
+                    raw_data[now] = data
+                else:
+                    # catch up missing data
+                    Catchup(ws, logger, raw_data, now, ptr)
+                next_ptr = ws.inc_ptr(ptr)
+                # process new data
+                Process.Process(params, status, raw_data, calib_data,
+                                hourly_data, daily_data, monthly_data)
+                # do tasks
+                tasks.do_tasks()
+                if now >= next_hour:
+                    next_hour += Process.HOUR
+                    fixed_block = CheckFixedBlock(ws, params, status, logger)
+                    # save any unsaved data
+                    raw_data.flush()
             else:
-                # catch up missing data
-                Catchup(ws, logger, raw_data, now, ptr)
-            next_ptr = ws.inc_ptr(ptr)
-            # process new data
-            Process.Process(params, status, raw_data, calib_data,
-                            hourly_data, daily_data, monthly_data)
-            # do tasks
-            tasks.do_tasks()
-            if now >= next_hour:
-                next_hour += hour
-                fixed_block = CheckFixedBlock(ws, params, status, logger)
-                # save any unsaved data
-                raw_data.flush()
-        else:
-            tasks.do_live(data)
+                tasks.do_live(data)
+    finally:
+        tasks.stop_thread()
     return 0
 
 def main(argv=None):

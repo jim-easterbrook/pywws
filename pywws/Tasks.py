@@ -23,7 +23,9 @@
 from datetime import datetime, timedelta
 import logging
 import os
+import Queue
 import shutil
+import threading
 
 from pywws.calib import Calib
 from pywws import Plot
@@ -36,7 +38,8 @@ from pywws import YoWindow
 
 class RegularTasks(object):
     def __init__(self, params, status,
-                 calib_data, hourly_data, daily_data, monthly_data):
+                 calib_data, hourly_data, daily_data, monthly_data,
+                 asynch=False):
         self.logger = logging.getLogger('pywws.Tasks.RegularTasks')
         self.params = params
         self.status = status
@@ -44,6 +47,7 @@ class RegularTasks(object):
         self.hourly_data = hourly_data
         self.daily_data = daily_data
         self.monthly_data = monthly_data
+        self.asynch = asynch
         # get directories
         self.work_dir = self.params.get('paths', 'work', '/tmp/weather')
         self.template_dir = self.params.get(
@@ -89,6 +93,36 @@ class RegularTasks(object):
                     self.services[service] = ToService(
                         self.params, self.status, self.calib_data,
                         service_name=service)
+        # start asynchronous thread to do uploads
+        if self.asynch:
+            self.logger.info('Starting asynchronous thread')
+            self.uploads_lock = threading.Lock()
+            self.to_thread = Queue.Queue()
+            self.thread = threading.Thread(target=self._asynch_thread)
+            self.thread.start()
+
+    def stop_thread(self):
+        if not self.asynch:
+            return
+        self.to_thread.put('shutdown')
+        self.thread.join()
+
+    def _asynch_thread(self):
+        try:
+            while True:
+                try:
+                    command = self.to_thread.get(timeout=600)
+                except Queue.Empty:
+                    pass
+                else:
+                    if command == 'shutdown':
+                        break
+                self.logger.info('Doing asynchronous tasks')
+                self.uploads_lock.acquire()
+                self._do_uploads()
+                self.uploads_lock.release()
+        except Exception, ex:
+            self.logger.exception(ex)
 
     def has_live_tasks(self):
         yowindow_file = self.params.get('live', 'yowindow', '')
@@ -158,9 +192,17 @@ class RegularTasks(object):
             for file in local_files:
                 shutil.move(file, self.local_dir)
         if uploads:
+            if self.asynch:
+                if not self.thread.isAlive():
+                    raise RuntimeError('upload thread has terminated')
+                self.uploads_lock.acquire()
             for file in uploads:
                 shutil.move(file, self.uploads_directory)
-        self._do_uploads()
+            if self.asynch:
+                self.uploads_lock.release()
+                self.to_thread.put('upload')
+        if not self.asynch:
+            self._do_uploads()
         return OK
 
     def do_live(self, data):
