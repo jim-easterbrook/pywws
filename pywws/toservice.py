@@ -311,7 +311,6 @@ class ToService(object):
         # convert data
         coded_data = eval(self.templater.make_text(self.template_file, data))
         coded_data.update(self.fixed_data)
-        self.logger.debug(coded_data)
         return urllib.urlencode(coded_data)
 
     def send_data(self, coded_data):
@@ -329,6 +328,7 @@ class ToService(object):
         :rtype: bool
         
         """
+        self.logger.debug(coded_data)
         # have three tries before giving up
         for n in range(3):
             try:
@@ -362,54 +362,54 @@ class ToService(object):
                     self.old_ex = e
         return False
 
-    def next_data(self, catchup, live_data=None, max_records=0):
+    def next_data(self, start, live_data):
         """Get weather data records to upload.
 
         This method returns either the most recent weather data
-        record, or all records since the last upload (up to 7 days),
-        according to the value of :obj:`catchup`.
+        record, or all records since a given datetime, according to
+        the value of :obj:`start`.
 
-        :param catchup: upload all data since last upload.
+        :param start: datetime of first record to get, or None to get
+        most recent data only.
 
-        :type catchup: bool
+        :type start: datetime
 
-        :keyword live_data: a current 'live' data record.
+        :param live_data: a current 'live' data record, or None.
 
         :type live_data: dict
-
-        :keyword max_records: limit the number of catchup records
-        yielded.
-
-        :type max_records: int
 
         :return: yields weather data records.
 
         :rtype: dict
         
         """
-        if catchup and self.catchup > 0:
-            start = datetime.utcnow() - timedelta(days=self.catchup)
-            last_update = self.params.get_datetime(
-                self.service_name, 'last update')
-            if last_update:
-                self.params.unset(self.service_name, 'last update')
-                self.status.set('last update', self.service_name,
-                                last_update.isoformat(' '))
-            last_update = self.status.get_datetime(
-                'last update', self.service_name)
-            if last_update:
-                start = max(start, last_update + timedelta(minutes=1))
-            count = 0
+        if live_data:
+            yield live_data
+        elif start:
             for data in self.data[start:]:
                 yield data
-                count += 1
-                if max_records and count >= max_records:
-                    break
-        elif live_data:
-            yield live_data
         else:
             # use most recent logged data
             yield self.data[self.data.before(datetime.max)]
+
+    def catchup_start(self):
+        """Get datetime of first 'catchup' record to send.
+
+        :rtype: datetime
+
+        """
+        if self.catchup <= 0:
+            return None
+        start = datetime.utcnow() - timedelta(days=self.catchup)
+        last_update = self.params.get_datetime(self.service_name, 'last update')
+        if last_update:
+            self.params.unset(self.service_name, 'last update')
+            self.status.set('last update', self.service_name,
+                            last_update.isoformat(' '))
+        last_update = self.status.get_datetime('last update', self.service_name)
+        if last_update:
+            start = max(start, last_update + timedelta(seconds=30))
+        return start
 
     def Upload(self, catchup, live_data=None):
         """Upload one or more weather data records.
@@ -430,8 +430,12 @@ class ToService(object):
         :rtype: bool
         
         """
+        if catchup:
+            start = self.catchup_start()
+        else:
+            start = None
         count = 0
-        for data in self.next_data(catchup, live_data):
+        for data in self.next_data(start, live_data):
             coded_data = self.encode_data(data)
             if not coded_data:
                 continue
