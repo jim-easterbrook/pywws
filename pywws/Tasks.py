@@ -75,6 +75,8 @@ class RegularTasks(object):
         self.uploads_directory = os.path.join(self.work_dir, 'uploads')
         if not os.path.isdir(self.uploads_directory):
             os.makedirs(self.uploads_directory)
+        # delay creation of a Twitter object until we know it's needed
+        self.twitter = None
         # create a YoWindow object
         self.yowindow = YoWindow.YoWindow(self.calib_data)
         # get local time's offset from UTC, without DST
@@ -117,31 +119,46 @@ class RegularTasks(object):
     def _asynch_thread(self):
         service_queue = {}
         uploads_pending = True
+        tweet_queue = deque()
+        running = True
         try:
-            while True:
-                try:
-                    command = self.to_thread.get(timeout=600)
-                except Queue.Empty:
-                    pass
-                else:
+            while running:
+                timeout = 600
+                while True:
+                    try:
+                        command = self.to_thread.get(timeout=timeout)
+                    except Queue.Empty:
+                        break
                     if command[0] == 'shutdown':
+                        running = False
                         break
                     elif command[0] == 'upload':
                         uploads_pending = True
+                    elif command[0] == 'twitter':
+                        tweet_queue.append(command[1])
                     elif command[0] == 'service':
                         name, timestamp, coded_data = command[1:]
                         if name not in service_queue:
                             service_queue[name] = deque()
                         service_queue[name].append((timestamp, coded_data))
+                    timeout = 5
                 self.logger.debug('Doing asynchronous tasks')
+                while tweet_queue:
+                    tweet = tweet_queue[0]
+                    self.logger.info("Tweeting")
+                    if self.twitter.Upload(tweet):
+                        tweet_queue.popleft()
                 for name in service_queue:
+                    count = 0
                     while service_queue[name]:
                         timestamp, coded_data = service_queue[name][0]
-                        if self.services[name].send_data(coded_data):
-                            self.from_thread.put(('service', name, timestamp))
-                            service_queue[name].popleft()
-                        else:
+                        if not self.services[name].send_data(coded_data):
                             break
+                        self.from_thread.put(('service', name, timestamp))
+                        service_queue[name].popleft()
+                        count += 1
+                    if count > 0:
+                        self.services[name].logger.info('%d records sent', count)
                 if uploads_pending:
                     self.uploads_lock.acquire()
                     if self._do_uploads():
@@ -329,13 +346,18 @@ class RegularTasks(object):
             service.Upload(live_data is None, live_data)
 
     def do_twitter(self, template, data=None):
-        from pywws import ToTwitter
-        twitter = ToTwitter.ToTwitter(self.params)
+        if not self.twitter:
+            from pywws import ToTwitter
+            self.twitter = ToTwitter.ToTwitter(self.params)
         self.logger.info("Templating %s", template)
         input_file = os.path.join(self.template_dir, template)
-        tweet = self.templater.make_text(input_file, live_data=data)
-        self.logger.info("Tweeting")
-        return twitter.Upload(tweet[:140])
+        tweet = self.templater.make_text(input_file, live_data=data)[:140]
+        if self.asynch:
+            self.to_thread.put(('twitter', tweet))
+            return True
+        else:
+            self.logger.info("Tweeting")
+            return self.twitter.Upload(tweet)
 
     def do_plot(self, template):
         self.logger.info("Graphing %s", template)
