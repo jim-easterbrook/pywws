@@ -152,11 +152,16 @@ class RegularTasks(object):
                     count = 0
                     while service_queue[name]:
                         timestamp, coded_data = service_queue[name][0]
-                        if not self.services[name].send_data(coded_data):
+                        if (len(service_queue[name]) > 1 and
+                                            self.services[name].catchup <= 0):
+                            # don't send 'catchup' records
+                            pass
+                        elif self.services[name].send_data(coded_data):
+                            count += 1
+                        else:
                             break
                         self.from_thread.put(('service', name, timestamp))
                         service_queue[name].popleft()
-                        count += 1
                     if count > 0:
                         self.services[name].logger.info('%d records sent', count)
                 if uploads_pending:
