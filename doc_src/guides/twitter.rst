@@ -22,14 +22,8 @@ How to configure pywws to post messages to Twitter
 Install dependencies
 --------------------
 
-* Python 2.5+ - http://python.org/ (Note: Python 3 is not yet supported.)
-* python-twitter 0.8.6+ - https://github.com/bear/python-twitter
-* simplejson - https://github.com/simplejson/simplejson
-* python-oauth2 - https://github.com/simplegeo/python-oauth2
-* httplib2 - http://code.google.com/p/httplib2/
-
-These should all be available from the standard repositories of any reasonably up to date Linux distribution.
-They can also be installed from the `Python Package Index <https://pypi.python.org/pypi>`_.
+Posting to Twitter requires some extra software.
+See :doc:`../essentials/dependencies` - :ref:`dependencies-twitter`.
 
 Create a Twitter account
 ------------------------
@@ -40,7 +34,7 @@ This could be useful to someone who lives in your area, but doesn't want to know
 Authorise pywws to post to your Twitter account
 -----------------------------------------------
 
-If you run pywws on a low power device such as a router, you may find it easier to run this authorisation step on another computer.
+If you run pywws on a low power device such as a router, you may find it easier to run this authorisation step on another computer, as long as it has ``python-oauth2`` installed.
 Use an empty 'data' directory -- a ``weather.ini`` file will be created whose contents can be copied into your real ``weather.ini`` file using any text editor.
 
 Make sure no other pywws software is running, then run :py:mod:`~pywws.TwitterAuth`::
@@ -102,5 +96,10 @@ For example::
 Note the use of the ``'T'`` flag -- this tells pywws to tweet the template result instead of uploading it to your ftp site.
 
 You could change the ``[logged]``, ``[12 hourly]`` or ``[daily]`` sections instead, but I think ``[hourly]`` is most appropriate for Twitter updates.
+
+.. versionchanged:: 13.06_r1015
+   added the ``'T'`` flag.
+   Previously Twitter templates were listed separately in ``twitter`` entries in the ``[hourly]`` and other sections.
+   The older syntax still works, but is deprecated.
 
 Comments or questions? Please subscribe to the pywws mailing list http://groups.google.com/group/pywws and let us know.

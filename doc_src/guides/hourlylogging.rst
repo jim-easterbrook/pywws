@@ -106,9 +106,12 @@ Add the names of your template files and weather services to the appropriate ent
    plot = ['28days.png.xml']
    text = ['allmonths.txt']
 
-You can test that all these are working by removing all ``last update`` lines from weather.ini then run :py:mod:`~pywws.Hourly` again::
+You can test that all these are working by removing the ``[last update]`` section from status.ini, then running :py:mod:`~pywws.Hourly` again::
 
    python -m pywws.Hourly -v ~/weather/data
+
+.. versionchanged:: 13.05_r1009
+   The last update information was previously stored in weather.ini, with ``last update`` entries in several sections.
 
 Using a utility script
 ----------------------
