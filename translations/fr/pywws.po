@@ -7,8 +7,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: pywws\n"
-"Report-Msgid-Bugs-To: jim@jim-easterbrook.me.uk\n"
-"POT-Creation-Date: 2012-12-21 15:28+0000\n"
+"Report-Msgid-Bugs-To: \"jim@jim-easterbrook.me.uk\"\n"
+"POT-Creation-Date: 2013-09-04 18:48-0400\n"
 "PO-Revision-Date: 2011-06-26 12:20+0000\n"
 "Last-Translator: Jacques Desroches <jacques.desroches@meteoduquebec.com>\n"
 "Language-Team: French\n"
@@ -18,222 +18,218 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: code/pywws/Plot.py:244
-msgid "Time (%Z)"
-msgstr "Heure (%Z)"
-
-#: code/pywws/Plot.py:246
-msgid "Day"
-msgstr "Jour"
-
-#: code/pywws/Plot.py:248
-msgid "Date"
-msgstr "Date"
-
-#: code/pywws/WeatherStation.py:114 code/pywws/WindRose.py:134
-#: code/pywws/conversions.py:52
+#: pywws/WindRose.py:353 pywws/conversions.py:96
 msgid "N"
 msgstr "N"
 
-#: code/pywws/WeatherStation.py:114 code/pywws/conversions.py:52
-msgid "NNE"
-msgstr "NNE"
-
-#: code/pywws/WeatherStation.py:114 code/pywws/conversions.py:52
-msgid "NE"
-msgstr "NE"
-
-#: code/pywws/WeatherStation.py:114 code/pywws/conversions.py:52
-msgid "ENE"
-msgstr "ENE"
-
-#: code/pywws/WeatherStation.py:115 code/pywws/WindRose.py:134
-#: code/pywws/conversions.py:53
-msgid "E"
-msgstr "E"
-
-#: code/pywws/WeatherStation.py:115 code/pywws/conversions.py:53
-msgid "ESE"
-msgstr "ESE"
-
-#: code/pywws/WeatherStation.py:115 code/pywws/conversions.py:53
-msgid "SE"
-msgstr "SE"
-
-#: code/pywws/WeatherStation.py:115 code/pywws/conversions.py:53
-msgid "SSE"
-msgstr "SSE"
-
-#: code/pywws/WeatherStation.py:116 code/pywws/WindRose.py:134
-#: code/pywws/conversions.py:54
+#: pywws/WindRose.py:353 pywws/conversions.py:98
 msgid "S"
 msgstr "S"
 
-#: code/pywws/WeatherStation.py:116 code/pywws/conversions.py:54
-msgid "SSW"
-msgstr "SSO"
+#: pywws/WindRose.py:353 pywws/conversions.py:97
+msgid "E"
+msgstr "E"
 
-#: code/pywws/WeatherStation.py:116 code/pywws/conversions.py:54
-msgid "SW"
-msgstr "SO"
-
-#: code/pywws/WeatherStation.py:116 code/pywws/conversions.py:54
-msgid "WSW"
-msgstr "OSO"
-
-#: code/pywws/WeatherStation.py:117 code/pywws/WindRose.py:134
-#: code/pywws/conversions.py:55
+#: pywws/WindRose.py:353 pywws/conversions.py:99
 msgid "W"
 msgstr "O"
 
-#: code/pywws/WeatherStation.py:117 code/pywws/conversions.py:55
-msgid "WNW"
-msgstr "ONO"
-
-#: code/pywws/WeatherStation.py:117 code/pywws/conversions.py:55
-msgid "NW"
-msgstr "NO"
-
-#: code/pywws/WeatherStation.py:117 code/pywws/conversions.py:55
-msgid "NNW"
-msgstr "NNO"
-
-#: code/pywws/WeatherStation.py:127
+#: pywws/conversions.py:51
 msgid "rising very rapidly"
 msgstr "en hausse très rapide"
 
-#: code/pywws/WeatherStation.py:129
+#: pywws/conversions.py:53
 msgid "rising quickly"
 msgstr "en hausse rapide"
 
-#: code/pywws/WeatherStation.py:131
+#: pywws/conversions.py:55
 msgid "rising"
 msgstr "en hausse"
 
-#: code/pywws/WeatherStation.py:133
+#: pywws/conversions.py:57
 msgid "rising slowly"
 msgstr "en hausse lente"
 
-#: code/pywws/WeatherStation.py:135
+#: pywws/conversions.py:59
 msgid "falling very rapidly"
 msgstr "en baisse très rapide"
 
-#: code/pywws/WeatherStation.py:137
+#: pywws/conversions.py:61
 msgid "falling quickly"
 msgstr "en baisse rapide"
 
-#: code/pywws/WeatherStation.py:139
+#: pywws/conversions.py:63
 msgid "falling"
 msgstr "en baisse"
 
-#: code/pywws/WeatherStation.py:141
+#: pywws/conversions.py:65
 msgid "falling slowly"
 msgstr "en baisse lente"
 
-#: code/pywws/WeatherStation.py:142
+#: pywws/conversions.py:66
 msgid "steady"
 msgstr "stable"
 
-#: code/pywws/ZambrettiCore.py:6
+#: pywws/conversions.py:96
+msgid "NNE"
+msgstr "NNE"
+
+#: pywws/conversions.py:96
+msgid "NE"
+msgstr "NE"
+
+#: pywws/conversions.py:96
+msgid "ENE"
+msgstr "ENE"
+
+#: pywws/conversions.py:97
+msgid "ESE"
+msgstr "ESE"
+
+#: pywws/conversions.py:97
+msgid "SE"
+msgstr "SE"
+
+#: pywws/conversions.py:97
+msgid "SSE"
+msgstr "SSE"
+
+#: pywws/conversions.py:98
+msgid "SSW"
+msgstr "SSO"
+
+#: pywws/conversions.py:98
+msgid "SW"
+msgstr "SO"
+
+#: pywws/conversions.py:98
+msgid "WSW"
+msgstr "OSO"
+
+#: pywws/conversions.py:99
+msgid "WNW"
+msgstr "ONO"
+
+#: pywws/conversions.py:99
+msgid "NW"
+msgstr "NO"
+
+#: pywws/conversions.py:99
+msgid "NNW"
+msgstr "NNO"
+
+#: pywws/ZambrettiCore.py:27
 msgid "Settled fine"
 msgstr "Beau temps établi"
 
-#: code/pywws/ZambrettiCore.py:7
+#: pywws/ZambrettiCore.py:28
 msgid "Fine weather"
 msgstr "Beau temps"
 
-#: code/pywws/ZambrettiCore.py:8
+#: pywws/ZambrettiCore.py:29
 msgid "Becoming fine"
 msgstr "en amélioration"
 
-#: code/pywws/ZambrettiCore.py:9
+#: pywws/ZambrettiCore.py:30
 msgid "Fine, becoming less settled"
 msgstr "Beau temps, tendance à se dégrader"
 
-#: code/pywws/ZambrettiCore.py:10
+#: pywws/ZambrettiCore.py:31
 msgid "Fine, possible showers"
 msgstr "Beau, averses possibles"
 
-#: code/pywws/ZambrettiCore.py:11
+#: pywws/ZambrettiCore.py:32
 msgid "Fairly fine, improving"
 msgstr "Plutôt beau, en amélioration"
 
-#: code/pywws/ZambrettiCore.py:12
+#: pywws/ZambrettiCore.py:33
 msgid "Fairly fine, possible showers early"
 msgstr "Plutôt beau, averses possibles en matinée"
 
-#: code/pywws/ZambrettiCore.py:13
+#: pywws/ZambrettiCore.py:34
 msgid "Fairly fine, showery later"
 msgstr "Plutôt beau, averse en soirée"
 
-#: code/pywws/ZambrettiCore.py:14
+#: pywws/ZambrettiCore.py:35
 msgid "Showery early, improving"
 msgstr "Averse en matinée, en amélioration"
 
-#: code/pywws/ZambrettiCore.py:15
+#: pywws/ZambrettiCore.py:36
 msgid "Changeable, mending"
 msgstr "Variable, en amélioration"
 
-#: code/pywws/ZambrettiCore.py:16
+#: pywws/ZambrettiCore.py:37
 msgid "Fairly fine, showers likely"
 msgstr "Plutôt beau, averse possible"
 
-#: code/pywws/ZambrettiCore.py:17
+#: pywws/ZambrettiCore.py:38
 msgid "Rather unsettled clearing later"
 msgstr "plutôt variable, en amélioration."
 
-#: code/pywws/ZambrettiCore.py:18
+#: pywws/ZambrettiCore.py:39
 msgid "Unsettled, probably improving"
 msgstr "Perturbé, amélioration probable"
 
-#: code/pywws/ZambrettiCore.py:19
+#: pywws/ZambrettiCore.py:40
 msgid "Showery, bright intervals"
 msgstr "Averses éparses, belles éclaircies"
 
-#: code/pywws/ZambrettiCore.py:20
+#: pywws/ZambrettiCore.py:41
 msgid "Showery, becoming less settled"
 msgstr "Averses, temps se découvrant"
 
-#: code/pywws/ZambrettiCore.py:21
+#: pywws/ZambrettiCore.py:42
 msgid "Changeable, some rain"
 msgstr "Variable, quelques précipitations"
 
-#: code/pywws/ZambrettiCore.py:22
+#: pywws/ZambrettiCore.py:43
 msgid "Unsettled, short fine intervals"
 msgstr "Perturbé, de rares éclairces"
 
-#: code/pywws/ZambrettiCore.py:23
+#: pywws/ZambrettiCore.py:44
 msgid "Unsettled, rain later"
 msgstr "Variable, quelques précipitations tardives"
 
-#: code/pywws/ZambrettiCore.py:24
+#: pywws/ZambrettiCore.py:45
 msgid "Unsettled, some rain"
 msgstr "Variable, quelques précipitations"
 
-#: code/pywws/ZambrettiCore.py:25
+#: pywws/ZambrettiCore.py:46
 msgid "Mostly very unsettled"
 msgstr "Très perturbé"
 
-#: code/pywws/ZambrettiCore.py:26
+#: pywws/ZambrettiCore.py:47
 msgid "Occasional rain, worsening"
 msgstr "Précipitations occasionnelles, se dégradant"
 
-#: code/pywws/ZambrettiCore.py:27
+#: pywws/ZambrettiCore.py:48
 msgid "Rain at times, very unsettled"
 msgstr "Quelques précipitations, très perturbé"
 
-#: code/pywws/ZambrettiCore.py:28
+#: pywws/ZambrettiCore.py:49
 msgid "Rain at frequent intervals"
 msgstr "Precipitations à intervalles fréquents"
 
-#: code/pywws/ZambrettiCore.py:29
+#: pywws/ZambrettiCore.py:50
 msgid "Rain, very unsettled"
 msgstr "Pluie, très perturbé"
 
-#: code/pywws/ZambrettiCore.py:30
+#: pywws/ZambrettiCore.py:51
 msgid "Stormy, may improve"
 msgstr "Tempête, pourrait s'améliorer"
 
-#: code/pywws/ZambrettiCore.py:31
+#: pywws/ZambrettiCore.py:52
 msgid "Stormy, much rain"
 msgstr "Tempête, fortes pluies"
+
+#: pywws/Plot.py:671
+msgid "Time (%Z)"
+msgstr "Heure (%Z)"
+
+#: pywws/Plot.py:673
+msgid "Day"
+msgstr "Jour"
+
+#: pywws/Plot.py:675
+msgid "Date"
+msgstr "Date"

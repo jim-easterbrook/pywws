@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: pywws 12.12\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-07-14 15:40\n"
-"PO-Revision-Date: 2013-07-14 16:56-0500\n"
+"PO-Revision-Date: 2013-09-07 11:08-0500\n"
 "Last-Translator: Jacques DesRoches <jacques.desroches@meteoduquebec.com>\n"
 "Language-Team: French\n"
 "Language: fr\n"
@@ -80,9 +80,9 @@ msgid ""
 msgstr ""
 "pywws est une collection de scripts Python pour lire, stocker et traiter les "
 "données des stations météorologiques sans fil USB courantes tels que Elecsa "
-"AstroTouch 6975, Watson W-8681, WH-1080PC, WH1080, WH1081, WH3080 etc Je "
-"suppose que tout modèle de station fourni avec le logiciel EasyWeather pour "
-"Windows est compatible, mais ne peut pas le garantir."
+"AstroTouch 6975, Watson W-8681, WH-1080PC, WH1080, WH1081, WH3080 etc. Je "
+"suppose que tout modèle de station équipée du logiciel EasyWeather pour "
+"Windows est compatible, sans pouvoir le garantir."
 
 # fd044a4c520c42789b392fa7d0083110
 #: ../../doc_src/index.rst:42
@@ -140,14 +140,13 @@ msgid ""
 "is under development - some things may not work properly)"
 msgstr ""
 "`Python <http://python.org/>`_ version 2.5 ou ultérieure (note: Le support "
-"de Python v3 est en cours de développement - certaines choses peuvent ne pas "
+"de Python v3 est en cours de développement - certains modules peuvent ne pas "
 "fonctionner correctement)"
 
 # 093e967fb4c44f68ab1d592f35e167b4
 #: ../../doc_src/index.rst:53
-#, fuzzy
 msgid "USB library option 1 (preferred, except on MacOS):"
-msgstr "Librarie USB - option 3 (préférable pour les Mac):"
+msgstr "Librarie USB - option 1 (préférable pour les Mac):"
 
 # 24b47d7aa87a4e2082f9858d2505dd22
 #: ../../doc_src/index.rst:55
@@ -161,9 +160,8 @@ msgstr "`libusb <http://www.libusb.org/>`_ version 0.1 ou version 1.0"
 
 # 093e967fb4c44f68ab1d592f35e167b4
 #: ../../doc_src/index.rst:57
-#, fuzzy
 msgid "USB library option 2 (if PyUSB 1.0 is not available):"
-msgstr "Librarie USB - option 3 (préférable pour les Mac):"
+msgstr "Librarie USB - option 2 (si PyUSB 1.0 n'est pas disponible):"
 
 # af6a1410a65e421a8e9585aeccb1b268
 #: ../../doc_src/index.rst:59
@@ -172,9 +170,8 @@ msgstr ""
 
 # 6a8d21d23e3741f8adbd0548bad98093
 #: ../../doc_src/index.rst:60
-#, fuzzy
 msgid "`libusb <http://www.libusb.org/>`_ version 0.1"
-msgstr "`libusb <http://www.libusb.org/>`_ version 0.1 ou version 1.0"
+msgstr "`libusb <http://www.libusb.org/>`_ version 0.1"
 
 # 093e967fb4c44f68ab1d592f35e167b4
 #: ../../doc_src/index.rst:61
@@ -193,9 +190,8 @@ msgstr ""
 
 # cfd0828f50f541258d9d8ddb6b8e09ae
 #: ../../doc_src/index.rst:65
-#, fuzzy
 msgid "USB library option 4:"
-msgstr "Librairie USB - option 2"
+msgstr "Librairie USB - option 4:"
 
 # 7bb3ebc015354a78a2d9c355af75c0a8
 #: ../../doc_src/index.rst:68
@@ -242,6 +238,8 @@ msgstr "Pour les mises à jour Twitter"
 msgid ""
 "`python-twitter <https://github.com/bear/python-twitter>`_ v0.8.6 or higher"
 msgstr ""
+"`python-twitter <https://github.com/bear/python-twitter>`_ v0.8.6 ou plus "
+"récent"
 
 # b2694cc9c38e4fe285e7a68190dc4897
 #: ../../doc_src/index.rst:80
@@ -311,24 +309,24 @@ msgstr ""
 
 # 7edb21e786b443aaa73cacff31c730de
 #: ../../doc_src/index.rst:101
-#, fuzzy
 msgid ""
 "The PyPI files contain a snapshot release of the software - a new one is "
 "issued every few months. If you'd like to keep up to date with latest "
 "developments of pywws, you should use ``git`` to clone the pywws repository::"
 msgstr ""
-"Si vous souhaitez être au fait des derniers développements de pywws, vous "
-"pouvez utiliser ``git`` pour cloner le répertoire pywws::"
+"Les fichiers PyPI contiennent un instantané de la version du logiciel - une "
+"nouvelle version est publiée tous les quelques mois.  Si vous souhaitez être "
+"au fait des derniers développements de pywws, vous pouvez utiliser ``git`` "
+"pour cloner le répertoire pywws::"
 
 # 76cac2dfb5a4487c824d52946f1a3532
 #: ../../doc_src/index.rst:106
-#, fuzzy
 msgid ""
 "After doing so you can compile the documentation and language localisation "
 "files (which will require the ``sphinx`` and ``gettext`` dependencies)::"
 msgstr ""
-"Par la suite, vous devrez employer ``make`` pour compiler la documentation "
-"et les fichiers de langue (qui exigeront les logiciels ``gettext`` et "
+"Par la suite, vous pouvez compiler la documentation et les fichiers de "
+"localisation de langue (ce qui nécessite les logiciels ``gettext`` et "
 "``sphinx``)::"
 
 # a178169c5a3748e79b7bc9b4dfa8b8a3
@@ -352,12 +350,12 @@ msgid ""
 "the downloaded files.) If you used ``pip`` you just need to repeat the "
 "command. ``git`` users just need to do a ``git pull`` command."
 msgstr ""
-"La méthode employée pour faire la mise-à-jour de pywws dépend de la façon "
+"La méthode employée pour faire la mise à jour de pywws dépend de la façon "
 "dont vous l'avez à l'origine obtenu. Si vous avez téléchargé un fichier zip "
 "ou tar.gz, vous devez procédé de la même manière avec la nouvelle version, "
 "puis supprimez le téléchargement obsolète quand vous avez terminé "
 "l'installation de la nouvelle version.  (Notez que l'évolution est beaucoup "
-"plus facile si vous ne maintenez pas vos fichiers de calibration, modules "
+"plus facile si vous n'entreposez pas vos fichiers de calibration, modules "
 "utilisateur et données météo dans le même répertoire que les fichiers "
 "téléchargés.) Si vous aviez utilisé  ``pip`` vous n'avez qu'à répéter la "
 "commande. Les utilisateurs de ``git`` n'ont qu'à faire la commande ``git "
@@ -371,7 +369,7 @@ msgid ""
 "processed data from earlier versions. The :py:mod:`pywws.Reprocess` module "
 "regenerates all the summary data. It should be run after any major upgrade."
 msgstr ""
-"Quelques récentes versions de pywws ont changé ce qui est stocké dans les "
+"Certaines récentes versions de pywws ont changé ce qui est stocké dans les "
 "fichiers de données horaires, quotidiens ou mensuels. Ces nouvelles versions "
 "sont incompatibles avec les données traitées par les versions antérieures. : "
 "le module :py:mod:`pywws.Reprocess` régénère toutes les données "
@@ -384,20 +382,18 @@ msgstr ""
 
 # c2731eb456ae42cd976bb447c5562216
 #: ../../doc_src/index.rst:125
-#, fuzzy
 msgid ""
 "Documentation is included with pywws downloads, and is also available "
 "`online <http://pythonhosted.org/pywws>`_. A good starting place is :doc:"
 "`guides/getstarted` which describes in more detail how to install pywws."
 msgstr ""
 "La documentation est inclue avec le téléchargement de pywws, et est "
-"également disponible `en ligne <http://jim-easterbrook.github.com/pywws/>`_. "
-"Un bon point de départ est le `Guide de démarrage <guides/getstarted.html>`_ "
-"qui décrit plus en détail comment installer pywws."
+"également disponible `en ligne <http://pythonhosted.org/pywws>`_. Un bon "
+"point de départ est le `Guide de démarrage <guides/getstarted.html>`_ qui "
+"décrit plus en détail comment installer pywws."
 
 # 29eb805323c5461cbe144e67b421e6cc
 #: ../../doc_src/index.rst:127
-#, fuzzy
 msgid ""
 "If you have questions not answered in the documentation, please join the "
 "`pywws Google mailing list / discussion group <http://groups.google.com/"
@@ -405,10 +401,12 @@ msgid ""
 "not appear immediately -- new posters have to be approved by a moderator, to "
 "prevent spam messages."
 msgstr ""
-"Si vous avez des questions dont vous ne trouvez pas la réponse dans la "
+"Si vous avez des questions dont vous ne trouvez pas réponse dans la "
 "documentation, s'il vous plaît joindre la `liste / groupe de discussion "
 "pywws Google <http://groups.google.com/group/pywws>`_ et y poser votre "
-"question."
+"question. Notez que votre premier message n'apparaît pas immédiatement -- "
+"les nouveaux membres doivent être approuvés par un modérateur, pour empêcher "
+"les pourriels. "
 
 # 6659c20cdf1244fca2a951636dd69e84
 #: ../../doc_src/index.rst:130
