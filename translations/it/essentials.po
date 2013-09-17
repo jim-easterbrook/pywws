@@ -1,0 +1,28 @@
+# Italian translations for pywws package.
+# Copyright (C) 2008-13, Jim Easterbrook
+# This file is distributed under the same license as the pywws package.
+# Edoardo <edoardo69@hotmail.it>, 2013.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: pywws 13.06\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-09-01 10:18\n"
+"PO-Revision-Date: 2013-09-01 10:31+0200\n"
+"Last-Translator: Edoardo <edoardo69@hotmail.it>\n"
+"Language-Team: Italian <tp@lists.linux.it>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: it\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+# 6ac335e0299a4a01a36a0de5140ee756
+#: ../../doc_src/essentials/CHANGELOG.rst:20
+msgid "Change Log"
+msgstr "Storico aggiornamenti"
+
+# bcb24c2e94bc47f29f2587e01bb1b9ec
+#: ../../doc_src/essentials/LICENCE.rst:20
+msgid "GNU General Public License"
+msgstr "Licenza Pubblica Generale GNU"
