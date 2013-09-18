@@ -48,45 +48,10 @@ I have written this software to meet my needs, but have tried to make it adaptab
 Requirements
 ************
 
-The software you'll need to run pywws depends on what you plan to do with it. In particular, there is a choice of USB library, to suit what's available on different operating systems.
+The software you'll need to run pywws depends on what you plan to do with it.
+You'll need Python 2.5 or later -- Python 3 is partially supported, some functionality depends on libraries that have not yet been ported to Python 3.
 
-   * `Python <http://python.org/>`_ version 2.5 or higher (note: Python 3 support is under development - some things may not work properly)
-   * USB library option 1 (preferred, except on MacOS):
-
-     *  `PyUSB <http://sourceforge.net/apps/trac/pyusb/>`_ version 1.0
-     *  `libusb <http://www.libusb.org/>`_ version 0.1 or version 1.0
-   * USB library option 2 (if PyUSB 1.0 is not available):
-
-     *  `PyUSB <http://sourceforge.net/apps/trac/pyusb/>`_ version 0.4
-     *  `libusb <http://www.libusb.org/>`_ version 0.1
-   * USB library option 3 (best for MacOS):
-
-     *  `hidapi <https://github.com/signal11/hidapi>`_
-     *  `ctypes <http://docs.python.org/2/library/ctypes.html>`_
-   * USB library option 4:
-
-     *  `hidapi <https://github.com/signal11/hidapi>`_
-     *  `cython-hidapi <https://github.com/gbishop/cython-hidapi>`_
-     *  `cython <http://cython.org/>`_
-   * For graph drawing:
-
-     *  `gnuplot <http://www.gnuplot.info/>`_ v4.2 or higher
-   * For secure website uploading (sftp)
-
-     *  `paramiko <http://www.lag.net/paramiko/>`_
-     *  `pycrypto <http://www.dlitz.net/software/pycrypto/>`_
-   * For Twitter updates:
-
-     *  `python-twitter <https://github.com/bear/python-twitter>`_ v0.8.6 or higher
-     *  `simplejson <https://github.com/simplejson/simplejson>`_
-     *  `python-oauth2 <https://github.com/simplegeo/python-oauth2>`_
-     *  `httplib2 <http://code.google.com/p/httplib2/>`_
-   * To create new language translations:
-
-     *  `gettext <http://www.gnu.org/s/gettext/>`_
-   * To 'compile' the documentation:
-
-     *  `sphinx <http://sphinx-doc.org/>`_
+For more detail, see :doc:`essentials/dependencies`.
 
 ***********************
 Getting a copy of pywws

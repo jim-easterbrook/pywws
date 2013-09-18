@@ -66,7 +66,7 @@ This restricts Mac users to option 3 or 4.
 * USB library option 3 (best for MacOS)
 
   *  `hidapi <https://github.com/signal11/hidapi>`_
-  *  `ctypes <http://docs.python.org/2/library/ctypes.html>`_
+  *  `ctypes <http://docs.python.org/2/library/ctypes.html>`_ (included with many Python installations)
 
 * USB library option 4
 

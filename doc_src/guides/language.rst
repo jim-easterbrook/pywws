@@ -170,5 +170,6 @@ Send Jim the translation
 
 I'm sure you would like others to benefit from the work you've done in translating pywws.
 Please, please, please send a copy of your language file(s) (for example ``pywws.po``) to jim@jim-easterbrook.me.uk.
+When you send a new translation you need to include details of which pywws version it is based on -- the easiest way to do this is to include the value of ``commit`` from the file ``pywws/version.py`` in your email.
 
 Comments or questions? Please subscribe to the pywws mailing list http://groups.google.com/group/pywws and let us know.
