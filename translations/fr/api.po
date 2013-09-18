@@ -8,9 +8,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pywws 12.12\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-09-04 18:51\n"
-"PO-Revision-Date: 2013-09-07 10:29-0500\n"
-"Last-Translator: Jacques DesRoches <jacques.desroches@meteoduquebec.com>\n"
+"POT-Creation-Date: 2013-09-17 19:19\n"
+"PO-Revision-Date: 2013-09-17 19:56-0500\n"
+"Last-Translator: Jacques DesRoches <jacques.desroches@weatherbyyou.com>\n"
 "Language-Team: français <>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
@@ -233,6 +233,11 @@ msgstr ""
 msgid ":obj:`pywws.ToTwitter <pywws.ToTwitter>`\\"
 msgstr ""
 
+# 6747f2850e724e3f9fb6136c84d66178
+#: ../../<autosummary>:1
+msgid "Post a message to Twitter"
+msgstr "Poste un message sur Twitter"
+
 # 7afd235771314aa4b56b63310f1c4d36
 #: ../../<autosummary>:1
 msgid ":obj:`pywws.toservice <pywws.toservice>`\\"
@@ -278,6 +283,14 @@ msgstr ""
 #: ../../<autosummary>:1
 msgid ":obj:`pywws.device_cython_hidapi <pywws.device_cython_hidapi>`\\"
 msgstr ""
+
+# f6403c0d840d45b49975654d2f738832
+# 37d2a0c4a7884352914c6dadbd6333e1
+#: ../../<autosummary>:1 ../../pywws/device_cython_hidapi.py:docstring of
+#: pywws.device_cython_hidapi:1
+msgid "Low level USB interface to weather station, using cython-hidapi."
+msgstr ""
+"Interface USB de bas niveau de la station météo, utilisant cython-hidapi."
 
 # 6b11ecf7084b48ef995cc698d5ac11a4
 #: ../../<autosummary>:1
@@ -381,6 +394,7 @@ msgstr ""
 #: ../../pywws/Upload.py:docstring pywws.Upload:16
 #: ../../pywws/WeatherStation.py:docstring pywws.WeatherStation:8
 #: ../../pywws/WindRose.py:docstring pywws.WindRose:16
+#: ../../pywws/device_cython_hidapi.py:docstring pywws.device_cython_hidapi:4
 #: ../../pywws/device_pyusb.py:docstring pywws.device_pyusb:4
 #: ../../pywws/device_pyusb1.py:docstring pywws.device_pyusb1:4
 #: ../../pywws/toservice.py:docstring pywws.toservice:15
@@ -503,6 +517,7 @@ msgstr "API détaillé"
 #: ../../doc_src/api/pywws.SetWeatherStation.rst:9
 #: ../../doc_src/api/pywws.Template.rst:9
 #: ../../doc_src/api/pywws.TestWeatherStation.rst:9
+#: ../../doc_src/api/pywws.ToTwitter.rst:9
 #: ../../doc_src/api/pywws.USBQualityTest.rst:9
 #: ../../doc_src/api/pywws.Upload.rst:9
 #: ../../doc_src/api/pywws.WeatherStation.rst:9
@@ -543,11 +558,13 @@ msgstr ""
 #: ../../doc_src/api/pywws.Tasks.rst:13
 #: ../../doc_src/api/pywws.Template.rst:38
 #: ../../doc_src/api/pywws.TimeZone.rst:13
+#: ../../doc_src/api/pywws.ToTwitter.rst:20
 #: ../../doc_src/api/pywws.Upload.rst:20
 #: ../../doc_src/api/pywws.WeatherStation.rst:19
 #: ../../doc_src/api/pywws.WindRose.rst:35
 #: ../../doc_src/api/pywws.YoWindow.rst:21
 #: ../../doc_src/api/pywws.calib.rst:13
+#: ../../doc_src/api/pywws.device_cython_hidapi.rst:13
 #: ../../doc_src/api/pywws.device_pyusb.rst:13
 #: ../../doc_src/api/pywws.device_pyusb1.rst:13
 #: ../../doc_src/api/pywws.toservice.rst:20
@@ -616,7 +633,7 @@ msgstr ""
 # 2d926edc248d4539bb76e932a61983c4
 #: ../../<autosummary>:1
 msgid "date(year, month, day) --> date object"
-msgstr ""
+msgstr "date(année, mois, jour) --> date object"
 
 # 62cbeeaa35004003b56bbd25046dc474
 #: ../../<autosummary>:1
@@ -644,6 +661,8 @@ msgid ""
 "datetime(year, month, day[, hour[, minute[, second[, microsecond[,"
 "tzinfo]]]]])"
 msgstr ""
+"datetime(année, mois, jour[, heure[, minute[, seconde[, microseconde[,"
+"tzinfo]]]]])"
 
 # e67d0ef3628c4733810e9018376ae53f
 #: ../../<autosummary>:1
@@ -2167,7 +2186,7 @@ msgstr ""
 # c4dc4f43ad7f4647a4c44afd5900974e
 #: ../../<autosummary>:1
 msgid ":obj:`cadhumidex <pywws.Plot.cadhumidex>`\\ (temp, humidity)"
-msgstr ""
+msgstr ":obj:`cadhumidex <pywws.Plot.cadhumidex>`\\ (temp, humidité)"
 
 # 553cb72f62904c20a9298e262f83f64f
 # bc122eafea1a49009251f19c9a9d5734
@@ -2259,6 +2278,8 @@ msgstr "Converti la température de Celsius, à Fahrenheit"
 #: ../../<autosummary>:1
 msgid ":obj:`usaheatindex <pywws.Plot.usaheatindex>`\\ (temp, humidity, dew)"
 msgstr ""
+":obj:`usaheatindex <pywws.Plot.usaheatindex>`\\ (temp, humidité, point de "
+"rosée)"
 
 # f6dff99bd8c642b3b97bbcb5be1dd85a
 # 9837fc854aff48219422f55b6ded0dce
@@ -2288,7 +2309,7 @@ msgstr ""
 # db79b78ac53a44cb97737993fad3e484
 #: ../../<autosummary>:1
 msgid ":obj:`wind_chill <pywws.Plot.wind_chill>`\\ (temp, wind)"
-msgstr ""
+msgstr ":obj:`wind_chill <pywws.Plot.wind_chill>`\\ (temp, vent)"
 
 # 44f7de4911f84f7ba4717dcec1cb4442
 #: ../../<autosummary>:1
@@ -3287,12 +3308,12 @@ msgstr ""
 # 395e2c8f5f80466e98abef637109fb4c
 #: ../../<autosummary>:1
 msgid ":obj:`apparent_temp <pywws.Template.apparent_temp>`\\ (temp, rh, wind)"
-msgstr ""
+msgstr ":obj:`apparent_temp <pywws.Template.apparent_temp>`\\ (temp, hr, vent)"
 
 # 7427bff3fc2a4ed8877558ec85aa9908
 #: ../../<autosummary>:1
 msgid ":obj:`cadhumidex <pywws.Template.cadhumidex>`\\ (temp, humidity)"
-msgstr ""
+msgstr ":obj:`cadhumidex <pywws.Template.cadhumidex>`\\ (temp, humidité)"
 
 # b150faf87307477195cc935fedb73fcc
 #: ../../<autosummary>:1
@@ -3335,6 +3356,8 @@ msgstr ""
 msgid ""
 ":obj:`usaheatindex <pywws.Template.usaheatindex>`\\ (temp, humidity, dew)"
 msgstr ""
+":obj:`usaheatindex <pywws.Template.usaheatindex>`\\ (temp, humidité, point "
+"de rosée)"
 
 # 031b00bb846f42ddaf2e006d9f3c295d
 #: ../../<autosummary>:1
@@ -3344,7 +3367,7 @@ msgstr ""
 # d33ef9f301bb48d3951e50a911e54a22
 #: ../../<autosummary>:1
 msgid ":obj:`wind_chill <pywws.Template.wind_chill>`\\ (temp, wind)"
-msgstr ""
+msgstr ":obj:`wind_chill <pywws.Template.wind_chill>`\\ (temp, vent)"
 
 # c8d656c4f63e4662acf395e9a787f6b3
 #: ../../<autosummary>:1
@@ -3510,6 +3533,46 @@ msgstr ""
 msgid "Abstract base class for time zone info objects."
 msgstr ""
 "Classe de base abstraite pour les objets d'informations de fuseau horaire."
+
+# 1461ae41a1ea4e0ba189e43518255b3b
+#: ../../doc_src/api/pywws.ToTwitter.rst:2
+msgid "pywws.ToTwitter"
+msgstr ""
+
+# 7a92601bddab4b6997fae63a8736b90b
+#: ../../pywws/ToTwitter.py:docstring of pywws.ToTwitter:1
+msgid "Post a message to Twitter ::"
+msgstr "Poster un message sur Twitter ::"
+
+# c57d493ad6ab4f4db66ff91b79aac6bf
+#: ../../pywws/ToTwitter.py:docstring of pywws.ToTwitter:12
+msgid ""
+"This module posts a brief message to `Twitter <https://twitter.com/>`_. "
+"Before posting to Twitter you need to set up an account and then authorise "
+"pywws by running the :py:mod:`TwitterAuth` program. See :doc:`../guides/"
+"twitter` for detailed instructions."
+msgstr ""
+"Ce module poste un bref message sur `Twitter <https://twitter.com/>` _. "
+"Avant de poster sur Twitter, vous devez créer un compte et autoriser pywws "
+"en exécutant le programme :py: mod: `TwitterAuth`. Voir :doc: `../Guides/"
+"twitter` obtenir les instructions détaillées."
+
+# 565c4d426bd441988f03fcb2bdf4cbad
+#: ../../<autosummary>:1
+msgid ""
+":obj:`ApplicationLogger <pywws.ToTwitter.ApplicationLogger>`\\ (verbose[, "
+"logfile])"
+msgstr ""
+
+# c98f01bde99249a2b6453be8e465cd63
+#: ../../<autosummary>:1
+msgid ":obj:`main <pywws.ToTwitter.main>`\\ ([argv])"
+msgstr ""
+
+# 130f609bf6e64944a95f3d8db71fd992
+#: ../../<autosummary>:1
+msgid ":obj:`ToTwitter <pywws.ToTwitter.ToTwitter>`\\ (params)"
+msgstr ""
 
 # 0894d4766cca46ad8f6f549a9086c8d9
 #: ../../doc_src/api/pywws.USBQualityTest.rst:2
@@ -3822,10 +3885,11 @@ msgstr ""
 
 # 74bc531433b747328b5ca9fde6f23d1d
 # 7b73a8782fc9480e96a4eb38dc68dbec
-#: ../../<autosummary>:1 ../../pywws/device_pyusb1.py:docstring of
-#: pywws.device_pyusb1.USBDevice:1
-msgid "Low level USB device access via PyUSB 1.0 library."
-msgstr "Accès de bas niveau au périphérique USB via la bibliothèque PyUSB 1.0."
+#: ../../<autosummary>:1 ../../pywws/device_cython_hidapi.py:docstring of
+#: pywws.device_cython_hidapi.USBDevice:1
+msgid "Low level USB device access via cython-hidapi library."
+msgstr ""
+"Accès de bas niveau au périphérique USB via la bibliothèque cython-hidapi."
 
 # 391c4cd4bc26422099f43c6ef8ae222c
 #: ../../<autosummary>:1
@@ -4241,12 +4305,12 @@ msgstr ""
 # dd358be211fd4792bdcc30af4524e9a1
 #: ../../<autosummary>:1
 msgid ":obj:`apparent_temp <pywws.WindRose.apparent_temp>`\\ (temp, rh, wind)"
-msgstr ""
+msgstr ":obj:`apparent_temp <pywws.WindRose.apparent_temp>`\\ (temp, hr, vent)"
 
 # f0a4e7940f064d5d93daa978e792e1f7
 #: ../../<autosummary>:1
 msgid ":obj:`cadhumidex <pywws.WindRose.cadhumidex>`\\ (temp, humidity)"
-msgstr ""
+msgstr ":obj:`cadhumidex <pywws.WindRose.cadhumidex>`\\ (temp, humidité)"
 
 # bdaffd6cf47249deabfcef1c3d0825af
 #: ../../<autosummary>:1
@@ -4289,6 +4353,8 @@ msgstr ""
 msgid ""
 ":obj:`usaheatindex <pywws.WindRose.usaheatindex>`\\ (temp, humidity, dew)"
 msgstr ""
+":obj:`usaheatindex <pywws.WindRose.usaheatindex>`\\ (temp, humidité, point "
+"de rosée)"
 
 # e8415427d1124bb9a51c1423649ac205
 #: ../../<autosummary>:1
@@ -4298,7 +4364,7 @@ msgstr ""
 # 6ac391b3eff64abc861060248a0d96bd
 #: ../../<autosummary>:1
 msgid ":obj:`wind_chill <pywws.WindRose.wind_chill>`\\ (temp, wind)"
-msgstr ""
+msgstr ":obj:`wind_chill <pywws.WindRose.wind_chill>`\\ (temp, vent)"
 
 # beee683d53d44afe93b7d9438c50f735
 #: ../../<autosummary>:1
@@ -4370,7 +4436,7 @@ msgstr ""
 # a6779db59d524fb5a72244dc74ceccf2
 #: ../../<autosummary>:1
 msgid ":obj:`apparent_temp <pywws.YoWindow.apparent_temp>`\\ (temp, rh, wind)"
-msgstr ""
+msgstr ":obj:`apparent_temp <pywws.YoWindow.apparent_temp>`\\ (temp, hr, vent)"
 
 # 646c2a3bb3344032ab42b8997a743ca0
 #: ../../<autosummary>:1
@@ -4417,6 +4483,8 @@ msgid ""
 ":obj:`ZambrettiCode <pywws.ZambrettiCore.ZambrettiCode>`\\ (pressure, month, "
 "wind, trend)"
 msgstr ""
+":obj:`ZambrettiCode <pywws.ZambrettiCore.ZambrettiCode>`\\ (pression, mois, "
+"vent, tendance)"
 
 # fe7d317202844db08a51fc5b372b7a20
 #: ../../<autosummary>:1
@@ -4426,7 +4494,7 @@ msgstr "Implémentation simple de l'algorithme de prévision de Zambretti."
 # e4f9adf994a3491b9d283cd2131ca048
 #: ../../<autosummary>:1
 msgid ":obj:`ZambrettiText <pywws.ZambrettiCore.ZambrettiText>`\\ (letter)"
-msgstr ""
+msgstr ":obj:`ZambrettiText <pywws.ZambrettiCore.ZambrettiText>`\\ (lettre)"
 
 # 3673ea4e6bce460f9e96f720458907e7
 #: ../../<autosummary>:1
@@ -4649,11 +4717,12 @@ msgstr ""
 msgid ""
 ":obj:`apparent_temp <pywws.conversions.apparent_temp>`\\ (temp, rh, wind)"
 msgstr ""
+":obj:`apparent_temp <pywws.conversions.apparent_temp>`\\ (temp, hr, vent)"
 
 # 9fb9fcda6def4648b87c9279be3f53ac
 #: ../../<autosummary>:1
 msgid ":obj:`cadhumidex <pywws.conversions.cadhumidex>`\\ (temp, humidity)"
-msgstr ""
+msgstr ":obj:`cadhumidex <pywws.conversions.cadhumidex>`\\ (temp, humidité)"
 
 # 736249fb57e1436aa1e1e98cb90b3afb
 #: ../../<autosummary>:1
@@ -4691,6 +4760,8 @@ msgstr ""
 msgid ""
 ":obj:`usaheatindex <pywws.conversions.usaheatindex>`\\ (temp, humidity, dew)"
 msgstr ""
+":obj:`usaheatindex <pywws.conversions.usaheatindex>`\\ (temp, humidité, "
+"point de rosée)"
 
 # 5dcd4ce0302a4f88883c97fefbf26418
 #: ../../<autosummary>:1
@@ -4700,7 +4771,7 @@ msgstr ""
 # c3c6778b7a0d4661871e547791806c14
 #: ../../<autosummary>:1
 msgid ":obj:`wind_chill <pywws.conversions.wind_chill>`\\ (temp, wind)"
-msgstr ""
+msgstr ":obj:`wind_chill <pywws.conversions.wind_chill>`\\ (temp, vent)"
 
 # 02c0bf5877184fba87f769bb83bc876d
 #: ../../<autosummary>:1
@@ -4770,6 +4841,200 @@ msgstr ""
 "Calcule la température apparente (sensation réelle), en utilisant la formule "
 "provenant de http://www.bom.gov.au/info/thermal_stress/"
 
+# c87606800f8a419889f5b822775ba0ba
+#: ../../doc_src/api/pywws.device_cython_hidapi.rst:2
+msgid "pywws.device_cython_hidapi"
+msgstr "pywws.device_cython_hidapi"
+
+# 059d53ce04684f0bb5f66ebe9eb9aa22
+#: ../../pywws/device_cython_hidapi.py:docstring of
+#: pywws.device_cython_hidapi:6
+msgid ""
+"This module handles low level communication with the weather station via the "
+"`cython-hidapi <https://github.com/gbishop/cython-hidapi>`_ library. An "
+"alternative module, :doc:`pywws.device_pyusb`, uses the `PyUSB <http://"
+"sourceforge.net/apps/trac/pyusb/>`_ library. The choice of which module to "
+"use depends on which libraries are available for you computer."
+msgstr ""
+"Ce module gère la communication de bas niveau avec la station météo via la "
+"bibliothèque `cython-hidapi <https://github.com/gbishop/cython-hidapi>`_ . "
+"Un module alternatif,  :doc:`pywws.device_pyusb`,  utilise la bibliothèque "
+"`PyUSB <http://sourceforge.net/apps/trac/pyusb/>`_. Le choix du module à "
+"utiliser dépend de la disponibilité des bibliothèques pour votre ordinateur."
+
+# 4474415ac11841eb9f9996575edae799
+#: ../../pywws/device_cython_hidapi.py:docstring of
+#: pywws.device_cython_hidapi:13 ../../pywws/device_pyusb.py:docstring
+#: pywws.device_pyusb:13
+msgid ""
+"Users of recent versions of Mac OS have no choice. The operating system "
+"makes it very difficult to access HID devices (such as the weather station) "
+"directly, so the ``hidapi`` library has to be used. ``cython-hidapi`` is a "
+"Python interface to that library."
+msgstr ""
+"Les utilisateurs de versions récentes de Mac OS n'ont pas le choix. Le "
+"système d'exploitation rend très difficile l'accès direct aux périphériques "
+"HID (comme la station météo), de sorte que la bibliothèque ``hidapi`` doit "
+"être utilisée. ``Cython-hidapi`` est une interface Python pour cette "
+"bibliothèque."
+
+# 5f247af92045463b888941219f513f09
+#: ../../pywws/device_cython_hidapi.py:docstring of
+#: pywws.device_cython_hidapi:18 ../../pywws/device_pyusb.py:docstring
+#: pywws.device_pyusb:18
+msgid ""
+"Users of OpenWRT and similar embedded Linux platforms will probably not be "
+"able to install ``cython-hidapi``, so are constrained to use ``libusb`` and "
+"its ``PyUSB`` Python interface."
+msgstr ""
+"Les utilisateurs de OpenWRT et plateformes embarquées Linux similaires ne "
+"seront probablement pas en mesure d'installer ``cython-hidapi`` et sont donc "
+"contraints d'utiliser ``libusb`` et son interface Python ``PyUSB``."
+
+# 789756ce59d647b2a077321b29a5b5f0
+#: ../../pywws/device_cython_hidapi.py:docstring of
+#: pywws.device_cython_hidapi:23 ../../pywws/device_pyusb.py:docstring
+#: pywws.device_pyusb:23 ../../pywws/device_pyusb1.py:docstring
+#: pywws.device_pyusb1:19
+msgid "Installation"
+msgstr "Installation"
+
+# 7e8d38fb808441d399f27a68408231cf
+#: ../../pywws/device_cython_hidapi.py:docstring of
+#: pywws.device_cython_hidapi:25 ../../pywws/device_pyusb.py:docstring
+#: pywws.device_pyusb:25 ../../pywws/device_pyusb1.py:docstring
+#: pywws.device_pyusb1:21
+msgid ""
+"Some of this software may already be installed on your machine, so do check "
+"before downloading sources and compiling them yourself."
+msgstr ""
+"Certains de ces logiciels peuvent être déjà installés sur votre machine, il "
+"faut vérifier avant de télécharger les sources et les compiler vous-même."
+
+# 789756ce59d647b2a077321b29a5b5f0
+#: ../../pywws/device_cython_hidapi.py:docstring of
+#: pywws.device_cython_hidapi:28
+msgid "Install hidapi."
+msgstr "Installation de hidapi."
+
+# 4a9439065c7746fc8c1aaaf282eaee9f
+#: ../../pywws/device_cython_hidapi.py:docstring of
+#: pywws.device_cython_hidapi:30
+msgid ""
+"Create a local copy of the git repository, change to the new directory and "
+"then follow the instructions in ``README.txt``::"
+msgstr ""
+"Créez une copie locale du dépôt git, placez vous dans ce nouveau répertoire, "
+"puis suivez les instructions du fichier ``README.txt``::"
+
+# 789756ce59d647b2a077321b29a5b5f0
+#: ../../pywws/device_cython_hidapi.py:docstring of
+#: pywws.device_cython_hidapi:37
+msgid "Install cython."
+msgstr "Installation cython."
+
+# 38f86c87d4d44ff0a6b8bed7bc17f30c
+#: ../../pywws/device_cython_hidapi.py:docstring of
+#: pywws.device_cython_hidapi:39
+msgid ""
+"This should be available as a package for your operating system. For "
+"example::"
+msgstr ""
+"Ceux-ci devraient être disponibles sous forme de paquets pour votre système "
+"d'exploitation. Par exemple::"
+
+# a55982e3e0eb442aa09b4d8033ddc9d5
+#: ../../pywws/device_cython_hidapi.py:docstring of
+#: pywws.device_cython_hidapi:44
+msgid "Install cython-hidapi."
+msgstr ""
+
+# 9b1ac859e93f4fd9be5a44bdb781da33
+#: ../../pywws/device_cython_hidapi.py:docstring of
+#: pywws.device_cython_hidapi:46
+msgid "This also needs to be downloaded and built::"
+msgstr "Ceci doit aussi être téléchargé et compilé::"
+
+# cf63706f240e493aa7af92e1d6cc9667
+#: ../../pywws/device_cython_hidapi.py:docstring of
+#: pywws.device_cython_hidapi:53
+msgid ""
+"Replace ``setup.py`` with ``setup-mac.py`` or ``setup-windows.py`` if you "
+"are using Mac OS or Windows."
+msgstr ""
+"Remplacez ``setup.py`` par ``setup-mac.py`` ou ``setup-windows.py`` si vous "
+"utilisez un Mac OS ou Windows."
+
+# 9b3a99b658b145df8a061fb9f880af82
+#: ../../pywws/device_cython_hidapi.py:docstring of
+#: pywws.device_cython_hidapi:57 ../../pywws/device_pyusb.py:docstring
+#: pywws.device_pyusb:40 ../../pywws/device_pyusb1.py:docstring
+#: pywws.device_pyusb1:36
+msgid "Testing"
+msgstr "Vérification"
+
+# 2f865559ca8f4a5ea5edf94ca8ae74d5
+#: ../../pywws/device_cython_hidapi.py:docstring of
+#: pywws.device_cython_hidapi:59 ../../pywws/device_pyusb.py:docstring
+#: pywws.device_pyusb:42 ../../pywws/device_pyusb1.py:docstring
+#: pywws.device_pyusb1:38
+msgid ""
+"Run ``TestWeatherStation.py`` with increased verbosity so it reports which "
+"USB device access module is being used::"
+msgstr ""
+"Exécute ``TestWeatherStation.py`` avec un niveau de message accru  de sorte "
+"qu'il indique quel module d'accès au dispositif USB est utilisé::"
+
+# 653d8889c8294f59af30e57723a065ab
+# 0a0d5f5f91554b3db82bd18dfff9f371
+#: ../../pywws/device_cython_hidapi.py:docstring of
+#: pywws.device_cython_hidapi:74 ../../pywws/device_pyusb.py:docstring
+#: pywws.device_pyusb:57 ../../pywws/device_pyusb1.py:docstring
+#: pywws.device_pyusb1:53 ../../pywws/toservice.py:docstring
+#: pywws.toservice:184
+msgid "API"
+msgstr "API"
+
+# 466e8b9a0dee46d9bb7aa65cb949047a
+#: ../../<autosummary>:1
+msgid ""
+":obj:`USBDevice <pywws.device_cython_hidapi.USBDevice>`\\ (idVendor, "
+"idProduct)"
+msgstr ""
+
+# b027e646e8e248cd98d329468e0efa46
+#: ../../pywws/device_cython_hidapi.py:docstring of
+#: pywws.device_cython_hidapi.USBDevice.read_data:1
+#: ../../pywws/device_pyusb.py:docstring
+#: pywws.device_pyusb.USBDevice.read_data:1
+#: ../../pywws/device_pyusb1.py:docstring
+#: pywws.device_pyusb1.USBDevice.read_data:1
+msgid "Receive data from the device."
+msgstr "Reçoit des données de l'appareil."
+
+# 9dd31bc7500a462ba542b53ccc37fecf
+#: ../../pywws/device_cython_hidapi.py:docstring of
+#: pywws.device_cython_hidapi.USBDevice.read_data:3
+#: ../../pywws/device_pyusb.py:docstring
+#: pywws.device_pyusb.USBDevice.read_data:3
+#: ../../pywws/device_pyusb1.py:docstring
+#: pywws.device_pyusb1.USBDevice.read_data:3
+msgid ""
+"If the read fails for any reason, an :obj:`IOError` exception is raised."
+msgstr ""
+"Si la lecture échoue pour une raison quelconque, une exception :obj:"
+"`IOError` est levée."
+
+# 380cb3c501cf4bc28cf0cbd2c4268ec6
+#: ../../pywws/device_cython_hidapi.py:docstring of
+#: pywws.device_cython_hidapi.USBDevice.write_data:1
+#: ../../pywws/device_pyusb.py:docstring
+#: pywws.device_pyusb.USBDevice.write_data:1
+#: ../../pywws/device_pyusb1.py:docstring
+#: pywws.device_pyusb1.USBDevice.write_data:1
+msgid "Send data to the device."
+msgstr "Envoyer donnée au service"
+
 # ff1079c5942149e4b6a794b2cf7505ad
 #: ../../doc_src/api/pywws.device_pyusb.rst:2
 msgid "pywws.device_pyusb"
@@ -4790,47 +5055,6 @@ msgstr ""
 "`cython-hidapi <https://github.com/gbishop/cython-hidapi>`_. Le choix du "
 "module à utiliser dépend de la disponibilité des bibliothèques selon votre "
 "ordinateur."
-
-# 4474415ac11841eb9f9996575edae799
-#: ../../pywws/device_pyusb.py:docstring of pywws.device_pyusb:13
-msgid ""
-"Users of recent versions of Mac OS have no choice. The operating system "
-"makes it very difficult to access HID devices (such as the weather station) "
-"directly, so the ``hidapi`` library has to be used. ``cython-hidapi`` is a "
-"Python interface to that library."
-msgstr ""
-"Les utilisateurs de versions récentes de Mac OS n'ont pas le choix. Le "
-"système d'exploitation rend très difficile l'accès direct aux périphériques "
-"HID (comme la station météo), de sorte que la bibliothèque ``hidapi`` doit "
-"être utilisée. ``Cython-hidapi`` est une interface Python pour cette "
-"bibliothèque."
-
-# 5f247af92045463b888941219f513f09
-#: ../../pywws/device_pyusb.py:docstring of pywws.device_pyusb:18
-msgid ""
-"Users of OpenWRT and similar embedded Linux platforms will probably not be "
-"able to install ``cython-hidapi``, so are constrained to use ``libusb`` and "
-"its ``PyUSB`` Python interface."
-msgstr ""
-"Les utilisateurs de OpenWRT et plateformes embarquées Linux similaires ne "
-"seront probablement pas en mesure d'installer ``cython-hidapi`` et sont donc "
-"contraints d'utiliser ``libusb`` et son interface Python ``PyUSB``."
-
-# 789756ce59d647b2a077321b29a5b5f0
-#: ../../pywws/device_pyusb.py:docstring of pywws.device_pyusb:23
-#: ../../pywws/device_pyusb1.py:docstring pywws.device_pyusb1:19
-msgid "Installation"
-msgstr "Installation"
-
-# 7e8d38fb808441d399f27a68408231cf
-#: ../../pywws/device_pyusb.py:docstring of pywws.device_pyusb:25
-#: ../../pywws/device_pyusb1.py:docstring pywws.device_pyusb1:21
-msgid ""
-"Some of this software may already be installed on your machine, so do check "
-"before downloading sources and compiling them yourself."
-msgstr ""
-"Certains de ces logiciels peuvent être déjà installés sur votre machine, il "
-"faut vérifier avant de télécharger les sources et les compiler vous-même."
 
 # fae8f472c6bf47668a8168a46a7d1a76
 #: ../../pywws/device_pyusb.py:docstring of pywws.device_pyusb:28
@@ -4855,30 +5079,6 @@ msgstr ""
 msgid "On some embedded linux systems::"
 msgstr "Sur certains systèmes embarqués sous Linux::"
 
-# 9b3a99b658b145df8a061fb9f880af82
-#: ../../pywws/device_pyusb.py:docstring of pywws.device_pyusb:40
-#: ../../pywws/device_pyusb1.py:docstring pywws.device_pyusb1:36
-msgid "Testing"
-msgstr "Vérification"
-
-# 2f865559ca8f4a5ea5edf94ca8ae74d5
-#: ../../pywws/device_pyusb.py:docstring of pywws.device_pyusb:42
-#: ../../pywws/device_pyusb1.py:docstring pywws.device_pyusb1:38
-msgid ""
-"Run ``TestWeatherStation.py`` with increased verbosity so it reports which "
-"USB device access module is being used::"
-msgstr ""
-"Exécute ``TestWeatherStation.py`` avec un niveau de message accru  de sorte "
-"qu'il indique quel module d'accès au dispositif USB est utilisé::"
-
-# 653d8889c8294f59af30e57723a065ab
-# 0a0d5f5f91554b3db82bd18dfff9f371
-#: ../../pywws/device_pyusb.py:docstring of pywws.device_pyusb:57
-#: ../../pywws/device_pyusb1.py:docstring pywws.device_pyusb1:53
-#: ../../pywws/toservice.py:docstring pywws.toservice:184
-msgid "API"
-msgstr "API"
-
 # 15a434437d9b4a3980bb39726fe2c043
 #: ../../<autosummary>:1
 msgid ":obj:`USBDevice <pywws.device_pyusb.USBDevice>`\\ (idVendor, idProduct)"
@@ -4890,33 +5090,6 @@ msgstr ""
 #: pywws.device_pyusb.USBDevice:1
 msgid "Low level USB device access via PyUSB library."
 msgstr "Accès de bas niveau au périphérique USB via la bibliothèque PyUSB."
-
-# b027e646e8e248cd98d329468e0efa46
-#: ../../pywws/device_pyusb.py:docstring of
-#: pywws.device_pyusb.USBDevice.read_data:1
-#: ../../pywws/device_pyusb1.py:docstring
-#: pywws.device_pyusb1.USBDevice.read_data:1
-msgid "Receive data from the device."
-msgstr "Reçoit des données de l'appareil."
-
-# 9dd31bc7500a462ba542b53ccc37fecf
-#: ../../pywws/device_pyusb.py:docstring of
-#: pywws.device_pyusb.USBDevice.read_data:3
-#: ../../pywws/device_pyusb1.py:docstring
-#: pywws.device_pyusb1.USBDevice.read_data:3
-msgid ""
-"If the read fails for any reason, an :obj:`IOError` exception is raised."
-msgstr ""
-"Si la lecture échoue pour une raison quelconque, une exception :obj:"
-"`IOError` est levée."
-
-# 380cb3c501cf4bc28cf0cbd2c4268ec6
-#: ../../pywws/device_pyusb.py:docstring of
-#: pywws.device_pyusb.USBDevice.write_data:1
-#: ../../pywws/device_pyusb1.py:docstring
-#: pywws.device_pyusb1.USBDevice.write_data:1
-msgid "Send data to the device."
-msgstr "Envoyer donnée au service"
 
 # 08cc973f18314f6fac7b10010ec68917
 #: ../../pywws/device_pyusb.py:docstring of
@@ -4968,6 +5141,13 @@ msgstr ""
 msgid ""
 ":obj:`USBDevice <pywws.device_pyusb1.USBDevice>`\\ (idVendor, idProduct)"
 msgstr ""
+
+# 74bc531433b747328b5ca9fde6f23d1d
+# 7b73a8782fc9480e96a4eb38dc68dbec
+#: ../../<autosummary>:1 ../../pywws/device_pyusb1.py:docstring of
+#: pywws.device_pyusb1.USBDevice:1
+msgid "Low level USB device access via PyUSB 1.0 library."
+msgstr "Accès de bas niveau au périphérique USB via la bibliothèque PyUSB 1.0."
 
 # c4fc4eb8c02e4c7d8b980fa7b9008aae
 #: ../../doc_src/api/pywws.toservice.rst:2
@@ -5406,6 +5586,24 @@ msgstr ""
 "Weather Underground."
 
 # 67115a407cb7413eb0928030b5d8977e
+#: ../../pywws/toservice.py:docstring of
+#: pywws.toservice.ToService.encode_data:1
+msgid "Encode a weather data record."
+msgstr "Encode un enregistrement de données météo. "
+
+# 94191a8411bd4706a03ecd2845a5e7c8
+# dc3e3a3efd8f4222acb42325c085e173
+#: ../../pywws/toservice.py:docstring of
+#: pywws.toservice.ToService.encode_data:3
+msgid ""
+"The :obj:`data` parameter contains the data to be encoded. It should be a "
+"'calibrated' data record, as stored in :class:`pywws.DataStore.calib_store`."
+msgstr ""
+"Le paramètre :obj:`data` contient les données à être encodées. Il devrait y "
+"avoir un enregistrement 'calibré' de données, tels que stockés dans :class:"
+"`pywws.DataStore.calib_store`."
+
+# 67115a407cb7413eb0928030b5d8977e
 #: ../../pywws/toservice.py:docstring of pywws.toservice.ToService.send_data:1
 msgid "Upload a weather data record."
 msgstr "Téléverse un enregistrement de données météo. "
@@ -5414,12 +5612,38 @@ msgstr "Téléverse un enregistrement de données météo. "
 # dc3e3a3efd8f4222acb42325c085e173
 #: ../../pywws/toservice.py:docstring of pywws.toservice.ToService.send_data:3
 msgid ""
-"The :obj:`data` parameter contains the data to be uploaded. It should be a "
-"'calibrated' data record, as stored in :class:`pywws.DataStore.calib_store`."
+"The :obj:`coded_data` parameter contains the data to be uploaded. It should "
+"be a urlencoded string."
 msgstr ""
-"Le paramètre :obj:`data` contient les données à être téléversées. Il devrait "
-"y avoir un enregistrement 'calibré' de données, tels que stockés dans :class:"
-"`pywws.DataStore.calib_store`."
+"Le paramètre :obj:`data` contient les données à être téléversées. Il doit "
+"être une chaîne urlencodée ."
+
+# f26a9dc6fb7a441db2f2caaeca25d1b8
+#: ../../pywws/toservice.py:docstring of pywws.toservice.ToService.next_data:1
+msgid "Get weather data records to upload."
+msgstr "Obtien les enregistrements de données météorologiques à téléverser."
+
+# b8f32bf9baa240bfa7a666e217db2815
+#: ../../pywws/toservice.py:docstring of pywws.toservice.ToService.next_data:3
+msgid ""
+"This method returns either the most recent weather data record, or all "
+"records since a given datetime, according to the value of :obj:`start`."
+msgstr ""
+"Cette méthode téléverse le plus récent enregistrement de données météo ou "
+"tous les enregistrements depuis une date fournie, selon la valeur de :obj:"
+"`start`."
+
+# 8cfcd40c7d754fa7aac70fb21742297d
+#: ../../pywws/toservice.py:docstring of pywws.toservice.ToService.next_data:8
+msgid "most recent data only."
+msgstr "données les plus récentes seulement."
+
+# f5ee5b163b9445a1aa852c9864b78545
+#: ../../pywws/toservice.py:docstring of
+#: pywws.toservice.ToService.catchup_start:1
+msgid "Get datetime of first 'catchup' record to send."
+msgstr ""
+"Obtien l'horodatage du premier enregistrement de rattrapage (catchup) envoyé"
 
 # 67115a407cb7413eb0928030b5d8977e
 #: ../../pywws/toservice.py:docstring of pywws.toservice.ToService.Upload:1
@@ -5546,10 +5770,6 @@ msgstr ""
 #~ msgid "Upload files to a directory by ftp"
 #~ msgstr "Téléverse les fichiers dans un répertoire, par ftp."
 
-# 6747f2850e724e3f9fb6136c84d66178
-#~ msgid "Post a message to Twitter"
-#~ msgstr "Poste un message sur Twitter"
-
 # b9d8076fcd02477cb74c031ae1bba637
 #~ msgid ""
 #~ "A separate file is used for each day's data, to keep memory load "
@@ -5599,22 +5819,6 @@ msgstr ""
 #~ msgid "Copied directly from the datetime module documentation."
 #~ msgstr "Copiés directement à partir de la documentation du module datetime."
 
-# 7a92601bddab4b6997fae63a8736b90b
-#~ msgid "Post a message to Twitter ::"
-#~ msgstr "Poster un message sur Twitter ::"
-
-# c57d493ad6ab4f4db66ff91b79aac6bf
-#~ msgid ""
-#~ "This module posts a brief message to `Twitter <https://twitter.com/>`_. "
-#~ "Before posting to Twitter you need to set up an account and then "
-#~ "authorise pywws by running the :py:mod:`TwitterAuth` program. See :doc:"
-#~ "`../guides/twitter` for detailed instructions."
-#~ msgstr ""
-#~ "Ce module poste un bref message sur `Twitter <https://twitter.com/>` _. "
-#~ "Avant de poster sur Twitter, vous devez créer un compte et autoriser "
-#~ "pywws en exécutant le programme :py: mod: `TwitterAuth`. Voir :doc: `../"
-#~ "Guides/twitter` obtenir les instructions détaillées."
-
 # a400f5eb81944e59afb02d8eabc1db3d
 # bc904b8d145c435f94b7b0ae3fc83e2d
 #, fuzzy
@@ -5627,16 +5831,6 @@ msgstr ""
 #~ msgstr ""
 #~ "Retourne un tableau pour convertir un entier représentant la direction du "
 #~ "vent, en une chaîne de caractères."
-
-# c87606800f8a419889f5b822775ba0ba
-#~ msgid "pywws.device_cython_hidapi"
-#~ msgstr "pywws.device_cython_hidapi"
-
-# f26a9dc6fb7a441db2f2caaeca25d1b8
-#~ msgid "Convert a weather data record to upload format."
-#~ msgstr ""
-#~ "Convertir un enregistrement de données météorologiques en format à "
-#~ "téléverser."
 
 # bcf54a793b0042a9ad7e007132e93421
 #~ msgid ""

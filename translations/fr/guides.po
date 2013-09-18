@@ -8,9 +8,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pywws 12.12\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-09-04 18:51\n"
-"PO-Revision-Date: 2013-09-07 12:55-0500\n"
-"Last-Translator: Jacques DesRoches <jacques.desroches@meteoduquebec.com>\n"
+"POT-Creation-Date: 2013-09-17 19:19\n"
+"PO-Revision-Date: 2013-09-17 20:01-0500\n"
+"Last-Translator: Jacques DesRoches <jacques.desroches@weatherbyyou.com>\n"
 "Language-Team: français <>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
@@ -639,11 +639,11 @@ msgstr ""
 # 2811f413c99c44fdbe90f2fa1446f56a
 # aa823c1804e844d2b697cb5e7a6c8ac9
 #: ../../doc_src/guides/getstarted.rst:278
-#: ../../doc_src/guides/hourlylogging.rst:151
+#: ../../doc_src/guides/hourlylogging.rst:154
 #: ../../doc_src/guides/integration.rst:103
 #: ../../doc_src/guides/language.rst:174
 #: ../../doc_src/guides/livelogging.rst:168
-#: ../../doc_src/guides/twitter.rst:106
+#: ../../doc_src/guides/twitter.rst:105
 msgid ""
 "Comments or questions? Please subscribe to the pywws mailing list http://"
 "groups.google.com/group/pywws and let us know."
@@ -849,22 +849,22 @@ msgstr ""
 # 13ae60a99e184b588c608da60ced5e51
 #: ../../doc_src/guides/hourlylogging.rst:109
 msgid ""
-"You can test that all these are working by removing all ``last update`` "
-"lines from weather.ini then run :py:mod:`~pywws.Hourly` again::"
+"You can test that all these are working by removing the ``[last update]`` "
+"section from status.ini, then running :py:mod:`~pywws.Hourly` again::"
 msgstr ""
-"Vous pouvez réaliser un test de bon fonctionnement en enlevant toute les "
-"lignes ``last update`` du fichier weather.ini, puis exécutez :py:mod:`~pywws."
+"Vous pouvez réaliser un test de bon fonctionnement en enlevant la section "
+"``last update`` du fichier weather.ini, puis exécutez :py:mod:`~pywws."
 "Hourly` de nouveau::"
 
 # ae3b1d70fb724544875c27b14fc69c12
 # fdff236f72764e7ba643e6104426cdc8
-#: ../../doc_src/guides/hourlylogging.rst:114
+#: ../../doc_src/guides/hourlylogging.rst:117
 #: ../../doc_src/guides/livelogging.rst:114
 msgid "Using a utility script"
 msgstr "Utilisation d'un script"
 
 # c704a6235358438c92cc4398ac5617c7
-#: ../../doc_src/guides/hourlylogging.rst:116
+#: ../../doc_src/guides/hourlylogging.rst:119
 msgid ""
 "The pywws installation includes a short script ``pywws-hourly.py`` that gets "
 "installed in ``/usr/bin`` or ``/usr/local/bin`` or similar. You should be "
@@ -875,12 +875,12 @@ msgstr ""
 "être en mesure d'utiliser ce script en exécutant :py:mod:`~pywws.Hourly`::"
 
 # 332392f0bd2145acbf1e451c83425b30
-#: ../../doc_src/guides/hourlylogging.rst:122
+#: ../../doc_src/guides/hourlylogging.rst:125
 msgid "Run as a cron job"
 msgstr "Exécuter en tant que tâche 'cron'"
 
 # 9a464e670d2c4b7a82131b54b22e72a9
-#: ../../doc_src/guides/hourlylogging.rst:124
+#: ../../doc_src/guides/hourlylogging.rst:127
 msgid ""
 "Most UNIX/Linux systems have a 'cron' daemon that can run programs at "
 "certain times, even if you are not logged in to the computer. You edit a "
@@ -894,7 +894,7 @@ msgstr ""
 "mod:`~pywws.Hourly` à chaque heure, à zéro minutes de l'heure::"
 
 # 4da73bccad0e43a9987c7907c252b2fc
-#: ../../doc_src/guides/hourlylogging.rst:130
+#: ../../doc_src/guides/hourlylogging.rst:133
 msgid ""
 "This might work, but if it didn't you probably won't get any error messages "
 "to tell you what went wrong. It's much better to run a script that runs :py:"
@@ -908,7 +908,7 @@ msgstr ""
 "le script que j'utilise::"
 
 # 7c32336e6ff4424d87bda794a7f6dfd5
-#: ../../doc_src/guides/hourlylogging.rst:149
+#: ../../doc_src/guides/hourlylogging.rst:152
 msgid ""
 "You’ll need to edit this quite a lot to suit your file locations and so on, "
 "but it gives some idea of what to do."
@@ -1916,50 +1916,22 @@ msgstr ""
 msgid "How to configure pywws to post messages to Twitter"
 msgstr "Comment configurer pywws pour poster des messages sur Twitter"
 
-# bfa0f57bcf1e4e96a06582df3f305f5d
+# caf869c8fd5d42d2bb42e2924b2f60d7
 #: ../../doc_src/guides/twitter.rst:25
-msgid "Python 2.5+ - http://python.org/ (Note: Python 3 is not yet supported.)"
-msgstr "Python 2.5+ - http://python.org/ (Note: Python 3 n'est pas supporté.)"
-
-# 72334fa12c0342a5b380cf2d17c1a9f5
-#: ../../doc_src/guides/twitter.rst:26
-msgid "python-twitter 0.8.6+ - https://github.com/bear/python-twitter"
-msgstr ""
-
-# 768498f3fcb5427c87c38524d7458a52
-#: ../../doc_src/guides/twitter.rst:27
-msgid "simplejson - https://github.com/simplejson/simplejson"
-msgstr ""
-
-# 87c54949432843018b067557eaa80bc2
-#: ../../doc_src/guides/twitter.rst:28
-msgid "python-oauth2 - https://github.com/simplegeo/python-oauth2"
-msgstr ""
-
-# e548d6eba5fd41ac827b79d9e329f193
-#: ../../doc_src/guides/twitter.rst:29
-msgid "httplib2 - http://code.google.com/p/httplib2/"
-msgstr ""
-
-# 0c7ff01dce624c4ab5e7621eff18fda8
-#: ../../doc_src/guides/twitter.rst:31
 msgid ""
-"These should all be available from the standard repositories of any "
-"reasonably up to date Linux distribution. They can also be installed from "
-"the `Python Package Index <https://pypi.python.org/pypi>`_."
+"Posting to Twitter requires some extra software. See :doc:`../essentials/"
+"dependencies` - :ref:`dependencies-twitter`."
 msgstr ""
-"Ceux-ci devraient tous être disponibles depuis les dépôts standards de "
-"n'importe quelle distribution Linux raisonnablement à jour. Ils peuvent "
-"également être installés depuis `l'Index des paquet Python  <https://pypi."
-"python.org/pypi>`_."
+"Postersur Twitter requière certains logiciels supplémentaires. Voir :doc:`../"
+"essentials/dependencies` - :ref:`dependencies-twitter`."
 
 # 9163c974d409475fbf3da43334be1a06
-#: ../../doc_src/guides/twitter.rst:35
+#: ../../doc_src/guides/twitter.rst:29
 msgid "Create a Twitter account"
 msgstr "Créer un compte Twitter."
 
 # e23df67ccd204f8db5a746f023b45bef
-#: ../../doc_src/guides/twitter.rst:37
+#: ../../doc_src/guides/twitter.rst:31
 msgid ""
 "You could post weather updates to your 'normal' Twitter account, but I think "
 "it's better to have a separate account just for weather reports. This could "
@@ -1973,26 +1945,28 @@ msgstr ""
 "petit déjeuner."
 
 # c980446fe07941f5b4a4d4a98e5dbab7
-#: ../../doc_src/guides/twitter.rst:41
+#: ../../doc_src/guides/twitter.rst:35
 msgid "Authorise pywws to post to your Twitter account"
 msgstr "Autoriser pywws à poster sur votre compte Twitter."
 
 # f4db4244329a4e46b7974d60913fbf4e
-#: ../../doc_src/guides/twitter.rst:43
+#: ../../doc_src/guides/twitter.rst:37
 msgid ""
 "If you run pywws on a low power device such as a router, you may find it "
-"easier to run this authorisation step on another computer. Use an empty "
-"'data' directory -- a ``weather.ini`` file will be created whose contents "
-"can be copied into your real ``weather.ini`` file using any text editor."
+"easier to run this authorisation step on another computer, as long as it has "
+"``python-oauth2`` installed. Use an empty 'data' directory -- a ``weather."
+"ini`` file will be created whose contents can be copied into your real "
+"``weather.ini`` file using any text editor."
 msgstr ""
 "Si vous exécutez pywws sur un appareil de faible puissance tel qu'un "
 "routeur, il peut plus simple d'exécuter cette étape d'autorisation sur un "
-"autre ordinateur. Utiliser un répertoire  'data' vide  --  un fichier "
-"``weather.ini`` sera créé dont le contenu pourra être copié dans votre "
-"fichier  ``weather.ini`` réel en utilisant tout éditeur de texte."
+"autre ordinateur en autant que ``python-oauth2`` y est installé. Utiliser un "
+"répertoire  'data' vide  --  un fichier ``weather.ini`` sera créé, dont le "
+"contenu pourra être copié dans votre fichier  ``weather.ini`` réel en "
+"utilisant tout éditeur de texte."
 
 # 46ded0f36b2043299a8003b0b501b086
-#: ../../doc_src/guides/twitter.rst:46
+#: ../../doc_src/guides/twitter.rst:40
 msgid ""
 "Make sure no other pywws software is running, then run :py:mod:`~pywws."
 "TwitterAuth`::"
@@ -2001,12 +1975,12 @@ msgstr ""
 "le module  :py:mod:`~pywws.TwitterAuth`::"
 
 # 067fa543308048eb85933694fd81c73f
-#: ../../doc_src/guides/twitter.rst:50
+#: ../../doc_src/guides/twitter.rst:44
 msgid "(Replace ``/data/weather`` with your data directory.)"
 msgstr "(Remplacez ``/data/weather`` par votre répertoire de données.)"
 
 # 4a35cdca9f794e3b865e624896a10b35
-#: ../../doc_src/guides/twitter.rst:52
+#: ../../doc_src/guides/twitter.rst:46
 msgid ""
 "This will open a web browser window (or give you a URL to copy to your web "
 "browser) where you can log in to your Twitter account and authorise pywws to "
@@ -2024,12 +1998,12 @@ msgstr ""
 "``secret`` et ``key``. (Ne révéler à quiconque.)"
 
 # 893079d8f2dd4d03adc7645170de399e
-#: ../../doc_src/guides/twitter.rst:58
+#: ../../doc_src/guides/twitter.rst:52
 msgid "Add location data (optional)"
 msgstr "Ajouter vos données de localisation (optionel)."
 
 # 8979e213253c44508d9ceb99362ee6aa
-#: ../../doc_src/guides/twitter.rst:60
+#: ../../doc_src/guides/twitter.rst:54
 msgid ""
 "Edit your ``weather.ini`` file and add ``latitude`` and ``longitude`` "
 "entries to the ``[twitter]`` section. For example::"
@@ -2038,12 +2012,12 @@ msgstr ""
 "``longitude`` à votre section  ``[twitter]``. Par exemple::"
 
 # e184459bc4bc4befbe1d032945eddcf4
-#: ../../doc_src/guides/twitter.rst:70
+#: ../../doc_src/guides/twitter.rst:64
 msgid "Create a template"
 msgstr "Créer un gabarit."
 
 # 043a7792fab14f2db67c5ea86d0af061
-#: ../../doc_src/guides/twitter.rst:72
+#: ../../doc_src/guides/twitter.rst:66
 msgid ""
 "Twitter messages are generated using a template, just like creating files to "
 "upload to a website. Copy the example template 'tweet.txt' to your template "
@@ -2054,7 +2028,7 @@ msgstr ""
 "exemple 'tweet.txt' dans votre dossier de gabarit, puis testez-le::"
 
 # 7276aeba738f47d6944a9b473120614a
-#: ../../doc_src/guides/twitter.rst:78
+#: ../../doc_src/guides/twitter.rst:72
 msgid ""
 "(Replace ``/data/weather`` and ``~/weather/templates`` with your data and "
 "template directories.) If you need to change the template (e.g. to change "
@@ -2066,17 +2040,17 @@ msgstr ""
 "l'éditer maintenant ou ultérieurement."
 
 # 4f410777f8d940e48c9a8e2dbfd5138e
-#: ../../doc_src/guides/twitter.rst:82
+#: ../../doc_src/guides/twitter.rst:76
 msgid "Post your first weather Tweet"
 msgstr "Poster votre premier Tweet météo."
 
 # 17047c7551af406eab8bc3239861ccb6
-#: ../../doc_src/guides/twitter.rst:84
+#: ../../doc_src/guides/twitter.rst:78
 msgid "Now everything is prepared for :py:mod:`~pywws.ToTwitter` to be run::"
 msgstr "Maintenant tout est pret pour exécuter :py:mod:`~pywws.ToTwitter`::"
 
 # 026c8159e8cf45a49509a067ac9b54fc
-#: ../../doc_src/guides/twitter.rst:88
+#: ../../doc_src/guides/twitter.rst:82
 msgid ""
 "If this works, your new Twitter account will have posted its first weather "
 "report. (You should delete the tweet.txt file now.)"
@@ -2085,12 +2059,12 @@ msgstr ""
 "relevé météo. (Vous devriez supprimer le fichier tweet.txt maintenant.)"
 
 # 163f2fbe435449b7b3162fb8ee8899cc
-#: ../../doc_src/guides/twitter.rst:92
+#: ../../doc_src/guides/twitter.rst:86
 msgid "Add Twitter updates to your hourly tasks"
 msgstr "Ajouter les envois sur Twitter à vos tâche horaire."
 
 # 08e48b5d0b564d46a0052a1c18246345
-#: ../../doc_src/guides/twitter.rst:94
+#: ../../doc_src/guides/twitter.rst:88
 msgid ""
 "Edit your ``weather.ini`` file and edit the ``[hourly]`` section. For "
 "example::"
@@ -2099,7 +2073,7 @@ msgstr ""
 "Par exemple::"
 
 # c2d52950941548bca5bc5ee4658bbb51
-#: ../../doc_src/guides/twitter.rst:102
+#: ../../doc_src/guides/twitter.rst:96
 msgid ""
 "Note the use of the ``'T'`` flag -- this tells pywws to tweet the template "
 "result instead of uploading it to your ftp site."
@@ -2109,7 +2083,7 @@ msgstr ""
 "ftp."
 
 # bd47bd5b123e43d8a35f6bb0d155dc04
-#: ../../doc_src/guides/twitter.rst:104
+#: ../../doc_src/guides/twitter.rst:98
 msgid ""
 "You could change the ``[logged]``, ``[12 hourly]`` or ``[daily]`` sections "
 "instead, but I think ``[hourly]`` is most appropriate for Twitter updates."
