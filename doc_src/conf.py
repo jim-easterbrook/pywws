@@ -38,6 +38,14 @@ import sys, os
 
 sys.path.insert(0, os.path.abspath('..'))
 
+# cludge to allow documentation to be compiled without installing dependencies
+class Dummy(object):
+    def __getattr__(self, name):
+        return Dummy
+
+for mod_name in ('hid', 'oauth2', 'twitter', 'usb', 'usb.core', 'usb.util'):
+    sys.modules[mod_name] = Dummy()
+
 # -- General configuration -----------------------------------------------------
 
 # If your documentation needs a minimal Sphinx version, state it here.
