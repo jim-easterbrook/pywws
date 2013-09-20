@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pywws 12.12\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-09-17 19:19\n"
-"PO-Revision-Date: 2013-09-17 20:01-0500\n"
+"POT-Creation-Date: 2013-09-18 17:53\n"
+"PO-Revision-Date: 2013-09-18 18:03-0500\n"
 "Last-Translator: Jacques DesRoches <jacques.desroches@weatherbyyou.com>\n"
 "Language-Team: français <>\n"
 "Language: fr\n"
@@ -641,7 +641,7 @@ msgstr ""
 #: ../../doc_src/guides/getstarted.rst:278
 #: ../../doc_src/guides/hourlylogging.rst:154
 #: ../../doc_src/guides/integration.rst:103
-#: ../../doc_src/guides/language.rst:174
+#: ../../doc_src/guides/language.rst:175
 #: ../../doc_src/guides/livelogging.rst:168
 #: ../../doc_src/guides/twitter.rst:105
 msgid ""
@@ -1737,12 +1737,18 @@ msgstr "Envoyer la traduction à Jim"
 msgid ""
 "I'm sure you would like others to benefit from the work you've done in "
 "translating pywws. Please, please, please send a copy of your language file"
-"(s) (for example ``pywws.po``) to jim@jim-easterbrook.me.uk."
+"(s) (for example ``pywws.po``) to jim@jim-easterbrook.me.uk. When you send a "
+"new translation you need to include details of which pywws version it is "
+"based on -- the easiest way to do this is to include the value of ``commit`` "
+"from the file ``pywws/version.py`` in your email."
 msgstr ""
 "Je suis sûr que vous souhaitez que les autres bénéficient du travail que "
 "vous avez fait en traduisant pywws. SVP, Svp, svp envoyez une copie de votre"
 "(vos) fichier(s) de langue (par exemple  ``pywws.po``) à jim@jim-easterbrook."
-"me.uk."
+"me.uk. Lorsque vous envoyez une nouvelle traduction vous devez inclure les "
+"détails de la version de pywws que vous avez traduit -- la façon la plus "
+"facile de le faire est d'inclure à votre courriel la valeur de ``commit`` du "
+"fichier  ``pywws/version.py``."
 
 # af56bcf2703a4372908843f37dbad728
 #: ../../doc_src/guides/livelogging.rst:20
