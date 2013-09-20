@@ -370,7 +370,7 @@ class ToService(object):
         the value of :obj:`start`.
 
         :param start: datetime of first record to get, or None to get
-        most recent data only.
+         most recent data only.
 
         :type start: datetime
 

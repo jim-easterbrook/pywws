@@ -31,8 +31,8 @@ pywws
 This document is available in the following languages (non-English versions may not be complete or up to date):
 
    * `English <../../en/html/index.html>`_
-   * `Français <../../fr/html/index.html>`_
-   * `Italiano <../../it/html/index.html>`_
+   * `Français <../../fr/html/index.html>`_ -- translated by Jacques Desroches
+   * `Italiano <../../it/html/index.html>`_ -- translated by Edoardo
 
 ************
 Introduction
@@ -102,7 +102,7 @@ Contents
    Dependencies <essentials/dependencies>
    Change log <essentials/CHANGELOG>
    User guides <guides/index>
-   Python modules <api/index>
+   Python modules <api_index>
 
 Indices and tables
 ==================

@@ -52,10 +52,11 @@ You should have a ``[paths]`` section similar to the following (where ``xxx`` is
   work = /tmp/weather
   templates = /home/xxx/weather/templates/
   graph_templates = /home/xxx/weather/graph_templates/
+  local_files = /home/xxx/weather/results/
 
 Edit these to suit your installation and preferences.
-``work`` is a temporary directory used to store intermediate files, ``templates`` is the directory where you keep your text template files and ``graph_templates`` is the directory where you keep your graph template files.
-Don't use the pywws example directories for these, as they will get over-written when you upgrade pywws.
+``work`` is a temporary directory used to store intermediate files, ``templates`` is the directory where you keep your text template files, ``graph_templates`` is the directory where you keep your graph template files and ``local_files`` is a directory where template output that is not uploaded to your web site is put.
+Don't use the pywws example directories for your templates, as they will get over-written when you upgrade pywws.
 
 Copy your text and graph templates to the appropriate directories.
 You may find some of the examples provided with pywws useful to get started.
@@ -68,7 +69,6 @@ In weather.ini you should have ``[logged]``, ``[hourly]``, ``[12 hourly]`` and `
 
    [logged]
    services = []
-   twitter = []
    plot = []
    text = []
 
@@ -79,36 +79,39 @@ These specify what :py:mod:`~pywws.Hourly` should do when it is run.
 Tasks in the ``[logged]`` section are done every time there is new logged data, tasks in the ``[hourly]`` section are done every hour, tasks in the ``[12 hourly]`` section are done twice daily and tasks in the ``[daily]`` section are done once per day.
 
 The ``services`` entry is a list of online weather services to upload data to.
-The ``plot`` and ``text`` entries are lists of template files for plots and text files to be uploaded to your web site, and the ``twitter`` entry is a list of templates for messages to be posted to Twitter.
+The ``plot`` and ``text`` entries are lists of template files for plots and text files to be processed and, optionally, uploaded to your web site.
 Add the names of your template files and weather services to the appropriate entries, for example::
 
    [logged]
    services = ['underground', 'metoffice']
-   twitter = []
    plot = []
    text = []
 
    [hourly]
    services = []
-   twitter = ['tweet.txt']
    plot = ['7days.png.xml', '24hrs.png.xml', 'rose_24hrs.png.xml']
-   text = ['24hrs.txt', '6hrs.txt', '7days.txt']
+   text = [('tweet.txt', 'T'), '24hrs.txt', '6hrs.txt', '7days.txt']
 
    [12 hourly]
    services = []
-   twitter = []
    plot = []
    text = []
 
    [daily]
    services = []
-   twitter = ['forecast.txt']
    plot = ['28days.png.xml']
-   text = ['allmonths.txt']
+   text = [('forecast.txt', 'T'), 'allmonths.txt']
+
+Note the use of the ``'T'`` flag -- this tells pywws to tweet the template result instead of uploading it to your ftp site.
 
 You can test that all these are working by removing the ``[last update]`` section from status.ini, then running :py:mod:`~pywws.Hourly` again::
 
    python -m pywws.Hourly -v ~/weather/data
+
+.. versionchanged:: 13.06_r1015
+   added the ``'T'`` flag.
+   Previously Twitter templates were listed separately in ``twitter`` entries in the ``[hourly]`` and other sections.
+   The older syntax still works, but is deprecated.
 
 .. versionchanged:: 13.05_r1009
    The last update information was previously stored in weather.ini, with ``last update`` entries in several sections.
@@ -150,5 +153,7 @@ Here's the script I use::
    /home/jim/scripts/email-log.sh $log "weather log"
 
 You’ll need to edit this quite a lot to suit your file locations and so on, but it gives some idea of what to do.
+
+----
 
 Comments or questions? Please subscribe to the pywws mailing list http://groups.google.com/group/pywws and let us know.

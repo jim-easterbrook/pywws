@@ -22,35 +22,8 @@ How to get started with pywws
 Install dependencies
 --------------------
 
-* Python 2.5+ - http://python.org/ (Note: Python 3 support is under development.)
-
-* USB library option 1 (preferred, except on MacOS):
-
-  * PyUSB 1.0 - http://sourceforge.net/apps/trac/pyusb/
-  * libusb 0.1 or 1.0 - http://www.libusb.org/
-* USB library option 2 (if PyUSB 1.0 is not available):
-
-  * PyUSB 0.4 - http://sourceforge.net/apps/trac/pyusb/
-  * libusb 0.1 - http://www.libusb.org/
-* USB library option 3 (best for MacOS):
-
-  * hidapi - https://github.com/signal11/hidapi
-  * ctypes - http://docs.python.org/2/library/ctypes.html
-* USB library option 4:
-
-  * hidapi - https://github.com/signal11/hidapi
-  * cython-hidapi - https://github.com/gbishop/cython-hidapi
-  * cython - http://cython.org/
-
-You may be able to install most of these using your operating system's package manager.
-This is a lot easier than downloading and compiling source files from the project websites.
-Note that some Linux distributions may use different names for some of the packages, e.g. in Ubuntu, pyusb is python-usb.
-
-In addition to the above, I recommend installing `pip <http://www.pip-installer.org/>`_ (the package may be called python-pip) or `easy_install <http://peak.telecommunity.com/DevCenter/EasyInstall>`_.
-These both simplify installation of software from the `Python Package Index (PyPI) <http://pypi.python.org/pypi>`_.
-For example, PyUSB can be installed from PyPI using the ``pip`` command::
-
-   sudo pip install pyusb
+Before you can do anything with pywws you need to install Python and some USB libraries (to allow Python to access the weather station).
+See :doc:`../essentials/dependencies` for more detail.
 
 Download the pywws software
 ---------------------------
@@ -271,8 +244,10 @@ You are now ready to set up regular or continuous logging, as described in :doc:
 Read the documentation
 ----------------------
 
-The doc directory in your pywws source directory contains HTML and plain text versions of the documentation (unless you did a direct installation with ``pip``).
+The doc directory in your pywws source directory contains HTML documentation (unless you did a direct installation with ``pip``).
 The HTML files can be read with any web browser.
 Start with the index (:doc:`../index`) and follow links from there.
+
+----
 
 Comments or questions? Please subscribe to the pywws mailing list http://groups.google.com/group/pywws and let us know.

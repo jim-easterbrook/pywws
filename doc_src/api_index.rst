@@ -22,7 +22,7 @@ Python programs and modules
 Contents:
 
 .. autosummary::
-   :toctree:
+   :toctree: api
 
    pywws.Hourly
    pywws.LiveLog
