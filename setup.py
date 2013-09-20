@@ -223,7 +223,6 @@ try:
     builder = 'html'
     cmdclass['build_sphinx'] = BuildDoc
     command_options['build_sphinx'] = {
-        'all_files'  : ('setup.py', '1'),
         'source_dir' : ('setup.py', 'doc_src'),
         'build_dir'  : ('setup.py', 'doc/%s/%s' % (builder, lang)),
         'builder'    : ('setup.py', builder),
@@ -231,7 +230,6 @@ try:
     # extract strings for translation
     cmdclass['xgettext_doc'] = BuildDoc
     command_options['xgettext_doc'] = {
-        'all_files'  : ('setup.py', '1'),
         'source_dir' : ('setup.py', 'doc_src'),
         'build_dir'  : ('setup.py', 'build'),
         'builder'    : ('setup.py', 'gettext'),
