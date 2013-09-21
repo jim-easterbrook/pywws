@@ -75,7 +75,7 @@ msgstr "Per recuperare dati da una stazione meteo pywws ha bisogno di una librer
 # 4a3def6cd3dd4db485dbdaeb4592b735
 #: ../../doc_src/essentials/dependencies.rst:53
 msgid "On MacOS X the operating system's generic hid driver \"claims\" the weather station, which prevents libusb from working. This restricts Mac users to option 3 or 4."
-msgstr "Su MacOS X il sistema operativo driver generico hid \"claims\" la stazione meteo, impedisce di lavorare a libusb. Questo limita gli utenti Mac all'opzione 3 o 4."
+msgstr "Su MacOS X il sistema operativo driver generico hid \"claims\" per la stazione meteo, impedisce di lavorare a libusb. Questo limita gli utenti Mac all'opzione 3 o 4."
 
 # d6f982047b4b4f2b8deda5522de4e857
 #: ../../doc_src/essentials/dependencies.rst:56
@@ -147,7 +147,7 @@ msgstr "Disegnare grafici"
 # daba1ae960e04f7ea9eed075cbef75f6
 #: ../../doc_src/essentials/dependencies.rst:80
 msgid "The :py:mod:`pywws.Plot` module uses ``gnuplot`` to draw graphs. If you want to produce graphs of weather data, e.g. to include in a web page, you need to install the ``gnuplot`` application:"
-msgstr "Il modulo :py:mod:`pywws.Plot` usa ``gnuplot`` per disegnare grafici. Se si vogliono produrre i grafici dei dati meteo, ad esempio, per includere in una pagina web, è necessario installare l'applicazione ``gnuplot``:"
+msgstr "Il modulo :py:mod:`pywws.Plot` usa ``gnuplot`` per disegnare grafici. Se si vogliono produrre i grafici dei dati meteo, ad esempio, da includere in una pagina web, è necessario installare l'applicazione ``gnuplot``:"
 
 # 64b22bfd47824a7c8972074881ea02c7
 #: ../../doc_src/essentials/dependencies.rst:83
@@ -162,7 +162,7 @@ msgstr ""
 # 2065bf7552b946ecb957beb1957736b4
 #: ../../doc_src/essentials/dependencies.rst:88
 msgid "The :py:mod:`pywws.Upload` module can use \"ftp over ssh\" (sftp) to upload files to your web-site. Normal uploading just uses Python's standard modules, but if you want to use sftp you need to install these two modules:"
-msgstr "Il :py:mod:`pywws.Upload` modulo può utilizzare \"ftp over ssh\" (sftp) per caricare i file sul vostro sito web. Il caricamento normale utilizza i moduli Python standard, ma se si desidera utilizzare sftp è necessario installare questi due moduli:"
+msgstr "Il modulo :py:mod:`pywws.Upload` può utilizzare \"ftp over ssh\" (sftp) per caricare i file sul vostro sito web. Il caricamento normale utilizza i moduli Python standard, ma se si desidera utilizzare sftp è necessario installare questi due moduli:"
 
 # 28aa33bfb6894baa85a1274c3558c242
 #: ../../doc_src/essentials/dependencies.rst:91
@@ -182,7 +182,7 @@ msgstr "Postare su Twitter"
 # eeaee61971af410697e2bcd648b3ce39
 #: ../../doc_src/essentials/dependencies.rst:99
 msgid "The :py:mod:`pywws.ToTwitter` module can be used to send weather status messages to Twitter. Posting to Twitter requires all four of these modules:"
-msgstr "Il: py:mod:'pywws.ToTwitter' modulo è essere utilizzato per inviare messaggi delle condizioni meteo a Twitter. Per postare su Twitter richiede tutti e quattro questi moduli:"
+msgstr "Il modulo :py:mod:`pywws.ToTwitter` è utilizzato per inviare messaggi delle condizioni meteo a Twitter. Per postare su Twitter richiede tutti e quattro questi moduli:"
 
 # 6df2d713e7b24caca7d5c2188309fb7c
 #: ../../doc_src/essentials/dependencies.rst:102
