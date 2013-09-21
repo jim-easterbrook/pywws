@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pywws 13.06\n"
 "Report-Msgid-Bugs-To: \"jim@jim-easterbrook.me.uk\"\n"
-"POT-Creation-Date: 2013-09-15 09:36+0200\n"
+"POT-Creation-Date: 2013-09-19 00:48+0200\n"
 "PO-Revision-Date: 2013-09-15 09:38+0200\n"
 "Last-Translator: Edoardo <edoardo69@hotmail.it>\n"
 "Language-Team: Italian\n"
@@ -121,114 +121,114 @@ msgstr "Temporalesco, in miglioramento"
 msgid "Stormy, much rain"
 msgstr "Temporalesco, molta pioggia"
 
-#: pywws/Plot.py:263
+#: pywws/Plot.py:671
 msgid "Time (%Z)"
 msgstr "Tempo (%Z)"
 
-#: pywws/Plot.py:265
+#: pywws/Plot.py:673
 msgid "Day"
 msgstr "Giorno"
 
-#: pywws/Plot.py:267
+#: pywws/Plot.py:675
 msgid "Date"
 msgstr "Data"
 
-#: pywws/WeatherStation.py:132 pywws/conversions.py:70 pywws/WindRose.py:152
-msgid "N"
-msgstr "N"
-
-#: pywws/WeatherStation.py:132 pywws/conversions.py:70
-msgid "NNE"
-msgstr "NNE"
-
-#: pywws/WeatherStation.py:132 pywws/conversions.py:70
-msgid "NE"
-msgstr "NE"
-
-#: pywws/WeatherStation.py:132 pywws/conversions.py:70
-msgid "ENE"
-msgstr "ENE"
-
-#: pywws/WeatherStation.py:133 pywws/conversions.py:71 pywws/WindRose.py:152
-msgid "E"
-msgstr "E"
-
-#: pywws/WeatherStation.py:133 pywws/conversions.py:71
-msgid "ESE"
-msgstr "ESE"
-
-#: pywws/WeatherStation.py:133 pywws/conversions.py:71
-msgid "SE"
-msgstr "SE"
-
-#: pywws/WeatherStation.py:133 pywws/conversions.py:71
-msgid "SSE"
-msgstr "SSE"
-
-#: pywws/WeatherStation.py:134 pywws/conversions.py:72 pywws/WindRose.py:152
-msgid "S"
-msgstr "S"
-
-#: pywws/WeatherStation.py:134 pywws/conversions.py:72
-msgid "SSW"
-msgstr "SSO"
-
-#: pywws/WeatherStation.py:134 pywws/conversions.py:72
-msgid "SW"
-msgstr "SO"
-
-#: pywws/WeatherStation.py:134 pywws/conversions.py:72
-msgid "WSW"
-msgstr "OSO"
-
-#: pywws/WeatherStation.py:135 pywws/conversions.py:73 pywws/WindRose.py:152
-msgid "W"
-msgstr "O"
-
-#: pywws/WeatherStation.py:135 pywws/conversions.py:73
-msgid "WNW"
-msgstr "ONO"
-
-#: pywws/WeatherStation.py:135 pywws/conversions.py:73
-msgid "NW"
-msgstr "NO"
-
-#: pywws/WeatherStation.py:135 pywws/conversions.py:73
-msgid "NNW"
-msgstr "NNO"
-
-#: pywws/WeatherStation.py:145
+#: pywws/conversions.py:51
 msgid "rising very rapidly"
 msgstr "aumento molto rapidamente"
 
-#: pywws/WeatherStation.py:147
+#: pywws/conversions.py:53
 msgid "rising quickly"
 msgstr "aumento veloce"
 
-#: pywws/WeatherStation.py:149
+#: pywws/conversions.py:55
 msgid "rising"
 msgstr "aumento"
 
-#: pywws/WeatherStation.py:151
+#: pywws/conversions.py:57
 msgid "rising slowly"
 msgstr "aumento lento"
 
-#: pywws/WeatherStation.py:153
+#: pywws/conversions.py:59
 msgid "falling very rapidly"
 msgstr "diminuzione molto rapida"
 
-#: pywws/WeatherStation.py:155
+#: pywws/conversions.py:61
 msgid "falling quickly"
 msgstr "diminuzione veloce"
 
-#: pywws/WeatherStation.py:157
+#: pywws/conversions.py:63
 msgid "falling"
 msgstr "diminuzione"
 
-#: pywws/WeatherStation.py:159
+#: pywws/conversions.py:65
 msgid "falling slowly"
 msgstr "diminuzione lenta"
 
-#: pywws/WeatherStation.py:160
+#: pywws/conversions.py:66
 msgid "steady"
 msgstr "stazionaria"
+
+#: pywws/conversions.py:96 pywws/WindRose.py:353
+msgid "N"
+msgstr "N"
+
+#: pywws/conversions.py:96
+msgid "NNE"
+msgstr "NNE"
+
+#: pywws/conversions.py:96
+msgid "NE"
+msgstr "NE"
+
+#: pywws/conversions.py:96
+msgid "ENE"
+msgstr "ENE"
+
+#: pywws/conversions.py:97 pywws/WindRose.py:353
+msgid "E"
+msgstr "E"
+
+#: pywws/conversions.py:97
+msgid "ESE"
+msgstr "ESE"
+
+#: pywws/conversions.py:97
+msgid "SE"
+msgstr "SE"
+
+#: pywws/conversions.py:97
+msgid "SSE"
+msgstr "SSE"
+
+#: pywws/conversions.py:98 pywws/WindRose.py:353
+msgid "S"
+msgstr "S"
+
+#: pywws/conversions.py:98
+msgid "SSW"
+msgstr "SSO"
+
+#: pywws/conversions.py:98
+msgid "SW"
+msgstr "SO"
+
+#: pywws/conversions.py:98
+msgid "WSW"
+msgstr "OSO"
+
+#: pywws/conversions.py:99 pywws/WindRose.py:353
+msgid "W"
+msgstr "O"
+
+#: pywws/conversions.py:99
+msgid "WNW"
+msgstr "ONO"
+
+#: pywws/conversions.py:99
+msgid "NW"
+msgstr "NO"
+
+#: pywws/conversions.py:99
+msgid "NNW"
+msgstr "NNO"

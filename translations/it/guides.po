@@ -7,14 +7,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pywws 13.06\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-09-01 10:18\n"
+"POT-Creation-Date: 2013-09-19 00:51\n"
 "PO-Revision-Date: 2013-09-15 09:38+0200\n"
 "Last-Translator: Edoardo <edoardo69@hotmail.it>\n"
 "Language-Team: Italian\n"
+"Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: it\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 # 4f3240f4d9b34179907212f071853dda
@@ -103,7 +103,7 @@ msgstr "Si può essere in grado di installare la maggior parte di questi utilizz
 # f2afb618d4294e1584cce77b9e78e654
 #: ../../doc_src/guides/getstarted.rst:49
 msgid "In addition to the above, I recommend installing `pip <http://www.pip-installer.org/>`_ (the package may be called python-pip) or `easy_install <http://peak.telecommunity.com/DevCenter/EasyInstall>`_. These both simplify installation of software from the `Python Package Index (PyPI) <http://pypi.python.org/pypi>`_. For example, PyUSB can be installed from PyPI using the ``pip`` command::"
-msgstr "Oltre a quanto sopra, vi consiglio l'installazione di `pip <http://www.pip-installer.org/>`_ (il pacchetto può essere chiamato python-pip) o `easy_install <http://peak.telecommunity.com/DevCenter/EasyInstall>`_. Questi semplificano entrambi l'installazione del software dalla `Python Package Index (PyPI) <http://pypi.python.org/pypi>`_. Ad esempio, PyUSB può essere installato da PyPI utilizzando il comando ``pip`` command::" 
+msgstr "Oltre a quanto sopra, vi consiglio l'installazione di `pip <http://www.pip-installer.org/>`_ (il pacchetto può essere chiamato python-pip) o `easy_install <http://peak.telecommunity.com/DevCenter/EasyInstall>`_. Questi semplificano entrambi l'installazione del software dalla `Python Package Index (PyPI) <http://pypi.python.org/pypi>`_. Ad esempio, PyUSB può essere installato da PyPI utilizzando il comando ``pip`` command::"
 
 # 850eb5f3571c4b3e9bfc130d59be5632
 #: ../../doc_src/guides/getstarted.rst:56
@@ -362,11 +362,11 @@ msgstr "La directory doc nella directory di origine pywws contiene le versioni H
 # f2f3c8346e8a4573813bc23c5afcb5c2
 # 1ad099fe6a5f4641aecf63b40e9110ff
 #: ../../doc_src/guides/getstarted.rst:278
-#: ../../doc_src/guides/hourlylogging.rst:151
-#: ../../doc_src/guides/integration.rst:95
+#: ../../doc_src/guides/hourlylogging.rst:154
+#: ../../doc_src/guides/integration.rst:103
 #: ../../doc_src/guides/language.rst:174
 #: ../../doc_src/guides/livelogging.rst:168
-#: ../../doc_src/guides/twitter.rst:99
+#: ../../doc_src/guides/twitter.rst:105
 msgid "Comments or questions? Please subscribe to the pywws mailing list http://groups.google.com/group/pywws and let us know."
 msgstr "Commenti o domande? Si prega di iscriversi per al mailing list pywws http://groups.google.com/group/pywws e facci sapere."
 
@@ -475,38 +475,43 @@ msgstr "La voce ``services`` è un elenco di servizi meteo online per caricare i
 
 # 997d93584e0c43f4ba5ab32e3d1349f7
 #: ../../doc_src/guides/hourlylogging.rst:109
-msgid "You can test that all these are working by removing all ``last update`` lines from weather.ini then run :py:mod:`~pywws.Hourly` again::"
-msgstr "È possibile verificare che tutti questi stiano lavorando rimuovendo tutte le linee ``last update`` da weather.ini quindi eseguire nuovamente :py:mod:`~pywws.Hourly`::"
+msgid "You can test that all these are working by removing the ``[last update]`` section from status.ini, then running :py:mod:`~pywws.Hourly` again::"
+msgstr "È possibile verificare che tutti questi stiano lavorando rimuovendo tutte le linee ``last update`` da status.ini quindi eseguire nuovamente :py:mod:`~pywws.Hourly`::"
+
+# c07342d566b745708be65ca61032ceb3
+#: ../../doc_src/guides/hourlylogging.rst:113
+msgid "The last update information was previously stored in weather.ini, with ``last update`` entries in several sections."
+msgstr "L'ultimo aggiornamento delle informazioni è stato memorizzato in precedenza in weather.ini, con ``ultimo aggiornamento`` le voci sono sezioni diverse."
 
 # 7a5ae968ac554cc68a5f7138feefbe13
 # 5e06866aabf64848ab283b12fb55683a
-#: ../../doc_src/guides/hourlylogging.rst:114
+#: ../../doc_src/guides/hourlylogging.rst:117
 #: ../../doc_src/guides/livelogging.rst:114
 msgid "Using a utility script"
 msgstr "Utilizzare gli script di utilità"
 
 # d7f26384dbae45c88f2da3bec7f3ab7e
-#: ../../doc_src/guides/hourlylogging.rst:116
+#: ../../doc_src/guides/hourlylogging.rst:119
 msgid "The pywws installation includes a short script ``pywws-hourly.py`` that gets installed in ``/usr/bin`` or ``/usr/local/bin`` or similar. You should be able to use this script to run :py:mod:`~pywws.Hourly`::"
 msgstr "L'installazione di pywws include un breve script ``pywws-hourly.py`` che viene installato nel ``/usr/bin`` o ``/usr/local/bin`` o simili. Si dovrebbe essere in grado di utilizzare questo script per eseguire :py:mod:`~pywws.Hourly`::"
 
 # da07460f098f4fa1820ce6a06d847463
-#: ../../doc_src/guides/hourlylogging.rst:122
+#: ../../doc_src/guides/hourlylogging.rst:125
 msgid "Run as a cron job"
 msgstr "Eseguire con cron job"
 
 # af4c32bac4a14c43ba516c3af282fa35
-#: ../../doc_src/guides/hourlylogging.rst:124
+#: ../../doc_src/guides/hourlylogging.rst:127
 msgid "Most UNIX/Linux systems have a 'cron' daemon that can run programs at certain times, even if you are not logged in to the computer. You edit a 'crontab' file to specify what to run and when to run  it. For example, to run :py:mod:`~pywws.Hourly` every hour, at zero minutes past the hour::"
 msgstr "La maggior parte dei sistemi UNIX/Linux hanno un demone 'cron' che può eseguire programmi in certi momenti, anche se non si è connessi al computer. Si modifica un file 'crontab' per specificare cosa eseguire e quando per farlo funzionare. Ad esempio, per eseguire :py:mod:`~pywws.Hourly` a zero minuti di ogni ora::"
 
 # 8257bdb1713543cdb54d663126ece7ad
-#: ../../doc_src/guides/hourlylogging.rst:130
+#: ../../doc_src/guides/hourlylogging.rst:133
 msgid "This might work, but if it didn't you probably won't get any error messages to tell you what went wrong. It's much better to run a script that runs :py:mod:`~pywws.Hourly` and then emails you any output it produces. Here's the script I use::"
 msgstr "Questo potrebbe funzionare, ma probabilmente non sarà possibile ottenere eventuali messaggi di errore per dirvi che cosa è andato storto. È molto meglio eseguire uno script che esegue :py:mod:`~pywws.Hourly` e poi invia tramite e-mail qualsiasi output prodotto. Ecco lo script che uso::"
 
 # 985c5e6cf2264b618229fcc2ea34c080
-#: ../../doc_src/guides/hourlylogging.rst:149
+#: ../../doc_src/guides/hourlylogging.rst:152
 msgid "You’ll need to edit this quite a lot to suit your file locations and so on, but it gives some idea of what to do."
 msgstr "Sarà necessario modificare questo file un bel pò per soddisfare i vostri percorsi di file e così via, ma dà un'idea di cosa fare."
 
@@ -676,114 +681,114 @@ msgid "`YoWindow <http://yowindow.com/>`_ is a weather display widget that can d
 msgstr "`YoWindow <http://yowindow.com/>`_ è un display widget meteo in grado di visualizzare i dati da internet o dalla tua stazione meteo. Per visualizzare i dati della tua stazione pywws devi scrivere in un file locale, in genere ogni 48 secondi quando vengono ricevuti i dati nuovi. Questo è facile da fare:"
 
 # 6eb112fcfac5402283c0fcf1109d17ff
-#: ../../doc_src/guides/integration.rst:31
+#: ../../doc_src/guides/integration.rst:32
 msgid "Stop all pywws software"
 msgstr "Arrestare tutti i software pywws"
 
 # 5fa5ef29dba54e80a11099387e3af92d
-#: ../../doc_src/guides/integration.rst:32
+#: ../../doc_src/guides/integration.rst:33
 msgid "Copy the ``yowindow.xml`` example template to your text template directory."
 msgstr "Copiare il modello di esempio ' yowindow.xml ' nella directory modelli di testo."
 
 # 3819d3bbd2d24422ad7b875431279342
-#: ../../doc_src/guides/integration.rst:33
+#: ../../doc_src/guides/integration.rst:34
 msgid "If you haven't already done so, edit ``weather.ini`` and set the ``local_files`` entry in the ``[paths]`` section to a suitable directory for your yowindow file."
 msgstr "Se non hai già fatto, modifica ``weather.ini`` e imposta la voce ``local_files`` nella sezione ``[paths]`` una directory adatta per il vostro file di yowindow."
 
 # b3ed0cdc9bcd4193b9f6ea38ace584d2
-#: ../../doc_src/guides/integration.rst:34
+#: ../../doc_src/guides/integration.rst:35
 msgid "Add the yowindow template to the ``[live]`` tasks in ``weather.ini``. Set its flags to ``'L'`` so the result is copied to your local directory instead of being uploaded to an ftp site::"
 msgstr "Aggiungere il modello yowindow per le attività di ``[live]`` in ``weather.ini``. Impostare il flag ``'L'`` così il risultato è copiato in una directory locale invece di essere caricata su un sito ftp::"
 
 # 3d367277118741efbfb8cdbc339438c2
-#: ../../doc_src/guides/integration.rst:38
+#: ../../doc_src/guides/integration.rst:39
 msgid "Restart pywws live logging."
 msgstr "Riavviare pywws in registrazione 'live'."
 
 # d4db0599ef964eb7b389d1dce3a18979
-#: ../../doc_src/guides/integration.rst:39
+#: ../../doc_src/guides/integration.rst:41
 msgid "You can check the file is being updated every 48 seconds by using ``more`` or ``cat`` to dump it to the screen."
 msgstr "È possibile controllare se il file è aggiornato ogni 48 secondi usando ``more`` o ``cat`` per visualizzare sullo schermo il file."
 
 # c4c82e1a422041a3a016e35669dc3b40
-#: ../../doc_src/guides/integration.rst:41
+#: ../../doc_src/guides/integration.rst:43
 msgid "Finally configure yowindow to use this file. See `<http://yowindow.com/pws_setup.php>`_ for instructions on how to do this."
 msgstr "Infine configurare yowindow per utilizzare questo file. Vedere `<http://yowindow.com/pws_setup.php>`_ per le istruzioni su come effettuare questa operazione."
 
 # 5edec64149af427f90c33e90764e61a8
-#: ../../doc_src/guides/integration.rst:45
+#: ../../doc_src/guides/integration.rst:47
 msgid "Twitter"
 msgstr ""
 
 # 87745065220f4110a6a34736dd73ac47
-#: ../../doc_src/guides/integration.rst:47
+#: ../../doc_src/guides/integration.rst:49
 msgid "See :doc:`twitter` for full instructions."
 msgstr "Vedere :doc:`twitter` per le istruzioni complete. "
 
 # c980b8708b38424d82d2d5e1ec3a84f6
-#: ../../doc_src/guides/integration.rst:50
+#: ../../doc_src/guides/integration.rst:52
 msgid "Weather Underground"
 msgstr ""
 
 # 9c7b4437d9ba4b3a8de7a217d55ee787
-#: ../../doc_src/guides/integration.rst:52
+#: ../../doc_src/guides/integration.rst:54
 msgid "`Weather Underground <http://www.wunderground.com/>`_ (or Wunderground) is one of the longest established weather websites in the world. Like many other such services, pywws can send weather data to it over the internet. The :py:mod:`pywws.toservice` module handles this communication for a range of online services."
 msgstr "`Weather Underground <http://www.wunderground.com/>`_ (or Wunderground) è uno dei più longevi siti meteo nel mondo. Come molti altri tali servizi, pywws può inviare i dati meteo in internet. Il :py:mod:`pywws.toservice` modulo gestisce la comunicazione per una serie di servizi on line."
 
 # 2c022250ade74ccfa8a3bac11f60401e
-#: ../../doc_src/guides/integration.rst:56
+#: ../../doc_src/guides/integration.rst:58
 msgid "The first step is to set up a Weather Underground account at `<http://www.wunderground.com/members/signup.asp>`_. Then use the \"Add A Station\" form to provide details of your station such as its location and type. You should then get a station ID and password -- make a note of these."
 msgstr "Il primo passo è di impostare un account Weather Underground in `<http://www.wunderground.com/members/signup.asp>`_.  Quindi utilizzare la scheda \"Add A Station\" e fornire dettagli della stazione come la sua posizione e il tipo. Si dovrebbe quindi avere una stazione ID e password, prendere nota di questi. "
 
 # 7cc3ddc7d2454ee0bc11cbaf3c8c917a
-#: ../../doc_src/guides/integration.rst:60
+#: ../../doc_src/guides/integration.rst:62
 msgid "Now stop any pywws software that's running, then try using :py:mod:`pywws.toservice` directly::"
 msgstr "Ora arrestare qualsiasi pywws software in esecuzione, quindi provare a utilizzare direttamente :py:mod:`pywws.toservice`::"
 
 # 4adb8eac747a4631bdcc2e2258b9f6c5
-#: ../../doc_src/guides/integration.rst:63
+#: ../../doc_src/guides/integration.rst:66
 msgid "This should fail, as you haven't set the station ID or password yet, but it creates entries in ``weather.ini`` for you to edit. Edit ``weather.ini`` and find the ``[underground]`` section::"
 msgstr "Questo deve fallire, siccome non è stata impostata la stazione ID e la password, ma crea le voci in ``weather.ini`` per la modifica. Modificare ``weather.ini`` e la sezione ``[underground]``::"
 
 # cefa9f0b614946fa9be31e8afae4cb3b
-#: ../../doc_src/guides/integration.rst:69
+#: ../../doc_src/guides/integration.rst:73
 msgid "Replace the ``unknown`` values with your station ID and password."
 msgstr "Sostituire i valori ``unknown`` con stazione ID e password."
 
 # 8024f6aa36d64dc0ba70f9d4a8b8c60c
-#: ../../doc_src/guides/integration.rst:71
+#: ../../doc_src/guides/integration.rst:75
 msgid "Now try :py:mod:`pywws.toservice` again::"
 msgstr "Ora provate dinuovo :py:mod:`pywws.toservice`::"
 
 # f913b1888b854d7293d6371858af8e62
-#: ../../doc_src/guides/integration.rst:74
+#: ../../doc_src/guides/integration.rst:79
 msgid "If this worked then you can upload your last 7 days worth of data. Note that this might take quite a long time, especially if you have a short 'logging interval'. First edit ``status.ini`` and remove the ``underground`` entry from the ``[last update]`` section. Then run :py:mod:`pywws.toservice` with the 'catchup' option, and high verbosity so you can see it working::"
 msgstr "Se questo ha funzionato, allora è possibile caricare i vostri ultimi 7 giorni di dati. Si noti che questo potrebbe richiedere molto tempo, soprattutto se avete una breve 'intervallo di registrazione'. In primo luogo modificare ``status.ini`` e rimuovere la voce ``underground`` nella sezione ``[last update]``. Quindi eseguire :py:mod:`pywws.toservice` con l'opzione 'catchup' e l'elevato livello di dettaglio così può vederla lavorare:: "
 
 # 646cf0d1628c40a8a059f917c405883a
-#: ../../doc_src/guides/integration.rst:80
+#: ../../doc_src/guides/integration.rst:86
 msgid "Once everything is working, you can add 'underground' to the ``[logged]`` tasks section in ``weather.ini``::"
 msgstr "Una volta che tutto funziona, è possibile aggiungere 'underground' alla sezione ``[logged]`` nel file ``weather.ini``::"
 
 # 5521f4b22fa049a49718a6dfe5a8eb3d
-#: ../../doc_src/guides/integration.rst:85
+#: ../../doc_src/guides/integration.rst:92
 msgid "\"RapidFire\" updates"
 msgstr "\"RapidFire\" aggiornamenti"
 
 # 10d9dfd7f8fa43fa8dd91ab415578b47
-#: ../../doc_src/guides/integration.rst:86
+#: ../../doc_src/guides/integration.rst:93
 msgid "Weather Underground has a second upload URL for real time updates as little as 2.5 seconds apart. If you run pywws in 'live logging' mode (see :doc:`livelogging`) you can use this to send updates every 48 seconds, by adding 'underground_rf' to the ``[live]`` tasks section in ``weather.ini``::"
 msgstr "Weather Underground ha un secondo upload URL per aggiornamenti in tempo reale appena 2,5 secondi. Se si esegue pywws con 'live logging' (vedere :doc:`livelogging`) è possibile utilizzare questa opzione per inviare gli aggiornamenti ogni 48 secondi, con l'aggiunta di 'underground_rf' nella sezione ``[live]`` delle attività ``weather.ini``::"
 
 # 50abd33be12b4fe69598dc4ee488954d
-#: ../../doc_src/guides/integration.rst:91
+#: ../../doc_src/guides/integration.rst:99
 msgid "It is not clear if Weather Underground approves of sending both RapidFire and normal updates for the same station. (See `<http://wiki.wunderground.com/index.php/PWS_-_Upload_Protocol#RapidFire_Updates>`_.) If you only use RapidFire there is a possibility of gaps in the history if your station goes \"off air\" for some reason."
 msgstr "Non è chiaro se Weather Underground approva l'invio normale RapidFire e aggiornamenti per la stessa stazione. (Vedi `<http://wiki.wunderground.com/index.php/PWS_-_Upload_Protocol#RapidFire_Updates>`_.) Se si utilizzano solo RapidFire c'è la possibilità di lacune nella continuità dei dati se la stazione \"off air\" per qualche motivo."
 
 # ca0a81d5de3349e49f1554bf25f71c80
 #: ../../doc_src/guides/language.rst:20
 msgid "How to use pywws in another language"
-msgstr "Come utilizzare pywws in un'altra lingua "
+msgstr "Come utilizzare pywws in un altra lingua "
 
 # be7fc1c3fa7841beb2e5cd09a7d013cf
 #: ../../doc_src/guides/language.rst:25
@@ -858,7 +863,7 @@ msgstr "Non dimenticate di fare questo ogni volta che si modifica un file di lin
 # 16f3231111cb4e9c883cf073c5199689
 #: ../../doc_src/guides/language.rst:88
 msgid "Test the pywws translation"
-msgstr ""
+msgstr "Controllare la traduzione pywws"
 
 # c29abb7027614bef8bbeba4fa510efa7
 #: ../../doc_src/guides/language.rst:90
@@ -1035,40 +1040,30 @@ msgstr "Questo memorizza l'id di processo del :py:mod:`~pywws.LiveLog` del pidfi
 msgid "How to configure pywws to post messages to Twitter"
 msgstr "Come configurare pywws per pubblicare messaggi su Twitter"
 
-# 97152a868a804754863984cd239fb234
+# 18b5327ab8234ce288bd210f022ac281
 #: ../../doc_src/guides/twitter.rst:25
-msgid "Python 2.5+ - http://python.org/ (Note: Python 3 is not supported.)"
-msgstr "Python 2.5+ - http://python.org/ (Nota: Python 3 non è supportato.)"
-
-# d0739451579e43edafa6336a6c5450c3
-#: ../../doc_src/guides/twitter.rst:26
-msgid "tweepy 2.0+ - https://github.com/tweepy/tweepy"
-msgstr ""
-
-# 0d1e1e0b09044825bc51e0e3c3ea2ef6
-#: ../../doc_src/guides/twitter.rst:27
-msgid "simplejson - http://pypi.python.org/pypi/simplejson/"
-msgstr ""
-
-# d5794b5820794ad5842f425f0b0762b5
-#: ../../doc_src/guides/twitter.rst:29
-msgid "Note that simplejson is included in Python 2.6+"
-msgstr "Si noti che simplejson è incluso in Python 2.6+"
+msgid "Posting to Twitter requires some extra software. See :doc:`../essentials/dependencies` - :ref:`dependencies-twitter`."
+msgstr "Postare su Twitter richiede alcuni software aggiuntivi. Vedere :doc:`../essentials/dependencies` - :ref:`dependencies-twitter`."
 
 # 2ef9573a2451430a82c16745b0c591c9
-#: ../../doc_src/guides/twitter.rst:32
+#: ../../doc_src/guides/twitter.rst:29
 msgid "Create a Twitter account"
 msgstr "Creare un account su Twitter"
 
 # 3295b60abba346328a664b51d5fad785
-#: ../../doc_src/guides/twitter.rst:34
+#: ../../doc_src/guides/twitter.rst:31
 msgid "You could post weather updates to your 'normal' Twitter account, but I think it's better to have a separate account just for weather reports. This could be useful to someone who lives in your area, but doesn't want to know what you had for breakfast."
 msgstr "Si potrebbero postare aggiornamenti meteo all'account 'normale' di Twitter, ma penso che sia meglio avere un conto separato solo per i bollettini meteo. Questo potrebbe essere utile a qualcuno che vive nella tua zona, ma non vuole sapere quello che avevi per la prima colazione."
 
 # 457b5bf59d2f49e4ab370e887b8226ca
-#: ../../doc_src/guides/twitter.rst:38
+#: ../../doc_src/guides/twitter.rst:35
 msgid "Authorise pywws to post to your Twitter account"
 msgstr "Autorizzare pywws per inviare al tuo account di Twitter"
+
+# 09a6dcf4a9774ea49afaf4cb8f8e45ec
+#: ../../doc_src/guides/twitter.rst:37
+msgid "If you run pywws on a low power device such as a router, you may find it easier to run this authorisation step on another computer, as long as it has ``python-oauth2`` installed. Use an empty 'data' directory -- a ``weather.ini`` file will be created whose contents can be copied into your real ``weather.ini`` file using any text editor."
+msgstr "Se si esegue pywws su un dispositivo di bassa potenza come un router, potrebbe essere più facile per eseguire questo passaggio di autorizzazione su un altro computer, sempre che ci sia `` python-oauth2 `` installato. Utilizzare una directory 'data' vuota -- il file ``weather.ini`` verrà creato i cui contenuti possono essere copiati nel file ``weather.ini`` reale utilizzando qualsiasi editor di testo."
 
 # 0838ffc1f34d431cbcf3349f8058af60
 #: ../../doc_src/guides/twitter.rst:40
@@ -1136,14 +1131,19 @@ msgid "Edit your ``weather.ini`` file and edit the ``[hourly]`` section. For exa
 msgstr "Modificare il file ``weather.ini`` e modificare la sezione ``[hourly]``. Ad esempio::"
 
 # 1b15c43123834f4fbb18c106821075db
-#: ../../doc_src/guides/twitter.rst:95
+#: ../../doc_src/guides/twitter.rst:96
 msgid "Note the use of the ``'T'`` flag -- this tells pywws to tweet the template result instead of uploading it to your ftp site."
 msgstr "Si noti l'uso del flag ``'T'`` -- questo dice a pywws si inviare il risultato a tweet invece di caricarlo sul il sito ftp."
 
 # c6dcd722ad22467bac1335bc009a2812
-#: ../../doc_src/guides/twitter.rst:97
+#: ../../doc_src/guides/twitter.rst:98
 msgid "You could change the ``[logged]``, ``[12 hourly]`` or ``[daily]`` sections instead, but I think ``[hourly]`` is most appropriate for Twitter updates."
 msgstr "Invece si potrebbe cambiare le sezioni ``[logged]``, ``[12 hourly]`` o ``[daily]``, ma credo che ogni ``[hourly]`` è più appropriato per gli aggiornamenti di Twitter."
+
+# fe1e82d2865a403b9e88c84a07b59f42
+#: ../../doc_src/guides/twitter.rst:100
+msgid "added the ``'T'`` flag. Previously Twitter templates were listed separately in ``twitter`` entries in the ``[hourly]`` and other sections. The older syntax still works, but is deprecated."
+msgstr "Aggiunto il flag ``'T'``. Già modelli Twitter sono stati indicati in voci ``twitter`` separatamente in ``[hourly]`` e di altre sezioni. La sintassi precedente funziona ancora, ma è obsoleta."
 
 # eefcfa93f27c41ae9c578118fec522a5
 #: ../../doc_src/guides/weather_ini.rst:20
@@ -1493,3 +1493,11 @@ msgstr "last update: data e ora del completamento delle attività più recenti"
 #: ../../doc_src/guides/weather_ini.rst:284
 msgid "These record date & time of the last successful completion of various tasks. They are used to allow unsuccessful tasks (e.g. network failure preventing uploads) to be retried after a few minutes."
 msgstr "Questi record data & ora sono dell'ultimo completamento riuscito delle varie attività. Essi sono utilizzati per consentire alle attività infruttuose (per esempio mancanza di rete prevenzione upload) ad essere riprovata dopo pochi minuti."
+
+# 97152a868a804754863984cd239fb234
+#~ msgid "Python 2.5+ - http://python.org/ (Note: Python 3 is not supported.)"
+#~ msgstr "Python 2.5+ - http://python.org/ (Nota: Python 3 non è supportato.)"
+
+# d5794b5820794ad5842f425f0b0762b5
+#~ msgid "Note that simplejson is included in Python 2.6+"
+#~ msgstr "Si noti che simplejson è incluso in Python 2.6+"
