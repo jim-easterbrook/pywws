@@ -236,7 +236,8 @@ class RegularTasks(object):
             if not os.path.isdir(self.local_dir):
                 os.makedirs(self.local_dir)
             for file in local_files:
-                targ = os.path.join(self.local_dir, file)
+                targ = os.path.join(
+                    self.local_dir, os.path.basename(file))
                 if os.path.exists(targ):
                     os.unlink(targ)
                 shutil.move(file, self.local_dir)
@@ -246,7 +247,8 @@ class RegularTasks(object):
                     raise RuntimeError('upload thread has terminated')
                 self.uploads_lock.acquire()
             for file in uploads:
-                targ = os.path.join(self.uploads_directory, file)
+                targ = os.path.join(
+                    self.uploads_directory, os.path.basename(file))
                 if os.path.exists(targ):
                     os.unlink(targ)
                 shutil.move(file, self.uploads_directory)
