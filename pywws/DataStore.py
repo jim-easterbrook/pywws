@@ -38,7 +38,7 @@ For example, to access the hourly data for Christmas day 2009, one
 might do the following::
 
   from datetime import datetime
-  import DataStore
+  from pywws import DataStore
   hourly = DataStore.hourly_store('weather_data')
   for data in hourly[datetime(2009, 12, 25):datetime(2009, 12, 26)]:
       print data['idx'], data['temp_out']
@@ -51,6 +51,9 @@ Some more examples of data access::
   data[datetime.min:datetime.max]
   # get last 12 hours worth of data
   data[datetime.utcnow() - timedelta(hours=12):]
+
+Note that the :py:class:`datetime.datetime` index is in UTC. You may
+need to apply an offset to convert to local time.
 
 The module provides five classes to store different data.
 :py:class:`data_store` takes "raw" data from the weather station;
@@ -197,8 +200,10 @@ class core_store(object):
                 dirs.reverse()
                 continue
             break
+
     def __del__(self):
         self.flush()
+
     def _slice(self, i):
         if i.step != None:
             raise TypeError("slice step not permitted")
@@ -218,6 +223,7 @@ class core_store(object):
         else:
             lst_day = min(b.toordinal() + 1, self._lst_day)
         return a, b, lst_day
+
     def _get_slice(self, i):
         a, b, lst_day = self._slice(i)
         # go to start of slice
@@ -241,6 +247,7 @@ class core_store(object):
             yield cache[cache_ptr]
             cache_ptr += 1
         return
+
     def __getitem__(self, i):
         """Return the data item or items with index i.
 
@@ -255,6 +262,7 @@ class core_store(object):
             self._cache[self._cache_ptr]['idx'] != i):
             raise KeyError(i)
         return self._cache[self._cache_ptr]
+
     def __setitem__(self, i, x):
         """Store a value x with index i.
 
@@ -274,6 +282,7 @@ class core_store(object):
         else:
             self._cache.insert(self._cache_ptr, x)
         self._cache_dirty = True
+
     def _del_slice(self, i):
         a, b, lst_day = self._slice(i)
         # go to start of slice
@@ -290,6 +299,7 @@ class core_store(object):
             del self._cache[self._cache_ptr]
             self._cache_dirty = True
         return
+
     def __delitem__(self, i):
         """Delete the data item or items with index i.
 
@@ -305,6 +315,7 @@ class core_store(object):
             raise KeyError(i)
         del self._cache[self._cache_ptr]
         self._cache_dirty = True
+
     def before(self, idx):
         """Return datetime of newest existing data record whose
         datetime is < idx.
@@ -322,6 +333,7 @@ class core_store(object):
                 return self._cache[self._cache_ptr - 1]['idx']
             day = self._cache_lo - 1
         return None
+
     def after(self, idx):
         """Return datetime of oldest existing data record whose
         datetime is >= idx.
@@ -339,6 +351,7 @@ class core_store(object):
                 return self._cache[self._cache_ptr]['idx']
             day = self._cache_hi
         return None
+
     def nearest(self, idx):
         """Return datetime of record whose datetime is nearest idx."""
         hi = self.after(idx)
@@ -350,11 +363,13 @@ class core_store(object):
         if abs(hi - idx) < abs(lo - idx):
             return hi
         return lo
+
     def _set_cache_ptr(self, i):
         day = i.toordinal()
         if day < self._cache_lo or day >= self._cache_hi:
             self._load(i)
         self._cache_ptr = self._binary_search(i, self._cache_ptr)
+
     def _binary_search(self, idx, start):
         hi = len(self._cache) - 1
         if hi < 0 or self._cache[0]['idx'] >= idx:
@@ -374,6 +389,7 @@ class core_store(object):
             else:
                 hi = mid
         return hi
+
     def _load(self, target_date):
         self.flush()
         self._cache = []
@@ -393,6 +409,7 @@ class core_store(object):
                     else:
                         result[key] = self.conv[key](value)
                 self._cache.append(result)
+
     def flush(self):
         if not self._cache_dirty:
             return
@@ -415,6 +432,7 @@ class core_store(object):
             for key in self.key_list[0:len(data)]:
                 row.append(data[key])
             writer.writerow(row)
+
     def _get_cache_path(self, target_date):
         # default implementation - one file per day
         path = os.path.join(self._root_dir,
@@ -424,10 +442,12 @@ class core_store(object):
         lo = target_date.toordinal()
         hi = lo + 1
         return path, lo, hi
+
 class data_store(core_store):
     """Stores raw weather station data."""
     def __init__(self, root_dir):
         core_store.__init__(self, os.path.join(root_dir, 'raw'))
+
     key_list = [
         'idx', 'delay', 'hum_in', 'temp_in', 'hum_out', 'temp_out',
         'abs_pressure', 'wind_ave', 'wind_gust', 'wind_dir', 'rain',
@@ -449,10 +469,12 @@ class data_store(core_store):
         'illuminance'  : float,
         'uv'           : int,
         }
+
 class calib_store(core_store):
     """Stores 'calibrated' weather station data."""
     def __init__(self, root_dir):
         core_store.__init__(self, os.path.join(root_dir, 'calib'))
+
     key_list = [
         'idx', 'delay', 'hum_in', 'temp_in', 'hum_out', 'temp_out',
         'abs_pressure', 'rel_pressure', 'wind_ave', 'wind_gust', 'wind_dir',
@@ -475,10 +497,12 @@ class calib_store(core_store):
         'illuminance'  : float,
         'uv'           : int,
         }
+
 class hourly_store(core_store):
     """Stores hourly summary weather station data."""
     def __init__(self, root_dir):
         core_store.__init__(self, os.path.join(root_dir, 'hourly'))
+
     key_list = [
         'idx', 'hum_in', 'temp_in', 'hum_out', 'temp_out',
         'abs_pressure', 'rel_pressure', 'pressure_trend',
@@ -500,10 +524,12 @@ class hourly_store(core_store):
         'illuminance'       : float,
         'uv'                : int,
         }
+
 class daily_store(core_store):
     """Stores daily summary weather station data."""
     def __init__(self, root_dir):
         core_store.__init__(self, os.path.join(root_dir, 'daily'))
+
     key_list = [
         'idx', 'start',
         'hum_out_ave',
@@ -570,6 +596,7 @@ class daily_store(core_store):
         'uv_max'             : int,
         'uv_max_t'           : safestrptime,
         }
+
     def _get_cache_path(self, target_date):
         # one file per month
         path = os.path.join(self._root_dir,
@@ -581,10 +608,12 @@ class daily_store(core_store):
         else:
             hi = lo.replace(year=lo.year+1, month=1)
         return path, lo.toordinal(), hi.toordinal()
+
 class monthly_store(core_store):
     """Stores monthly summary weather station data."""
     def __init__(self, root_dir):
         core_store.__init__(self, os.path.join(root_dir, 'monthly'))
+
     key_list = [
         'idx', 'start',
         'hum_out_ave',
@@ -679,6 +708,7 @@ class monthly_store(core_store):
         'uv_max_hi_t'          : safestrptime,
         'uv_max_ave'           : float,
         }
+
     def _get_cache_path(self, target_date):
         # one file per year
         path = os.path.join(self._root_dir,
