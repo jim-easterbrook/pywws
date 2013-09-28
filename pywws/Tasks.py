@@ -356,7 +356,7 @@ class RegularTasks(object):
                 self.service_start[name] = data['idx'] + timedelta(seconds=30)
                 self.service_queued[name] += 1
         else:
-            service.Upload(live_data is None, live_data)
+            service.Upload(live_data=live_data)
 
     def do_twitter(self, template, data=None):
         if not self.twitter:

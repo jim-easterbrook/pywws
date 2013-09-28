@@ -383,14 +383,19 @@ class ToService(object):
         :rtype: dict
         
         """
+        if not start:
+            if live_data:
+                start = datetime.max
+            else:
+                start = self.data.before(datetime.max)
+        if live_data:
+            stop = live_data['idx'] - timedelta(seconds=48)
+        else:
+            stop = None
+        for data in self.data[start:stop]:
+            yield data
         if live_data:
             yield live_data
-        elif start:
-            for data in self.data[start:]:
-                yield data
-        else:
-            # use most recent logged data
-            yield self.data[self.data.before(datetime.max)]
 
     def catchup_start(self):
         """Get datetime of first 'catchup' record to send.
@@ -411,7 +416,7 @@ class ToService(object):
             start = max(start, last_update + timedelta(seconds=30))
         return start
 
-    def Upload(self, catchup, live_data=None):
+    def Upload(self, catchup=True, live_data=None):
         """Upload one or more weather data records.
 
         This method uploads either the most recent weather data
@@ -477,7 +482,7 @@ def main(argv=None):
     logger = ApplicationLogger(verbose)
     return ToService(
         DataStore.params(args[0]), DataStore.status(args[0]),
-        DataStore.calib_store(args[0]), args[1]).Upload(catchup)
+        DataStore.calib_store(args[0]), args[1]).Upload(catchup=catchup)
 
 if __name__ == "__main__":
     sys.exit(main())
