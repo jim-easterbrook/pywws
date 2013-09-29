@@ -32,7 +32,7 @@ from pywws.calib import Calib
 from pywws import Plot
 from pywws import Template
 from pywws.TimeZone import Local
-from pywws.toservice import ToService
+from pywws.toservice import ToService, FIVE_MINS, FIFTY_SECS
 from pywws import Upload
 from pywws import WindRose
 from pywws import YoWindow
@@ -266,7 +266,7 @@ class RegularTasks(object):
                     break
                 if message[0] == 'service':
                     name, timestamp = message[1:]
-                    self.status.set('last update', name, timestamp)
+                    self.services[name].set_status(timestamp)
                     self.service_queued[name] -= 1
         return OK
 
@@ -351,9 +351,14 @@ class RegularTasks(object):
                 coded_data = service.encode_data(data)
                 if not coded_data:
                     continue
-                self.to_thread.put(
-                    ('service', name, data['idx'].isoformat(' '), coded_data))
-                self.service_start[name] = data['idx'] + timedelta(seconds=30)
+                self.to_thread.put(('service', name, data['idx'], coded_data))
+                self.service_start[name] = data['idx'] + FIFTY_SECS
+                parent = service.parent
+                if parent:
+                    last_update = self.status.get_datetime(
+                        'last update', parent)
+                    if last_update and last_update >= data['idx'] - FIVE_MINS:
+                        self.service_start[parent] = data['idx'] + FIFTY_SECS
                 self.service_queued[name] += 1
         else:
             service.Upload(live_data=live_data)

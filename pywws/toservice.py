@@ -226,6 +226,7 @@ from pywws.Logger import ApplicationLogger
 from pywws import Template
 
 FIVE_MINS = timedelta(minutes=5)
+FIFTY_SECS = timedelta(seconds=50)
 
 class ToService(object):
     """Upload weather data to weather services such as Weather
@@ -260,6 +261,10 @@ class ToService(object):
         # 'derived' services such as 'underground_rf' share their
         # parent's config and templates
         config_section = self.service_name.split('_')[0]
+        if config_section == self.service_name:
+            self.parent = None
+        else:
+            self.parent = config_section
         self.old_response = None
         self.old_ex = None
         # set default socket timeout, so urlopen calls don't hang forever
@@ -389,13 +394,22 @@ class ToService(object):
             else:
                 start = self.data.before(datetime.max)
         if live_data:
-            stop = live_data['idx'] - timedelta(seconds=48)
+            stop = live_data['idx'] - FIFTY_SECS
         else:
             stop = None
         for data in self.data[start:stop]:
             yield data
         if live_data:
             yield live_data
+
+    def set_status(self, timestamp):
+        self.status.set(
+            'last update', self.service_name, timestamp.isoformat(' '))
+        if self.parent:
+            last_update = self.status.get_datetime('last update', self.parent)
+            if last_update and last_update >= timestamp - FIVE_MINS:
+                self.status.set(
+                    'last update', self.parent, timestamp.isoformat(' '))
 
     def catchup_start(self):
         """Get datetime of first 'catchup' record to send.
@@ -405,7 +419,7 @@ class ToService(object):
         """
         if self.catchup <= 0:
             return None
-        start = datetime.utcnow() - timedelta(days=self.catchup)
+        start = datetime.utcnow() - FIFTY_SECS
         last_update = self.params.get_datetime(self.service_name, 'last update')
         if last_update:
             self.params.unset(self.service_name, 'last update')
@@ -413,7 +427,11 @@ class ToService(object):
                             last_update.isoformat(' '))
         last_update = self.status.get_datetime('last update', self.service_name)
         if last_update:
-            start = max(start, last_update + timedelta(seconds=30))
+            start = max(start, last_update + FIFTY_SECS)
+        if self.parent:
+            last_update = self.status.get_datetime('last update', self.parent)
+            if last_update:
+                start = max(start, last_update + FIFTY_SECS)
         return start
 
     def Upload(self, catchup=True, live_data=None):
@@ -446,8 +464,7 @@ class ToService(object):
                 continue
             if not self.send_data(coded_data):
                 return False
-            self.status.set('last update', self.service_name,
-                            data['idx'].isoformat(' '))
+            self.set_status(data['idx'])
             count += 1
         if count > 1:
             self.logger.info('%d records sent', count)
