@@ -70,6 +70,10 @@ You must update all your stored data by running :py:mod:`pywws.Reprocess` after 
 The initial value is copied from the weather station, assuming you have set it up to display the correct relative pressure, but you can adjust the value in weather.ini to calibrate your station.
 You must update all your stored data by running :py:mod:`pywws.Reprocess` after you change this value.
 
+.. versionchanged:: 13.10_r1082
+   made ``pressure offset`` a config item.
+   Previously it was always read from the weather station.
+
 ``gnuplot encoding`` is the text encoding used when plotting graphs. The default value of ``iso_8859_1`` allows the degree symbol, which is useful in a weather application! Other values might be needed if your language includes accented characters. The possible values depend on your gnuplot installation so some experimentation may be needed.
 
 ``template encoding`` is the text encoding used for templates.

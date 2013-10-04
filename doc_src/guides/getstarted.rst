@@ -240,6 +240,10 @@ If you change the pressure offset or day end hour in future, you must update all
 
 For more detail on the configuration file options, see :doc:`../guides/weather_ini`.
 
+.. versionchanged:: 13.10_r1082
+   made ``pressure offset`` a config item.
+   Previously it was always read from the weather station.
+
 Process the raw data
 --------------------
 
