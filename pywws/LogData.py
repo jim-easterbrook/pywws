@@ -116,21 +116,11 @@ def CheckFixedBlock(ws, params, status, logger):
     # store weather station type
     params.set('config', 'ws type', ws.ws_type)
     # store info from fixed block
-    pressure_offset = fixed_block['rel_pressure'] - fixed_block['abs_pressure']
-    old_offset = eval(status.get('fixed', 'pressure offset', 'None'))
-    if old_offset and abs(old_offset - pressure_offset) > 0.01:
-        # re-read fixed block, as can get incorrect values
-        logger.warning('Re-read fixed block')
-        fixed_block = ws.get_fixed_block(unbuffered=True)
-        if not fixed_block:
-            return None
-        pressure_offset = fixed_block['rel_pressure'] - fixed_block['abs_pressure']
-    if old_offset and abs(old_offset - pressure_offset) > 0.01:
-        logger.warning(
-            'Pressure offset change: %g -> %g', old_offset, pressure_offset)
-    params.unset('fixed', 'pressure offset')
+    status.unset('fixed', 'pressure offset')
+    if not params.get('config', 'pressure offset'):
+        params.set('config', 'pressure offset', '%g' % (
+            fixed_block['rel_pressure'] - fixed_block['abs_pressure']))
     params.unset('fixed', 'fixed block')
-    status.set('fixed', 'pressure offset', '%g' % (pressure_offset))
     status.set('fixed', 'fixed block', str(fixed_block))
     return fixed_block
 

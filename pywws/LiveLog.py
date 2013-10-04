@@ -106,7 +106,7 @@ def LiveLog(data_dir):
                     Catchup(ws, logger, raw_data, now, ptr)
                 next_ptr = ws.inc_ptr(ptr)
                 # process new data
-                Process.Process(params, status, raw_data, calib_data,
+                Process.Process(params, raw_data, calib_data,
                                 hourly_data, daily_data, monthly_data)
                 # do tasks
                 tasks.do_tasks()
@@ -117,6 +117,8 @@ def LiveLog(data_dir):
                     raw_data.flush()
             else:
                 tasks.do_live(data)
+    except Exception, ex:
+        logger.exception(ex)
     finally:
         tasks.stop_thread()
     return 0

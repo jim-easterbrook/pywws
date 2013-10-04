@@ -43,8 +43,8 @@ Create a plain text file in your ``modules`` directory, e.g.
 ``calib.py`` and copy the following text into it::
 
     class Calib(object):
-        def __init__(self, status):
-            self.pressure_offset = eval(status.get('fixed', 'pressure offset'))
+        def __init__(self, params):
+            self.pressure_offset = eval(params.get('config', 'pressure offset'))
         def calib(self, raw):
             result = dict(raw)
             # sanitise data
@@ -95,12 +95,13 @@ class DefaultCalib(object):
     """Default calibration class.
 
     This class sets the relative pressure, using a pressure offset
-    read from the weather station, and 'sanitises' the wind direction
-    value. This is the bare minimum 'calibration' required.
+    originally read from the weather station, and 'sanitises' the wind
+    direction value. This is the bare minimum 'calibration' required.
 
     """
-    def __init__(self, status):
-        self.pressure_offset = eval(status.get('fixed', 'pressure offset'))
+    def __init__(self, params):
+        self.pressure_offset = eval(params.get('config', 'pressure offset'))
+
     def calib(self, raw):
         result = dict(raw)
         # sanitise data
@@ -124,7 +125,7 @@ class Calib(object):
 
     """
     calibrator = None
-    def __init__(self, params, status):
+    def __init__(self, params):
         global usercalib
         self.logger = logging.getLogger('pywws.Calib')
         if not Calib.calibrator:
@@ -136,8 +137,8 @@ class Calib(object):
                 module = os.path.splitext(module)[0]
                 usercalib = __import__(
                     module, globals(), locals(), ['Calib'])
-                Calib.calibrator = usercalib.Calib(status)
+                Calib.calibrator = usercalib.Calib(params)
             else:
                 self.logger.info('Using default calibration')
-                Calib.calibrator = DefaultCalib(status)
+                Calib.calibrator = DefaultCalib(params)
         self.calib = Calib.calibrator.calib

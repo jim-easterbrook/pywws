@@ -108,7 +108,7 @@ Add the names of your template files to the appropriate entries, for example::
    plot = ['28days.png.xml']
    text = [('forecast.txt', 'T'), 'allmonths.txt']
 
-Note the use of the ``'T'`` flag -- this tells pywws to tweet the template result instead of uploading it to your ftp site.
+Note the use of the ``'T'`` flag -- this tells pywws to send the template result to Twitter instead of uploading it to your ftp site.
 
 .. versionchanged:: 13.06_r1015
    added the ``'T'`` flag.

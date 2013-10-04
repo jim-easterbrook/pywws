@@ -69,14 +69,13 @@ def Reprocess(data_dir):
     # create data summaries
     print 'Generating hourly and daily summaries'
     params = DataStore.params(data_dir)
-    status = DataStore.status(data_dir)
     raw_data = DataStore.data_store(data_dir)
     calib_data = DataStore.calib_store(data_dir)
     hourly_data = DataStore.hourly_store(data_dir)
     daily_data = DataStore.daily_store(data_dir)
     monthly_data = DataStore.monthly_store(data_dir)
     Process.Process(
-        params, status,
+        params,
         raw_data, calib_data, hourly_data, daily_data, monthly_data)
     return 0
 

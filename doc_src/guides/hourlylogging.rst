@@ -102,7 +102,7 @@ Add the names of your template files and weather services to the appropriate ent
    plot = ['28days.png.xml']
    text = [('forecast.txt', 'T'), 'allmonths.txt']
 
-Note the use of the ``'T'`` flag -- this tells pywws to tweet the template result instead of uploading it to your ftp site.
+Note the use of the ``'T'`` flag -- this tells pywws to send the template result to Twitter instead of uploading it to your ftp site.
 
 You can test that all these are working by removing the ``[last update]`` section from status.ini, then running :py:mod:`~pywws.Hourly` again::
 

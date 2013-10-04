@@ -150,14 +150,12 @@ If you have any other problem, please ask for help on the pywws mailing list: ht
 Set up your weather station
 ---------------------------
 
-If you haven't already done so, set your weather station to display the correct relative atmospheric pressure.
+If you haven't already done so, you should set your weather station to display the correct relative atmospheric pressure.
 (See the manual for details of how to do this.)
-pywws gets the offset between relative and absolute pressure from the station, so this needs to be set before using pywws.
+pywws gets the offset between relative and absolute pressure from the station, so this should be set before using pywws.
 
 You can get the correct relative pressure from your location by looking on the internet for weather reports from a nearby station, ideally an official one such as an airport.
 This is best done during calm weather when the pressure is almost constant over a large area.
-
-If you change the offset at any time, you can update all your stored data by running :py:mod:`pywws.Reprocess`.
 
 Set the weather station logging interval
 ----------------------------------------
@@ -220,6 +218,7 @@ Open this with a text editor. You should find something like the following::
    [config]
    ws type = 1080
    logdata sync = 1
+   pressure offset = 9.4
 
 You need to add a new entry in the ``[config]`` section called ``day end hour``.
 This tells pywws what convention you want to use when calculating daily summary data.
@@ -233,7 +232,11 @@ After editing, your weather.ini file should look something like this::
    [config]
    ws type = 1080
    logdata sync = 1
+   pressure offset = 9.4
    day end hour = 9
+
+You can also edit the ``pressure offset`` value to adjust how pywws calculates the relative (sea level) air pressure from the absolute value that the station measures.
+If you change the pressure offset or day end hour in future, you must update all your stored data by running :py:mod:`pywws.Reprocess`.
 
 For more detail on the configuration file options, see :doc:`../guides/weather_ini`.
 

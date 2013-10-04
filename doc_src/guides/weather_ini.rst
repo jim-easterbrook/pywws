@@ -53,6 +53,7 @@ config: miscellaneous system configuration
  [config]
  ws type = 1080
  day end hour = 21
+ pressure offset = 9.4
  gnuplot encoding = iso_8859_1
  template encoding = iso-8859-1
  language = en
@@ -63,6 +64,11 @@ config: miscellaneous system configuration
 ``ws type`` is the "class" of weather station. It should be set to ``1080`` for most weather stations, or ``3080`` if your station console displays solar illuminance.
  
 ``day end hour`` is the end of the "`meteorological day <http://en.wikipedia.org/wiki/Meteorological_day>`_", in local time without daylight savings time. Typical values are 21, 9, or 24.
+You must update all your stored data by running :py:mod:`pywws.Reprocess` after you change this value.
+
+``pressure offset`` is the difference between absolute and relative (sea level) air pressure.
+The initial value is copied from the weather station, assuming you have set it up to display the correct relative pressure, but you can adjust the value in weather.ini to calibrate your station.
+You must update all your stored data by running :py:mod:`pywws.Reprocess` after you change this value.
 
 ``gnuplot encoding`` is the text encoding used when plotting graphs. The default value of ``iso_8859_1`` allows the degree symbol, which is useful in a weather application! Other values might be needed if your language includes accented characters. The possible values depend on your gnuplot installation so some experimentation may be needed.
 
@@ -75,6 +81,7 @@ If you create templates with a different character set, you should change this v
 ``logdata sync`` sets the quality of synchronisation used by :doc:`../api/pywws.LogData`. Set it to 0 for fast & inaccurate or 1 for slower but precise.
 
 ``rain day threshold`` is the amount of rain (in mm) that has to fall in one day for it to qualify as a rainy day in the monthly summary data.
+You must update all your stored data by running :py:mod:`pywws.Reprocess` after you change this value.
 
 .. versionadded:: 13.09_r1057
    ``asynchrouous`` controls the use of a separate upload thread in :py:mod:`pywws.LiveLog`.
@@ -244,11 +251,7 @@ fixed: values copied from the weather station's "fixed block"
 ::
 
  [fixed]
- pressure offset = 7.4
  fixed block = {...}
-
-``pressure offset`` is the difference between absolute and relative air pressure.
-It is copied from the weather station, assuming you have set it up to display the correct relative pressure.
 
 ``fixed block`` is all the data stored in the first 256 bytes of the station's memory.
 This includes maximum and minimum values, alarm threshold settings, display units and so on.

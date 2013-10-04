@@ -58,7 +58,7 @@ class RegularTasks(object):
         self.local_dir = self.params.get(
             'paths', 'local_files', os.path.expanduser('~/weather/results/'))
         # create calibration object
-        self.calibrator = Calib(self.params, self.status)
+        self.calibrator = Calib(self.params)
         # create templater object
         self.templater = Template.Template(
             self.params, self.status, self.calib_data, self.hourly_data,

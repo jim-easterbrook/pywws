@@ -71,7 +71,7 @@ def Hourly(data_dir):
     # get weather station data
     LogData.LogData(params, status, raw_data)
     # do the processing
-    Process.Process(params, status,
+    Process.Process(params,
                     raw_data, calib_data, hourly_data, daily_data, monthly_data)
     # do tasks
     if not Tasks.RegularTasks(

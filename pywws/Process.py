@@ -514,7 +514,7 @@ class MonthAcc(object):
                  result['%s_max_hi_t' % i]) = self.max_hi[i].result()
         return result
 
-def calibrate_data(logger, params, status, raw_data, calib_data):
+def calibrate_data(logger, params, raw_data, calib_data):
     """'Calibrate' raw data, using a user-supplied function."""
     start = calib_data.before(datetime.max)
     if start is None:
@@ -523,7 +523,7 @@ def calibrate_data(logger, params, status, raw_data, calib_data):
     if start is None:
         return start
     del calib_data[start:]
-    calibrator = Calib(params, status)
+    calibrator = Calib(params)
     count = 0
     for data in raw_data[start:]:
         idx = data['idx']
@@ -695,7 +695,7 @@ def generate_monthly(logger, rain_day_threshold, day_end_hour, time_offset,
         month_start = month_end
     return start
 
-def Process(params, status,
+def Process(params,
             raw_data, calib_data, hourly_data, daily_data, monthly_data):
     """Generate summaries from raw weather station data.
 
@@ -727,7 +727,7 @@ def Process(params, status,
     # get other config
     rain_day_threshold = eval(params.get('config', 'rain day threshold', '0.2'))
     # calibrate raw data
-    start = calibrate_data(logger, params, status, raw_data, calib_data)
+    start = calibrate_data(logger, params, raw_data, calib_data)
     # generate hourly data
     start = generate_hourly(logger, calib_data, hourly_data, start)
     # generate daily data
@@ -763,7 +763,6 @@ def main(argv=None):
     logger = ApplicationLogger(verbose)
     data_dir = args[0]
     return Process(DataStore.params(data_dir),
-                   DataStore.status(data_dir),
                    DataStore.data_store(data_dir),
                    DataStore.calib_store(data_dir),
                    DataStore.hourly_store(data_dir),

@@ -465,7 +465,7 @@ class BasePlotter(object):
         self.daily_data = daily_data
         self.monthly_data = monthly_data
         self.work_dir = work_dir
-        self.pressure_offset = eval(status.get('fixed', 'pressure offset'))
+        self.pressure_offset = eval(params.get('config', 'pressure offset'))
         # set language related stuff
         self.encoding = params.get('config', 'gnuplot encoding', 'iso_8859_1')
         # create work directory
