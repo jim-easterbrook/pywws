@@ -419,7 +419,7 @@ class ToService(object):
         """
         if self.catchup <= 0:
             return None
-        start = datetime.utcnow() - FIFTY_SECS
+        start = datetime.utcnow() - timedelta(days=self.catchup)
         last_update = self.params.get_datetime(self.service_name, 'last update')
         if last_update:
             self.params.unset(self.service_name, 'last update')
