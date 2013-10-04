@@ -48,15 +48,75 @@ Twitter
 
 See :doc:`twitter` for full instructions.
 
+UK Met Office
+-------------
+
+Handled by the :py:mod:`pywws.toservice` module.
+See :ref:`weather-underground` for general setup instructions.
+
+* | Create account:
+  | https://register.metoffice.gov.uk/WaveRegistrationClient/public/register.do?service=weatherobservations
+* API: http://wow.metoffice.gov.uk/support/dataformats#automatic
+* Example ``weather.ini`` section::
+
+    [metoffice]
+    site id = 12345678
+    aws pin = 987654
+
+Open Weather Map
+----------------
+
+Handled by the :py:mod:`pywws.toservice` module.
+See :ref:`weather-underground` for general setup instructions.
+
+* Create account: http://openweathermap.org/login
+* API: http://openweathermap.org/API
+* Example ``weather.ini`` section::
+
+    [openweathermap]
+    lat = 51.501
+    long = -0.142
+    alt = 10
+    user = Elizabeth Windsor
+    password = corgi
+    id = Buck House
+
+The default behaviour is to use your user name to identify the weather station.
+However, it's possible for a user to have more than one weather station, so there is an undocumented ``name`` parameter in the API that can be used to identify the station.
+This appears as ``id`` in ``weather.ini``.
+Make sure you don't choose a name that is already in use.
+
+PWS Weather
+-----------
+
+Handled by the :py:mod:`pywws.toservice` module.
+See :ref:`weather-underground` for general setup instructions.
+
+* Create account: http://www.pwsweather.com/register.php
+* API based on WU protocol: `<http://wiki.wunderground.com/index.php/PWS_-_Upload_Protocol>`_
+* Example ``weather.ini`` section::
+
+    [pwsweather]
+    station = ABCDEFGH1
+    password = xxxxxxx
+
+.. _weather-underground:
+
 Weather Underground
 -------------------
 
+* Create account: http://www.wunderground.com/members/signup.asp
+* API: `<http://wiki.wunderground.com/index.php/PWS_-_Upload_Protocol>`_
+* Example ``weather.ini`` section::
+
+    [underground]
+    station = ABCDEFGH1
+    password = xxxxxxx
+
 `Weather Underground <http://www.wunderground.com/>`_ (or Wunderground) is one of the longest established weather websites in the world.
-Like many other such services, pywws can send weather data to it over the internet.
 The :py:mod:`pywws.toservice` module handles this communication for a range of online services.
 
-The first step is to set up a Weather Underground account at `<http://www.wunderground.com/members/signup.asp>`_.
-Then use the "Add A Station" form to provide details of your station such as its location and type.
+The first step is to set up a Weather Underground account, then use the "Add A Station" form to provide details of your station such as its location and type.
 You should then get a station ID and password -- make a note of these.
 
 Now stop any pywws software that's running, then try using :py:mod:`pywws.toservice` directly::
@@ -96,8 +156,12 @@ If you run pywws in 'live logging' mode (see :doc:`livelogging`) you can use thi
  [live]
  services = ['underground_rf']
 
-It is not clear if Weather Underground approves of sending both RapidFire and normal updates for the same station.
-(See `<http://wiki.wunderground.com/index.php/PWS_-_Upload_Protocol#RapidFire_Updates>`_.)
-If you only use RapidFire there is a possibility of gaps in the history if your station goes "off air" for some reason.
+ [logged]
+ services = ['underground']
+
+Make sure you still have an 'underground' service in ``[logged]`` or ``[hourly]``.
+This will ensure that 'catchup' records are sent to fill in any gaps if your station goes offline for some reason.
+ 
+----
 
 Comments or questions? Please subscribe to the pywws mailing list http://groups.google.com/group/pywws and let us know.
