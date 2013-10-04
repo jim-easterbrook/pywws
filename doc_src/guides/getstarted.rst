@@ -49,6 +49,10 @@ The directories everything gets installed to depend on your operating system and
 The pywws modules are installed in the 'site-packages' directory (e.g. ``/usr/lib/python2.7/site-packages``).
 Typically the scripts are installed in ``/usr/bin``, and the example files are installed in ``/usr/share/pywws``, but other directories (such as ``/usr/local/share``) could be used.
 
+Upgrading pywws is also a one line command::
+
+   sudo pip install pywws -U
+
 Download and extract
 ^^^^^^^^^^^^^^^^^^^^
 
@@ -70,11 +74,14 @@ It is convenient to create a soft link to this awkwardly named directory::
    cd ~/weather
    ln -s pywws-12.11_95babb0 pywws
 
-Alternatively, to get the latest development version of pywws use ``git clone``, then use ``setup.py`` to compile the language files and documentation::
+Alternatively, to get the latest development version of pywws use ``git clone``::
 
    cd ~/weather
    git clone https://github.com/jim-easterbrook/pywws.git
-   cd pywws
+
+After cloning you may want to use ``setup.py`` to compile the language files and documentation, if you have installed the ``gettext`` and ``sphinx`` packages::
+
+   cd ~/weather/pywws
    python setup.py msgfmt
    python setup.py build_sphinx
 
@@ -86,6 +93,15 @@ After downloading and extracting, or cloning the repos, you can then use ``setup
 
 This is optional, and installs into the same directories as using ``pip`` would.
 If you don't do this installation process, you will only be able to run pywws modules from your pywws directory.
+
+Upgrading a cloned repos is done with ``git pull``, after which you can recompile and reinstall if you wish::
+
+   cd ~/weather/pywws
+   git pull
+
+Upgrading a downloaded snapshot is the same process as the first installation.
+Download the .tar.gz or .zip file, extract its contents, then delete the soft link pointing to the old download and create one pointing to the new download.
+Once you are satisfied the new version is working OK you can delete the old download entirely.
 
 (Python 3 users only) Translate pywws to Python 3
 -------------------------------------------------
@@ -158,7 +174,7 @@ Log your weather station data
 -----------------------------
 
 First, choose a directory to store all your weather station data.
-This will be written to quite frequently, so a disk drive is preferable to a memory stick, as these have a limited number of writes.
+This will be written to quite frequently, so a disk drive is preferable to a flash memory stick or card, as these have a limited number of writes.
 In most cases your home directory is suitable, for example::
 
    mkdir ~/weather/data

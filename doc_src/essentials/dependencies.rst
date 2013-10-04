@@ -35,6 +35,9 @@ For example, to install PyUSB from PyPI using the ``pip`` command::
 
   sudo pip install pyusb
 
+Note: some of these libraries may have their own dependencies that you may need to install.
+Follow the links to read more about each library's requirements.
+
 Essential
 ---------
 
@@ -124,5 +127,7 @@ A program called ``Sphinx`` is used to convert this easy to write format into HT
 If you'd like to create a local copy of the documentation (so you don't have to rely on the online version, or to test a translation you're working on) you need to install ``Sphinx``.
 
 *  `sphinx <http://sphinx-doc.org/>`_
+
+----
 
 Comments or questions? Please subscribe to the pywws mailing list http://groups.google.com/group/pywws and let us know.
