@@ -16,6 +16,12 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
+Changes in v13.10:
+    1/ Changed Twitter library from tweepy to python-twitter.
+    2/ Added ability to do uploads asynchronously.
+    3/ Rearranged and improved documentation.
+    4/ Various bug fixes and minor improvements.
+
 Changes in v13.06:
     1/ Substantially rearranged directories, getting rid of 'code' and 'code3'.
     2/ Removed 'makefile' - everything is now done via 'setup.py'.

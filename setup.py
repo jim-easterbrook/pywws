@@ -185,6 +185,7 @@ class msgfmt(Command):
 
 cmdclass = {}
 command_options = {}
+setup_kw = {}
 
 # if using Python 3, translate during build
 try:
@@ -263,6 +264,9 @@ for root, dirs, files in os.walk('examples'):
 
 version = '%s_r%s' % (pywws.version.version, pywws.version.release)
 
+if using_setuptools:
+    setup_kw['include_package_data'] = True
+
 setup(name = 'pywws',
       version = version,
       description = 'Python software for wireless weather stations',
@@ -300,4 +304,5 @@ pages showing recent weather readings, typically updated every hour.
       data_files = data_files,
       cmdclass = cmdclass,
       command_options = command_options,
+      **setup_kw
       )
