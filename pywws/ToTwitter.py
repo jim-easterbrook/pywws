@@ -46,14 +46,17 @@ import codecs
 import getopt
 import logging
 import sys
-import twitter
+try:
+    import twitter
+    using_tweepy = False
+except ImportError:
+    import tweepy
+    using_tweepy = True
 
+from pywws.constants import Twitter as pct
 from pywws import DataStore
 from pywws import Localisation
 from pywws.Logger import ApplicationLogger
-
-consumer_key = '62moSmU9ERTs0LK0g2xHAg'
-consumer_secret = 'ygdXpjr0rDagU3dqULPqXF8GFgUOD6zYDapoHAH9ck'
 
 class ToTwitter(object):
     def __init__(self, params):
@@ -69,9 +72,15 @@ class ToTwitter(object):
         self.lat = params.get('twitter', 'latitude')
         self.long = params.get('twitter', 'longitude')
         # open API
-        self.api = twitter.Api(
-            consumer_key=consumer_key, consumer_secret=consumer_secret,
-            access_token_key=key, access_token_secret=secret)
+        if using_tweepy:
+            auth = tweepy.OAuthHandler(pct.consumer_key, pct.consumer_secret)
+            auth.set_access_token(key, secret)
+            self.api = tweepy.API(auth)
+        else:
+            self.api = twitter.Api(
+                consumer_key=pct.consumer_key,
+                consumer_secret=pct.consumer_secret,
+                access_token_key=key, access_token_secret=secret)
 
     def Upload(self, tweet):
         if not tweet:
@@ -80,8 +89,12 @@ class ToTwitter(object):
             tweet = tweet.decode(self.encoding)
         for i in range(3):
             try:
-                status = self.api.PostUpdate(
-                    tweet, latitude=self.lat, longitude=self.long)
+                if using_tweepy:
+                    status = self.api.update_status(
+                        tweet, lat=self.lat, long=self.long)
+                else:
+                    status = self.api.PostUpdate(
+                        tweet, latitude=self.lat, longitude=self.long)
                 return True
             except Exception, ex:
                 e = str(ex)

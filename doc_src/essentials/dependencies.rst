@@ -100,15 +100,21 @@ Twitter updates
 ---------------
 
 The :py:mod:`pywws.ToTwitter` module can be used to send weather status messages to Twitter.
-Posting to Twitter requires all four of these modules:
+Posting to Twitter requires these modules:
 
 *  `python-twitter <https://github.com/bear/python-twitter>`_ v1.0 or higher
+   **or**
+   `tweepy <https://github.com/tweepy/tweepy>`_ v2.0 or higher
 *  `simplejson <https://github.com/simplejson/simplejson>`_
 *  `python-oauth2 <https://github.com/simplegeo/python-oauth2>`_
 *  `httplib2 <http://code.google.com/p/httplib2/>`_
 
+.. versionchanged:: 13.10_r1086
+   reenabled use of ``tweepy`` library as an alternative to ``python-twitter``.
+   ``python-oauth2`` is still required by :py:mod:`pywws.TwitterAuth`.
+
 .. versionchanged:: 13.06_r1023
-   pywws previously used the `tweepy <https://github.com/tweepy/tweepy>`_ library instead of ``python-twitter`` and ``python-oauth2``.
+   pywws previously used the ``tweepy`` library instead of ``python-twitter`` and ``python-oauth2``.
 
 To create new language translations
 -----------------------------------

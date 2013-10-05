@@ -51,11 +51,11 @@ import sys
 import urlparse
 import webbrowser
 
+from pywws.constants import Twitter
 from pywws import DataStore
-from pywws.ToTwitter import consumer_key, consumer_secret
 
 def TwitterAuth(params):
-    consumer = oauth.Consumer(consumer_key, consumer_secret)
+    consumer = oauth.Consumer(Twitter.consumer_key, Twitter.consumer_secret)
     client = oauth.Client(consumer)
     # step 1 - obtain a request token
     resp, content = client.request(
