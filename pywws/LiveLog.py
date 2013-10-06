@@ -36,15 +36,18 @@ __usage__ = """
   -h      or --help      display this help
   -l file or --log file  write log information to file
   -v      or --verbose   increase amount of reassuring messages
+  -p file or --pid file  write PID to file and go into the background
  data_dir is the root directory of the weather data (e.g. /data/weather)
 """
 __doc__ %= __usage__
 __usage__ = __doc__.split('\n')[0] + __usage__
 
 from datetime import datetime, timedelta
+import daemon
 import getopt
 import logging
 import os
+import PidFile
 import sys
 import time
 
@@ -127,13 +130,14 @@ def main(argv=None):
     if argv is None:
         argv = sys.argv
     try:
-        opts, args = getopt.getopt(argv[1:], "hl:v", ['help', 'log=', 'verbose'])
+        opts, args = getopt.getopt(argv[1:], "hl:p:v", ['help', 'log=', 'verbose'])
     except getopt.error, msg:
         print >>sys.stderr, 'Error: %s\n' % msg
         print >>sys.stderr, __usage__.strip()
         return 1
     # process options
     logfile = None
+    pidfile = None
     verbose = 0
     for o, a in opts:
         if o in ('-h', '--help'):
@@ -143,13 +147,19 @@ def main(argv=None):
             logfile = a
         elif o in ('-v', '--verbose'):
             verbose += 1
+        elif o in ('-p', '--pid'):
+            pidfile = a
     # check arguments
     if len(args) != 1:
         print >>sys.stderr, 'Error: 1 argument required\n'
         print >>sys.stderr, __usage__.strip()
         return 2
     logger = ApplicationLogger(verbose, logfile)
-    return LiveLog(args[0])
+    if pidfile != None:
+        with daemon.DaemonContext(pidfile = PidFile.PidFile(pidfile)):
+            rtn = LiveLog(args[0])
+    else:
+        return LiveLog(args[0])
 
 if __name__ == "__main__":
     logger = logging.getLogger('pywws')
