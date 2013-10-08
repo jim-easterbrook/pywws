@@ -1,0 +1,42 @@
+#!/bin/sh
+#
+# PROVIDE: pywws
+# KEYWORD: shutdown
+#
+# Add the following lines to /etc/rc.conf.local or /etc/rc.conf
+# to enable this service:
+#
+# pywws_enable (bool): Set to NO by default.
+#                       Set it to YES to enable it.
+# pywws_dir:          Directory where weather data & config is stored
+# pwws_base:          Directory containing pywws code
+# pywws_user:         The user account pywws daemon runs as what
+#                       you want it to be.
+# pywws_logfile:      The logfile to write, must be writable by
+#                       pywws_user. Defaults to $pywws_dir/pywws.log
+# pywws_pidfile:      The pidfile to write, must be writable by
+#                       pywws_user. Defaults to $pywws_dir/pywws.pid
+
+. /etc/rc.subr
+
+name="pywws"
+rcvar="pywws_enable"
+
+load_rc_config ${name}
+
+: ${pywws_enable:="NO"}
+: ${pywws_user:="pywws"}
+: ${pywws_dir:="/var/db/weather"}
+: ${pywws_base:="/home/darius/projects/pywws"}
+: ${pywws_logfile:="${pywws_dir}/pywws.log"}
+: ${pywws_pidfile:="${pywws_dir}/pywws.pid"}
+
+required_dirs="${pywws_dir} ${pywws_base}"
+
+command="${pywws_base}/scripts/pywws-livelog.py"
+command_interpreter="/usr/local/bin/python"
+command_args="-p ${pywws_pidfile} -l ${pywws_logfile} ${pywws_dir}"
+pidfile="${pywws_pidfile}"
+
+run_rc_command "$1"
+
