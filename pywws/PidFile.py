@@ -1,4 +1,4 @@
-# Created by Graham Poulter and released under the MIT license
+# Created by Graham Poulter and released under the GPL & MIT licences
 #
 # Copied from http://code.activestate.com/recipes/577911-context-manager-for-a-daemon-pid-file/
 #
