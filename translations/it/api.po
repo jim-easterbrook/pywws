@@ -727,7 +727,7 @@ msgstr "Questo imposta l'oggetto di traduzione ``Localisation.translation`` per 
 #: ../../pywws/Localisation.py:docstring of
 #: pywws.Localisation.SetTranslation:6
 msgid "The ``lang`` parameter can be any string of the form ``en``, ``en_GB`` or ``en_GB.UTF-8``. Anything after a ``.`` character is ignored. In the case of a string such as ``en_GB``, the routine will search for an ``en_GB`` language file before searching for an ``en`` one."
-msgstr "Il parametro ``lang`` può essere qualsiasi stringa nel formato ``it``, ``it_IT`` o ``it_IT.UTF-8``. Tutto ciò dopo un carattere ``. `` viene ignorato. Nel caso di una stringa come ``it_IT``, la routine cercherà un file di lingua ``it_IT`` prima di cercare un file ``it``."
+msgstr "Il parametro ``lang`` può essere qualsiasi stringa nel formato ``it``, ``it_IT`` o ``it_IT.UTF-8``. Tutto ciò dopo un carattere ``.`` viene ignorato. Nel caso di una stringa come ``it_IT``, la routine cercherà un file di lingua ``it_IT`` prima di cercare un file ``it``."
 
 # 6a51a910239f423d82af51bf05dd5ae3
 #: ../../pywws/Localisation.py:docstring of
@@ -3598,7 +3598,7 @@ msgstr "Posta gli aggiornamenti delle condizioni meteo a servizi come Weather Un
 # ba7460843a14404d8f82ecf88df12895
 #: ../../pywws/toservice.py:docstring of pywws.toservice:17
 msgid "Several organisations allow weather stations to upload data using a simple HTTP 'POST' or 'GET' request, with the data encoded as a sequence of ``key=value`` pairs separated by ``&`` characters."
-msgstr "Diverse organizzazioni consentono alle stazioni meteorologiche di caricare i dati utilizzando un semplice HTTP 'POST' o 'GET' richiesta, con i dati codificati come una sequenza di coppie ``key=value`` separate dal carattere ``&``."
+msgstr "Diverse organizzazioni consentono alle stazioni meteorologiche di caricare i dati utilizzando un semplice HTTP 'POST' o 'GET' richiesta, con i dati codificati come una sequenza di coppie ``key=value`` separate dal carattere &."
 
 # c3c45915ad994ca48cb53facdfcd940a
 #: ../../pywws/toservice.py:docstring of pywws.toservice:21
