@@ -444,6 +444,7 @@ __usage__ = __doc__.split('\n')[0] + __usage__
 import codecs
 from datetime import datetime, timedelta
 import getopt
+import locale
 import logging
 import os
 import subprocess
@@ -543,6 +544,7 @@ class BasePlotter(object):
             terminal = '%s large size %d,%d' % (fileformat, w, h)
         terminal = self.GetValue(self.graph, 'terminal', terminal)
         of.write('set encoding %s\n' % (self.encoding))
+        of.write('set locale "%s"\n' % (locale.getlocale()[0]))
         of.write('set terminal %s\n' % (terminal))
         of.write('set output "%s"\n' % (output_file))
         # set overall title
