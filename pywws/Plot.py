@@ -544,7 +544,7 @@ class BasePlotter(object):
             terminal = '%s large size %d,%d' % (fileformat, w, h)
         terminal = self.GetValue(self.graph, 'terminal', terminal)
         of.write('set encoding %s\n' % (self.encoding))
-        of.write('set locale "%s"\n' % (locale.getlocale()[0]))
+        of.write('set locale "%s.%s"\n' % locale.getlocale())
         of.write('set terminal %s\n' % (terminal))
         of.write('set output "%s"\n' % (output_file))
         # set overall title
