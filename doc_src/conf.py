@@ -41,6 +41,8 @@ sys.path.insert(0, os.path.abspath('..'))
 # cludge to allow documentation to be compiled without installing dependencies
 class Dummy(object):
     def __getattr__(self, name):
+        if name in ('__file__',):
+            return None
         return Dummy
 
 for mod_name in ('hid', 'oauth2', 'twitter', 'usb', 'usb.core', 'usb.util'):
