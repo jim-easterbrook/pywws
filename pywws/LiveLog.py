@@ -79,9 +79,9 @@ def LiveLog(data_dir):
     monthly_data = DataStore.monthly_store(data_dir)
     # create a RegularTasks object
     asynch = eval(params.get('config', 'asynchronous', 'False'))
-    tasks = Tasks.RegularTasks(
-        params, status, calib_data, hourly_data, daily_data, monthly_data,
-        asynch=asynch)
+    tasks = Tasks.RegularTasks(params, status, raw_data, calib_data,
+                               hourly_data, daily_data, monthly_data,
+                               asynch=asynch)
     # get time of last logged data
     last_stored = raw_data.before(datetime.max)
     if last_stored == None:

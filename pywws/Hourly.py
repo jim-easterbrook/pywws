@@ -74,9 +74,8 @@ def Hourly(data_dir):
     Process.Process(params,
                     raw_data, calib_data, hourly_data, daily_data, monthly_data)
     # do tasks
-    if not Tasks.RegularTasks(
-        params, status, calib_data, hourly_data, daily_data, monthly_data
-        ).do_tasks():
+    if not Tasks.RegularTasks(params, status, raw_data, calib_data,
+                              hourly_data, daily_data, monthly_data).do_tasks():
         return 1
     return 0
 

@@ -523,7 +523,7 @@ def calibrate_data(logger, params, raw_data, calib_data):
     if start is None:
         return start
     del calib_data[start:]
-    calibrator = Calib(params)
+    calibrator = Calib(params, raw_data)
     count = 0
     for data in raw_data[start:]:
         idx = data['idx']

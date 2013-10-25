@@ -39,11 +39,12 @@ from pywws import YoWindow
 
 class RegularTasks(object):
     def __init__(self, params, status,
-                 calib_data, hourly_data, daily_data, monthly_data,
+                 raw_data, calib_data, hourly_data, daily_data, monthly_data,
                  asynch=False):
         self.logger = logging.getLogger('pywws.Tasks.RegularTasks')
         self.params = params
         self.status = status
+        self.raw_data = raw_data
         self.calib_data = calib_data
         self.hourly_data = hourly_data
         self.daily_data = daily_data
@@ -58,7 +59,7 @@ class RegularTasks(object):
         self.local_dir = self.params.get(
             'paths', 'local_files', os.path.expanduser('~/weather/results/'))
         # create calibration object
-        self.calibrator = Calib(self.params)
+        self.calibrator = Calib(self.params, self.raw_data)
         # create templater object
         self.templater = Template.Template(
             self.params, self.status, self.calib_data, self.hourly_data,
@@ -318,6 +319,7 @@ class RegularTasks(object):
             # save any unsaved data
             self.params.flush()
             self.status.flush()
+            self.raw_data.flush()
             self.calib_data.flush()
             self.hourly_data.flush()
             self.daily_data.flush()
