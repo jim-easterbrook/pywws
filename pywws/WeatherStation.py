@@ -306,26 +306,23 @@ class CUSBDrive(object):
 
 class weather_station(object):
     """Class that represents the weather station to user program."""
-    # avoid USB activity this number of seconds each side of time when
-    # station screen is believed to be writing to the memory
-    avoid = 3.0
     # minimum interval between polling for data change
     min_pause = 0.5
-    def __init__(self, ws_type='1080', params=None, status=None):
+    def __init__(self, ws_type='1080', params=None, status=None, avoid=3.0):
         """Connect to weather station and prepare to read data."""
         self.logger = logging.getLogger('pywws.weather_station')
         # create basic IO object
         self.cusb = CUSBDrive()
         # init variables
-        self.params = params
         self.status = status
+        self.avoid = max(avoid, 0.0)
         self._fixed_block = None
         self._data_block = None
         self._data_pos = None
         self._current_ptr = None
-        if self.params:
-            self.params.unset('fixed', 'station clock')
-            self.params.unset('fixed', 'sensor clock')
+        if params:
+            params.unset('fixed', 'station clock')
+            params.unset('fixed', 'sensor clock')
         if self.status:
             self._station_clock = eval(
                 self.status.get('clock', 'station', 'None'))
@@ -419,16 +416,20 @@ class weather_station(object):
                 result = dict(new_data)
                 if valid_time:
                     # data has just changed, so definitely at a 48s update time
-                    self._sensor_clock = data_time
-                    self.logger.warning(
-                        'setting sensor clock %g', data_time % live_interval)
-                    if self.status:
-                        self.status.set(
-                            'clock', 'sensor', str(self._sensor_clock))
+                    if self._sensor_clock:
+                        diff = (data_time - self._sensor_clock) % live_interval
+                        if diff > 2.0 and diff < (live_interval - 2.0):
+                            self.logger.error('unexpected sensor clock change')
+                            self._sensor_clock = None
+                    if not self._sensor_clock:
+                        self._sensor_clock = data_time
+                        self.logger.warning(
+                            'setting sensor clock %g', data_time % live_interval)
+                        if self.status:
+                            self.status.set(
+                                'clock', 'sensor', str(self._sensor_clock))
                     if not next_live:
                         self.logger.warning('live_data live synchronised')
-                    else:
-                        self.logger.error('unexpected sensor clock setting')
                     next_live = data_time
                 elif next_live and data_time < next_live - self.min_pause:
                     self.logger.warning(
@@ -459,12 +460,18 @@ class weather_station(object):
                 result = dict(new_data)
                 if valid_time:
                     # pointer has just changed, so definitely at a logging time
-                    self._station_clock = ptr_time
-                    self.logger.warning(
-                        'setting station clock %g', ptr_time % 60.0)
-                    if self.status:
-                        self.status.set(
-                            'clock', 'station', str(self._station_clock))
+                    if self._station_clock:
+                        diff = (ptr_time - self._station_clock) % 60
+                        if diff > 2 and diff < 58:
+                            self.logger.error('unexpected station clock change')
+                            self._station_clock = None
+                    if not self._station_clock:
+                        self._station_clock = ptr_time
+                        self.logger.warning(
+                            'setting station clock %g', ptr_time % 60.0)
+                        if self.status:
+                            self.status.set(
+                                'clock', 'station', str(self._station_clock))
                     if not next_log:
                         self.logger.warning('live_data log synchronised')
                     next_log = ptr_time
@@ -598,7 +605,7 @@ class weather_station(object):
                     self._sensor_clock = None
                 else:
                     pause = min(pause, (self.avoid - phase) % 48)
-            if pause > self.avoid * 2.0:
+            if pause >= self.avoid * 2.0:
                 return
             self.logger.debug('avoid %s', str(pause))
             time.sleep(pause)

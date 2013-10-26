@@ -132,8 +132,9 @@ def LogData(params, status, raw_data, sync=None, clear=False):
         params.unset('fixed', 'ws type')
         params.set('config', 'ws type', ws_type)
     ws_type = params.get('config', 'ws type', 'Unknown')
+    avoid = eval(params.get('config', 'usb activity margin', '3.0'))
     ws = WeatherStation.weather_station(
-        ws_type=ws_type, params=params, status=status)
+        ws_type=ws_type, params=params, status=status, avoid=avoid)
     fixed_block = CheckFixedBlock(ws, params, status, logger)
     # check for valid weather station type
     if ws.ws_type not in ('1080', '3080'):

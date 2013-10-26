@@ -68,8 +68,9 @@ def LiveLog(data_dir):
         params.unset('fixed', 'ws type')
         params.set('config', 'ws type', ws_type)
     ws_type = params.get('config', 'ws type', '1080')
+    avoid = eval(params.get('config', 'usb activity margin', '3.0'))
     ws = WeatherStation.weather_station(
-        ws_type=ws_type, params=params, status=status)
+        ws_type=ws_type, params=params, status=status, avoid=avoid)
     fixed_block = CheckFixedBlock(ws, params, status, logger)
     # open data file stores
     raw_data = DataStore.data_store(data_dir)
@@ -113,8 +114,6 @@ def LiveLog(data_dir):
                 if now >= next_hour:
                     next_hour += Process.HOUR
                     fixed_block = CheckFixedBlock(ws, params, status, logger)
-                    # save any unsaved data
-                    raw_data.flush()
             else:
                 tasks.do_live(data)
     except Exception, ex:
