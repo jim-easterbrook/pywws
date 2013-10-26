@@ -156,15 +156,6 @@ class DataLogger(object):
 
     def log_data(self, sync=None, clear=False):
         fixed_block = self.check_fixed_block()
-        # check for valid weather station type
-        if self.ws.ws_type not in ('1080', '3080'):
-            print "Unknown weather station type. Please edit weather.ini"
-            print "and set 'ws type' to '1080' or '3080', as appropriate."
-            if fixed_block['lux_wm2_coeff'] == 0.0:
-                print "Your station is probably a '1080' type."
-            else:
-                print "Your station is probably a '3080' type."
-            sys.exit(1)
         # get sync config value
         if sync is None:
             if fixed_block['read_period'] <= 5:
