@@ -75,6 +75,8 @@ import os
 import sys
 import time
 
+DAY = timedelta(days=1)
+
 def safestrptime(date_string, format=None):
     # time.strptime is time consuming (because it's so flexible?) so don't use
     # it for the fixed format datetime strings in our csv files
@@ -162,24 +164,22 @@ class status(ParamStore):
 class core_store(object):
     def __init__(self, root_dir):
         self._root_dir = root_dir
-        self._one_day = timedelta(days=1)
         # initialise cache
         self._cache = []
         self._cache_ptr = 0
-        self._cache_lo = date.max.toordinal()
-        self._cache_hi = date.min.toordinal()
+        self._cache_lo = date.max
+        self._cache_hi = date.min
         self._cache_dirty = False
         # get conservative first and last days for which data (might) exist
-        self._fst_day = date.max.toordinal() - 500
-        self._lst_day = date.min.toordinal() + 500
+        self._lo_limit = date.max - timedelta(days=500)
+        self._hi_limit = date.min + timedelta(days=500)
         for root, dirs, files in os.walk(self._root_dir):
             files.sort()
             for file in files:
                 if file[0] == '.':
                     continue
-                path, lo, hi = self._get_cache_path(
+                path, self._lo_limit, hi = self._get_cache_path(
                     safestrptime(file, "%Y-%m-%d.txt").date())
-                self._fst_day = lo
                 break
             else:
                 dirs.sort()
@@ -191,62 +191,61 @@ class core_store(object):
             for file in files:
                 if file[0] == '.':
                     continue
-                path, lo, hi = self._get_cache_path(
+                path, lo, self._hi_limit = self._get_cache_path(
                     safestrptime(file, "%Y-%m-%d.txt").date())
-                self._lst_day = hi
                 break
             else:
                 dirs.sort()
                 dirs.reverse()
                 continue
             break
+        self._lo_limit_dt = datetime(
+            self._lo_limit.year, self._lo_limit.month, self._lo_limit.day)
+        self._hi_limit_dt = datetime(
+            self._hi_limit.year, self._hi_limit.month, self._hi_limit.day)
 
     def __del__(self):
         self.flush()
 
     def _slice(self, i):
-        if i.step != None:
+        if i.step is not None:
             raise TypeError("slice step not permitted")
         a = i.start
-        if a == None:
-            a = datetime.fromordinal(self._fst_day)
+        if a is None:
+            a = self._lo_limit_dt
         elif not isinstance(a, datetime):
             raise TypeError("slice indices must be %s or None" % (datetime))
-        elif a.toordinal() < self._fst_day:
-            a = datetime.fromordinal(self._fst_day)
+        elif a < self._lo_limit_dt:
+            a = self._lo_limit_dt
         b = i.stop
-        if b == None:
-            b = datetime.max
-            lst_day = self._lst_day
+        if b is None:
+            b = self._hi_limit_dt
         elif not isinstance(b, datetime):
             raise TypeError("slice indices must be %s or None" % (datetime))
-        else:
-            lst_day = min(b.toordinal() + 1, self._lst_day)
-        return a, b, lst_day
+        elif b > self._hi_limit_dt:
+            b = self._hi_limit_dt
+        return a, b
 
     def _get_slice(self, i):
-        a, b, lst_day = self._slice(i)
+        a, b = self._slice(i)
         # go to start of slice
         self._set_cache_ptr(a)
         cache = self._cache
         cache_hi = self._cache_hi
         cache_ptr = self._cache_ptr
         # iterate over complete caches
-        while cache_hi < lst_day:
-            while cache_ptr < len(cache):
-                yield cache[cache_ptr]
-                cache_ptr += 1
-            self._load(date.fromordinal(cache_hi))
+        while cache_hi <= b.date():
+            for data in cache[cache_ptr:]:
+                yield data
+            self._load(cache_hi)
             cache = self._cache
             cache_hi = self._cache_hi
             cache_ptr = 0
         # iterate over part of cache
-        while cache_ptr < len(cache):
-            if cache[cache_ptr]['idx'] >= b:
+        for data in cache[cache_ptr:]:
+            if data['idx'] >= b:
                 return
-            yield cache[cache_ptr]
-            cache_ptr += 1
-        return
+            yield data
 
     def __getitem__(self, i):
         """Return the data item or items with index i.
@@ -274,8 +273,12 @@ class core_store(object):
         x['idx'] = i
         self._set_cache_ptr(i)
         if len(self._cache) == 0:
-            self._fst_day = min(self._fst_day, self._cache_lo)
-            self._lst_day = max(self._lst_day, self._cache_hi)
+            self._lo_limit = min(self._lo_limit, self._cache_lo)
+            self._hi_limit = max(self._hi_limit, self._cache_hi)
+            self._lo_limit_dt = datetime(
+                self._lo_limit.year, self._lo_limit.month, self._lo_limit.day)
+            self._hi_limit_dt = datetime(
+                self._hi_limit.year, self._hi_limit.month, self._hi_limit.day)
         if (self._cache_ptr < len(self._cache) and
             self._cache[self._cache_ptr]['idx'] == i):
             self._cache[self._cache_ptr] = x
@@ -284,14 +287,14 @@ class core_store(object):
         self._cache_dirty = True
 
     def _del_slice(self, i):
-        a, b, lst_day = self._slice(i)
+        a, b = self._slice(i)
         # go to start of slice
         self._set_cache_ptr(a)
         # delete to end of cache
-        while self._cache_hi < lst_day:
+        while self._cache_hi <= b.date():
             del self._cache[self._cache_ptr:]
             self._cache_dirty = True
-            self._load(date.fromordinal(self._cache_hi))
+            self._load(self._cache_hi)
             self._cache_ptr = 0
         # delete part of cache
         while (self._cache_ptr < len(self._cache) and
@@ -324,14 +327,14 @@ class core_store(object):
         return None."""
         if not isinstance(idx, datetime):
             raise TypeError("'%s' is not %s" % (idx, datetime))
-        day = min(idx.toordinal(), self._lst_day - 1)
-        while day >= self._fst_day:
+        day = min(idx.date(), self._hi_limit - DAY)
+        while day >= self._lo_limit:
             if day < self._cache_lo or day >= self._cache_hi:
-                self._load(date.fromordinal(day))
+                self._load(day)
             self._cache_ptr = self._binary_search(idx, self._cache_ptr)
             if self._cache_ptr > 0:
                 return self._cache[self._cache_ptr - 1]['idx']
-            day = self._cache_lo - 1
+            day = self._cache_lo - DAY
         return None
 
     def after(self, idx):
@@ -342,10 +345,10 @@ class core_store(object):
         return None."""
         if not isinstance(idx, datetime):
             raise TypeError("'%s' is not %s" % (idx, datetime))
-        day = max(idx.toordinal(), self._fst_day)
-        while day < self._lst_day:
+        day = max(idx.date(), self._lo_limit)
+        while day < self._hi_limit:
             if day < self._cache_lo or day >= self._cache_hi:
-                self._load(date.fromordinal(day))
+                self._load(day)
             self._cache_ptr = self._binary_search(idx, self._cache_ptr)
             if self._cache_ptr < len(self._cache):
                 return self._cache[self._cache_ptr]['idx']
@@ -365,9 +368,9 @@ class core_store(object):
         return lo
 
     def _set_cache_ptr(self, i):
-        day = i.toordinal()
+        day = i.date()
         if day < self._cache_lo or day >= self._cache_hi:
-            self._load(i)
+            self._load(day)
         self._cache_ptr = self._binary_search(i, self._cache_ptr)
 
     def _binary_search(self, idx, start):
@@ -409,6 +412,7 @@ class core_store(object):
                     else:
                         result[key] = self.conv[key](value)
                 self._cache.append(result)
+            csvfile.close()
 
     def flush(self):
         if not self._cache_dirty:
@@ -432,6 +436,7 @@ class core_store(object):
             for key in self.key_list[0:len(data)]:
                 row.append(data[key])
             writer.writerow(row)
+        csvfile.close()
 
     def _get_cache_path(self, target_date):
         # default implementation - one file per day
@@ -439,8 +444,8 @@ class core_store(object):
                             target_date.strftime("%Y"),
                             target_date.strftime("%Y-%m"),
                             target_date.strftime("%Y-%m-%d.txt"))
-        lo = target_date.toordinal()
-        hi = lo + 1
+        lo = target_date
+        hi = lo + DAY
         return path, lo, hi
 
 class data_store(core_store):
@@ -607,7 +612,7 @@ class daily_store(core_store):
             hi = lo.replace(month=lo.month+1)
         else:
             hi = lo.replace(year=lo.year+1, month=1)
-        return path, lo.toordinal(), hi.toordinal()
+        return path, lo, hi
 
 class monthly_store(core_store):
     """Stores monthly summary weather station data."""
@@ -715,4 +720,4 @@ class monthly_store(core_store):
                             target_date.strftime("%Y-01-01.txt"))
         lo = target_date.replace(month=1, day=1)
         hi = lo.replace(year=lo.year+1)
-        return path, lo.toordinal(), hi.toordinal()
+        return path, lo, hi
