@@ -20,19 +20,34 @@ from datetime import datetime
 
 class Calib(object):
     """Jim's weather station calibration class."""
-    def __init__(self, params):
+    def __init__(self, params, raw_data):
         # pressure sensor went wrong on 19th August 2011
         self.pressure_fault = datetime(2011, 8, 19, 11, 0, 0)
+        # finally replaced weather station on 11th November 2011
+        self.new_station = datetime(2011, 11, 11, 12, 5, 0)
 
     def calib(self, raw):
         result = dict(raw)
         # sanitise data
         if result['wind_dir'] is not None and result['wind_dir'] >= 16:
             result['wind_dir'] = None
-        # pressure readings are nonsense since sensor failed
-        if raw['idx'] < self.pressure_fault:
-            result['rel_pressure'] = raw['abs_pressure'] + 7.4
+        # set relative pressure and tweak temperature and humidity to make old
+        # and new stations closer
+        if result['idx'] > self.new_station:
+            result['rel_pressure'] = result['abs_pressure'] + 5.2
+            if result['temp_out'] is not None:
+                result['temp_out'] += 0.6
+            if result['hum_out'] is not None:
+                result['hum_out'] -= 1
         else:
-            result['abs_pressure'] = None
-            result['rel_pressure'] = None
+            if result['idx'] > self.pressure_fault:
+                # pressure readings are nonsense since sensor failed
+                result['abs_pressure'] = None
+                result['rel_pressure'] = None
+            else:
+                result['rel_pressure'] = result['abs_pressure'] + 7.4
+            if result['temp_out'] is not None:
+                result['temp_out'] -= 0.6
+            if result['hum_out'] is not None:
+                result['hum_out'] += 2
         return result
