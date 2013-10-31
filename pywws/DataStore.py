@@ -70,7 +70,7 @@ Detailed API
 
 from ConfigParser import RawConfigParser
 import csv
-from datetime import date, datetime, timedelta
+from datetime import date, datetime, timedelta, MAXYEAR
 import os
 import sys
 import time
@@ -444,7 +444,7 @@ class core_store(object):
                             target_date.strftime("%Y"),
                             target_date.strftime("%Y-%m"),
                             target_date.strftime("%Y-%m-%d.txt"))
-        lo = target_date
+        lo = min(target_date, date.max - DAY)
         hi = lo + DAY
         return path, lo, hi
 
@@ -610,8 +610,11 @@ class daily_store(core_store):
         lo = target_date.replace(day=1)
         if lo.month < 12:
             hi = lo.replace(month=lo.month+1)
-        else:
+        elif lo.year < MAXYEAR:
             hi = lo.replace(year=lo.year+1, month=1)
+        else:
+            hi = lo
+            lo = hi.replace(month=hi.month-1)
         return path, lo, hi
 
 class monthly_store(core_store):
@@ -719,5 +722,9 @@ class monthly_store(core_store):
         path = os.path.join(self._root_dir,
                             target_date.strftime("%Y-01-01.txt"))
         lo = target_date.replace(month=1, day=1)
-        hi = lo.replace(year=lo.year+1)
+        if lo.year < MAXYEAR:
+            hi = lo.replace(year=lo.year+1)
+        else:
+            hi = lo
+            lo = hi.replace(year=hi.year-1)
         return path, lo, hi
