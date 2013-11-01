@@ -5,10 +5,11 @@ Remove temperature spikes from raw data.
  usage: %s [options] data_dir
  options are:
   -h or --help     display this help
+  -n or --noaction show what would be done but don't modify data
  data_dir is the root directory of the weather data (e.g. $(HOME)/weather/data)
 """ % __file__
 
-from datetime import datetime
+from datetime import datetime, timedelta
 import getopt
 import os
 import sys
@@ -21,16 +22,19 @@ def main(argv=None):
     if argv is None:
         argv = sys.argv
     try:
-        opts, args = getopt.getopt(argv[1:], "h", ['help'])
+        opts, args = getopt.getopt(argv[1:], "hn", ['help', 'noaction'])
     except getopt.error, msg:
         print >>sys.stderr, 'Error: %s\n' % msg
         print >>sys.stderr, __usage__.strip()
         return 1
     # process options
+    noaction = False
     for o, a in opts:
         if o == '-h' or o == '--help':
             print __usage__.strip()
             return 0
+        elif o == '-n' or o == '--noaction':
+            noaction = True
     # check arguments
     if len(args) != 1:
         print >>sys.stderr, 'Error: 1 argument required\n'
@@ -42,39 +46,41 @@ def main(argv=None):
     stop  = datetime(2013, 10, 29, 18, 32)
     # open data store
     raw_data = DataStore.data_store(data_dir)
-    # preload array of nearby timestamps
-    idx = raw_data.before(raw_data.before(start))
-    local_times = []
-    for i in range(5):
-        local_times.append(idx)
-        idx = raw_data.after(idx + SECOND)
-    # change the data
+    # process the data
+    aperture = timedelta(minutes=14, seconds=30)
+    # make list of changes to apply after examining the data
+    changes = []
     for data in raw_data[start:stop]:
-        if data['temp_out'] is not None:
-            # get temperatures at nearby times
-            temp_list = []
-            for ts in local_times:
-                temp = raw_data[ts]['temp_out']
-                if temp is not None:
-                    temp_list.append(temp)
-            # get median
-            temp_list.sort()
-            median = temp_list[len(temp_list) / 2]
-            # remove anything too far from median
-            if abs(data['temp_out'] - median) >= 2.0:
-                print str(data['idx']), temp_list, data['temp_out']
-                data['temp_out'] = None
-                raw_data[data['idx']] = data
-        # get next timestamp
-        del local_times[0]
-        local_times.append(idx)
-        idx = raw_data.after(idx + SECOND)
-    # make sure it's saved
-    raw_data.flush()
-    # clear calibrated data that needs to be regenerated
-    calib_data = DataStore.calib_store(data_dir)
-    del calib_data[start:]
-    calib_data.flush()
+        if data['temp_out'] is None:
+            continue
+        # get temperatures at nearby times
+        idx = data['idx']
+        temp_list = []
+        for local_data in raw_data[idx-aperture:idx+aperture]:
+            temp = local_data['temp_out']
+            if temp is not None:
+                temp_list.append(temp)
+        if len(temp_list) < 3:
+            continue
+        # get median
+        temp_list.sort()
+        median = temp_list[len(temp_list) / 2]
+        # remove anything too far from median
+        if abs(data['temp_out'] - median) >= 2.5:
+            print str(idx), temp_list, data['temp_out']
+            changed = dict(data)
+            changed['temp_out'] = None
+            changes.append(changed)
+    # store the changed data
+    if changes and not noaction:
+        for changed in changes:
+            raw_data[changed['idx']] = changed
+        # make sure it's saved
+        raw_data.flush()
+        # clear calibrated data that needs to be regenerated
+        calib_data = DataStore.calib_store(data_dir)
+        del calib_data[changes[0]['idx']:]
+        calib_data.flush()
     # done
     return 0
 
