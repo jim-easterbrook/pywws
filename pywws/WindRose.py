@@ -266,13 +266,19 @@ class RosePlotter(BasePlotter):
     def GetPreamble(self):
         result = """set polar
 set angles degrees
-set xtics axis nomirror
-set ytics axis nomirror
 set zeroaxis
 set grid polar 22.5
 set size square
 unset border
+set noytics
 """
+        if self.gnuplot_version >= 4.6:
+            result += """set noxtics
+set rtics nomirror
+unset raxis
+"""
+        else:
+            result += 'set xtics axis nomirror\n'
         lmargin = eval(self.GetValue(self.graph, 'lmargin', '-1'))
         result += 'set lmargin %g\n' % (lmargin)
         lmargin = eval(self.GetValue(self.graph, 'rmargin', '-1'))
@@ -348,6 +354,7 @@ unset border
                 yrange = 21
         else:
             yrange = eval(yrange)
+        result += 'set rrange [0:%d]\n' % (yrange)
         result += 'set xrange [-%d:%d]\n' % (yrange, yrange)
         result += 'set yrange [-%d:%d]\n' % (yrange, yrange)
         points = [_('N'), _('S'), _('E'), _('W')]
@@ -425,7 +432,7 @@ def main(argv=None):
     params = DataStore.params(args[0])
     Localisation.SetApplicationLanguage(params)
     return RosePlotter(
-        params,
+        params, DataStore.status(args[0]),
         DataStore.calib_store(args[0]), DataStore.hourly_store(args[0]),
         DataStore.daily_store(args[0]), DataStore.monthly_store(args[0]),
         args[1]

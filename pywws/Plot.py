@@ -467,6 +467,8 @@ class BasePlotter(object):
         self.monthly_data = monthly_data
         self.work_dir = work_dir
         self.pressure_offset = eval(params.get('config', 'pressure offset'))
+        self.gnuplot_version = eval(
+            params.get('config', 'gnuplot version', '4.2'))
         # set language related stuff
         self.encoding = params.get('config', 'gnuplot encoding', 'iso_8859_1')
         # create work directory
@@ -544,7 +546,9 @@ class BasePlotter(object):
             terminal = '%s large size %d,%d' % (fileformat, w, h)
         terminal = self.GetValue(self.graph, 'terminal', terminal)
         of.write('set encoding %s\n' % (self.encoding))
-        of.write('set locale "%s.%s"\n' % locale.getlocale())
+        lcl = locale.getlocale()
+        if lcl[0]:
+            of.write('set locale "%s.%s"\n' % lcl)
         of.write('set terminal %s\n' % (terminal))
         of.write('set output "%s"\n' % (output_file))
         # set overall title
