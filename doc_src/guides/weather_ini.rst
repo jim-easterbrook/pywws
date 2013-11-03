@@ -61,6 +61,7 @@ config: miscellaneous system configuration
  rain day threshold = 0.2
  asynchronous = False
  usb activity margin = 3.0
+ gnuplot version = 4.2
 
 ``ws type`` is the "class" of weather station. It should be set to ``1080`` for most weather stations, or ``3080`` if your station console displays solar illuminance.
  
@@ -95,6 +96,10 @@ You must update all your stored data by running :py:mod:`pywws.Reprocess` after 
    ``usb activity margin`` controls the algorithm that avoids the "USB lockup" problem that affects some stations.
    It sets the number of seconds either side of expected station activity (receiving a reading from outside or logging a reading) that pywws does not get data from the station.
    If your station is not affected by the USB lockup problem you can set ``usb activity margin`` to 0.0.
+
+.. versionadded:: 13.11_r1102
+   ``gnuplot version`` tells :py:mod:`pywws.Plot` and :py:mod:`pywws.WindRose` what version of gnuplot is installed on your computer.
+   This allows them to use version-specific features to give improved plot quality.
 
 paths: directories in which templates etc. are stored
 -----------------------------------------------------
