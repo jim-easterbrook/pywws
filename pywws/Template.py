@@ -47,6 +47,13 @@ some of the examples in the example_templates directory.
 Processing instructions
 -----------------------
 
+Note that if the closing '#' of a processing instruction is the last
+character on a line then the following line break is not outputted.
+This makes templates easier to edit as you can have a separate line
+for each processing instruction and still produce output with no line
+breaks. If you want to output a line break after a processing
+instruction, put a blank line immediately after it.
+
 ``##``
 ^^^^^^
 
@@ -86,6 +93,14 @@ switch to "raw" data. The index is reset to the most recent value.
 
 convert all datetime values to time zone ``name`` before output.
 Permitted values for name are ``utc`` or ``local``.
+
+``#locale expr#``
+^^^^^^^^^^^^^^^^^
+
+switch use of 'locale' on or off, according to ``expr``. When locale
+is on floating point numbers may use a comma as the decimal separator
+instead of a point, depending on your localisation settings. Use
+``"True"`` or ``"False"`` for expr.
 
 ``#roundtime expr#``
 ^^^^^^^^^^^^^^^^^^^^
@@ -305,6 +320,8 @@ class Template(object):
         data_set = self.hourly_data
         # start off in utc
         time_zone = utc
+        # start off with default use_locale setting
+        use_locale = self.use_locale
         # jump to last item
         idx, valid_data = jump(datetime.max, -1)
         if not valid_data:
@@ -365,7 +382,7 @@ class Template(object):
                             yield command[2]
                     elif isinstance(x, datetime):
                         yield x.strftime(fmt)
-                    elif not self.use_locale:
+                    elif not use_locale:
                         yield fmt % (x)
                     elif sys.version_info >= (2, 7) or '%%' not in fmt:
                         yield locale.format_string(fmt, x)
@@ -401,6 +418,8 @@ class Template(object):
                     else:
                         self.logger.error("Unknown time zone: %s", command[1])
                         return
+                elif command[0] == 'locale':
+                    use_locale = eval(command[1])
                 elif command[0] == 'roundtime':
                     if eval(command[1]):
                         round_time = timedelta(seconds=30)
