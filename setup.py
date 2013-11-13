@@ -46,9 +46,12 @@ if commit != pywws.version.commit:
     pywws.version.release = str(int(pywws.version.release) + 1)
     pywws.version.commit = commit
     vf = open('pywws/version.py', 'w')
-    vf.write("version = '%s'\n" % pywws.version.version)
-    vf.write("release = '%s'\n" % pywws.version.release)
-    vf.write("commit = '%s'\n" % pywws.version.commit)
+    vf.write("""version = '%s'
+release = '%s'
+commit = '%s'
+if __name__ == '__main__':
+    print '%%s_r%%s' %% (version, release)
+""" % (pywws.version.version, pywws.version.release, pywws.version.commit))
     vf.close()
 
 # Custom distutils classes
