@@ -1,5 +1,5 @@
-version = '13.11'
-release = '1109'
-commit = '3880d37'
+version = '13.11.dev1110'
+release = '1110'
+commit = '660cf6d'
 if __name__ == '__main__':
-    print '%s_r%s' % (version, release)
+    print(version)
