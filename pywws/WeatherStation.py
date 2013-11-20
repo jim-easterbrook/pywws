@@ -308,6 +308,8 @@ class weather_station(object):
     """Class that represents the weather station to user program."""
     # minimum interval between polling for data change
     min_pause = 0.5
+    # margin of error for various decisions
+    margin = (min_pause * 2.0) - 0.1
     def __init__(self, ws_type='1080', params=None, status=None, avoid=3.0):
         """Connect to weather station and prepare to read data."""
         self.logger = logging.getLogger('pywws.weather_station')
@@ -366,10 +368,6 @@ class weather_station(object):
         last_log = now - (old_data['delay'] * 60)
         last_status = None
         while True:
-            if not self._station_clock:
-                next_log = None
-            if not self._sensor_clock:
-                next_live = None
             now = time.time()
             # wake up just before next reading is due
             advance = now + max(self.avoid, self.min_pause) + self.min_pause
@@ -401,7 +399,7 @@ class weather_station(object):
             last_status = new_data['status']
             # 'good' time stamp if we haven't just woken up from long
             # pause and data read wasn't delayed
-            valid_time = data_time - last_data_time < (self.min_pause * 2.0) - 0.1
+            valid_time = data_time - last_data_time < self.margin
             # make sure changes because of logging interval aren't
             # mistaken for new live data
             if new_data['delay'] >= read_period:
@@ -431,7 +429,7 @@ class weather_station(object):
                     if not next_live:
                         self.logger.warning('live_data live synchronised')
                     next_live = data_time
-                elif next_live and data_time < next_live - self.min_pause:
+                elif next_live and data_time < next_live - self.margin:
                     self.logger.warning(
                         'live_data lost sync %g', data_time - next_live)
                     next_live = None
@@ -450,7 +448,7 @@ class weather_station(object):
             last_ptr_time = ptr_time
             new_ptr = self.current_pos()
             ptr_time = time.time()
-            valid_time = ptr_time - last_ptr_time < (self.min_pause * 2.0) - 0.1
+            valid_time = ptr_time - last_ptr_time < self.margin
             if new_ptr != old_ptr:
                 self.logger.debug('live_data new ptr: %06x', new_ptr)
                 last_log = ptr_time
@@ -475,7 +473,7 @@ class weather_station(object):
                     if not next_log:
                         self.logger.warning('live_data log synchronised')
                     next_log = ptr_time
-                elif next_log and ptr_time < next_log - self.min_pause:
+                elif next_log and ptr_time < next_log - self.margin:
                     self.logger.warning(
                         'live_data lost log sync %g', ptr_time - next_log)
                     next_log = None
@@ -484,10 +482,6 @@ class weather_station(object):
                     result['idx'] = datetime.utcfromtimestamp(int(next_log))
                     next_log += log_interval
                     yield result, old_ptr, True
-                if new_ptr != self.inc_ptr(old_ptr):
-                    self.logger.error(
-                        'live_data unexpected ptr change %06x -> %06x',
-                        old_ptr, new_ptr)
                 old_ptr = new_ptr
                 old_data['delay'] = 0
                 data_time = 0
@@ -560,10 +554,11 @@ class weather_station(object):
         if new_ptr == self._current_ptr:
             return self._current_ptr
         if self._current_ptr and new_ptr != self.inc_ptr(self._current_ptr):
+            self.logger.error(
+                'unexpected ptr change %06x -> %06x', self._current_ptr, new_ptr)
             for k in self.reading_len:
                 if (new_ptr - self._current_ptr) == self.reading_len[k]:
-                    self.logger.warning(
-                        'type change %s -> %s', self.ws_type, k)
+                    self.logger.warning('type change %s -> %s', self.ws_type, k)
                     self.ws_type = k
                     break
         self._current_ptr = new_ptr
