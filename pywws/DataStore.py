@@ -469,7 +469,10 @@ class core_store(object):
         for data in cache.data:
             row = []
             for key in self.key_list[0:len(data)]:
-                row.append(data[key])
+                if isinstance(data[key], float):
+                    row.append(str(data[key]))
+                else:
+                    row.append(data[key])
             writer.writerow(row)
         csvfile.close()
 
