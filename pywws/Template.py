@@ -88,6 +88,10 @@ value.
 
 switch to "raw" data. The index is reset to the most recent value.
 
+.. versionchanged:: 11.09
+   This now selects "calibrated" data. The directive name remains
+   unchanged for backwards compatibility.
+
 ``#timezone name#``
 ^^^^^^^^^^^^^^^^^^^
 
