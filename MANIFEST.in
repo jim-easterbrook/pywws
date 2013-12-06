@@ -3,7 +3,7 @@ recursive-include translations *.po
 recursive-include doc_src *
 recursive-include doc *
 recursive-include examples *
-global-exclude *~
+global-exclude *~ *.pyc
 exclude doc/html/*/html/.buildinfo
 prune doc_src/api
 prune doc/html/*/doctrees
