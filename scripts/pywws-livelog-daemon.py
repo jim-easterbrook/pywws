@@ -18,7 +18,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-"""Run :py:mod:`pywws.LiveLog` as a UNIX daemon.
+"""Run pywws.LiveLog as a UNIX daemon.
 
 Requires the python-daemon library.
 
@@ -31,7 +31,7 @@ installing python-daemon from PyPI instead of your Linux repos.
 
 __docformat__ = "restructuredtext en"
 __usage__ = """
- usage: python -m pywws.LiveLog [options] data_dir log_file start|stop|restart
+ usage: pywws-livelog-daemon.py [options] data_dir log_file start|stop|restart
  options are:
   -h      or --help        display this help
   -v      or --verbose     increase amount of logging messages
