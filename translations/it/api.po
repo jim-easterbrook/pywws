@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pywws 13.10\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-10-06 20:51\n"
+"POT-Creation-Date: 2013-12-15 13:56\n"
 "PO-Revision-Date: 2013-09-15 09:40+0200\n"
 "Last-Translator: Edoardo <edoardo69@hotmail.it>\n"
 "Language-Team: Italian\n"
@@ -100,7 +100,7 @@ msgstr "Il modulo fornisce cinque classi per archiviare dati diversi. :py:class:
 #: ../../pywws/EWtoPy.py:docstring pywws.EWtoPy:32
 #: ../../pywws/Plot.py:docstring pywws.Plot:414
 #: ../../pywws/Reprocess.py:docstring pywws.Reprocess:22
-#: ../../pywws/Template.py:docstring pywws.Template:202
+#: ../../pywws/Template.py:docstring pywws.Template:221
 #: ../../pywws/TimeZone.py:docstring pywws.TimeZone:18
 #: ../../pywws/Upload.py:docstring pywws.Upload:50
 #: ../../pywws/WeatherStation.py:docstring pywws.WeatherStation:55
@@ -172,8 +172,9 @@ msgstr ""
 #: ../../doc_src/api/pywws.DataStore.rst:19
 #: ../../doc_src/api/pywws.EWtoPy.rst:19
 #: ../../doc_src/api/pywws.Forecast.rst:21
-#: ../../doc_src/api/pywws.LiveLog.rst:23
-#: ../../doc_src/api/pywws.LogData.rst:23 ../../doc_src/api/pywws.Plot.rst:36
+#: ../../doc_src/api/pywws.Hourly.rst:21
+#: ../../doc_src/api/pywws.LiveLog.rst:21
+#: ../../doc_src/api/pywws.LogData.rst:20 ../../doc_src/api/pywws.Plot.rst:36
 #: ../../doc_src/api/pywws.Process.rst:25
 #: ../../doc_src/api/pywws.SetWeatherStation.rst:21
 #: ../../doc_src/api/pywws.Tasks.rst:13
@@ -503,6 +504,11 @@ msgstr ""
 msgid ":obj:`main <pywws.Hourly.main>`\\ ([argv])"
 msgstr ""
 
+# ec662628ceff4dac8509039f634dd158
+#: ../../<autosummary>:1
+msgid ":obj:`DataLogger <pywws.Hourly.DataLogger>`\\ (params, status, raw_data)"
+msgstr ""
+
 # b7e5283c02bc412a984411b455fa76cb
 #: ../../doc_src/api/pywws.LiveLog.rst:2
 msgid "pywws.LiveLog"
@@ -529,16 +535,6 @@ msgstr "Per ulteriori informazioni sull'utilizzo di ``LiveLog.py``, see :doc:`..
 msgid ":obj:`ApplicationLogger <pywws.LiveLog.ApplicationLogger>`\\ (verbose[, logfile])"
 msgstr ""
 
-# 71002caa0220418087ac12a984693a54
-#: ../../<autosummary>:1
-msgid ":obj:`Catchup <pywws.LiveLog.Catchup>`\\ (ws, logger, raw_data, last_date, ...)"
-msgstr ""
-
-# 545e3db3bad643eeb47a89246c6f5a6e
-#: ../../<autosummary>:1
-msgid ":obj:`CheckFixedBlock <pywws.LiveLog.CheckFixedBlock>`\\ (ws, params, status, logger)"
-msgstr ""
-
 # 753e97272e534a678d84f09da05a7e04
 #: ../../<autosummary>:1
 msgid ":obj:`LiveLog <pywws.LiveLog.LiveLog>`\\ (data_dir)"
@@ -547,6 +543,11 @@ msgstr ""
 # 111ae5c49fed4ee788ee518618edff04
 #: ../../<autosummary>:1
 msgid ":obj:`main <pywws.LiveLog.main>`\\ ([argv])"
+msgstr ""
+
+# 49c7696ad6c84ca5a28decd3a3864673
+#: ../../<autosummary>:1
+msgid ":obj:`DataLogger <pywws.LiveLog.DataLogger>`\\ (params, status, raw_data)"
 msgstr ""
 
 # b395c10890484fefbe4887b74256d4c1
@@ -771,24 +772,14 @@ msgstr "La sincronizzazione con la stazione meteo è realizzata in attesa di un 
 msgid ":obj:`ApplicationLogger <pywws.LogData.ApplicationLogger>`\\ (verbose[, logfile])"
 msgstr ""
 
-# 6e9ecd654ed24f7e9d7e6b8222ec86b4
-#: ../../<autosummary>:1
-msgid ":obj:`Catchup <pywws.LogData.Catchup>`\\ (ws, logger, raw_data, last_date, ...)"
-msgstr ""
-
-# 0b4503dd893543549148abf7051bfb3a
-#: ../../<autosummary>:1
-msgid ":obj:`CheckFixedBlock <pywws.LogData.CheckFixedBlock>`\\ (ws, params, status, logger)"
-msgstr ""
-
-# 40d35de73e1541fc8b189d6d6d0e2506
-#: ../../<autosummary>:1
-msgid ":obj:`LogData <pywws.LogData.LogData>`\\ (params, status, raw_data[, sync, clear])"
-msgstr ""
-
 # 6c2e3532cd2f4e4b8652d3151ad796ab
 #: ../../<autosummary>:1
 msgid ":obj:`main <pywws.LogData.main>`\\ ([argv])"
+msgstr ""
+
+# d2c11b2cdcf34f28bd1cff118c65056a
+#: ../../<autosummary>:1
+msgid ":obj:`DataLogger <pywws.LogData.DataLogger>`\\ (params, status, raw_data)"
 msgstr ""
 
 # c1a6dc5b6bfb4fffad72ad016f71dd89
@@ -1616,9 +1607,9 @@ msgstr ""
 msgid "Compute average of multiple data values."
 msgstr "Calcola la media di più valori di dati."
 
-# 3ed031887ca8467db59704cc862bf6f9
+# ba85019996ae4499922b1c1cda92f629
 #: ../../<autosummary>:1
-msgid ":obj:`Calib <pywws.Process.Calib>`\\ (params)"
+msgid ":obj:`Calib <pywws.Process.Calib>`\\ (params, stored_data)"
 msgstr ""
 
 # ccbfca2ff93c4db19d2521ba60ab84f2
@@ -1814,14 +1805,14 @@ msgstr ""
 msgid "Routines to perform common tasks such as plotting gaphs or uploading files."
 msgstr "Routine per eseguire attività comuni quali disegnare grafici o caricare i file."
 
-# d3f21eea8ad944ad9aadbb72adefa827
+# e9369b1413814b0c980e945e2ff9b3f5
 #: ../../<autosummary>:1
-msgid ":obj:`Calib <pywws.Tasks.Calib>`\\ (params)"
+msgid ":obj:`Calib <pywws.Tasks.Calib>`\\ (params, stored_data)"
 msgstr ""
 
-# 39e926ecf3f54ee388019801c281f89a
+# e9e3824d5eb84bb490fc0d00cb2106a0
 #: ../../<autosummary>:1
-msgid ":obj:`RegularTasks <pywws.Tasks.RegularTasks>`\\ (params, status, calib_data, ...)"
+msgid ":obj:`RegularTasks <pywws.Tasks.RegularTasks>`\\ (params, status, raw_data, ...)"
 msgstr ""
 
 # 19447a01e8a14e1bb9c616bdd097c411
@@ -1879,188 +1870,208 @@ msgstr "Prima di scrivere il proprio file di template, potrebbe essere utile esa
 msgid "Processing instructions"
 msgstr "Istruzioni di elaborazione"
 
+# 658e102dd7cc4db8bc15b15d06b3ff9f
+#: ../../pywws/Template.py:docstring of pywws.Template:36
+msgid "Note that if the closing '#' of a processing instruction is the last character on a line then the following line break is not outputted. This makes templates easier to edit as you can have a separate line for each processing instruction and still produce output with no line breaks. If you want to output a line break after a processing instruction, put a blank line immediately after it."
+msgstr ""
+
 # 3cab9c61695c44b08e3f98cd06f96bfd
-#: ../../pywws/Template.py:docstring of pywws.Template:37
+#: ../../pywws/Template.py:docstring of pywws.Template:44
 msgid "``##``"
 msgstr ""
 
 # 2bd1303923944e5dbb2a15405aa76ac1
-#: ../../pywws/Template.py:docstring of pywws.Template:39
+#: ../../pywws/Template.py:docstring of pywws.Template:46
 msgid "output a single '#' character."
 msgstr "output di un singolo carattere '#'."
 
 # 48aefef58dea41ae935258b1aeeb5f7f
-#: ../../pywws/Template.py:docstring of pywws.Template:42
+#: ../../pywws/Template.py:docstring of pywws.Template:49
 msgid "``#! comment text#``"
 msgstr "``#! testo di commento#``"
 
 # acb43becc2984f6db8c34754e557318c
-#: ../../pywws/Template.py:docstring of pywws.Template:44
+#: ../../pywws/Template.py:docstring of pywws.Template:51
 msgid "a comment, no output generated. ``comment text`` can be any text without a line break."
 msgstr "Il commento, non genera nessun output. ``testo di commento`` può essere qualsiasi testo senza un'interruzione di riga. "
 
 # 33392e0d240a470388e920111b9953dd
-#: ../../pywws/Template.py:docstring of pywws.Template:48
+#: ../../pywws/Template.py:docstring of pywws.Template:55
 msgid "``#monthly#``"
 msgstr ""
 
 # 17037fc9541e4b82bb2e581f7d9465f8
-#: ../../pywws/Template.py:docstring of pywws.Template:50
+#: ../../pywws/Template.py:docstring of pywws.Template:57
 msgid "switch to \"monthly\" summary data. The index is reset to the most recent value."
 msgstr "ritorna i dati \"monthly\" di riepilogo. L'indice viene reimpostato sul valore più recente."
 
 # 1d05a980001e4727ba682aac214b7f03
-#: ../../pywws/Template.py:docstring of pywws.Template:54
+#: ../../pywws/Template.py:docstring of pywws.Template:61
 msgid "``#daily#``"
 msgstr ""
 
 # e9d135eaa4684df3b1ed9bf308c587db
-#: ../../pywws/Template.py:docstring of pywws.Template:56
+#: ../../pywws/Template.py:docstring of pywws.Template:63
 msgid "switch to \"daily\" summary data. The index is reset to the most recent value."
 msgstr "ritorna i dati \"daily\" di riepilogo. L'indice viene reimpostato sul valore più recente."
 
 # 34716181de1d4145b405f2ed31e7ccf9
-#: ../../pywws/Template.py:docstring of pywws.Template:60
+#: ../../pywws/Template.py:docstring of pywws.Template:67
 msgid "``#hourly#``"
 msgstr ""
 
 # 84f1d72aa75d4c1b9a7652bec4957446
-#: ../../pywws/Template.py:docstring of pywws.Template:62
+#: ../../pywws/Template.py:docstring of pywws.Template:69
 msgid "switch to \"hourly\" summary data. The index is reset to the most recent value."
 msgstr "ritorna i dati \"hourly\" di riepilogo. L'indice viene reimpostato sul valore più recente."
 
 # 0a381664086148749052539864be0a18
-#: ../../pywws/Template.py:docstring of pywws.Template:66
+#: ../../pywws/Template.py:docstring of pywws.Template:73
 msgid "``#raw#``"
 msgstr ""
 
 # a444aaebc9d743f0b975cdf274731603
-#: ../../pywws/Template.py:docstring of pywws.Template:68
+#: ../../pywws/Template.py:docstring of pywws.Template:75
 msgid "switch to \"raw\" data. The index is reset to the most recent value."
 msgstr "ritorna i dati \"raw\" di riepilogo. L'indice viene reimpostato sul valore più recente."
 
+# b5850fd4882a453f973c27a49620d5ee
+#: ../../pywws/Template.py:docstring of pywws.Template:77
+msgid "This now selects \"calibrated\" data. The directive name remains unchanged for backwards compatibility."
+msgstr ""
+
 # ca8ec90b18b14a8986fbe1b4f2e891fe
-#: ../../pywws/Template.py:docstring of pywws.Template:71
+#: ../../pywws/Template.py:docstring of pywws.Template:82
 msgid "``#timezone name#``"
 msgstr ""
 
 # 21274cf9864b4081906be6ace51358b2
-#: ../../pywws/Template.py:docstring of pywws.Template:73
+#: ../../pywws/Template.py:docstring of pywws.Template:84
 msgid "convert all datetime values to time zone ``name`` before output. Permitted values for name are ``utc`` or ``local``."
 msgstr "Converte tutti i valori data e ora del fuso orario ``name`` prima dell'output. I valori consentiti per nome sono ``utc`` o ``local``."
 
+# 15fd70e194384deaa650478fa8b0d0ce
+#: ../../pywws/Template.py:docstring of pywws.Template:88
+msgid "``#locale expr#``"
+msgstr ""
+
+# e57ff2bc4c25447f9d300713e5b5712f
+#: ../../pywws/Template.py:docstring of pywws.Template:90
+msgid "switch use of 'locale' on or off, according to ``expr``. When locale is on floating point numbers may use a comma as the decimal separator instead of a point, depending on your localisation settings. Use ``\"True\"`` or ``\"False\"`` for expr."
+msgstr ""
+
 # 28c359635fec42a0a4cdeaa6ca4fcc24
-#: ../../pywws/Template.py:docstring of pywws.Template:77
+#: ../../pywws/Template.py:docstring of pywws.Template:96
 msgid "``#roundtime expr#``"
 msgstr ""
 
 # 42ec77600887475fa6da40cd52896091
-#: ../../pywws/Template.py:docstring of pywws.Template:79
+#: ../../pywws/Template.py:docstring of pywws.Template:98
 msgid "switch time rounding on or off, according to ``expr``. When time rounding is on, 30 seconds is added to each time value used. This is useful if you are only printing out hours and minutes, e.g. with a \"%H:%M\" format, and want time values such as 10:23:58 to appear as \"10:24\". Use ``\"True\"`` or ``\"False\"`` for expr."
 msgstr "Interruttore arrotondamento tempo on/off, secondo ``expr``.  Quando l'arrotondamento del tempo è attivo, 30 secondi vengono aggiunti a ciascun valore di tempo. Questo è utile se si stampa solo in ore e minuti, ad esempio con un formato \" %H: %M\", e che i valori di tempo come ad esempio 10:23:58 di apparire come \"10:24 \". Usare ``\"True\"`` o ``\"False\"`` per ``expr``."
 
 # 31cab58fc3944f518199b9874cd9de8c
-#: ../../pywws/Template.py:docstring of pywws.Template:86
+#: ../../pywws/Template.py:docstring of pywws.Template:105
 msgid "``#jump count#``"
 msgstr ""
 
 # 609653e9bf2541c6ae08a9c9753d6b07
-#: ../../pywws/Template.py:docstring of pywws.Template:88
+#: ../../pywws/Template.py:docstring of pywws.Template:107
 msgid "jump ``count`` values. The data index is adjusted by ``count`` hours or days. Negative values jump back in time."
 msgstr "Salta i valori ``count``. L'indice dei dati è regolata da ``count`` ore o giorni. Con valori negativi salta indietro nel tempo."
 
 # bf8af045f6ea43de89ddca10a3066ddd
-#: ../../pywws/Template.py:docstring of pywws.Template:91
+#: ../../pywws/Template.py:docstring of pywws.Template:110
 msgid "It is a good idea to put jumps within a loop at the end, just before the ``#endloop#`` instruction. The loop can then terminate cleanly if it has run out of data."
 msgstr "È una buona idea inserire salti all'interno di un loop alla fine, poco prima dell'istruzione ``#endloop#``. Il ciclo può poi terminare in modo pulito se ha esaurito i dati."
 
 # 407ce38f4a4344caa1ab55de2761ab63
-#: ../../pywws/Template.py:docstring of pywws.Template:96
+#: ../../pywws/Template.py:docstring of pywws.Template:115
 msgid "``#goto date-time#``"
 msgstr ""
 
 # 0b7366bcdc324fb5b49ec5fdf3485e56
-#: ../../pywws/Template.py:docstring of pywws.Template:98
+#: ../../pywws/Template.py:docstring of pywws.Template:117
 msgid "go to ``date-time``. The data index is adjusted to the record immediately after ``date-time``. This can be in UTC or your local time zone, according to the setting of ``timezone``, and must exactly match the ISO date format, for example ``\"2010-11-01 12:00:00\"`` is noon on 1st November 2010."
 msgstr "va alla ``date-time``'. L'indice di dati è impostato al record immediatamente dopo ``date-time``.Questo può essere in UTC o il fuso orario locale, secondo l'impostazione di ``timezone``, E deve corrispondere esattamente al formato data ISO, per esempio ``\"2010-11-01 12:00:00\"`` è mezzogiorno a partire dal 1° novembre 2010."
 
 # 390305f908e1409abf00d5570427a003
-#: ../../pywws/Template.py:docstring of pywws.Template:104
+#: ../../pywws/Template.py:docstring of pywws.Template:123
 msgid "Parts of ``date-time`` can be replaced with strftime style % format characters to specify the current loop index. For example, ``\"%Y-%m-01 12:00:00\"`` is noon on 1st of this month."
 msgstr "Parti di ``date-time`` possono essere sostituite con strftime % stile caratteri di formattazione per specificare l'attuale indice del ciclo. Ad esempio, ``\"%Y-%m-01 12:00:00\"`` è mezzogiorno a partire dal giorno 1 del mese."
 
 # 8564f3ba478b4c2ca38eac5aed760b31
-#: ../../pywws/Template.py:docstring of pywws.Template:109
+#: ../../pywws/Template.py:docstring of pywws.Template:128
 msgid "``#loop count#``"
 msgstr ""
 
 # ee2813d8baef42e19d3f1cffd831766d
-#: ../../pywws/Template.py:docstring of pywws.Template:111
+#: ../../pywws/Template.py:docstring of pywws.Template:130
 msgid "start a loop that will repeat ``count`` times. ``count`` must be one or more."
 msgstr "avvia un ciclo che si ripete ``count`` volte. ``count`` deve essere uno o più."
 
 # 88698fdf68cb43f28c30fc2768878bec
-#: ../../pywws/Template.py:docstring of pywws.Template:115
+#: ../../pywws/Template.py:docstring of pywws.Template:134
 msgid "``#endloop#``"
 msgstr ""
 
 # a78f71a236a74bddb132ee14028d6391
-#: ../../pywws/Template.py:docstring of pywws.Template:117
+#: ../../pywws/Template.py:docstring of pywws.Template:136
 msgid "end a loop started by ``#loop count#``. The template processing will go back to the line containing the ``#loop count#`` instruction. Don't try to nest loops."
 msgstr "finisce un ciclo avviato da ``#loop count#``. L'elaborazione del modello torna alla riga contenente le istruzioni ``#loop count#``. Non provare a nido loop."
 
 # dab7a35ec5d64dc98ed5fe9adcc3d2fd
-#: ../../pywws/Template.py:docstring of pywws.Template:122
+#: ../../pywws/Template.py:docstring of pywws.Template:141
 msgid "``#key fmt_string no_value_string conversion#``"
 msgstr ""
 
 # fb8f8fde8a0c467facc8deb10f57129c
-#: ../../pywws/Template.py:docstring of pywws.Template:124
+#: ../../pywws/Template.py:docstring of pywws.Template:143
 msgid "output a data value. ``key`` is the data key, e.g. ``temp_out`` for outdoor temperature. ``fmt_string`` is a printf-like format string (actually Python's % operator) except for datetime values, when it is input to datetime's ``strftime()`` method. ``no_value_string`` is output instead of ``fmt_string`` when the data value is absent, e.g. if the station lost contact with the outside sensor. ``conversion`` is a Python expression to convert the data, e.g. to convert wind speed from m/s to mph you could use ``\"x * 3.6 / 1.609344\"``, or the more convenient provided function ``\"wind_mph(x)\"``."
 msgstr "ricava un valore di dati. `key`` è la chiave dei dati, es. `temp_out`` per la temperatura esterna. ``fmt_string`` è un printf come stringa di formattazione (in realtà l'operatore  % di Python's) tranne che per i valori data e ora, quando si ha data e ora usare il metodo ``strftime()``. ``no_value_string`` risulta al posto di ``fmt_string`` quando il valore dei dati è assente, ad esempio, se la stazione ha perso il contatto con il sensore esterno. ``conversion`` è un espressione Python per convertire i dati, ad esempio per convertire la velocità da m/s a mph è possibile utilizzare ``\"x * 3.6 / 1.609344\"``, o la funzione più conveniente prevista ``\"wind_mph(x)\"``."
 
 # be8d1b2b166d4886a2604a69cf2b09e8
-#: ../../pywws/Template.py:docstring of pywws.Template:134
+#: ../../pywws/Template.py:docstring of pywws.Template:153
 msgid "All these values need double quotes \" if they contain spaces or other potentially difficult characters. All except ``key`` are optional, but note that if you want to specify a conversion, you also need to specify ``fmt_string`` and ``no_value_string``."
 msgstr "Tutti questi valori tra virgolette \" contengono spazi e altri caratteri potenzialmente difficili. Tutti tranne ``key`` sono facoltativi, ma si noti che se si desidera specificare una conversione, inoltre, è necessario specificare ``fmt_string`` e ``no_value_string`` ."
 
 # aacc7e8ee68b49dcb561f46fddea92c4
-#: ../../pywws/Template.py:docstring of pywws.Template:140
+#: ../../pywws/Template.py:docstring of pywws.Template:159
 msgid "``#calc expression fmt_string no_value_string conversion#``"
 msgstr ""
 
 # bdcc81cdbf4e411dae9305262600c3cd
-#: ../../pywws/Template.py:docstring of pywws.Template:142
+#: ../../pywws/Template.py:docstring of pywws.Template:161
 msgid "output a value computed from one or more data items. ``expression`` is any valid Python expression, e.g. ``\"dew_point(data['temp_out'], data['hum_out'])\"`` to compute the outdoor dew point. ``fmt_string``, ``no_value_string`` and ``conversion`` are as described above. Note that it is probably more efficient to incorporate any conversion into expression."
 msgstr "restituisce un valore calcolato da uno o più elementi di dati. ``expression`` è una espressione valida in Python, ad es. ``\"dew_point(data['temp_out'], data['hum_out'])\"`` per calcolare il punto di rugiada all'aperto. ``fmt_string``, ``no_value_string`` e ``conversion`` sono come descritti sopra. Si noti che, probabilmente, è più efficiente incorporare qualsiasi conversione nell'espressione stessa."
 
 # b331b6d5526140a7b2505e343f09842c
-#: ../../pywws/Template.py:docstring of pywws.Template:150
+#: ../../pywws/Template.py:docstring of pywws.Template:169
 msgid "Example"
 msgstr "Esempio"
 
 # 79edc97ed5854fa09ea6e76c244b1529
-#: ../../pywws/Template.py:docstring of pywws.Template:152
+#: ../../pywws/Template.py:docstring of pywws.Template:171
 msgid "Here is an example snippet showing basic and advanced use of the template features. It is part of the 6hrs.txt example template file, which generates an HTML table of 7 hourly readings (which should span 6 hours). ::"
 msgstr "Ecco un esempio di base e utilizzo avanzato del modello. E' parte della 6hrs.txt del file di esempio del modello, che genera una tabella HTML di 7 letture orarie (che deve coprire 6 ore). ::"
 
 # 0dd95d4d05564245b79b472a8fb9ba6c
-#: ../../pywws/Template.py:docstring of pywws.Template:174
+#: ../../pywws/Template.py:docstring of pywws.Template:193
 msgid "The first three lines of this snippet do the following: select hourly data, jump back 6 hours, start a loop with a count of 7. A jump forward of one hour appears just before the end of the repeated segment. As this last jump (of one hour) happens each time round the loop, a sequence of 7 data readings will be output. The last line marks the end of the loop — everything between the ``#loop 7#`` and ``#endloop#`` lines is output 7 times."
 msgstr "Le prime tre righe di questo frammento: seleziona i dati orari, salta indietro di 6 ore, avvia un loop con un conteggio di 7. un salto in avanti di un'ora appare poco prima della fine del segmento ripetuto. A quest'ultimo salto (di un'ora) accade ogni volta nel ciclo, una sequenza di 7 letture dei dati sarà il risultato. L'ultima riga indica la fine del ciclo - tutto tra le linee ``#loop 7#`` e ``#endloop#`` è ripetuta 7 volte. "
 
 # e9af380e229745c983230b4ae0a2aacf
-#: ../../pywws/Template.py:docstring of pywws.Template:182
+#: ../../pywws/Template.py:docstring of pywws.Template:201
 msgid "The ``#temp_out ...#``, ``#hum_out ...#``, ``#rain ...#`` and ``#rel_pressure ...#`` instructions show basic data output. They each use a ``fmt_string`` to format the data appropriately. The ``#wind_ave ...#`` and ``#wind_gust ...#`` instructions show how to use a conversion expression to convert m/s to mph."
 msgstr "Le istruzioni ``#temp_out ...#``, ``#hum_out ...#``, ``#rain ...#`` e ``#rel_pressure ...#`` mostrano dati di base. Ognuno di essi con un ``fmt_string`` per formattare i dati in modo appropriato. Le istruzioni ``#wind_ave ...#`` e ``#wind_gust ...#`` mostra come utilizzare un'espressione di conversione per convertire m/s a mph."
 
 # f24b2c26cf0f43f789ad33b364945547
-#: ../../pywws/Template.py:docstring of pywws.Template:188
+#: ../../pywws/Template.py:docstring of pywws.Template:207
 msgid "The ``#wind_dir ...#`` and ``#pressure_trend ...#`` instructions show use of the built-in functions ``winddir_text`` and ``pressure_trend_text`` to convert numerical values into text."
 msgstr "Le istruzioni ``#wind_dir ...#`` e ``#pressure_trend ...#`` mostrano l'uso della funzione incorporata ``wind_dir_text`` e la funzione ``pressure_trend_text`` convertono i valori numerici in testo."
 
 # 8051db5c42924e098851a098a9ff957d
-#: ../../pywws/Template.py:docstring of pywws.Template:192
+#: ../../pywws/Template.py:docstring of pywws.Template:211
 msgid "Finally we get to datetime values. The ``#idx \"%H%M\"#`` instruction simply outputs the time (in HHMM format) of the data's index. The ``#idx \"%Y/%m/%d\" \"\" \"[None, x][x.hour == 0 or loop_count == 7]\"#`` instruction is a bit more complicated. It outputs the date, but only on the first line or if the date has changed. It does this by indexing the array ``[None, x]`` with a boolean expression that is true when ``loop_count`` is 7 (i.e. on the first pass through the loop) or ``x.hour`` is zero (i.e. this is the first hour of the day)."
 msgstr "Finalmente arriviamo ai valori di datetime. L'istruzione ``#idx \"%H%M\"#`` emette semplicemente l'ora (in formato HHMM) dell'indice dei dati meteo. L'istruzione``#idx \"%Y/%m/%d\" \"\" \"[None, x][x.hour == 0 or loop_count == 7]\"#`` è un po' più complicato. Esso emette la data, ma solo sulla prima riga o se la data è cambiata. Ciò è reso possibile dall'indicizzazione dell'array ``[None, x]`` con un'espressione booleana che è vera quando ``loop_count`` è 7 (Cioè il primo passo del ciclo) o ``x.hour`` è pari a zero (Vale a dire che questa è la prima ora del giorno)."
 
@@ -2520,9 +2531,9 @@ msgstr "Basso livello di accesso al dispositivo USB tramite la libreria hidapi."
 msgid ":obj:`datetime <pywws.WeatherStation.datetime>`\\"
 msgstr ""
 
-# db0b62aea65f430bade4b56ed30e6e47
+# f8da854cd0e84f45a828c93a8239a4b5
 #: ../../<autosummary>:1
-msgid ":obj:`weather_station <pywws.WeatherStation.weather_station>`\\ ([ws_type, params, status])"
+msgid ":obj:`weather_station <pywws.WeatherStation.weather_station>`\\ ([ws_type, params, status, avoid])"
 msgstr ""
 
 # cc245f8925dc42d4a62d51616ee64602
@@ -3027,52 +3038,52 @@ msgstr "In primo luogo, decidere dove si desidera salvare il vostro modulo. Come
 
 # 19d52e41d1a04b68b570031565df44b5
 #: ../../pywws/calib.py:docstring of pywws.calib:23
-msgid "Create a plain text file in your ``modules`` directory, e.g. ``calib.py`` and copy the following text into it::"
-msgstr "Creare un file di testo nella directory ``modules`` ad esempio, ``calib.py`` e copia il seguente testo in esso::"
+msgid "You could start by copying one of the example calibration modules, or you can create a plain text file in your ``modules`` directory, e.g. ``calib.py`` and copy the following text into it::"
+msgstr "Si potrebbe iniziare copiando uno dei moduli calibrazione di esempio, oppure è possibile creare un file di testo nella directory ``modules``, ad esempio ``calib.py`` e copiare il seguente testo in esso::"
 
 # b38986920fb14ff2886edd2793d47460
-#: ../../pywws/calib.py:docstring of pywws.calib:38
-msgid "The :class:`Calib` class has two methods. :py:meth:`Calib.__init__` is the constructor and is a good place to set any constants you need. :py:meth:`Calib.calib` generates a single set of 'calibrated' data from a single set of 'raw' data. There are a few rules to follow when writing this method:"
-msgstr "La classe :class:`Calib` ha due metodi. :py:meth:`Calib.__init__` è il costruttore ed è un buon posto per impostare qualsiasi costante che è necessaria. :py:meth:`Calib.calib` genera un singolo set di dati 'calibrato' da un singolo set di dati 'raw'. Ci sono alcune regole da seguire quando si scrive questo file:"
+#: ../../pywws/calib.py:docstring of pywws.calib:40
+msgid "The :class:`Calib` class has two methods. :py:meth:`Calib.__init__` is the constructor and is a good place to set any constants you need. It is passed a reference to the raw data storage which can be useful for advanced tasks such as spike removal. :py:meth:`Calib.calib` generates a single set of 'calibrated' data from a single set of 'raw' data. There are a few rules to follow when writing this method:"
+msgstr "La classe :class:`Calib` ha due metodi. :py:meth:`Calib.__init__` è il costruttore ed è un buon posto per impostare tutte le costanti necessarie. E' un riferimento passato per la memorizzazione dei dati grezzi, che può essere utile per attività avanzate come la rimozione picchi. :py:meth:`Calib.calib` genera un singolo set di dati 'calibrato' da un singolo set di dati 'raw'. Ci sono alcune regole da seguire quando si scrive questo file:"
 
 # 4823b11f664947b59eb1090b622cb5e3
-#: ../../pywws/calib.py:docstring of pywws.calib:44
+#: ../../pywws/calib.py:docstring of pywws.calib:47
 msgid "Make sure you include the line ``result = dict(raw)``, which copies all the raw data to your result value, at the start."
 msgstr "Assicurati di includere la riga ``result = dict(raw)``, che copia tutti i dati grezzi(raw) per il risultato valido, dall'inizio."
 
 # ccc30eb6ea334030be44a4681304b819
-#: ../../pywws/calib.py:docstring of pywws.calib:47
+#: ../../pywws/calib.py:docstring of pywws.calib:50
 msgid "Don't modify any of the raw data."
 msgstr "Non modificare i dati grezzi(raw)."
 
 # e773f89a714e4d439031ccb6b2ae7008
-#: ../../pywws/calib.py:docstring of pywws.calib:49
+#: ../../pywws/calib.py:docstring of pywws.calib:52
 msgid "Make sure you set ``result['rel_pressure']``."
 msgstr "Assicurarsi di impostare ``result['rel_pressure']``."
 
 # 4d6e5df3ef6741d58a7fac5bb95045e8
-#: ../../pywws/calib.py:docstring of pywws.calib:51
+#: ../../pywws/calib.py:docstring of pywws.calib:54
 msgid "Don't forget to ``return`` the result at the end."
 msgstr "Non dimenticate ``return`` situato alla fine del file."
 
 # 8f545f4b3a8243e7aad1f60801d096d1
-#: ../../pywws/calib.py:docstring of pywws.calib:53
+#: ../../pywws/calib.py:docstring of pywws.calib:56
 msgid "When you've finished writing your calibration module you can get pywws to use it by putting its location in your ``weather.ini`` file. It goes in the ``[paths]`` section, as shown in the example below::"
 msgstr "Quando hai finito di scrivere il tuo modulo di calibrazione è possibile ottenere da pywws che la utilizzi mettere la sua posizione nel vostro file ``weather.ini`` Va in sezione ``[paths]``, come mostrato nell'esempio di seguito::"
 
 # e4b12e6877204d1b9e8223dd816bf58e
-#: ../../pywws/calib.py:docstring of pywws.calib:63
+#: ../../pywws/calib.py:docstring of pywws.calib:66
 msgid "Note that the ``user_calib`` value need not include the ``.py`` at the end of the file name."
 msgstr "Si noti che il valore ``user_calib`` non comprende l'estenzione ``.py`` alla fine del nome del file."
 
-# 5116b4316d044245860eac0221c410ba
+# 60f1b65af1c449a4995bbd1f9b10d63d
 #: ../../<autosummary>:1
-msgid ":obj:`Calib <pywws.calib.Calib>`\\ (params)"
+msgid ":obj:`Calib <pywws.calib.Calib>`\\ (params, stored_data)"
 msgstr ""
 
-# f479a7a2e487453f8e90b07053c65c41
+# 66bd58a2ac294822bfb4a9ec66d1848e
 #: ../../<autosummary>:1
-msgid ":obj:`DefaultCalib <pywws.calib.DefaultCalib>`\\ (params)"
+msgid ":obj:`DefaultCalib <pywws.calib.DefaultCalib>`\\ (params, stored_data)"
 msgstr ""
 
 # 590cd740be9e44f5b3e69effc4fb12c1
@@ -3081,16 +3092,6 @@ msgstr ""
 #: pywws.calib.DefaultCalib:1
 msgid "Default calibration class."
 msgstr "Classe di calibrazione predefinita."
-
-# c2fde6ace72d471085a26c75f1833693
-#: ../../<autosummary>:1
-msgid ":obj:`datetime <pywws.calib.datetime>`\\"
-msgstr ""
-
-# ee37dbad9ac6494494a43637acf99cbc
-#: ../../<autosummary>:1
-msgid ":obj:`timedelta <pywws.calib.timedelta>`\\"
-msgstr ""
 
 # ca23efa48b09484fab3a9d644eda07bb
 #: ../../pywws/calib.py:docstring of pywws.calib.DefaultCalib:3
@@ -3206,7 +3207,7 @@ msgstr "Calcola il punto di rugiada, usando la formula da http://en.wikipedia.or
 # 6749b0a590024d7b92e896e1229963ba
 #: ../../pywws/conversions.py:docstring of pywws.conversions.usaheatindex:3
 msgid "See http://en.wikipedia.org/wiki/Heat_index, formula 1. The formula is not valid for T < 26.7C, Dew Point < 12C, or RH < 40%"
-msgstr ""
+msgstr "Vedi http://en.wikipedia.org/wiki/Heat_index, formula 1. La formula non è valida per T < 26.7C, Dew Point < 12C, or RH < 40%"
 
 # c43052a7029240e5b3dbe2086e6554ae
 #: ../../pywws/conversions.py:docstring of pywws.conversions.wind_chill:1
