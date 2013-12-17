@@ -210,18 +210,25 @@ ftp: configuration of uploading to a website
  user = username
  password = userpassword
  directory = public_html/weather/data/
+ port = 21
 
 These entries provide details of your website (or local directory) where processed text files and graph images should be transferred to.
 
 ``local site`` specifies whether the files should be copied to a local directory or sent to a remote site. You may want to set this if you run your web server on the same machine as you are running pywws on.
 
 ``secure`` specifies whether to transfer files using SFTP (secure FTP) instead of the more common FTP. Your web site provider should be able to tell you if you can use SFTP.
+Note that you may need to change the ``port`` value when you change to or from secure mode.
 
 ``site`` is the web address of the FTP site to transfer files to.
 
 ``user`` and ``password`` are the FTP site login details. Your web site provider should have provided them to you.
 
 ``directory`` specifies where on the FTP site (or local file system) the files should be stored. Note that you may have to experiment with this a bit - you might need a '/' character at the start of the path.
+
+.. versionadded:: 13.12.dev1120
+   ``port`` specifies the port number to use.
+   Default value is 21 for FTP, 22 for SFTP.
+   Your web site provider may tell you to use a different port number.
 
 twitter: configuration of posting to Twitter
 --------------------------------------------
