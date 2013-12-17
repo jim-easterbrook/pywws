@@ -400,6 +400,11 @@ class weather_station(object):
             # 'good' time stamp if we haven't just woken up from long
             # pause and data read wasn't delayed
             valid_time = data_time - last_data_time < self.margin
+            # some stations lose sync when they lose contact
+            if next_live and (
+                    decode_status(new_data['status'])['lost_connection'] or
+                    decode_status(old_data['status'])['lost_connection']):
+                valid_time = False
             # make sure changes because of logging interval aren't
             # mistaken for new live data
             if new_data['delay'] >= read_period:
