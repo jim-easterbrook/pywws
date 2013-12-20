@@ -34,6 +34,7 @@ __usage__ = """
  usage: pywws-livelog-daemon.py [options] data_dir log_file start|stop|restart
  options are:
   -h      or --help        display this help
+  -p file or --pid file    store pid in 'file' (default /run/lock/pywws.pid)
   -v      or --verbose     increase amount of logging messages
  data_dir is the root directory of the weather data (e.g. /data/weather)
  log_file is a file to write logging to, e.g. /var/log/pywws.log
@@ -51,14 +52,13 @@ from pywws.LiveLog import LiveLog
 from pywws.Logger import ApplicationLogger
 
 class Runner(DaemonRunner):
-    def __init__(self, data_dir, action, files_preserve):
+    def __init__(self, data_dir, action, files_preserve, pid_file):
         self.data_dir = os.path.abspath(data_dir)
         # attributes required by daemon runner
         self.stdin_path = '/dev/null'
         self.stdout_path = '/dev/null'
         self.stderr_path = '/dev/null'
-        self.pidfile_path = os.path.join(self.data_dir, 'pywws.pid')
-        self.pidfile_path = '/run/lock/pywws.pid'
+        self.pidfile_path = pid_file
         self.pidfile_timeout = 5
         # initialise daemon runner
         DaemonRunner.__init__(self, self)
@@ -76,17 +76,21 @@ def main(argv=None):
     if argv is None:
         argv = sys.argv
     try:
-        opts, args = getopt.getopt(argv[1:], "hv", ['help', 'verbose'])
+        opts, args = getopt.getopt(
+            argv[1:], "hp:v", ['help', 'pid=', 'verbose'])
     except getopt.error, msg:
         print >>sys.stderr, 'Error: %s\n' % msg
         print >>sys.stderr, __usage__.strip()
         return 1
     # process options
+    pid_file = '/run/lock/pywws.pid'
     verbose = 0
     for o, a in opts:
         if o in ('-h', '--help'):
             print __usage__.strip()
             return 0
+        elif o in ('-p', '--pid'):
+            pid_file = a
         elif o in ('-v', '--verbose'):
             verbose += 1
     # check arguments
@@ -95,7 +99,8 @@ def main(argv=None):
         print >>sys.stderr, __usage__.strip()
         return 2
     logger = ApplicationLogger(verbose, args[1])
-    runner = Runner(args[0], args[2], map(lambda x: x.stream, logger.handlers))
+    runner = Runner(
+        args[0], args[2], map(lambda x: x.stream, logger.handlers), pid_file)
     try:
         runner.do_action()
     except Exception, ex:
