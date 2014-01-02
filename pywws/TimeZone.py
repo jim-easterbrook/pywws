@@ -40,6 +40,7 @@ Detailed API
 """
 
 from datetime import tzinfo, timedelta, datetime
+import sys
 import time as _time
 
 ZERO = timedelta(0)
@@ -84,3 +85,10 @@ class LocalTimezone(tzinfo):
         tt = _time.localtime(stamp)
         return tt.tm_isdst > 0
 Local = LocalTimezone()
+
+def main():
+    print datetime.now(utc).strftime('%Y/%m/%d %H:%M %Z')
+    print datetime.now(Local).strftime('%Y/%m/%d %H:%M %Z')
+
+if __name__ == "__main__":
+    sys.exit(main())
