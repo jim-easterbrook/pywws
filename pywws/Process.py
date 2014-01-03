@@ -667,7 +667,7 @@ def generate_monthly(logger, rain_day_threshold, day_end_hour,
     start = start.replace(day=1, hour=day_end_hour, minute=0, second=0)
     if day_end_hour >= 12:
         # month actually starts on the last day of previous month
-        local_start -= DAY
+        start -= DAY
     start -= STDOFFSET
     del monthly_data[start:]
     stop = daily_data.before(datetime.max)
@@ -713,7 +713,7 @@ def Process(params,
     if last_raw is None:
         raise IOError('No data found. Check data directory parameter.')
     # get daytime end hour (in local time)
-    day_end_hour = eval(params.get('config', 'day end hour', '21'))
+    day_end_hour = eval(params.get('config', 'day end hour', '21')) % 24
     # get other config
     rain_day_threshold = eval(params.get('config', 'rain day threshold', '0.2'))
     # calibrate raw data
