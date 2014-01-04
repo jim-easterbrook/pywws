@@ -405,16 +405,14 @@ class weather_station(object):
                     decode_status(new_data['status'])['lost_connection'] or
                     decode_status(old_data['status'])['lost_connection']):
                 valid_time = False
-            # make sure changes because of logging interval aren't
-            # mistaken for new live data
-            if new_data['delay'] >= read_period:
-                for key in ('delay', 'hum_in', 'temp_in', 'abs_pressure'):
-                    old_data[key] = new_data[key]
-            # ignore solar data which changes every 60 seconds
-            if self.ws_type == '3080':
-                for key in ('illuminance', 'uv'):
-                    old_data[key] = new_data[key]
-            if new_data != old_data:
+            changed = False
+            for key in ('hum_in', 'temp_in', 'hum_out', 'temp_out',
+                        'abs_pressure', 'wind_ave', 'wind_gust', 'wind_dir',
+                        'rain', 'status'):
+                if new_data[key] != old_data[key]:
+                    changed = True
+                    break
+            if changed:
                 self.logger.debug('live_data new data')
                 result = dict(new_data)
                 if valid_time:
@@ -437,6 +435,8 @@ class weather_station(object):
                 elif next_live and data_time < next_live - self.margin:
                     self.logger.warning(
                         'live_data lost sync %g', data_time - next_live)
+                    self.logger.warning('old data %s', str(old_data))
+                    self.logger.warning('new data %s', str(new_data))
                     next_live = None
                     self._sensor_clock = None
                 if next_live and not logged_only:
