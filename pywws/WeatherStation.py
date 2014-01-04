@@ -85,6 +85,16 @@ from pywws import Localisation
 USBDevice = None
 if not USBDevice:
     try:
+        from pywws.device_pyusb1 import USBDevice
+    except ImportError:
+        pass
+if not USBDevice:
+    try:
+        from pywws.device_pyusb import USBDevice
+    except ImportError:
+        pass
+if not USBDevice:
+    try:
         from pywws.device_ctypes_hidapi import USBDevice
     except ImportError:
         pass
@@ -94,12 +104,7 @@ if not USBDevice:
     except ImportError:
         pass
 if not USBDevice:
-    try:
-        from pywws.device_pyusb1 import USBDevice
-    except ImportError:
-        pass
-if not USBDevice:
-    from pywws.device_pyusb import USBDevice
+    raise ImportError('No USB library found')
 
 # get meaning for status integer
 rain_overflow   = 0x80
@@ -446,7 +451,7 @@ class weather_station(object):
                     result['idx'] = datetime.utcfromtimestamp(int(next_live))
                     next_live += live_interval
                     yield result, old_ptr, False
-                old_data = new_data
+            old_data = new_data
             # get new pointer
             if old_data['delay'] < read_period - 1:
                 continue
