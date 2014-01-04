@@ -31,7 +31,7 @@ import threading
 from pywws.calib import Calib
 from pywws import Plot
 from pywws import Template
-from pywws.TimeZone import Local
+from pywws.TimeZone import STDOFFSET
 from pywws.toservice import ToService, FIVE_MINS, FIFTY_SECS
 from pywws import Upload
 from pywws import WindRose
@@ -80,14 +80,9 @@ class RegularTasks(object):
         self.twitter = None
         # create a YoWindow object
         self.yowindow = YoWindow.YoWindow(self.calib_data)
-        # get local time's offset from UTC, without DST
-        now = self.calib_data.before(datetime.max)
-        if not now:
-            now = datetime.utcnow()
-        time_offset = Local.utcoffset(now) - Local.dst(now)
         # get daytime end hour, in UTC
         self.day_end_hour = eval(params.get('config', 'day end hour', '21'))
-        self.day_end_hour = (self.day_end_hour - (time_offset.seconds // 3600)) % 24
+        self.day_end_hour = (self.day_end_hour - (STDOFFSET.seconds // 3600)) % 24
         # create service uploader objects
         self.services = {}
         for section in ('live', 'logged', 'hourly', '12 hourly', 'daily'):
@@ -281,8 +276,8 @@ class RegularTasks(object):
         if now:
             now += timedelta(minutes=self.calib_data[now]['delay'])
         else:
-            now = datetime.utcnow()
-        threshold = now.replace(minute=0, second=0, microsecond=0)
+            now = datetime.utcnow().replace(microsecond=0)
+        threshold = (now + STDOFFSET).replace(minute=0, second=0) - STDOFFSET
         last_update = self.params.get_datetime('hourly', 'last update')
         if last_update:
             self.params.unset('hourly', 'last update')
