@@ -1,6 +1,6 @@
 .. pywws - Python software for USB Wireless Weather Stations
    http://github.com/jim-easterbrook/pywws
-   Copyright (C) 2008-13  Jim Easterbrook  jim@jim-easterbrook.me.uk
+   Copyright (C) 2008-14  Jim Easterbrook  jim@jim-easterbrook.me.uk
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -62,6 +62,7 @@ config: miscellaneous system configuration
  asynchronous = False
  usb activity margin = 3.0
  gnuplot version = 4.2
+ frequent writes = False
 
 ``ws type`` is the "class" of weather station. It should be set to ``1080`` for most weather stations, or ``3080`` if your station console displays solar illuminance.
  
@@ -100,6 +101,11 @@ You must update all your stored data by running :py:mod:`pywws.Reprocess` after 
 .. versionadded:: 13.11_r1102
    ``gnuplot version`` tells :py:mod:`pywws.Plot` and :py:mod:`pywws.WindRose` what version of gnuplot is installed on your computer.
    This allows them to use version-specific features to give improved plot quality.
+
+.. versionadded:: 14.01_r1133
+   ``frequent writes`` tells :py:mod:`pywws.Tasks` to save weather data and status to file every time there is new logged data.
+   The default is to save the files every hour, to reduce "wear" on solid state memory such as the SD cards used with Raspberry Pi computers.
+   If your weather data directory is stored on a conventional disc drive you can set ``frequent writes`` to ``True``.
 
 paths: directories in which templates etc. are stored
 -----------------------------------------------------

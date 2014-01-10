@@ -2,7 +2,7 @@
 
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-13  Jim Easterbrook  jim@jim-easterbrook.me.uk
+# Copyright (C) 2008-14  Jim Easterbrook  jim@jim-easterbrook.me.uk
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -50,6 +50,7 @@ class RegularTasks(object):
         self.daily_data = daily_data
         self.monthly_data = monthly_data
         self.asynch = asynch
+        self.flush = eval(self.params.get('config', 'frequent writes', 'False'))
         # get directories
         self.work_dir = self.params.get('paths', 'work', '/tmp/weather')
         self.template_dir = self.params.get(
@@ -310,7 +311,7 @@ class RegularTasks(object):
         if OK:
             for section in sections:
                 self.status.set('last update', section, now.isoformat(' '))
-        if 'hourly' in sections:
+        if self.flush or 'hourly' in sections:
             # save any unsaved data
             self.params.flush()
             self.status.flush()
