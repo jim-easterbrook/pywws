@@ -123,11 +123,12 @@ def main(argv=None):
         print >>sys.stderr, 'Error: 1 argument required\n'
         print >>sys.stderr, __usage__.strip()
         return 2
-    logger = ApplicationLogger(verbose, logfile)
     if pidfile != None:
         with daemon.DaemonContext(pidfile = PidFile.PidFile(pidfile)):
+            logger = ApplicationLogger(verbose, logfile)
             rtn = LiveLog(args[0])
     else:
+        logger = ApplicationLogger(verbose, logfile)
         return LiveLog(args[0])
 
 if __name__ == "__main__":
