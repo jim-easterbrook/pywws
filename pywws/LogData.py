@@ -70,135 +70,166 @@ import time
 
 from pywws import DataStore
 from pywws.Logger import ApplicationLogger
+from pywws.Process import HOUR
 from pywws.TimeZone import Local
 from pywws import WeatherStation
 
-def Catchup(ws, logger, raw_data, last_date, last_ptr):
-    fixed_block = ws.get_fixed_block(unbuffered=True)
-    # get time to go back to
-    last_stored = raw_data.before(datetime.max)
-    if last_stored == None:
-        last_stored = datetime.min
-    if datetime.utcnow() < last_stored:
-        raise ValueError('Computer time is earlier than last stored data')
-    last_stored += timedelta(seconds=fixed_block['read_period'] * 30)
-    # data_count includes record currently being updated every 48 seconds
-    max_count = fixed_block['data_count'] - 1
-    count = 0
-    while last_date > last_stored and count < max_count:
-        data = ws.get_data(last_ptr)
-        if data['delay'] is None or data['delay'] > 30:
-            logger.error('invalid data at %04x, %s',
-                         last_ptr, last_date.isoformat(' '))
-            last_date -= timedelta(minutes=fixed_block['read_period'])
-        else:
-            raw_data[last_date] = data
-            count += 1
-            last_date -= timedelta(minutes=data['delay'])
-        last_ptr = ws.dec_ptr(last_ptr)
-    if count > 0:
-        logger.info("%d catchup records", count)
-
-def CheckFixedBlock(ws, params, status, logger):
-    fixed_block = ws.get_fixed_block(unbuffered=True)
-    # check clocks
-    try:
-        s_time = DataStore.safestrptime(
-            fixed_block['date_time'], '%Y-%m-%d %H:%M')
-    except Exception:
-        s_time = None
-    if s_time:
-        c_time = datetime.now().replace(second=0, microsecond=0)
-        diff = abs(s_time - c_time)
-        if diff > timedelta(minutes=2):
-            logger.warning(
-                "Computer and weather station clocks disagree by %s (H:M:S).", str(diff))
-    # store weather station type
-    params.set('config', 'ws type', ws.ws_type)
-    # store info from fixed block
-    status.unset('fixed', 'pressure offset')
-    if not params.get('config', 'pressure offset'):
-        params.set('config', 'pressure offset', '%g' % (
-            fixed_block['rel_pressure'] - fixed_block['abs_pressure']))
-    params.unset('fixed', 'fixed block')
-    status.set('fixed', 'fixed block', str(fixed_block))
-    return fixed_block
-
-def LogData(params, status, raw_data, sync=None, clear=False):
-    logger = logging.getLogger('pywws.LogData')
-    # connect to weather station
-    ws_type = params.get('fixed', 'ws type')
-    if ws_type:
-        params.unset('fixed', 'ws type')
-        params.set('config', 'ws type', ws_type)
-    ws_type = params.get('config', 'ws type', 'Unknown')
-    ws = WeatherStation.weather_station(
-        ws_type=ws_type, params=params, status=status)
-    fixed_block = CheckFixedBlock(ws, params, status, logger)
-    # check for valid weather station type
-    if ws.ws_type not in ('1080', '3080'):
-        print "Unknown weather station type. Please edit weather.ini"
-        print "and set 'ws type' to '1080' or '3080', as appropriate."
-        if fixed_block['lux_wm2_coeff'] == 0.0:
-            print "Your station is probably a '1080' type."
-        else:
-            print "Your station is probably a '3080' type."
-        sys.exit(1)
-    # get sync config value
-    if sync is None:
-        if fixed_block['read_period'] <= 5:
-            sync = int(params.get('config', 'logdata sync', '1'))
-        else:
-            sync = int(params.get('config', 'logdata sync', '0'))
-    # get address and date-time of last complete logged data
-    logger.info('Synchronising to weather station')
-    range_hi = datetime.max
-    range_lo = datetime.min
-    last_delay = ws.get_data(ws.current_pos())['delay']
-    if last_delay == 0:
-        prev_date = datetime.min
-    else:
-        prev_date = datetime.utcnow()
-    for data, last_ptr, logged in ws.live_data(logged_only=(sync > 1)):
-        last_date = data['idx']
-        logger.debug('Reading time %s', last_date.strftime('%H:%M:%S'))
-        if logged:
-            break
-        if sync < 2 and ws._station_clock:
-            err = last_date - datetime.fromtimestamp(ws._station_clock)
-            last_date -= timedelta(
-                minutes=data['delay'], seconds=err.seconds % 60)
-            logger.debug('log time %s', last_date.strftime('%H:%M:%S'))
-            last_ptr = ws.dec_ptr(last_ptr)
-            break
-        if sync < 1:
-            hi = last_date - timedelta(minutes=data['delay'])
-            if last_date - prev_date > timedelta(seconds=50):
-                lo = hi - timedelta(seconds=60)
-            elif data['delay'] == last_delay:
-                lo = hi - timedelta(seconds=60)
-                hi = hi - timedelta(seconds=48)
+class DataLogger(object):
+    def __init__(self, params, status, raw_data):
+        self.logger = logging.getLogger('pywws.DataLogger')
+        self.params = params
+        self.status = status
+        self.raw_data = raw_data
+        # connect to weather station
+        ws_type = self.params.get('fixed', 'ws type')
+        if ws_type:
+            self.params.unset('fixed', 'ws type')
+            self.params.set('config', 'ws type', ws_type)
+        ws_type = self.params.get('config', 'ws type', 'Unknown')
+        avoid = eval(self.params.get('config', 'usb activity margin', '3.0'))
+        self.ws = WeatherStation.weather_station(
+            ws_type=ws_type, params=self.params, status=self.status,
+            avoid=avoid)
+        # check for valid weather station type
+        fixed_block = self.check_fixed_block()
+        if ws_type not in ('1080', '3080'):
+            print "Unknown weather station type. Please edit weather.ini"
+            print "and set 'ws type' to '1080' or '3080', as appropriate."
+            if fixed_block['lux_wm2_coeff'] == 0.0:
+                print "Your station is probably a '1080' type."
             else:
-                lo = hi - timedelta(seconds=48)
-            last_delay = data['delay']
-            prev_date = last_date
-            range_hi = min(range_hi, hi)
-            range_lo = max(range_lo, lo)
-            err = (range_hi - range_lo) / 2
-            last_date = range_lo + err
-            logger.debug('est log time %s +- %ds (%s..%s)',
-                         last_date.strftime('%H:%M:%S'), err.seconds,
-                         lo.strftime('%H:%M:%S'), hi.strftime('%H:%M:%S'))
-            if err < timedelta(seconds=15):
-                last_ptr = ws.dec_ptr(last_ptr)
+                print "Your station is probably a '3080' type."
+            sys.exit(1)
+        # check computer clock isn't earlier than last stored data
+        last_stored = self.raw_data.before(datetime.max)
+        if last_stored and datetime.utcnow() < last_stored:
+            raise ValueError('Computer time is earlier than last stored data')
+
+    def check_fixed_block(self):
+        fixed_block = self.ws.get_fixed_block(unbuffered=True)
+        # check clocks
+        try:
+            s_time = DataStore.safestrptime(
+                fixed_block['date_time'], '%Y-%m-%d %H:%M')
+        except Exception:
+            s_time = None
+        if s_time:
+            c_time = datetime.now().replace(second=0, microsecond=0)
+            diff = abs(s_time - c_time)
+            if diff > timedelta(minutes=2):
+                self.logger.warning(
+                    "Computer and weather station clocks disagree by %s (H:M:S).", str(diff))
+        # store weather station type
+        self.params.set('config', 'ws type', self.ws.ws_type)
+        # store info from fixed block
+        self.status.unset('fixed', 'pressure offset')
+        if not self.params.get('config', 'pressure offset'):
+            self.params.set('config', 'pressure offset', '%g' % (
+                fixed_block['rel_pressure'] - fixed_block['abs_pressure']))
+        self.params.unset('fixed', 'fixed block')
+        self.status.set('fixed', 'fixed block', str(fixed_block))
+        return fixed_block
+
+    def catchup(self, last_date, last_ptr):
+        fixed_block = self.ws.get_fixed_block(unbuffered=True)
+        # get time to go back to
+        last_stored = self.raw_data.before(datetime.max)
+        if not last_stored:
+            last_stored = datetime.min
+        last_stored += timedelta(seconds=fixed_block['read_period'] * 30)
+        # data_count includes record currently being updated every 48 seconds
+        max_count = fixed_block['data_count'] - 1
+        count = 0
+        while last_date > last_stored and count < max_count:
+            data = self.ws.get_data(last_ptr)
+            if data['delay'] is None or data['delay'] > 30:
+                self.logger.error('invalid data at %04x, %s',
+                                  last_ptr, last_date.isoformat(' '))
+                last_date -= timedelta(minutes=fixed_block['read_period'])
+            else:
+                self.raw_data[last_date] = data
+                count += 1
+                last_date -= timedelta(minutes=data['delay'])
+            last_ptr = self.ws.dec_ptr(last_ptr)
+        if count > 0:
+            self.logger.info("%d catchup records", count)
+
+    def log_data(self, sync=None, clear=False):
+        fixed_block = self.check_fixed_block()
+        # get sync config value
+        if sync is None:
+            if fixed_block['read_period'] <= 5:
+                sync = int(self.params.get('config', 'logdata sync', '1'))
+            else:
+                sync = int(self.params.get('config', 'logdata sync', '0'))
+        # get address and date-time of last complete logged data
+        self.logger.info('Synchronising to weather station')
+        range_hi = datetime.max
+        range_lo = datetime.min
+        last_delay = self.ws.get_data(self.ws.current_pos())['delay']
+        if last_delay == 0:
+            prev_date = datetime.min
+        else:
+            prev_date = datetime.utcnow()
+        for data, last_ptr, logged in self.ws.live_data(logged_only=(sync > 1)):
+            last_date = data['idx']
+            self.logger.debug('Reading time %s', last_date.strftime('%H:%M:%S'))
+            if logged:
                 break
-    # go back through stored data, until we catch up with what we've already got
-    logger.info('Fetching data')
-    Catchup(ws, logger, raw_data, last_date, last_ptr)
-    if clear:
-        logger.info('Clearing weather station memory')
-        ptr = ws.fixed_format['data_count'][0]
-        ws.write_data([(ptr, 1), (ptr+1, 0)])
+            if sync < 2 and self.ws._station_clock:
+                err = last_date - datetime.fromtimestamp(self.ws._station_clock)
+                last_date -= timedelta(
+                    minutes=data['delay'], seconds=err.seconds % 60)
+                self.logger.debug('log time %s', last_date.strftime('%H:%M:%S'))
+                last_ptr = self.ws.dec_ptr(last_ptr)
+                break
+            if sync < 1:
+                hi = last_date - timedelta(minutes=data['delay'])
+                if last_date - prev_date > timedelta(seconds=50):
+                    lo = hi - timedelta(seconds=60)
+                elif data['delay'] == last_delay:
+                    lo = hi - timedelta(seconds=60)
+                    hi = hi - timedelta(seconds=48)
+                else:
+                    lo = hi - timedelta(seconds=48)
+                last_delay = data['delay']
+                prev_date = last_date
+                range_hi = min(range_hi, hi)
+                range_lo = max(range_lo, lo)
+                err = (range_hi - range_lo) / 2
+                last_date = range_lo + err
+                self.logger.debug('est log time %s +- %ds (%s..%s)',
+                                  last_date.strftime('%H:%M:%S'), err.seconds,
+                                  lo.strftime('%H:%M:%S'), hi.strftime('%H:%M:%S'))
+                if err < timedelta(seconds=15):
+                    last_ptr = self.ws.dec_ptr(last_ptr)
+                    break
+        # go back through stored data, until we catch up with what we've already got
+        self.logger.info('Fetching data')
+        self.catchup(last_date, last_ptr)
+        if clear:
+            self.logger.info('Clearing weather station memory')
+            ptr = self.ws.fixed_format['data_count'][0]
+            self.ws.write_data([(ptr, 1), (ptr+1, 0)])
+
+    def live_data(self, logged_only=False):
+        next_hour = datetime.utcnow(
+            ).replace(minute=0, second=0, microsecond=0) + HOUR
+        next_ptr = None
+        for data, ptr, logged in self.ws.live_data(logged_only=logged_only):
+            if logged:
+                now = data['idx']
+                if ptr == next_ptr:
+                    # data is contiguous with last logged value
+                    self.raw_data[now] = data
+                    if now >= next_hour:
+                        next_hour += HOUR
+                        self.check_fixed_block()
+                else:
+                    # catch up missing data
+                    self.catchup(now, ptr)
+                next_ptr = self.ws.inc_ptr(ptr)
+            yield data, logged
 
 def main(argv=None):
     if argv is None:
@@ -231,9 +262,9 @@ def main(argv=None):
         return 2
     logger = ApplicationLogger(verbose)
     root_dir = args[0]
-    return LogData(
+    DataLogger(
         DataStore.params(root_dir), DataStore.status(root_dir),
-        DataStore.data_store(root_dir), sync=sync, clear=clear)
+        DataStore.data_store(root_dir)).log_data(sync=sync, clear=clear)
 
 if __name__ == "__main__":
     sys.exit(main())

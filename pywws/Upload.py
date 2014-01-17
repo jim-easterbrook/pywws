@@ -86,7 +86,7 @@ from pywws import DataStore
 from pywws.Logger import ApplicationLogger
 
 class _ftp(object):
-    def __init__(self, logger, site, user, password, directory):
+    def __init__(self, logger, site, user, password, directory, port):
         global ftplib
         import ftplib
         self.logger = logger
@@ -94,10 +94,13 @@ class _ftp(object):
         self.user = user
         self.password = password
         self.directory = directory
+        self.port = port
 
     def connect(self):
         self.logger.info("Uploading to web site with FTP")
-        self.ftp = ftplib.FTP(self.site, self.user, self.password)
+        self.ftp = ftplib.FTP()
+        self.ftp.connect(self.site, self.port)
+        self.ftp.login(self.user, self.password)
         self.logger.debug(self.ftp.getwelcome())
         self.ftp.cwd(self.directory)
 
@@ -117,7 +120,7 @@ class _ftp(object):
         self.ftp.close()
 
 class _sftp(object):
-    def __init__(self, logger, site, user, password, directory):
+    def __init__(self, logger, site, user, password, directory, port):
         global paramiko
         import paramiko
         self.logger = logger
@@ -125,10 +128,11 @@ class _sftp(object):
         self.user = user
         self.password = password
         self.directory = directory
+        self.port = port
 
     def connect(self):
         self.logger.info("Uploading to web site with SFTP")
-        self.transport = paramiko.Transport((self.site, 22))
+        self.transport = paramiko.Transport((self.site, self.port))
         self.transport.connect(username=self.user, password=self.password)
         self.ftp = paramiko.SFTPClient.from_transport(self.transport)
         self.ftp.chdir(self.directory)
@@ -174,11 +178,13 @@ class Upload(object):
             directory = self.params.get(
                 'ftp', 'directory', 'public_html/weather/data/')
             if eval(self.params.get('ftp', 'secure', 'False')):
+                port = eval(self.params.get('ftp', 'port', '22'))
                 self.uploader = _sftp(
-                    self.logger, site, user, password, directory)
+                    self.logger, site, user, password, directory, port)
             else:
+                port = eval(self.params.get('ftp', 'port', '21'))
                 self.uploader = _ftp(
-                    self.logger, site, user, password, directory)
+                    self.logger, site, user, password, directory, port)
 
     def connect(self):
         try:

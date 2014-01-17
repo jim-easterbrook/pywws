@@ -5,9 +5,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: pywws 13.06\n"
+"Project-Id-Version: pywws 13.10\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-09-19 00:51\n"
+"POT-Creation-Date: 2013-10-06 20:51\n"
 "PO-Revision-Date: 2013-09-15 09:39+0200\n"
 "Last-Translator: Edoardo <edoardo69@hotmail.it>\n"
 "Language-Team: Italian\n"
@@ -50,17 +50,17 @@ msgstr "Questo documento è tradotto nelle seguenti lingue (Le versioni diverse 
 # 3bd7f3bf6760463da11f48ac64ddb4fe
 #: ../../doc_src/index.rst:33
 msgid "`English <../../en/html/index.html>`_"
-msgstr ""
+msgstr "`Inglese <../../en/html/index.html>`_ -- scritto da jim Easterbrook"
 
-# 0340073a28c148adb5ee9ec2d4d46dac
+# 3e858e9183e149999412940147259457
 #: ../../doc_src/index.rst:34
-msgid "`Français <../../fr/html/index.html>`_"
-msgstr ""
+msgid "`Français <../../fr/html/index.html>`_ -- translated by Jacques Desroches"
+msgstr "`Francese <../../fr/html/index.html>`_ -- tradotto da Jacques Desroches"
 
-# 8a489f4ef2334e40953620e4fe12a858
+# 71e41c15f6284d8cbc01092a2b03d889
 #: ../../doc_src/index.rst:35
-msgid "`Italiano <../../it/html/index.html>`_"
-msgstr ""
+msgid "`Italiano <../../it/html/index.html>`_ -- translated by Edoardo"
+msgstr "`Italiano <../../it/html/index.html>`_ -- tradotto da Edoardo"
 
 # afbe44021b1f415593b2d3136c76ac31
 #: ../../doc_src/index.rst:39
@@ -89,276 +89,198 @@ msgstr "Requisiti"
 
 # b02ed3b35f0b44bfaa445e6b5f0277f7
 #: ../../doc_src/index.rst:51
-msgid "The software you'll need to run pywws depends on what you plan to do with it. In particular, there is a choice of USB library, to suit what's available on different operating systems."
-msgstr "Il software che avete bisogno per eseguire pywws dipende dall'obbiettivo che vi siete posti. In particolare, dalla scelta della libreria USB, in funzione di quelle che avete disponibili sui diversi sistemi operativi."
+msgid "The software you'll need to run pywws depends on what you plan to do with it. You'll need Python 2.5 or later -- Python 3 is partially supported, some functionality depends on libraries that have not yet been ported to Python 3."
+msgstr "Il software necessario per eseguire pywws dipende da cosa si intende fare con esso. È necessario Python 2.5 o successiva -- Python 3 è parzialmente supportato, alcune funzionalità dipendono dalle librerie che non sono ancora state portate in Python 3."
 
-# 42eae4e3e22345f696cedfb12e025967
-#: ../../doc_src/index.rst:53
-msgid "`Python <http://python.org/>`_ version 2.5 or higher (note: Python 3 support is under development - some things may not work properly)"
-msgstr "`Python <http://python.org/>`_ versione 2.5 o superiore (nota: Il supporto di Python v3 è in corso di sviluppo - alcune cose possono non funzionare correttamente)"
-
-# 8e935d277f1248f39adf8e29a786d347
+# a5d65b4219484ac98045332e377a6756
 #: ../../doc_src/index.rst:54
-msgid "USB library option 1 (preferred, except on MacOS):"
-msgstr "Libreria USB - opzione 1 (preferito, eccetto in MacOS):"
-
-# 30dfaf8034ab4b0e9f06ace40c6dc6ab
-#: ../../doc_src/index.rst:56
-msgid "`PyUSB <http://sourceforge.net/apps/trac/pyusb/>`_ version 1.0"
-msgstr ""
-
-# 66b1455758954ff2acd631e73aa1fe53
-#: ../../doc_src/index.rst:57
-msgid "`libusb <http://www.libusb.org/>`_ version 0.1 or version 1.0"
-msgstr ""
-
-# 22d8d19a368e43d78bddda402a0f133c
-#: ../../doc_src/index.rst:58
-msgid "USB library option 2 (if PyUSB 1.0 is not available):"
-msgstr "Libreria USB - opzione 2 (se PyUSB 1.0 non è disponibile):"
-
-# d197b198476e419d9cd5a90cf535bd6c
-#: ../../doc_src/index.rst:60
-msgid "`PyUSB <http://sourceforge.net/apps/trac/pyusb/>`_ version 0.4"
-msgstr ""
-
-# 93513820e4014b4eb73daf42cd7c3ef4
-#: ../../doc_src/index.rst:61
-msgid "`libusb <http://www.libusb.org/>`_ version 0.1"
-msgstr ""
-
-# 2dde4eaf362940839e0cf53dec41b8cf
-#: ../../doc_src/index.rst:62
-msgid "USB library option 3 (best for MacOS):"
-msgstr "Libreria USB - opzione 3 (consigliato per MacOS):"
-
-# 5903b49243c84c8a8c04737024fc5100
-# d22b99f8be0047198c12f4b97294ad16
-#: ../../doc_src/index.rst:64 ../../doc_src/index.rst:68
-msgid "`hidapi <https://github.com/signal11/hidapi>`_"
-msgstr ""
-
-# 913e2a6d1934404482a528a077c0d895
-#: ../../doc_src/index.rst:65
-msgid "`ctypes <http://docs.python.org/2/library/ctypes.html>`_"
-msgstr ""
-
-# 9ab249a097cc43568ca220b85d106ca9
-#: ../../doc_src/index.rst:66
-msgid "USB library option 4:"
-msgstr "Libreria USB - opzione 4:"
-
-# b0a9acdd864444ac9d8fb84b75671c8a
-#: ../../doc_src/index.rst:69
-msgid "`cython-hidapi <https://github.com/gbishop/cython-hidapi>`_"
-msgstr ""
-
-# a62abf17377e49ffb8312f8c6134f8a3
-#: ../../doc_src/index.rst:70
-msgid "`cython <http://cython.org/>`_"
-msgstr ""
-
-# bc3afa1d3e964ac7aa74ff91ac6561cf
-#: ../../doc_src/index.rst:71
-msgid "For graph drawing:"
-msgstr "Per disegnare i grafici:"
-
-# 2c481fcf21d74a148c7e7f4a65d6f066
-#: ../../doc_src/index.rst:73
-msgid "`gnuplot <http://www.gnuplot.info/>`_ v4.2 or higher"
-msgstr "`gnuplot <http://www.gnuplot.info/>`_ v4.2 o superiore"
-
-# 8bd7c62d4c204e47bcf17e7d16a18ea6
-#: ../../doc_src/index.rst:74
-msgid "For secure website uploading (sftp)"
-msgstr "Per caricare in sicurezza il votro sito (sfpt)"
-
-# ed1fca03a69a403db49161c8716e13e8
-#: ../../doc_src/index.rst:76
-msgid "`paramiko <http://www.lag.net/paramiko/>`_"
-msgstr ""
-
-# 50e570cc7e794710a8348c6f0746c928
-#: ../../doc_src/index.rst:77
-msgid "`pycrypto <http://www.dlitz.net/software/pycrypto/>`_"
-msgstr ""
-
-# 9726133a0d9547de9c42a33579a7ed6e
-#: ../../doc_src/index.rst:78
-msgid "For Twitter updates:"
-msgstr "Per aggiornare i post su Twitter:"
-
-# ff76f11240a2484fa0b2e3554b7f5e55
-#: ../../doc_src/index.rst:80
-msgid "`python-twitter <https://github.com/bear/python-twitter>`_ v0.8.6 or higher"
-msgstr "`python-twitter <https://github.com/tweepy/tweepy>`_ v0.8.6 o superiore"
-
-# 521c4c61ebbb4793951635a695d7ffe2
-#: ../../doc_src/index.rst:81
-msgid "`simplejson <https://github.com/simplejson/simplejson>`_"
-msgstr ""
-
-# d101a9e5992d4d1492dd5170d796e306
-#: ../../doc_src/index.rst:82
-msgid "`python-oauth2 <https://github.com/simplegeo/python-oauth2>`_"
-msgstr ""
-
-# 13903e7016b748e7a516e7dd6293a9a1
-#: ../../doc_src/index.rst:83
-msgid "`httplib2 <http://code.google.com/p/httplib2/>`_"
-msgstr ""
-
-# 54609b928b42448c8de16a312ee79ad4
-#: ../../doc_src/index.rst:84
-msgid "To create new language translations:"
-msgstr "Per generare le traduzioni in nuovi linguaggi:"
-
-# 96404f5f2c0e4a34a882d29c38ce70d7
-#: ../../doc_src/index.rst:86
-msgid "`gettext <http://www.gnu.org/s/gettext/>`_"
-msgstr ""
-
-# 646a916e56df4ac38f5d235e41982df5
-#: ../../doc_src/index.rst:87
-msgid "To 'compile' the documentation:"
-msgstr "Per 'compilare' la documentazione:"
-
-# 0472ed0d7a6348deae9a19421336f1c8
-#: ../../doc_src/index.rst:89
-msgid "`sphinx <http://sphinx-doc.org/>`_"
-msgstr ""
+msgid "For more detail, see :doc:`essentials/dependencies`."
+msgstr "Per ulteriori dettagli, vedi :doc:`essentials/dependencies`."
 
 # 59f5360d7d194f73b92222689e52ebf8
-#: ../../doc_src/index.rst:93
+#: ../../doc_src/index.rst:58
 msgid "Getting a copy of pywws"
 msgstr "Scaricare una copia di pywws"
 
 # 3cfacb5e34b34ba99386504289102700
-#: ../../doc_src/index.rst:95
+#: ../../doc_src/index.rst:60
 msgid "The simplest way to obtain pywws is to use ``pip`` to install it directly from the `Python Package Index (PyPI) <http://pypi.python.org/pypi/pywws/>`_. Note that this will probably require 'root' privileges, so will need to be run using ``sudo``::"
 msgstr "Semplicemente per installare pywws usate il comando ``pip`` scaricando direttamente dal sito `Python Package Index (PyPI) <http://pypi.python.org/pypi/pywws/>`_. Nota questo metodo richiede i privilegi di 'root', usate il comando ``sudo``::"
 
 # 08ed6d771e1e4b43a554cf616c8f0825
-#: ../../doc_src/index.rst:100
-msgid "If you don't have root privileges, or don't want to install pywws, you can download a zip or tar.gz file from PyPI and then extract the files into a convenient directory on your computer."
-msgstr "Se non hai i privilegi di root, o non vuoi installare pywws, si può scaricare un file zip o tar.gz da PyPI ed estrarre i file in una directory del tuo computer."
+#: ../../doc_src/index.rst:65
+msgid "If you don't have root privileges, or don't want to install pywws into the system directories, you can download a zip or tar.gz file from PyPI and then extract the files into any convenient directory on your computer."
+msgstr "Se non hai i privilegi di root, o non vuoi installare pywws nel sistema, si può scaricare il file zip o tar.gz da PyPI ed estrarre i file in una qualsiasi directory del tuo computer."
 
 # 85ed011c4b5748d99b06885e2296f5fe
-#: ../../doc_src/index.rst:102
+#: ../../doc_src/index.rst:67
 msgid "The PyPI files contain a snapshot release of the software - a new one is issued every few months. If you'd like to keep up to date with latest developments of pywws, you should use ``git`` to clone the pywws repository::"
 msgstr "I file di PyPI contengono una versione istantanea del software - una nuova versione viene emessa ogni pochi mesi. Se si desidera mantenere aggiornati con gli sviluppi più recenti della pywws, è consigliabile utilizzare ``git`` per clonare il repository pywws::"
 
 # ebef9231250545568c959e24ddd5bf91
-#: ../../doc_src/index.rst:107
+#: ../../doc_src/index.rst:72
 msgid "After doing so you can compile the documentation and language localisation files (which will require the ``sphinx`` and ``gettext`` dependencies)::"
 msgstr "Dopo averlo fatto è possibile compilare i file di localizzazione della documentazione e lingua (che richiederanno le dipendenze ``sphinx`` e ``gettext``)::"
 
+# 309cdf42da284b07b66f82340cdabd19
+#: ../../doc_src/index.rst:78
+msgid "This is optional -- the documentation is available online and you might prefer to use pywws in English."
+msgstr "Questo è facoltativo- - la documentazione è disponibile online se preferisci utilizzare pywws in Inglese."
+
 # a5d65b4219484ac98045332e377a6756
-#: ../../doc_src/index.rst:113
+#: ../../doc_src/index.rst:80
 msgid "For more details, see :doc:`guides/getstarted`."
 msgstr "Per ulteriori dettagli, vedi :doc:`guides/getstarted`."
 
 # ab1458499e4348f3bcefa0c2745e9e07
-#: ../../doc_src/index.rst:116
+#: ../../doc_src/index.rst:83
 msgid "Upgrading pywws"
 msgstr "Aggiornare pywws"
 
 # d1c19ccd59234268a01dec101aa5df21
-#: ../../doc_src/index.rst:118
-msgid "The method used to upgrade pywws depends on how you originally obtained it. If you downloaded a zip or tar.gz file, you just need to do the same again, with the new version, then delete your old download when you've finished setting up the new one. (Note that upgrading is much easier if you do not keep your templates, user modules and weather data in the same directory as the downloaded files.) If you used ``pip`` you just need to repeat the command. ``git`` users just need to do a ``git pull`` command."
-msgstr "Il metodo utilizzato per aggiornare pywws dipende da come originariamente l' hai ottenuta. Se hai scaricato un file zip o tar. gz, hai solo bisogno di fare la stessa cosa di nuovo, con la nuova versione, quindi eliminare il vecchio download quando hai finito di impostare quella nuova. (Si noti che l'aggiornamento è molto più facile se non conservate i template, moduli utente e dati meteo nella stessa directory del file scaricato). Se hai usato ``pip`` basta ripetere il comando. Gli utenti ``git`` hanno bisogno del comando ``git pull``."
+#: ../../doc_src/index.rst:85
+msgid "The method used to upgrade pywws depends on how you originally obtained it. If you downloaded a zip or tar.gz file, you just need to do the same again, with the new version, then delete your old download when you've finished setting up the new one. (Note that upgrading is much easier if you do not keep your templates, user modules and weather data in the same directory as the downloaded files.) ``git`` users just need to do a ``git pull`` command. If you used ``pip`` you need to use the upgrade option::"
+msgstr "Il metodo utilizzato per aggiornare pywws dipende da come originariamente l' hai ottenuta. Se hai scaricato un file zip o tar. gz, hai solo bisogno di fare la stessa cosa di nuovo, con la nuova versione, quindi eliminare il vecchio download quando hai finito di impostare quella nuova. (Si noti che l'aggiornamento è molto più facile se non conservate i template, moduli utente e dati meteo nella stessa directory del file scaricato). Gli utenti ``git`` hanno bisogno del comando ``git pull``.Se si è utilizzato ``pip`` è necessario utilizzare l'opzione di aggiornamento::"
 
 # 9720a13d786f4ede8dcf3432c764074d
-#: ../../doc_src/index.rst:120
+#: ../../doc_src/index.rst:91
 msgid "Some new versions of pywws have changed what's stored in the hourly, daily or monthly summary data files. These new versions are incompatible with processed data from earlier versions. The :py:mod:`pywws.Reprocess` module regenerates all the summary data. It should be run after any major upgrade."
 msgstr "Alcune nuove versioni di pywws hanno cambiato ciò che è memorizzato nei file di dati di riepilogo oraria, giornaliera o mensile. Queste nuove versioni non sono compatibili con i dati elaborati da versioni precedenti. Il :py:mod:`pywws.Reprocess` Rigenera tutti i dati di riepilogo. Questo dovrebbe essere eseguito dopo ogni aggiornamento importante. "
 
 # b5dece753e92432aaf9996b59772e95f
-#: ../../doc_src/index.rst:124
+#: ../../doc_src/index.rst:95
 msgid "Documentation"
 msgstr "Documentazione"
 
 # dadf9524fcfd46f5b4979d8c4cbbdf92
-#: ../../doc_src/index.rst:126
+#: ../../doc_src/index.rst:97
 msgid "Documentation is included with pywws downloads, and is also available `online <http://pythonhosted.org/pywws>`_. A good starting place is :doc:`guides/getstarted` which describes in more detail how to install pywws."
 msgstr "La documentazione è inclusa con pywws ed è anche disponibile `online <http://pythonhosted.org/pywws>`_. Un buon punto di partenza è :doc:`guides/getstarted` che descrive in dettaglio come installare pywws."
 
 # f8219cb9bd924cbfb839b9dc6b8f4221
-#: ../../doc_src/index.rst:128
+#: ../../doc_src/index.rst:99
 msgid "If you have questions not answered in the documentation, please join the `pywws Google mailing list / discussion group <http://groups.google.com/group/pywws>`_ and ask there. Note that your first message to the group will not appear immediately -- new posters have to be approved by a moderator, to prevent spam messages."
 msgstr "Se avete domande o non risposte nella documentazione, unitevi alla `pywws Google mailing list / discussion group <http://groups.google.com/group/pywws>`_ e chiedete lì. Si noti che il primo messaggio del gruppo non apparirà immediatamente - nuovi poster devono essere approvati da un moderatore, per evitare messaggi di spam."
 
 # fddf9a89de3c405f80b808243971a931
-#: ../../doc_src/index.rst:131
+#: ../../doc_src/index.rst:102
 msgid "Contents"
 msgstr "Contenuto"
 
 # 8e51b0bef4b244d2ba24850fef906c44
-#: ../../doc_src/index.rst:143
+#: ../../doc_src/index.rst:114
 msgid "Indices and tables"
 msgstr "Indici e tabelle"
 
 # 179ce8269aa9446c88d256de0212e726
-#: ../../doc_src/index.rst:145
+#: ../../doc_src/index.rst:116
 msgid ":ref:`genindex`"
 msgstr ""
 
 # a8bc26ea3b3b40e5ba1ce72c62295833
-#: ../../doc_src/index.rst:146
+#: ../../doc_src/index.rst:117
 msgid ":ref:`modindex`"
 msgstr ""
 
 # d8505ac17e3945a7a240b3fbb2b0b264
-#: ../../doc_src/index.rst:147
+#: ../../doc_src/index.rst:118
 msgid ":ref:`search`"
 msgstr ""
 
 # 026dfdc6a8ab4fc79caa757c3886f854
-#: ../../doc_src/index.rst:151
+#: ../../doc_src/index.rst:122
 msgid "Credits"
 msgstr "Ringraziamenti"
 
 # 2edbea4f40a148c3b8128163041eca09
-#: ../../doc_src/index.rst:153
+#: ../../doc_src/index.rst:124
 msgid "I would not have been able to get any information from the weather station without access to the source of Michael Pendec's \"wwsr\" program. I am also indebted to Dave Wells for decoding the `weather station's \"fixed block\" data <http://www.jim-easterbrook.me.uk/weather/mm/>`_."
 msgstr "Non sarei stato in grado di ottenere tutte le informazioni dalla stazione meteo senza avere accesso ai sorgenti di Michael Pendec's programma \"wwsr\". Sono anche grata alla Dave Wells per la decodifica del `weather station's \"fixed block\" data <http://www.jim-easterbrook.me.uk/weather/mm/>`_."
 
 # 79cd27a354224d43989c36c66e344f63
-#: ../../doc_src/index.rst:155
+#: ../../doc_src/index.rst:126
 msgid "Last of all, a big thank you to all the pywws users who have helped with questions and suggestions, and especially to those who have translated pywws and its documentation into other languages."
 msgstr "Infine, un grande ringraziamento a tutti gli utenti pywws che hanno aiutato con domande e suggerimenti e soprattutto a coloro che hanno tradotto pywws e la relativa documentazione in altre lingue."
 
 # 49846b6200174fd8a04ca83cf4a2509c
-#: ../../doc_src/index.rst:159
+#: ../../doc_src/index.rst:130
 msgid "Legalese"
 msgstr "Licenze"
 
 # 3c90afac83564c8c9d5ed4eaf2c3db72
-#: ../../doc_src/index.rst:161
+#: ../../doc_src/index.rst:132
 msgid "pywws - Python software for USB Wireless WeatherStations."
 msgstr "pywws - Python software per Stazione Meteo USB senza filo."
 
 # 44234801500e4720b877c2d5be417120
-#: ../../doc_src/index.rst:162
+#: ../../doc_src/index.rst:133
 msgid "http://github.com/jim-easterbrook/pywws"
 msgstr ""
 
 # cc831ed27daa409a941f4627b345f86a
-#: ../../doc_src/index.rst:163
+#: ../../doc_src/index.rst:134
 msgid "Copyright (C) 2008-13 Jim Easterbrook jim@jim-easterbrook.me.uk"
 msgstr ""
 
 # 96ef138eedfd49cc83de5f411cadd28d
-#: ../../doc_src/index.rst:165
+#: ../../doc_src/index.rst:136
 msgid "This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version."
 msgstr "Questo programma è software libero; può essere redistribuito e/o modificarlo secondo i termini della GNU General Public License come pubblicata dalla Free Software Foundation; versione 2 della licenza, o (a tua scelta) qualsiasi versione successiva."
 
 # ad5fa06a85514c2696f645cb28b0f2b8
-#: ../../doc_src/index.rst:167
+#: ../../doc_src/index.rst:138
 msgid "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details."
 msgstr "Questo programma è distribuito nella speranza che sia utile, ma senza alcuna garanzia; senza neppure la garanzia implicita di commerciabilità o idoneità per uno scopo particolare. Vedi la GNU General Public License per maggiori dettagli."
 
 # b87365c4d60d480bb61bd7ec9b472c61
-#: ../../doc_src/index.rst:169
+#: ../../doc_src/index.rst:140
 msgid "You should have received a copy of the `GNU General Public License <essentials/LICENCE.html>`_ along with this program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA"
 msgstr "Dovresti aver ricevuto una copia del `GNU General Public License <essentials/LICENCE.html>`_ insieme a questo programma; in caso contrario, scrivete a Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA"
+
+# 42eae4e3e22345f696cedfb12e025967
+#~ msgid "`Python <http://python.org/>`_ version 2.5 or higher (note: Python 3 support is under development - some things may not work properly)"
+#~ msgstr "`Python <http://python.org/>`_ versione 2.5 o superiore (nota: Il supporto di Python v3 è in corso di sviluppo - alcune cose possono non funzionare correttamente)"
+
+# 8e935d277f1248f39adf8e29a786d347
+#~ msgid "USB library option 1 (preferred, except on MacOS):"
+#~ msgstr "Libreria USB - opzione 1 (preferito, eccetto in MacOS):"
+
+# 22d8d19a368e43d78bddda402a0f133c
+#~ msgid "USB library option 2 (if PyUSB 1.0 is not available):"
+#~ msgstr "Libreria USB - opzione 2 (se PyUSB 1.0 non è disponibile):"
+
+# 2dde4eaf362940839e0cf53dec41b8cf
+#~ msgid "USB library option 3 (best for MacOS):"
+#~ msgstr "Libreria USB - opzione 3 (consigliato per MacOS):"
+
+# 9ab249a097cc43568ca220b85d106ca9
+#~ msgid "USB library option 4:"
+#~ msgstr "Libreria USB - opzione 4:"
+
+# bc3afa1d3e964ac7aa74ff91ac6561cf
+#~ msgid "For graph drawing:"
+#~ msgstr "Per disegnare i grafici:"
+
+# 2c481fcf21d74a148c7e7f4a65d6f066
+#~ msgid "`gnuplot <http://www.gnuplot.info/>`_ v4.2 or higher"
+#~ msgstr "`gnuplot <http://www.gnuplot.info/>`_ v4.2 o superiore"
+
+# 8bd7c62d4c204e47bcf17e7d16a18ea6
+#~ msgid "For secure website uploading (sftp)"
+#~ msgstr "Per caricare in sicurezza il votro sito (sfpt)"
+
+# 9726133a0d9547de9c42a33579a7ed6e
+#~ msgid "For Twitter updates:"
+#~ msgstr "Per aggiornare i post su Twitter:"
+
+# ff76f11240a2484fa0b2e3554b7f5e55
+#~ msgid "`python-twitter <https://github.com/bear/python-twitter>`_ v0.8.6 or higher"
+#~ msgstr "`python-twitter <https://github.com/tweepy/tweepy>`_ v0.8.6 o superiore"
+
+# 54609b928b42448c8de16a312ee79ad4
+#~ msgid "To create new language translations:"
+#~ msgstr "Per generare le traduzioni in nuovi linguaggi:"
+
+# 646a916e56df4ac38f5d235e41982df5
+#~ msgid "To 'compile' the documentation:"
+#~ msgstr "Per 'compilare' la documentazione:"

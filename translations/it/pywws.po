@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pywws 13.06\n"
 "Report-Msgid-Bugs-To: \"jim@jim-easterbrook.me.uk\"\n"
-"POT-Creation-Date: 2013-09-19 00:48+0200\n"
+"POT-Creation-Date: 2013-12-15 13:56+0100\n"
 "PO-Revision-Date: 2013-09-15 09:38+0200\n"
 "Last-Translator: Edoardo <edoardo69@hotmail.it>\n"
 "Language-Team: Italian\n"
@@ -121,15 +121,15 @@ msgstr "Temporalesco, in miglioramento"
 msgid "Stormy, much rain"
 msgstr "Temporalesco, molta pioggia"
 
-#: pywws/Plot.py:671
+#: pywws/Plot.py:677
 msgid "Time (%Z)"
 msgstr "Tempo (%Z)"
 
-#: pywws/Plot.py:673
+#: pywws/Plot.py:679
 msgid "Day"
 msgstr "Giorno"
 
-#: pywws/Plot.py:675
+#: pywws/Plot.py:681
 msgid "Date"
 msgstr "Data"
 
@@ -169,7 +169,7 @@ msgstr "diminuzione lenta"
 msgid "steady"
 msgstr "stazionaria"
 
-#: pywws/conversions.py:96 pywws/WindRose.py:353
+#: pywws/conversions.py:96 pywws/WindRose.py:360
 msgid "N"
 msgstr "N"
 
@@ -185,7 +185,7 @@ msgstr "NE"
 msgid "ENE"
 msgstr "ENE"
 
-#: pywws/conversions.py:97 pywws/WindRose.py:353
+#: pywws/conversions.py:97 pywws/WindRose.py:360
 msgid "E"
 msgstr "E"
 
@@ -201,7 +201,7 @@ msgstr "SE"
 msgid "SSE"
 msgstr "SSE"
 
-#: pywws/conversions.py:98 pywws/WindRose.py:353
+#: pywws/conversions.py:98 pywws/WindRose.py:360
 msgid "S"
 msgstr "S"
 
@@ -217,7 +217,7 @@ msgstr "SO"
 msgid "WSW"
 msgstr "OSO"
 
-#: pywws/conversions.py:99 pywws/WindRose.py:353
+#: pywws/conversions.py:99 pywws/WindRose.py:360
 msgid "W"
 msgstr "O"
 

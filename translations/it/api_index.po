@@ -1,0 +1,331 @@
+# Italian translations for pywws package.
+# Copyright (C) 2008-13, Jim Easterbrook
+# This file is distributed under the same license as the pywws package.
+# Edoardo <edoardo69@hotmail.it>, 2013.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: pywws 13.10\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-10-06 20:51\n"
+"PO-Revision-Date: 2013-10-06 20:52+0200\n"
+"Last-Translator: Edoardo <edoardo69@hotmail.it>\n"
+"Language-Team: Italian\n"
+"Language: it\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+# 513d62621f2146358e1acbd9a6ba3029
+#: ../../doc_src/api_index.rst:20
+msgid "Python programs and modules"
+msgstr "Programmi Python e moduli"
+
+# 40cb713a7dd04927b9c6d16af64c4001
+#: ../../doc_src/api_index.rst:22
+msgid "Contents:"
+msgstr "Contenuto:"
+
+# 4a9d14d096f143bc80c19fa829f07176
+#: ../../<autosummary>:1
+msgid ":obj:`pywws.Hourly <pywws.Hourly>`\\"
+msgstr ""
+
+# f1685dc3bfed468b865fc86897988712
+#: ../../<autosummary>:1
+msgid "Get weather data, process it, prepare graphs & text files and upload to a web site."
+msgstr "Ottenere dati meteo, elaborarli, preparare grafici i file di testo e caricare su un sito web."
+
+# 7f53823dc3e947aa95af5be89dccec1b
+#: ../../<autosummary>:1
+msgid ":obj:`pywws.LiveLog <pywws.LiveLog>`\\"
+msgstr ""
+
+# 29355c9d50c043eea14d7f557f632d1a
+#: ../../<autosummary>:1
+msgid "Get weather data, store it, and process it."
+msgstr "Ottenere dati meteo, memorizzarli ed elaborarli."
+
+# 5e7adea983134dcd95731fccfeecda93
+#: ../../<autosummary>:1
+msgid ":obj:`pywws.Reprocess <pywws.Reprocess>`\\"
+msgstr ""
+
+# 5f94385d644e494184385536d8168648
+#: ../../<autosummary>:1
+msgid "Regenerate hourly and daily summary data"
+msgstr "Rigenerare i dati di riepilogo orari e giornalieri"
+
+# e90e6cbcddfa42bf839ce6838f1d9ad4
+#: ../../<autosummary>:1
+msgid ":obj:`pywws.TwitterAuth <pywws.TwitterAuth>`\\"
+msgstr ""
+
+# 88783b8823fa460db3357c9cb0b4789b
+#: ../../<autosummary>:1
+msgid "Authorise pywws to post to your Twitter account"
+msgstr "Autorizzare pywws per inviare al vostro account Twitter"
+
+# e029d6025d7647d4bf2ecfca861000be
+#: ../../<autosummary>:1
+msgid ":obj:`pywws.SetWeatherStation <pywws.SetWeatherStation>`\\"
+msgstr ""
+
+# 6a7c7b4720284417a12997280b198904
+#: ../../<autosummary>:1
+msgid "Set some weather station parameters"
+msgstr "Impostare alcuni parametri della stazione meteo"
+
+# e7de4f3a81424816af2af92004f97cd9
+#: ../../<autosummary>:1
+msgid ":obj:`pywws.TestWeatherStation <pywws.TestWeatherStation>`\\"
+msgstr ""
+
+# 31dde8b7cdd24d04b514920a8de6bebf
+#: ../../<autosummary>:1
+msgid "Test connection to weather station."
+msgstr "Testare la connessione alla stazione meteo."
+
+# 94d2840c9d5446b99f9bdbdaf6141b68
+#: ../../<autosummary>:1
+msgid ":obj:`pywws.USBQualityTest <pywws.USBQualityTest>`\\"
+msgstr ""
+
+# ba255ec577a04c6f92f8078de75f9354
+#: ../../<autosummary>:1
+msgid "Test quality of USB connection to weather station"
+msgstr "Verificare la qualità della connessione USB della stazione meteo"
+
+# e403e9f9a4c842cd9bcad714db0bf21b
+#: ../../<autosummary>:1
+msgid ":obj:`pywws.EWtoPy <pywws.EWtoPy>`\\"
+msgstr ""
+
+# 5e05006f133a40c796226bb5fd52d242
+#: ../../<autosummary>:1
+msgid "Convert EasyWeather.dat data to pywws format"
+msgstr "Convertire i dati EasyWeather.dat nel formato pywws"
+
+# eb28de692ec94d19a1b1d48fa3132a66
+#: ../../<autosummary>:1
+msgid ":obj:`pywws.Tasks <pywws.Tasks>`\\"
+msgstr ""
+
+# e502123b049e4728b723e173ae1bdf5a
+#: ../../<autosummary>:1
+msgid "Routines to perform common tasks such as plotting gaphs or uploading files."
+msgstr "Procedura per eseguire attività comuni quali disegnare grafici o caricare i file."
+
+# bcb2f2a2cb34415987693882ea896f8e
+#: ../../<autosummary>:1
+msgid ":obj:`pywws.LogData <pywws.LogData>`\\"
+msgstr ""
+
+# 83290a6f128f4885ab76557d13206bf2
+#: ../../<autosummary>:1
+msgid "Save weather station history to file"
+msgstr "Salva i dati della stazione meteo nel file"
+
+# af298098fb1b4351b48dbf3ef2ecb2e5
+#: ../../<autosummary>:1
+msgid ":obj:`pywws.Process <pywws.Process>`\\"
+msgstr ""
+
+# a46d35f6f2d249de9facc8ad8076518a
+#: ../../<autosummary>:1
+msgid "Generate hourly, daily & monthly summaries of raw weather station"
+msgstr "Generare tracciati orari, giornalieri & riepiloghi mensili dei dati meteorologici stazione"
+
+# 2a19ca6f9fd84799b503ea2e2d60995e
+# ce5d6f3b62c1454e851e5f1e112e75cf
+#: ../../<autosummary>:1
+msgid ":obj:`pywws.calib <pywws.calib>`\\"
+msgstr ""
+
+# a5ac3460a2384acbaac5c99cf67ad41e
+# e2006bc23a124cd08630092a5fc7ed28
+#: ../../<autosummary>:1
+msgid "Calibrate raw weather station data"
+msgstr "Calibra i dati grezzi stazione meteo"
+
+# 2ff8639720894434840c6d4ba3a7fba1
+#: ../../<autosummary>:1
+msgid ":obj:`pywws.Plot <pywws.Plot>`\\"
+msgstr ""
+
+# e51d3cb5f7c245aca379fa7e832a4f10
+#: ../../<autosummary>:1
+msgid "Plot graphs of weather data according to an XML recipe"
+msgstr "Tracciare grafici di dati meteo secondo una direttiva XML"
+
+# 997bfe22d43347a3a05279b5cfd2773c
+#: ../../<autosummary>:1
+msgid ":obj:`pywws.WindRose <pywws.WindRose>`\\"
+msgstr ""
+
+# 1760f024e0b449e899ddd075f77f12b7
+#: ../../<autosummary>:1
+msgid "Plot a \"wind rose\""
+msgstr "Traccia una \"rosa dei venti\""
+
+# 63db5371f7224c188d24f398bb532765
+#: ../../<autosummary>:1
+msgid ":obj:`pywws.Template <pywws.Template>`\\"
+msgstr ""
+
+# 9cae2b04278a4df3a67f0ee08c38d11f
+#: ../../<autosummary>:1
+msgid "Create text data file based on a template"
+msgstr "Creare il file dati di testo basato sul modello"
+
+# dddb88bc98994d839c2d1897a9c17042
+#: ../../<autosummary>:1
+msgid ":obj:`pywws.Forecast <pywws.Forecast>`\\"
+msgstr ""
+
+# baf6fed1d06043948a4dffb9718aeee7
+#: ../../<autosummary>:1
+msgid "Predict future weather using recent data"
+msgstr "Previsione del meteo utilizzando i dati della stazione meteo"
+
+# 413fa1d332fc457da336c4027248bfd8
+#: ../../<autosummary>:1
+msgid ":obj:`pywws.ZambrettiCore <pywws.ZambrettiCore>`\\"
+msgstr ""
+
+# 7dad9ac89163433a8347e098977cd6f8
+#: ../../<autosummary>:1
+msgid ":obj:`pywws.Upload <pywws.Upload>`\\"
+msgstr ""
+
+# efc5c30b6bdd4de4b32bf4c1f48dc8ef
+#: ../../<autosummary>:1
+msgid "Upload files to a web server by ftp or copy them to a local directory"
+msgstr "Carica i file su un server web tramite ftp o copiarli in una directory locale"
+
+# 5b28cd57f5cb4d47be5235d645de9c36
+#: ../../<autosummary>:1
+msgid ":obj:`pywws.ToTwitter <pywws.ToTwitter>`\\"
+msgstr ""
+
+# b100982766814035b90ec08f9305b994
+#: ../../<autosummary>:1
+msgid "Post a message to Twitter"
+msgstr "Postare messaggi su Twitter"
+
+# b321d3f3b36749068447259e38bd7806
+#: ../../<autosummary>:1
+msgid ":obj:`pywws.toservice <pywws.toservice>`\\"
+msgstr ""
+
+# 4cbde3020d83465587ce0ed2be333412
+#: ../../<autosummary>:1
+msgid "Post weather update to services such as Weather Underground"
+msgstr "Posta gli aggiornamenti delle condizioni meteo a servizi come Weather Underground"
+
+# e0808260bc9c427bb8eb9cbf474a83c0
+#: ../../<autosummary>:1
+msgid ":obj:`pywws.YoWindow <pywws.YoWindow>`\\"
+msgstr ""
+
+# 1daa496e7f0b4babbb504c3a5227c1b9
+#: ../../<autosummary>:1
+msgid "Generate YoWindow XML file"
+msgstr "Genera il file YoWindow XML"
+
+# d16be80b8f9b41799f301d7345211678
+#: ../../<autosummary>:1
+msgid ":obj:`pywws.WeatherStation <pywws.WeatherStation>`\\"
+msgstr ""
+
+# fafb4f51a0424aa8ab79669e61903b28
+#: ../../<autosummary>:1
+msgid "Get data from WH1080/WH3080 compatible weather stations."
+msgstr "Ottenere i dati da stazioni meteo compatibili con WH1080/WH3080."
+
+# ebced18949f24be0937ce0dd0a5ccc13
+#: ../../<autosummary>:1
+msgid ":obj:`pywws.device_ctypes_hidapi <pywws.device_ctypes_hidapi>`\\"
+msgstr ""
+
+# 8b27121f77a447beabc7443e591d4919
+#: ../../<autosummary>:1
+msgid "Low level USB interface to weather station, using ctypes to access hidapi."
+msgstr "Interfaccia di basso livello USB della stazione meteo, utilizzando ctypes per accedere a hidapi."
+
+# 2587ed376bb64f2485fa440599aeb32d
+#: ../../<autosummary>:1
+msgid ":obj:`pywws.device_cython_hidapi <pywws.device_cython_hidapi>`\\"
+msgstr ""
+
+# 4cfee4ba72744c949ab777deaeb6d049
+#: ../../<autosummary>:1
+msgid "Low level USB interface to weather station, using cython-hidapi."
+msgstr "Interfaccia di basso livello USB della stazione meteo, tramite cython-hidapi."
+
+# 2d29da0d59e445c1a5b12f41678062ad
+#: ../../<autosummary>:1
+msgid ":obj:`pywws.device_pyusb1 <pywws.device_pyusb1>`\\"
+msgstr ""
+
+# b462625030184d39ad17b2a5e0bdb357
+# f02aecdff1a64d49aef81c7104ba2c4c
+#: ../../<autosummary>:1
+msgid "Low level USB interface to weather station, using PyUSB."
+msgstr "Interfaccia di basso livello USB della stazione meteo tramite PyUSB."
+
+# 8adb194b035b43dea758439688d65fbd
+#: ../../<autosummary>:1
+msgid ":obj:`pywws.device_pyusb <pywws.device_pyusb>`\\"
+msgstr ""
+
+# e1b9c271a98f417db2a8bd56267e1bc2
+#: ../../<autosummary>:1
+msgid ":obj:`pywws.DataStore <pywws.DataStore>`\\"
+msgstr ""
+
+# ab367d4be7a345f888253729a4e7a7fe
+#: ../../<autosummary>:1
+msgid "DataStore.py - stores readings in easy to access files"
+msgstr "DataStore.py - memorizza le letture in file di facile accesso"
+
+# 24e409476f504553ace560c9d9833ea0
+#: ../../<autosummary>:1
+msgid ":obj:`pywws.TimeZone <pywws.TimeZone>`\\"
+msgstr ""
+
+# 6a6b6d9a4d1e4bd4bc8534eb3203a9cd
+#: ../../<autosummary>:1
+msgid "Provide a couple of :py:class:`datetime.tzinfo` objects"
+msgstr "Fornisce una coppia di oggetti :py:class:`datetime.tzinfo`"
+
+# eaee2cd57b8c4311a2af82e219c4fa86
+#: ../../<autosummary>:1
+msgid ":obj:`pywws.Localisation <pywws.Localisation>`\\"
+msgstr ""
+
+# 07ed0bfb54654672ac7dd1cd75ce72b8
+#: ../../<autosummary>:1
+msgid "Localisation.py - provide translations of strings into local"
+msgstr "Localisation.py - fornisce traduzioni di stringhe in lingua locale"
+
+# 6ba0be0da47847e48fb04fc79d0da467
+#: ../../<autosummary>:1
+msgid ":obj:`pywws.conversions <pywws.conversions>`\\"
+msgstr ""
+
+# 63312aa5e51245499bceedc9b00cec35
+#: ../../<autosummary>:1
+msgid "conversions.py - a set of functions to convert pywws native units"
+msgstr "conversions.py - un insieme di funzioni per convertire unità native pywws"
+
+# 1b203dfa9ebd4743934403eabd62ceae
+#: ../../<autosummary>:1
+msgid ":obj:`pywws.Logger <pywws.Logger>`\\"
+msgstr ""
+
+# 85b3ef02dcfd43b7846c215b0f1139f5
+#: ../../<autosummary>:1
+msgid "Common code for logging info and errors."
+msgstr "Codice comune per la registrazione di informazioni ed errori."

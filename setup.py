@@ -33,23 +33,27 @@ import subprocess
 import pywws.version
 
 # regenerate version file, if required
+regenerate = False
 try:
-    p = subprocess.Popen(
-        ['git', 'rev-parse', '--short', 'HEAD'], stdout=subprocess.PIPE)
+    p = subprocess.Popen(['git', 'rev-parse', '--short', 'HEAD'],
+                         stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     commit = p.communicate()[0].strip().decode('ASCII')
-    if p.returncode:
-        commit = pywws.version.commit
+    regenerate = (not p.returncode) and commit != pywws.version.commit
 except OSError:
-    commit = pywws.version.commit
-if commit != pywws.version.commit:
-    pywws.version.version = date.today().strftime('%y.%m')
-    pywws.version.release = str(int(pywws.version.release) + 1)
-    pywws.version.commit = commit
+    pass
+if regenerate:
+    release = str(int(pywws.version.release) + 1)
+    version = date.today().strftime('%y.%m') + '.dev%s' % release
     vf = open('pywws/version.py', 'w')
-    vf.write("version = '%s'\n" % pywws.version.version)
-    vf.write("release = '%s'\n" % pywws.version.release)
-    vf.write("commit = '%s'\n" % pywws.version.commit)
+    vf.write("""version = '%s'
+release = '%s'
+commit = '%s'
+if __name__ == '__main__':
+    print(version)
+""" % (version, release, commit))
     vf.close()
+else:
+    version = pywws.version.version
 
 # Custom distutils classes
 class xgettext(Command):
@@ -87,7 +91,7 @@ class xgettext(Command):
         options = [
             '--language=Python', '--no-wrap',
             '--copyright-holder="Jim Easterbrook"', '--package-name=pywws',
-            '--package-version=%s' % pywws.version.version,
+            '--package-version=%s' % version,
             '--msgid-bugs-address="jim@jim-easterbrook.me.uk"',
             '--output=%s' % self.output_file,
             ]
@@ -185,7 +189,6 @@ class msgfmt(Command):
 
 cmdclass = {}
 command_options = {}
-setup_kw = {}
 
 # if using Python 3, translate during build
 try:
@@ -262,11 +265,6 @@ for root, dirs, files in os.walk('examples'):
     if paths:
         data_files.append(('share/pywws/%s' % root, paths))
 
-version = '%s_r%s' % (pywws.version.version, pywws.version.release)
-
-if using_setuptools:
-    setup_kw['include_package_data'] = True
-
 setup(name = 'pywws',
       version = version,
       description = 'Python software for wireless weather stations',
@@ -304,5 +302,4 @@ pages showing recent weather readings, typically updated every hour.
       data_files = data_files,
       cmdclass = cmdclass,
       command_options = command_options,
-      **setup_kw
       )

@@ -5,9 +5,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: pywws 13.06\n"
+"Project-Id-Version: pywws 13.10\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-09-20 22:56\n"
+"POT-Creation-Date: 2013-10-06 20:51\n"
 "PO-Revision-Date: 2013-09-01 10:31+0200\n"
 "Last-Translator: Edoardo <edoardo69@hotmail.it>\n"
 "Language-Team: Italian <tp@lists.linux.it>\n"
@@ -47,199 +47,209 @@ msgstr "Si può essere in grado di installare la maggior parte di questi utilizz
 msgid "Alternatively, you may be able to install more recent versions of some of the libraries from the `Python Package Index (PyPI) <http://pypi.python.org/pypi>`_. I recommend installing `pip <http://www.pip-installer.org/>`_ (the package may be called python-pip) or `easy_install <http://peak.telecommunity.com/DevCenter/EasyInstall>`_. These both simplify installation of software from PyPI. For example, to install PyUSB from PyPI using the ``pip`` command::"
 msgstr "In alternativa, può essere in grado di installare le versioni più recenti di alcune delle librerie dal `Python Package Index (PyPI) <http://pypi.python.org/pypi>`_. Vi consiglio l'installazione di `pip <http://www.pip-installer.org/>`_ (il pacchetto può essere chiamato python-pip) o `easy_install <http://peak.telecommunity.com/DevCenter/EasyInstall>`_. Questo semplifica l'installazione del software da PyPI. Per esempio, per installare PyUSB da PyPI utilizzando il comando ``pip`` command::"
 
+# f2f76aebf3fb489489abdc7d08ac6197
+#: ../../doc_src/essentials/dependencies.rst:38
+msgid "Note: some of these libraries may have their own dependencies that you may need to install. Follow the links to read more about each library's requirements."
+msgstr "Nota: alcune di queste librerie possono avere le loro proprie dipendenze che potrebbe essere necessario installare. Segui i link per saperne di più su ciascuna libreria."
+
 # ffae7dd4019942a8ae1c768e3fc5a927
-#: ../../doc_src/essentials/dependencies.rst:39
+#: ../../doc_src/essentials/dependencies.rst:42
 msgid "Essential"
 msgstr "Indispensabile"
 
 # 33182a6b83484b26abbbd61501d0ee9a
-#: ../../doc_src/essentials/dependencies.rst:41
+#: ../../doc_src/essentials/dependencies.rst:44
 msgid "`Python <http://python.org/>`_ version 2.5 or higher."
 msgstr "`Python <http://python.org/>`_ versione 2.5 o superiore."
 
 # 6fed84d956984c2cb2902620d5cc97df
-#: ../../doc_src/essentials/dependencies.rst:43
+#: ../../doc_src/essentials/dependencies.rst:46
 msgid "Python 3 is supported, but some things might not work properly. If you find a problem with Python 3, please send a message to the `mailing list <http://groups.google.com/group/pywws>`_ or submit a `bug report on GitHub <https://github.com/jim-easterbrook/pywws/issues>`_."
 msgstr "Python 3 è supportato, ma alcune cose potrebbero non funzionare correttamente. Se avete un problema con Python 3, si prega di inviare un messaggio al `mailing list <http://groups.google.com/group/pywws>`_ o presentare un <https://github.com/jim-easterbrook/pywws/issues>`_."
 
 # 516331e0e74847f99b0bad025e653827
-#: ../../doc_src/essentials/dependencies.rst:47
+#: ../../doc_src/essentials/dependencies.rst:50
 msgid "USB library"
 msgstr "Libreria USB"
 
 # e5d3a42e7cfd4405ab7705d9d8983f6c
-#: ../../doc_src/essentials/dependencies.rst:49
+#: ../../doc_src/essentials/dependencies.rst:52
 msgid "To retrieve data from a weather station pywws needs a python library that allows it to communicate via USB. There is a variety of USB libraries that can be used. Not all of them are available on all computing platforms, which may restrict your choice."
 msgstr "Per recuperare dati da una stazione meteo pywws ha bisogno di una libreria che permette di comunicare via USB. C'è una varietà di librerie USB che possono essere utilizzate. Non tutte sono disponibili su tutte le piattaforme informatiche, che possono limitare la vostra scelta."
 
 # 4a3def6cd3dd4db485dbdaeb4592b735
-#: ../../doc_src/essentials/dependencies.rst:53
+#: ../../doc_src/essentials/dependencies.rst:56
 msgid "On MacOS X the operating system's generic hid driver \"claims\" the weather station, which prevents libusb from working. This restricts Mac users to option 3 or 4."
 msgstr "Su MacOS X il sistema operativo driver generico hid \"claims\" per la stazione meteo, impedisce di lavorare a libusb. Questo limita gli utenti Mac all'opzione 3 o 4."
 
 # d6f982047b4b4f2b8deda5522de4e857
-#: ../../doc_src/essentials/dependencies.rst:56
+#: ../../doc_src/essentials/dependencies.rst:59
 msgid "USB library option 1 (preferred, except on MacOS)"
 msgstr "USB library opzione 1 (preferito, tranne in MacOS)"
 
 # e65282e30911468eaa6c5d74c03dae53
-#: ../../doc_src/essentials/dependencies.rst:58
+#: ../../doc_src/essentials/dependencies.rst:61
 msgid "`PyUSB <http://sourceforge.net/apps/trac/pyusb/>`_ version 1.0"
 msgstr "`PyUSB <http://sourceforge.net/apps/trac/pyusb/>`_ versione 1.0"
 
 # ae60cd99ffd0446e861fbc8fbdbdf622
-#: ../../doc_src/essentials/dependencies.rst:59
+#: ../../doc_src/essentials/dependencies.rst:62
 msgid "`libusb <http://www.libusb.org/>`_ version 0.1 or version 1.0"
 msgstr "`libusb <http://www.libusb.org/>`_ versione 0.1 o versione 1.0"
 
 # 0c34d29ab6c0477ca3475a63337f2f60
-#: ../../doc_src/essentials/dependencies.rst:61
+#: ../../doc_src/essentials/dependencies.rst:64
 msgid "USB library option 2 (if PyUSB 1.0 is not available)"
 msgstr "USB library opzione 2 (Se PyUSB 1.0 non è disponibile)"
 
 # 561d356259474185b6249a77cfd064fc
-#: ../../doc_src/essentials/dependencies.rst:63
+#: ../../doc_src/essentials/dependencies.rst:66
 msgid "`PyUSB <http://sourceforge.net/apps/trac/pyusb/>`_ version 0.4"
 msgstr "`PyUSB <http://sourceforge.net/apps/trac/pyusb/>`_ versione 0.4"
 
 # e883c92e987644ee89cf7bef16107046
-#: ../../doc_src/essentials/dependencies.rst:64
+#: ../../doc_src/essentials/dependencies.rst:67
 msgid "`libusb <http://www.libusb.org/>`_ version 0.1"
 msgstr "`libusb <http://www.libusb.org/>`_ versione 0.1"
 
 # b6e7e79e1f2a4032917fce01a2d47d0e
-#: ../../doc_src/essentials/dependencies.rst:66
+#: ../../doc_src/essentials/dependencies.rst:69
 msgid "USB library option 3 (best for MacOS)"
 msgstr "USB library opzione 3 (preferito per MacOS)"
 
 # 2e443bbb1d7a453ca841b014c18f257b
 # a678bf7adcf54e1fb07e876b9baf20ff
-#: ../../doc_src/essentials/dependencies.rst:68
-#: ../../doc_src/essentials/dependencies.rst:73
+#: ../../doc_src/essentials/dependencies.rst:71
+#: ../../doc_src/essentials/dependencies.rst:76
 msgid "`hidapi <https://github.com/signal11/hidapi>`_"
 msgstr ""
 
-# f36233db9bf1471e9a8d9f58ea1dc687
-#: ../../doc_src/essentials/dependencies.rst:69
-msgid "`ctypes <http://docs.python.org/2/library/ctypes.html>`_"
-msgstr ""
+# 94d26528807b43239e4a9084b988d343
+#: ../../doc_src/essentials/dependencies.rst:72
+msgid "`ctypes <http://docs.python.org/2/library/ctypes.html>`_ (included with many Python installations)"
+msgstr "`ctypes <http://docs.python.org/2/library/ctypes.html>`_ (Incluso in molte installazioni Python)"
 
 # 980e8f68977942988742d683535a444e
-#: ../../doc_src/essentials/dependencies.rst:71
+#: ../../doc_src/essentials/dependencies.rst:74
 msgid "USB library option 4"
 msgstr "USB library opzione 4"
 
 # b19bf573c89847eda079e67d015b7b3d
-#: ../../doc_src/essentials/dependencies.rst:74
+#: ../../doc_src/essentials/dependencies.rst:77
 msgid "`cython-hidapi <https://github.com/gbishop/cython-hidapi>`_"
 msgstr ""
 
 # f12f74e431f94c93b35e57e7ca2fce3d
-#: ../../doc_src/essentials/dependencies.rst:75
+#: ../../doc_src/essentials/dependencies.rst:78
 msgid "`cython <http://cython.org/>`_"
 msgstr ""
 
 # 851e44957e6b4110b598d145f0e139cc
-#: ../../doc_src/essentials/dependencies.rst:78
+#: ../../doc_src/essentials/dependencies.rst:81
 msgid "Graph drawing"
 msgstr "Disegnare grafici"
 
 # daba1ae960e04f7ea9eed075cbef75f6
-#: ../../doc_src/essentials/dependencies.rst:80
+#: ../../doc_src/essentials/dependencies.rst:83
 msgid "The :py:mod:`pywws.Plot` module uses ``gnuplot`` to draw graphs. If you want to produce graphs of weather data, e.g. to include in a web page, you need to install the ``gnuplot`` application:"
 msgstr "Il modulo :py:mod:`pywws.Plot` usa ``gnuplot`` per disegnare grafici. Se si vogliono produrre i grafici dei dati meteo, ad esempio, da includere in una pagina web, è necessario installare l'applicazione ``gnuplot``:"
 
 # 64b22bfd47824a7c8972074881ea02c7
-#: ../../doc_src/essentials/dependencies.rst:83
+#: ../../doc_src/essentials/dependencies.rst:86
 msgid "`gnuplot <http://www.gnuplot.info/>`_ v4.2 or higher"
 msgstr "`gnuplot <http://www.gnuplot.info/>`_ v4.2 o superiore"
 
 # 94f5ddba5c09406d93de6516a7b28fc9
-#: ../../doc_src/essentials/dependencies.rst:86
+#: ../../doc_src/essentials/dependencies.rst:89
 msgid "Secure website uploading (sftp)"
-msgstr ""
+msgstr "Trasferimento sicuro di file (sftp)"
 
 # 2065bf7552b946ecb957beb1957736b4
-#: ../../doc_src/essentials/dependencies.rst:88
+#: ../../doc_src/essentials/dependencies.rst:91
 msgid "The :py:mod:`pywws.Upload` module can use \"ftp over ssh\" (sftp) to upload files to your web-site. Normal uploading just uses Python's standard modules, but if you want to use sftp you need to install these two modules:"
 msgstr "Il modulo :py:mod:`pywws.Upload` può utilizzare \"ftp over ssh\" (sftp) per caricare i file sul vostro sito web. Il caricamento normale utilizza i moduli Python standard, ma se si desidera utilizzare sftp è necessario installare questi due moduli:"
 
 # 28aa33bfb6894baa85a1274c3558c242
-#: ../../doc_src/essentials/dependencies.rst:91
+#: ../../doc_src/essentials/dependencies.rst:94
 msgid "`paramiko <https://github.com/paramiko/paramiko>`_"
 msgstr ""
 
 # 211f81229c5648e2844696e3114f492a
-#: ../../doc_src/essentials/dependencies.rst:92
+#: ../../doc_src/essentials/dependencies.rst:95
 msgid "`pycrypto <http://www.dlitz.net/software/pycrypto/>`_"
 msgstr ""
 
 # f8203b7640c04ae7ac5e1a041cbe1cf9
-#: ../../doc_src/essentials/dependencies.rst:97
+#: ../../doc_src/essentials/dependencies.rst:100
 msgid "Twitter updates"
 msgstr "Postare su Twitter"
 
 # eeaee61971af410697e2bcd648b3ce39
-#: ../../doc_src/essentials/dependencies.rst:99
-msgid "The :py:mod:`pywws.ToTwitter` module can be used to send weather status messages to Twitter. Posting to Twitter requires all four of these modules:"
-msgstr "Il modulo :py:mod:`pywws.ToTwitter` è utilizzato per inviare messaggi delle condizioni meteo a Twitter. Per postare su Twitter richiede tutti e quattro questi moduli:"
-
-# 6df2d713e7b24caca7d5c2188309fb7c
 #: ../../doc_src/essentials/dependencies.rst:102
-msgid "`python-twitter <https://github.com/bear/python-twitter>`_ v0.8.6 or higher"
-msgstr ""
+msgid "The :py:mod:`pywws.ToTwitter` module can be used to send weather status messages to Twitter. Posting to Twitter requires these modules:"
+msgstr "Il modulo :py:mod:`pywws.ToTwitter` è utilizzato per inviare messaggi delle condizioni meteo a Twitter. Per postare su Twitter richiede questi moduli:"
+
+# ad389a51ebcb49f9b7b189bfa0dad691
+#: ../../doc_src/essentials/dependencies.rst:105
+msgid "`python-twitter <https://github.com/bear/python-twitter>`_ v1.0 or higher **or** `tweepy <https://github.com/tweepy/tweepy>`_ v2.0 or higher"
+msgstr "`python-twitter <https://github.com/bear/python-twitter>`_ v1.0 o superiore **o** `tweepy <https://github.com/tweepy/tweepy>`_ v2.0 o superiore"
 
 # 97cbd4e179ff44089ec88e62dd86d362
-#: ../../doc_src/essentials/dependencies.rst:103
+#: ../../doc_src/essentials/dependencies.rst:108
 msgid "`simplejson <https://github.com/simplejson/simplejson>`_"
 msgstr ""
 
 # ebb1d32ce6064d8eaadd709c05a08799
-#: ../../doc_src/essentials/dependencies.rst:104
+#: ../../doc_src/essentials/dependencies.rst:109
 msgid "`python-oauth2 <https://github.com/simplegeo/python-oauth2>`_"
 msgstr ""
 
 # 0e1c1000c2a74813b8d839fed9cfae02
-#: ../../doc_src/essentials/dependencies.rst:105
+#: ../../doc_src/essentials/dependencies.rst:110
 msgid "`httplib2 <http://code.google.com/p/httplib2/>`_"
 msgstr ""
 
+# 7976411093ea4eef86fad169c48947f5
+#: ../../doc_src/essentials/dependencies.rst:112
+msgid "reenabled use of ``tweepy`` library as an alternative to ``python-twitter``. ``python-oauth2`` is still required by :py:mod:`pywws.TwitterAuth`."
+msgstr "Riabilitato uso della libreria ``tweepy`` come un'alternativa a ``python-twitter``.  ``python-oauth2`` è ancora richiesto da :py:mod:`pywws.TwitterAuth`."
+
 # ca0d9460188c443e867e475f05dd6811
-#: ../../doc_src/essentials/dependencies.rst:107
-msgid "pywws previously used the `tweepy <https://github.com/tweepy/tweepy>`_ library instead of ``python-twitter`` and ``python-oauth2``."
-msgstr "Pywws precedentemente utilizzava la libreria `tweepy <https://github.com/tweepy/tweepy>`_ invece di ``python-twitter`` e ``python-oauth2``."
+#: ../../doc_src/essentials/dependencies.rst:116
+msgid "pywws previously used the ``tweepy`` library instead of ``python-twitter`` and ``python-oauth2``."
+msgstr "Pywws precedentemente utilizzava la libreria ``tweepy`` invece di ``python-twitter`` e ``python-oauth2``."
 
 # dd952bd2d5c640549e647d804f9e1ce0
-#: ../../doc_src/essentials/dependencies.rst:111
+#: ../../doc_src/essentials/dependencies.rst:120
 msgid "To create new language translations"
 msgstr "Per creare nuove traduzioni di lingua"
 
 # c54f08eda89a4f278f390c5c6b0afcd7
-#: ../../doc_src/essentials/dependencies.rst:113
+#: ../../doc_src/essentials/dependencies.rst:122
 msgid "pywws can be configured to use languages other than English, and the documentation can also be translated into other languages. See :doc:`../guides/language` for more information. The ``gettext`` package is required to extract the strings to be translated and compile the translation files."
 msgstr "pywws può essere configurato per utilizzare lingue diverse dall'inglese, e la documentazione può anche essere tradotta in altre lingue. Vedere :doc:`../guides/language` per ulteriori informazioni. Il pacchetto ``gettext`` è necessario per estrarre le stringhe da tradurre e compilare i file di traduzione."
 
 # 6de21295540a4ba8863fc87d0818ea4b
-#: ../../doc_src/essentials/dependencies.rst:117
+#: ../../doc_src/essentials/dependencies.rst:126
 msgid "`gettext <http://www.gnu.org/s/gettext/>`_"
 msgstr ""
 
 # a4eb967d5960470f9fda92fc52d0fd73
-#: ../../doc_src/essentials/dependencies.rst:120
+#: ../../doc_src/essentials/dependencies.rst:129
 msgid "To 'compile' the documentation"
 msgstr "Per 'compilare' la documentazione"
 
 # a6851c9f0e4f4f0ea5b4bc0c630b1eec
-#: ../../doc_src/essentials/dependencies.rst:122
+#: ../../doc_src/essentials/dependencies.rst:131
 msgid "The documentation of pywws is written in \"ReStructured text\". A program called ``Sphinx`` is used to convert this easy to write format into HTML for use with a web browser. If you'd like to create a local copy of the documentation (so you don't have to rely on the online version, or to test a translation you're working on) you need to install ``Sphinx``."
 msgstr "La documentazione di pywws è scritto in \"testo RiStrutturato\".  Un programma chiamato ``Sphinx`` è utilizzato per convertire questo formato di scrittura in HTML per l'uso di un browser web. Se si desidera creare una copia locale della documentazione (in modo non sia necessario fare affidamento sulla versione online, o per provare una traduzione su cui stai lavorando) è necessario installare ``Sphinx``."
 
 # abae2f6cb29641129e61a1142b54f6cd
-#: ../../doc_src/essentials/dependencies.rst:126
+#: ../../doc_src/essentials/dependencies.rst:135
 msgid "`sphinx <http://sphinx-doc.org/>`_"
 msgstr ""
 
 # cb9c0b010259407688eb3da2f9a54992
-#: ../../doc_src/essentials/dependencies.rst:128
+#: ../../doc_src/essentials/dependencies.rst:139
 msgid "Comments or questions? Please subscribe to the pywws mailing list http://groups.google.com/group/pywws and let us know."
 msgstr "Commenti o domande? È possibile iscriversi alla mailing list pywws http://groups.google.com/group/pywws e farci sapere."

@@ -2,7 +2,7 @@
 
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-13  Jim Easterbrook  jim@jim-easterbrook.me.uk
+# Copyright (C) 2008-14  Jim Easterbrook  jim@jim-easterbrook.me.uk
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -31,7 +31,7 @@ import threading
 from pywws.calib import Calib
 from pywws import Plot
 from pywws import Template
-from pywws.TimeZone import Local
+from pywws.TimeZone import STDOFFSET
 from pywws.toservice import ToService, FIVE_MINS, FIFTY_SECS
 from pywws import Upload
 from pywws import WindRose
@@ -39,16 +39,18 @@ from pywws import YoWindow
 
 class RegularTasks(object):
     def __init__(self, params, status,
-                 calib_data, hourly_data, daily_data, monthly_data,
+                 raw_data, calib_data, hourly_data, daily_data, monthly_data,
                  asynch=False):
         self.logger = logging.getLogger('pywws.Tasks.RegularTasks')
         self.params = params
         self.status = status
+        self.raw_data = raw_data
         self.calib_data = calib_data
         self.hourly_data = hourly_data
         self.daily_data = daily_data
         self.monthly_data = monthly_data
         self.asynch = asynch
+        self.flush = eval(self.params.get('config', 'frequent writes', 'False'))
         # get directories
         self.work_dir = self.params.get('paths', 'work', '/tmp/weather')
         self.template_dir = self.params.get(
@@ -58,7 +60,7 @@ class RegularTasks(object):
         self.local_dir = self.params.get(
             'paths', 'local_files', os.path.expanduser('~/weather/results/'))
         # create calibration object
-        self.calibrator = Calib(self.params)
+        self.calibrator = Calib(self.params, self.raw_data)
         # create templater object
         self.templater = Template.Template(
             self.params, self.status, self.calib_data, self.hourly_data,
@@ -79,14 +81,9 @@ class RegularTasks(object):
         self.twitter = None
         # create a YoWindow object
         self.yowindow = YoWindow.YoWindow(self.calib_data)
-        # get local time's offset from UTC, without DST
-        now = self.calib_data.before(datetime.max)
-        if not now:
-            now = datetime.utcnow()
-        time_offset = Local.utcoffset(now) - Local.dst(now)
         # get daytime end hour, in UTC
         self.day_end_hour = eval(params.get('config', 'day end hour', '21'))
-        self.day_end_hour = (self.day_end_hour - (time_offset.seconds // 3600)) % 24
+        self.day_end_hour = (self.day_end_hour - (STDOFFSET.seconds // 3600)) % 24
         # create service uploader objects
         self.services = {}
         for section in ('live', 'logged', 'hourly', '12 hourly', 'daily'):
@@ -280,8 +277,8 @@ class RegularTasks(object):
         if now:
             now += timedelta(minutes=self.calib_data[now]['delay'])
         else:
-            now = datetime.utcnow()
-        threshold = now.replace(minute=0, second=0, microsecond=0)
+            now = datetime.utcnow().replace(microsecond=0)
+        threshold = (now + STDOFFSET).replace(minute=0, second=0) - STDOFFSET
         last_update = self.params.get_datetime('hourly', 'last update')
         if last_update:
             self.params.unset('hourly', 'last update')
@@ -314,10 +311,11 @@ class RegularTasks(object):
         if OK:
             for section in sections:
                 self.status.set('last update', section, now.isoformat(' '))
-        if 'hourly' in sections:
+        if self.flush or 'hourly' in sections:
             # save any unsaved data
             self.params.flush()
             self.status.flush()
+            self.raw_data.flush()
             self.calib_data.flush()
             self.hourly_data.flush()
             self.daily_data.flush()

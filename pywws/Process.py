@@ -84,11 +84,10 @@ import sys
 from pywws.calib import Calib
 from pywws import DataStore
 from pywws.Logger import ApplicationLogger
-from pywws.TimeZone import Local, utc
+from pywws.TimeZone import STDOFFSET, HOUR
 
 SECOND = timedelta(seconds=1)
 TIME_ERR = timedelta(seconds=45)
-HOUR = timedelta(hours=1)
 HOURx3 = timedelta(hours=3)
 DAY = timedelta(hours=24)
 WEEK = timedelta(days=7)
@@ -246,9 +245,8 @@ class DayAcc(object):
     "day end hour" setting.
 
     """
-    def __init__(self, daytime):
+    def __init__(self):
         self.logger = logging.getLogger('pywws.Process.DayAcc')
-        self._daytime = daytime
         self.has_illuminance = False
         self.wind_dir = list()
         for i in range(16):
@@ -277,6 +275,7 @@ class DayAcc(object):
 
     def add_raw(self, data):
         idx = data['idx']
+        local_hour = (idx + STDOFFSET).hour
         wind_gust = data['wind_gust']
         if wind_gust is not None and wind_gust > self.wind_gust[0]:
             self.wind_gust = (wind_gust, idx)
@@ -284,7 +283,7 @@ class DayAcc(object):
             temp = data[i]
             if temp is not None:
                 self.ave[i].add(temp)
-                if self._daytime[idx.hour]:
+                if local_hour >= 9 and local_hour < 21:
                     # daytime max temperature
                     self.max[i].add(temp, idx)
                 else:
@@ -523,7 +522,7 @@ def calibrate_data(logger, params, raw_data, calib_data):
     if start is None:
         return start
     del calib_data[start:]
-    calibrator = Calib(params)
+    calibrator = Calib(params, raw_data)
     count = 0
     for data in raw_data[start:]:
         idx = data['idx']
@@ -548,7 +547,10 @@ def generate_hourly(logger, calib_data, hourly_data, process_from):
             start = process_from
     if start is None:
         return start
+    # set start of hour in local time (not all time offsets are integer hours)
+    start += STDOFFSET
     start = start.replace(minute=0, second=0)
+    start -= STDOFFSET
     del hourly_data[start:]
     # preload pressure history, and find last valid rain
     prev = None
@@ -602,7 +604,7 @@ def generate_hourly(logger, calib_data, hourly_data, process_from):
         hour_start = hour_end
     return start
 
-def generate_daily(logger, day_end_hour, daytime,
+def generate_daily(logger, day_end_hour,
                    calib_data, hourly_data, daily_data, process_from):
     """Generate daily summaries from calibrated and hourly data."""
     start = daily_data.before(datetime.max)
@@ -616,14 +618,16 @@ def generate_daily(logger, day_end_hour, daytime,
             start = process_from
     if start is None:
         return start
-    # round to start of this day
+    # round to start of this day, in local time
+    start += STDOFFSET
     if start.hour < day_end_hour:
         start = start - DAY
     start = start.replace(hour=day_end_hour, minute=0, second=0)
+    start -= STDOFFSET
     del daily_data[start:]
     stop = calib_data.before(datetime.max)
     day_start = start
-    acc = DayAcc(daytime)
+    acc = DayAcc()
     count = 0
     while day_start <= stop:
         count += 1
@@ -644,7 +648,7 @@ def generate_daily(logger, day_end_hour, daytime,
         day_start = day_end
     return start
 
-def generate_monthly(logger, rain_day_threshold, day_end_hour, time_offset,
+def generate_monthly(logger, rain_day_threshold, day_end_hour,
                      daily_data, monthly_data, process_from):
     """Generate monthly summaries from daily data."""
     start = monthly_data.before(datetime.max)
@@ -659,15 +663,12 @@ def generate_monthly(logger, rain_day_threshold, day_end_hour, time_offset,
     if start is None:
         return start
     # set start to start of first day of month (local time)
-    if start.hour < day_end_hour:
-        start = start - DAY
-    start = start.replace(hour=day_end_hour, minute=0, second=0)
-    local_start = start + time_offset
-    local_start = local_start.replace(day=1)
-    if local_start.hour >= 12:
+    start += STDOFFSET
+    start = start.replace(day=1, hour=day_end_hour, minute=0, second=0)
+    if day_end_hour >= 12:
         # month actually starts on the last day of previous month
-        local_start -= DAY
-    start = local_start - time_offset
+        start -= DAY
+    start -= STDOFFSET
     del monthly_data[start:]
     stop = daily_data.before(datetime.max)
     month_start = start
@@ -711,19 +712,8 @@ def Process(params,
     last_raw = raw_data.before(datetime.max)
     if last_raw is None:
         raise IOError('No data found. Check data directory parameter.')
-    # get local time's offset from UTC, without DST
-    time_offset = Local.utcoffset(last_raw) - Local.dst(last_raw)
-    # set daytime end hour, in UTC
-    day_end_hour = eval(params.get('config', 'day end hour', '21'))
-    day_end_hour = (day_end_hour - (time_offset.seconds // 3600)) % 24
-    # divide 24 hours of UTC day into day and night
-    daytime = []
-    for i in range(24):
-        daytime.append(True)
-    night_hour = (21 - (time_offset.seconds // 3600)) % 24
-    for i in range(12):
-        daytime[night_hour] = False
-        night_hour = (night_hour + 1) % 24
+    # get daytime end hour (in local time)
+    day_end_hour = eval(params.get('config', 'day end hour', '21')) % 24
     # get other config
     rain_day_threshold = eval(params.get('config', 'rain day threshold', '0.2'))
     # calibrate raw data
@@ -731,10 +721,10 @@ def Process(params,
     # generate hourly data
     start = generate_hourly(logger, calib_data, hourly_data, start)
     # generate daily data
-    start = generate_daily(logger, day_end_hour, daytime,
+    start = generate_daily(logger, day_end_hour,
                            calib_data, hourly_data, daily_data, start)
     # generate monthly data
-    generate_monthly(logger, rain_day_threshold, day_end_hour, time_offset,
+    generate_monthly(logger, rain_day_threshold, day_end_hour,
                      daily_data, monthly_data, start)
     return 0
 

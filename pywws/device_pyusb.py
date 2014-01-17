@@ -100,6 +100,7 @@ class USBDevice(object):
         self.devh = dev.open()
         if not self.devh:
             raise IOError("Open device failed")
+        self.devh.reset()
 ##        if platform.system() is 'Windows':
 ##            self.devh.setConfiguration(1)
         try:

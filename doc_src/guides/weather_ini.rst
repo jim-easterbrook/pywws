@@ -1,6 +1,6 @@
 .. pywws - Python software for USB Wireless Weather Stations
    http://github.com/jim-easterbrook/pywws
-   Copyright (C) 2008-13  Jim Easterbrook  jim@jim-easterbrook.me.uk
+   Copyright (C) 2008-14  Jim Easterbrook  jim@jim-easterbrook.me.uk
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -60,6 +60,9 @@ config: miscellaneous system configuration
  logdata sync = 1
  rain day threshold = 0.2
  asynchronous = False
+ usb activity margin = 3.0
+ gnuplot version = 4.2
+ frequent writes = False
 
 ``ws type`` is the "class" of weather station. It should be set to ``1080`` for most weather stations, or ``3080`` if your station console displays solar illuminance.
  
@@ -89,6 +92,20 @@ You must update all your stored data by running :py:mod:`pywws.Reprocess` after 
 
 .. versionadded:: 13.09_r1057
    ``asynchrouous`` controls the use of a separate upload thread in :py:mod:`pywws.LiveLog`.
+
+.. versionadded:: 13.10_r1094
+   ``usb activity margin`` controls the algorithm that avoids the "USB lockup" problem that affects some stations.
+   It sets the number of seconds either side of expected station activity (receiving a reading from outside or logging a reading) that pywws does not get data from the station.
+   If your station is not affected by the USB lockup problem you can set ``usb activity margin`` to 0.0.
+
+.. versionadded:: 13.11_r1102
+   ``gnuplot version`` tells :py:mod:`pywws.Plot` and :py:mod:`pywws.WindRose` what version of gnuplot is installed on your computer.
+   This allows them to use version-specific features to give improved plot quality.
+
+.. versionadded:: 14.01_r1133
+   ``frequent writes`` tells :py:mod:`pywws.Tasks` to save weather data and status to file every time there is new logged data.
+   The default is to save the files every hour, to reduce "wear" on solid state memory such as the SD cards used with Raspberry Pi computers.
+   If your weather data directory is stored on a conventional disc drive you can set ``frequent writes`` to ``True``.
 
 paths: directories in which templates etc. are stored
 -----------------------------------------------------
@@ -199,18 +216,25 @@ ftp: configuration of uploading to a website
  user = username
  password = userpassword
  directory = public_html/weather/data/
+ port = 21
 
 These entries provide details of your website (or local directory) where processed text files and graph images should be transferred to.
 
 ``local site`` specifies whether the files should be copied to a local directory or sent to a remote site. You may want to set this if you run your web server on the same machine as you are running pywws on.
 
 ``secure`` specifies whether to transfer files using SFTP (secure FTP) instead of the more common FTP. Your web site provider should be able to tell you if you can use SFTP.
+Note that you may need to change the ``port`` value when you change to or from secure mode.
 
 ``site`` is the web address of the FTP site to transfer files to.
 
 ``user`` and ``password`` are the FTP site login details. Your web site provider should have provided them to you.
 
 ``directory`` specifies where on the FTP site (or local file system) the files should be stored. Note that you may have to experiment with this a bit - you might need a '/' character at the start of the path.
+
+.. versionadded:: 13.12.dev1120
+   ``port`` specifies the port number to use.
+   Default value is 21 for FTP, 22 for SFTP.
+   Your web site provider may tell you to use a different port number.
 
 twitter: configuration of posting to Twitter
 --------------------------------------------

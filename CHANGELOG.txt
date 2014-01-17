@@ -16,6 +16,13 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
+Changes in v13.12:
+    1/ Changed API of user calibration module.
+    2/ Can use python-twitter *or* tweepy library.
+    3/ Added a script to run live logging as a UNIX daemon process.
+    4/ Changed data store to use separate read and write caches.
+    5/ Various bug fixes and minor improvements.
+
 Changes in v13.10:
     1/ Changed Twitter library from tweepy to python-twitter.
     2/ Added ability to do uploads asynchronously.

@@ -444,6 +444,7 @@ __usage__ = __doc__.split('\n')[0] + __usage__
 import codecs
 from datetime import datetime, timedelta
 import getopt
+import locale
 import logging
 import os
 import subprocess
@@ -466,6 +467,8 @@ class BasePlotter(object):
         self.monthly_data = monthly_data
         self.work_dir = work_dir
         self.pressure_offset = eval(params.get('config', 'pressure offset'))
+        self.gnuplot_version = eval(
+            params.get('config', 'gnuplot version', '4.2'))
         # set language related stuff
         self.encoding = params.get('config', 'gnuplot encoding', 'iso_8859_1')
         # create work directory
@@ -493,31 +496,30 @@ class BasePlotter(object):
         self.x_lo = self.GetValue(self.graph, 'start', None)
         self.x_hi = self.GetValue(self.graph, 'stop', None)
         self.duration = self.GetValue(self.graph, 'duration', None)
-        if self.duration == None:
-            self.duration = timedelta(hours=24)
-        else:
+        if self.duration:
             self.duration = eval('timedelta(%s)' % self.duration)
-        if self.x_lo != None:
+        else:
+            self.duration = timedelta(hours=24)
+        if self.x_lo:
             self.x_lo = eval('datetime(%s)' % self.x_lo)
-            if self.x_hi != None:
+            if self.x_hi:
                 self.x_hi = eval('datetime(%s)' % self.x_hi)
                 self.duration = self.x_hi - self.x_lo
             else:
                 self.x_hi = self.x_lo + self.duration
-        elif self.x_hi != None:
+        elif self.x_hi:
             self.x_hi = eval('datetime(%s)' % self.x_hi)
             self.x_lo = self.x_hi - self.duration
         else:
             self.x_hi = self.hourly_data.before(datetime.max)
-            if self.x_hi == None:
+            if not self.x_hi:
                 self.x_hi = datetime.utcnow()    # only if no hourly data
+            self.x_hi += Local.utcoffset(self.x_hi)
             # set end of graph to start of the next hour after last item
-            self.x_hi = self.x_hi + timedelta(minutes=55)
+            self.x_hi += timedelta(minutes=55)
             self.x_hi = self.x_hi.replace(minute=0, second=0)
             self.x_lo = self.x_hi - self.duration
-            self.x_hi = self.x_hi + Local.utcoffset(self.x_lo)
-            self.x_lo = self.x_hi - self.duration
-        self.utcoffset = Local.utcoffset(self.x_lo)
+        self.utcoffset = Local.utcoffset(self.x_hi)
         # open gnuplot command file
         self.tmp_files = []
         cmd_file = os.path.join(self.work_dir, 'plot.cmd')
@@ -543,6 +545,9 @@ class BasePlotter(object):
             terminal = '%s large size %d,%d' % (fileformat, w, h)
         terminal = self.GetValue(self.graph, 'terminal', terminal)
         of.write('set encoding %s\n' % (self.encoding))
+        lcl = locale.getlocale()
+        if lcl[0]:
+            of.write('set locale "%s.%s"\n' % lcl)
         of.write('set terminal %s\n' % (terminal))
         of.write('set output "%s"\n' % (output_file))
         # set overall title
@@ -677,14 +682,14 @@ set timefmt "%Y-%m-%dT%H:%M:%S"
             if sys.version_info[0] < 3:
                 xlabel = xlabel.encode(self.encoding)
             result += 'set xlabel "%s"\n' % (
-                self.x_lo.replace(tzinfo=Local).strftime(xlabel))
+                self.x_hi.replace(tzinfo=Local).strftime(xlabel))
             dateformat = '%Y/%m/%d'
             dateformat = self.GetValue(self.graph, 'dateformat', dateformat)
             if sys.version_info[0] < 3:
                 dateformat = dateformat.encode(self.encoding)
             ldat = self.x_lo.replace(tzinfo=Local).strftime(dateformat)
             rdat = self.x_hi.replace(tzinfo=Local).strftime(dateformat)
-            if ldat != '':
+            if ldat:
                 result += 'set label "%s" at "%s", graph -0.3 left\n' % (
                     ldat, self.x_lo.isoformat())
             if rdat != ldat:
@@ -715,7 +720,7 @@ set timefmt "%Y-%m-%dT%H:%M:%S"
         # set grid
         result += 'unset grid\n'
         grid = self.GetValue(plot, 'grid', None)
-        if grid != None:
+        if grid is not None:
             result += 'set grid %s\n' % grid
         # x_lo & x_hi are in local time, data is indexed in UTC
         start = self.x_lo - self.utcoffset

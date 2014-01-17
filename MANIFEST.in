@@ -2,7 +2,9 @@ include *.txt MANIFEST.in README.md
 recursive-include translations *.po
 recursive-include doc_src *
 recursive-include doc *
-global-exclude *~
+recursive-include examples *
+global-exclude *~ *.pyc
 exclude doc/html/*/html/.buildinfo
 prune doc_src/api
 prune doc/html/*/doctrees
+prune pywws.egg-info

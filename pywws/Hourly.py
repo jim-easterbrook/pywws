@@ -51,7 +51,7 @@ import sys
 
 from pywws import DataStore
 from pywws import Localisation
-from pywws import LogData
+from pywws.LogData import DataLogger
 from pywws.Logger import ApplicationLogger
 from pywws import Process
 from pywws import Tasks
@@ -69,14 +69,13 @@ def Hourly(data_dir):
     daily_data = DataStore.daily_store(data_dir)
     monthly_data = DataStore.monthly_store(data_dir)
     # get weather station data
-    LogData.LogData(params, status, raw_data)
+    DataLogger(params, status, raw_data).log_data()
     # do the processing
     Process.Process(params,
                     raw_data, calib_data, hourly_data, daily_data, monthly_data)
     # do tasks
-    if not Tasks.RegularTasks(
-        params, status, calib_data, hourly_data, daily_data, monthly_data
-        ).do_tasks():
+    if not Tasks.RegularTasks(params, status, raw_data, calib_data,
+                              hourly_data, daily_data, monthly_data).do_tasks():
         return 1
     return 0
 
