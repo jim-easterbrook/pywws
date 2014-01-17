@@ -3,7 +3,7 @@
 
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-13  Jim Easterbrook  jim@jim-easterbrook.me.uk
+# Copyright (C) 2008-14  Jim Easterbrook  jim@jim-easterbrook.me.uk
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -92,6 +92,14 @@ switch to "raw" data. The index is reset to the most recent value.
    This now selects "calibrated" data. The directive name remains
    unchanged for backwards compatibility.
 
+``#live#``
+^^^^^^^^^^
+
+switch to "live" data. If the template is processed in the ``[live]``
+section of ``weather.ini`` this will select the most up-to-date
+weather data, otherwise it will have the same effect as ``#raw#``. Any
+``#jump#`` will go to "raw" data.
+
 ``#timezone name#``
 ^^^^^^^^^^^^^^^^^^^
 
@@ -162,7 +170,9 @@ output instead of ``fmt_string`` when the data value is absent, e.g.
 if the station lost contact with the outside sensor. ``conversion`` is
 a Python expression to convert the data, e.g. to convert wind speed
 from m/s to mph you could use ``"x * 3.6 / 1.609344"``, or the more
-convenient provided function ``"wind_mph(x)"``.
+convenient provided function ``"wind_mph(x)"``. See the
+:py:mod:`pywws.conversions` module for details of the available
+functions.
 
 All these values need double quotes " if they contain spaces or other
 potentially difficult characters. All except ``key`` are optional, but
@@ -178,6 +188,12 @@ data['hum_out'])"`` to compute the outdoor dew point. ``fmt_string``,
 ``no_value_string`` and ``conversion`` are as described above. Note
 that it is probably more efficient to incorporate any conversion into
 expression.
+
+In addition to the functions in the :py:mod:`pywws.conversions` module
+there are three more useful functions: ``rain_hour(data)`` returns the
+amount of rain in the last hour, ``rain_day(data)`` returns the amount
+of rain since midnight (local time) and ``hour_diff(data, key)``
+returns the change in data item ``key`` over the last hour.
 
 Example
 -------
