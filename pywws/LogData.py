@@ -2,7 +2,7 @@
 
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-13  Jim Easterbrook  jim@jim-easterbrook.me.uk
+# Copyright (C) 2008-14 Jim Easterbrook  jim@jim-easterbrook.me.uk
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -23,18 +23,18 @@
 
 %s
 
-This program / module gets data from the weather station's memory and
-stores it to file. Each time it is run it fetches all data that is
-newer than the last stored data, so it only needs to be run every hour
-or so. As the weather station typically stores two weeks' readings
-(depending on the logging interval), LogData.py could be run quite
+This module gets data from the weather station's memory and stores it
+to file. Each time it is run it fetches all data that is newer than
+the last stored data, so it only needs to be run every hour or so. As
+the weather station typically stores two weeks' readings (depending on
+the logging interval), :py:mod:`pywws.LogData` could be run quite
 infrequently if you don't need up-to-date data.
 
 There is no date or time information in the raw weather station data,
-so LogData.py creates a time stamp for each reading. It uses the
-computer's clock, rather than the weather station clock which can not
-be read accurately by the computer. A networked computer should have
-its clock set accurately by `ntp
+so :py:mod:`pywws.LogData` creates a time stamp for each reading. It
+uses the computer's clock, rather than the weather station clock which
+can not be read accurately by the computer. A networked computer
+should have its clock set accurately by `ntp
 <http://en.wikipedia.org/wiki/Network_Time_Protocol>`_.
 
 Synchronisation with the weather station is achieved by waiting for a
@@ -45,6 +45,9 @@ weather station stores a new logged record, and gets time stamps
 accurate to a couple of seconds. Note that this could take a long
 time, if the logging interval is greater than the recommended five
 minutes.
+
+Detailed API
+------------
 
 """
 
@@ -70,8 +73,7 @@ import time
 
 from pywws import DataStore
 from pywws.Logger import ApplicationLogger
-from pywws.Process import HOUR
-from pywws.TimeZone import Local
+from pywws.TimeZone import HOUR
 from pywws import WeatherStation
 
 class DataLogger(object):
@@ -136,12 +138,43 @@ class DataLogger(object):
         last_stored = self.raw_data.before(datetime.max)
         if not last_stored:
             last_stored = datetime.min
+        if self.status.get('data', 'ptr'):
+            saved_ptr, saved_date = self.status.get('data', 'ptr').split(',')
+            saved_ptr = int(saved_ptr, 16)
+            saved_date = DataStore.safestrptime(saved_date)
+            saved_date = self.raw_data.nearest(saved_date)
+            while saved_date < last_stored:
+                saved_date = self.raw_data.after(saved_date)
+                saved_ptr = self.ws.inc_ptr(saved_ptr)
+        else:
+            saved_ptr = None
+            saved_date = None
         last_stored += timedelta(seconds=fixed_block['read_period'] * 30)
+        if last_date <= last_stored:
+            # nothing to do
+            return
+        self.status.set(
+            'data', 'ptr', '%06x,%s' % (last_ptr, last_date.isoformat(' ')))
         # data_count includes record currently being updated every 48 seconds
         max_count = fixed_block['data_count'] - 1
         count = 0
+        duplicates = []
         while last_date > last_stored and count < max_count:
             data = self.ws.get_data(last_ptr)
+            if last_ptr == saved_ptr:
+                if any(data[key] != self.raw_data[saved_date][key] for key in (
+                        'hum_in', 'temp_in', 'hum_out', 'temp_out',
+                        'abs_pressure', 'wind_ave', 'wind_gust', 'wind_dir',
+                        'rain', 'status')):
+                    # pointer matches but data is different, so no duplicates
+                    duplicates = None
+                    saved_ptr = None
+                    saved_date = None
+                else:
+                    # potential duplicate data
+                    duplicates.append(last_date)
+                    saved_date = self.raw_data.before(saved_date)
+                    saved_ptr = self.ws.dec_ptr(saved_ptr)
             if data['delay'] is None or data['delay'] > 30:
                 self.logger.error('invalid data at %04x, %s',
                                   last_ptr, last_date.isoformat(' '))
@@ -151,8 +184,18 @@ class DataLogger(object):
                 count += 1
                 last_date -= timedelta(minutes=data['delay'])
             last_ptr = self.ws.dec_ptr(last_ptr)
-        if count > 0:
-            self.logger.info("%d catchup records", count)
+        if duplicates:
+            for d in duplicates:
+                del self.raw_data[d]
+            count -= len(duplicates)
+        last_date = self.raw_data.nearest(last_date)
+        next_date = self.raw_data.after(last_date + timedelta(seconds=1))
+        if next_date:
+            gap = (next_date - last_date).seconds // 60
+            gap -= fixed_block['read_period']
+            if gap > 0:
+                self.logger.critical("%d minutes gap in data detected", gap)
+        self.logger.info("%d catchup records", count)
 
     def log_data(self, sync=None, clear=False):
         fixed_block = self.check_fixed_block()
@@ -225,6 +268,8 @@ class DataLogger(object):
                     if now >= next_hour:
                         next_hour += HOUR
                         self.check_fixed_block()
+                    self.status.set(
+                        'data', 'ptr', '%06x,%s' % (ptr, now.isoformat(' ')))
                 else:
                     # catch up missing data
                     self.catchup(now, ptr)
