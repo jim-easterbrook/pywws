@@ -400,6 +400,10 @@ class weather_station(object):
             last_data_time = data_time
             new_data = self.get_data(old_ptr, unbuffered=True)
             data_time = time.time()
+            # when ptr changes, internal sensor data gets updated
+            if new_ptr != old_ptr:
+                for key in ('hum_in', 'temp_in', 'abs_pressure'):
+                    old_data[key] = new_data[key]
             # log any change of status
             if new_data['status'] != last_status:
                 self.logger.warning(
