@@ -425,6 +425,8 @@ class weather_station(object):
                         diff = (data_time - self._sensor_clock) % live_interval
                         if diff > 2.0 and diff < (live_interval - 2.0):
                             self.logger.error('unexpected sensor clock change')
+                            self.logger.warning('old data %s', str(old_data))
+                            self.logger.warning('new data %s', str(new_data))
                             self._sensor_clock = None
                     if not self._sensor_clock:
                         self._sensor_clock = data_time
