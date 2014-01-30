@@ -488,6 +488,7 @@ class weather_station(object):
                     yield result, old_ptr, True
                 old_ptr = new_ptr
                 old_data['delay'] = 0
+                data_time = 0
             elif ptr_time > last_log + log_interval + 180:
                 # if station stops logging data, don't keep reading
                 # USB until it locks up
