@@ -39,10 +39,10 @@ reduce USB traffic. The caching behaviour can be over-ridden with the
 ``unbuffered`` parameter to ``get_data`` and ``get_raw_data``.
 
 Decoding the data is controlled by the static dictionaries
-``reading_format``, ``lo_fix_format`` and ``fixed_format``. The keys
+``_reading_format``, ``lo_fix_format`` and ``fixed_format``. The keys
 are names of data items and the values can be an ``(offset, type,
 multiplier)`` tuple or another dictionary. So, for example, the
-reading_format dictionary entry ``'rain' : (13, 'us', 0.3)`` means
+_reading_format dictionary entry ``'rain' : (13, 'us', 0.3)`` means
 that the rain value is an unsigned short (two bytes), 13 bytes from
 the start of the block, and should be multiplied by 0.3 to get a
 useful value.
@@ -106,77 +106,114 @@ if not USBDevice:
 if not USBDevice:
     raise ImportError('No USB library found')
 
-# get meaning for status integer
-rain_overflow   = 0x80
-lost_connection = 0x40
-unknown         = 0x20
-unknown         = 0x10
-unknown         = 0x08
-unknown         = 0x04
-unknown         = 0x02
-unknown         = 0x01
-
 def decode_status(status):
     result = {}
-    for key, mask in (('rain_overflow',   0x80),
-                      ('lost_connection', 0x40),
-                      ('unknown',         0x3f),
+    for key, mask in (('low_battery',     0x800),
+                      ('rain_overflow',   0x080),
+                      ('lost_connection', 0x040),
+                      ('unknown',         0x73f),
                       ):
         result[key] = status & mask
     return result
 
 # decode weather station raw data formats
+def _plain_byte(raw, offset):
+    return raw[offset]
+
+def _unsigned_byte(raw, offset):
+    res = raw[offset]
+    if res == 0xFF:
+        return None
+    return res
+
+def _signed_byte(raw, offset):
+    res = raw[offset]
+    if res == 0xFF:
+        return None
+    if res >= 128:
+        return 128 - res
+    return res
+
+def _unsigned_short(raw, offset):
+    lo = raw[offset]
+    hi = raw[offset+1]
+    if lo == 0xFF and hi == 0xFF:
+        return None
+    return (hi * 256) + lo
+
+def _signed_short(raw, offset):
+    lo = raw[offset]
+    hi = raw[offset+1]
+    if lo == 0xFF and hi == 0xFF:
+        return None
+    if hi >= 128:
+        return ((128 - hi) * 256) - lo
+    return (hi * 256) + lo
+
+def _unsigned_int3(raw, offset):
+    lo = raw[offset]
+    md = raw[offset+1]
+    hi = raw[offset+2]
+    if lo == 0xFF and md == 0xFF and hi == 0xFF:
+        return None
+    return (hi * 256 * 256) + (md * 256) + lo
+
+def _bcd_decode(byte):
+    hi = (byte // 16) & 0x0F
+    lo = byte & 0x0F
+    return (hi * 10) + lo
+
+def _date_time(raw, offset):
+    year = _bcd_decode(raw[offset])
+    month = _bcd_decode(raw[offset+1])
+    day = _bcd_decode(raw[offset+2])
+    hour = _bcd_decode(raw[offset+3])
+    minute = _bcd_decode(raw[offset+4])
+    return '%4d-%02d-%02d %02d:%02d' % (year + 2000, month, day, hour, minute)
+
+def _time(raw, offset):
+    hour = _bcd_decode(raw[offset])
+    minute = _bcd_decode(raw[offset+1])
+    return '%02d:%02d' % (hour, minute)
+
+def _wind_ave(raw, offset):
+    # wind average - 12 bits split across a byte and a nibble
+    result = raw[offset] + ((raw[offset+2] & 0x0F) << 8)
+    if result == 0xFFF:
+        result = None
+    return result
+
+def _wind_gust(raw, offset):
+    # wind gust - 12 bits split across a byte and a nibble
+    result = raw[offset] + ((raw[offset+1] & 0xF0) << 4)
+    if result == 0xFFF:
+        result = None
+    return result
+
+def _bit_field(raw, offset):
+    # convert byte to list of 8 booleans
+    mask = 1
+    result = []
+    for i in range(8):
+        result.append(raw[offset] & mask != 0)
+        mask = mask << 1
+    return result
+
+_decoders = {
+    'pb' : _plain_byte,
+    'ub' : _unsigned_byte,
+    'sb' : _signed_byte,
+    'us' : _unsigned_short,
+    'ss' : _signed_short,
+    'u3' : _unsigned_int3,
+    'dt' : _date_time,
+    'tt' : _time,
+    'wa' : _wind_ave,
+    'wg' : _wind_gust,
+    'bf' : _bit_field,
+    }
+
 def _decode(raw, format):
-    def _signed_byte(raw, offset):
-        res = raw[offset]
-        if res == 0xFF:
-            return None
-        sign = 1
-        if res >= 128:
-            sign = -1
-            res = res - 128
-        return sign * res
-    def _signed_short(raw, offset):
-        lo = raw[offset]
-        hi = raw[offset+1]
-        if lo == 0xFF and hi == 0xFF:
-            return None
-        sign = 1
-        if hi >= 128:
-            sign = -1
-            hi = hi - 128
-        return sign * ((hi * 256) + lo)
-    def _unsigned_short(raw, offset):
-        lo = raw[offset]
-        hi = raw[offset+1]
-        if lo == 0xFF and hi == 0xFF:
-            return None
-        return (hi * 256) + lo
-    def _unsigned_int3(raw, offset):
-        lo = raw[offset]
-        md = raw[offset+1]
-        hi = raw[offset+2]
-        if lo == 0xFF and md == 0xFF and hi == 0xFF:
-            return None
-        return (hi * 256 * 256) + (md * 256) + lo
-    def _bcd_decode(byte):
-        hi = (byte // 16) & 0x0F
-        lo = byte & 0x0F
-        return (hi * 10) + lo
-    def _date_time(raw, offset):
-        year = _bcd_decode(raw[offset])
-        month = _bcd_decode(raw[offset+1])
-        day = _bcd_decode(raw[offset+2])
-        hour = _bcd_decode(raw[offset+3])
-        minute = _bcd_decode(raw[offset+4])
-        return '%4d-%02d-%02d %02d:%02d' % (year + 2000, month, day, hour, minute)
-    def _bit_field(raw, offset):
-        mask = 1
-        result = []
-        for i in range(8):
-            result.append(raw[offset] & mask != 0)
-            mask = mask << 1
-        return result
     if not raw:
         return None
     if isinstance(format, dict):
@@ -185,44 +222,11 @@ def _decode(raw, format):
             result[key] = _decode(raw, value)
     else:
         pos, type, scale = format
-        if type == 'ub':
-            result = raw[pos]
-            if result == 0xFF:
-                result = None
-        elif type == 'sb':
-            result = _signed_byte(raw, pos)
-        elif type == 'us':
-            result = _unsigned_short(raw, pos)
-        elif type == 'u3':
-            result = _unsigned_int3(raw, pos)
-        elif type == 'ss':
-            result = _signed_short(raw, pos)
-        elif type == 'dt':
-            result = _date_time(raw, pos)
-        elif type == 'tt':
-            result = '%02d:%02d' % (_bcd_decode(raw[pos]),
-                                    _bcd_decode(raw[pos+1]))
-        elif type == 'pb':
-            result = raw[pos]
-        elif type == 'wa':
-            # wind average - 12 bits split across a byte and a nibble
-            result = raw[pos] + ((raw[pos+2] & 0x0F) << 8)
-            if result == 0xFFF:
-                result = None
-        elif type == 'wg':
-            # wind gust - 12 bits split across a byte and a nibble
-            result = raw[pos] + ((raw[pos+1] & 0xF0) << 4)
-            if result == 0xFFF:
-                result = None
-        elif type == 'bf':
+        result = _decoders[type](raw, pos)
+        if type == 'bf':
             # bit field - 'scale' is a list of bit names
-            result = {}
-            for k, v in zip(scale, _bit_field(raw, pos)):
-                result[k] = v
-            return result
-        else:
-            raise IOError('unknown type %s' % type)
-        if scale and result:
+            result = dict(zip(scale, result))
+        elif scale and result:
             result = float(result) * scale
     return result
 
@@ -548,8 +552,13 @@ class weather_station(object):
 
         If unbuffered is false then a cached value that was obtained
         earlier may be returned."""
-        return _decode(self.get_raw_data(ptr, unbuffered),
-                       self.reading_format[self.ws_type])
+        result = _decode(self.get_raw_data(ptr, unbuffered),
+                         self._reading_format[self.ws_type])
+        # split up 'wind_dir' byte
+        if result['wind_dir'] is not None:
+            result['status'] |= (result['wind_dir'] & 0xF0) << 4
+            result['wind_dir'] = result['wind_dir'] & 0x0F
+        return result
 
     def current_pos(self):
         """Get circular buffer location where current data is being written."""
@@ -661,8 +670,8 @@ class weather_station(object):
     # specifies an (offset, type, multiplier) tuple that is understood
     # by _decode.
     # depends on weather station type
-    reading_format = {}
-    reading_format['1080'] = {
+    _reading_format = {}
+    _reading_format['1080'] = {
         'delay'        : (0, 'ub', None),
         'hum_in'       : (1, 'ub', None),
         'temp_in'      : (2, 'ss', 0.1),
@@ -675,11 +684,11 @@ class weather_station(object):
         'rain'         : (13, 'us', 0.3),
         'status'       : (15, 'pb', None),
         }
-    reading_format['3080'] = {
+    _reading_format['3080'] = {
         'illuminance' : (16, 'u3', 0.1),
         'uv'          : (19, 'ub', None),
         }
-    reading_format['3080'].update(reading_format['1080'])
+    _reading_format['3080'].update(_reading_format['1080'])
     lo_fix_format = {
         'read_period'   : (16, 'ub', None),
         'settings_1'    : (17, 'bf', ('temp_in_F', 'temp_out_F', 'rain_in',
