@@ -1,0 +1,134 @@
+#!/usr/bin/env python
+
+# pywws - Python software for USB Wireless Weather Stations
+# http://github.com/jim-easterbrook/pywws
+# Copyright (C) 2008-14  Jim Easterbrook  jim@jim-easterbrook.me.uk
+
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+"""Regenerate hourly and daily summary data
+::
+
+%s
+
+Introduction
+------------
+
+This program recreates the calibrated, hourly, daily and monthly
+summary data that is created by the :py:mod:`pywws.Process` module.
+It should be run whenever you upgrade to a newer version of pywws (if
+the summary data format has changed), change your calibration module
+or alter your pressure offset.
+
+Detailed API
+------------
+
+"""
+
+__docformat__ = "restructuredtext en"
+__usage__ = """
+ usage: %s [options] data_dir
+ options are:
+  -h | --help     display this help
+  -l | --lowbat   update status on old data to include 'low battery'
+  -v | --verbose  increase number of informative messages
+ data_dir is the root directory of the weather data
+"""
+
+import getopt
+import logging
+import os
+import sys
+
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+from pywws import DataStore
+from pywws.Logger import ApplicationLogger
+from pywws import Process
+
+__usage__ %= sys.argv[0]
+__doc__ %= __usage__
+__usage__ = __doc__.split('\n')[0] + __usage__
+
+def Reprocess(data_dir, lowbat):
+    logger = logging.getLogger('pywws-reprocess')
+    raw_data = DataStore.data_store(data_dir)
+    if lowbat:
+        # update old data that doesn't have 'low_battery' status
+        logger.warning("Updating status to include 'low battery'")
+        count = 0
+        for data in raw_data[:]:
+            count += 1
+            idx = data['idx']
+            if count % 10000 == 0:
+                logger.info("calib: %s", idx.isoformat(' '))
+            elif count % 500 == 0:
+                logger.debug("calib: %s", idx.isoformat(' '))
+            if data['wind_dir'] is not None and data['wind_dir'] >= 16:
+                data['status'] |= (data['wind_dir'] & 0xF0) << 4
+                data['wind_dir'] = data['wind_dir'] & 0x0F
+                raw_data[idx] = data
+        raw_data.flush()
+    # delete old format summary files
+    logger.warning('Deleting old summaries')
+    for summary in ['calib', 'hourly', 'daily', 'monthly']:
+        for root, dirs, files in os.walk(
+                os.path.join(data_dir, summary), topdown=False):
+            logger.info(root)
+            for file in files:
+                os.unlink(os.path.join(root, file))
+            os.rmdir(root)
+    # create data summaries
+    logger.warning('Generating hourly and daily summaries')
+    params = DataStore.params(data_dir)
+    calib_data = DataStore.calib_store(data_dir)
+    hourly_data = DataStore.hourly_store(data_dir)
+    daily_data = DataStore.daily_store(data_dir)
+    monthly_data = DataStore.monthly_store(data_dir)
+    Process.Process(
+        params,
+        raw_data, calib_data, hourly_data, daily_data, monthly_data)
+    return 0
+
+def main(argv=None):
+    if argv is None:
+        argv = sys.argv
+    try:
+        opts, args = getopt.getopt(
+            argv[1:], "hlv", ['help', 'lowbat', 'verbose'])
+    except getopt.error, msg:
+        print >>sys.stderr, 'Error: %s\n' % msg
+        print >>sys.stderr, __usage__.strip()
+        return 1
+    # process options
+    lowbat = False
+    verbose = 0
+    for o, a in opts:
+        if o in ('-h', '--help'):
+            print __usage__.strip()
+            return 0
+        elif o in ('-l', '--lowbat'):
+            lowbat = True
+        elif o in ('-v', '--verbose'):
+            verbose += 1
+    # check arguments
+    if len(args) != 1:
+        print >>sys.stderr, 'Error: 1 argument required\n'
+        print >>sys.stderr, __usage__.strip()
+        return 2
+    logger = ApplicationLogger(verbose)
+    data_dir = args[0]
+    return Reprocess(data_dir, lowbat)
+
+sys.exit(main())
