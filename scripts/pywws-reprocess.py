@@ -42,7 +42,7 @@ __usage__ = """
  usage: %s [options] data_dir
  options are:
   -h | --help     display this help
-  -l | --lowbat   update status on old data to include 'low battery'
+  -u | --update   update status on old data to include bits from wind_dir byte
   -v | --verbose  increase number of informative messages
  data_dir is the root directory of the weather data
 """
@@ -61,24 +61,28 @@ __usage__ %= sys.argv[0]
 __doc__ %= __usage__
 __usage__ = __doc__.split('\n')[0] + __usage__
 
-def Reprocess(data_dir, lowbat):
+def Reprocess(data_dir, update):
     logger = logging.getLogger('pywws-reprocess')
     raw_data = DataStore.data_store(data_dir)
-    if lowbat:
-        # update old data that doesn't have 'low_battery' status
-        logger.warning("Updating status to include 'low battery'")
+    if update:
+        # update old data to copy high nibble of wind_dir to status
+        logger.warning("Updating status to include extra bits from wind_dir")
         count = 0
         for data in raw_data[:]:
             count += 1
             idx = data['idx']
             if count % 10000 == 0:
-                logger.info("calib: %s", idx.isoformat(' '))
+                logger.info("update: %s", idx.isoformat(' '))
             elif count % 500 == 0:
-                logger.debug("calib: %s", idx.isoformat(' '))
-            if data['wind_dir'] is not None and data['wind_dir'] >= 16:
-                data['status'] |= (data['wind_dir'] & 0xF0) << 4
-                data['wind_dir'] = data['wind_dir'] & 0x0F
-                raw_data[idx] = data
+                logger.debug("update: %s", idx.isoformat(' '))
+            if data['wind_dir'] is not None:
+                if data['wind_dir'] >= 16:
+                    data['status'] |= (data['wind_dir'] & 0xF0) << 4
+                    data['wind_dir'] &= 0x0F
+                    raw_data[idx] = data
+                if data['status'] & 0x800:
+                    data['wind_dir'] = None
+                    raw_data[idx] = data
         raw_data.flush()
     # delete old format summary files
     logger.warning('Deleting old summaries')
@@ -106,20 +110,20 @@ def main(argv=None):
         argv = sys.argv
     try:
         opts, args = getopt.getopt(
-            argv[1:], "hlv", ['help', 'lowbat', 'verbose'])
+            argv[1:], "huv", ['help', 'update', 'verbose'])
     except getopt.error, msg:
         print >>sys.stderr, 'Error: %s\n' % msg
         print >>sys.stderr, __usage__.strip()
         return 1
     # process options
-    lowbat = False
+    update = False
     verbose = 0
     for o, a in opts:
         if o in ('-h', '--help'):
             print __usage__.strip()
             return 0
-        elif o in ('-l', '--lowbat'):
-            lowbat = True
+        elif o in ('-u', '--update'):
+            update = True
         elif o in ('-v', '--verbose'):
             verbose += 1
     # check arguments
@@ -129,6 +133,6 @@ def main(argv=None):
         return 2
     logger = ApplicationLogger(verbose)
     data_dir = args[0]
-    return Reprocess(data_dir, lowbat)
+    return Reprocess(data_dir, update)
 
 sys.exit(main())

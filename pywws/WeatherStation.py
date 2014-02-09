@@ -108,10 +108,10 @@ if not USBDevice:
 
 def decode_status(status):
     result = {}
-    for key, mask in (('low_battery',     0x800),
-                      ('rain_overflow',   0x080),
-                      ('lost_connection', 0x040),
-                      ('unknown',         0x73f),
+    for key, mask in (('invalid_wind_dir', 0x800),
+                      ('rain_overflow',    0x080),
+                      ('lost_connection',  0x040),
+                      ('unknown',          0x73f),
                       ):
         result[key] = status & mask
     return result
@@ -557,7 +557,10 @@ class weather_station(object):
         # split up 'wind_dir' byte
         if result['wind_dir'] is not None:
             result['status'] |= (result['wind_dir'] & 0xF0) << 4
-            result['wind_dir'] = result['wind_dir'] & 0x0F
+            if result['wind_dir'] & 0x80:
+                result['wind_dir'] = None
+            else:
+                result['wind_dir'] &= 0x0F
         return result
 
     def current_pos(self):
