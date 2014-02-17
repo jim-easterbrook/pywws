@@ -1,6 +1,6 @@
 .. pywws - Python software for USB Wireless Weather Stations
    http://github.com/jim-easterbrook/pywws
-   Copyright (C) 2008-13  Jim Easterbrook  jim@jim-easterbrook.me.uk
+   Copyright (C) 2008-14  Jim Easterbrook  jim@jim-easterbrook.me.uk
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -32,6 +32,9 @@ Getting started
 
 First of all, you need to install pywws and make sure it can get data from your weather station.
 See :doc:`getstarted` for details.
+
+If you have previously been using :py:mod:`~pywws.Hourly` then disable your 'cron' job (or whatever else you use to run it) so it no longer runs.
+You should not run :py:mod:`~pywws.Hourly` and :py:mod:`~pywws.LiveLog` at the same time.
 
 Try running :py:mod:`~pywws.LiveLog` from the command line, with a high level of verbosity so you can see what's happening::
 
