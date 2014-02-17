@@ -32,10 +32,10 @@ internet.
 
 This module enables pywws to upload readings to these organisations.
 It is highly customisable using configuration files. Each 'service'
-requires a configuration file and two templates in ``pywws/services``
-(that should not need to be edited by the user) and a section in
-``weather.ini`` containing user specific data such as your site ID and
-password.
+requires a configuration file and one or two templates in
+``pywws/services`` (that should not need to be edited by the user) and
+a section in ``weather.ini`` containing user specific data such as
+your site ID and password.
 
 See :ref:`How to integrate pywws with various weather services
 <guides-integration-other>` for details of the available services.
@@ -214,6 +214,10 @@ class ToService(object):
         self.template_file = os.path.join(
             os.path.dirname(__file__), 'services', '%s_template_%s.txt' % (
                 config_section, self.params.get('config', 'ws type')))
+        if not os.path.exists(self.template_file):
+            self.template_file = os.path.join(
+                os.path.dirname(__file__), 'services',
+                '%s_template_1080.txt' % (config_section))
         # get other parameters
         self.catchup = eval(service_params.get('config', 'catchup'))
         self.use_get = eval(service_params.get('config', 'use get'))
