@@ -1,6 +1,6 @@
 .. pywws - Python software for USB Wireless Weather Stations
    http://github.com/jim-easterbrook/pywws
-   Copyright (C) 2008-13  Jim Easterbrook  jim@jim-easterbrook.me.uk
+   Copyright (C) 2008-14  Jim Easterbrook  jim@jim-easterbrook.me.uk
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -48,14 +48,21 @@ Twitter
 
 See :doc:`twitter` for full instructions.
 
+.. _guides-integration-other:
+
+Other "services"
+----------------
+
+The remaining weather service uploads are handled by the :py:mod:`pywws.toservice` module.
+See the module's documentation for general configuration options.
+The following subsections give further information about some of the available services.
+
 UK Met Office
--------------
+^^^^^^^^^^^^^
 
-Handled by the :py:mod:`pywws.toservice` module.
-See :ref:`weather-underground` for general setup instructions.
-
+* Web site: http://wow.metoffice.gov.uk/
 * | Create account:
-  | https://register.metoffice.gov.uk/WaveRegistrationClient/public/register.do?service=weatherobservations
+  | https://register.metoffice.gov.uk/WaveRegistrationClient/public/newaccount.do?service=weatherobservations
 * API: http://wow.metoffice.gov.uk/support/dataformats#automatic
 * Example ``weather.ini`` section::
 
@@ -64,11 +71,9 @@ See :ref:`weather-underground` for general setup instructions.
     aws pin = 987654
 
 Open Weather Map
-----------------
+^^^^^^^^^^^^^^^^
 
-Handled by the :py:mod:`pywws.toservice` module.
-See :ref:`weather-underground` for general setup instructions.
-
+* Web site: http://openweathermap.org/
 * Create account: http://openweathermap.org/login
 * API: http://openweathermap.org/API
 * Example ``weather.ini`` section::
@@ -87,11 +92,9 @@ This appears as ``id`` in ``weather.ini``.
 Make sure you don't choose a name that is already in use.
 
 PWS Weather
------------
+^^^^^^^^^^^
 
-Handled by the :py:mod:`pywws.toservice` module.
-See :ref:`weather-underground` for general setup instructions.
-
+* Web site: http://www.pwsweather.com/
 * Create account: http://www.pwsweather.com/register.php
 * API based on WU protocol: `<http://wiki.wunderground.com/index.php/PWS_-_Upload_Protocol>`_
 * Example ``weather.ini`` section::
@@ -100,10 +103,18 @@ See :ref:`weather-underground` for general setup instructions.
     station = ABCDEFGH1
     password = xxxxxxx
 
-.. _weather-underground:
+temperatur.nu
+^^^^^^^^^^^^^
+
+* Web site: http://www.temperatur.nu/
+* Example ``weather.ini`` section::
+
+    [temperaturnu]
+    id = ???
+    town = ???
 
 Weather Underground
--------------------
+^^^^^^^^^^^^^^^^^^^
 
 * Create account: http://www.wunderground.com/members/signup.asp
 * API: `<http://wiki.wunderground.com/index.php/PWS_-_Upload_Protocol>`_
@@ -113,43 +124,8 @@ Weather Underground
     station = ABCDEFGH1
     password = xxxxxxx
 
-`Weather Underground <http://www.wunderground.com/>`_ (or Wunderground) is one of the longest established weather websites in the world.
-The :py:mod:`pywws.toservice` module handles this communication for a range of online services.
-
-The first step is to set up a Weather Underground account, then use the "Add A Station" form to provide details of your station such as its location and type.
-You should then get a station ID and password -- make a note of these.
-
-Now stop any pywws software that's running, then try using :py:mod:`pywws.toservice` directly::
-
- python -m pywws.toservice ~/weather/data underground
-
-This should fail, as you haven't set the station ID or password yet, but it creates entries in ``weather.ini`` for you to edit.
-Edit ``weather.ini`` and find the ``[underground]`` section::
-
- [underground]
- station = unknown
- password = unknown
-
-Replace the ``unknown`` values with your station ID and password.
-
-Now try :py:mod:`pywws.toservice` again::
-
- python -m pywws.toservice ~/weather/data underground
-
-If this worked then you can upload your last 7 days worth of data.
-Note that this might take quite a long time, especially if you have a short 'logging interval'.
-First edit ``status.ini`` and remove the ``underground`` entry from the ``[last update]`` section.
-Then run :py:mod:`pywws.toservice` with the 'catchup' option, and high verbosity so you can see it working::
-
- python -m pywws.toservice -vvc ~/weather/data underground
-
-Once everything is working, you can add 'underground' to the ``[logged]`` tasks section in ``weather.ini``::
-
- [logged]
- services = ['underground']
-
-"RapidFire" updates
-^^^^^^^^^^^^^^^^^^^
+Weather Underground "RapidFire" updates
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Weather Underground has a second upload URL for real time updates as little as 2.5 seconds apart.
 If you run pywws in 'live logging' mode (see :doc:`livelogging`) you can use this to send updates every 48 seconds, by adding 'underground_rf' to the ``[live]`` tasks section in ``weather.ini``::
 
@@ -161,7 +137,17 @@ If you run pywws in 'live logging' mode (see :doc:`livelogging`) you can use thi
 
 Make sure you still have an 'underground' service in ``[logged]`` or ``[hourly]``.
 This will ensure that 'catchup' records are sent to fill in any gaps if your station goes offline for some reason.
- 
+
+wetter.com
+^^^^^^^^^^
+
+* Web site: http://www.wetter.com/wetter_aktuell/wetternetzwerk/
+* Example ``weather.ini`` section::
+
+    [wetterarchivde]
+    benutzername = ???
+    passwort = ???
+
 ----
 
 Comments or questions? Please subscribe to the pywws mailing list http://groups.google.com/group/pywws and let us know.

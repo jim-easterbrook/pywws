@@ -26,9 +26,9 @@
 Introduction
 ------------
 
-Several organisations allow weather stations to upload data using a
-simple HTTP 'POST' or 'GET' request, with the data encoded as a
-sequence of ``key=value`` pairs separated by ``&`` characters.
+There are an increasing number of web sites around the world that
+encourage amateur weather station owners to upload data over the
+internet.
 
 This module enables pywws to upload readings to these organisations.
 It is highly customisable using configuration files. Each 'service'
@@ -37,26 +37,8 @@ requires a configuration file and two templates in ``pywws/services``
 ``weather.ini`` containing user specific data such as your site ID and
 password.
 
-There are currently six services for which configuration files have
-been written.
-
-+-----------------------------------------------------------------------+-----------------------+-------------------------------------------------------+
-| organisation                                                          | service name          | config file                                           |
-+=======================================================================+=======================+=======================================================+
-| `UK Met Office <http://wow.metoffice.gov.uk/>`_                       | ``metoffice``         | :download:`../../pywws/services/metoffice.ini`        |
-+-----------------------------------------------------------------------+-----------------------+-------------------------------------------------------+
-| `Open Weather Map <http://openweathermap.org/>`_                      | ``openweathermap``    | :download:`../../pywws/services/openweathermap.ini`   |
-+-----------------------------------------------------------------------+-----------------------+-------------------------------------------------------+
-| `PWS Weather <www.pwsweather.com>`_                                   | ``pwsweather``        | :download:`../../pywws/services/pwsweather.ini`       |
-+-----------------------------------------------------------------------+-----------------------+-------------------------------------------------------+
-| `Stacja Pogody <http://stacjapogody.waw.pl/index.php?id=mapastacji>`_ | ``stacjapogodywawpl`` | :download:`../../pywws/services/stacjapogodywawpl.ini`|
-+-----------------------------------------------------------------------+-----------------------+-------------------------------------------------------+
-| `temperatur.nu <http://www.temperatur.nu/>`_                          | ``temperaturnu``      | :download:`../../pywws/services/temperaturnu.ini`     |
-+-----------------------------------------------------------------------+-----------------------+-------------------------------------------------------+
-| `Weather Underground <http://www.wunderground.com/>`_                 | ``underground``       | :download:`../../pywws/services/underground.ini`      |
-+-----------------------------------------------------------------------+-----------------------+-------------------------------------------------------+
-| `wetter.com <http://www.wetter.com/community/>`_                      | ``wetterarchivde``    | :download:`../../pywws/services/wetterarchivde.ini`   |
-+-----------------------------------------------------------------------+-----------------------+-------------------------------------------------------+
+See :ref:`How to integrate pywws with various weather services
+<guides-integration-other>` for details of the available services.
 
 Configuration
 -------------
@@ -70,8 +52,9 @@ create a section in ``weather.ini``::
 
     python -m pywws.toservice data_dir service_name
 
-``service_name`` is a single word service name, such as ``metoffice``,
-``data_dir`` is your weather data directory, as usual.
+``service_name`` is the single word service name used by pywws, such
+as ``metoffice``, ``data_dir`` is your weather data directory, as
+usual.
 
 Edit ``weather.ini`` and find the section corresponding to the service
 name, e.g. ``[underground]``. Copy your site details into this
