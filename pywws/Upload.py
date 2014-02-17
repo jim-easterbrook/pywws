@@ -2,7 +2,7 @@
 
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-13  Jim Easterbrook  jim@jim-easterbrook.me.uk
+# Copyright (C) 2008-14  Jim Easterbrook  jim@jim-easterbrook.me.uk
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -164,6 +164,7 @@ class Upload(object):
     def __init__(self, params):
         self.logger = logging.getLogger('pywws.Upload')
         self.params = params
+        self.old_ex = None
         if eval(self.params.get('ftp', 'local site', 'False')):
             # copy to local directory
             directory = self.params.get(
@@ -202,7 +203,10 @@ class Upload(object):
                 self.uploader.put(file, target)
                 return True
             except Exception, ex:
-                self.logger.error(str(ex))
+                e = str(ex)
+                if e != self.old_ex:
+                    self.logger.error(e)
+                    self.old_ex = e
         return False
 
     def disconnect(self):
