@@ -2,7 +2,7 @@
 
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-13  Jim Easterbrook  jim@jim-easterbrook.me.uk
+# Copyright (C) 2008-14  Jim Easterbrook  jim@jim-easterbrook.me.uk
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -276,37 +276,34 @@ class ToService(object):
         
         """
         self.logger.debug(coded_data)
-        # have three tries before giving up
-        for n in range(3):
+        try:
             try:
-                try:
-                    if self.use_get:
-                        wudata = urllib2.urlopen(
-                            '%s?%s' % (self.server, coded_data))
-                    else:
-                        wudata = urllib2.urlopen(self.server, coded_data)
-                except urllib2.HTTPError, ex:
-                    if ex.code != 400:
-                        raise
-                    wudata = ex
-                response = wudata.readlines()
-                wudata.close()
-                if len(response) == len(self.expected_result):
-                    for actual, expected in zip(response, self.expected_result):
-                        if not re.match(expected, actual):
-                            break
-                    else:
-                        self.old_response = response
-                        return True
-                if response != self.old_response:
-                    for line in response:
-                        self.logger.error(line.strip())
-                self.old_response = response
-            except Exception, ex:
-                e = str(ex)
-                if e != self.old_ex:
-                    self.logger.error(e)
-                    self.old_ex = e
+                if self.use_get:
+                    wudata = urllib2.urlopen('%s?%s' % (self.server, coded_data))
+                else:
+                    wudata = urllib2.urlopen(self.server, coded_data)
+            except urllib2.HTTPError, ex:
+                if ex.code != 400:
+                    raise
+                wudata = ex
+            response = wudata.readlines()
+            wudata.close()
+            if len(response) == len(self.expected_result):
+                for actual, expected in zip(response, self.expected_result):
+                    if not re.match(expected, actual):
+                        break
+                else:
+                    self.old_response = response
+                    return True
+            if response != self.old_response:
+                for line in response:
+                    self.logger.error(line.strip())
+            self.old_response = response
+        except Exception, ex:
+            e = str(ex)
+            if e != self.old_ex:
+                self.logger.error(e)
+                self.old_ex = e
         return False
 
     def next_data(self, start, live_data):

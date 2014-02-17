@@ -197,16 +197,14 @@ class Upload(object):
 
     def upload_file(self, file):
         target = os.path.basename(file)
-        # have three tries before giving up
-        for n in range(3):
-            try:
-                self.uploader.put(file, target)
-                return True
-            except Exception, ex:
-                e = str(ex)
-                if e != self.old_ex:
-                    self.logger.error(e)
-                    self.old_ex = e
+        try:
+            self.uploader.put(file, target)
+            return True
+        except Exception, ex:
+            e = str(ex)
+            if e != self.old_ex:
+                self.logger.error(e)
+                self.old_ex = e
         return False
 
     def disconnect(self):

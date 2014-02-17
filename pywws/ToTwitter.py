@@ -2,7 +2,7 @@
 
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-13  Jim Easterbrook  jim@jim-easterbrook.me.uk
+# Copyright (C) 2008-14  Jim Easterbrook  jim@jim-easterbrook.me.uk
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -92,17 +92,16 @@ class ToTwitter(object):
             return True
         if not isinstance(tweet, unicode):
             tweet = tweet.decode(self.encoding)
-        for i in range(3):
-            try:
-                status = self.post(tweet, **self.post_kw)
+        try:
+            status = self.post(tweet, **self.post_kw)
+            return True
+        except Exception, ex:
+            e = str(ex)
+            if 'is a duplicate' in e:
                 return True
-            except Exception, ex:
-                e = str(ex)
-                if 'is a duplicate' in e:
-                    return True
-                if e != self.old_ex:
-                    self.logger.error(e)
-                    self.old_ex = e
+            if e != self.old_ex:
+                self.logger.error(e)
+                self.old_ex = e
         return False
 
     def UploadFile(self, file):
