@@ -32,7 +32,7 @@ from pywws.calib import Calib
 from pywws import Plot
 from pywws import Template
 from pywws.TimeZone import STDOFFSET
-from pywws.toservice import ToService, FIVE_MINS, FIFTY_SECS
+from pywws.toservice import ToService, FIVE_MINS
 from pywws import Upload
 from pywws import WindRose
 from pywws import YoWindow
@@ -93,10 +93,8 @@ class RegularTasks(object):
                         self.params, self.status, self.calib_data,
                         service_name=name)
         if self.asynch:
-            self.service_start = {}
             self.service_queued = {}
             for name in self.services:
-                self.service_start[name] = self.services[name].catchup_start()
                 self.service_queued[name] = 0
         # start asynchronous thread to do uploads
         if self.asynch:
@@ -342,24 +340,23 @@ class RegularTasks(object):
 
     def _do_service(self, name, live_data):
         service = self.services[name]
-        if self.asynch:
-            for data in service.next_data(self.service_start[name], live_data):
-                if self.service_queued[name] >= 50:
-                    break
-                coded_data = service.encode_data(data)
-                if not coded_data:
-                    continue
-                self.to_thread.put(('service', name, data['idx'], coded_data))
-                self.service_start[name] = data['idx'] + FIFTY_SECS
-                parent = service.parent
-                if parent:
-                    last_update = self.status.get_datetime(
-                        'last update', parent)
-                    if last_update and last_update >= data['idx'] - FIVE_MINS:
-                        self.service_start[parent] = data['idx'] + FIFTY_SECS
-                self.service_queued[name] += 1
-        else:
+        if not self.asynch:
             service.Upload(live_data=live_data)
+        if self.service_queued[name] >= 50:
+            return
+        for data in service.next_data(True, live_data):
+            coded_data = service.encode_data(data)
+            if not coded_data:
+                continue
+            self.to_thread.put(('service', name, data['idx'], coded_data))
+            parent = service.parent
+            if parent and parent in self.services:
+                parent = self.services[parent]
+                if parent.last_update >= data['idx'] - FIVE_MINS:
+                    parent.last_update = data['idx']
+            self.service_queued[name] += 1
+            if self.service_queued[name] >= 50:
+                break
 
     def do_twitter(self, template, data=None):
         if not self.twitter:

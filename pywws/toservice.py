@@ -151,7 +151,6 @@ from pywws.Logger import ApplicationLogger
 from pywws import Template
 
 FIVE_MINS = timedelta(minutes=5)
-FIFTY_SECS = timedelta(seconds=50)
 
 class ToService(object):
     """Upload weather data to weather services such as Weather
@@ -222,6 +221,26 @@ class ToService(object):
         self.catchup = eval(service_params.get('config', 'catchup'))
         self.use_get = eval(service_params.get('config', 'use get'))
         self.expected_result = eval(service_params.get('config', 'result'))
+        self.interval = eval(service_params.get('config', 'interval'))
+        self.interval = max(self.interval, 40)
+        self.interval = timedelta(seconds=self.interval)
+        # get timestamp of last uploaded data
+        if self.catchup <= 0:
+            self.last_update = datetime.utcnow() - self.interval
+        else:
+            self.last_update = datetime.utcnow() - timedelta(days=self.catchup)
+        last_update = self.params.get_datetime(self.service_name, 'last update')
+        if last_update:
+            self.params.unset(self.service_name, 'last update')
+            self.status.set('last update', self.service_name,
+                            last_update.isoformat(' '))
+        last_update = self.status.get_datetime('last update', self.service_name)
+        if last_update:
+            self.last_update = max(self.last_update, last_update)
+        if self.parent:
+            last_update = self.status.get_datetime('last update', self.parent)
+            if last_update:
+                self.last_update = max(self.last_update, last_update)
 
     def encode_data(self, data):
         """Encode a weather data record.
@@ -293,19 +312,19 @@ class ToService(object):
                 self.old_ex = e
         return False
 
-    def next_data(self, start, live_data):
+    def next_data(self, catchup, live_data):
         """Get weather data records to upload.
 
         This method returns either the most recent weather data
-        record, or all records since a given datetime, according to
-        the value of :obj:`start`.
+        record, or all records since the last upload, according to
+        the value of :obj:`catchup`.
 
-        :param start: datetime of first record to get, or None to get
-         most recent data only.
+        :param catchup: ``True`` to get all records since last upload,
+         or ``False`` to get most recent data only.
 
-        :type start: datetime
+        :type catchup: boolean
 
-        :param live_data: a current 'live' data record, or None.
+        :param live_data: a current 'live' data record, or ``None``.
 
         :type live_data: dict
 
@@ -314,18 +333,22 @@ class ToService(object):
         :rtype: dict
         
         """
-        if not start:
-            if live_data:
-                start = datetime.max
-            else:
-                start = self.data.before(datetime.max)
+        if catchup:
+            start = self.last_update
+        else:
+            start = self.data.before(datetime.max)
         if live_data:
-            stop = live_data['idx'] - FIFTY_SECS
+            stop = live_data['idx'] - self.interval
         else:
             stop = None
+        next_update = self.last_update + self.interval
         for data in self.data[start:stop]:
-            yield data
-        if live_data:
+            if data['idx'] >= next_update:
+                self.last_update = data['idx']
+                next_update = self.last_update + self.interval
+                yield data
+        if live_data and live_data['idx'] >= next_update:
+            self.last_update = live_data['idx']
             yield live_data
 
     def set_status(self, timestamp):
@@ -336,29 +359,6 @@ class ToService(object):
             if last_update and last_update >= timestamp - FIVE_MINS:
                 self.status.set(
                     'last update', self.parent, timestamp.isoformat(' '))
-
-    def catchup_start(self):
-        """Get datetime of first 'catchup' record to send.
-
-        :rtype: datetime
-
-        """
-        if self.catchup <= 0:
-            return None
-        start = datetime.utcnow() - timedelta(days=self.catchup)
-        last_update = self.params.get_datetime(self.service_name, 'last update')
-        if last_update:
-            self.params.unset(self.service_name, 'last update')
-            self.status.set('last update', self.service_name,
-                            last_update.isoformat(' '))
-        last_update = self.status.get_datetime('last update', self.service_name)
-        if last_update:
-            start = max(start, last_update + FIFTY_SECS)
-        if self.parent:
-            last_update = self.status.get_datetime('last update', self.parent)
-            if last_update:
-                start = max(start, last_update + FIFTY_SECS)
-        return start
 
     def Upload(self, catchup=True, live_data=None):
         """Upload one or more weather data records.
@@ -379,12 +379,8 @@ class ToService(object):
         :rtype: bool
         
         """
-        if catchup:
-            start = self.catchup_start()
-        else:
-            start = None
         count = 0
-        for data in self.next_data(start, live_data):
+        for data in self.next_data(catchup, live_data):
             coded_data = self.encode_data(data)
             if not coded_data:
                 continue
