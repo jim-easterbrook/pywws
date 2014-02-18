@@ -248,49 +248,52 @@ class ToService(object):
                 result = max(result, last_parent)
         return result
 
-    def encode_data(self, data):
-        """Encode a weather data record.
+    def prepare_data(self, data):
+        """Prepare a weather data record.
 
         The :obj:`data` parameter contains the data to be encoded. It
         should be a 'calibrated' data record, as stored in
-        :class:`pywws.DataStore.calib_store`.
+        :class:`pywws.DataStore.calib_store`. The relevant data items
+        are extracted and converted to strings using a template, then
+        merged with the station's "fixed" data.
 
         :param data: the weather data record.
 
         :type data: dict
 
-        :return: urlencoded data.
+        :return: dict.
 
         :rtype: string
         
         """
-        # check we have enough data
-        if data['temp_out'] is None or data['hum_out'] is None:
+        # check we have external data
+        if data['temp_out'] is None:
             return None
         # convert data
-        coded_data = eval(self.templater.make_text(self.template_file, data))
-        coded_data.update(self.fixed_data)
-        return urllib.urlencode(coded_data)
+        prepared_data = eval(self.templater.make_text(self.template_file, data))
+        prepared_data.update(self.fixed_data)
+        return prepared_data
 
-    def send_data(self, timestamp, coded_data):
+    def send_data(self, timestamp, prepared_data):
         """Upload a weather data record.
 
-        The :obj:`coded_data` parameter contains the data to be uploaded.
-        It should be a urlencoded string.
+        The :obj:`prepared_data` parameter contains the data to be uploaded.
+        It should be a dictionary of string keys and string values.
 
         :param timestamp: the timestamp of the data to upload.
 
         :type timestamp: datetime
 
-        :param coded_data: the data to upload.
+        :param prepared_data: the data to upload.
 
-        :type coded_data: string
+        :type prepared_data: dict
 
         :return: success status
 
         :rtype: bool
         
         """
+        coded_data = urllib.urlencode(prepared_data)
         self.logger.debug(coded_data)
         try:
             try:
@@ -392,10 +395,10 @@ class ToService(object):
         """
         count = 0
         for data in self.next_data(catchup, live_data):
-            coded_data = self.encode_data(data)
-            if not coded_data:
+            prepared_data = self.prepare_data(data)
+            if not prepared_data:
                 continue
-            if not self.send_data(data['idx'], coded_data):
+            if not self.send_data(data['idx'], prepared_data):
                 return False
             count += 1
         if count > 1:

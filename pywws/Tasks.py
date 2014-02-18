@@ -140,11 +140,11 @@ class RegularTasks(object):
             service = self.services[name]
             count = 0
             while self.service_queue[name]:
-                timestamp, coded_data = self.service_queue[name][0]
+                timestamp, prepared_data = self.service_queue[name][0]
                 if len(self.service_queue[name]) > 1 and service.catchup <= 0:
                     # don't send queued 'catchup' records
                     pass
-                elif service.send_data(timestamp, coded_data):
+                elif service.send_data(timestamp, prepared_data):
                     count += 1
                 else:
                     break
@@ -310,10 +310,10 @@ class RegularTasks(object):
         if len(self.service_queue[name]) >= 50:
             return
         for data in service.next_data(True, live_data):
-            coded_data = service.encode_data(data)
-            if not coded_data:
+            prepared_data = service.prepare_data(data)
+            if not prepared_data:
                 continue
-            self.service_queue[name].append((data['idx'], coded_data))
+            self.service_queue[name].append((data['idx'], prepared_data))
             if len(self.service_queue[name]) >= 50:
                 break
         if self.asynch:
