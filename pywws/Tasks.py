@@ -24,7 +24,6 @@ from collections import deque
 from datetime import datetime, timedelta
 import logging
 import os
-import Queue
 import shutil
 import threading
 
@@ -92,80 +91,74 @@ class RegularTasks(object):
                     self.services[name] = ToService(
                         self.params, self.status, self.calib_data,
                         service_name=name)
-        if self.asynch:
-            self.service_queued = {}
-            for name in self.services:
-                self.service_queued[name] = 0
+        # create queues for things to upload / send
+        self.tweet_queue = deque()
+        self.service_queue = {}
+        for name in self.services:
+            self.service_queue[name] = deque()
+        self.uploads_queue = deque()
         # start asynchronous thread to do uploads
         if self.asynch:
             self.logger.info('Starting asynchronous thread')
-            self.uploads_lock = threading.Lock()
-            self.to_thread = Queue.Queue()
-            self.from_thread = Queue.Queue()
+            self.shutdown_thread = threading.Event()
+            self.wake_thread = threading.Event()
             self.thread = threading.Thread(target=self._asynch_thread)
             self.thread.start()
 
     def stop_thread(self):
         if not self.asynch:
             return
-        self.to_thread.put(('shutdown',))
+        self.shutdown_thread.set()
+        self.wake_thread.set()
         self.thread.join()
+        self.logger.debug('Asynchronous thread terminated')
 
     def _asynch_thread(self):
-        service_queue = {}
-        uploads_pending = True
-        tweet_queue = deque()
-        running = True
         try:
-            while running:
+            while not self.shutdown_thread.isSet():
                 timeout = 600
                 while True:
-                    try:
-                        command = self.to_thread.get(timeout=timeout)
-                    except Queue.Empty:
+                    self.wake_thread.wait(timeout)
+                    if not self.wake_thread.isSet():
+                        # main thread has stopped putting things on the queue
                         break
-                    if command[0] == 'shutdown':
-                        running = False
-                        break
-                    elif command[0] == 'upload':
-                        uploads_pending = True
-                    elif command[0] == 'twitter':
-                        tweet_queue.append(command[1])
-                    elif command[0] == 'service':
-                        name, timestamp, coded_data = command[1:]
-                        if name not in service_queue:
-                            service_queue[name] = deque()
-                        service_queue[name].append((timestamp, coded_data))
-                    timeout = 5
+                    self.wake_thread.clear()
+                    timeout = 2
                 self.logger.debug('Doing asynchronous tasks')
-                while tweet_queue:
-                    tweet = tweet_queue[0]
-                    self.logger.info("Tweeting")
-                    if self.twitter.Upload(tweet):
-                        tweet_queue.popleft()
-                for name in service_queue:
-                    count = 0
-                    while service_queue[name]:
-                        timestamp, coded_data = service_queue[name][0]
-                        if (len(service_queue[name]) > 1 and
-                                            self.services[name].catchup <= 0):
-                            # don't send 'catchup' records
-                            pass
-                        elif self.services[name].send_data(coded_data):
-                            count += 1
-                        else:
-                            break
-                        self.from_thread.put(('service', name, timestamp))
-                        service_queue[name].popleft()
-                    if count > 0:
-                        self.services[name].logger.info('%d records sent', count)
-                if uploads_pending:
-                    self.uploads_lock.acquire()
-                    if self._do_uploads():
-                        uploads_pending = False
-                    self.uploads_lock.release()
+                self._do_queued_tasks()
         except Exception, ex:
             self.logger.exception(ex)
+
+    def _do_queued_tasks(self):
+        while self.tweet_queue:
+            tweet = self.tweet_queue[0]
+            self.logger.info("Tweeting")
+            if not self.twitter.Upload(tweet):
+                break
+            self.tweet_queue.popleft()
+        for name in self.service_queue:
+            service = self.services[name]
+            count = 0
+            while self.service_queue[name]:
+                timestamp, coded_data = self.service_queue[name][0]
+                if len(self.service_queue[name]) > 1 and service.catchup <= 0:
+                    # don't send queued 'catchup' records
+                    pass
+                elif service.send_data(coded_data):
+                    service.set_status(timestamp)
+                    count += 1
+                else:
+                    break
+                self.service_queue[name].popleft()
+            if count > 0:
+                service.logger.info('%d records sent', count)
+        while self.uploads_queue:
+            file = self.uploads_queue.popleft()
+            targ = os.path.join(self.uploads_directory, os.path.basename(file))
+            if os.path.exists(targ):
+                os.unlink(targ)
+            shutil.move(file, self.uploads_directory)
+        self._do_uploads()
 
     def has_live_tasks(self):
         yowindow_file = self.params.get('live', 'yowindow', '')
@@ -189,7 +182,8 @@ class RegularTasks(object):
                 yield template, ''
 
     def _do_common(self, sections, live_data=None):
-        OK = True
+        if self.asynch and not self.thread.isAlive():
+            raise RuntimeError('Asynchronous thread terminated unexpectedly')
         for section in sections:
             yowindow_file = self.params.get(section, 'yowindow', '')
             if yowindow_file:
@@ -197,8 +191,7 @@ class RegularTasks(object):
                 break
         for section in sections:
             for template, flags in self._parse_templates(section, 'twitter'):
-                if not self.do_twitter(template):
-                    OK = False
+                self.do_twitter(template)
         uploads = []
         local_files = []
         service_done = []
@@ -209,8 +202,7 @@ class RegularTasks(object):
                     service_done.append(name)
             for template, flags in self._parse_templates(section, 'text'):
                 if 'T' in flags:
-                    if not self.do_twitter(template, live_data):
-                        OK = False
+                    self.do_twitter(template, live_data)
                     continue
                 upload = self.do_template(template, live_data)
                 if 'L' in flags:
@@ -236,37 +228,15 @@ class RegularTasks(object):
                 if os.path.exists(targ):
                     os.unlink(targ)
                 shutil.move(file, self.local_dir)
-        if uploads:
-            if self.asynch:
-                if not self.thread.isAlive():
-                    raise RuntimeError('upload thread has terminated')
-                self.uploads_lock.acquire()
-            for file in uploads:
-                targ = os.path.join(
-                    self.uploads_directory, os.path.basename(file))
-                if os.path.exists(targ):
-                    os.unlink(targ)
-                shutil.move(file, self.uploads_directory)
-            if self.asynch:
-                self.uploads_lock.release()
-                self.to_thread.put(('upload',))
-        if not self.asynch:
-            self._do_uploads()
+        for file in uploads:
+            self.uploads_queue.append(file)
         if self.asynch:
-            # process replies from thread
-            while True:
-                try:
-                    message = self.from_thread.get_nowait()
-                except Queue.Empty:
-                    break
-                if message[0] == 'service':
-                    name, timestamp = message[1:]
-                    self.services[name].set_status(timestamp)
-                    self.service_queued[name] -= 1
-        return OK
+            self.wake_thread.set()
+        else:
+            self._do_queued_tasks()
 
     def do_live(self, data):
-        return self._do_common(['live'], self.calibrator.calib(data))
+        self._do_common(['live'], self.calibrator.calib(data))
 
     def do_tasks(self):
         sections = ['logged']
@@ -305,10 +275,9 @@ class RegularTasks(object):
             if (not last_update) or (last_update < threshold):
                 # time to do daily tasks
                 sections.append('daily')
-        OK = self._do_common(sections)
-        if OK:
-            for section in sections:
-                self.status.set('last update', section, now.isoformat(' '))
+        self._do_common(sections)
+        for section in sections:
+            self.status.set('last update', section, now.isoformat(' '))
         if self.flush or 'hourly' in sections:
             # save any unsaved data
             self.params.flush()
@@ -318,9 +287,9 @@ class RegularTasks(object):
             self.hourly_data.flush()
             self.daily_data.flush()
             self.monthly_data.flush()
-        return OK
 
     def _do_uploads(self):
+        # get list of pending uploads
         uploads = []
         for name in os.listdir(self.uploads_directory):
             path = os.path.join(self.uploads_directory, name)
@@ -328,7 +297,7 @@ class RegularTasks(object):
                 uploads.append(path)
         if not uploads:
             return True
-        OK = True
+        # upload files
         self.uploader.connect()
         for path in uploads:
             if self.uploader.upload_file(path):
@@ -336,27 +305,25 @@ class RegularTasks(object):
             else:
                 OK = False
         self.uploader.disconnect()
-        return OK
 
     def _do_service(self, name, live_data):
         service = self.services[name]
-        if not self.asynch:
-            service.Upload(live_data=live_data)
-        if self.service_queued[name] >= 50:
+        if len(self.service_queue[name]) >= 50:
             return
         for data in service.next_data(True, live_data):
             coded_data = service.encode_data(data)
             if not coded_data:
                 continue
-            self.to_thread.put(('service', name, data['idx'], coded_data))
+            self.service_queue[name].append((data['idx'], coded_data))
             parent = service.parent
             if parent and parent in self.services:
                 parent = self.services[parent]
                 if parent.last_update >= data['idx'] - FIVE_MINS:
                     parent.last_update = data['idx']
-            self.service_queued[name] += 1
-            if self.service_queued[name] >= 50:
+            if len(self.service_queue[name]) >= 50:
                 break
+        if self.asynch:
+            self.wake_thread.set()
 
     def do_twitter(self, template, data=None):
         if not self.twitter:
@@ -365,12 +332,9 @@ class RegularTasks(object):
         self.logger.info("Templating %s", template)
         input_file = os.path.join(self.template_dir, template)
         tweet = self.templater.make_text(input_file, live_data=data)[:140]
+        self.tweet_queue.append(tweet)
         if self.asynch:
-            self.to_thread.put(('twitter', tweet))
-            return True
-        else:
-            self.logger.info("Tweeting")
-            return self.twitter.Upload(tweet)
+            self.wake_thread.set()
 
     def do_plot(self, template):
         self.logger.info("Graphing %s", template)
