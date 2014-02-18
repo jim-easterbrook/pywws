@@ -127,7 +127,7 @@ class ParamStore(object):
         with self._lock:
             if not self._config.has_option(section, option):
                 if default is not None:
-                    self.set(section, option, default)
+                    self._set(section, option, default)
                 return default
             return self._config.get(section, option)
 
@@ -140,13 +140,16 @@ class ParamStore(object):
     def set(self, section, option, value):
         """Set option in section to string value."""
         with self._lock:
-            if not self._config.has_section(section):
-                self._config.add_section(section)
-            elif (self._config.has_option(section, option) and
-                  self._config.get(section, option) == value):
-                return
-            self._config.set(section, option, value)
-            self._dirty = True
+            self._set(section, option, value)
+
+    def _set(self, section, option, value):
+        if not self._config.has_section(section):
+            self._config.add_section(section)
+        elif (self._config.has_option(section, option) and
+              self._config.get(section, option) == value):
+            return
+        self._config.set(section, option, value)
+        self._dirty = True
 
     def unset(self, section, option):
         """Remove option from section."""
