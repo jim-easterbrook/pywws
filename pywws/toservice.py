@@ -94,13 +94,13 @@ section, depending on how often you want to send data. For example::
     twitter = []
     plot = []
     text = []
-    services = ['underground_rf']
+    services = ['underground_rf', 'cwop']
 
     [logged]
     twitter = []
     plot = []
     text = []
-    services = ['metoffice', 'stacjapogodywawpl']
+    services = ['metoffice', 'cwop']
 
     [hourly]
     twitter = []
@@ -136,6 +136,7 @@ __doc__ %= __usage__
 __usage__ = __doc__.split('\n')[0] + __usage__
 
 from ConfigParser import SafeConfigParser
+from datetime import datetime, timedelta
 import getopt
 import logging
 import os
@@ -144,11 +145,12 @@ import socket
 import sys
 import urllib
 import urllib2
-from datetime import datetime, timedelta
+import urlparse
 
 from pywws import DataStore
 from pywws.Logger import ApplicationLogger
 from pywws import Template
+from pywws.version import version
 
 FIVE_MINS = timedelta(minutes=5)
 
@@ -200,6 +202,14 @@ class ToService(object):
             os.path.dirname(__file__), 'services', '%s.ini' % (self.service_name))))
         # get URL
         self.server = service_params.get('config', 'url')
+        parsed_url = urlparse.urlsplit(self.server)
+        if parsed_url.scheme == 'aprs':
+            self.send_data = self.aprs_send_data
+            self.server, self.port = parsed_url.netloc.split(':')
+            self.port = int(self.port)
+        else:
+            self.send_data = self.http_send_data
+            self.use_get = eval(service_params.get('config', 'use get'))
         # get fixed part of upload data
         self.fixed_data = dict()
         for name, value in service_params.items('fixed'):
@@ -219,7 +229,6 @@ class ToService(object):
                 '%s_template_1080.txt' % (config_section))
         # get other parameters
         self.catchup = eval(service_params.get('config', 'catchup'))
-        self.use_get = eval(service_params.get('config', 'use get'))
         self.expected_result = eval(service_params.get('config', 'result'))
         self.interval = eval(service_params.get('config', 'interval'))
         self.interval = max(self.interval, 40)
@@ -274,8 +283,58 @@ class ToService(object):
         prepared_data.update(self.fixed_data)
         return prepared_data
 
-    def send_data(self, timestamp, prepared_data):
-        """Upload a weather data record.
+    def aprs_send_data(self, timestamp, prepared_data):
+        """Upload a weather data record using APRS.
+
+        The :obj:`prepared_data` parameter contains the data to be uploaded.
+        It should be a dictionary of string keys and string values.
+
+        :param timestamp: the timestamp of the data to upload.
+
+        :type timestamp: datetime
+
+        :param prepared_data: the data to upload.
+
+        :type prepared_data: dict
+
+        :return: success status
+
+        :rtype: bool
+
+        """
+
+        login = 'user %s pass -1 vers pywws %s\n' % (
+            prepared_data['designator'], version)
+        packet = '%s>APRS,TCPIP*:@%sz%s/%s_%s/%sg%st%sr%sp...P%sb%sh%s\n' % (
+            prepared_data['designator'],   prepared_data['idx'],
+            prepared_data['latitude'],     prepared_data['longitude'],
+            prepared_data['wind_dir'],     prepared_data['wind_ave'],
+            prepared_data['wind_gust'],    prepared_data['temp_out'],
+            prepared_data['rain_hour'],    prepared_data['rain_day'],
+            prepared_data['rel_pressure'], prepared_data['hum_out'],
+            )
+        self.logger.debug('packet: "%s"', packet)
+        sock = socket.socket()
+        try:
+            sock.connect((self.server, self.port))
+            response = sock.recv(4096)
+            self.logger.debug('server software: %s', response.strip())
+            sock.sendall(login)
+            response = sock.recv(4096)
+            self.logger.debug('server login ack: %s', response.strip())
+            sock.sendall(packet)
+            sock.close()
+        except Exception, ex:
+            e = str(ex)
+            if e != self.old_ex:
+                self.logger.error(e)
+                self.old_ex = e
+            return False
+        self.set_last_update(timestamp)
+        return True
+
+    def http_send_data(self, timestamp, prepared_data):
+        """Upload a weather data record using HTTP.
 
         The :obj:`prepared_data` parameter contains the data to be uploaded.
         It should be a dictionary of string keys and string values.
@@ -359,8 +418,7 @@ class ToService(object):
         next_update = last_update + self.interval
         for data in self.data[start:stop]:
             if data['idx'] >= next_update:
-                last_update = data['idx']
-                next_update = last_update + self.interval
+                next_update = data['idx'] + self.interval
                 yield data
         if live_data and live_data['idx'] >= next_update:
             yield live_data

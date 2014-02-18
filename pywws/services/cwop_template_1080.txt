@@ -1,0 +1,30 @@
+#! pywws - Python software for USB Wireless Weather Stations                       #
+#! http://github.com/jim-easterbrook/pywws                                         #
+#! Copyright (C) 2008-13  Jim Easterbrook  jim@jim-easterbrook.me.uk               #
+#!                                                                                 #
+#! This program is free software; you can redistribute it and/or                   #
+#! modify it under the terms of the GNU General Public License                     #
+#! as published by the Free Software Foundation; either version 2                  #
+#! of the License, or (at your option) any later version.                          #
+#!                                                                                 #
+#! This program is distributed in the hope that it will be useful,                 #
+#! but WITHOUT ANY WARRANTY; without even the implied warranty of                  #
+#! MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                   #
+#! GNU General Public License for more details.                                    #
+#!                                                                                 #
+#! You should have received a copy of the GNU General Public License               #
+#! along with this program; if not, write to the Free Software                     #
+#! Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA. #
+#! This code based on contributions from Marco Trevisan <mail@3v1n0.net> #
+#live#
+{
+#idx          "'idx'          : '%H%M%S',"#
+#wind_dir     "'wind_dir'     : '%03.0f'," "'...'," "winddir_degrees(x)"#
+#wind_ave     "'wind_ave'     : '%03.0f'," "'...'," "wind_mph(x)"#
+#wind_gust    "'wind_gust'    : '%03.0f'," "'...'," "wind_mph(x)"#
+#temp_out     "'temp_out'     : '%03.0f'," "'...'," "temp_f(x)"#
+#hum_out      "'hum_out'      : '%02d',"   "'...'," "x % 100"#
+#rel_pressure "'rel_pressure' : '%05.0f'," "'...'," "x * 10.0"#
+#calc "100.0 * rain_inch(rain_hour(data))" "'rain_hour' : '%03.0f'," "'...',"#
+#calc "100.0 * rain_inch(rain_day(data))"  "'rain_day'  : '%03.0f'," "'...',"#
+}

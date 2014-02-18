@@ -57,6 +57,26 @@ The remaining weather service uploads are handled by the :py:mod:`pywws.toservic
 See the module's documentation for general configuration options.
 The following subsections give further information about some of the available services.
 
+Citizen Weather Observer Program
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+* Web site: http://www.wxqa.com/
+* Create account: http://www.wxqa.com/SIGN-UP.html
+* API: http://www.wxqa.com/faq.html
+* Example ``weather.ini`` section::
+
+    [cwop]
+    designator = EW9999
+    latitude = 5130.06N
+    longitude = 00008.52E
+
+Note that the latitude and longitude must be in "LORAN" format and leading zeros are required.
+See question 3 in the `CWOP FAQ <http://www.wxqa.com/faq.html>`_ for more information.
+
+CWOP uploads are rate-limited by pywws, so you can safely add it to both the ``[live]`` and ``[logged]`` sections in ``weather.ini``.
+
+The CWOP/APRS uploader is based on code by Marco Trevisan <mail@3v1n0.net>.
+
 UK Met Office
 ^^^^^^^^^^^^^
 
