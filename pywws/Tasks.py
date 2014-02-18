@@ -31,7 +31,7 @@ from pywws.calib import Calib
 from pywws import Plot
 from pywws import Template
 from pywws.TimeZone import STDOFFSET
-from pywws.toservice import ToService, FIVE_MINS
+from pywws.toservice import ToService
 from pywws import Upload
 from pywws import WindRose
 from pywws import YoWindow
@@ -144,8 +144,7 @@ class RegularTasks(object):
                 if len(self.service_queue[name]) > 1 and service.catchup <= 0:
                     # don't send queued 'catchup' records
                     pass
-                elif service.send_data(coded_data):
-                    service.set_status(timestamp)
+                elif service.send_data(timestamp, coded_data):
                     count += 1
                 else:
                     break
@@ -315,11 +314,6 @@ class RegularTasks(object):
             if not coded_data:
                 continue
             self.service_queue[name].append((data['idx'], coded_data))
-            parent = service.parent
-            if parent and parent in self.services:
-                parent = self.services[parent]
-                if parent.last_update >= data['idx'] - FIVE_MINS:
-                    parent.last_update = data['idx']
             if len(self.service_queue[name]) >= 50:
                 break
         if self.asynch:

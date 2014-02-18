@@ -224,23 +224,29 @@ class ToService(object):
         self.interval = eval(service_params.get('config', 'interval'))
         self.interval = max(self.interval, 40)
         self.interval = timedelta(seconds=self.interval)
-        # get timestamp of last uploaded data
-        if self.catchup <= 0:
-            self.last_update = datetime.utcnow() - self.interval
-        else:
-            self.last_update = datetime.utcnow() - timedelta(days=self.catchup)
+        # move 'last update' from params to status
         last_update = self.params.get_datetime(self.service_name, 'last update')
         if last_update:
             self.params.unset(self.service_name, 'last update')
-            self.status.set('last update', self.service_name,
-                            last_update.isoformat(' '))
-        last_update = self.status.get_datetime('last update', self.service_name)
-        if last_update:
-            self.last_update = max(self.last_update, last_update)
+            self.status.set(
+                'last update', self.service_name, last_update.isoformat(' '))
+        # set timestamp of first data to upload
+        if self.catchup <= 0:
+            last_update = datetime.utcnow() - self.interval
+        else:
+            last_update = datetime.utcnow() - timedelta(days=self.catchup)
+        if last_update > self.get_last_update():
+            self.set_last_update(last_update)
+
+    def get_last_update(self):
+        result = self.status.get_datetime('last update', self.service_name)
+        if not result:
+            result = datetime.min
         if self.parent:
-            last_update = self.status.get_datetime('last update', self.parent)
-            if last_update:
-                self.last_update = max(self.last_update, last_update)
+            last_parent = self.status.get_datetime('last update', self.parent)
+            if last_parent:
+                result = max(result, last_parent)
+        return result
 
     def encode_data(self, data):
         """Encode a weather data record.
@@ -266,15 +272,19 @@ class ToService(object):
         coded_data.update(self.fixed_data)
         return urllib.urlencode(coded_data)
 
-    def send_data(self, coded_data):
+    def send_data(self, timestamp, coded_data):
         """Upload a weather data record.
 
         The :obj:`coded_data` parameter contains the data to be uploaded.
         It should be a urlencoded string.
 
+        :param timestamp: the timestamp of the data to upload.
+
+        :type timestamp: datetime
+
         :param coded_data: the data to upload.
 
-        :type data: string
+        :type coded_data: string
 
         :return: success status
 
@@ -300,6 +310,7 @@ class ToService(object):
                         break
                 else:
                     self.old_response = response
+                    self.set_last_update(timestamp)
                     return True
             if response != self.old_response:
                 for line in response:
@@ -333,25 +344,25 @@ class ToService(object):
         :rtype: dict
         
         """
+        last_update = self.get_last_update()
         if catchup:
-            start = self.last_update
+            start = last_update
         else:
             start = self.data.before(datetime.max)
         if live_data:
             stop = live_data['idx'] - self.interval
         else:
             stop = None
-        next_update = self.last_update + self.interval
+        next_update = last_update + self.interval
         for data in self.data[start:stop]:
             if data['idx'] >= next_update:
-                self.last_update = data['idx']
-                next_update = self.last_update + self.interval
+                last_update = data['idx']
+                next_update = last_update + self.interval
                 yield data
         if live_data and live_data['idx'] >= next_update:
-            self.last_update = live_data['idx']
             yield live_data
 
-    def set_status(self, timestamp):
+    def set_last_update(self, timestamp):
         self.status.set(
             'last update', self.service_name, timestamp.isoformat(' '))
         if self.parent:
@@ -384,9 +395,8 @@ class ToService(object):
             coded_data = self.encode_data(data)
             if not coded_data:
                 continue
-            if not self.send_data(coded_data):
+            if not self.send_data(data['idx'], coded_data):
                 return False
-            self.set_status(data['idx'])
             count += 1
         if count > 1:
             self.logger.info('%d records sent', count)
