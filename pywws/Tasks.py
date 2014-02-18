@@ -297,12 +297,11 @@ class RegularTasks(object):
         if not uploads:
             return True
         # upload files
-        self.uploader.connect()
+        if not self.uploader.connect():
+            return
         for path in uploads:
             if self.uploader.upload_file(path):
                 os.unlink(path)
-            else:
-                OK = False
         self.uploader.disconnect()
 
     def _do_service(self, name, live_data):
