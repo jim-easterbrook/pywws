@@ -2,7 +2,7 @@
 
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-13  Jim Easterbrook  jim@jim-easterbrook.me.uk
+# Copyright (C) 2008-14  Jim Easterbrook  jim@jim-easterbrook.me.uk
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -251,7 +251,6 @@ from pywws.conversions import *
 from pywws import DataStore
 from pywws import Localisation
 from pywws.Plot import BasePlotter
-from pywws.TimeZone import Local
 
 class RosePlotter(BasePlotter):
     def GetPlotList(self):
@@ -312,7 +311,7 @@ unset raxis
         stop = stop + timedelta(minutes=1)
         for data in source[start:stop]:
             wind_dir = data['wind_dir']
-            if wind_dir == None or wind_dir >= 16:
+            if wind_dir is None:
                 continue
             if not eval(xcalc):
                 continue
