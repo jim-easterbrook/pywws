@@ -152,7 +152,7 @@ from pywws.Logger import ApplicationLogger
 from pywws import Template
 from pywws.version import version
 
-FIVE_MINS = timedelta(minutes=5)
+PARENT_MARGIN = timedelta(minutes=2)
 
 class ToService(object):
     """Upload weather data to weather services such as Weather
@@ -251,10 +251,6 @@ class ToService(object):
         result = self.status.get_datetime('last update', self.service_name)
         if not result:
             result = datetime.min
-        if self.parent:
-            last_parent = self.status.get_datetime('last update', self.parent)
-            if last_parent:
-                result = max(result, last_parent)
         return result
 
     def prepare_data(self, data):
@@ -428,9 +424,9 @@ class ToService(object):
             'last update', self.service_name, timestamp.isoformat(' '))
         if self.parent:
             last_update = self.status.get_datetime('last update', self.parent)
-            if last_update and last_update >= timestamp - FIVE_MINS:
-                self.status.set(
-                    'last update', self.parent, timestamp.isoformat(' '))
+            if last_update and last_update >= timestamp - PARENT_MARGIN:
+                self.status.set('last update', self.parent,
+                                (timestamp + PARENT_MARGIN).isoformat(' '))
 
     def Upload(self, catchup=True, live_data=None):
         """Upload one or more weather data records.
