@@ -91,6 +91,13 @@ class RegularTasks(object):
                     self.services[name] = ToService(
                         self.params, self.status, self.calib_data,
                         service_name=name)
+            # check for deprecated syntax
+            if self.params.get(section, 'twitter') not in (None, '[]'):
+                self.logger.warning(
+                    'Deprecated twitter entry in [%s]', section)
+            if self.params.get(section, 'yowindow'):
+                self.logger.warning(
+                    'Deprecated yowindow entry in [%s]', section)
         # create queues for things to upload / send
         self.tweet_queue = deque()
         self.service_queue = {}
@@ -160,10 +167,10 @@ class RegularTasks(object):
         self._do_uploads()
 
     def has_live_tasks(self):
-        yowindow_file = self.params.get('live', 'yowindow', '')
+        yowindow_file = self.params.get('live', 'yowindow')
         if yowindow_file:
             return True
-        for template in eval(self.params.get('live', 'twitter', '[]')):
+        if self.params.get('live', 'twitter') not in (None, '[]'):
             return True
         for name in eval(self.params.get('live', 'services', '[]')):
             return True
@@ -184,13 +191,15 @@ class RegularTasks(object):
         if self.asynch and not self.thread.isAlive():
             raise RuntimeError('Asynchronous thread terminated unexpectedly')
         for section in sections:
-            yowindow_file = self.params.get(section, 'yowindow', '')
+            yowindow_file = self.params.get(section, 'yowindow')
             if yowindow_file:
                 self.yowindow.write_file(yowindow_file)
                 break
         for section in sections:
-            for template, flags in self._parse_templates(section, 'twitter'):
-                self.do_twitter(template)
+            templates = self.params.get(section, 'twitter')
+            if templates not in (None, '[]'):
+                for template in eval(templates):
+                    self.do_twitter(template)
         uploads = []
         local_files = []
         service_done = []
