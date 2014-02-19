@@ -77,6 +77,8 @@ CWOP uploads are rate-limited by pywws, so you can safely add it to both the ``[
 
 The CWOP/APRS uploader is based on code by Marco Trevisan <mail@3v1n0.net>.
 
+.. versionadded:: 14.02.dev1156
+
 UK Met Office
 ^^^^^^^^^^^^^
 
