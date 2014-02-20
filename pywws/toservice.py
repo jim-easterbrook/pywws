@@ -240,18 +240,7 @@ class ToService(object):
             self.status.set(
                 'last update', self.service_name, last_update.isoformat(' '))
         # set timestamp of first data to upload
-        if self.catchup <= 0:
-            last_update = datetime.utcnow() - self.interval
-        else:
-            last_update = datetime.utcnow() - timedelta(days=self.catchup)
-        if last_update > self.get_last_update():
-            self.set_last_update(last_update)
-
-    def get_last_update(self):
-        result = self.status.get_datetime('last update', self.service_name)
-        if not result:
-            result = datetime.min
-        return result
+        self.next_update = datetime.utcnow() - timedelta(days=self.catchup)
 
     def prepare_data(self, data):
         """Prepare a weather data record.
@@ -402,21 +391,24 @@ class ToService(object):
         :rtype: dict
         
         """
-        last_update = self.get_last_update()
+        last_update = self.status.get_datetime('last update', self.service_name)
+        if last_update:
+            self.next_update = max(self.next_update,
+                                   last_update + self.interval)
         if catchup:
-            start = last_update
+            start = self.next_update
         else:
             start = self.data.before(datetime.max)
         if live_data:
             stop = live_data['idx'] - self.interval
         else:
             stop = None
-        next_update = last_update + self.interval
         for data in self.data[start:stop]:
-            if data['idx'] >= next_update:
-                next_update = data['idx'] + self.interval
+            if data['idx'] >= self.next_update:
+                self.next_update = data['idx'] + self.interval
                 yield data
-        if live_data and live_data['idx'] >= next_update:
+        if live_data and live_data['idx'] >= self.next_update:
+            self.next_update = live_data['idx'] + self.interval
             yield live_data
 
     def set_last_update(self, timestamp):
