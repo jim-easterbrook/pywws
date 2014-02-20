@@ -1,6 +1,6 @@
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-13  Jim Easterbrook  jim@jim-easterbrook.me.uk
+# Copyright (C) 2008-14  Jim Easterbrook  jim@jim-easterbrook.me.uk
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -28,9 +28,6 @@ class Calib(object):
 
     def calib(self, raw):
         result = dict(raw)
-        # sanitise data
-        if result['wind_dir'] is not None and result['wind_dir'] >= 16:
-            result['wind_dir'] = None
         # set relative pressure and tweak temperature and humidity to make old
         # and new stations closer
         if result['idx'] > self.new_station:

@@ -1,6 +1,6 @@
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-13  Jim Easterbrook  jim@jim-easterbrook.me.uk
+# Copyright (C) 2008-14  Jim Easterbrook  jim@jim-easterbrook.me.uk
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -25,11 +25,8 @@ part of the 'processing' step (see :doc:`pywws.Process`). For example,
 if you have fitted a funnel to double your rain gauge's collection
 area, you can write a calibration routine to double the rain value.
 
-The default calibration does two things:
-    #. Generate relative atmospheric pressure.
-    #. Remove invalid wind direction values.
-
-Any user calibration you write must also do these.
+The default calibration generates the relative atmospheric pressure.
+Any user calibration you write must also do this.
 
 Writing your calibration module
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -49,11 +46,8 @@ you can create a plain text file in your ``modules`` directory, e.g.
 
         def calib(self, raw):
             result = dict(raw)
-            # sanitise data
-            if result['wind_dir'] is not None and result['wind_dir'] >= 16:
-                result['wind_dir'] = None
             # calculate relative pressure
-            result['rel_pressure'] = raw['abs_pressure'] + self.pressure_offset
+            result['rel_pressure'] = result['abs_pressure'] + self.pressure_offset
             return result
 
 The :class:`Calib` class has two methods. :py:meth:`Calib.__init__` is
@@ -97,8 +91,8 @@ class DefaultCalib(object):
     """Default calibration class.
 
     This class sets the relative pressure, using a pressure offset
-    originally read from the weather station, and 'sanitises' the wind
-    direction value. This is the bare minimum 'calibration' required.
+    originally read from the weather station. This is the bare minimum
+    'calibration' required.
 
     """
     def __init__(self, params, stored_data):
@@ -106,11 +100,8 @@ class DefaultCalib(object):
 
     def calib(self, raw):
         result = dict(raw)
-        # sanitise data
-        if result['wind_dir'] is not None and result['wind_dir'] >= 16:
-            result['wind_dir'] = None
         # calculate relative pressure
-        result['rel_pressure'] = raw['abs_pressure'] + self.pressure_offset
+        result['rel_pressure'] = result['abs_pressure'] + self.pressure_offset
         return result
 
 usercalib = None
