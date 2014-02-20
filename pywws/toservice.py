@@ -205,8 +205,8 @@ class ToService(object):
         parsed_url = urlparse.urlsplit(self.server)
         if parsed_url.scheme == 'aprs':
             self.send_data = self.aprs_send_data
-            self.server, self.port = parsed_url.netloc.split(':')
-            self.port = int(self.port)
+            server, port = parsed_url.netloc.split(':')
+            self.server = (server, int(port))
         else:
             self.send_data = self.http_send_data
             self.use_get = eval(service_params.get('config', 'use get'))
@@ -288,8 +288,8 @@ class ToService(object):
 
         """
 
-        login = 'user %s pass -1 vers pywws %s\n' % (
-            prepared_data['designator'], version)
+        login = 'user %s pass %s vers pywws %s\n' % (
+            prepared_data['designator'], prepared_data['passcode'], version)
         packet = '%s>APRS,TCPIP*:@%sz%s/%s_%s/%sg%st%sr%sp...P%sb%sh%s\n' % (
             prepared_data['designator'],   prepared_data['idx'],
             prepared_data['latitude'],     prepared_data['longitude'],
@@ -301,14 +301,17 @@ class ToService(object):
         self.logger.debug('packet: "%s"', packet)
         sock = socket.socket()
         try:
-            sock.connect((self.server, self.port))
-            response = sock.recv(4096)
-            self.logger.debug('server software: %s', response.strip())
-            sock.sendall(login)
-            response = sock.recv(4096)
-            self.logger.debug('server login ack: %s', response.strip())
-            sock.sendall(packet)
-            sock.close()
+            sock.connect(self.server)
+            try:
+                response = sock.recv(4096)
+                self.logger.debug('server software: %s', response.strip())
+                sock.sendall(login)
+                response = sock.recv(4096)
+                self.logger.debug('server login ack: %s', response.strip())
+                sock.sendall(packet)
+                sock.shutdown(socket.SHUT_RDWR)
+            finally:
+                sock.close()
         except Exception, ex:
             e = str(ex)
             if e != self.old_ex:
