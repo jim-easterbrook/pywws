@@ -70,8 +70,19 @@ Citizen Weather Observer Program
     latitude = 5130.06N
     longitude = 00008.52E
 
+  or, for radio hams::
+
+    [cwop]
+    designator = G4XXX
+    passcode = xxxxxx
+    latitude = 5130.06N
+    longitude = 00008.52E
+
 Note that the latitude and longitude must be in "LORAN" format and leading zeros are required.
 See question 3 in the `CWOP FAQ <http://www.wxqa.com/faq.html>`_ for more information.
+
+Licensed radio hams use their callsign as the designator and need a passcode.
+They should use the service name ``cwop_ham`` instead of ``cwop``.
 
 CWOP uploads are rate-limited by pywws, so you can safely add it to both the ``[live]`` and ``[logged]`` sections in ``weather.ini``.
 
