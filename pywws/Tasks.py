@@ -342,10 +342,14 @@ class RegularTasks(object):
         self.logger.info("Graphing %s", template)
         input_file = os.path.join(self.graph_template_dir, template)
         output_file = os.path.join(self.work_dir, os.path.splitext(template)[0])
-        if self.plotter.DoPlot(input_file, output_file) == 0:
+        input_xml = Plot.GraphFileReader(input_file)
+        if (input_xml.get_children(self.plotter.plot_name) and
+                        self.plotter.DoPlot(input_xml, output_file) == 0):
             return output_file
-        elif self.roseplotter.DoPlot(input_file, output_file) == 0:
+        if (input_xml.get_children(self.roseplotter.plot_name) and
+                        self.roseplotter.DoPlot(input_xml, output_file) == 0):
             return output_file
+        self.logger.warning('nothing to graph in %s', input_file)
         return None
 
     def do_template(self, template, data=None):

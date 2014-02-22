@@ -3,7 +3,7 @@
 
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-13  Jim Easterbrook  jim@jim-easterbrook.me.uk
+# Copyright (C) 2008-14  Jim Easterbrook  jim@jim-easterbrook.me.uk
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -457,6 +457,38 @@ from pywws import Localisation
 from pywws.Logger import ApplicationLogger
 from pywws.TimeZone import Local
 
+class GraphNode(object):
+    def __init__(self, node):
+        self.node = node
+
+    def get_children(self, name):
+        result = []
+        for child in self.node.childNodes:
+            if child.localName == name:
+                result.append(GraphNode(child))
+        return result
+
+    def get_value(self, name, default):
+        for child in self.node.childNodes:
+            if child.localName == name:
+                if child.childNodes:
+                    return child.childNodes[0].data.strip()
+                else:
+                    return ''
+        return default
+
+class GraphFileReader(GraphNode):
+    def __init__(self, input_file):
+        self.input_file = input_file
+        self.doc = GraphNode(xml.dom.minidom.parse(input_file))
+        graphs = self.doc.get_children('graph')
+        if not graphs:
+            raise RuntimeError('%s has no graph node' % input_file)
+        GraphNode.__init__(self, graphs[0].node)
+
+    def close(self):
+        self.doc.node.unlink()
+
 class BasePlotter(object):
     def __init__(self, params, status, raw_data, hourly_data,
                  daily_data, monthly_data, work_dir):
@@ -476,26 +508,23 @@ class BasePlotter(object):
             os.makedirs(self.work_dir)
 
     def DoPlot(self, input_file, output_file):
-        # read XML graph description
-        self.doc = xml.dom.minidom.parse(input_file)
-        self.graph = self.GetChildren(self.doc, 'graph')
-        if not self.graph:
-            self.logger.error('%s has no graph node' % input_file)
-            self.doc.unlink()
-            return 1
-        self.graph = self.graph[0]
+        if isinstance(input_file, GraphFileReader):
+            self.graph = input_file
+        else:
+            # read XML graph description
+            self.graph = GraphFileReader(input_file)
         # get list of plots
-        plot_list = self.GetPlotList()
+        plot_list = self.graph.get_children(self.plot_name)
         self.plot_count = len(plot_list)
         if self.plot_count < 1:
             # nothing to plot
-            self.logger.info('%s has no plot nodes' % input_file)
-            self.doc.unlink()
+            self.logger.info('%s has no %s nodes', self.graph.input_file, self.plot_name)
+            self.graph.close()
             return 1
         # get start and end datetimes
-        self.x_lo = self.GetValue(self.graph, 'start', None)
-        self.x_hi = self.GetValue(self.graph, 'stop', None)
-        self.duration = self.GetValue(self.graph, 'duration', None)
+        self.x_lo = self.graph.get_value('start', None)
+        self.x_hi = self.graph.get_value('stop', None)
+        self.duration = self.graph.get_value('duration', None)
         if self.duration:
             self.duration = eval('timedelta(%s)' % self.duration)
         else:
@@ -531,19 +560,19 @@ class BasePlotter(object):
         # write gnuplot set up
         self.rows = self.GetDefaultRows()
         self.cols = (self.plot_count + self.rows - 1) // self.rows
-        self.rows, self.cols = eval(self.GetValue(
-            self.graph, 'layout', '%d, %d' % (self.rows, self.cols)))
+        self.rows, self.cols = eval(self.graph.get_value(
+            'layout', '%d, %d' % (self.rows, self.cols)))
         w, h = self.GetDefaultPlotSize()
         w = w * self.cols
         h = h * self.rows
-        w, h = eval(self.GetValue(self.graph, 'size', '(%d, %d)' % (w, h)))
-        fileformat = self.GetValue(self.graph, 'fileformat', 'png')
+        w, h = eval(self.graph.get_value('size', '(%d, %d)' % (w, h)))
+        fileformat = self.graph.get_value('fileformat', 'png')
         if fileformat == 'svg':
             terminal = '%s enhanced font "arial,9" size %d,%d dynamic rounded' % (
                 fileformat, w, h)
         else:
             terminal = '%s large size %d,%d' % (fileformat, w, h)
-        terminal = self.GetValue(self.graph, 'terminal', terminal)
+        terminal = self.graph.get_value('terminal', terminal)
         of.write('set encoding %s\n' % (self.encoding))
         lcl = locale.getlocale()
         if lcl[0]:
@@ -551,7 +580,7 @@ class BasePlotter(object):
         of.write('set terminal %s\n' % (terminal))
         of.write('set output "%s"\n' % (output_file))
         # set overall title
-        title = self.GetValue(self.graph, 'title', '')
+        title = self.graph.get_value('title', '')
         if title:
             if sys.version_info[0] < 3:
                 title = title.encode(self.encoding)
@@ -562,33 +591,33 @@ class BasePlotter(object):
         for plot_no in range(self.plot_count):
             plot = plot_list[plot_no]
             # set key / title location
-            title = self.GetValue(plot, 'title', '')
+            title = plot.get_value('title', '')
             if sys.version_info[0] < 3:
                 title = title.encode(self.encoding)
             of.write('set key horizontal title "%s"\n' % title)
             # optional yaxis labels
-            ylabel = self.GetValue(plot, 'ylabel', '')
+            ylabel = plot.get_value('ylabel', '')
             if ylabel:
                 if sys.version_info[0] < 3:
                     ylabel = ylabel.encode(self.encoding)
-                ylabelangle = self.GetValue(plot, 'ylabelangle', '')
+                ylabelangle = plot.get_value('ylabelangle', '')
                 if ylabelangle:
                     ylabelangle = ' rotate by %s' % (ylabelangle)
                 of.write('set ylabel "%s"%s\n' % (ylabel, ylabelangle))
             else:
                 of.write('set ylabel\n')
-            y2label = self.GetValue(plot, 'y2label', '')
+            y2label = plot.get_value('y2label', '')
             if y2label:
                 if sys.version_info[0] < 3:
                     y2label = y2label.encode(self.encoding)
-                y2labelangle = self.GetValue(plot, 'y2labelangle', '')
+                y2labelangle = plot.get_value('y2labelangle', '')
                 if y2labelangle:
                     y2labelangle = ' rotate by %s' % (y2labelangle)
                 of.write('set y2label "%s"%s\n' % (y2label, y2labelangle))
             else:
                 of.write('set y2label\n')
             # set data source
-            source = self.GetValue(plot, 'source', 'raw')
+            source = plot.get_value('source', 'raw')
             if source == 'raw':
                 source = self.raw_data
             elif source == 'hourly':
@@ -600,36 +629,18 @@ class BasePlotter(object):
             # do the plot
             of.write(self.PlotData(plot_no, plot, source))
         of.close()
-        self.doc.unlink()
+        self.graph.close()
         # run gnuplot on file
         subprocess.check_call(['gnuplot', cmd_file])
         for file in self.tmp_files:
             os.unlink(file)
         return 0
 
-    def GetChildren(self, node, name):
-        result = []
-        for child in node.childNodes:
-            if child.localName == name:
-                result.append(child)
-        return result
-
-    def GetValue(self, node, name, default):
-        for child in node.childNodes:
-            if child.localName == name:
-                if child.childNodes:
-                    return child.childNodes[0].data.strip()
-                else:
-                    return ''
-        return default
-
 class Record(object):
     pass
 
 class GraphPlotter(BasePlotter):
-    def GetPlotList(self):
-        return self.GetChildren(self.graph, 'plot')
-
+    plot_name = 'plot'
     def GetDefaultRows(self):
         return self.plot_count
 
@@ -643,9 +654,9 @@ set timefmt "%Y-%m-%dT%H:%M:%S"
 """
         result += 'set xrange ["%s":"%s"]\n' % (
             self.x_lo.isoformat(), self.x_hi.isoformat())
-        lmargin = eval(self.GetValue(self.graph, 'lmargin', '5'))
+        lmargin = eval(self.graph.get_value('lmargin', '5'))
         result += 'set lmargin %g\n' % (lmargin)
-        rmargin = eval(self.GetValue(self.graph, 'rmargin', '-1'))
+        rmargin = eval(self.graph.get_value('rmargin', '-1'))
         result += 'set rmargin %g\n' % (rmargin)
         if self.duration <= timedelta(hours=24):
             xformat = '%H%M'
@@ -653,9 +664,9 @@ set timefmt "%Y-%m-%dT%H:%M:%S"
             xformat = '%a %d'
         else:
             xformat = '%Y/%m/%d'
-        xformat = self.GetValue(self.graph, 'xformat', xformat)
+        xformat = self.graph.get_value('xformat', xformat)
         result += 'set format x "%s"\n' % xformat
-        xtics = self.GetValue(self.graph, 'xtics', None)
+        xtics = self.graph.get_value('xtics', None)
         if xtics:
             result += 'set xtics %d\n' % (eval(xtics) * 3600)
         if sys.version_info[0] < 3:
@@ -664,7 +675,7 @@ set timefmt "%Y-%m-%dT%H:%M:%S"
 
     def PlotData(self, plot_no, plot, source):
         _ = Localisation.translation.ugettext
-        subplot_list = self.GetChildren(plot, 'subplot')
+        subplot_list = plot.get_children('subplot')
         subplot_count = len(subplot_list)
         if subplot_count < 1:
             return ''
@@ -678,13 +689,13 @@ set timefmt "%Y-%m-%dT%H:%M:%S"
                 xlabel = _('Day')
             else:
                 xlabel = _('Date')
-            xlabel = self.GetValue(self.graph, 'xlabel', xlabel)
+            xlabel = self.graph.get_value('xlabel', xlabel)
             if sys.version_info[0] < 3:
                 xlabel = xlabel.encode(self.encoding)
             result += 'set xlabel "%s"\n' % (
                 self.x_hi.replace(tzinfo=Local).strftime(xlabel))
             dateformat = '%Y/%m/%d'
-            dateformat = self.GetValue(self.graph, 'dateformat', dateformat)
+            dateformat = self.graph.get_value('dateformat', dateformat)
             if sys.version_info[0] < 3:
                 dateformat = dateformat.encode(self.encoding)
             ldat = self.x_lo.replace(tzinfo=Local).strftime(dateformat)
@@ -696,13 +707,13 @@ set timefmt "%Y-%m-%dT%H:%M:%S"
                 result += 'set label "%s" at "%s", graph -0.3 right\n' % (
                     rdat, self.x_hi.isoformat())
         # set bottom margin
-        bmargin = eval(self.GetValue(plot, 'bmargin', '-1'))
+        bmargin = eval(plot.get_value('bmargin', '-1'))
         result += 'set bmargin %g\n' % (bmargin)
         # set y ranges and tics
-        yrange = self.GetValue(plot, 'yrange', None)
-        y2range = self.GetValue(plot, 'y2range', None)
-        ytics = self.GetValue(plot, 'ytics', 'autofreq')
-        y2tics = self.GetValue(plot, 'y2tics', '')
+        yrange = plot.get_value('yrange', None)
+        y2range = plot.get_value('y2range', None)
+        ytics = plot.get_value('ytics', 'autofreq')
+        y2tics = plot.get_value('y2tics', '')
         if y2tics and not y2range:
             y2range = yrange
         elif y2range and not y2tics:
@@ -719,7 +730,7 @@ set timefmt "%Y-%m-%dT%H:%M:%S"
             result += 'unset y2tics; set ytics mirror %s\n' % (ytics)
         # set grid
         result += 'unset grid\n'
-        grid = self.GetValue(plot, 'grid', None)
+        grid = plot.get_value('grid', None)
         if grid is not None:
             result += 'set grid %s\n' % grid
         # x_lo & x_hi are in local time, data is indexed in UTC
@@ -739,9 +750,9 @@ set timefmt "%Y-%m-%dT%H:%M:%S"
         else:
             interval = timedelta(hours=36)
             boxwidth = 2800 * 24
-        boxwidth = eval(self.GetValue(plot, 'boxwidth', str(boxwidth)))
+        boxwidth = eval(plot.get_value('boxwidth', str(boxwidth)))
         result += 'set boxwidth %d\n' % boxwidth
-        command = self.GetValue(plot, 'command', None)
+        command = plot.get_value('command', None)
         if command:
             result += '%s\n' % command
         stop = source.after(stop)
@@ -756,8 +767,8 @@ set timefmt "%Y-%m-%dT%H:%M:%S"
                 plot_no, subplot_no))
             self.tmp_files.append(subplot.dat_file)
             subplot.dat = open(subplot.dat_file, 'w')
-            subplot.xcalc = self.GetValue(subplot.subplot, 'xcalc', None)
-            subplot.ycalc = self.GetValue(subplot.subplot, 'ycalc', None)
+            subplot.xcalc = subplot.subplot.get_value('xcalc', None)
+            subplot.ycalc = subplot.subplot.get_value('ycalc', None)
             subplot.cummulative = 'last_ycalc' in subplot.ycalc
             if subplot.xcalc:
                 subplot.xcalc = compile(subplot.xcalc, '<string>', 'eval')
@@ -803,9 +814,9 @@ set timefmt "%Y-%m-%dT%H:%M:%S"
         colour = 0
         for subplot_no in range(subplot_count):
             subplot = subplots[subplot_no]
-            colour = eval(self.GetValue(subplot.subplot, 'colour', str(colour+1)))
-            style = self.GetValue(
-                subplot.subplot, 'style', 'smooth unique lc %d lw 1' % (colour))
+            colour = eval(subplot.subplot.get_value('colour', str(colour+1)))
+            style = subplot.subplot.get_value(
+                'style', 'smooth unique lc %d lw 1' % (colour))
             words = style.split()
             if len(words) > 1 and words[0] in ('+', 'x', 'line'):
                 width = int(words[1])
@@ -819,8 +830,8 @@ set timefmt "%Y-%m-%dT%H:%M:%S"
                 style = 'lc %d lw %d pt 2 with points' % (colour, width)
             elif words[0] == 'line':
                 style = 'smooth unique lc %d lw %d' % (colour, width)
-            axes = self.GetValue(subplot.subplot, 'axes', 'x1y1')
-            title = self.GetValue(subplot.subplot, 'title', '')
+            axes = subplot.subplot.get_value('axes', 'x1y1')
+            title = subplot.subplot.get_value('title', '')
             result += ' "%s" using 1:($2) axes %s title "%s" %s' % (
                 subplot.dat_file, axes, title, style)
             if subplot_no != subplot_count - 1:
@@ -849,7 +860,7 @@ def main(argv=None):
         print >>sys.stderr, 'Error: 4 arguments required\n'
         print >>sys.stderr, __usage__.strip()
         return 2
-    logger = ApplicationLogger(1)
+    logger = ApplicationLogger(2)
     params = DataStore.params(args[0])
     status = DataStore.status(args[0])
     Localisation.SetApplicationLanguage(params)
@@ -858,7 +869,7 @@ def main(argv=None):
         DataStore.calib_store(args[0]), DataStore.hourly_store(args[0]),
         DataStore.daily_store(args[0]), DataStore.monthly_store(args[0]),
         args[1]
-        ).DoPlot(args[2], args[3])
+        ).DoPlot(GraphFileReader(args[2]), args[3])
 
 if __name__ == "__main__":
     sys.exit(main())

@@ -250,12 +250,11 @@ import xml.dom.minidom
 from pywws.conversions import *
 from pywws import DataStore
 from pywws import Localisation
+from pywws.Logger import ApplicationLogger
 from pywws.Plot import BasePlotter
 
 class RosePlotter(BasePlotter):
-    def GetPlotList(self):
-        return self.GetChildren(self.graph, 'windrose')
-
+    plot_name = 'windrose'
     def GetDefaultRows(self):
         return int(math.sqrt(self.plot_count))
 
@@ -278,26 +277,26 @@ unset raxis
 """
         else:
             result += 'set xtics axis nomirror\n'
-        lmargin = eval(self.GetValue(self.graph, 'lmargin', '-1'))
+        lmargin = eval(self.graph.get_value('lmargin', '-1'))
         result += 'set lmargin %g\n' % (lmargin)
-        lmargin = eval(self.GetValue(self.graph, 'rmargin', '-1'))
+        lmargin = eval(self.graph.get_value('rmargin', '-1'))
         result += 'set rmargin %g\n' % (lmargin)
-        lmargin = eval(self.GetValue(self.graph, 'tmargin', '-1'))
+        lmargin = eval(self.graph.get_value('tmargin', '-1'))
         result += 'set tmargin %g\n' % (lmargin)
-        lmargin = eval(self.GetValue(self.graph, 'bmargin', '-1'))
+        lmargin = eval(self.graph.get_value('bmargin', '-1'))
         result += 'set bmargin %g\n' % (lmargin)
         return result
 
     def PlotData(self, plot_no, plot, source):
         _ = Localisation.translation.ugettext
         # get statistics
-        thresh = eval(self.GetValue(
-            plot, 'threshold', '0.0, 1.54, 3.09, 5.14, 8.23, 10.8, 15.5'))
+        thresh = eval(plot.get_value(
+            'threshold', '0.0, 1.54, 3.09, 5.14, 8.23, 10.8, 15.5'))
         thresh = thresh + (1000.0,)
-        colour = eval(self.GetValue(plot, 'colour', str(range(len(thresh)))))
-        xcalc = self.GetValue(plot, 'xcalc', 'True')
+        colour = eval(plot.get_value('colour', str(range(len(thresh)))))
+        xcalc = plot.get_value('xcalc', 'True')
         xcalc = compile(xcalc, '<string>', 'eval')
-        ycalc = self.GetValue(plot, 'ycalc', None)
+        ycalc = plot.get_value('ycalc', None)
         ycalc = compile(ycalc, '<string>', 'eval')
         histograms = []
         for i in range(len(thresh)):
@@ -336,7 +335,7 @@ unset raxis
         for n in range(16):
             total += histograms[-1][n]
         result = ''
-        yrange = self.GetValue(plot, 'yrange', '31')
+        yrange = plot.get_value('yrange', '31')
         if yrange == '*':
             # auto-ranging
             if total > 0:
@@ -357,7 +356,7 @@ unset raxis
         result += 'set xrange [-%d:%d]\n' % (yrange, yrange)
         result += 'set yrange [-%d:%d]\n' % (yrange, yrange)
         points = [_('N'), _('S'), _('E'), _('W')]
-        points = eval(self.GetValue(plot, 'points', str(points)))
+        points = eval(plot.get_value('points', str(points)))
         result += 'set label 1000 "%s" at 0, %d center front\n' % (points[0], yrange)
         result += 'set label 1001 "%s" at 0, -%d center front\n' % (points[1], yrange)
         result += 'set label 1002 "%s" at %d, 0 center front\n' % (points[2], yrange)
@@ -428,6 +427,7 @@ def main(argv=None):
         print >>sys.stderr, 'Error: 4 arguments required\n'
         print >>sys.stderr, __usage__.strip()
         return 2
+    logger = ApplicationLogger(2)
     params = DataStore.params(args[0])
     Localisation.SetApplicationLanguage(params)
     return RosePlotter(
