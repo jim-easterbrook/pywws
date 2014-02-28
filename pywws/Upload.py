@@ -191,7 +191,10 @@ class Upload(object):
         try:
             self.uploader.connect()
         except Exception, ex:
-            self.logger.error(str(ex))
+            e = str(ex)
+            if e != self.old_ex:
+                self.logger.error(e)
+                self.old_ex = e
             return False
         return True
 
