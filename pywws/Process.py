@@ -170,7 +170,7 @@ class HourAcc(object):
         self.wind_gust = (-2.0, None)
         self.rain = 0.0
         self.wind_count = 0
-        self.retval = dict()
+        self.retval = {'idx' : None, 'temp_out' : None}
 
     def add_raw(self, data):
         idx = data['idx']
@@ -203,12 +203,13 @@ class HourAcc(object):
             self.copy_keys.append('illuminance')
             self.copy_keys.append('uv')
         # if near the end of the hour, ignore 'lost contact' readings
-        if data['idx'].minute < 45 or data['temp_out'] is not None:
+        if (data['idx'].minute < 45 or data['temp_out'] is not None or
+                                self.retval['temp_out'] is None):
             for key in self.copy_keys:
                 self.retval[key] = data[key]
 
     def result(self):
-        if not self.retval:
+        if not self.retval['idx']:
             return None
         if self.wind_count > 0:
             # convert weighted wind directions to a vector
