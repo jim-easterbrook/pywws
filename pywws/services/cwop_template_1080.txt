@@ -18,7 +18,7 @@
 #! This code based on contributions from Marco Trevisan <mail@3v1n0.net> #
 #live#
 {
-'idx'          : #idx          "'%H%M%S',"#
+'idx'          : #idx          "'%d%H%M',"#
 'wind_dir'     : #wind_dir     "'%03.0f'," "'...',"   "winddir_degrees(x)"#
 'wind_ave'     : #wind_ave     "'%03.0f'," "'...',"   "wind_mph(x)"#
 'wind_gust'    : #wind_gust    "'%03.0f'," "'...',"   "wind_mph(x)"#
