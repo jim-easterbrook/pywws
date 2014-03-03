@@ -27,6 +27,10 @@ pywws modules.
 
 __docformat__ = "restructuredtext en"
 
+from datetime import timedelta
+
+SECOND = timedelta(seconds=1)
+
 class Twitter(object):
     consumer_key = '62moSmU9ERTs0LK0g2xHAg'
     consumer_secret = 'ygdXpjr0rDagU3dqULPqXF8GFgUOD6zYDapoHAH9ck'

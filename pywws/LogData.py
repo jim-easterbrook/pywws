@@ -71,6 +71,7 @@ import os
 import sys
 import time
 
+from pywws.constants import SECOND
 from pywws import DataStore
 from pywws.Logger import ApplicationLogger
 from pywws.TimeZone import HOUR
@@ -144,7 +145,7 @@ class DataLogger(object):
             saved_date = DataStore.safestrptime(saved_date)
             saved_date = self.raw_data.nearest(saved_date)
             while saved_date < last_stored:
-                saved_date = self.raw_data.after(saved_date)
+                saved_date = self.raw_data.after(saved_date + SECOND)
                 saved_ptr = self.ws.inc_ptr(saved_ptr)
         else:
             saved_ptr = None
@@ -189,7 +190,7 @@ class DataLogger(object):
                 del self.raw_data[d]
             count -= len(duplicates)
         last_date = self.raw_data.nearest(last_date)
-        next_date = self.raw_data.after(last_date + timedelta(seconds=1))
+        next_date = self.raw_data.after(last_date + SECOND)
         if next_date:
             gap = (next_date - last_date).seconds // 60
             gap -= fixed_block['read_period']
