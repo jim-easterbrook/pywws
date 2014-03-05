@@ -290,7 +290,7 @@ class ToService(object):
 
         login = 'user %s pass %s vers pywws %s\n' % (
             prepared_data['designator'], prepared_data['passcode'], version)
-        packet = '%s>APRS,TCPIP*:@%sz%s/%s_%s/%sg%st%sr%sp...P%sb%sh%s.pywws-%s\n' % (
+        packet = '%s>APRS,TCPIP*:@%sz%s/%s_%s/%sg%st%sr%sP%sb%sh%s.pywws-%s\n' % (
             prepared_data['designator'],   prepared_data['idx'],
             prepared_data['latitude'],     prepared_data['longitude'],
             prepared_data['wind_dir'],     prepared_data['wind_ave'],
