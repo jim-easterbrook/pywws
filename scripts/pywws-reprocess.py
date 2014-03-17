@@ -135,4 +135,5 @@ def main(argv=None):
     data_dir = args[0]
     return Reprocess(data_dir, update)
 
-sys.exit(main())
+if __name__ == "__main__":
+    sys.exit(main())

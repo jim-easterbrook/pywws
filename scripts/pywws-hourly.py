@@ -22,4 +22,6 @@ import os
 import sys
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from pywws.Hourly import main
-sys.exit(main())
+
+if __name__ == "__main__":
+    sys.exit(main())
