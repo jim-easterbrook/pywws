@@ -375,7 +375,7 @@ class weather_station(object):
             self._station_clock = None
         ptr_time = 0
         data_time = 0
-        last_status = None
+        last_status = decode_status(0)
         while True:
             # sleep until just before next reading is due
             if not self._sensor_clock:
@@ -408,12 +408,13 @@ class weather_station(object):
             if new_ptr != old_ptr:
                 for key in ('hum_in', 'temp_in', 'abs_pressure'):
                     old_data[key] = new_data[key]
-            # log any change of status
-            if new_data['status'] != last_status:
-                self.logger.warning(
-                    'status %s', str(decode_status(new_data['status'])))
-            last_status = new_data['status']
-            if (decode_status(new_data['status'])['lost_connection'] and not
+            # log any change of status except 'invalid_wind_dir'
+            new_status = decode_status(new_data['status'])
+            last_status['invalid_wind_dir'] = new_status['invalid_wind_dir']
+            if new_status != last_status:
+                self.logger.warning('status %s', str(new_status))
+            last_status = new_status
+            if (new_status['lost_connection'] and not
                 decode_status(old_data['status'])['lost_connection']):
                 # 'lost connection' decision can happen at any time
                 old_data = new_data
