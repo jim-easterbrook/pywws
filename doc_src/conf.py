@@ -2,7 +2,7 @@
 #
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-13  Jim Easterbrook  jim@jim-easterbrook.me.uk
+# Copyright (C) 2008-14  Jim Easterbrook  jim@jim-easterbrook.me.uk
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -37,6 +37,7 @@ import sys, os
 #sys.path.insert(0, os.path.abspath('.'))
 
 sys.path.insert(0, os.path.abspath('..'))
+sys.path.insert(0, os.path.abspath('../scripts'))
 
 # cludge to allow documentation to be compiled without installing dependencies
 class Dummy(object):
@@ -45,8 +46,16 @@ class Dummy(object):
             return None
         return Dummy
 
-for mod_name in ('hid', 'oauth2', 'twitter', 'usb', 'usb.core', 'usb.util'):
+for mod_name in ('hid', 'oauth2', 'twitter', 'usb', 'usb.core', 'usb.util',
+                 'daemon', 'daemon.runner'):
     sys.modules[mod_name] = Dummy()
+
+# cludge to allow scripts with hyphens in their names to be documented
+for name in os.listdir('../scripts'):
+    base, ext = os.path.splitext(name)
+    if ext != '.py':
+        continue
+    sys.modules[base.replace('-', '_')] = __import__(base)
 
 # -- General configuration -----------------------------------------------------
 
@@ -77,7 +86,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'pywws'
-copyright = u'2008-13, Jim Easterbrook'
+copyright = u'2008-14, Jim Easterbrook'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the

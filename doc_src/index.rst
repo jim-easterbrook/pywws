@@ -1,6 +1,6 @@
 .. pywws - Python software for USB Wireless Weather Stations
    http://github.com/jim-easterbrook/pywws
-   Copyright (C) 2008-13  Jim Easterbrook  jim@jim-easterbrook.me.uk
+   Copyright (C) 2008-14  Jim Easterbrook  jim@jim-easterbrook.me.uk
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -88,7 +88,7 @@ If you used ``pip`` you need to use the upgrade option::
 
    sudo pip install pywws -U
 
-Some new versions of pywws have changed what's stored in the hourly, daily or monthly summary data files. These new versions are incompatible with processed data from earlier versions. The :py:mod:`pywws.Reprocess` module regenerates all the summary data. It should be run after any major upgrade.
+Some new versions of pywws have changed what's stored in the hourly, daily or monthly summary data files. These new versions are incompatible with processed data from earlier versions. The :doc:`scripts/pywws-reprocess` script regenerates all the summary data. It should be run after any major upgrade.
 
 *************
 Documentation
@@ -131,7 +131,7 @@ Legalese
 
 | pywws - Python software for USB Wireless WeatherStations.
 | http://github.com/jim-easterbrook/pywws
-| Copyright (C) 2008-13 Jim Easterbrook jim@jim-easterbrook.me.uk
+| Copyright (C) 2008-14 Jim Easterbrook jim@jim-easterbrook.me.uk
 
 This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
 

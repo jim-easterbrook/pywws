@@ -23,17 +23,16 @@
 
 %s
 
-Introduction
-------------
-
 This program recreates the calibrated, hourly, daily and monthly
-summary data that is created by the :py:mod:`pywws.Process` module.
-It should be run whenever you upgrade to a newer version of pywws (if
-the summary data format has changed), change your calibration module
-or alter your pressure offset.
+summary data that is created by the :py:mod:`pywws.Process` module. It
+should be run whenever you upgrade to a newer version of pywws (if the
+summary data format has changed), change your calibration module or
+alter your pressure offset.
 
-Detailed API
-------------
+The ``-u`` (or ``--update``) option is a special case. It should be
+used when upgrading from any pywws version earlier than 14.02.dev1143.
+Unlike normal reprocessing, the ``-u`` option changes your raw data.
+You are advised to backup your data before using the ``-u`` option.
 
 """
 
@@ -57,7 +56,7 @@ from pywws import DataStore
 from pywws.Logger import ApplicationLogger
 from pywws import Process
 
-__usage__ %= sys.argv[0]
+__usage__ %= os.path.basename(__file__).rstrip('c')
 __doc__ %= __usage__
 __usage__ = __doc__.split('\n')[0] + __usage__
 
