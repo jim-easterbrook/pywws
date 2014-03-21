@@ -1,6 +1,6 @@
 .. pywws - Python software for USB Wireless Weather Stations
    http://github.com/jim-easterbrook/pywws
-   Copyright (C) 2008-13  Jim Easterbrook  jim@jim-easterbrook.me.uk
+   Copyright (C) 2008-14  Jim Easterbrook  jim@jim-easterbrook.me.uk
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -76,6 +76,13 @@ This restricts Mac users to option 3 or 4.
   *  `hidapi <https://github.com/signal11/hidapi>`_
   *  `cython-hidapi <https://github.com/gbishop/cython-hidapi>`_
   *  `cython <http://cython.org/>`_
+
+Running as a daemon
+-------------------
+
+The :doc:`../scripts/pywws-livelog-daemon` program runs pywws live logging as a proper UNIX daemon process. It requires the ``python-daemon`` library:
+
+*  `python-daemon <https://pypi.python.org/pypi/python-daemon/>`_
 
 Graph drawing
 -------------

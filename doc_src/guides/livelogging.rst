@@ -23,9 +23,9 @@ Introduction
 ------------
 
 There are two quite different modes of operation with pywws.
-Traditionally :py:mod:`~pywws.Hourly` would be run at regular intervals (usually an hour) from cron.
+Traditionally :doc:`../scripts/pywws-hourly` would be run at regular intervals (usually an hour) from cron.
 This is suitable for fairly static websites, but more frequent updates can be useful for sites such as Weather Underground (http://www.wunderground.com/).
-The newer :py:mod:`~pywws.LiveLog` program runs continuously and can upload data every 48 seconds.
+The newer :doc:`../scripts/pywws-livelog` program runs continuously and can upload data every 48 seconds.
 
 Getting started
 ---------------
@@ -33,15 +33,21 @@ Getting started
 First of all, you need to install pywws and make sure it can get data from your weather station.
 See :doc:`getstarted` for details.
 
-If you have previously been using :py:mod:`~pywws.Hourly` then disable your 'cron' job (or whatever else you use to run it) so it no longer runs.
-You should not run :py:mod:`~pywws.Hourly` and :py:mod:`~pywws.LiveLog` at the same time.
+If you have previously been using :doc:`../scripts/pywws-hourly` then disable your 'cron' job (or whatever else you use to run it) so it no longer runs.
+You should not run :doc:`../scripts/pywws-hourly` and :doc:`../scripts/pywws-livelog` at the same time.
 
-Try running :py:mod:`~pywws.LiveLog` from the command line, with a high level of verbosity so you can see what's happening::
+Try running :doc:`../scripts/pywws-livelog` from the command line, with a high level of verbosity so you can see what's happening.
+If you have installed pywws using ``pip`` or ``python setup.py install`` then you should be able to use the pywws scripts directly::
 
-   python -m pywws.LiveLog -vvv ~/weather/data
+   pywws-livelog.py -vvv ~/weather/data
+
+Otherwise you need to change to the pywws directory first::
+
+   cd ~/weather/pywws
+   scripts/pywws-livelog.py -vvv ~/weather/data
 
 Within five minutes (assuming you have set a 5 minute logging interval) you should see a 'live_data new ptr' message, followed by fetching any new data from the weather station and processing it.
-Let :py:mod:`~pywws.LiveLog` run for a minute or two longer, then kill the process by typing '<Ctrl>C'.
+Let :doc:`../scripts/pywws-livelog` run for a minute or two longer, then kill the process by typing '<Ctrl>C'.
 
 Configuring file locations
 --------------------------
@@ -132,29 +138,32 @@ Uploading data to web sites or 'services' can sometimes take a long time, partic
 In normal operation pywws waits until all uploads have been processed before fetching any more data from the weather station.
 This can lead to data sometimes being missed.
 
-The ``asynchronous`` item in the ``[config]`` section of weather.ini can be set to ``True`` to tell :py:mod:`~pywws.LiveLog` to do these uploads in a separate thread.
+The ``asynchronous`` item in the ``[config]`` section of weather.ini can be set to ``True`` to tell :doc:`../scripts/pywws-livelog` to do these uploads in a separate thread.
 This feature is still a bit experimental -- try it at your own risk.
-
-Using a utility script
-----------------------
-
-The pywws installation includes a short script ``pywws-livelog.py`` that gets installed in ``/usr/bin`` or ``/usr/local/bin`` or similar.
-You should be able to use this script to run :py:mod:`~pywws.LiveLog`::
-
-   pywws-livelog.py -v ~/weather/data
 
 Run in the background
 ---------------------
 
-In order to have :py:mod:`~pywws.LiveLog` carry on running after you finish using your computer it needs to be run as a 'background job'.
+In order to have :doc:`../scripts/pywws-livelog` carry on running after you finish using your computer it needs to be run as a 'background job'.
 On most Linux / UNIX systems you can do this by putting an ampersand ('&') at the end of the command line.
 For example::
 
    pywws-livelog.py ~/weather/data &
 
-However, it would be useful to know what went wrong if the program crashes for any reason. :py:mod:`~pywws.LiveLog` can store its messages in a log file, specified with the ``-l`` option::
+However, it would be useful to know what went wrong if the program crashes for any reason. :doc:`../scripts/pywws-livelog` can store its messages in a log file, specified with the ``-l`` option::
 
    pywws-livelog.py -v -l ~/weather/data/pywws.log ~/weather/data &
+
+.. versionadded:: 13.12.dev1118
+
+Running a job in the background like this doesn't always work correctly.
+On some systems the job may suspend when you log out.
+It's much better to run as a proper UNIX 'daemon' process.
+The :doc:`../scripts/pywws-livelog-daemon` program does this, if you have the `python-daemon <https://pypi.python.org/pypi/python-daemon/>`_ library installed::
+
+   pywws-livelog-daemon.py -v ~/weather/data ~/weather/data/pywws.log start
+
+Note that the log file is now a required parameter, not an option.
 
 Automatic restarting
 --------------------
@@ -162,12 +171,15 @@ Automatic restarting
 There are various ways of configuring a Linux system to start a program when the machine boots up.
 Typically these involve putting a file in ``/etc/init.d/``, which requires root privileges.
 A slightly harder problem is ensuring a program restarts if it crashes.
-My solution to both problems is to run the following script from cron, every hour. ::
+My solution to both problems is to run the following script from cron, several times an hour. ::
 
    #!/bin/sh
 
+   # exit if NTP hasn't set computer clock
+   [ `ntpdc -c sysinfo | awk '/stratum:/ {print $2}'` -ge 10 ] && exit
+
    pidfile=/var/run/pywws.pid
-   datadir=/data/weather
+   datadir=/home/jim/weather/data
    logfile=$datadir/live_logger.log
 
    # exit if process is running
@@ -175,19 +187,18 @@ My solution to both problems is to run the following script from cron, every hou
 
    # email last few lines of the logfile to see why it died
    if [ -f $logfile ]; then
-     log=/var/log/log-weather
+     log=/tmp/log-weather
      tail -40 $logfile >$log
      /home/jim/scripts/email-log.sh $log "weather log"
      rm $log
      fi
 
    # restart process
-   pywws-livelog.py -v -l $logfile $datadir &
-   echo $! >$pidfile
+   pywws-livelog-daemon.py -v -p $pidfile $datadir $logfile start
 
-This stores the process id of the running :py:mod:`~pywws.LiveLog` in pidfile.
+The process id of the daemon is stored in ``pidfile``.
 If the process is running, the script does nothing.
-If the process has crashed, it emails the last 40 lines of the log file to me (using a script that creates a message and passes it to sendmail) and then restarts :py:mod:`~pywws.LiveLog`.
+If the process has crashed, it emails the last 40 lines of the log file to me (using a script that creates a message and passes it to sendmail) and then restarts :doc:`../scripts/pywws-livelog-daemon`.
 You'll need to edit this quite a lot to suit your file locations and so on, but it gives some idea of what to do.
 
 ----

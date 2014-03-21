@@ -67,11 +67,11 @@ config: miscellaneous system configuration
 ``ws type`` is the "class" of weather station. It should be set to ``1080`` for most weather stations, or ``3080`` if your station console displays solar illuminance.
  
 ``day end hour`` is the end of the "`meteorological day <http://en.wikipedia.org/wiki/Meteorological_day>`_", in local time without daylight savings time. Typical values are 21, 9, or 24.
-You must update all your stored data by running :py:mod:`pywws.Reprocess` after you change this value.
+You must update all your stored data by running :doc:`../scripts/pywws-reprocess` after you change this value.
 
 ``pressure offset`` is the difference between absolute and relative (sea level) air pressure.
 The initial value is copied from the weather station, assuming you have set it up to display the correct relative pressure, but you can adjust the value in weather.ini to calibrate your station.
-You must update all your stored data by running :py:mod:`pywws.Reprocess` after you change this value.
+You must update all your stored data by running :doc:`../scripts/pywws-reprocess` after you change this value.
 
 .. versionchanged:: 13.10_r1082
    made ``pressure offset`` a config item.
@@ -88,10 +88,10 @@ If you create templates with a different character set, you should change this v
 ``logdata sync`` sets the quality of synchronisation used by :doc:`../api/pywws.LogData`. Set it to 0 for fast & inaccurate or 1 for slower but precise.
 
 ``rain day threshold`` is the amount of rain (in mm) that has to fall in one day for it to qualify as a rainy day in the monthly summary data.
-You must update all your stored data by running :py:mod:`pywws.Reprocess` after you change this value.
+You must update all your stored data by running :doc:`../scripts/pywws-reprocess` after you change this value.
 
 .. versionadded:: 13.09_r1057
-   ``asynchrouous`` controls the use of a separate upload thread in :py:mod:`pywws.LiveLog`.
+   ``asynchrouous`` controls the use of a separate upload thread in :doc:`../scripts/pywws-livelog`.
 
 .. versionadded:: 13.10_r1094
    ``usb activity margin`` controls the algorithm that avoids the "USB lockup" problem that affects some stations.

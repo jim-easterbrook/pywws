@@ -2,7 +2,7 @@
 
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-13  Jim Easterbrook  jim@jim-easterbrook.me.uk
+# Copyright (C) 2008-14  Jim Easterbrook  jim@jim-easterbrook.me.uk
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -41,8 +41,8 @@ found.
 I typically get one or two errors per hour, so the test needs to be
 run for several hours to produce a useful measurement. Note that other
 software that accesses the weather station (such as
-:doc:`pywws.Hourly` or :doc:`pywws.LiveLog`) must not be run while the
-test is in progress.
+:doc:`../scripts/pywws-hourly` or :doc:`../scripts/pywws-livelog`)
+must not be run while the test is in progress.
 
 If you run this test and get no errors at all, please let me know.
 There is something good about your setup and I'd love to know what it

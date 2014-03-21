@@ -34,9 +34,6 @@ Modules:
 .. autosummary::
    :toctree: api
 
-   pywws.Hourly
-   pywws.LiveLog
-   pywws.Reprocess
    pywws.TwitterAuth
    pywws.SetWeatherStation
    pywws.TestWeatherStation

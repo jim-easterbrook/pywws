@@ -109,13 +109,13 @@ section, depending on how often you want to send data. For example::
     services = ['underground']
 
 Note that the ``[live]`` section is only used when running
-:py:mod:`~pywws.LiveLog`. It is a good idea to repeat any service
-selected in ``[live]`` in the ``[logged]`` or ``[hourly]`` section in
-case you switch to running :py:mod:`~pywws.Hourly`.
+:doc:`../scripts/pywws-livelog`. It is a good idea to repeat any
+service selected in ``[live]`` in the ``[logged]`` or ``[hourly]``
+section in case you switch to running :doc:`../scripts/pywws-hourly`.
 
-Restart your regular pywws program (:py:mod:`~pywws.Hourly` or
-:py:mod:`~pywws.LiveLog`) and visit the appropriate web site to see
-regular updates from your weather station.
+Restart your regular pywws program (:doc:`../scripts/pywws-hourly` or
+:doc:`../scripts/pywws-livelog`) and visit the appropriate web site to
+see regular updates from your weather station.
 
 API
 ---
