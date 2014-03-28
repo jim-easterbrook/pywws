@@ -135,6 +135,7 @@ __usage__ = """
 __doc__ %= __usage__
 __usage__ = __doc__.split('\n')[0] + __usage__
 
+import base64
 from ConfigParser import SafeConfigParser
 from datetime import datetime, timedelta
 import getopt
@@ -228,6 +229,11 @@ class ToService(object):
                 os.path.dirname(__file__), 'services',
                 '%s_template_1080.txt' % (config_section))
         # get other parameters
+        self.auth_type = service_params.get('config', 'auth_type')
+        if self.auth_type == 'basic':
+            user = self.params.get(config_section, 'user', 'unknown')
+            password = self.params.get(config_section, 'password', 'unknown')
+            self.auth = 'Basic %s' % base64.b64encode('%s:%s' % (user, password))
         self.catchup = eval(service_params.get('config', 'catchup'))
         self.expected_result = eval(service_params.get('config', 'result'))
         self.interval = eval(service_params.get('config', 'interval'))
@@ -346,9 +352,12 @@ class ToService(object):
         try:
             try:
                 if self.use_get:
-                    wudata = urllib2.urlopen('%s?%s' % (self.server, coded_data))
+                    request = urllib2.Request('%s?%s' % (self.server, coded_data))
                 else:
-                    wudata = urllib2.urlopen(self.server, coded_data)
+                    request = urllib2.Request(self.server, coded_data)
+                if self.auth_type == 'basic':
+                    request.add_header('Authorization', self.auth)
+                wudata = urllib2.urlopen(request)
             except urllib2.HTTPError, ex:
                 if ex.code != 400:
                     raise
