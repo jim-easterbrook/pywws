@@ -349,6 +349,7 @@ class ToService(object):
         """
         coded_data = urllib.urlencode(prepared_data)
         self.logger.debug(coded_data)
+        new_ex = self.old_ex
         try:
             try:
                 if self.use_get:
@@ -376,11 +377,20 @@ class ToService(object):
                 for line in response:
                     self.logger.error(line.strip())
             self.old_response = response
+        except urllib2.HTTPError, ex:
+            new_ex = str(ex)
+            extra_ex = ex.info(), ex.readlines()
         except Exception, ex:
-            e = str(ex)
-            if e != self.old_ex:
-                self.logger.error(e)
-                self.old_ex = e
+            new_ex = str(ex)
+            extra_ex = []
+        if new_ex == self.old_ex:
+            log = self.logger.debug
+        else:
+            log = self.logger.error
+            self.old_ex = new_ex
+        log(new_ex)
+        for extra in extra_ex:
+            log(extra)
         return False
 
     def next_data(self, catchup, live_data):

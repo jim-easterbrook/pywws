@@ -192,7 +192,9 @@ class Upload(object):
             self.uploader.connect()
         except Exception, ex:
             e = str(ex)
-            if e != self.old_ex:
+            if e == self.old_ex:
+                self.logger.debug(e)
+            else:
                 self.logger.error(e)
                 self.old_ex = e
             return False
@@ -205,7 +207,9 @@ class Upload(object):
             return True
         except Exception, ex:
             e = str(ex)
-            if e != self.old_ex:
+            if e == self.old_ex:
+                self.logger.debug(e)
+            else:
                 self.logger.error(e)
                 self.old_ex = e
         return False
