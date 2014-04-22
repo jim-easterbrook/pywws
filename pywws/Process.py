@@ -3,7 +3,7 @@
 
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-13  Jim Easterbrook  jim@jim-easterbrook.me.uk
+# Copyright (C) 2008-14  Jim Easterbrook  jim@jim-easterbrook.me.uk
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -62,6 +62,8 @@ a more useful total in the last hour, day or month.
 
 """
 
+from __future__ import absolute_import
+
 __docformat__ = "restructuredtext en"
 __usage__ = """
  usage: python -m pywws.Process [options] data_dir
@@ -81,10 +83,10 @@ import math
 import os
 import sys
 
-from pywws.calib import Calib
-from pywws import DataStore
-from pywws.Logger import ApplicationLogger
-from pywws.TimeZone import STDOFFSET, HOUR
+from .calib import Calib
+from . import DataStore
+from .Logger import ApplicationLogger
+from .TimeZone import STDOFFSET, HOUR
 
 SECOND = timedelta(seconds=1)
 TIME_ERR = timedelta(seconds=45)

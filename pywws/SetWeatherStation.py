@@ -2,7 +2,7 @@
 
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-13  Jim Easterbrook  jim@jim-easterbrook.me.uk
+# Copyright (C) 2008-14  Jim Easterbrook  jim@jim-easterbrook.me.uk
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -25,6 +25,8 @@
 
 """
 
+from __future__ import absolute_import
+
 __docformat__ = "restructuredtext en"
 __usage__ = """
  usage: python -m pywws.SetWeatherStation [options]
@@ -46,8 +48,8 @@ import logging
 import sys
 import time
 
-from pywws.Logger import ApplicationLogger
-from pywws import WeatherStation
+from .Logger import ApplicationLogger
+from . import WeatherStation
 
 def bcd_encode(value):
     hi = value // 10

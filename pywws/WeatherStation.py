@@ -74,6 +74,8 @@ Detailed API
 
 """
 
+from __future__ import absolute_import
+
 __docformat__ = "restructuredtext en"
 
 from datetime import datetime
@@ -81,26 +83,26 @@ import logging
 import sys
 import time
 
-from pywws import Localisation
+from . import Localisation
 USBDevice = None
 if not USBDevice:
     try:
-        from pywws.device_pyusb1 import USBDevice
+        from .device_pyusb1 import USBDevice
     except ImportError:
         pass
 if not USBDevice:
     try:
-        from pywws.device_pyusb import USBDevice
+        from .device_pyusb import USBDevice
     except ImportError:
         pass
 if not USBDevice:
     try:
-        from pywws.device_ctypes_hidapi import USBDevice
+        from .device_ctypes_hidapi import USBDevice
     except ImportError:
         pass
 if not USBDevice:
     try:
-        from pywws.device_cython_hidapi import USBDevice
+        from .device_cython_hidapi import USBDevice
     except ImportError:
         pass
 if not USBDevice:

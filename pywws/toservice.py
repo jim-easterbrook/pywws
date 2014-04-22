@@ -122,6 +122,8 @@ API
 
 """
 
+from __future__ import absolute_import
+
 __docformat__ = "restructuredtext en"
 __usage__ = """
  usage: python -m pywws.toservice [options] data_dir service_name
@@ -148,10 +150,10 @@ import urllib
 import urllib2
 import urlparse
 
-from pywws import DataStore
-from pywws.Logger import ApplicationLogger
-from pywws import Template
-from pywws.version import version
+from . import DataStore
+from .Logger import ApplicationLogger
+from . import Template
+from .version import version
 
 PARENT_MARGIN = timedelta(minutes=2)
 

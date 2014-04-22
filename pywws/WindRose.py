@@ -226,6 +226,8 @@ Detailed API
 
 """
 
+from __future__ import absolute_import
+
 __docformat__ = "restructuredtext en"
 __usage__ = """
  usage: python -m pywws.WindRose [options] data_dir temp_dir xml_file output_file
@@ -247,11 +249,11 @@ import os
 import sys
 import xml.dom.minidom
 
-from pywws.conversions import *
-from pywws import DataStore
-from pywws import Localisation
-from pywws.Logger import ApplicationLogger
-from pywws.Plot import BasePlotter
+from .conversions import *
+from . import DataStore
+from . import Localisation
+from .Logger import ApplicationLogger
+from .Plot import BasePlotter
 
 class RosePlotter(BasePlotter):
     plot_name = 'windrose'

@@ -50,6 +50,8 @@ is!
 
 """
 
+from __future__ import absolute_import
+
 __docformat__ = "restructuredtext en"
 
 __usage__ = """
@@ -66,8 +68,8 @@ __usage__ = __doc__.split('\n')[0] + __usage__
 import getopt
 import sys
 
-from pywws.Logger import ApplicationLogger
-from pywws import WeatherStation
+from .Logger import ApplicationLogger
+from . import WeatherStation
 
 def main(argv=None):
     if argv is None:

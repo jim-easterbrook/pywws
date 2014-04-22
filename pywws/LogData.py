@@ -51,6 +51,8 @@ Detailed API
 
 """
 
+from __future__ import absolute_import
+
 __docformat__ = "restructuredtext en"
 __usage__ = """
  usage: python -m pywws.LogData [options] data_dir
@@ -71,11 +73,11 @@ import os
 import sys
 import time
 
-from pywws.constants import SECOND
-from pywws import DataStore
-from pywws.Logger import ApplicationLogger
-from pywws.TimeZone import HOUR
-from pywws import WeatherStation
+from .constants import SECOND
+from . import DataStore
+from .Logger import ApplicationLogger
+from .TimeZone import HOUR
+from . import WeatherStation
 
 class DataLogger(object):
     def __init__(self, params, status, raw_data):

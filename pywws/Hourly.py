@@ -2,7 +2,7 @@
 
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-13  Jim Easterbrook  jim@jim-easterbrook.me.uk
+# Copyright (C) 2008-14  Jim Easterbrook  jim@jim-easterbrook.me.uk
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -34,6 +34,8 @@ For more information on using ``Hourly.py``, see
 
 """
 
+from __future__ import absolute_import
+
 __docformat__ = "restructuredtext en"
 __usage__ = """
  usage: python -m pywws.Hourly [options] data_dir
@@ -49,12 +51,12 @@ import getopt
 import os
 import sys
 
-from pywws import DataStore
-from pywws import Localisation
-from pywws.LogData import DataLogger
-from pywws.Logger import ApplicationLogger
-from pywws import Process
-from pywws import Tasks
+from . import DataStore
+from . import Localisation
+from .LogData import DataLogger
+from .Logger import ApplicationLogger
+from . import Process
+from . import Tasks
 
 def Hourly(data_dir):
     # get file locations

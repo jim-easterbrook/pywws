@@ -31,6 +31,8 @@ detailed instructions.
 
 """
 
+from __future__ import absolute_import
+
 __docformat__ = "restructuredtext en"
 __usage__ = """
  usage: python -m pywws.ToTwitter [options] data_dir file
@@ -54,10 +56,10 @@ try:
 except ImportError:
     import tweepy
 
-from pywws.constants import Twitter as pct
-from pywws import DataStore
-from pywws import Localisation
-from pywws.Logger import ApplicationLogger
+from .constants import Twitter as pct
+from . import DataStore
+from . import Localisation
+from .Logger import ApplicationLogger
 
 class ToTwitter(object):
     def __init__(self, params):

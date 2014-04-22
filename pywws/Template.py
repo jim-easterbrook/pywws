@@ -252,6 +252,8 @@ Detailed API
 
 """
 
+from __future__ import absolute_import
+
 __docformat__ = "restructuredtext en"
 __usage__ = """
  usage: python -m pywws.Template [options] data_dir template_file output_file
@@ -273,13 +275,13 @@ import os
 import shlex
 import sys
 
-from pywws import conversions
-from conversions import *
-from pywws import DataStore
-from pywws.Forecast import Zambretti, ZambrettiCode
-from pywws import Localisation
-from pywws.Logger import ApplicationLogger
-from pywws.TimeZone import Local, utc
+from . import conversions
+from .conversions import *
+from . import DataStore
+from .Forecast import Zambretti, ZambrettiCode
+from . import Localisation
+from .Logger import ApplicationLogger
+from .TimeZone import Local, utc
 
 SECOND = timedelta(seconds=1)
 HOUR = timedelta(hours=1)

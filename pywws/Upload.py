@@ -62,6 +62,8 @@ Detailed API
 
 """
 
+from __future__ import absolute_import
+
 __docformat__ = "restructuredtext en"
 __usage__ = """
  usage: python -m pywws.Upload [options] data_dir file [file...]
@@ -82,8 +84,8 @@ import os
 import shutil
 import sys
 
-from pywws import DataStore
-from pywws.Logger import ApplicationLogger
+from . import DataStore
+from .Logger import ApplicationLogger
 
 class _ftp(object):
     def __init__(self, logger, site, user, password, directory, port):

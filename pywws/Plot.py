@@ -428,6 +428,8 @@ Detailed API
 
 """
 
+from __future__ import absolute_import
+
 __docformat__ = "restructuredtext en"
 __usage__ = """
  usage: python -m pywws.Plot [options] data_dir temp_dir xml_file output_file
@@ -451,11 +453,11 @@ import subprocess
 import sys
 import xml.dom.minidom
 
-from pywws.conversions import *
-from pywws import DataStore
-from pywws import Localisation
-from pywws.Logger import ApplicationLogger
-from pywws.TimeZone import Local
+from .conversions import *
+from . import DataStore
+from . import Localisation
+from .Logger import ApplicationLogger
+from .TimeZone import Local
 
 class GraphNode(object):
     def __init__(self, node):

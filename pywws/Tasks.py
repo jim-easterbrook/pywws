@@ -20,6 +20,8 @@
 
 """Routines to perform common tasks such as plotting gaphs or uploading files."""
 
+from __future__ import absolute_import
+
 from collections import deque
 from datetime import datetime, timedelta
 import logging
@@ -27,14 +29,14 @@ import os
 import shutil
 import threading
 
-from pywws.calib import Calib
-from pywws import Plot
-from pywws import Template
-from pywws.TimeZone import STDOFFSET
-from pywws.toservice import ToService
-from pywws import Upload
-from pywws import WindRose
-from pywws import YoWindow
+from .calib import Calib
+from . import Plot
+from . import Template
+from .TimeZone import STDOFFSET
+from .toservice import ToService
+from . import Upload
+from . import WindRose
+from . import YoWindow
 
 class RegularTasks(object):
     def __init__(self, params, status,
@@ -329,7 +331,7 @@ class RegularTasks(object):
 
     def do_twitter(self, template, data=None):
         if not self.twitter:
-            from pywws import ToTwitter
+            from . import ToTwitter
             self.twitter = ToTwitter.ToTwitter(self.params)
         self.logger.info("Templating %s", template)
         input_file = os.path.join(self.template_dir, template)

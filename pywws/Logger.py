@@ -22,11 +22,13 @@
 Common code for logging info and errors.
 """
 
+from __future__ import absolute_import
+
 import logging
 import logging.handlers
 import sys
 
-from pywws import version
+from . import version
 
 def ApplicationLogger(verbose, logfile=None):
     logger = logging.getLogger('')
