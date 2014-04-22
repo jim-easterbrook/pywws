@@ -256,7 +256,9 @@ command_options['sdist'] = {
 # get lists of data files and scripts to install
 scripts = []
 for name in os.listdir('scripts'):
-    scripts.append(os.path.join('scripts', name))
+    ext = os.path.splitext(name)[1].lower()
+    if ext == '.py':
+        scripts.append(os.path.join('scripts', name))
 data_files = []
 for root, dirs, files in os.walk('examples'):
     paths = []
