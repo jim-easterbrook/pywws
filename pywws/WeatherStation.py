@@ -321,7 +321,7 @@ class weather_station(object):
     min_pause = 0.5
     # margin of error for various decisions
     margin = (min_pause * 2.0) - 0.1
-    def __init__(self, ws_type='1080', params=None, status=None, avoid=3.0):
+    def __init__(self, ws_type='1080', status=None, avoid=3.0):
         """Connect to weather station and prepare to read data."""
         self.logger = logging.getLogger('pywws.weather_station')
         # create basic IO object
@@ -333,9 +333,6 @@ class weather_station(object):
         self._data_block = None
         self._data_pos = None
         self._current_ptr = None
-        if params:
-            params.unset('fixed', 'station clock')
-            params.unset('fixed', 'sensor clock')
         if self.status:
             self._station_clock = eval(
                 self.status.get('clock', 'station', 'None'))
@@ -575,11 +572,6 @@ class weather_station(object):
         if self._current_ptr and new_ptr != self.inc_ptr(self._current_ptr):
             self.logger.error(
                 'unexpected ptr change %06x -> %06x', self._current_ptr, new_ptr)
-            for k in self.reading_len:
-                if (new_ptr - self._current_ptr) == self.reading_len[k]:
-                    self.logger.warning('type change %s -> %s', self.ws_type, k)
-                    self.ws_type = k
-                    break
         self._current_ptr = new_ptr
         return self._current_ptr
 

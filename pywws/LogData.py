@@ -77,7 +77,7 @@ from .constants import SECOND
 from . import DataStore
 from .Logger import ApplicationLogger
 from .TimeZone import HOUR
-from . import WeatherStation
+from .WeatherStation import weather_station
 
 class DataLogger(object):
     def __init__(self, params, status, raw_data):
@@ -92,9 +92,8 @@ class DataLogger(object):
             self.params.set('config', 'ws type', ws_type)
         ws_type = self.params.get('config', 'ws type', 'Unknown')
         avoid = eval(self.params.get('config', 'usb activity margin', '3.0'))
-        self.ws = WeatherStation.weather_station(
-            ws_type=ws_type, params=self.params, status=self.status,
-            avoid=avoid)
+        self.ws = weather_station(
+            ws_type=ws_type, status=self.status, avoid=avoid)
         # check for valid weather station type
         fixed_block = self.check_fixed_block()
         if ws_type not in ('1080', '3080'):
@@ -124,8 +123,6 @@ class DataLogger(object):
             if diff > timedelta(minutes=2):
                 self.logger.warning(
                     "Computer and weather station clocks disagree by %s (H:M:S).", str(diff))
-        # store weather station type
-        self.params.set('config', 'ws type', self.ws.ws_type)
         # store info from fixed block
         self.status.unset('fixed', 'pressure offset')
         if not self.params.get('config', 'pressure offset'):
@@ -133,6 +130,9 @@ class DataLogger(object):
                 fixed_block['rel_pressure'] - fixed_block['abs_pressure']))
         self.params.unset('fixed', 'fixed block')
         self.status.set('fixed', 'fixed block', str(fixed_block))
+        # check ws type
+        if (fixed_block['lux_wm2_coeff'] == 0.0) != (self.ws.ws_type == '1080'):
+            self.logger.warning('weather station type appears to be incorrect')
         return fixed_block
 
     def catchup(self, last_date, last_ptr):
