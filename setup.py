@@ -2,7 +2,7 @@
 
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-13  Jim Easterbrook  jim@jim-easterbrook.me.uk
+# Copyright (C) 2008-14  Jim Easterbrook  jim@jim-easterbrook.me.uk
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -247,6 +247,16 @@ if using_setuptools:
         'upload_dir' : ('setup.py', 'doc/html'),
         }
 
+# add package requirements (setuptools only)
+setuptools_options = {}
+if using_setuptools:
+    setuptools_options['install_requires'] = ['pyusb >= 1.0.0b1']
+    setuptools_options['extras_require'] = {
+        'daemon'  : ['python-daemon'],
+        'sftp'    : ['paramiko', 'pycrypto'],
+        'twitter' : ['python-twitter >= 1.0', 'oauth2'],
+        }
+
 # set options for building distributions
 command_options['sdist'] = {
     'formats'        : ('setup.py', 'gztar zip'),
@@ -304,4 +314,5 @@ pages showing recent weather readings, typically updated every hour.
       data_files = data_files,
       cmdclass = cmdclass,
       command_options = command_options,
+      **setuptools_options
       )
