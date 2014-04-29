@@ -33,7 +33,7 @@ weather station to your computer! ::
 from __future__ import absolute_import
 
 __usage__ = """
- usage: python -m pywws.TestWeatherStation [options]
+ usage: %s [options]
  options are:
        --help           display this help
   -c | --change         display any changes in "fixed block" data
@@ -46,9 +46,7 @@ __usage__ = """
                         (repeat for even more messages e.g. -vvv)
 """
 
-__doc__ %= __usage__
-
-__usage__ = __doc__.split('\n')[0] + __usage__
+__doc__ %= __usage__ % ('python -m pywws.TestWeatherStation')
 
 import datetime
 import getopt
@@ -66,6 +64,7 @@ def raw_dump(pos, data):
 def main(argv=None):
     if argv is None:
         argv = sys.argv
+    usage = (__usage__ % (argv[0])).strip()
     try:
         opts, args = getopt.getopt(
             argv[1:], "cdh:lmuv",
@@ -73,12 +72,12 @@ def main(argv=None):
              'unknown', 'verbose'))
     except getopt.error, msg:
         print >>sys.stderr, 'Error: %s\n' % msg
-        print >>sys.stderr, __usage__.strip()
+        print >>sys.stderr, usage
         return 1
     # check arguments
     if len(args) != 0:
         print >>sys.stderr, 'Error: no arguments allowed\n'
-        print >>sys.stderr, __usage__.strip()
+        print >>sys.stderr, usage
         return 2
     # process options
     change = False
@@ -90,7 +89,8 @@ def main(argv=None):
     verbose = 0
     for o, a in opts:
         if o == '--help':
-            print __usage__.strip()
+            print __doc__.split('\n\n')[0]
+            print usage
             return 0
         elif o in ('-c', '--change'):
             change = True

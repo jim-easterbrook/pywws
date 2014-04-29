@@ -33,15 +33,14 @@ from __future__ import absolute_import
 
 __docformat__ = "restructuredtext en"
 __usage__ = """
- usage: python -m pywws.LiveLog [options] data_dir
+ usage: %s [options] data_dir
  options are:
   -h      or --help      display this help
   -l file or --log file  write log information to file
   -v      or --verbose   increase amount of reassuring messages
  data_dir is the root directory of the weather data (e.g. /data/weather)
 """
-__doc__ %= __usage__
-__usage__ = __doc__.split('\n')[0] + __usage__
+__doc__ %= __usage__ % ('python -m pywws.LiveLog')
 
 from datetime import datetime, timedelta
 import getopt
@@ -97,18 +96,20 @@ def LiveLog(data_dir):
 def main(argv=None):
     if argv is None:
         argv = sys.argv
+    usage = (__usage__ % (argv[0])).strip()
     try:
         opts, args = getopt.getopt(argv[1:], "hl:v", ['help', 'log=', 'verbose'])
     except getopt.error, msg:
         print >>sys.stderr, 'Error: %s\n' % msg
-        print >>sys.stderr, __usage__.strip()
+        print >>sys.stderr, usage
         return 1
     # process options
     logfile = None
     verbose = 0
     for o, a in opts:
         if o in ('-h', '--help'):
-            print __usage__.strip()
+            print __doc__.split('\n\n')[0]
+            print usage
             return 0
         elif o in ('-l', '--log'):
             logfile = a
@@ -117,7 +118,7 @@ def main(argv=None):
     # check arguments
     if len(args) != 1:
         print >>sys.stderr, 'Error: 1 argument required\n'
-        print >>sys.stderr, __usage__.strip()
+        print >>sys.stderr, usage
         return 2
     logger = ApplicationLogger(verbose, logfile)
     return LiveLog(args[0])
