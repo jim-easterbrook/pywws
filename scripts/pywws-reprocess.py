@@ -46,93 +46,15 @@ __usage__ = """
  data_dir is the root directory of the weather data
 """
 
-import getopt
-import logging
 import os
 import sys
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-from pywws import DataStore
-from pywws.Logger import ApplicationLogger
-from pywws import Process
+from pywws.Reprocess import main
 
 __usage__ %= os.path.basename(__file__).rstrip('c')
 __doc__ %= __usage__
 __usage__ = __doc__.split('\n')[0] + __usage__
-
-def Reprocess(data_dir, update):
-    logger = logging.getLogger('pywws-reprocess')
-    raw_data = DataStore.data_store(data_dir)
-    if update:
-        # update old data to copy high nibble of wind_dir to status
-        logger.warning("Updating status to include extra bits from wind_dir")
-        count = 0
-        for data in raw_data[:]:
-            count += 1
-            idx = data['idx']
-            if count % 10000 == 0:
-                logger.info("update: %s", idx.isoformat(' '))
-            elif count % 500 == 0:
-                logger.debug("update: %s", idx.isoformat(' '))
-            if data['wind_dir'] is not None:
-                if data['wind_dir'] >= 16:
-                    data['status'] |= (data['wind_dir'] & 0xF0) << 4
-                    data['wind_dir'] &= 0x0F
-                    raw_data[idx] = data
-                if data['status'] & 0x800:
-                    data['wind_dir'] = None
-                    raw_data[idx] = data
-        raw_data.flush()
-    # delete old format summary files
-    logger.warning('Deleting old summaries')
-    for summary in ['calib', 'hourly', 'daily', 'monthly']:
-        for root, dirs, files in os.walk(
-                os.path.join(data_dir, summary), topdown=False):
-            logger.info(root)
-            for file in files:
-                os.unlink(os.path.join(root, file))
-            os.rmdir(root)
-    # create data summaries
-    logger.warning('Generating hourly and daily summaries')
-    params = DataStore.params(data_dir)
-    calib_data = DataStore.calib_store(data_dir)
-    hourly_data = DataStore.hourly_store(data_dir)
-    daily_data = DataStore.daily_store(data_dir)
-    monthly_data = DataStore.monthly_store(data_dir)
-    Process.Process(
-        params,
-        raw_data, calib_data, hourly_data, daily_data, monthly_data)
-    return 0
-
-def main(argv=None):
-    if argv is None:
-        argv = sys.argv
-    try:
-        opts, args = getopt.getopt(
-            argv[1:], "huv", ['help', 'update', 'verbose'])
-    except getopt.error, msg:
-        print >>sys.stderr, 'Error: %s\n' % msg
-        print >>sys.stderr, __usage__.strip()
-        return 1
-    # process options
-    update = False
-    verbose = 0
-    for o, a in opts:
-        if o in ('-h', '--help'):
-            print __usage__.strip()
-            return 0
-        elif o in ('-u', '--update'):
-            update = True
-        elif o in ('-v', '--verbose'):
-            verbose += 1
-    # check arguments
-    if len(args) != 1:
-        print >>sys.stderr, 'Error: 1 argument required\n'
-        print >>sys.stderr, __usage__.strip()
-        return 2
-    logger = ApplicationLogger(verbose)
-    data_dir = args[0]
-    return Reprocess(data_dir, update)
 
 if __name__ == "__main__":
     sys.exit(main())
