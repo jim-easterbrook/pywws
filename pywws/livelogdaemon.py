@@ -33,6 +33,8 @@ For more information on 'live logging' see :doc:`../guides/livelogging`.
 
 """
 
+from __future__ import absolute_import
+
 __docformat__ = "restructuredtext en"
 __usage__ = """
  usage: %s [options] data_dir log_file start|stop|restart
@@ -50,9 +52,8 @@ import getopt
 import os
 import sys
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from pywws.LiveLog import LiveLog
-from pywws.Logger import ApplicationLogger
+from .LiveLog import LiveLog
+from .Logger import ApplicationLogger
 
 class Runner(DaemonRunner):
     def __init__(self, data_dir, action, files_preserve, pid_file):
