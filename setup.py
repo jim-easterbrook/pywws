@@ -30,30 +30,28 @@ except ImportError:
 import os
 import subprocess
 
-import pywws.version
+from pywws import __version__, _release, _commit
 
-# regenerate version file, if required
+# regenerate version info, if required
 regenerate = False
 try:
     p = subprocess.Popen(['git', 'rev-parse', '--short', 'HEAD'],
                          stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     commit = p.communicate()[0].strip().decode('ASCII')
-    regenerate = (not p.returncode) and commit != pywws.version.commit
+    regenerate = (not p.returncode) and commit != _commit
 except OSError:
     pass
 if regenerate:
-    release = str(int(pywws.version.release) + 1)
+    release = str(int(_release) + 1)
     version = date.today().strftime('%y.%m') + '.dev%s' % release
-    vf = open('pywws/version.py', 'w')
-    vf.write("""version = '%s'
-release = '%s'
-commit = '%s'
-if __name__ == '__main__':
-    print(version)
+    vf = open('pywws/__init__.py', 'w')
+    vf.write("""__version__ = '%s'
+_release = '%s'
+_commit = '%s'
 """ % (version, release, commit))
     vf.close()
 else:
-    version = pywws.version.version
+    version = __version__
 
 # Custom distutils classes
 class xgettext(Command):

@@ -28,7 +28,7 @@ import logging
 import logging.handlers
 import sys
 
-from . import version
+from . import __version__
 
 def ApplicationLogger(verbose, logfile=None):
     logger = logging.getLogger('')
@@ -45,6 +45,6 @@ def ApplicationLogger(verbose, logfile=None):
         logging.Formatter('%(asctime)s:%(name)s:%(message)s', datefmt))
     logger.addHandler(handler)
     pywws_logger = logging.getLogger('pywws.Logger')
-    pywws_logger.warning('pywws version %s', version.version)
+    pywws_logger.warning('pywws version %s', __version__)
     pywws_logger.info('Python version %s', sys.version)
     return logger

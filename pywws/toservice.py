@@ -153,7 +153,7 @@ import urlparse
 from . import DataStore
 from .Logger import ApplicationLogger
 from . import Template
-from .version import version
+from . import __version__
 
 PARENT_MARGIN = timedelta(minutes=2)
 
@@ -297,7 +297,7 @@ class ToService(object):
         """
 
         login = 'user %s pass %s vers pywws %s\n' % (
-            prepared_data['designator'], prepared_data['passcode'], version)
+            prepared_data['designator'], prepared_data['passcode'], __version__)
         packet = '%s>APRS,TCPIP*:@%sz%s/%s_%s/%sg%st%sr%sP%sb%sh%s.pywws-%s\n' % (
             prepared_data['designator'],   prepared_data['idx'],
             prepared_data['latitude'],     prepared_data['longitude'],
@@ -305,7 +305,7 @@ class ToService(object):
             prepared_data['wind_gust'],    prepared_data['temp_out'],
             prepared_data['rain_hour'],    prepared_data['rain_day'],
             prepared_data['rel_pressure'], prepared_data['hum_out'],
-            version
+            __version__
             )
         self.logger.debug('packet: "%s"', packet)
         sock = socket.socket()
@@ -352,6 +352,7 @@ class ToService(object):
         coded_data = urllib.urlencode(prepared_data)
         self.logger.debug(coded_data)
         new_ex = self.old_ex
+        extra_ex = []
         try:
             try:
                 if self.use_get:
@@ -381,10 +382,11 @@ class ToService(object):
             self.old_response = response
         except urllib2.HTTPError, ex:
             new_ex = str(ex)
-            extra_ex = ex.info(), ex.readlines()
+            extra_ex = ex.info().split('\n')
+            for line in ex.readlines():
+                extra_ex.append(re.sub('<+?>', '', line))
         except Exception, ex:
             new_ex = str(ex)
-            extra_ex = []
         if new_ex == self.old_ex:
             log = self.logger.debug
         else:
