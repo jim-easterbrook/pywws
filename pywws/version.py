@@ -19,5 +19,8 @@
 from __future__ import absolute_import
 from . import __version__
 
-if __name__ == '__main__':
+def main(argv=None):
     print(__version__)
+
+if __name__ == '__main__':
+    main()
