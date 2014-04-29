@@ -29,6 +29,7 @@ except ImportError:
     using_setuptools = False
 import os
 import subprocess
+import sys
 
 from pywws import __version__, _release, _commit
 
@@ -248,7 +249,11 @@ if using_setuptools:
 # add package requirements (setuptools only)
 setuptools_options = {}
 if using_setuptools:
-    setuptools_options['install_requires'] = ['pyusb >= 1.0.0b1']
+    if sys.platform.startswith('darwin'):
+        # Mac OS X can't use pyusb
+        setuptools_options['install_requires'] = ['ctypes >= 1.0.2']
+    else:
+        setuptools_options['install_requires'] = ['pyusb >= 1.0.0b1']
     setuptools_options['extras_require'] = {
         'daemon'  : ['python-daemon'],
         'sftp'    : ['paramiko', 'pycrypto'],
