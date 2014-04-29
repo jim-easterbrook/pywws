@@ -21,7 +21,6 @@
 """Regenerate hourly and daily summary data.
 
 ::
-
 %s
 
 This program recreates the calibrated, hourly, daily and monthly
@@ -44,6 +43,7 @@ __usage__ = """
  usage: %s [options] data_dir
  options are:
   -h | --help     display this help
+  -u | --update   update status on old data to include bits from wind_dir byte
   -v | --verbose  increase number of informative messages
  data_dir is the root directory of the weather data
 """
