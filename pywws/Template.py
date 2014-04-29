@@ -350,8 +350,10 @@ class Template(object):
             self.logger.error("No summary data - run Process.py first")
             return
         data = data_set[idx]
-        # open template file file
-        if sys.version_info[0] >= 3:
+        # open template file, if not already a file(like) object
+        if hasattr(template_file, 'readline'):
+            tmplt = template_file
+        elif sys.version_info[0] >= 3:
             tmplt = open(template_file, 'r', encoding=self.encoding)
         else:
             tmplt = open(template_file, 'r')
@@ -477,8 +479,6 @@ class Template(object):
                     self.logger.error(
                         "Unknown processing directive: #%s#", parts[i])
                     return
-        tmplt.close()
-        return
 
     def make_text(self, template_file, live_data=None):
         result = ''
