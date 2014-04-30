@@ -19,26 +19,36 @@
 Python programs and modules
 ===========================
 
-Programs:
-
-.. toctree::
-   :maxdepth: 1
-
-   scripts/pywws-hourly
-   scripts/pywws-livelog
-   scripts/pywws-livelog-daemon
-   scripts/pywws-reprocess
-
-Modules:
+Set up and configure pywws
+--------------------------
 
 .. autosummary::
    :toctree: api
 
-   pywws.TwitterAuth
-   pywws.SetWeatherStation
    pywws.TestWeatherStation
+   pywws.SetWeatherStation
+   pywws.version
+   pywws.Reprocess
+   pywws.TwitterAuth
    pywws.USBQualityTest
    pywws.EWtoPy
+
+Get data and process it
+-----------------------
+
+.. autosummary::
+   :toctree: api
+
+   pywws.Hourly
+   pywws.LiveLog
+   pywws.livelogdaemon
+
+"Internal" modules
+------------------
+
+.. autosummary::
+   :toctree: api
+
    pywws.Tasks
    pywws.LogData
    pywws.Process
@@ -53,13 +63,13 @@ Modules:
    pywws.toservice
    pywws.YoWindow
    pywws.WeatherStation
-   pywws.device_ctypes_hidapi
-   pywws.device_cython_hidapi
    pywws.device_pyusb1
    pywws.device_pyusb
+   pywws.device_ctypes_hidapi
+   pywws.device_cython_hidapi
    pywws.DataStore
    pywws.TimeZone
    pywws.Localisation
-   pywws.calib
    pywws.conversions
    pywws.Logger
+   pywws.constants
