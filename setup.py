@@ -20,18 +20,14 @@
 
 from datetime import date
 from distutils import log
-from distutils.cmd import Command
-try:
-    from setuptools import setup
-    using_setuptools = True
-except ImportError:
-    from distutils.core import setup
-    using_setuptools = False
 import os
+from setuptools import setup, Command
 import subprocess
 import sys
 
-from pywws import __version__, _release, _commit
+# read current version info without importing pywws package
+with open('pywws/__init__.py') as f:
+    exec(f.read())
 
 # regenerate version info, if required
 regenerate = False
@@ -241,24 +237,16 @@ except ImportError:
     pass
 
 # set options for uploading documentation to PyPI
-if using_setuptools:
-    command_options['upload_docs'] = {
-        'upload_dir' : ('setup.py', 'doc/html'),
-        }
+command_options['upload_docs'] = {
+    'upload_dir' : ('setup.py', 'doc/html'),
+    }
 
-# add package requirements (setuptools only)
-setuptools_options = {}
-if using_setuptools:
-    if sys.platform.startswith('darwin'):
-        # Mac OS X can't use pyusb
-        setuptools_options['install_requires'] = ['ctypes >= 1.0.2']
-    else:
-        setuptools_options['install_requires'] = ['pyusb >= 1.0.0b1']
-    setuptools_options['extras_require'] = {
-        'daemon'  : ['python-daemon'],
-        'sftp'    : ['paramiko', 'pycrypto'],
-        'twitter' : ['python-twitter >= 1.0', 'oauth2'],
-        }
+# package requirements
+if sys.platform.startswith('darwin'):
+    # Mac OS X can't use pyusb
+    install_requires = ['ctypes >= 1.0.2']
+else:
+    install_requires = ['pyusb >= 1.0.0b1']
 
 # set options for building distributions
 command_options['sdist'] = {
@@ -266,19 +254,22 @@ command_options['sdist'] = {
     'force_manifest' : ('setup.py', '1'),
     }
 
-# get lists of data files and scripts to install
-scripts = []
-for name in os.listdir('scripts'):
-    ext = os.path.splitext(name)[1].lower()
-    if ext == '.py':
-        scripts.append(os.path.join('scripts', name))
+# get list of data files to install
 data_files = []
 for root, dirs, files in os.walk('examples'):
     paths = []
     for name in files:
         paths.append(os.path.join(root, name))
     if paths:
-        data_files.append(('share/pywws/%s' % root, paths))
+        data_files.append((root, paths))
+for root, dirs, files in os.walk(os.path.join('doc', 'html')):
+    if 'doctree' in root:
+        continue
+    paths = []
+    for name in files:
+        paths.append(os.path.join(root, name))
+    if paths:
+        data_files.append((root, paths))
 
 setup(name = 'pywws',
       version = version,
@@ -313,9 +304,25 @@ pages showing recent weather readings, typically updated every hour.
       package_data = {
           'pywws' : ['services/*', 'lang/*/LC_MESSAGES/pywws.mo'],
           },
-      scripts = scripts,
       data_files = data_files,
       cmdclass = cmdclass,
       command_options = command_options,
-      **setuptools_options
+      entry_points = {
+          'console_scripts' : [
+              'pywws-hourly             = pywws.Hourly:main',
+              'pywws-livelog            = pywws.LiveLog:main',
+              'pywws-livelog-daemon     = pywws.livelogdaemon:main',
+              'pywws-reprocess          = pywws.Reprocess:main',
+              'pywws-setweatherstation  = pywws.SetWeatherStation:main',
+              'pywws-testweatherstation = pywws.TestWeatherStation:main',
+              'pywws-version            = pywws.version:main',
+              ],
+          },
+      install_requires = install_requires,
+      extras_require = {
+          'daemon'  : ['python-daemon'],
+          'sftp'    : ['paramiko', 'pycrypto'],
+          'twitter' : ['python-twitter >= 1.0', 'oauth2'],
+          },
+      zip_safe = False,
       )
