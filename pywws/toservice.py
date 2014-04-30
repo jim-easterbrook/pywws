@@ -143,6 +143,7 @@ from datetime import datetime, timedelta
 import getopt
 import logging
 import os
+import pkg_resources
 import re
 import socket
 import sys
@@ -201,8 +202,8 @@ class ToService(object):
         # open params file
         service_params = SafeConfigParser()
         service_params.optionxform = str
-        service_params.readfp(open(os.path.join(
-            os.path.dirname(__file__), 'services', '%s.ini' % (self.service_name))))
+        service_params.readfp(pkg_resources.resource_stream(
+            'pywws', 'services/%s.ini' % (self.service_name)))
         # get URL
         self.server = service_params.get('config', 'url')
         parsed_url = urlparse.urlsplit(self.server)
@@ -223,13 +224,12 @@ class ToService(object):
         self.templater = Template.Template(
             self.params, self.status, self.data, self.data, None, None,
             use_locale=False)
-        self.template_file = os.path.join(
-            os.path.dirname(__file__), 'services', '%s_template_%s.txt' % (
-                config_section, self.params.get('config', 'ws type')))
-        if not os.path.exists(self.template_file):
-            self.template_file = os.path.join(
-                os.path.dirname(__file__), 'services',
-                '%s_template_1080.txt' % (config_section))
+        template_name = 'services/%s_template_%s.txt' % (
+            config_section, self.params.get('config', 'ws type'))
+        if not pkg_resources.resource_exists('pywws', template_name):
+            template_name = 'services/%s_template_1080.txt' % (config_section)
+        self.template_file = pkg_resources.resource_stream(
+            'pywws', template_name)
         # get other parameters
         self.auth_type = service_params.get('config', 'auth_type')
         if self.auth_type == 'basic':
@@ -273,6 +273,7 @@ class ToService(object):
             return None
         # convert data
         prepared_data = eval(self.templater.make_text(self.template_file, data))
+        self.template_file.seek(0)
         prepared_data.update(self.fixed_data)
         return prepared_data
 
@@ -382,9 +383,9 @@ class ToService(object):
             self.old_response = response
         except urllib2.HTTPError, ex:
             new_ex = str(ex)
-            extra_ex = ex.info().split('\n')
+            extra_ex = str(ex.info()).split('\n')
             for line in ex.readlines():
-                extra_ex.append(re.sub('<+?>', '', line))
+                extra_ex.append(re.sub('<.+?>', '', line))
         except Exception, ex:
             new_ex = str(ex)
         if new_ex == self.old_ex:
@@ -394,7 +395,9 @@ class ToService(object):
             self.old_ex = new_ex
         log(new_ex)
         for extra in extra_ex:
-            log(extra)
+            extra = extra.strip()
+            if extra:
+                log(extra)
         return False
 
     def next_data(self, catchup, live_data):
