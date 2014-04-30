@@ -24,16 +24,12 @@ However, many of these packages won't be needed by most users.
 What you need depends on what you want to do with pywws.
 Remember, it's a "kit of parts" rather than a monolithic application.
 
-You may be able to install most of these using your operating system's package manager.
+Some of the requirements are Python packages that can be downloaded from the `Python Package Index (PyPI) <http://pypi.python.org/pypi>`_.
+I recommend using `pip <http://www.pip-installer.org/>`_ to install these.
+
+You should be able to install the remaining dependencies using your operating system's package manager.
 This is a lot easier than downloading and compiling source files from the project websites.
 Note that some Linux distributions use different names for some of the packages, e.g. in Ubuntu, pyusb is called python-usb.
-
-Alternatively, you may be able to install more recent versions of some of the libraries from the `Python Package Index (PyPI) <http://pypi.python.org/pypi>`_.
-I recommend installing `pip <http://www.pip-installer.org/>`_ (the package may be called python-pip) or `easy_install <http://peak.telecommunity.com/DevCenter/EasyInstall>`_.
-These both simplify installation of software from PyPI.
-For example, to install PyUSB from PyPI using the ``pip`` command::
-
-  sudo pip install pyusb
 
 Note: some of these libraries may have their own dependencies that you may need to install.
 Follow the links to read more about each library's requirements.
@@ -41,10 +37,18 @@ Follow the links to read more about each library's requirements.
 Essential
 ---------
 
-* `Python <http://python.org/>`_ version 2.5 or higher.
+* `Python <http://python.org/>`_ version 2.5 or higher
 
 Python 3 is supported, but some things might not work properly.
 If you find a problem with Python 3, please send a message to the `mailing list <http://groups.google.com/group/pywws>`_ or submit a `bug report on GitHub <https://github.com/jim-easterbrook/pywws/issues>`_.
+
+* `pip <http://www.pip-installer.org/>`_
+
+You will probably be able to install pip with your system's package manager, where it may be called python-pip.
+If not, download and run the ``get-pip.py`` file from the pip web site.
+In either case you should immediately use pip to install the latest version of itself::
+
+  sudo pip install --upgrade pip
 
 USB library
 ^^^^^^^^^^^
@@ -53,44 +57,52 @@ To retrieve data from a weather station pywws needs a python library that allows
 There is a variety of USB libraries that can be used.
 Not all of them are available on all computing platforms, which may restrict your choice.
 
-On MacOS X the operating system's generic hid driver "claims" the weather station, which prevents libusb from working.
-This restricts Mac users to option 3 or 4.
+Mac OS X
+""""""""
 
-* USB library option 1 (preferred, except on MacOS)
+On MacOS X the operating system's generic hid driver "claims" the weather station, which makes it very difficult to use anything other than an HID interface.
+Unfortunately, you will need to download and compile hidapi yourself.
 
-  *  `PyUSB <http://sourceforge.net/apps/trac/pyusb/>`_ version 1.0
-  *  `libusb <http://www.libusb.org/>`_ version 0.1 or version 1.0
+*  `hidapi <http://www.signal11.us/oss/hidapi/>`_
+*  `ctypes <http://docs.python.org/2/library/ctypes.html>`_ (your package manager may know it as python-ctypes)
 
-* USB library option 2 (if PyUSB 1.0 is not available)
+If you can't install ctypes then you can try the Cython interface to hidapi instead:
 
-  *  `PyUSB <http://sourceforge.net/apps/trac/pyusb/>`_ version 0.4
-  *  `libusb <http://www.libusb.org/>`_ version 0.1
+*  `cython-hidapi <https://github.com/gbishop/cython-hidapi>`_
+*  `cython <http://cython.org/>`_ (your package manager may know it as python-Cython)
 
-* USB library option 3 (best for MacOS)
+Other systems
+"""""""""""""
 
-  *  `hidapi <https://github.com/signal11/hidapi>`_
-  *  `ctypes <http://docs.python.org/2/library/ctypes.html>`_ (included with many Python installations)
+*  `libusb <http://www.libusb.org/>`_ version 0.1 or version 1.0 (should be available from the package manager)
+*  `PyUSB <http://sourceforge.net/apps/trac/pyusb/>`_ version 1.0
 
-* USB library option 4
+::
 
-  *  `hidapi <https://github.com/signal11/hidapi>`_
-  *  `cython-hidapi <https://github.com/gbishop/cython-hidapi>`_
-  *  `cython <http://cython.org/>`_
+  pip install pyusb==1.0.0b1
+
+If you can't install version 1 of PyUSB then version 0.4 can be used, provided you install version 0.1 of libusb.
+As a last resort you can use hidapi -- see the Mac OS X instructions above.
 
 Running as a daemon
 -------------------
 
-The :doc:`../scripts/pywws-livelog-daemon` program runs pywws live logging as a proper UNIX daemon process. It requires the ``python-daemon`` library:
+The :py:mod:`pywws.livelogdaemon` program runs pywws live logging as a proper UNIX daemon process.
+It requires the python-daemon library:
 
 *  `python-daemon <https://pypi.python.org/pypi/python-daemon/>`_
+
+::
+
+  pip install python-daemon
 
 Graph drawing
 -------------
 
-The :py:mod:`pywws.Plot` module uses ``gnuplot`` to draw graphs.
-If you want to produce graphs of weather data, e.g. to include in a web page, you need to install the ``gnuplot`` application:
+The :py:mod:`pywws.Plot` module uses gnuplot to draw graphs.
+If you want to produce graphs of weather data, e.g. to include in a web page, you need to install the gnuplot application:
 
-*  `gnuplot <http://www.gnuplot.info/>`_ v4.2 or higher
+*  `gnuplot <http://www.gnuplot.info/>`_ v4.2 or higher (should be available from the package manager)
 
 Secure website uploading (sftp)
 -------------------------------
@@ -101,6 +113,10 @@ Normal uploading just uses Python's standard modules, but if you want to use sft
 *  `paramiko <https://github.com/paramiko/paramiko>`_
 *  `pycrypto <http://www.dlitz.net/software/pycrypto/>`_
 
+::
+
+   sudo pip install pycrypto paramiko
+
 .. _dependencies-twitter:
 
 Twitter updates
@@ -110,11 +126,20 @@ The :py:mod:`pywws.ToTwitter` module can be used to send weather status messages
 Posting to Twitter requires these modules:
 
 *  `python-twitter <https://github.com/bear/python-twitter>`_ v1.0 or higher
-   **or**
-   `tweepy <https://github.com/tweepy/tweepy>`_ v2.0 or higher
-*  `simplejson <https://github.com/simplejson/simplejson>`_
 *  `python-oauth2 <https://github.com/simplegeo/python-oauth2>`_
-*  `httplib2 <http://code.google.com/p/httplib2/>`_
+
+::
+
+  sudo pip install python-twitter oauth2
+
+**or**
+
+*   `tweepy <https://github.com/tweepy/tweepy>`_ v2.0 or higher
+*  `python-oauth2 <https://github.com/simplegeo/python-oauth2>`_
+
+::
+
+  sudo pip install tweepy oauth2
 
 .. versionchanged:: 13.10_r1086
    reenabled use of ``tweepy`` library as an alternative to ``python-twitter``.
@@ -128,18 +153,22 @@ To create new language translations
 
 pywws can be configured to use languages other than English, and the documentation can also be translated into other languages.
 See :doc:`../guides/language` for more information.
-The ``gettext`` package is required to extract the strings to be translated and compile the translation files.
+The gettext package is required to extract the strings to be translated and compile the translation files.
 
-*  `gettext <http://www.gnu.org/s/gettext/>`_
+*  `gettext <http://www.gnu.org/s/gettext/>`_ (should be available from the package manager)
 
 To 'compile' the documentation
 ------------------------------
 
 The documentation of pywws is written in "ReStructured text".
-A program called ``Sphinx`` is used to convert this easy to write format into HTML for use with a web browser.
-If you'd like to create a local copy of the documentation (so you don't have to rely on the online version, or to test a translation you're working on) you need to install ``Sphinx``.
+A program called Sphinx is used to convert this easy to write format into HTML for use with a web browser.
+If you'd like to create a local copy of the documentation (so you don't have to rely on the online version, or to test a translation you're working on) you need to install Sphinx.
 
-*  `sphinx <http://sphinx-doc.org/>`_
+*  `Sphinx <http://sphinx-doc.org/>`_
+
+::
+
+  sudo pip install sphinx
 
 ----
 
