@@ -241,13 +241,6 @@ command_options['upload_docs'] = {
     'upload_dir' : ('setup.py', 'doc/html'),
     }
 
-# package requirements
-if sys.platform.startswith('darwin'):
-    # Mac OS X can't use pyusb
-    install_requires = ['ctypes >= 1.0.2']
-else:
-    install_requires = ['pyusb >= 1.0.0b1']
-
 # set options for building distributions
 command_options['sdist'] = {
     'formats'        : ('setup.py', 'gztar zip'),
@@ -318,7 +311,6 @@ pages showing recent weather readings, typically updated every hour.
               'pywws-version            = pywws.version:main',
               ],
           },
-      install_requires = install_requires,
       extras_require = {
           'daemon'  : ['python-daemon'],
           'sftp'    : ['paramiko', 'pycrypto'],
