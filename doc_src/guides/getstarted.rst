@@ -98,8 +98,8 @@ If you have not installed pywws with pip, you need to use setup.py to generate t
    cd ~/weather/pywws
    sudo python setup.py develop
 
-Note to Python 3 users: this will generate Python 3 versions of the pywws software in ``~/weather/pywws/build/lib``.
-You will need to change to this directory before running any of the ``python -m pywws.xxx`` commands referred to elsewhere in the documentation.
+Note to Python 3 users: this will generate and use Python 3 versions of the pywws software in ``~/weather/pywws/build/lib``.
+Because your pywws directory (``~/weather/pywws``) contains the Python 2 pywws package you will need to change to a different directory before running any of the ``python -m pywws.xxx`` commands referred to elsewhere in the documentation.
 
 .. _test-weather-station:
 
