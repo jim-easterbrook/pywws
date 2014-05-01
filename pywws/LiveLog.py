@@ -20,10 +20,9 @@
 
 """Get weather data, store it, and process it.
 
-Run this continuously, having set what tasks are to be done. ::
-
+Run this continuously, having set what tasks are to be done. This
+script can also be run with the ``pywws-livelog`` command. ::
 %s
-
 For more information on using ``LiveLog.py``, see
 :doc:`../guides/livelogging`.
 

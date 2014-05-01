@@ -53,42 +53,16 @@ You'll need Python 2.5 or later -- Python 3 is partially supported, some functio
 
 For more detail, see :doc:`essentials/dependencies`.
 
-***********************
-Getting a copy of pywws
-***********************
+******************************
+Installing and upgrading pywws
+******************************
 
-The simplest way to obtain pywws is to use ``pip`` to install it directly from the `Python Package Index (PyPI) <http://pypi.python.org/pypi/pywws/>`_.
-Note that this will probably require 'root' privileges, so will need to be run using ``sudo``::
+pywws can be installed directly from the `Python Package Index (PyPI) <http://pypi.python.org/pypi/pywws/>`_ using the pip command.
+See :doc:`guides/getstarted` for full instructions.
 
-   sudo pip install pywws
-
-If you don't have root privileges, or don't want to install pywws into the system directories, you can download a zip or tar.gz file from PyPI and then extract the files into any convenient directory on your computer.
-
-The PyPI files contain a snapshot release of the software - a new one is issued every few months.
-If you'd like to keep up to date with latest developments of pywws, you should use ``git`` to clone the pywws repository::
-
-   git clone https://github.com/jim-easterbrook/pywws.git
-
-After doing so you can compile the documentation and language localisation files (which will require the ``sphinx`` and ``gettext`` dependencies)::
-
-   cd pywws
-   python setup.py msgfmt
-   python setup.py build_sphinx
-
-This is optional -- the documentation is available online and you might prefer to use pywws in English.
-
-For more details, see :doc:`guides/getstarted`.
-
-Upgrading pywws
-===============
-
-The method used to upgrade pywws depends on how you originally obtained it. If you downloaded a zip or tar.gz file, you just need to do the same again, with the new version, then delete your old download when you've finished setting up the new one. (Note that upgrading is much easier if you do not keep your templates, user modules and weather data in the same directory as the downloaded files.)
-``git`` users just need to do a ``git pull`` command.
-If you used ``pip`` you need to use the upgrade option::
-
-   sudo pip install pywws -U
-
-Some new versions of pywws have changed what's stored in the hourly, daily or monthly summary data files. These new versions are incompatible with processed data from earlier versions. The :doc:`scripts/pywws-reprocess` script regenerates all the summary data. It should be run after any major upgrade.
+Some new versions of pywws change what's stored in the hourly, daily or monthly summary data files.
+These new versions are incompatible with processed data from earlier versions.
+The :py:mod:`pywws.Reprocess` script regenerates all the summary data. It should be run after any major upgrade.
 
 *************
 Documentation

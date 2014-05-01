@@ -19,14 +19,11 @@
 How to get started with pywws
 =============================
 
-Install dependencies
---------------------
+Installation
+------------
 
-Before you can do anything with pywws you need to install Python and some USB libraries (to allow Python to access the weather station).
+First of all you need to install Python and a USB library (to allow Python to access the weather station).
 See :doc:`../essentials/dependencies` for more detail.
-
-Download the pywws software
----------------------------
 
 Create a directory for all your weather related files and change to it.
 For example (on a Linux or similar operating system)::
@@ -34,96 +31,85 @@ For example (on a Linux or similar operating system)::
    mkdir ~/weather
    cd ~/weather
 
-You can install pywws directly from PyPI using ``pip`` or ``easy_install``, or you can download and extract the files into your weather directory.
-This has the advantage that you can easily read the Python modules and other files.
-It also allows you to run pywws software without the 'root' privileges usually needed to install software.
-
 Easy installation
 ^^^^^^^^^^^^^^^^^
 
-This is a simple one line command::
+The easiest way to install pywws is with the pip command::
 
    sudo pip install pywws
 
-The directories everything gets installed to depend on your operating system and Python version.
-The pywws modules are installed in the 'site-packages' directory (e.g. ``/usr/lib/python2.7/site-packages``).
-Typically the scripts are installed in ``/usr/bin``, and the example files are installed in ``/usr/share/pywws``, but other directories (such as ``/usr/local/share``) could be used.
-
 Upgrading pywws is also a one line command::
 
-   sudo pip install pywws -U
+   sudo pip install -U pywws
+
+Now you are ready to :ref:`test-weather-station`.
 
 Download and extract
 ^^^^^^^^^^^^^^^^^^^^
 
-You can either download a snapshot release from PyPI, or you can use ``git`` to get the most up to date development version of pywws.
+If you prefer not to use pip, or you want easy access to the pywws source files (e.g. to translate the documentation -- see :doc:`language`), you can download and extract the files into your weather directory.
 
-To download a snapshot, visit http://pypi.python.org/pypi/pywws/ and download one of the .tar.gz or .zip files. Put it in your weather directory, then extract all the files, for example::
+Visit http://pypi.python.org/pypi/pywws/ and download one of the .tar.gz or .zip files. Put it in your weather directory, then extract all the files, for example::
 
    cd ~/weather
-   tar zxvf pywws-12.11_95babb0.tar.gz
+   tar zxvf pywws-14.03.dev1178.tar.gz
 
 or::
 
    cd ~/weather
-   unzip pywws-12.11_95babb0.zip
+   unzip pywws-14.03.dev1178.zip
 
-This should create a directory (called ``pywws-12.11_95babb0`` in this example) containing all the pywws source files.
+This should create a directory (called ``pywws-14.03.dev1178`` in this example) containing all the pywws source files.
 It is convenient to create a soft link to this awkwardly named directory::
 
    cd ~/weather
-   ln -s pywws-12.11_95babb0 pywws
-
-Alternatively, to get the latest development version of pywws use ``git clone``::
-
-   cd ~/weather
-   git clone https://github.com/jim-easterbrook/pywws.git
-
-After cloning you may want to use ``setup.py`` to compile the language files and documentation, if you have installed the ``gettext`` and ``sphinx`` packages::
-
-   cd ~/weather/pywws
-   python setup.py msgfmt
-   python setup.py build_sphinx
-
-After downloading and extracting, or cloning the repos, you can then use ``setup.py`` to build and install everything::
-
-   cd ~/weather/pywws
-   python setup.py build
-   sudo python setup.py install
-
-This is optional, and installs into the same directories as using ``pip`` would.
-If you don't do this installation process, you will only be able to run pywws modules from your pywws directory.
-
-Upgrading a cloned repos is done with ``git pull``, after which you can recompile and reinstall if you wish::
-
-   cd ~/weather/pywws
-   git pull
+   ln -s pywws-14.03.dev1178 pywws
 
 Upgrading a downloaded snapshot is the same process as the first installation.
 Download the .tar.gz or .zip file, extract its contents, then delete the soft link pointing to the old download and create one pointing to the new download.
 Once you are satisfied the new version is working OK you can delete the old download entirely.
 
-(Python 3 users only) Translate pywws to Python 3
--------------------------------------------------
+Clone the repository
+^^^^^^^^^^^^^^^^^^^^
 
-If your default Python version is 3.x and you installed pywws using ``pip``, or ran ``python setup.py install``, the code will already have been translated from Python 2 to Python 3 as part of the installation process.
-If not, you need to use setup.py to do the translation and create a Python 3 installation::
+The PyPI files contain a snapshot release of the software - a new one is issued every few months.
+If you want to use the very latest version of pywws, e.g. to work on fixing a bug, you can get all the files you need from the `GitHub repository <https://github.com/jim-easterbrook/pywws>`_.
+Install git and use it to clone the repos::
+
+   cd ~/weather
+   git clone https://github.com/jim-easterbrook/pywws.git
+
+After cloning you may want to use setup.py to compile the language files and documentation, if you have installed the gettext and sphinx packages::
 
    cd ~/weather/pywws
-   rm -Rf build
-   python3 setup.py build
-   sudo python3 setup.py install
+   python setup.py msgfmt
+   python setup.py build_sphinx
+
+To upgrade you use git to pull any changes::
+
+   cd ~/weather/pywws
+   git pull
+
+Install scripts
+^^^^^^^^^^^^^^^
+
+If you have not installed pywws with pip, you need to use setup.py to generate the "entry point" scripts for common pywws tasks::
+
+   cd ~/weather/pywws
+   sudo python setup.py develop
+
+Note to Python 3 users: this will generate Python 3 versions of the pywws software in ``~/weather/pywws/build/lib``.
+You will need to change to this directory before running any of the ``python -m pywws.xxx`` commands referred to elsewhere in the documentation.
+
+.. _test-weather-station:
 
 Test the weather station connection
 -----------------------------------
 
-Finally you're ready to test your pywws installation.
-Connect the weather station (if not already connected) then run the :py:mod:`pywws.TestWeatherStation` module.
-If you have downloaded but not installed pywws, then don't forget to change to the pywws directory first.
-For example::
+Now you're ready to test your pywws installation.
+Connect the weather station (if not already connected) then run the :py:mod:`pywws.TestWeatherStation` module::
 
-   cd ~/weather/pywws
-   python -m pywws.TestWeatherStation
+   pywws-testweatherstation
 
 If everything is working correctly, this should dump a load of numbers to the screen, for example::
 
@@ -140,7 +126,7 @@ There are several reasons why this might not work.
 Most likely is a 'permissions' problem.
 This can be tested by running the command as root::
 
-   sudo python -m pywws.TestWeatherStation
+   sudo pywws-testweatherstation
 
 If this works then you may be able to allow your normal user account to access the weather station by setting up a 'udev' rule.
 See the compatibility wiki page http://code.google.com/p/pywws/wiki/Compatibility for more details.
@@ -166,7 +152,7 @@ Most pywws users set up their computers to read data from the station every hour
 The recommended interval is 5 minutes, which still allows 2 weeks of storage.
 Use :py:mod:`pywws.SetWeatherStation` to set the interval::
 
-   python -m pywws.SetWeatherStation -r 5
+   pywws-setweatherstation -r 5
 
 Log your weather station data
 -----------------------------
@@ -267,10 +253,5 @@ You are now ready to set up regular or continuous logging, as described in :doc:
 Read the documentation
 ----------------------
 
-The doc directory in your pywws source directory contains HTML documentation (unless you did a direct installation with ``pip``).
-The HTML files can be read with any web browser.
-Start with the index (:doc:`../index`) and follow links from there.
-
-----
-
-Comments or questions? Please subscribe to the pywws mailing list http://groups.google.com/group/pywws and let us know.
+The ``pywws-version -v`` command will show you the location of the pywws documentation.
+These HTML files can be read with any web browser.

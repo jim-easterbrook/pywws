@@ -75,6 +75,13 @@ autodoc_default_flags = ['members', 'undoc-members']
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 
+rst_epilog = """
+----
+
+Comments or questions? Please subscribe to the pywws mailing list
+http://groups.google.com/group/pywws and let us know.
+"""
+
 # The suffix of source filenames.
 source_suffix = '.rst'
 

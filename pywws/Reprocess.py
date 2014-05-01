@@ -20,9 +20,8 @@
 
 """Regenerate hourly and daily summary data.
 
-::
+This script can also be run with the ``pywws-reprocess`` command. ::
 %s
-
 This program recreates the calibrated, hourly, daily and monthly
 summary data that is created by the :py:mod:`pywws.Process` module. It
 should be run whenever you upgrade to a newer version of pywws (if the

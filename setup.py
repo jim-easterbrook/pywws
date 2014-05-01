@@ -23,7 +23,6 @@ from distutils import log
 import os
 from setuptools import setup, Command
 import subprocess
-import sys
 
 # read current version info without importing pywws package
 with open('pywws/__init__.py') as f:

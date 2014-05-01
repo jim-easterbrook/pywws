@@ -23,12 +23,12 @@ Introduction
 ------------
 
 There are two quite different modes of operation with pywws.
-Traditionally :doc:`../scripts/pywws-hourly` would be run at regular intervals (usually an hour) from cron.
+Traditionally :py:mod:`pywws.Hourly` would be run at regular intervals (usually an hour) from cron.
 This is suitable for fairly static websites, but more frequent updates can be useful for sites such as Weather Underground (http://www.wunderground.com/).
-The newer :doc:`../scripts/pywws-livelog` program runs continuously and can upload data every 48 seconds.
+The newer :py:mod:`pywws.LiveLog` program runs continuously and can upload data every 48 seconds.
 
-Note that although this document (and the program name) refers to 'hourly' logging, you can run  :doc:`../scripts/pywws-hourly` as often or as infrequently as you like, but don't try to run it more often than double your logging interval.
-For example, if your logging interval is 10 minutes, don't run :doc:`../scripts/pywws-hourly` more often than every 20 minutes.
+Note that although this document (and the program name) refers to 'hourly' logging, you can run  :py:mod:`pywws.Hourly` as often or as infrequently as you like, but don't try to run it more often than double your logging interval.
+For example, if your logging interval is 10 minutes, don't run :py:mod:`pywws.Hourly` more often than every 20 minutes.
 
 Getting started
 ---------------
@@ -36,17 +36,15 @@ Getting started
 First of all, you need to install pywws and make sure it can get data from your weather station.
 See :doc:`getstarted` for details.
 
-Try running :doc:`../scripts/pywws-hourly` from the command line, with a high level of verbosity so you can see what's happening.
-If you have installed pywws using ``pip`` or ``python setup.py install`` then you should be able to use the pywws scripts directly::
+Try running :py:mod:`pywws.Hourly` from the command line, with a high level of verbosity so you can see what's happening.
+Use the ``pywws-hourly`` command to run :py:mod:`pywws.Hourly`::
 
-   pywws-hourly.py -vvv ~/weather/data
-
-Otherwise you need to change to the pywws directory first::
-
-   cd ~/weather/pywws
-   scripts/pywws-hourly.py -vvv ~/weather/data
+   pywws-hourly -vvv ~/weather/data
 
 Within five minutes (assuming you have set a 5 minute logging interval) you should see a 'live_data new ptr' message, followed by fetching any new data from the weather station and processing it.
+
+.. versionchanged:: 14.04.dev1194
+   the ``pywws-hourly`` command replaced ``scripts/pywws-hourly.py``.
 
 Configuring file locations
 --------------------------
@@ -66,7 +64,10 @@ Don't use the pywws example directories for your templates, as they will get ove
 
 Copy your text and graph templates to the appropriate directories.
 You may find some of the examples provided with pywws useful to get started.
-If you installed pywws with ``pip`` the examples should be in ``/usr/share/pywws`` or ``/usr/local/share/pywws`` or similar.
+The ``pywws-version -v`` command should show you where the examples are on your computer.
+
+.. versionadded:: 14.04.dev1194
+   the ``pywws-version`` command.
 
 Configuring periodic tasks
 --------------------------
@@ -81,7 +82,7 @@ In weather.ini you should have ``[logged]``, ``[hourly]``, ``[12 hourly]`` and `
    [hourly]
    ...
 
-These specify what :doc:`../scripts/pywws-hourly` should do when it is run.
+These specify what :py:mod:`pywws.Hourly` should do when it is run.
 Tasks in the ``[logged]`` section are done every time there is new logged data, tasks in the ``[hourly]`` section are done every hour, tasks in the ``[12 hourly]`` section are done twice daily and tasks in the ``[daily]`` section are done once per day.
 
 The ``services`` entry is a list of online weather services to upload data to.
@@ -110,9 +111,9 @@ Add the names of your template files and weather services to the appropriate ent
 
 Note the use of the ``'T'`` flag -- this tells pywws to send the template result to Twitter instead of uploading it to your ftp site.
 
-You can test that all these are working by removing the ``[last update]`` section from status.ini, then running :doc:`../scripts/pywws-hourly` again::
+You can test that all these are working by removing the ``[last update]`` section from status.ini, then running :py:mod:`pywws.Hourly` again::
 
-   pywws-hourly.py -v ~/weather/data
+   pywws-hourly -v ~/weather/data
 
 .. versionchanged:: 13.06_r1015
    added the ``'T'`` flag.
@@ -120,19 +121,19 @@ You can test that all these are working by removing the ``[last update]`` sectio
    The older syntax still works, but is deprecated.
 
 .. versionchanged:: 13.05_r1009
-   The last update information was previously stored in weather.ini, with ``last update`` entries in several sections.
+   the last update information was previously stored in weather.ini, with ``last update`` entries in several sections.
 
 Run as a cron job
 -----------------
 
 Most UNIX/Linux systems have a 'cron' daemon that can run programs at certain times, even if you are not logged in to the computer.
 You edit a 'crontab' file to specify what to run and when to run  it.
-For example, to run :doc:`../scripts/pywws-hourly` every hour, at zero minutes past the hour::
+For example, to run :py:mod:`pywws.Hourly` every hour, at zero minutes past the hour::
 
-   0 * * * *       pywws-hourly.py /home/xxx/weather/data
+   0 * * * *       pywws-hourly /home/xxx/weather/data
 
 This might work, but if it didn't you probably won't get any error messages to tell you what went wrong.
-It's much better to run a script that runs :doc:`../scripts/pywws-hourly` and then emails you any output it produces.
+It's much better to run a script that runs :py:mod:`pywws.Hourly` and then emails you any output it produces.
 Here's the script I use::
 
    #!/bin/sh
@@ -145,13 +146,9 @@ Here's the script I use::
 
    log=/var/log/log-weather
 
-   pywws-hourly.py -v /data/weather >$log 2>&1
+   pywws-hourly -v /data/weather >$log 2>&1
 
    # mail the log file
    /home/jim/scripts/email-log.sh $log "weather log"
 
 You’ll need to edit this quite a lot to suit your file locations and so on, but it gives some idea of what to do.
-
-----
-
-Comments or questions? Please subscribe to the pywws mailing list http://groups.google.com/group/pywws and let us know.

@@ -16,14 +16,23 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
+"""Display pywws version information.
+
+This script can also be run with the ``pywws-version`` command. ::
+%s
+
+"""
+
 from __future__ import absolute_import
 
+__docformat__ = "restructuredtext en"
 __usage__ = """
  usage: %s [options]
  options are:
   -h      or --help      display this help
   -v      or --verbose   show verbose version information
 """
+__doc__ %= __usage__ % ('python -m pywws.version')
 
 import getopt
 import os
@@ -46,6 +55,7 @@ def main(argv=None):
     verbose = False
     for o, a in opts:
         if o in ('-h', '--help'):
+            print __doc__.split('\n\n')[0]
             print usage
             return 0
         elif o in ('-v', '--verbose'):

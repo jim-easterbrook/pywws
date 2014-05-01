@@ -60,7 +60,7 @@ Not all of them are available on all computing platforms, which may restrict you
 Mac OS X
 """"""""
 
-On MacOS X the operating system's generic hid driver "claims" the weather station, which makes it very difficult to use anything other than an HID interface.
+On MacOS X the operating system's generic hid driver "claims" the weather station, which makes it very difficult to use any other USB interface.
 Unfortunately, you will need to download and compile hidapi yourself.
 
 *  `hidapi <http://www.signal11.us/oss/hidapi/>`_
@@ -81,7 +81,8 @@ Other systems
 
   pip install pyusb==1.0.0b1
 
-If you can't install version 1 of PyUSB then version 0.4 can be used, provided you install version 0.1 of libusb.
+If you have problems with version 1 of PyUSB then version 0.4 can be used, provided you install version 0.1 of libusb.
+Your system package manager should have both libraries.
 As a last resort you can use hidapi -- see the Mac OS X instructions above.
 
 Running as a daemon
@@ -169,7 +170,3 @@ If you'd like to create a local copy of the documentation (so you don't have to 
 ::
 
   sudo pip install sphinx
-
-----
-
-Comments or questions? Please subscribe to the pywws mailing list http://groups.google.com/group/pywws and let us know.

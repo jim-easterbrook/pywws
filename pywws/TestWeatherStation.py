@@ -20,14 +20,16 @@
 
 """Test connection to weather station.
 
+This script can also be run with the ``pywws-testweatherstation``
+command. ::
+%s
 This is a simple utility to test communication with the weather
 station. If this doesn't work, then there's a problem that needs to be
 sorted out before trying any of the other programs. Likely problems
 include not properly installing the USB libraries, or a permissions
 problem. The most unlikely problem is that you forgot to connect the
-weather station to your computer! ::
+weather station to your computer!
 
-%s
 """
 
 from __future__ import absolute_import
@@ -35,15 +37,15 @@ from __future__ import absolute_import
 __usage__ = """
  usage: %s [options]
  options are:
-       --help           display this help
-  -c | --change         display any changes in "fixed block" data
-  -d | --decode         display meaningful values instead of raw data
-  -h | --history count  display the last "count" readings
-  -l | --live           display 'live' data
-  -m | --logged         display 'logged' data
-  -u | --unknown        display unknown fixed block values
-  -v | --verbose        increase amount of reassuring messages
-                        (repeat for even more messages e.g. -vvv)
+         --help       display this help
+  -c   | --change     display any changes in "fixed block" data
+  -d   | --decode     display meaningful values instead of raw data
+  -h n | --history n  display the last "n" readings
+  -l   | --live       display 'live' data
+  -m   | --logged     display 'logged' data
+  -u   | --unknown    display unknown fixed block values
+  -v   | --verbose    increase amount of reassuring messages
+                      (repeat for even more messages e.g. -vvv)
 """
 
 __doc__ %= __usage__ % ('python -m pywws.TestWeatherStation')

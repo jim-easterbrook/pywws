@@ -20,10 +20,8 @@
 
 """Run 'live logging' as a UNIX daemon.
 
-::
-
+This script can also be run with the ``pywws-livelog-daemon`` command. ::
 %s
-
 Requires the python-daemon library.
 
 If you get a "function() argument 1 must be code, not str" error, try
