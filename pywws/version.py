@@ -36,7 +36,7 @@ __doc__ %= __usage__ % ('python -m pywws.version')
 
 import getopt
 import os
-from pkg_resources import Requirement, resource_filename
+from pkg_resources import resource_filename
 import sys
 
 from . import __version__, _commit
@@ -74,9 +74,7 @@ def main(argv=None):
             print 'USB:   ', USBDevice.__module__
         except ImportError:
             print 'USB:    missing'
-        example_dir = resource_filename(Requirement.parse('pywws'), 'examples')
-        if not os.path.exists(example_dir):
-            example_dir = os.path.join(sys.prefix, 'share', 'pywws', 'examples')
+        example_dir = resource_filename('pywws', 'examples')
         if os.path.exists(example_dir):
             print 'examples:'
             print '  ', example_dir

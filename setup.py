@@ -229,7 +229,7 @@ except ImportError:
 
 # set options for uploading documentation to PyPI
 command_options['upload_docs'] = {
-    'upload_dir' : ('setup.py', 'doc/html'),
+    'upload_dir' : ('setup.py', 'pywws/doc'),
     }
 
 # set options for building distributions
@@ -237,15 +237,6 @@ command_options['sdist'] = {
     'formats'        : ('setup.py', 'gztar zip'),
     'force_manifest' : ('setup.py', '1'),
     }
-
-# get list of data files to install
-data_files = []
-for root, dirs, files in os.walk('examples'):
-    paths = []
-    for name in files:
-        paths.append(os.path.join(root, name))
-    if paths:
-        data_files.append((root, paths))
 
 setup(name = 'pywws',
       version = version,
@@ -282,9 +273,9 @@ pages showing recent weather readings, typically updated every hour.
               'services/*',
               'lang/*/LC_MESSAGES/pywws.mo',
               'doc/*.*', 'doc/*/html/*.*', 'doc/*/html/*/*.*', 'doc/*/html/*/*/*',
+              'examples/*/*.*', 'examples/*/*/*.*',
               ],
           },
-      data_files = data_files,
       cmdclass = cmdclass,
       command_options = command_options,
       entry_points = {
