@@ -235,7 +235,6 @@ command_options['upload_docs'] = {
 # set options for building distributions
 command_options['sdist'] = {
     'formats'        : ('setup.py', 'gztar zip'),
-    'force_manifest' : ('setup.py', '1'),
     }
 
 setup(name = 'pywws',
