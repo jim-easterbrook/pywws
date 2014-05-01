@@ -185,13 +185,6 @@ class msgfmt(Command):
 cmdclass = {}
 command_options = {}
 
-# if using Python 3, translate during build
-try:
-    from distutils.command.build_py import build_py_2to3 as build_py
-    cmdclass['build_py'] = build_py
-except ImportError:
-    pass
-
 if 'LANG' in os.environ:
     lang = os.environ['LANG'].split('_')[0]
 else:
@@ -317,4 +310,5 @@ pages showing recent weather readings, typically updated every hour.
           'twitter' : ['python-twitter >= 1.0', 'oauth2'],
           },
       zip_safe = False,
+      use_2to3 = True,
       )
