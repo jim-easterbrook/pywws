@@ -211,12 +211,11 @@ command_options['msgfmt'] = {
 try:
     from sphinx.setup_command import BuildDoc
     # compile documentation to html
-    builder = 'html'
     cmdclass['build_sphinx'] = BuildDoc
     command_options['build_sphinx'] = {
         'source_dir' : ('setup.py', 'doc_src'),
-        'build_dir'  : ('setup.py', 'doc/%s/%s' % (builder, lang)),
-        'builder'    : ('setup.py', builder),
+        'build_dir'  : ('setup.py', 'pywws/doc/%s' % (lang)),
+        'builder'    : ('setup.py', 'html'),
         }
     # extract strings for translation
     cmdclass['xgettext_doc'] = BuildDoc
@@ -242,14 +241,6 @@ command_options['sdist'] = {
 # get list of data files to install
 data_files = []
 for root, dirs, files in os.walk('examples'):
-    paths = []
-    for name in files:
-        paths.append(os.path.join(root, name))
-    if paths:
-        data_files.append((root, paths))
-for root, dirs, files in os.walk(os.path.join('doc', 'html')):
-    if 'doctree' in root:
-        continue
     paths = []
     for name in files:
         paths.append(os.path.join(root, name))
@@ -287,7 +278,11 @@ pages showing recent weather readings, typically updated every hour.
       platforms = ['POSIX', 'MacOS', 'Windows'],
       packages = ['pywws'],
       package_data = {
-          'pywws' : ['services/*', 'lang/*/LC_MESSAGES/pywws.mo'],
+          'pywws' : [
+              'services/*',
+              'lang/*/LC_MESSAGES/pywws.mo',
+              'doc/*.*', 'doc/*/html/*.*', 'doc/*/html/*/*.*', 'doc/*/html/*/*/*',
+              ],
           },
       data_files = data_files,
       cmdclass = cmdclass,

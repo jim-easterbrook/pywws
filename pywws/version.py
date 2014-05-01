@@ -80,11 +80,7 @@ def main(argv=None):
         if os.path.exists(example_dir):
             print 'examples:'
             print '  ', example_dir
-        doc_index = resource_filename(
-            Requirement.parse('pywws'), 'doc/html/index.html')
-        if not os.path.exists(doc_index):
-            doc_index = os.path.join(
-                sys.prefix, 'share', 'pywws', 'doc', 'html', 'index.html')
+        doc_index = resource_filename('pywws', 'doc/index.html')
         if os.path.exists(doc_index):
             doc_index = 'file://%s' % doc_index
         else:
