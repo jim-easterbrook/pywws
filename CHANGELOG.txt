@@ -16,6 +16,12 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
+Changes in v14.05:
+    1/ Rearranged package layout, moving examples and documentation.
+    2/ Added 'entry point' auto-generated commands for some modules.
+    3/ Added verbose output option to pywws-version command.
+    4/ Various bug fixes and minor improvements.
+
 Changes in v14.03:
     1/ Extracts additional status from 'wind_dir' byte. You must run
        pywws-reprocess.py with the -u option after upgrading from any previous
