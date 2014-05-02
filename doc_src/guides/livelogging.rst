@@ -167,6 +167,8 @@ My solution to both problems is to run the following script from cron, several t
 
    #!/bin/sh
 
+   export PATH=$PATH:/usr/local/bin
+
    # exit if NTP hasn't set computer clock
    [ `ntpdc -c sysinfo | awk '/stratum:/ {print $2}'` -ge 10 ] && exit
 

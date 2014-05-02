@@ -140,13 +140,15 @@ Here's the script I use::
    #
    # weather station logger calling script
 
-   if [ ! -d /data/weather/ ]; then
+   export PATH=$PATH:/usr/local/bin
+
+   if [ ! -d ~/weather/data/ ]; then
      exit
      fi
 
    log=/var/log/log-weather
 
-   pywws-hourly -v /data/weather >$log 2>&1
+   pywws-hourly -v ~/weather/data >$log 2>&1
 
    # mail the log file
    /home/jim/scripts/email-log.sh $log "weather log"

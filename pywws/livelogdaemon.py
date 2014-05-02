@@ -40,7 +40,7 @@ __usage__ = """
   -h      or --help        display this help
   -p file or --pid file    store pid in 'file' (default /run/lock/pywws.pid)
   -v      or --verbose     increase amount of logging messages
- data_dir is the root directory of the weather data (e.g. /data/weather)
+ data_dir is the root directory of the weather data (e.g. ~/weather/data)
  log_file is a file to write logging to, e.g. /var/log/pywws.log
 """
 __doc__ %= __usage__ % ('python -m pywws.livelogdaemon')

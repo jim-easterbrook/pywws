@@ -39,9 +39,9 @@ Use an empty 'data' directory -- a ``weather.ini`` file will be created whose co
 
 Make sure no other pywws software is running, then run :py:mod:`~pywws.TwitterAuth`::
 
-   python -m pywws.TwitterAuth /data/weather
+   python -m pywws.TwitterAuth ~/weather/data
 
-(Replace ``/data/weather`` with your data directory.)
+(Replace ``~/weather/data`` with your data directory.)
 
 This will open a web browser window (or give you a URL to copy to your web browser) where you can log in to your Twitter account and authorise pywws to post.
 Your web browser will then show a 7 digit number which you need to copy to the :py:mod:`~pywws.TwitterAuth` program.
@@ -66,10 +66,10 @@ Create a template
 Twitter messages are generated using a template, just like creating files to upload to a website.
 Copy the example template 'tweet.txt' to your template directory, then test it::
 
-   python -m pywws.Template /data/weather ~/weather/templates/tweet.txt tweet.txt
+   python -m pywws.Template ~/weather/data ~/weather/templates/tweet.txt tweet.txt
    cat tweet.txt
 
-(Replace ``/data/weather`` and ``~/weather/templates`` with your data and template directories.)
+(Replace ``~/weather/data`` and ``~/weather/templates`` with your data and template directories.)
 If you need to change the template (e.g. to change the units or language used) you can edit it now or later.
 
 Post your first weather Tweet
@@ -77,7 +77,7 @@ Post your first weather Tweet
 
 Now everything is prepared for :py:mod:`~pywws.ToTwitter` to be run::
 
-   python -m pywws.ToTwitter /data/weather tweet.txt
+   python -m pywws.ToTwitter ~/weather/data tweet.txt
 
 If this works, your new Twitter account will have posted its first weather report.
 (You should delete the tweet.txt file now.)

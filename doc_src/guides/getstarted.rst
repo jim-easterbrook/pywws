@@ -183,7 +183,7 @@ This is useful when running it manually, for example::
 You should now have some data files you can look at.
 For example::
 
-   more ~/weather/data/weather/raw/2012/2012-12/2012-12-16.txt
+   more ~/weather/data/raw/2012/2012-12/2012-12-16.txt
 
 (Replace the year, month and day with ones that you have data for.)
 
@@ -241,7 +241,7 @@ These are created by :py:mod:`pywws.Process`. For example::
 
 You should now have some processed files to look at::
 
-   more ~/weather/data/weather/daily/2012/2012-12-16.txt
+   more ~/weather/data/daily/2012/2012-12-16.txt
 
 If you ever change your ``day end hour`` configuration setting, you will need to reprocess all your weather data.
 You can do this by running :py:mod:`pywws.Reprocess`::

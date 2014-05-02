@@ -37,7 +37,7 @@ __usage__ = """
   -h      or --help      display this help
   -l file or --log file  write log information to file
   -v      or --verbose   increase amount of reassuring messages
- data_dir is the root directory of the weather data (e.g. /data/weather)
+ data_dir is the root directory of the weather data (e.g. ~/weather/data)
 """
 __doc__ %= __usage__ % ('python -m pywws.LiveLog')
 
