@@ -118,7 +118,7 @@ class msgmerge(Command):
         if not self.lang:
             log.error('no language code specified')
             return
-        build_dir = os.path.join(self.build_dir, self.lang)
+        build_dir = os.path.join(self.build_dir, self.lang, 'LC_MESSAGES')
         self.mkpath(build_dir)
         for name in os.listdir(self.source_dir):
             base, ext = os.path.splitext(name)
@@ -158,8 +158,7 @@ class msgfmt(Command):
             log.error('no source directory specified')
             return
         for root, dirs, files in os.walk(self.source_dir):
-            targ_dir = os.path.join(
-                root.replace(self.source_dir, self.build_dir), 'LC_MESSAGES')
+            targ_dir = root.replace(self.source_dir, self.build_dir)
             for name in files:
                 base, ext = os.path.splitext(name)
                 if ext.lower() != '.po':
@@ -198,12 +197,12 @@ command_options['xgettext'] = {
 cmdclass['msgmerge'] = msgmerge
 command_options['msgmerge'] = {
     'source_dir' : ('setup.py', 'build/gettext'),
-    'build_dir'  : ('setup.py', 'translations'),
+    'build_dir'  : ('setup.py', 'pywws/lang'),
     'lang'       : ('setup.py', lang),
     }
 cmdclass['msgfmt'] = msgfmt
 command_options['msgfmt'] = {
-    'source_dir' : ('setup.py', 'translations'),
+    'source_dir' : ('setup.py', 'pywws/lang'),
     'build_dir'  : ('setup.py', 'pywws/lang'),
     }
 

@@ -1,6 +1,6 @@
 .. pywws - Python software for USB Wireless Weather Stations
    http://github.com/jim-easterbrook/pywws
-   Copyright (C) 2008-13  Jim Easterbrook  jim@jim-easterbrook.me.uk
+   Copyright (C) 2008-14  Jim Easterbrook  jim@jim-easterbrook.me.uk
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -47,8 +47,8 @@ To find the correct code for your language, consult the list at http://www.gnu.o
 Getting started
 ---------------
 
-Your pywws directory should already have a subdirectory called translations.
-This contains the existing set of language files, for example ``translations/sv/pywws.po`` contains the Swedish translations.
+Your pywws directory should already have a subdirectory called pywws/lang.
+This contains the existing set of language files, for example ``pywws/lang/sv/LC_MESSAGES/pywws.po`` contains the Swedish translations.
 If one of these languages is what you need, then edit your weather.ini file and add a ``language`` entry to the ``[config]`` section, for example::
 
    [config]
@@ -72,7 +72,7 @@ For example, to create a source file for the French language (code ``fr``)::
    python setup.py xgettext
    python setup.py msgmerge --lang=fr
 
-This will ask you to confirm your email address, then create a ``pywws.po`` file in the directory ``translations/fr``.
+This will ask you to confirm your email address, then create a ``pywws.po`` file in the directory ``pywws/lang/fr/LC_MESSAGES``.
 You should now edit ``pywws.po``, filling in every ``msgstr`` line with a translation of the ``msgid`` line immediately above it.
 The reason for including your email address is to allow anyone who has questions about your translation to get in touch with you.
 Feel free to put in an invalid address if you are concerned about privacy.

@@ -22,6 +22,5 @@ pywws/doc/fr
 pywws/doc/it
 doc_src/api/pywws.*.rst
 
-# Miscellaneous
-MANIFEST
-pywws/lang
+# Compiled language files
+*.mo
