@@ -154,9 +154,17 @@ To create new language translations
 
 pywws can be configured to use languages other than English, and the documentation can also be translated into other languages.
 See :doc:`../guides/language` for more information.
-The gettext package is required to extract the strings to be translated and compile the translation files.
+The babel package is required to extract the strings to be translated and compile the translation files.
 
-*  `gettext <http://www.gnu.org/s/gettext/>`_ (should be available from the package manager)
+*  `babel <http://babel.pocoo.org/>`_
+
+::
+
+  sudo pip install babel
+
+.. versionchanged:: 14.05.dev1209
+   pywws previously used the gettext package.
+
 
 To 'compile' the documentation
 ------------------------------
