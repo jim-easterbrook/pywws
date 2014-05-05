@@ -21,7 +21,7 @@
 from datetime import date
 from distutils import log
 import os
-from setuptools import setup, Command
+from setuptools import setup
 import subprocess
 
 # read current version info without importing pywws package
@@ -49,137 +49,6 @@ _commit = '%s'
 else:
     version = __version__
 
-# Custom distutils classes
-class xgettext(Command):
-    description = 'extract strings for translation from Python source'
-    user_options = [
-        ('source-dir=', 's', 'root directory of .py source files'),
-        ('output-file=',  'o', '.pot output file'),
-        ]
-
-    def initialize_options(self):
-        self.source_dir = None
-        self.output_file = None
-
-    def finalize_options(self):
-        pass
-
-    def run(self):
-        if not self.source_dir:
-            log.error('no source directory specified')
-            return
-        if not self.output_file:
-            log.error('no output file specified')
-            return
-        src_list = []
-        for root, dirs, files in os.walk(self.source_dir):
-            for name in files:
-                base, ext = os.path.splitext(name)
-                if ext.lower() != '.py':
-                    continue
-                src = os.path.join(root, name)
-                src_list.append(src)
-        if not src_list:
-            log.error('no python files found')
-            return
-        options = [
-            '--language=Python', '--no-wrap',
-            '--copyright-holder="Jim Easterbrook"', '--package-name=pywws',
-            '--package-version=%s' % version,
-            '--msgid-bugs-address="jim@jim-easterbrook.me.uk"',
-            '--output=%s' % self.output_file,
-            ]
-        self.mkpath(os.path.dirname(self.output_file))
-        log.info('generating %s', self.output_file)
-        if not self.dry_run:
-            subprocess.check_call(['xgettext'] + options + src_list)
-
-class msgmerge(Command):
-    description = 'merge extracted strings for translation'
-    user_options = [
-        ('source-dir=', 's', 'root directory of .pot source files'),
-        ('build-dir=',  'b', 'root directory of .po output files'),
-        ('lang=',       'l', 'language code'),
-        ]
-
-    def initialize_options(self):
-        self.source_dir = None
-        self.build_dir = None
-        self.lang = None
-
-    def finalize_options(self):
-        if self.build_dir is None:
-            self.build_dir = self.source_dir
-
-    def run(self):
-        if not self.source_dir:
-            log.error('no source directory specified')
-            return
-        if not self.lang:
-            log.error('no language code specified')
-            return
-        build_dir = os.path.join(self.build_dir, self.lang, 'LC_MESSAGES')
-        self.mkpath(build_dir)
-        for name in os.listdir(self.source_dir):
-            base, ext = os.path.splitext(name)
-            if ext.lower() != '.pot':
-                continue
-            src = os.path.join(self.source_dir, name)
-            dest = os.path.join(build_dir, name[:-1])
-            if os.path.exists(dest):
-                command = 'msgmerge'
-                options = ['--no-wrap', '--update', dest, src]
-            else:
-                command = 'msginit'
-                options = [
-                    '--no-wrap', '--locale=%s' % self.lang,
-                    '--input=%s' % src, '--output-file=%s' % dest]
-            log.info('generating %s', dest)
-            if not self.dry_run:
-                subprocess.check_call([command] + options)
-
-class msgfmt(Command):
-    description = '"compile" .po files to .mo files'
-    user_options = [
-        ('source-dir=', 's', 'root directory of .po source files'),
-        ('build-dir=',  'b', 'root directory of .mo output files'),
-        ]
-
-    def initialize_options(self):
-        self.source_dir = None
-        self.build_dir = None
-
-    def finalize_options(self):
-        if self.build_dir is None:
-            self.build_dir = self.source_dir
-
-    def run(self):
-        if not self.source_dir:
-            log.error('no source directory specified')
-            return
-        for root, dirs, files in os.walk(self.source_dir):
-            targ_dir = root.replace(self.source_dir, self.build_dir)
-            for name in files:
-                base, ext = os.path.splitext(name)
-                if ext.lower() != '.po':
-                    continue
-                src = os.path.join(root, name)
-                targ = os.path.join(targ_dir, base + '.mo')
-                if os.path.exists(targ):
-                    targ_date = os.stat(targ)[8]
-                else:
-                    targ_date = 0
-                src_date = os.stat(src)[8]
-                if targ_date > src_date:
-                    log.debug('skipping %s', targ)
-                    continue
-                self.mkpath(targ_dir)
-                log.info('compiling %s to %s', src, targ)
-                if not self.dry_run:
-                    subprocess.check_call(
-                        ['msgfmt', '--use-fuzzy',
-                         '--output-file=%s' % targ, src])
-
 cmdclass = {}
 command_options = {}
 
@@ -189,21 +58,22 @@ else:
     lang = 'en'
 
 # add commands to create & build translation files
-cmdclass['xgettext'] = xgettext
-command_options['xgettext'] = {
-    'source_dir'  : ('setup.py', 'pywws'),
-    'output_file' : ('setup.py', 'build/gettext/pywws.pot'),
+# requires Babel to be installed
+command_options['compile_catalog'] = {
+    'domain'    : ('setup.py', 'pywws'),
+    'directory' : ('setup.py', 'pywws/lang'),
+    'locale'    : ('setup.py', lang),
+    'use_fuzzy' : ('setup.py', '1'),
     }
-cmdclass['msgmerge'] = msgmerge
-command_options['msgmerge'] = {
-    'source_dir' : ('setup.py', 'build/gettext'),
-    'build_dir'  : ('setup.py', 'pywws/lang'),
-    'lang'       : ('setup.py', lang),
-    }
-cmdclass['msgfmt'] = msgfmt
-command_options['msgfmt'] = {
-    'source_dir' : ('setup.py', 'pywws/lang'),
-    'build_dir'  : ('setup.py', 'pywws/lang'),
+command_options['extract_messages'] = {
+    'input_dirs'         : ('setup.py', 'pywws'),
+    'output_file'        : ('setup.py', 'build/gettext/pywws.pot'),
+    'no_wrap'            : ('setup.py', '1'),
+    'sort_by_file'       : ('setup.py', '1'),
+    'add_comments'       : ('setup.py', 'TX_NOTE'),
+    'strip_comments'     : ('setup.py', '1'),
+    'copyright_holder'   : ('setup.py', 'Jim Easterbrook'),
+    'msgid_bugs_address' : ('setup.py', 'jim@jim-easterbrook.me.uk'),
     }
 
 # if sphinx is installed, add commands to build documentation
@@ -217,8 +87,10 @@ try:
         'builder'    : ('setup.py', 'html'),
         }
     # extract strings for translation
-    cmdclass['xgettext_doc'] = BuildDoc
-    command_options['xgettext_doc'] = {
+    class extract_messages_doc(BuildDoc):
+        description = 'extract localizable strings from the documentation'
+    cmdclass['extract_messages_doc'] = extract_messages_doc
+    command_options['extract_messages_doc'] = {
         'source_dir' : ('setup.py', 'doc_src'),
         'build_dir'  : ('setup.py', 'build'),
         'builder'    : ('setup.py', 'gettext'),

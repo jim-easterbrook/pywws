@@ -686,6 +686,7 @@ set timefmt "%Y-%m-%dT%H:%M:%S"
         # label x axis of last plot
         if plot_no == self.plot_count - 1:
             if self.duration <= timedelta(hours=24):
+                # TX_NOTE Keep the "(%Z)" formatting string
                 xlabel = _('Time (%Z)')
             elif self.duration <= timedelta(days=7):
                 xlabel = _('Day')
