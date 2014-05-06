@@ -32,7 +32,7 @@ import threading
 from .calib import Calib
 from . import Plot
 from . import Template
-from .TimeZone import STDOFFSET
+from .TimeZone import STDOFFSET, Local
 from .toservice import ToService
 from . import Upload
 from . import WindRose
@@ -85,9 +85,24 @@ class RegularTasks(object):
         # get daytime end hour, in UTC
         self.day_end_hour = eval(params.get('config', 'day end hour', '21'))
         self.day_end_hour = (self.day_end_hour - (STDOFFSET.seconds // 3600)) % 24
+        # parse "cron" sections
+        self.cron = {}
+        for section in self.params._config.sections():
+            if section.split()[0] != 'cron':
+                continue
+            import croniter
+            self.cron[section] = croniter.croniter(
+                self.params.get(section, 'format'))
+            self.cron[section].get_prev()
+            last_update = self.status.get_datetime('last update', section)
+            if last_update:
+                last_update = last_update + Local.utcoffset(last_update)
+                while self.cron[section].get_current(datetime) <= last_update:
+                    self.cron[section].get_next()
         # create service uploader objects
         self.services = {}
-        for section in ('live', 'logged', 'hourly', '12 hourly', 'daily'):
+        for section in self.cron.keys() + [
+                       'live', 'logged', 'hourly', '12 hourly', 'daily']:
             for name in eval(self.params.get(section, 'services', '[]')):
                 if name not in self.services:
                     self.services[name] = ToService(
@@ -169,6 +184,8 @@ class RegularTasks(object):
         self._do_uploads()
 
     def has_live_tasks(self):
+        if self.cron:
+            return True
         yowindow_file = self.params.get('live', 'yowindow')
         if yowindow_file:
             return True
@@ -245,8 +262,36 @@ class RegularTasks(object):
         else:
             self._do_queued_tasks()
 
+    def _do_cron(self, live_data=None):
+        if not self.cron:
+            return
+        # get timestamp of latest data
+        if live_data:
+            now = live_data['idx']
+        else:
+            now = self.calib_data.before(datetime.max)
+        if not now:
+            now = datetime.utcnow()
+        # convert to local time
+        local_now = now + Local.utcoffset(now)
+        # get list of due sections
+        sections = []
+        for section in self.cron:
+            if self.cron[section].get_current(datetime) > local_now:
+                continue
+            sections.append(section)
+            self.cron[section].get_next()
+        if not sections:
+            return
+        # do it!
+        self._do_common(sections, live_data)
+        for section in sections:
+            self.status.set('last update', section, now.isoformat(' '))
+
     def do_live(self, data):
-        self._do_common(['live'], self.calibrator.calib(data))
+        calib_data = self.calibrator.calib(data)
+        self._do_common(['live'], calib_data)
+        self._do_cron(calib_data)
 
     def do_tasks(self):
         sections = ['logged']
@@ -288,6 +333,7 @@ class RegularTasks(object):
         self._do_common(sections)
         for section in sections:
             self.status.set('last update', section, now.isoformat(' '))
+        self._do_cron()
         if self.flush or 'hourly' in sections:
             # save any unsaved data
             self.params.flush()
