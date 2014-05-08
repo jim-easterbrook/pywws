@@ -92,7 +92,7 @@ class RegularTasks(object):
                 continue
             import croniter
             self.cron[section] = croniter.croniter(
-                self.params.get(section, 'format'))
+                self.params.get(section, 'format', ''))
             self.cron[section].get_prev()
             last_update = self.status.get_datetime('last update', section)
             if last_update:
@@ -280,7 +280,8 @@ class RegularTasks(object):
             if self.cron[section].get_current(datetime) > local_now:
                 continue
             sections.append(section)
-            self.cron[section].get_next()
+            while self.cron[section].get_current(datetime) <= local_now:
+                self.cron[section].get_next()
         if not sections:
             return
         # do it!
