@@ -1,239 +1,238 @@
-# Swedish translations for PACKAGE package
-# Svenska �vers�ttningar f�r paket PACKAGE.
-# Copyright (C) 2010 THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# Pyttsen <weather@spacelab.se>, 2010.
+# Translations template for pywws.
+# Copyright (C) 2014 Jim Easterbrook
+# This file is distributed under the same license as the pywws project.
 # 
+# Translators:
+# Sunshades <joacim@ahlstrand.info>, 2014
+# Pyttsen <weather@spacelab.se>, 2010
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: pywws_14_05\n"
 "Report-Msgid-Bugs-To: jim@jim-easterbrook.me.uk\n"
-"POT-Creation-Date: 2012-11-16 11:57+0000\n"
-"PO-Revision-Date: 2010-02-03 22:11+0100\n"
-"Last-Translator: Pyttsen <weather@spacelab.se>\n"
-"Language-Team: Swedish\n"
-"Language: \n"
+"POT-Creation-Date: 2014-05-05 17:27+0100\n"
+"PO-Revision-Date: 2014-05-21 16:25+0000\n"
+"Last-Translator: Sunshades <joacim@ahlstrand.info>\n"
+"Language-Team: Swedish (http://www.transifex.com/projects/p/pywws_14_05/language/sv/)\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=ISO-8859-1\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 1.3\n"
+"Language: sv\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: code/pywws/Plot.py:226
+#. Keep the "(%Z)" formatting string
+#: pywws/Plot.py:690
 msgid "Time (%Z)"
-msgstr ""
+msgstr "Tid (%Z)"
 
-#: code/pywws/Plot.py:228
+#: pywws/Plot.py:692
 msgid "Day"
-msgstr ""
+msgstr "Dag"
 
-#: code/pywws/Plot.py:230
+#: pywws/Plot.py:694
 msgid "Date"
-msgstr ""
+msgstr "Datum"
 
-#: code/pywws/WeatherStation.py:114 code/pywws/WindRose.py:123
-#: code/pywws/conversions.py:52
+#: pywws/WindRose.py:360 pywws/conversions.py:98
 msgid "N"
 msgstr "N"
 
-#: code/pywws/WeatherStation.py:114 code/pywws/conversions.py:52
-msgid "NNE"
-msgstr "NNV"
-
-#: code/pywws/WeatherStation.py:114 code/pywws/conversions.py:52
-msgid "NE"
-msgstr "NO"
-
-#: code/pywws/WeatherStation.py:114 code/pywws/conversions.py:52
-msgid "ENE"
-msgstr "ONO"
-
-#: code/pywws/WeatherStation.py:115 code/pywws/WindRose.py:123
-#: code/pywws/conversions.py:53
+#: pywws/WindRose.py:360 pywws/conversions.py:99
 msgid "E"
 msgstr "O"
 
-#: code/pywws/WeatherStation.py:115 code/pywws/conversions.py:53
-msgid "ESE"
-msgstr "OSO"
-
-#: code/pywws/WeatherStation.py:115 code/pywws/conversions.py:53
-msgid "SE"
-msgstr "SO"
-
-#: code/pywws/WeatherStation.py:115 code/pywws/conversions.py:53
-msgid "SSE"
-msgstr "SSO"
-
-#: code/pywws/WeatherStation.py:116 code/pywws/WindRose.py:123
-#: code/pywws/conversions.py:54
+#: pywws/WindRose.py:360 pywws/conversions.py:100
 msgid "S"
 msgstr "S"
 
-#: code/pywws/WeatherStation.py:116 code/pywws/conversions.py:54
-msgid "SSW"
-msgstr "SSV"
-
-#: code/pywws/WeatherStation.py:116 code/pywws/conversions.py:54
-msgid "SW"
-msgstr "SV"
-
-#: code/pywws/WeatherStation.py:116 code/pywws/conversions.py:54
-msgid "WSW"
-msgstr "VSV"
-
-#: code/pywws/WeatherStation.py:117 code/pywws/WindRose.py:123
-#: code/pywws/conversions.py:55
+#: pywws/WindRose.py:360 pywws/conversions.py:101
 msgid "W"
 msgstr "V"
 
-#: code/pywws/WeatherStation.py:117 code/pywws/conversions.py:55
-msgid "WNW"
-msgstr "VNV"
+#: pywws/ZambrettiCore.py:29
+msgid "Settled fine"
+msgstr "Stadigt vackert väder"
 
-#: code/pywws/WeatherStation.py:117 code/pywws/conversions.py:55
-msgid "NW"
-msgstr "NV"
+#: pywws/ZambrettiCore.py:30
+msgid "Fine weather"
+msgstr "Vackert väder"
 
-#: code/pywws/WeatherStation.py:117 code/pywws/conversions.py:55
-msgid "NNW"
-msgstr "NNV"
+#: pywws/ZambrettiCore.py:31
+msgid "Becoming fine"
+msgstr "På väg mot vackert väder"
 
-#: code/pywws/WeatherStation.py:127
+#: pywws/ZambrettiCore.py:32
+msgid "Fine, becoming less settled"
+msgstr "Vackert, på väg mot ostadigt"
+
+#: pywws/ZambrettiCore.py:33
+msgid "Fine, possible showers"
+msgstr "Vackert, möjliga skurar"
+
+#: pywws/ZambrettiCore.py:34
+msgid "Fairly fine, improving"
+msgstr "Halvklart, mot förbättring"
+
+#: pywws/ZambrettiCore.py:35
+msgid "Fairly fine, possible showers early"
+msgstr "Halvklart, möjligen tidiga skurar"
+
+#: pywws/ZambrettiCore.py:36
+msgid "Fairly fine, showery later"
+msgstr "Halvklart, senare skurar"
+
+#: pywws/ZambrettiCore.py:37
+msgid "Showery early, improving"
+msgstr "Tidiga skurar, på väg mot bättring"
+
+#: pywws/ZambrettiCore.py:38
+msgid "Changeable, mending"
+msgstr "Varierande, mot förbättring"
+
+#: pywws/ZambrettiCore.py:39
+msgid "Fairly fine, showers likely"
+msgstr "Halvklart, troligtvis skurar"
+
+#: pywws/ZambrettiCore.py:40
+msgid "Rather unsettled clearing later"
+msgstr "Något ostadigt, senare uppklarnande"
+
+#: pywws/ZambrettiCore.py:41
+msgid "Unsettled, probably improving"
+msgstr "Ostadigt, troligtvis mot förbättring"
+
+#: pywws/ZambrettiCore.py:42
+msgid "Showery, bright intervals"
+msgstr "Skurar, tidvis uppklarnande"
+
+#: pywws/ZambrettiCore.py:43
+msgid "Showery, becoming less settled"
+msgstr "Skurar, mot mer ostadigt"
+
+#: pywws/ZambrettiCore.py:44
+msgid "Changeable, some rain"
+msgstr "Varierande, något regn"
+
+#: pywws/ZambrettiCore.py:45
+msgid "Unsettled, short fine intervals"
+msgstr "Ostadigt, korta solchanser"
+
+#: pywws/ZambrettiCore.py:46
+msgid "Unsettled, rain later"
+msgstr "Ostadigt, senare övergående i regn"
+
+#: pywws/ZambrettiCore.py:47
+msgid "Unsettled, some rain"
+msgstr "Ostadigt, något regn"
+
+#: pywws/ZambrettiCore.py:48
+msgid "Mostly very unsettled"
+msgstr "Mestadels mycket ostadigt"
+
+#: pywws/ZambrettiCore.py:49
+msgid "Occasional rain, worsening"
+msgstr "Tillfälligt regn, mot sämre väder"
+
+#: pywws/ZambrettiCore.py:50
+msgid "Rain at times, very unsettled"
+msgstr "Regnperioder , mycket ostadigt"
+
+#: pywws/ZambrettiCore.py:51
+msgid "Rain at frequent intervals"
+msgstr "Mestadels regn"
+
+#: pywws/ZambrettiCore.py:52
+msgid "Rain, very unsettled"
+msgstr "Regn, mycket ostadigt"
+
+#: pywws/ZambrettiCore.py:53
+msgid "Stormy, may improve"
+msgstr "Blåsigt, kan förbättras"
+
+#: pywws/ZambrettiCore.py:54
+msgid "Stormy, much rain"
+msgstr "Blåsigt, mycket regn"
+
+#: pywws/conversions.py:53
 msgid "rising very rapidly"
-msgstr "v�ldigt hastigt �kande"
+msgstr "mycket hastigt ökande"
 
-#: code/pywws/WeatherStation.py:129
+#: pywws/conversions.py:55
 msgid "rising quickly"
-msgstr "hastigt �kande"
+msgstr "hastigt ökande"
 
-#: code/pywws/WeatherStation.py:131
+#: pywws/conversions.py:57
 msgid "rising"
-msgstr "�kande"
+msgstr "ökande"
 
-#: code/pywws/WeatherStation.py:133
+#: pywws/conversions.py:59
 msgid "rising slowly"
-msgstr "l�ngsamt �kande"
+msgstr "långsamt ökande"
 
-#: code/pywws/WeatherStation.py:135
+#: pywws/conversions.py:61
 msgid "falling very rapidly"
-msgstr "v�ldigt hastigt fallande"
+msgstr "mycket hastigt fallande"
 
-#: code/pywws/WeatherStation.py:137
+#: pywws/conversions.py:63
 msgid "falling quickly"
 msgstr "hastigt fallande"
 
-#: code/pywws/WeatherStation.py:139
+#: pywws/conversions.py:65
 msgid "falling"
 msgstr "fallande"
 
-#: code/pywws/WeatherStation.py:141
+#: pywws/conversions.py:67
 msgid "falling slowly"
-msgstr "l�ngsamt fallande"
+msgstr "långsamt fallande"
 
-#: code/pywws/WeatherStation.py:142
+#: pywws/conversions.py:68
 msgid "steady"
 msgstr "stadigt"
 
-#: code/pywws/ZambrettiCore.py:6
-msgid "Settled fine"
-msgstr ""
+#: pywws/conversions.py:98
+msgid "NNE"
+msgstr "NNV"
 
-#: code/pywws/ZambrettiCore.py:7
-msgid "Fine weather"
-msgstr ""
+#: pywws/conversions.py:98
+msgid "NE"
+msgstr "NO"
 
-#: code/pywws/ZambrettiCore.py:8
-msgid "Becoming fine"
-msgstr ""
+#: pywws/conversions.py:98
+msgid "ENE"
+msgstr "ONO"
 
-#: code/pywws/ZambrettiCore.py:9
-msgid "Fine, becoming less settled"
-msgstr ""
+#: pywws/conversions.py:99
+msgid "ESE"
+msgstr "OSO"
 
-#: code/pywws/ZambrettiCore.py:10
-msgid "Fine, possible showers"
-msgstr ""
+#: pywws/conversions.py:99
+msgid "SE"
+msgstr "SO"
 
-#: code/pywws/ZambrettiCore.py:11
-msgid "Fairly fine, improving"
-msgstr ""
+#: pywws/conversions.py:99
+msgid "SSE"
+msgstr "SSO"
 
-#: code/pywws/ZambrettiCore.py:12
-msgid "Fairly fine, possible showers early"
-msgstr ""
+#: pywws/conversions.py:100
+msgid "SSW"
+msgstr "SSV"
 
-#: code/pywws/ZambrettiCore.py:13
-msgid "Fairly fine, showery later"
-msgstr ""
+#: pywws/conversions.py:100
+msgid "SW"
+msgstr "SV"
 
-#: code/pywws/ZambrettiCore.py:14
-msgid "Showery early, improving"
-msgstr ""
+#: pywws/conversions.py:100
+msgid "WSW"
+msgstr "VSV"
 
-#: code/pywws/ZambrettiCore.py:15
-msgid "Changeable, mending"
-msgstr ""
+#: pywws/conversions.py:101
+msgid "WNW"
+msgstr "VNV"
 
-#: code/pywws/ZambrettiCore.py:16
-msgid "Fairly fine, showers likely"
-msgstr ""
+#: pywws/conversions.py:101
+msgid "NW"
+msgstr "NV"
 
-#: code/pywws/ZambrettiCore.py:17
-msgid "Rather unsettled clearing later"
-msgstr ""
-
-#: code/pywws/ZambrettiCore.py:18
-msgid "Unsettled, probably improving"
-msgstr ""
-
-#: code/pywws/ZambrettiCore.py:19
-msgid "Showery, bright intervals"
-msgstr ""
-
-#: code/pywws/ZambrettiCore.py:20
-msgid "Showery, becoming less settled"
-msgstr ""
-
-#: code/pywws/ZambrettiCore.py:21
-msgid "Changeable, some rain"
-msgstr ""
-
-#: code/pywws/ZambrettiCore.py:22
-msgid "Unsettled, short fine intervals"
-msgstr ""
-
-#: code/pywws/ZambrettiCore.py:23
-msgid "Unsettled, rain later"
-msgstr ""
-
-#: code/pywws/ZambrettiCore.py:24
-msgid "Unsettled, some rain"
-msgstr ""
-
-#: code/pywws/ZambrettiCore.py:25
-msgid "Mostly very unsettled"
-msgstr ""
-
-#: code/pywws/ZambrettiCore.py:26
-msgid "Occasional rain, worsening"
-msgstr ""
-
-#: code/pywws/ZambrettiCore.py:27
-msgid "Rain at times, very unsettled"
-msgstr ""
-
-#: code/pywws/ZambrettiCore.py:28
-msgid "Rain at frequent intervals"
-msgstr ""
-
-#: code/pywws/ZambrettiCore.py:29
-msgid "Rain, very unsettled"
-msgstr ""
-
-#: code/pywws/ZambrettiCore.py:30
-msgid "Stormy, may improve"
-msgstr ""
-
-#: code/pywws/ZambrettiCore.py:31
-msgid "Stormy, much rain"
-msgstr ""
+#: pywws/conversions.py:101
+msgid "NNW"
+msgstr "NNV"
