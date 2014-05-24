@@ -222,8 +222,9 @@ class DataLogger(object):
             self.logger.debug('Reading time %s', last_date.strftime('%H:%M:%S'))
             if logged:
                 break
-            if sync < 2 and self.ws._station_clock:
-                err = last_date - datetime.fromtimestamp(self.ws._station_clock)
+            if sync < 2 and self.ws._station_clock.clock:
+                err = last_date - datetime.fromtimestamp(
+                    self.ws._station_clock.clock)
                 last_date -= timedelta(
                     minutes=data['delay'], seconds=err.seconds % 60)
                 self.logger.debug('log time %s', last_date.strftime('%H:%M:%S'))
