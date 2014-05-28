@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<graph>
+  <size>480, 240</size>
+  <lmargin>7</lmargin>
+  <rmargin>7</rmargin>
+  <duration>hours=24</duration>
+  <xtics>4</xtics>
+  <xformat>%H%M</xformat>
+  <xlabel></xlabel>
+  <dateformat></dateformat>
+  <plot>
+    <bmargin>1</bmargin>
+    <yrange>-10, 35</yrange>
+    <ytics>10</ytics>
+    <source>raw</source>
+    <subplot>
+      <colour>1</colour>
+      <title>Temperature (°C)</title>
+      <ycalc>data['temp_out']</ycalc>
+    </subplot>
+    <subplot>
+      <colour>3</colour>
+      <ycalc>dew_point(data['temp_out'], data['hum_out'])</ycalc>
+      <title>Dew point (°C)</title>
+    </subplot>
+  </plot>
+  <plot>
+    <title>Rainfall (mm)</title>
+    <yrange>0, 6</yrange>
+    <ytics>2</ytics>
+    <y2range>0, 30</y2range>
+    <y2tics>10</y2tics>
+    <ylabel>hourly</ylabel>
+    <y2label>total</y2label>
+    <source>hourly</source>
+    <subplot>
+      <colour>5</colour>
+      <style>box</style>
+      <xcalc>data['idx'].replace(minute=30, second=0)</xcalc>
+      <ycalc>data['rain']</ycalc>
+      <title>hourly</title>
+    </subplot>
+    <subplot>
+      <colour>3</colour>
+      <axes>x1y2</axes>
+      <ycalc>data['rain'] + last_ycalc</ycalc>
+      <title>total</title>
+    </subplot>
+  </plot>
+</graph>

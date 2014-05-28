@@ -1,0 +1,13 @@
+media /home/jim/weather/results/tweet.png
+#hourly#
+#timezone local#
+#roundtime True#
+#idx "%H:%M %Z: "#
+#temp_out "%.1f°C, " "-, "#
+#hum_out "%d%%, " "-, "#
+#wind_ave "%.1f / " "- / " "wind_mph(x)"#
+#wind_gust "%.1f mph " "- mph " "wind_mph(x)"#
+#wind_dir "%s, " "-, " "winddir_text(x)"#
+#rain "%.1f mm/hr, "#
+#rel_pressure "%.0f hPa "#
+#pressure_trend "%s" "" "pressure_trend_text(x)"#

@@ -61,6 +61,39 @@ from . import DataStore
 from . import Localisation
 from .Logger import ApplicationLogger
 
+class TweepyHandler(object):
+    def __init__(self, key, secret, latitude, longitude):
+        auth = tweepy.OAuthHandler(pct.consumer_key, pct.consumer_secret)
+        auth.set_access_token(key, secret)
+        self.api = tweepy.API(auth)
+        if latitude is not None and longitude is not None:
+            self.kwargs = {'lat' : latitude, 'long' : longitude}
+        else:
+            self.kwargs = {}
+
+    def post(self, status, media):
+        if media:
+            self.api.update_with_media(media, status[:117], **self.kwargs)
+        else:
+            self.api.update_status(status[:140], **self.kwargs)
+
+class PythonTwitterHandler(object):
+    def __init__(self, key, secret, latitude, longitude):
+        self.api = twitter.Api(
+            consumer_key=pct.consumer_key,
+            consumer_secret=pct.consumer_secret,
+            access_token_key=key, access_token_secret=secret)
+        if latitude is not None and longitude is not None:
+            self.kwargs = {'latitude' : latitude, 'longitude' : longitude}
+        else:
+            self.kwargs = {}
+
+    def post(self, status, media):
+        if media:
+            self.api.PostMedia(status[:117], media, **self.kwargs)
+        else:
+            self.api.PostUpdate(status[:140], **self.kwargs)
+
 class ToTwitter(object):
     def __init__(self, params):
         self.logger = logging.getLogger('pywws.ToTwitter')
@@ -76,26 +109,22 @@ class ToTwitter(object):
         longitude = params.get('twitter', 'longitude')
         # open API
         if twitter:
-            self.api = twitter.Api(
-                consumer_key=pct.consumer_key,
-                consumer_secret=pct.consumer_secret,
-                access_token_key=key, access_token_secret=secret)
-            self.post = self.api.PostUpdate
-            self.post_kw = {'latitude' : latitude, 'longitude' : longitude}
+            self.api = PythonTwitterHandler(key, secret, latitude, longitude)
         else:
-            auth = tweepy.OAuthHandler(pct.consumer_key, pct.consumer_secret)
-            auth.set_access_token(key, secret)
-            self.api = tweepy.API(auth)
-            self.post = self.api.update_status
-            self.post_kw = {'lat' : latitude, 'long' : longitude}
+            self.api = TweepyHandler(key, secret, latitude, longitude)
 
     def Upload(self, tweet):
         if not tweet:
             return True
+        if tweet.startswith('media'):
+            media, tweet = tweet.split('\n', 1)
+            media = media.split()[1]
+        else:
+            media = None
         if not isinstance(tweet, unicode):
             tweet = tweet.decode(self.encoding)
         try:
-            status = self.post(tweet, **self.post_kw)
+            self.api.post(tweet, media)
             return True
         except Exception, ex:
             e = str(ex)
@@ -108,7 +137,7 @@ class ToTwitter(object):
 
     def UploadFile(self, file):
         tweet_file = codecs.open(file, 'r', encoding=self.encoding)
-        tweet = tweet_file.read(140)
+        tweet = tweet_file.read()
         tweet_file.close()
         return self.Upload(tweet)
 
