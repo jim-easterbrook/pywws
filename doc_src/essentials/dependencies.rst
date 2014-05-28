@@ -85,6 +85,18 @@ If you have problems with version 1 of PyUSB then version 0.4 can be used, provi
 Your system package manager should have both libraries.
 As a last resort you can use hidapi -- see the Mac OS X instructions above.
 
+Flexible timed tasks
+--------------------
+
+The :py:mod:`pywws.Tasks` module can do tasks at particular times and/or dates.
+This requires the croniter library:
+
+*  `croniter <https://pypi.python.org/pypi/croniter/>`_
+
+::
+
+  pip install croniter
+
 Running as a daemon
 -------------------
 

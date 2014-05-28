@@ -120,6 +120,11 @@ Add the names of your template files to the appropriate entries, for example::
 
 Note the use of the ``'T'`` flag -- this tells pywws to send the template result to Twitter instead of uploading it to your ftp site.
 
+.. versionadded:: 14.05.dev1211
+   ``[cron name]`` sections.
+   If you need more flexibility in when tasks are done you can use ``[cron name]`` sections.
+   See :doc:`weather_ini` for more detail.
+
 .. versionchanged:: 13.06_r1015
    added the ``'T'`` flag.
    Previously Twitter templates were listed separately in ``twitter`` entries in the ``[hourly]`` and other sections.

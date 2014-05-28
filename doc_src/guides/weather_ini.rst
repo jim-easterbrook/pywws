@@ -39,6 +39,7 @@ The following sections are currently in use:
   * paths: directories in which templates etc. are stored.
   * live: tasks to be done every 48 seconds.
   * logged: tasks to be done every time the station logs a data record.
+  * cron: tasks to be done at a particular time or date.
   * hourly: tasks to be done every hour.
   * 12 hourly: tasks to be done every 12 hours.
   * daily: tasks to be done every day.
@@ -129,9 +130,10 @@ live: tasks to be done every 48 seconds
  text = [('yowindow.xml', 'L')]
  plot = []
 
-This section specifies tasks that are to be carried out for every data sample during 'live logging', i.e. every 48 seconds. It is unlikely that you'd want to do anything other than upload to Weather Underground or update your YoWindow file this often.
+This section specifies tasks that are to be carried out for every data sample during 'live logging', i.e. every 48 seconds.
 
 ``services`` is a list of 'services' to upload data to. Each one listed must have a configuration file in ``pywws/services/``. See :doc:`../api/pywws.toservice` for more detail.
+pywws will automatically limit the frequency of service uploads according to each service's specification.
 
 ``text`` and ``plot`` are lists of text and plot templates to be processed and, optionally, uploaded to your website.
 
@@ -154,6 +156,54 @@ This section specifies tasks that are to be carried out every time a data record
 ``services`` is a list of 'services' to upload data to. Each one listed must have a configuration file in ``pywws/services/``. See :doc:`../api/pywws.toservice` for more detail.
 
 ``text`` and ``plot`` are lists of text and plot templates to be processed and, optionally, uploaded to your website.
+
+cron: tasks to be done at a particular time or date
+---------------------------------------------------
+
+.. versionadded:: 14.05.dev1211
+
+::
+
+ [cron prehourly]
+ format = 59 * * * *
+ plot = [('tweet.png.xml', 'L')]
+ services = []
+ text = []
+
+ [cron hourly]
+ format = 0 * * * *
+ plot = ['7days.png.xml', '2014.png.xml', '24hrs.png.xml', 'rose_12hrs.png.xml']
+ text = [('tweet.txt', 'T'), '24hrs.txt', '6hrs.txt', '7days.txt', '2014.txt']
+ services = []
+
+ [cron daily 9]
+ format = 0 9 * * *
+ plot = ['28days.png.xml']
+ text = [('forecast.txt', 'T'), 'forecast_9am.txt', 'forecast_week.txt']
+ services = []
+
+ [cron daily 21]
+ format = 0 21 * * *
+ text = ['forecast_9am.txt']
+ services = []
+ plot = []
+
+ [cron weekly]
+ format = 0 9 * * 6
+ plot = ['2008.png.xml', '2009.png.xml', '2010.png.xml', '2011.png.xml',
+         '2012.png.xml', '2013.png.xml']
+ text = ['2008.txt', '2009.txt', '2010.txt', '2011.txt', '2012.txt', '2013.txt']
+ services = []
+
+``[cron name]`` sections provide a very flexible way to specify tasks to be done at a particular time and/or date.
+``name`` can be anything you like, but each ``[cron name]`` section must have a unique name.
+
+To use ``[cron name]`` sections you need to install the "croniter" package.
+See :doc:`../essentials/dependencies` for more detail.
+
+``format`` specifies when the tasks should be done (in local time), in the usual crontab format.
+(See ``man 5 crontab`` on any Linux computer.)
+Processing is not done exactly on the minute, but when the next live or logged data arrives.
 
 hourly: tasks to be done every hour
 -----------------------------------
@@ -185,6 +235,7 @@ This section specifies tasks that are to be carried out every hour when 'live lo
  plot = []
 
 This section specifies tasks that are to be carried out every 12 hours when 'live logging' or running an hourly cron job. Use it for things that don't change very often, such as monthly graphs.
+The tasks are done at your day end hour, and 12 hours later.
 
 ``services`` is a list of 'services' to upload data to. Each one listed must have a configuration file in ``pywws/services/``. See :doc:`../api/pywws.toservice` for more detail.
 
@@ -200,6 +251,7 @@ daily: tasks to be done every 24 hours
  plot = ['2008.png.xml', '2009.png.xml', '2010.png.xml', '28days.png.xml']
 
 This section specifies tasks that are to be carried out every day when 'live logging' or running an hourly cron job. Use it for things that don't change very often, such as monthly or yearly graphs.
+The tasks are done at your day end hour.
 
 ``services`` is a list of 'services' to upload data to. Each one listed must have a configuration file in ``pywws/services/``. See :doc:`../api/pywws.toservice` for more detail.
 

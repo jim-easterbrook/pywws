@@ -115,6 +115,11 @@ You can test that all these are working by removing the ``[last update]`` sectio
 
    pywws-hourly -v ~/weather/data
 
+.. versionadded:: 14.05.dev1211
+   ``[cron name]`` sections.
+   If you need more flexibility in when tasks are done you can use ``[cron name]`` sections.
+   See :doc:`weather_ini` for more detail.
+
 .. versionchanged:: 13.06_r1015
    added the ``'T'`` flag.
    Previously Twitter templates were listed separately in ``twitter`` entries in the ``[hourly]`` and other sections.
