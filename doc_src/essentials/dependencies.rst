@@ -161,11 +161,12 @@ Posting to Twitter requires these modules:
 .. versionchanged:: 13.06_r1023
    pywws previously used the ``tweepy`` library instead of ``python-twitter`` and ``python-oauth2``.
 
+.. _dependencies-translations:
+
 To create new language translations
 -----------------------------------
 
-pywws can be configured to use languages other than English, and the documentation can also be translated into other languages.
-See :doc:`../guides/language` for more information.
+pywws can be configured to use languages other than English, as described in :doc:`../guides/language`.
 The babel package is required to extract the strings to be translated and compile the translation files.
 
 *  `babel <http://babel.pocoo.org/>`_
@@ -174,9 +175,18 @@ The babel package is required to extract the strings to be translated and compil
 
   sudo pip install babel
 
+Translating the documentation also needs the sphinx-intl package.
+
+*  `sphinx-intl <https://pypi.python.org/pypi/sphinx-intl>`_
+
+::
+
+  sudo pip install sphinx-intl
+
 .. versionchanged:: 14.05.dev1209
    pywws previously used the gettext package.
 
+.. _dependencies-compile-documentation:
 
 To 'compile' the documentation
 ------------------------------
