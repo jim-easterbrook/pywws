@@ -74,6 +74,18 @@ command_options['extract_messages'] = {
     'copyright_holder'   : ('setup.py', 'Jim Easterbrook'),
     'msgid_bugs_address' : ('setup.py', 'jim@jim-easterbrook.me.uk'),
     }
+command_options['init_catalog'] = {
+    'domain'     : ('setup.py', 'pywws'),
+    'input_file' : ('setup.py', 'build/gettext/pywws.pot'),
+    'output_dir' : ('setup.py', 'pywws/lang'),
+    'no_wrap'    : ('setup.py', '1'),
+    }
+command_options['update_catalog'] = {
+    'domain'     : ('setup.py', 'pywws'),
+    'input_file' : ('setup.py', 'build/gettext/pywws.pot'),
+    'output_dir' : ('setup.py', 'pywws/lang'),
+    'no_wrap'    : ('setup.py', '1'),
+    }
 
 # if sphinx is installed, add commands to build documentation
 try:
