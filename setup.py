@@ -152,7 +152,7 @@ pages showing recent weather readings, typically updated every hour.
       package_data = {
           'pywws' : [
               'services/*',
-              'lang/*/LC_MESSAGES/pywws.mo',
+              'lang/*/LC_MESSAGES/*.po', 'lang/*/LC_MESSAGES/pywws.mo',
               'doc/*.*', 'doc/*/html/*.*', 'doc/*/html/*/*.*', 'doc/*/html/*/*/*',
               'examples/*/*.*', 'examples/*/*/*.*',
               ],
