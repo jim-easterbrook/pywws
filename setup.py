@@ -62,7 +62,6 @@ else:
 command_options['compile_catalog'] = {
     'domain'    : ('setup.py', 'pywws'),
     'directory' : ('setup.py', 'pywws/lang'),
-    'locale'    : ('setup.py', lang),
     'use_fuzzy' : ('setup.py', '1'),
     }
 command_options['extract_messages'] = {
