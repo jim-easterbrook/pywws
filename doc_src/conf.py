@@ -37,7 +37,6 @@ import sys, os
 #sys.path.insert(0, os.path.abspath('.'))
 
 sys.path.insert(0, os.path.abspath('..'))
-sys.path.insert(0, os.path.abspath('../scripts'))
 
 # cludge to allow documentation to be compiled without installing dependencies
 class Dummy(object):
@@ -49,13 +48,6 @@ class Dummy(object):
 for mod_name in ('hid', 'oauth2', 'twitter', 'usb', 'usb.core', 'usb.util',
                  'daemon', 'daemon.runner'):
     sys.modules[mod_name] = Dummy()
-
-# cludge to allow scripts with hyphens in their names to be documented
-for name in os.listdir('../scripts'):
-    base, ext = os.path.splitext(name)
-    if ext != '.py':
-        continue
-    sys.modules[base.replace('-', '_')] = __import__(base)
 
 # -- General configuration -----------------------------------------------------
 
