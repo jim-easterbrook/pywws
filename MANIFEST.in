@@ -1,0 +1,6 @@
+include *.txt
+include *.md
+recursive-include .tx *
+recursive-include doc_src *
+recursive-include pywws/lang *.po
+prune doc_src/api
