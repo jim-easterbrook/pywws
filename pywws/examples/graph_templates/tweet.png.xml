@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <graph>
-  <size>480, 240</size>
-  <lmargin>7</lmargin>
+  <terminal>png small size 440,220</terminal>
+  <lmargin>6</lmargin>
   <rmargin>7</rmargin>
   <duration>hours=24</duration>
-  <xtics>4</xtics>
+  <xtics>2</xtics>
   <xformat>%H%M</xformat>
   <xlabel></xlabel>
   <dateformat></dateformat>
   <plot>
     <bmargin>1</bmargin>
     <yrange>-10, 35</yrange>
-    <ytics>10</ytics>
     <source>raw</source>
     <subplot>
       <colour>1</colour>
@@ -25,11 +24,10 @@
     </subplot>
   </plot>
   <plot>
+    <bmargin>1.6</bmargin>
     <title>Rainfall (mm)</title>
     <yrange>0, 6</yrange>
-    <ytics>2</ytics>
     <y2range>0, 30</y2range>
-    <y2tics>10</y2tics>
     <ylabel>hourly</ylabel>
     <y2label>total</y2label>
     <source>hourly</source>
