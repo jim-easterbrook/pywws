@@ -183,6 +183,14 @@ Translating the documentation also needs the sphinx-intl package.
 
   sudo pip install sphinx-intl
 
+Copying files to or from Transifex is made easier with the transifex-client package.
+
+*  `transifex-client <http://support.transifex.com/customer/portal/topics/440187-transifex-client>`_
+
+::
+
+  sudo pip install transifex-client
+
 .. versionchanged:: 14.05.dev1209
    pywws previously used the gettext package.
 

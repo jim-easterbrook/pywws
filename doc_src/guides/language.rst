@@ -65,7 +65,7 @@ You also need to download and extract the pywws software instead of installing i
 See :doc:`getstarted`.
 It's probably better to use the most recent "snapshot" release rather than the ever changing GitHub repository.
 
-.. _transifex:
+.. _using-transifex:
 
 Translating the easy way - the Transifex web site
 -------------------------------------------------
@@ -76,12 +76,20 @@ In May 2014 I created a `pywws project <https://www.transifex.com/organization/j
 If you'd like to use Transifex to help translate pywws, please create an account and join the appropriate language team.
 
 Visit the newest pywws project page on Transifex and click on your language, then click on the "resource" you want to translate.
-(``pywws.pot`` contains the program strings used when running pywws, the others contain strings from the pywws documentation.)
+(``pywws`` contains the program strings used when running pywws, the others contain strings from the pywws documentation.)
 This opens a dialog where you can choose to download a file to work on or translate the strings online.
 Please read :ref:`translator-notes` before you start.
 
-When you've finished translating ``pywws.pot`` select the "download for use" option and save the file to ``pywws/lang/fr/LC_MESSAGES/pywws.po`` (replace ``fr`` with your language code).
+When you've finished translating ``pywws`` select the "download for use" option and save the file to ``pywws/lang/fr/LC_MESSAGES/pywws.po`` (replace ``fr`` with your language code).
 Now you can :ref:`test-translation`.
+
+.. versionadded:: 14.05.dev1221
+   pywws now includes a config file for the ``transifex-client`` program (see :ref:`dependencies <dependencies-translations>`).
+   This simplifies the process of downloading files for testing (or uploading files you've been editing on your computer).
+
+For example, this command downloads any updated files for the French language::
+   
+   tx pull -l fr
 
 Translating the hard way - using local files
 --------------------------------------------
@@ -112,7 +120,7 @@ If a .po file for your language already exists, but needs updating with new sour
 
    python setup.py update_catalog --locale fr
 
-Now you can open the pywws.po file in your favourite text editor and start filling in the empty ``msgstr`` strings with your translation of the corresponding ``msgid`` string.
+Now you can open the ``pywws/lang/fr/LC_MESSAGES/pywws.po`` file in your favourite text editor and start filling in the empty ``msgstr`` strings with your translation of the corresponding ``msgid`` string.
 Please read :ref:`translator-notes` before you start.
 
 .. _test-translation:
@@ -171,7 +179,7 @@ The Sphinx program used to compile the pywws documentation has good support for 
 I recommend reading `this overview <http://sphinx-doc.org/latest/intl.html>`_, but don't follow its instructions too closely.
 I've tried to simplify the process, as described below.
 
-As before, the easiest way to contribute to the pywws documentation translations is via the Transifex web site (see :ref:`transifex`).
+As before, the easiest way to contribute to the pywws documentation translations is via the Transifex web site (see :ref:`using-transifex`).
 You don't need to translate everything -- even a partial translation could be useful.
 Just let me know when you've done enough to be worth publishing.
 
