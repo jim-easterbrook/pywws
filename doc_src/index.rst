@@ -16,31 +16,15 @@
    along with this program; if not, write to the Free Software
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-#####
-pywws
-#####
-
 .. image:: img_1504.jpg
    :align: right
 
-| Python software for USB Wireless WeatherStations
-| http://pythonhosted.org/pywws
-| http://jim-easterbrook.github.com/pywws/
-| http://github.com/jim-easterbrook/pywws/
+.. include:: ../README.rst
 
-This document is available in the following languages (non-English versions may not be complete or up to date):
-
+Documentation is available in the following languages (non-English versions may not be complete or up to date):
    * `English <../../en/html/index.html>`_
    * `Français <../../fr/html/index.html>`_ -- translated by Jacques Desroches
    * `Italiano <../../it/html/index.html>`_ -- translated by Edoardo
-
-************
-Introduction
-************
-
-pywws is a collection of Python scripts to read, store and process data from popular USB wireless weather stations such as Elecsa AstroTouch 6975, Watson W-8681, WH-1080PC, WH1080, WH1081, WH3080 etc. I assume any model that is supplied with the EasyWeather Windows software is compatible, but cannot guarantee this.
-
-The software has been developed to run in a low power, low memory environment such as a router. It can be used to create graphs and web pages showing recent weather readings, typically updated every hour. It can also send data to services such as `Weather Underground <http://www.wunderground.com/>`_ and post messages to `Twitter <https://twitter.com/>`_.
 
 I have written this software to meet my needs, but have tried to make it adaptable to other people's requirements. You may want to edit some or all of the modules, or write some new ones, to get it to do exactly what you want. One of the reasons for using Python is that it makes such alterations so easy. Don't be afraid, just jump in and have a go.
 
