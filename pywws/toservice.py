@@ -75,9 +75,7 @@ Upload old data
 ---------------
 
 Now you can upload your last 7 days' data, if the service supports it.
-Edit your ``status.ini`` file and remove the appropriate line from the
-``last update`` section, then run ``toservice`` with the catchup
-option::
+Run ``toservice`` with the catchup option::
 
     python -m pywws.toservice -cvv data_dir service_name
 
@@ -248,7 +246,8 @@ class ToService(object):
             self.status.set(
                 'last update', self.service_name, last_update.isoformat(' '))
         # set timestamp of first data to upload
-        self.next_update = datetime.utcnow() - timedelta(days=self.catchup)
+        self.next_update = datetime.utcnow() - max(
+            timedelta(days=self.catchup), self.interval)
 
     def prepare_data(self, data):
         """Prepare a weather data record.
@@ -277,7 +276,7 @@ class ToService(object):
         prepared_data.update(self.fixed_data)
         return prepared_data
 
-    def aprs_send_data(self, timestamp, prepared_data):
+    def aprs_send_data(self, timestamp, prepared_data, ignore_last_update=False):
         """Upload a weather data record using APRS.
 
         The :obj:`prepared_data` parameter contains the data to be uploaded.
@@ -290,6 +289,11 @@ class ToService(object):
         :param prepared_data: the data to upload.
 
         :type prepared_data: dict
+
+        :param ignore_last_update: don't get or set the 'last update'
+            status.ini entry.
+
+        :type ignore_last_update: bool
 
         :return: success status
 
@@ -328,10 +332,11 @@ class ToService(object):
                 self.logger.error(e)
                 self.old_ex = e
             return False
-        self.set_last_update(timestamp)
+        if not ignore_last_update:
+            self.set_last_update(timestamp)
         return True
 
-    def http_send_data(self, timestamp, prepared_data):
+    def http_send_data(self, timestamp, prepared_data, ignore_last_update=False):
         """Upload a weather data record using HTTP.
 
         The :obj:`prepared_data` parameter contains the data to be uploaded.
@@ -344,6 +349,11 @@ class ToService(object):
         :param prepared_data: the data to upload.
 
         :type prepared_data: dict
+
+        :param ignore_last_update: don't get or set the 'last update'
+            status.ini entry.
+
+        :type ignore_last_update: bool
 
         :return: success status
 
@@ -375,7 +385,8 @@ class ToService(object):
                         break
                 else:
                     self.old_response = response
-                    self.set_last_update(timestamp)
+                    if not ignore_last_update:
+                        self.set_last_update(timestamp)
                     return True
             if response != self.old_response:
                 for line in response:
@@ -400,7 +411,7 @@ class ToService(object):
                 log(extra)
         return False
 
-    def next_data(self, catchup, live_data):
+    def next_data(self, catchup, live_data, ignore_last_update=False):
         """Get weather data records to upload.
 
         This method returns either the most recent weather data
@@ -416,12 +427,21 @@ class ToService(object):
 
         :type live_data: dict
 
+        :param ignore_last_update: don't get the 'last update'
+            status.ini entry.
+
+        :type ignore_last_update: bool
+
         :return: yields weather data records.
 
         :rtype: dict
         
         """
-        last_update = self.status.get_datetime('last update', self.service_name)
+        if ignore_last_update:
+            last_update = None
+        else:
+            last_update = self.status.get_datetime(
+                'last update', self.service_name)
         if last_update:
             self.next_update = max(self.next_update,
                                    last_update + self.interval)
@@ -450,7 +470,7 @@ class ToService(object):
                 self.status.set('last update', self.parent,
                                 (timestamp + PARENT_MARGIN).isoformat(' '))
 
-    def Upload(self, catchup=True, live_data=None):
+    def Upload(self, catchup=True, live_data=None, ignore_last_update=False):
         """Upload one or more weather data records.
 
         This method uploads either the most recent weather data
@@ -464,17 +484,27 @@ class ToService(object):
 
         :type catchup: bool
 
+        :param live_data: current 'live' data. If not present the most
+            recent logged data is uploaded.
+
+        :type live_data: dict
+
+        :param ignore_last_update: don't get or set the 'last update'
+            status.ini entry.
+
+        :type ignore_last_update: bool
+
         :return: success status
 
         :rtype: bool
         
         """
         count = 0
-        for data in self.next_data(catchup, live_data):
+        for data in self.next_data(catchup, live_data, ignore_last_update):
             prepared_data = self.prepare_data(data)
             if not prepared_data:
                 continue
-            if not self.send_data(data['idx'], prepared_data):
+            if not self.send_data(data['idx'], prepared_data, ignore_last_update):
                 return False
             count += 1
         if count > 1:
@@ -510,7 +540,8 @@ def main(argv=None):
     logger = ApplicationLogger(verbose)
     return ToService(
         DataStore.params(args[0]), DataStore.status(args[0]),
-        DataStore.calib_store(args[0]), args[1]).Upload(catchup=catchup)
+        DataStore.calib_store(args[0]), args[1]).Upload(
+            catchup=catchup, ignore_last_update=not catchup)
 
 if __name__ == "__main__":
     sys.exit(main())
