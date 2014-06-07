@@ -60,6 +60,8 @@ The following subsections give further information about some of the available s
 Citizen Weather Observer Program
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+.. versionadded:: 14.02.dev1156
+
 * Web site: http://www.wxqa.com/
 * Create account: http://www.wxqa.com/SIGN-UP.html
 * API: http://www.wxqa.com/faq.html
@@ -82,13 +84,12 @@ Note that the latitude and longitude must be in "LORAN" format and leading zeros
 See question 3 in the `CWOP FAQ <http://www.wxqa.com/faq.html>`_ for more information.
 
 Licensed radio hams use their callsign as the designator and need a passcode.
-They should use the service name ``cwop_ham`` instead of ``cwop``.
+They should use the service name ``cwop_ham`` instead of ``cwop`` when running :py:mod:`pywws.toservice` directly and in the ``weather.ini`` ``services`` entries.
+(The same ``[cwop]`` config section is used for both.)
 
 CWOP uploads are rate-limited by pywws, so you can safely add it to both the ``[live]`` and ``[logged]`` sections in ``weather.ini``.
 
 The CWOP/APRS uploader is based on code by Marco Trevisan <mail@3v1n0.net>.
-
-.. versionadded:: 14.02.dev1156
 
 UK Met Office
 ^^^^^^^^^^^^^
@@ -180,7 +181,3 @@ wetter.com
     [wetterarchivde]
     benutzername = ???
     passwort = ???
-
-----
-
-Comments or questions? Please subscribe to the pywws mailing list http://groups.google.com/group/pywws and let us know.
