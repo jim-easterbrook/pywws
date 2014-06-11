@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+pywws - Python software for USB Wireless Weather Stations
+http://github.com/jim-easterbrook/pywws
+Copyright (C) 2008-14  Jim Easterbrook  jim@jim-easterbrook.me.uk
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+WARNING: this template exploits undocumented features of pywws.Plot. It may not
+work with future versions of pywws.
+It assumes a logging interval of 5 minutes. If you have a different logging
+interval you will need to adjust the winddir_average() parameters.
+-->
+<graph>
+  <size>600, 400</size>
+  <lmargin>7</lmargin>
+  <rmargin>7</rmargin>
+  <duration>hours=24</duration>
+  <xtics>2</xtics>
+  <xformat>%H%M</xformat>
+  <dateformat></dateformat>
+  <plot>
+    <bmargin>1</bmargin>
+    <title>Wind speed (mph)</title>
+    <yrange>0, 35</yrange>
+    <source>raw</source>
+    <subplot>
+      <colour>3</colour>
+      <ycalc>wind_mph(data['wind_ave'])</ycalc>
+      <title>average</title>
+    </subplot>
+    <subplot>
+      <style>+ 1</style>
+      <colour>4</colour>
+      <ycalc>(None,wind_mph(data['wind_gust']))[data['wind_gust']-data['wind_ave']>1.0]</ycalc>
+      <title>gust</title>
+    </subplot>
+  </plot>
+  <plot>
+    <title>Wind direction (°)</title>
+    <yrange>0, 360</yrange>
+    <ytics>45</ytics>
+    <y2tics>('N' 0, 'E' 90, 'S' 180, 'W' 270, 'N' 360)</y2tics>
+    <source>raw</source>
+    <subplot>
+      <style>+ 1</style>
+      <colour>2</colour>
+      <ycalc>winddir_average(source[data['idx']-timedelta(minutes=24):
+	                            data['idx']+timedelta(minutes=24)],0.5,9)</ycalc>
+    </subplot>
+  </plot>
+</graph>
