@@ -25,6 +25,8 @@
 
 from __future__ import absolute_import
 
+__docformat__ = "restructuredtext en"
+
 import math
 
 # rename imports to prevent them being imported when
@@ -79,6 +81,53 @@ def temp_f(c):
         return None
     return (c * 9.0 / 5.0) + 32.0
 
+def winddir_average(data, threshold, min_count):
+    """Compute average wind direction (in degrees) for a slice of data.
+
+    The wind speed and direction of each data item is converted to a
+    vector before averaging, so the result reflects the dominant wind
+    direction during the time period covered by the data.
+
+    :note: The return value is in degrees, not the 0..15 range used
+        elsewhere in pywws.
+
+    :param data: a slice of pywws raw/calib or hourly data.
+
+    :type data: pywws.DataStore.core_store
+
+    :param threshold: minimum average windspeed for there to be a
+        valid wind direction.
+
+    :type threshold: float
+
+    :param min_count: minimum number of data items for there to be a
+        valid wind direction.
+
+    :type min_count: int
+
+    :rtype: float
+    
+    """
+    Ve = 0.0
+    Vn = 0.0
+    total = 0.0
+    count = 0
+    for item in data:
+        direction = item['wind_dir']
+        speed = item['wind_ave']
+        if direction is not None and speed is not None:
+            direction = math.radians(float(direction) * 22.5)
+            Ve -= speed * math.sin(direction)
+            Vn -= speed * math.cos(direction)
+            total += speed
+            count += 1
+    if count < min_count or count < 1:
+        return None
+    total = total / float(count)
+    if total < threshold:
+        return None
+    return math.degrees(math.atan2(Ve, Vn)) + 180.0
+    
 def winddir_degrees(pts):
     "Convert wind direction from 0..15 to degrees"
     if pts is None:
