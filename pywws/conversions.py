@@ -141,6 +141,8 @@ def winddir_text(pts):
     global _winddir_text_array
     if pts is None:
         return None
+    if not isinstance(pts, int):
+        pts = int(pts + 0.5) % 16
     if not _winddir_text_array:
         _ = _Localisation.translation.gettext
         _winddir_text_array = (

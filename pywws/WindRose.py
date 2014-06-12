@@ -314,6 +314,8 @@ unset raxis
             wind_dir = data['wind_dir']
             if wind_dir is None:
                 continue
+            if not isinstance(wind_dir, int):
+                wind_dir = int(wind_dir + 0.5) % 16
             if not eval(xcalc):
                 continue
             value = eval(ycalc)

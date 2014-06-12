@@ -66,7 +66,9 @@ def ZambrettiCode(pressure, month, wind, trend,
     pressure = 950.0 + ((1050.0 - 950.0) *
                         (pressure - baro_bottom) / (baro_top - baro_bottom))
     # adjust pressure for wind direction
-    if wind != None:
+    if wind is not None:
+        if not isinstance(wind, int):
+            wind = int(wind + 0.5) % 16
         if not north:
             # southern hemisphere, so add 180 degrees
             wind = (wind + 8) % 16
