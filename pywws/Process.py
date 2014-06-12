@@ -148,6 +148,58 @@ sin_LUT = map(
 cos_LUT = map(
     lambda x: math.cos(math.radians(float(x * 360) / 16.0)), range(16))
 
+class WindFilter(object):
+    """Compute average wind speed and direction.
+
+    The wind speed and direction of each data item is converted to a
+    vector before averaging, so the result reflects the dominant wind
+    direction during the time period covered by the data.
+
+    Setting the ``decay`` parameter converts the filter from a simple
+    averager to one where the most recent sample carries the highest
+    weight, the previous sample is weighted by ``decay``, the one
+    before that by ``decay ** 2`` and so on.
+
+    The return value is a (speed, direction) tuple.
+
+    :param decay: filter coefficient decay rate.
+
+    :type data: float
+
+    :rtype: (float, float)
+    
+    """
+    def __init__(self, decay=1.0):
+        self.decay = decay
+        self.Ve = 0.0
+        self.Vn = 0.0
+        self.total = 0.0
+        self.weight = 1.0
+        self.total_weight = 0.0
+
+    def add(self, data):
+        self.weight = self.weight / self.decay
+        direction = data['wind_dir']
+        speed = data['wind_ave']
+        if direction is None or speed is None:
+            return
+        speed = speed * self.weight
+        if isinstance(direction, int):
+            self.Ve -= speed * sin_LUT[direction]
+            self.Vn -= speed * cos_LUT[direction]
+        else:
+            direction = math.radians(float(direction) * 22.5)
+            self.Ve -= speed * math.sin(direction)
+            self.Vn -= speed * math.cos(direction)
+        self.total += speed
+        self.total_weight += self.weight
+
+    def result(self):
+        if self.total_weight == 0.0:
+            return (None, None)
+        return (self.total / self.total_weight,
+                (math.degrees(math.atan2(self.Ve, self.Vn)) + 180.0) / 22.5)
+
 class HourAcc(object):
     """'Accumulate' raw weather data to produce hourly summary.
 
@@ -158,31 +210,19 @@ class HourAcc(object):
     def __init__(self, last_rain):
         self.logger = logging.getLogger('pywws.Process.HourAcc')
         self.last_rain = last_rain
-        self.wind_dir = list()
-        for i in range(16):
-            self.wind_dir.append(0.0)
         self.copy_keys = ['idx', 'hum_in', 'temp_in', 'hum_out', 'temp_out',
                           'abs_pressure', 'rel_pressure']
         self.reset()
 
     def reset(self):
-        for i in range(16):
-            self.wind_dir[i] = 0.0
-        self.wind_acc = 0.0
+        self.wind_fil = WindFilter()
         self.wind_gust = (-2.0, None)
         self.rain = 0.0
-        self.wind_count = 0
         self.retval = {'idx' : None, 'temp_out' : None}
 
     def add_raw(self, data):
         idx = data['idx']
-        wind_ave = data['wind_ave']
-        if wind_ave is not None:
-            wind_dir = data['wind_dir']
-            if wind_dir is not None:
-                self.wind_dir[wind_dir] += wind_ave
-            self.wind_acc += wind_ave
-            self.wind_count += 1
+        self.wind_fil.add(data)
         wind_gust = data['wind_gust']
         if wind_gust is not None and wind_gust > self.wind_gust[0]:
             self.wind_gust = (wind_gust, idx)
@@ -213,22 +253,7 @@ class HourAcc(object):
     def result(self):
         if not self.retval['idx']:
             return None
-        if self.wind_count > 0:
-            # convert weighted wind directions to a vector
-            Ve = 0.0
-            Vn = 0.0
-            for dir in range(16):
-                val = self.wind_dir[dir]
-                Ve -= val * sin_LUT[dir]
-                Vn -= val * cos_LUT[dir]
-            # get direction of total vector
-            dir_ave = (math.degrees(math.atan2(Ve, Vn)) + 180.0) * 16.0 / 360.0
-            self.retval['wind_dir'] = int(dir_ave + 0.5) % 16
-            wind_ave = self.wind_acc / float(self.wind_count)
-            self.retval['wind_ave'] = wind_ave
-        else:
-            self.retval['wind_dir'] = None
-            self.retval['wind_ave'] = None
+        self.retval['wind_ave'], self.retval['wind_dir'] = self.wind_fil.result()
         if self.wind_gust[1]:
             self.retval['wind_gust'] = self.wind_gust[0]
         else:
@@ -251,19 +276,13 @@ class DayAcc(object):
     def __init__(self):
         self.logger = logging.getLogger('pywws.Process.DayAcc')
         self.has_illuminance = False
-        self.wind_dir = list()
-        for i in range(16):
-            self.wind_dir.append(0.0)
         self.ave = {}
         self.max = {}
         self.min = {}
         self.reset()
 
     def reset(self):
-        for i in range(16):
-            self.wind_dir[i] = 0.0
-        self.wind_acc = 0.0
-        self.wind_count = 0
+        self.wind_fil = WindFilter()
         self.wind_gust = (-1.0, None)
         self.rain = 0.0
         for i in ('temp_in', 'temp_out', 'hum_in', 'hum_out',
@@ -307,13 +326,7 @@ class DayAcc(object):
                     self.max[i].add(value, idx)
 
     def add_hourly(self, data):
-        wind_ave = data['wind_ave']
-        if wind_ave is not None:
-            wind_dir = data['wind_dir']
-            if wind_dir is not None:
-                self.wind_dir[wind_dir] += wind_ave
-            self.wind_acc += wind_ave
-            self.wind_count += 1
+        self.wind_fil.add(data)
         rain = data['rain']
         if rain is not None:
             self.rain += rain
@@ -322,22 +335,7 @@ class DayAcc(object):
     def result(self):
         if not self.retval:
             return None
-        if self.wind_count > 0:
-            # convert weighted wind directions to a vector
-            Ve = 0.0
-            Vn = 0.0
-            for dir in range(16):
-                val = self.wind_dir[dir]
-                Ve -= val * sin_LUT[dir]
-                Vn -= val * cos_LUT[dir]
-            # get direction of total vector
-            dir_ave = (math.degrees(math.atan2(Ve, Vn)) + 180.0) * 16.0 / 360.0
-            self.retval['wind_dir'] = int(dir_ave + 0.5) % 16
-            wind_ave = self.wind_acc / float(self.wind_count)
-            self.retval['wind_ave'] = wind_ave
-        else:
-            self.retval['wind_dir'] = None
-            self.retval['wind_ave'] = None
+        self.retval['wind_ave'], self.retval['wind_dir'] = self.wind_fil.result()
         if self.wind_gust[1]:
             self.retval['wind_gust'] = self.wind_gust[0]
         else:
@@ -376,9 +374,6 @@ class MonthAcc(object):
         self.max_lo = {}
         self.max_hi = {}
         self.max_ave = {}
-        self.wind_dir = list()
-        for i in range(16):
-            self.wind_dir.append(0.0)
         self.reset()
 
     def reset(self):
@@ -399,10 +394,7 @@ class MonthAcc(object):
             self.max_lo[i] = Minimum()
             self.max_hi[i] = Maximum()
             self.max_ave[i] = Average()
-        for i in range(16):
-            self.wind_dir[i] = 0.0
-        self.wind_acc = 0.0
-        self.wind_count = 0
+        self.wind_fil = WindFilter()
         self.wind_gust = (-1.0, None)
         self.rain = 0.0
         self.rain_days = 0
@@ -434,13 +426,7 @@ class MonthAcc(object):
             value = data['%s_max' % i]
             if value is not None:
                 self.max[i].add(value, data['%s_max_t' % i])
-        wind_ave = data['wind_ave']
-        if wind_ave is not None:
-            wind_dir = data['wind_dir']
-            if wind_dir is not None:
-                self.wind_dir[wind_dir] += wind_ave
-            self.wind_acc += wind_ave
-            self.wind_count += 1
+        self.wind_fil.add(data)
         wind_gust = data['wind_gust']
         if wind_gust is not None and wind_gust > self.wind_gust[0]:
             self.wind_gust = (wind_gust, data['wind_gust_t'])
@@ -485,22 +471,7 @@ class MonthAcc(object):
              result['%s_max_t' % i]) = self.max[i].result()
             (result['%s_min' % i],
              result['%s_min_t' % i]) = self.min[i].result()
-        if self.wind_count > 0:
-            # convert weighted wind directions to a vector
-            Ve = 0.0
-            Vn = 0.0
-            for dir in range(16):
-                val = self.wind_dir[dir]
-                Ve -= val * sin_LUT[dir]
-                Vn -= val * cos_LUT[dir]
-            # get direction of total vector
-            dir_ave = (math.degrees(math.atan2(Ve, Vn)) + 180.0) * 16.0 / 360.0
-            result['wind_dir'] = int(dir_ave + 0.5) % 16
-            wind_ave = self.wind_acc / float(self.wind_count)
-            result['wind_ave'] = wind_ave
-        else:
-            result['wind_dir'] = None
-            result['wind_ave'] = None
+        result['wind_ave'], result['wind_dir'] = self.wind_fil.result()
         if self.wind_gust[1]:
             result['wind_gust'] = self.wind_gust[0]
         else:
