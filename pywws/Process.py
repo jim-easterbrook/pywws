@@ -90,6 +90,7 @@ from .TimeZone import STDOFFSET, HOUR
 
 SECOND = timedelta(seconds=1)
 TIME_ERR = timedelta(seconds=45)
+MINUTEx5 = timedelta(minutes=5)
 HOURx3 = timedelta(hours=3)
 DAY = timedelta(hours=24)
 WEEK = timedelta(days=7)
@@ -157,8 +158,18 @@ class WindFilter(object):
 
     Setting the ``decay`` parameter converts the filter from a simple
     averager to one where the most recent sample carries the highest
-    weight, the previous sample is weighted by ``decay``, the one
-    before that by ``decay ** 2`` and so on.
+    weight, and earlier samples have a lower weight according to how
+    long ago they were.
+
+    This process is an approximation of "exponential smoothing". See
+    `Wikipedia <http://en.wikipedia.org/wiki/Exponential_smoothing>`_
+    for a detailed discussion.
+
+    The parameter ``decay`` corresponds to the value ``(1 - alpha)``
+    in the Wikipedia description. Because the weather data being
+    smoothed may not be at regular intervals this parameter is the
+    decay over 5 minutes. Weather data at other intervals will have
+    its weight scaled accordingly.
 
     The return value is a (speed, direction) tuple.
 
@@ -176,13 +187,22 @@ class WindFilter(object):
         self.total = 0.0
         self.weight = 1.0
         self.total_weight = 0.0
+        self.last_idx = None
 
     def add(self, data):
-        self.weight = self.weight / self.decay
         direction = data['wind_dir']
         speed = data['wind_ave']
         if direction is None or speed is None:
             return
+        if self.last_idx and self.decay != 1.0:
+            interval = data['idx'] - self.last_idx
+            assert interval.days == 0
+            decay = self.decay
+            if interval != MINUTEx5:
+                decay = decay ** (float(interval.seconds) /
+                                  float(MINUTEx5.seconds))
+            self.weight = self.weight / decay
+        self.last_idx = data['idx']
         speed = speed * self.weight
         if isinstance(direction, int):
             self.Ve -= speed * sin_LUT[direction]

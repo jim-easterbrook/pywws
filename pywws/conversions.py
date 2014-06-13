@@ -91,8 +91,18 @@ def winddir_average(data, threshold, min_count, decay=1.0):
 
     Setting the ``decay`` parameter converts the filter from a simple
     averager to one where the most recent sample carries the highest
-    weight, the previous sample is weighted by ``decay``, the one
-    before that by ``decay ** 2`` and so on.
+    weight, and earlier samples have a lower weight according to how
+    long ago they were.
+
+    This process is an approximation of "exponential smoothing". See
+    `Wikipedia <http://en.wikipedia.org/wiki/Exponential_smoothing>`_
+    for a detailed discussion.
+
+    The parameter ``decay`` corresponds to the value ``(1 - alpha)``
+    in the Wikipedia description. Because the weather data being
+    smoothed may not be at regular intervals this parameter is the
+    decay over 5 minutes. Weather data at other intervals will have
+    its weight scaled accordingly.
 
     :note: The return value is in degrees, not the 0..15 range used
         elsewhere in pywws.
