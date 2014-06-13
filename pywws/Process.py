@@ -164,7 +164,7 @@ class WindFilter(object):
 
     :param decay: filter coefficient decay rate.
 
-    :type data: float
+    :type decay: float
 
     :rtype: (float, float)
     

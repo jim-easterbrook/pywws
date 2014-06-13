@@ -32,6 +32,7 @@ import math
 # rename imports to prevent them being imported when
 # doing 'from pywws.conversions import *'
 from . import Localisation as _Localisation
+from .Process import WindFilter as _WindFilter
 
 def illuminance_wm2(lux):
     "Approximate conversion of illuminance in lux to solar radiation in W/m2"
@@ -81,12 +82,17 @@ def temp_f(c):
         return None
     return (c * 9.0 / 5.0) + 32.0
 
-def winddir_average(data, threshold, min_count):
+def winddir_average(data, threshold, min_count, decay=1.0):
     """Compute average wind direction (in degrees) for a slice of data.
 
     The wind speed and direction of each data item is converted to a
     vector before averaging, so the result reflects the dominant wind
     direction during the time period covered by the data.
+
+    Setting the ``decay`` parameter converts the filter from a simple
+    averager to one where the most recent sample carries the highest
+    weight, the previous sample is weighted by ``decay``, the one
+    before that by ``decay ** 2`` and so on.
 
     :note: The return value is in degrees, not the 0..15 range used
         elsewhere in pywws.
@@ -105,28 +111,25 @@ def winddir_average(data, threshold, min_count):
 
     :type min_count: int
 
+    :param decay: filter coefficient decay rate.
+
+    :type decay: float
+
     :rtype: float
     
     """
-    Ve = 0.0
-    Vn = 0.0
-    total = 0.0
+    wind_filter = _WindFilter()
     count = 0
     for item in data:
-        direction = item['wind_dir']
-        speed = item['wind_ave']
-        if direction is not None and speed is not None:
-            direction = math.radians(float(direction) * 22.5)
-            Ve -= speed * math.sin(direction)
-            Vn -= speed * math.cos(direction)
-            total += speed
+        wind_filter.add(item)
+        if item['wind_dir'] is not None:
             count += 1
-    if count < min_count or count < 1:
+    if count < min_count:
         return None
-    total = total / float(count)
-    if total < threshold:
+    speed, direction = wind_filter.result()
+    if speed is None or speed < threshold:
         return None
-    return math.degrees(math.atan2(Ve, Vn)) + 180.0
+    return direction * 22.5
     
 def winddir_degrees(pts):
     "Convert wind direction from 0..15 to degrees"
