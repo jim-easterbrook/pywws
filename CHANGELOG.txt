@@ -16,6 +16,17 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
+Changes in v14.06:
+    1/ Can now send images to Twitter.
+    2/ Periodic tasks can be specified with a cron style syntax.
+    3/ Added wind direction filter for use in graphs or user calibration
+       modules.
+    4/ Started using "Transifex" to host translations. Changed tools and
+       procedures to create new translations.
+    5/ Improved USB hangup avoidance strategy for stations with large clock
+       drift figures.
+    6/ Various bug fixes and minor improvements.
+
 Changes in v14.05:
     1/ Rearranged package layout, moving examples and documentation.
     2/ Added 'entry point' auto-generated commands for some modules.
