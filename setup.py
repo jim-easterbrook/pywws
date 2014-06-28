@@ -112,7 +112,7 @@ try:
     cmdclass['build_sphinx'] = BuildDoc
     command_options['build_sphinx'] = {
         'source_dir' : ('setup.py', 'src/doc'),
-        'build_dir'  : ('setup.py', 'src/pywws/doc/%s' % (lang)),
+        'build_dir'  : ('setup.py', 'doc/%s' % (lang)),
         'builder'    : ('setup.py', 'html'),
         }
     # extract strings for translation
@@ -120,7 +120,7 @@ try:
         description = 'extract localizable strings from the documentation'
     cmdclass['extract_messages_doc'] = extract_messages_doc
     command_options['extract_messages_doc'] = {
-        'source_dir' : ('setup.py', 'doc_src'),
+        'source_dir' : ('setup.py', 'src/doc'),
         'build_dir'  : ('setup.py', 'build'),
         'builder'    : ('setup.py', 'gettext'),
         }
@@ -129,7 +129,7 @@ except ImportError:
 
 # set options for uploading documentation to PyPI
 command_options['upload_docs'] = {
-    'upload_dir' : ('setup.py', 'src/pywws/doc'),
+    'upload_dir' : ('setup.py', 'doc'),
     }
 
 # modify upload class to add appropriate tag
@@ -186,7 +186,6 @@ setup(name = 'pywws',
           'pywws' : [
               'services/*',
               'lang/*/LC_MESSAGES/pywws.mo',
-              'doc/*.*', 'doc/*/html/*.*', 'doc/*/html/*/*.*', 'doc/*/html/*/*/*',
               'examples/*/*.*', 'examples/*/*/*.*',
               ],
           },

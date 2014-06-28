@@ -17,10 +17,10 @@ develop-eggs
 *~
 
 # Compiled documentation
-pywws/doc/en
-pywws/doc/fr
-pywws/doc/it
-doc_src/api/pywws.*.rst
+doc/en
+doc/fr
+doc/it
+src/doc/api/pywws.*.rst
 
 # Compiled language files
 *.mo
