@@ -19,6 +19,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 from datetime import date
+from distutils.command.upload import upload
 import os
 from setuptools import setup
 
@@ -130,6 +131,27 @@ except ImportError:
 command_options['upload_docs'] = {
     'upload_dir' : ('setup.py', 'pywws/doc'),
     }
+
+# modify upload class to add appropriate tag
+# requires GitPython - 'sudo pip install gitpython --pre'
+class upload_and_tag(upload):
+    def run(self):
+        import git
+        message = ''
+        with open('CHANGELOG.txt') as cl:
+            while not cl.readline().startswith('Changes'):
+                pass
+            while True:
+                line = cl.readline().strip()
+                if not line:
+                    break
+                message += line + '\n'
+        repo = git.Repo()
+        tag = repo.create_tag(next_release, message=message)
+        remote = repo.remotes.origin
+        remote.push(tags=True)
+        return upload.run(self)
+cmdclass['upload'] = upload_and_tag
 
 # set options for building distributions
 command_options['sdist'] = {
