@@ -21,27 +21,27 @@
 from datetime import date
 import os
 from setuptools import setup
-import subprocess
 
 # read current version info without importing pywws package
 with open('pywws/__init__.py') as f:
     exec(f.read())
 
-# regenerate version info, if required
-last_commit = None
+# get GitHub repo information
+# requires GitPython - 'sudo pip install gitpython --pre'
+last_commit = _commit
 last_release = None
 try:
-    p = subprocess.Popen(['git', 'rev-parse', '--short', 'HEAD'],
-                         stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    if not p.returncode:
-        last_commit = p.communicate()[0].strip().decode('ASCII')
-    p = subprocess.Popen(['git', 'describe', '--abbrev=0', '--tags'],
-                         stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    if not p.returncode:
-        last_release = p.communicate()[0].strip().decode('ASCII')
-except OSError:
+    import git
+    try:
+        repo = git.Repo()
+        last_release = str(repo.tags[0])
+        last_commit = str(repo.head.commit)[:7]
+    except git.exc.InvalidGitRepositoryError:
+        pass
+except ImportError:
     pass
 
+# regenerate version info, if required
 if last_commit != _commit:
     _release = str(int(_release) + 1)
     _commit = last_commit
