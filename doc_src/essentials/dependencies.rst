@@ -79,7 +79,9 @@ Other systems
 
 ::
 
-  pip install pyusb==1.0.0b1
+  pip install pyusb --pre
+
+The ``--pre`` flag enables the installation of "pre release" versions, such as the current beta release (1.0.0b1) of pyusb.
 
 If you have problems with version 1 of PyUSB then version 0.4 can be used, provided you install version 0.1 of libusb.
 Your system package manager should have both libraries.

@@ -36,11 +36,11 @@ Easy installation
 
 The easiest way to install pywws is with the pip command::
 
-   sudo pip install pywws
+   sudo pip install pywws --pre
 
 Upgrading pywws is also a one line command::
 
-   sudo pip install -U pywws
+   sudo pip install -U pywws --pre
 
 Now you are ready to :ref:`test-weather-station`.
 
