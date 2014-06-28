@@ -16,6 +16,12 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
+Changes in v14.06.1:
+    1/ Revised version numbering scheme.
+    2/ Compiled documentation no longer included in releases.
+    3/ Can partially specify start & stop date/time in graphs, e.g. to start a
+       plot at midnight, no matter when it is plotted.
+
 Changes in v14.06:
     1/ Can now send images to Twitter.
     2/ Periodic tasks can be specified with a cron style syntax.

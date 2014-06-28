@@ -1,6 +1,7 @@
 include *.txt
 include *.md
 recursive-include .tx *
+include doc/*.html
 recursive-include src/doc *
 recursive-include src/pywws/lang *.po
 prune src/doc/api
