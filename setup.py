@@ -24,7 +24,7 @@ import os
 from setuptools import setup
 
 # read current version info without importing pywws package
-with open('pywws/__init__.py') as f:
+with open('src/pywws/__init__.py') as f:
     exec(f.read())
 
 # get GitHub repo information
@@ -60,7 +60,7 @@ else:
     version = next_release
 
 if version != __version__:
-    vf = open('pywws/__init__.py', 'w')
+    vf = open('src/pywws/__init__.py', 'w')
     vf.write("""__version__ = '%s'
 _release = '%s'
 _commit = '%s'
@@ -79,11 +79,11 @@ else:
 # requires Babel to be installed
 command_options['compile_catalog'] = {
     'domain'    : ('setup.py', 'pywws'),
-    'directory' : ('setup.py', 'pywws/lang'),
+    'directory' : ('setup.py', 'src/pywws/lang'),
     'use_fuzzy' : ('setup.py', '1'),
     }
 command_options['extract_messages'] = {
-    'input_dirs'         : ('setup.py', 'pywws'),
+    'input_dirs'         : ('setup.py', 'src/pywws'),
     'output_file'        : ('setup.py', 'build/gettext/pywws.pot'),
     'no_wrap'            : ('setup.py', '1'),
     'sort_by_file'       : ('setup.py', '1'),
@@ -95,13 +95,13 @@ command_options['extract_messages'] = {
 command_options['init_catalog'] = {
     'domain'     : ('setup.py', 'pywws'),
     'input_file' : ('setup.py', 'build/gettext/pywws.pot'),
-    'output_dir' : ('setup.py', 'pywws/lang'),
+    'output_dir' : ('setup.py', 'src/pywws/lang'),
     'no_wrap'    : ('setup.py', '1'),
     }
 command_options['update_catalog'] = {
     'domain'     : ('setup.py', 'pywws'),
     'input_file' : ('setup.py', 'build/gettext/pywws.pot'),
-    'output_dir' : ('setup.py', 'pywws/lang'),
+    'output_dir' : ('setup.py', 'src/pywws/lang'),
     'no_wrap'    : ('setup.py', '1'),
     }
 
@@ -111,8 +111,8 @@ try:
     # compile documentation to html
     cmdclass['build_sphinx'] = BuildDoc
     command_options['build_sphinx'] = {
-        'source_dir' : ('setup.py', 'doc_src'),
-        'build_dir'  : ('setup.py', 'pywws/doc/%s' % (lang)),
+        'source_dir' : ('setup.py', 'src/doc'),
+        'build_dir'  : ('setup.py', 'src/pywws/doc/%s' % (lang)),
         'builder'    : ('setup.py', 'html'),
         }
     # extract strings for translation
@@ -129,7 +129,7 @@ except ImportError:
 
 # set options for uploading documentation to PyPI
 command_options['upload_docs'] = {
-    'upload_dir' : ('setup.py', 'pywws/doc'),
+    'upload_dir' : ('setup.py', 'src/pywws/doc'),
     }
 
 # modify upload class to add appropriate tag
@@ -181,6 +181,7 @@ setup(name = 'pywws',
       license = 'GNU GPL',
       platforms = ['POSIX', 'MacOS', 'Windows'],
       packages = ['pywws'],
+      package_dir = {'' : 'src'},
       package_data = {
           'pywws' : [
               'services/*',

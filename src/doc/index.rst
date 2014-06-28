@@ -19,7 +19,7 @@
 .. image:: img_1504.jpg
    :align: right
 
-.. include:: ../README.rst
+.. include:: ../../README.rst
 
 Documentation is available in the following languages (non-English versions may not be complete or up to date):
    * `English <../../en/html/index.html>`_

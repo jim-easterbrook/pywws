@@ -19,4 +19,4 @@
 Change Log
 ==========
 
-.. literalinclude:: ../../CHANGELOG.txt
+.. literalinclude:: ../../../CHANGELOG.txt

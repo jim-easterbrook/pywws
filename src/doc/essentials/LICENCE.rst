@@ -19,4 +19,4 @@
 GNU General Public License
 ==========================
 
-.. literalinclude:: ../../LICENCE.txt
+.. literalinclude:: ../../../LICENCE.txt
