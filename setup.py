@@ -35,7 +35,11 @@ try:
     import git
     try:
         repo = git.Repo()
-        last_release = str(repo.tags[0])
+        latest = 0
+        for tag in repo.tags:
+            if tag.tag.tagged_date > latest:
+                latest = tag.tag.tagged_date
+                last_release = str(tag)
         last_commit = str(repo.head.commit)[:7]
     except git.exc.InvalidGitRepositoryError:
         pass
@@ -48,6 +52,7 @@ if last_commit != _commit:
     _commit = last_commit
 if last_release:
     major, minor, patch = last_release.split('.')
+    print major, minor, patch
     today = date.today()
     if today.strftime('%m') == minor:
         patch = int(patch) + 1
