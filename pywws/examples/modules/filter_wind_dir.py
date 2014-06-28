@@ -16,9 +16,8 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-from datetime import datetime, timedelta
+from datetime import timedelta
 
-from pywws.constants import SECOND
 from pywws.Process import WindFilter
 
 class Calib(object):
@@ -33,14 +32,9 @@ class Calib(object):
         # calculate relative pressure
         result['rel_pressure'] = result['abs_pressure'] + self.pressure_offset
         # filter wind direction
-        stop = self.raw_data.before(result['idx'])
-        if stop:
-            start = stop - self.wind_fil_aperture
-        else:
-            stop = datetime.min
-            start = datetime.max
-        stop += SECOND
-        wind_filter = WindFilter(decay=0.85)
+        stop = result['idx']
+        start = stop - self.wind_fil_aperture
+        wind_filter = WindFilter(decay=0.8)
         for data in self.raw_data[start:stop]:
             wind_filter.add(data)
         wind_filter.add(raw)
