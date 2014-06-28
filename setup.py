@@ -19,7 +19,6 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 from datetime import date
-from distutils import log
 import os
 from setuptools import setup
 import subprocess
@@ -29,25 +28,43 @@ with open('pywws/__init__.py') as f:
     exec(f.read())
 
 # regenerate version info, if required
-regenerate = False
+last_commit = None
+last_release = None
 try:
     p = subprocess.Popen(['git', 'rev-parse', '--short', 'HEAD'],
                          stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    commit = p.communicate()[0].strip().decode('ASCII')
-    regenerate = (not p.returncode) and commit != _commit
+    if not p.returncode:
+        last_commit = p.communicate()[0].strip().decode('ASCII')
+    p = subprocess.Popen(['git', 'describe', '--abbrev=0', '--tags'],
+                         stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    if not p.returncode:
+        last_release = p.communicate()[0].strip().decode('ASCII')
 except OSError:
     pass
-if regenerate:
-    release = str(int(_release) + 1)
-    version = date.today().strftime('%y.%m') + '.dev%s' % release
+
+if last_commit != _commit:
+    _release = str(int(_release) + 1)
+    _commit = last_commit
+if last_release:
+    major, minor, patch = last_release.split('.')
+    today = date.today()
+    if today.strftime('%m') == minor:
+        patch = int(patch) + 1
+    else:
+        patch = 0
+    next_release = today.strftime('%y.%m') + '.%d' % patch
+    version = next_release + '.dev%s' % _release
+else:
+    next_release = '.'.join(__version__.split('.')[:3])
+    version = next_release
+
+if version != __version__:
     vf = open('pywws/__init__.py', 'w')
     vf.write("""__version__ = '%s'
 _release = '%s'
 _commit = '%s'
-""" % (version, release, commit))
+""" % (version, _release, _commit))
     vf.close()
-else:
-    version = __version__
 
 cmdclass = {}
 command_options = {}
@@ -123,12 +140,12 @@ with open('README.rst') as ldf:
     long_description = ldf.read()
 
 setup(name = 'pywws',
-      version = version,
+      version = next_release,
       description = 'Python software for wireless weather stations',
       author = 'Jim Easterbrook',
       author_email = 'jim@jim-easterbrook.me.uk',
       url = 'http://jim-easterbrook.github.com/pywws/',
-      download_url = 'https://pypi.python.org/pypi/pywws/%s' % version,
+      download_url = 'https://pypi.python.org/pypi/pywws/%s' % next_release,
       long_description = long_description,
       classifiers = [
           'Development Status :: 5 - Production/Stable',
