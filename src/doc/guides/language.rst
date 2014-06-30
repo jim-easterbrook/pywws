@@ -120,7 +120,7 @@ If a .po file for your language already exists, but needs updating with new sour
 
    python setup.py update_catalog --locale fr
 
-Now you can open the ``pywws/lang/fr/LC_MESSAGES/pywws.po`` file in your favourite text editor and start filling in the empty ``msgstr`` strings with your translation of the corresponding ``msgid`` string.
+Now you can open the ``src/pywws/lang/fr/LC_MESSAGES/pywws.po`` file in your favourite text editor and start filling in the empty ``msgstr`` strings with your translation of the corresponding ``msgid`` string.
 Please read :ref:`translator-notes` before you start.
 
 .. _test-translation:
@@ -199,22 +199,22 @@ Create language files
 
 The sphinx-intl command is used to create or update the .po files::
 
-   sphinx-intl update --locale-dir pywws/lang -p build/gettext -l fr
+   sphinx-intl update --locale-dir src/pywws/lang -p build/gettext -l fr
 
 Viewing your translated documentation
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 First compile your newly edited language file(s)::
 
-   sphinx-intl build --locale-dir pywws/lang -l fr
+   sphinx-intl build --locale-dir src/pywws/lang -l fr
 
 Then delete the old documentation (if it exists) and rebuild using your language::
 
-   rm -rf pywws/doc/fr
+   rm -rf doc/fr
    LANG=fr python setup.py build_sphinx
 
 Note that the ``build_sphinx`` command doesn't have a ``--locale`` (or ``-l``) option, so the language is set by a temporary environment variable.
 
-Finally you can view the translated documentation by using a web browser to read the file ``pywws/doc/fr/html/index.html``.
+Finally you can view the translated documentation by using a web browser to read the file ``doc/fr/html/index.html``.
 
 As before, please make sure you send your translation to jim@jim-easterbrook.me.uk so other pywws users can benefit from your work.

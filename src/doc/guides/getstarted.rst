@@ -1,6 +1,6 @@
 .. pywws - Python software for USB Wireless Weather Stations
    http://github.com/jim-easterbrook/pywws
-   Copyright (C) 2008-13  Jim Easterbrook  jim@jim-easterbrook.me.uk
+   Copyright (C) 2008-14  Jim Easterbrook  jim@jim-easterbrook.me.uk
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -79,12 +79,6 @@ Install git and use it to clone the repos::
    cd ~/weather
    git clone https://github.com/jim-easterbrook/pywws.git
 
-After cloning you may want to use setup.py to compile the language files and documentation, if you have installed the gettext and sphinx packages::
-
-   cd ~/weather/pywws
-   python setup.py msgfmt
-   python setup.py build_sphinx
-
 To upgrade you use git to pull any changes::
 
    cd ~/weather/pywws
@@ -96,10 +90,29 @@ Install scripts
 If you have not installed pywws with pip, you need to use setup.py to generate the "entry point" scripts for common pywws tasks::
 
    cd ~/weather/pywws
+   python setup.py build
    sudo python setup.py develop
 
 Note to Python 3 users: this will generate and use Python 3 versions of the pywws software in ``~/weather/pywws/build/lib``.
-Because your pywws directory (``~/weather/pywws``) contains the Python 2 pywws package you will need to change to a different directory before running any of the ``python -m pywws.xxx`` commands referred to elsewhere in the documentation.
+
+Compile documentation (optional)
+--------------------------------
+
+If you'd like to have a local copy of the pywws documentation (and have downloaded the source or cloned the repo) you can "compile" the English documentation.
+This requires the sphinx package::
+
+   cd ~/weather/pywws
+   python setup.py build_sphinx
+
+Compiling the documentation in another language requires the additional step of compiling the translation files, which requires the sphinx-intl package.
+For example, to compile the French documentation::
+
+   cd ~/weather/pywws
+   sphinx-intl build --locale-dir src/pywws/lang -l fr
+   LANG=fr python setup.py build_sphinx
+
+The compiled documentation should then be found at ``~/weather/pywws/doc/fr/html/index.html``.
+See :doc:`language` for more detail.
 
 .. _test-weather-station:
 
@@ -253,5 +266,5 @@ You are now ready to set up regular or continuous logging, as described in :doc:
 Read the documentation
 ----------------------
 
-The ``pywws-version -v`` command will show you the location of the pywws documentation.
-These HTML files can be read with any web browser.
+You're looking at it right now!
+The :doc:`index` section is probably the most useful bit to read first, but the :doc:`../api_index` section has a lot more detail on the various pywws modules and commands.
