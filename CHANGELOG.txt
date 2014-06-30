@@ -27,11 +27,14 @@ Changes in v14.06:
     2/ Periodic tasks can be specified with a cron style syntax.
     3/ Added wind direction filter for use in graphs or user calibration
        modules.
-    4/ Started using "Transifex" to host translations. Changed tools and
+    4/ Wind direction is now stored as a float. Old templates that use the
+       wind_dir_text array will need updating, probably to use the
+       winddir_text() function.
+    5/ Started using "Transifex" to host translations. Changed tools and
        procedures to create new translations.
-    5/ Improved USB hangup avoidance strategy for stations with large clock
+    6/ Improved USB hangup avoidance strategy for stations with large clock
        drift figures.
-    6/ Various bug fixes and minor improvements.
+    7/ Various bug fixes and minor improvements.
 
 Changes in v14.05:
     1/ Rearranged package layout, moving examples and documentation.
