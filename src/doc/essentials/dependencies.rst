@@ -50,6 +50,11 @@ In either case you should immediately use pip to install the latest version of i
 
   sudo pip install --upgrade pip
 
+Installing pip should also have installed the python setuptools package.
+If not, use pip to install it::
+
+  sudo pip install setuptools
+
 USB library
 ^^^^^^^^^^^
 
@@ -118,6 +123,11 @@ The :py:mod:`pywws.Plot` module uses gnuplot to draw graphs.
 If you want to produce graphs of weather data, e.g. to include in a web page, you need to install the gnuplot application:
 
 *  `gnuplot <http://www.gnuplot.info/>`_ v4.2 or higher (should be available from the package manager)
+
+After installing gnuplot you should edit weather.ini (see :doc:`../guides/weather_ini`) and set the ``gnuplot version`` config item.
+Finding out the installed gnuplot version is easy::
+
+  gnuplot -V
 
 Secure website uploading (sftp)
 -------------------------------
