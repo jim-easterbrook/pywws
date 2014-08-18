@@ -209,6 +209,8 @@ class ToService(object):
             self.send_data = self.aprs_send_data
             server, port = parsed_url.netloc.split(':')
             self.server = (server, int(port))
+        elif parsed_url.scheme == 'mqtt':
+            self.send_data = self.mqtt_send_data
         else:
             self.send_data = self.http_send_data
             self.use_get = eval(service_params.get('config', 'use get'))
@@ -275,6 +277,49 @@ class ToService(object):
         self.template_file.seek(0)
         prepared_data.update(self.fixed_data)
         return prepared_data
+
+    def mqtt_send_data(self, timestamp, prepared_data, ignore_last_update=False):
+        import paho.mqtt.client as mosquitto
+	import time
+
+        topic = prepared_data['topic']
+        hostname = prepared_data['hostname']
+        port = prepared_data['port']
+        client_id = prepared_data['client_id']
+
+	self.logger.info("publishing on topic [" + topic + "] to hostname [" + hostname + "] and port ["+ port +"] with a client_id ["+client_id +"]")
+
+        mosquittoClient = mosquitto.Mosquitto(client_id)
+        mosquittoClient.connect(hostname, port)
+
+	data = prepared_data
+
+        mosquittoClient.publish(topic + "/temp_out",data["temp_out"])
+        self.logger.info("published " + topic + "/temp_out")
+        time.sleep(0.200)
+        mosquittoClient.publish(topic + "/temp_in",data["temp_in"])
+        self.logger.info("published " + topic + "/temp_in")
+        time.sleep(0.200)
+        mosquittoClient.publish(topic + "/hum_out",data["hum_out"])
+        self.logger.info("published " + topic + "/hum_out")
+        time.sleep(0.200)
+        mosquittoClient.publish(topic + "/hum_in",data["hum_in"])
+        self.logger.info("published " + topic + "/hum_in")
+        time.sleep(0.200)
+	
+	self.logger.info("----------------------")
+
+        self.logger.info("got %s", data)
+        self.logger.info("publishing to " + topic)
+        self.logger.info("server " + hostname)
+        self.logger.info("port " + port)
+        self.logger.info("ident " + client_id)
+        self.logger.info("done attempt")
+	self.logger.info("----------------------")
+        mosquittoClient.disconnect()
+	self.logger.info("----------------------")
+        return True
+
 
     def aprs_send_data(self, timestamp, prepared_data, ignore_last_update=False):
         """Upload a weather data record using APRS.
@@ -545,3 +590,4 @@ def main(argv=None):
 
 if __name__ == "__main__":
     sys.exit(main())
+

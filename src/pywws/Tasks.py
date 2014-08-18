@@ -225,10 +225,7 @@ class RegularTasks(object):
         for section in sections:
             for name in eval(self.params.get(section, 'services', '[]')):
                 if name not in service_done:
-                    if name == 'mqtt':
-                        self.do_mqtt(live_data)
-                    else:
-                        self._do_service(name, live_data)
+                    self._do_service(name, live_data)
                     service_done.append(name)
             for template, flags in self._parse_templates(section, 'text'):
                 if 'T' in flags:
@@ -463,3 +460,4 @@ class RegularTasks(object):
         output_file = os.path.join(self.work_dir, template)
         self.templater.make_file(input_file, output_file, live_data=data)
         return output_file
+
