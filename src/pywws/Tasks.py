@@ -376,59 +376,6 @@ class RegularTasks(object):
         if self.asynch:
             self.wake_thread.set()
 
-    def do_mqtt(self, data=None):
-        import paho.mqtt.client as mosquitto
-
-        topic = self.params.get('mqtt', 'topic', 'weather/home')
-        hostname = self.params.get('mqtt', 'hostname', 'localhost')
-        port = self.params.get('mqtt', 'port', '1833')
-        client_id = self.params.get('mqtt', 'client_id', 'weatherstation')
-
-        mosquittoClient = mosquitto.Mosquitto(client_id)
-        mosquittoClient.connect(hostname, port)
-
-        self.logger.info("attempting mosquitto")
-
-        mosquittoClient.publish(topic + "/rel_pressure",data["rel_pressure"])
-        self.logger.info(topic+ "/rel_pressure")
-        sleep(0.200)
-        mosquittoClient.publish(topic + "/temp_out",data["temp_out"])
-        self.logger.info("published " + topic + "/temp_out")
-        sleep(0.200)
-        mosquittoClient.publish(topic + "/temp_in",data["temp_in"])
-        self.logger.info("published " + topic + "/temp_in")
-        sleep(0.200)
-        mosquittoClient.publish(topic + "/hum_out",data["hum_out"])
-        self.logger.info("published " + topic + "/hum_out")
-        sleep(0.200)
-        mosquittoClient.publish(topic + "/hum_in",data["hum_in"])
-        self.logger.info("published " + topic + "/hum_in")
-        sleep(0.200)
-        mosquittoClient.publish(topic + "/rain-cumulative",data["rain"])
-        self.logger.info("published " + topic + "/rain-cumulative")
-        sleep(0.200)
-        mosquittoClient.publish(topic + "/wind_gust",data["wind_gust"])
-        sleep(0.200)
-        mosquittoClient.publish(topic + "/wind_ave",data["wind_ave"])
-        sleep(0.200)
-        mosquittoClient.publish(topic + "/wind_dir",data["wind_dir"])
-        sleep(0.200)
-        mosquittoClient.publish(topic + "/uv",data["uv"])
-        sleep(0.200)
-        mosquittoClient.publish(topic + "/illuminance",data["illuminance"])
-        sleep(0.200)
-        
-        self.logger.info("got %s", data)
-        self.logger.info("publishing to " + topic)
-        self.logger.info("server " + hostname)
-        self.logger.info("port " + port)
-        self.logger.info("ident " + client_id)
-        self.logger.info("done attempt")
-
-        mosquittoClient.disconnect()
-        return None
-
-
     def do_twitter(self, template, data=None):
         if not self.twitter:
             from . import ToTwitter
