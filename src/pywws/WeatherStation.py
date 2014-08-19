@@ -505,7 +505,7 @@ class weather_station(object):
             # has ptr changed?
             if new_ptr != old_ptr:
                 self.logger.info('live_data new ptr: %06x', new_ptr)
-                last_log = ptr_time
+                last_log = ptr_time - self.margin
                 if ptr_time - last_ptr_time < self.margin:
                     # pointer has just changed, so definitely at a logging time
                     self._station_clock.set_clock(ptr_time)

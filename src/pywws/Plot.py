@@ -120,20 +120,26 @@ start
 ^^^^^
 
 This element sets the date & time of the start of the X axis. It is
-used in the constructor of a Python datetime object. For example, to
-start the graph at noon (local time) on Christmas day 2008:
-``<start>year=2008, month=12, day=25, hour=12</start>``. The default
-value is (stop - duration).
+used in the ``replace`` method of a Python datetime object that is
+initialised to 00:00 hours on the date of the latest weather station
+hourly reading. For example, to start the graph at noon (local time)
+on Christmas day 2008: ``<start>year=2008, month=12, day=25,
+hour=12</start>`` or to start the graph at 2am (local time) today:
+``<start>hour=2</start>``. The default value is (stop - duration).
+
+.. versionadded:: 14.06.dev1238
+   previously the ``<start>`` and ``<stop>`` elements were used in a
+   datetime constructor, so ``year``, ``month`` and ``day`` values
+   were required.
 
 stop
 ^^^^
 
 This element sets the date & time of the end of the X axis. It is used
-in the constructor of a Python datetime object. For example, to end
-the graph at 10 am (local time) on new year's day: ``<stop>year=2009,
-month=1, day=1, hour=10</stop>``. The default value is (start +
-duration), unless start is not defined in which case the timestamp of
-the latest weather station hourly reading is used.
+in the ``replace`` method of a Python datetime object, just like
+``<start>``. The default value is (start + duration), unless start is
+not defined, in which case the timestamp of the latest weather station
+hourly reading is used.
 
 duration
 ^^^^^^^^
@@ -509,6 +515,17 @@ class BasePlotter(object):
         if not os.path.isdir(self.work_dir):
             os.makedirs(self.work_dir)
 
+    def _eval_time(self, time_str):
+        # get timestamp of last data item
+        result = self.hourly_data.before(datetime.max)
+        if not result:
+            result = datetime.utcnow()    # only if no hourly data
+        result += Local.utcoffset(result)
+        # set to start of the day
+        result = result.replace(hour=0, minute=0, second=0, microsecond=0)
+        # apply time string
+        return eval('result.replace(%s)' % time_str)
+
     def DoPlot(self, input_file, output_file):
         if isinstance(input_file, GraphFileReader):
             self.graph = input_file
@@ -532,14 +549,14 @@ class BasePlotter(object):
         else:
             self.duration = timedelta(hours=24)
         if self.x_lo:
-            self.x_lo = eval('datetime(%s)' % self.x_lo)
+            self.x_lo = self._eval_time(self.x_lo)
             if self.x_hi:
-                self.x_hi = eval('datetime(%s)' % self.x_hi)
+                self.x_hi = self._eval_time(self.x_hi)
                 self.duration = self.x_hi - self.x_lo
             else:
                 self.x_hi = self.x_lo + self.duration
         elif self.x_hi:
-            self.x_hi = eval('datetime(%s)' % self.x_hi)
+            self.x_hi = self._eval_time(self.x_hi)
             self.x_lo = self.x_hi - self.duration
         else:
             self.x_hi = self.hourly_data.before(datetime.max)

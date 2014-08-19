@@ -280,44 +280,30 @@ class ToService(object):
 
     def mqtt_send_data(self, timestamp, prepared_data, ignore_last_update=False):
         import paho.mqtt.client as mosquitto
-	import time
+        import time
 
         topic = prepared_data['topic']
         hostname = prepared_data['hostname']
         port = prepared_data['port']
         client_id = prepared_data['client_id']
 
-	self.logger.info("publishing on topic [" + topic + "] to hostname [" + hostname + "] and port ["+ port +"] with a client_id ["+client_id +"]")
+        self.logger.info("timestamp: "+ str(timestamp) + ". publishing on topic [" + topic + "] to hostname [" + hostname + "] and port ["+ port +"] with a client_id ["+client_id +"]")
 
         mosquittoClient = mosquitto.Mosquitto(client_id)
         mosquittoClient.connect(hostname, port)
 
-	data = prepared_data
+        mosquittoClient.publish(topic,json.dumps(prepared_data))
 
-        mosquittoClient.publish(topic + "/temp_out",data["temp_out"])
-        self.logger.info("published " + topic + "/temp_out")
-        time.sleep(0.200)
-        mosquittoClient.publish(topic + "/temp_in",data["temp_in"])
-        self.logger.info("published " + topic + "/temp_in")
-        time.sleep(0.200)
-        mosquittoClient.publish(topic + "/hum_out",data["hum_out"])
-        self.logger.info("published " + topic + "/hum_out")
-        time.sleep(0.200)
-        mosquittoClient.publish(topic + "/hum_in",data["hum_in"])
-        self.logger.info("published " + topic + "/hum_in")
-        time.sleep(0.200)
-	
-	self.logger.info("----------------------")
+        """ commented out as sending the data as a json object (above)
+        for item in prepared_data:
+            if prepared_data[item] =='':
+                prepared_data[item] = 'None'
+            mosquittoClient.publish(topic + "/" + item + "/" + str(timestamp),prepared_data[item])
+            time.sleep(0.200)
+        """
 
-        self.logger.info("got %s", data)
-        self.logger.info("publishing to " + topic)
-        self.logger.info("server " + hostname)
-        self.logger.info("port " + port)
-        self.logger.info("ident " + client_id)
-        self.logger.info("done attempt")
-	self.logger.info("----------------------")
+        self.logger.info("published data: %s", prepared_data)
         mosquittoClient.disconnect()
-	self.logger.info("----------------------")
         return True
 
 
