@@ -281,6 +281,7 @@ class ToService(object):
     def mqtt_send_data(self, timestamp, prepared_data, ignore_last_update=False):
         import paho.mqtt.client as mosquitto
         import time
+        import json
 
         topic = prepared_data['topic']
         hostname = prepared_data['hostname']
