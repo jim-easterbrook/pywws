@@ -407,3 +407,4 @@ class RegularTasks(object):
         output_file = os.path.join(self.work_dir, template)
         self.templater.make_file(input_file, output_file, live_data=data)
         return output_file
+
