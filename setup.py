@@ -18,14 +18,20 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
+from __future__ import with_statement
+
 from datetime import date
 from distutils.command.upload import upload
 import os
 from setuptools import setup
+import sys
 
 # read current version info without importing pywws package
-with open('src/pywws/__init__.py') as f:
-    exec(f.read())
+if sys.version_info[0] >= 3:
+    with open('src/pywws/__init__.py') as f:
+        exec(f.read())
+else:
+    execfile('src/pywws/__init__.py')
 
 # get GitHub repo information
 # requires GitPython - 'sudo pip install gitpython --pre'
@@ -52,7 +58,6 @@ if last_commit != _commit:
     _commit = last_commit
 if last_release:
     major, minor, patch = last_release.split('.')
-    print major, minor, patch
     today = date.today()
     if today.strftime('%m') == minor:
         patch = int(patch) + 1
