@@ -17,14 +17,21 @@
 #! Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA. #
 #live#
 {
-#idx          "'idx'      	: '%Y-%m-%d %H:%M:%S',"#
-#wind_dir     "'wind_dir'      	: '%.0f'," "" "winddir_degrees(x)"#
-#wind_ave     "'wind_ave' 	: '%.2f'," "" "wind_mph(x)"#
-#wind_gust    "'wind_gust'  	: '%.2f'," "" "wind_mph(x)"#
-#hum_out      "'hum_out'     	: '%.d',"#
+#idx          "'idx'            : '%Y-%m-%d %H:%M:%S',"#
+#wind_dir     "'wind_dir'       : '%.0f'," "" "winddir_degrees(x)"#
+#wind_ave     "'wind_ave'       : '%.2f'," "" "wind_mph(x)"#
+#wind_gust    "'wind_gust'      : '%.2f'," "" "wind_mph(x)"#
+#hum_out      "'hum_out'        : '%.d',"#
 #hum_in       "'hum_in'         : '%.d',"#
-#temp_in      "'temp_in'        : '%.1f'," "" "temp_f(x)"#
-#temp_out     "'temp_out'       : '%.1f'," "" "temp_f(x)"#
+#temp_in      "'temp_in_c'        : '%.1f',"#
+#temp_in      "'temp_in_f'        : '%.1f'," "" "temp_f(x)"#
+#temp_out     "'temp_out_c'       : '%.1f',"#
+#temp_out     "'temp_out_f'       : '%.1f'," "" "temp_f(x)"#
 #rel_pressure "'rel_pressue'    : '%.4f'," "" "pressure_inhg(x)"#
-
+#calc "rain_inch(rain_hour(data))" "'rainin' : '%g',"#
+#calc "rain_inch(rain_day(data))" "'dailyrainin' : '%g',"#
+#calc "rain_hour(data)" "'rain' : '%g',"#
+#calc "rain_day(data)" "'dailyrain' : '%g',"#
 }
+
+

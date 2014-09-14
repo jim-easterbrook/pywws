@@ -288,6 +288,12 @@ class ToService(object):
         port = prepared_data['port']
         client_id = prepared_data['client_id']
 
+	# clean up the object
+	del prepared_data['topic']
+        del prepared_data['hostname']
+        del prepared_data['port']
+        del prepared_data['client_id']
+
         self.logger.info("timestamp: "+ str(timestamp) + ". publishing on topic [" + topic + "] to hostname [" + hostname + "] and port ["+ port +"] with a client_id ["+client_id +"]")
 
         mosquittoClient = mosquitto.Mosquitto(client_id)

@@ -316,6 +316,24 @@ These sections contain information such as passwords and station IDs needed to u
 
 ``password`` is your Weather Underground password.
 
+MQTT: configuration of publishing to a mqtt broker
+--------------------------------------------
+::
+
+ [mqtt]
+ topic=/weather/pywws
+ hostname=localhost
+ port=1883
+ client_id=pywws
+
+Pywws will publish a JOSN string of the data specified in the mqtt_template_1080.txt file. This data will be pulished to the broker running under the hostname, on the port number specified here. Note, an IP address can be used. The client_id is a note on who published the data to the topic. The topic can be any string value, this needs to be the topic that a subscriber is aware of. If nothing is subscribing to this topic the broker discards the message, otherwise subscribers will pick it up.
+
+If these aren't obvious to you it's worth doing a bit of reading around MQTT. it's a great lightwieght messaging system, from IBM recently made more popular when Facebook published information on their use of it. More information is available at http://mqtt.org/.
+
+This has been tested with an Open Source MQTT broker called Mosquitto, running on a Raspberry Pi (Raspian OS). Mosquitto is available here http://mosquitto.org/.
+
+TLS (mqtt data encryption) is not yet implemented, it is on a (rather long) to do list. :)
+
 status.ini - status file format
 ===============================
 
