@@ -650,7 +650,7 @@ class BasePlotter(object):
         of.close()
         self.graph.close()
         # run gnuplot on file
-        subprocess.check_call(['gnuplot', cmd_file])
+        subprocess.check_call(['/opt/bin/gnuplot', cmd_file])
         for file in self.tmp_files:
             os.unlink(file)
         return 0
