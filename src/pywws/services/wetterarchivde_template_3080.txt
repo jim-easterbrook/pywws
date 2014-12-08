@@ -28,4 +28,5 @@
 #wind_ave               "'ws'    : '%.1f',"#
 #wind_gust              "'wg'    : '%.1f',"#
 #calc "rain_hour(data)" "'pa'    : '%.1f',"#
+#uv                     "'uv'    : '%d',"#
 }
