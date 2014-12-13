@@ -176,8 +176,9 @@ wetter.com
 ^^^^^^^^^^
 
 * Web site: http://www.wetter.com/wetter_aktuell/wetternetzwerk/
+* Register station: http://www.wetter.com/mein_wetter/wetterstation/willkommen/
 * Example ``weather.ini`` section::
 
     [wetterarchivde]
-    benutzername = ???
-    passwort = ???
+    user_id = 12345
+    kennwort = ab1d3456i8
