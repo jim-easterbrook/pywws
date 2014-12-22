@@ -1,6 +1,6 @@
 #! pywws - Python software for USB Wireless Weather Stations                       #
 #! http://github.com/jim-easterbrook/pywws                                         #
-#! Copyright (C) 2008-13  Jim Easterbrook  jim@jim-easterbrook.me.uk               #
+#! Copyright (C) 2014  Matt Thompson  thompsonson@gmail.com                        #
 #!                                                                                 #
 #! This program is free software; you can redistribute it and/or                   #
 #! modify it under the terms of the GNU General Public License                     #
@@ -23,15 +23,13 @@
 #wind_gust    "'wind_gust'      : '%.2f'," "" "wind_mph(x)"#
 #hum_out      "'hum_out'        : '%.d',"#
 #hum_in       "'hum_in'         : '%.d',"#
-#temp_in      "'temp_in_c'        : '%.1f',"#
-#temp_in      "'temp_in_f'        : '%.1f'," "" "temp_f(x)"#
-#temp_out     "'temp_out_c'       : '%.1f',"#
-#temp_out     "'temp_out_f'       : '%.1f'," "" "temp_f(x)"#
+#temp_in      "'temp_in_c'      : '%.1f',"#
+#temp_in      "'temp_in_f'      : '%.1f'," "" "temp_f(x)"#
+#temp_out     "'temp_out_c'     : '%.1f',"#
+#temp_out     "'temp_out_f'     : '%.1f'," "" "temp_f(x)"#
 #rel_pressure "'rel_pressue'    : '%.4f'," "" "pressure_inhg(x)"#
 #calc "rain_inch(rain_hour(data))" "'rainin' : '%g',"#
 #calc "rain_inch(rain_day(data))" "'dailyrainin' : '%g',"#
 #calc "rain_hour(data)" "'rain' : '%g',"#
 #calc "rain_day(data)" "'dailyrain' : '%g',"#
 }
-
-

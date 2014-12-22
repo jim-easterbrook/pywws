@@ -167,11 +167,11 @@ class ToService(object):
         :param params: pywws configuration.
 
         :type params: :class:`pywws.DataStore.params`
-        
+
         :param status: pywws status store.
 
         :type status: :class:`pywws.DataStore.status`
-        
+
         :param calib_data: 'calibrated' data.
 
         :type calib_data: :class:`pywws.DataStore.calib_store`
@@ -179,7 +179,7 @@ class ToService(object):
         :param service_name: name of service to upload to.
 
         :type service_name: string
-    
+
         """
         self.logger = logging.getLogger('pywws.ToService(%s)' % service_name)
         self.params = params
@@ -267,7 +267,7 @@ class ToService(object):
         :return: dict.
 
         :rtype: string
-        
+
         """
         # check we have external data
         if data['temp_out'] is None:
@@ -288,31 +288,33 @@ class ToService(object):
         port = prepared_data['port']
         client_id = prepared_data['client_id']
 
-	# clean up the object
-	del prepared_data['topic']
+        # clean up the object
+        del prepared_data['topic']
         del prepared_data['hostname']
         del prepared_data['port']
         del prepared_data['client_id']
 
-        self.logger.info("timestamp: "+ str(timestamp) + ". publishing on topic [" + topic + "] to hostname [" + hostname + "] and port ["+ port +"] with a client_id ["+client_id +"]")
+        self.logger.info(
+            "timestamp: " + str(timestamp) + ". publishing on topic [" +
+            topic + "] to hostname [" + hostname + "] and port ["+ port +
+            "] with a client_id [" + client_id + "]")
 
         mosquittoClient = mosquitto.Mosquitto(client_id)
         mosquittoClient.connect(hostname, port)
 
-        mosquittoClient.publish(topic,json.dumps(prepared_data))
+        mosquittoClient.publish(topic, json.dumps(prepared_data))
 
-        """ commented out as sending the data as a json object (above)
-        for item in prepared_data:
-            if prepared_data[item] =='':
-                prepared_data[item] = 'None'
-            mosquittoClient.publish(topic + "/" + item + "/" + str(timestamp),prepared_data[item])
-            time.sleep(0.200)
-        """
+##        commented out as sending the data as a json object (above)
+##        for item in prepared_data:
+##            if prepared_data[item] == '':
+##                prepared_data[item] = 'None'
+##            mosquittoClient.publish(
+##                topic + "/" + item + "/" + str(timestamp), prepared_data[item])
+##            time.sleep(0.200)
 
         self.logger.info("published data: %s", prepared_data)
         mosquittoClient.disconnect()
         return True
-
 
     def aprs_send_data(self, timestamp, prepared_data, ignore_last_update=False):
         """Upload a weather data record using APRS.
@@ -396,7 +398,7 @@ class ToService(object):
         :return: success status
 
         :rtype: bool
-        
+
         """
         coded_data = urllib.urlencode(prepared_data)
         self.logger.debug(coded_data)
@@ -473,7 +475,7 @@ class ToService(object):
         :return: yields weather data records.
 
         :rtype: dict
-        
+
         """
         if ignore_last_update:
             last_update = None
@@ -535,7 +537,7 @@ class ToService(object):
         :return: success status
 
         :rtype: bool
-        
+
         """
         count = 0
         for data in self.next_data(catchup, live_data, ignore_last_update):
@@ -583,4 +585,3 @@ def main(argv=None):
 
 if __name__ == "__main__":
     sys.exit(main())
-
