@@ -209,6 +209,8 @@ class ToService(object):
             self.send_data = self.aprs_send_data
             server, port = parsed_url.netloc.split(':')
             self.server = (server, int(port))
+        elif parsed_url.scheme == 'mqtt':
+            self.send_data = self.mqtt_send_data
         else:
             self.send_data = self.http_send_data
             self.use_get = eval(service_params.get('config', 'use get'))
@@ -275,6 +277,42 @@ class ToService(object):
         self.template_file.seek(0)
         prepared_data.update(self.fixed_data)
         return prepared_data
+
+    def mqtt_send_data(self, timestamp, prepared_data, ignore_last_update=False):
+        import paho.mqtt.client as mosquitto
+        import time
+        import json
+
+        topic = prepared_data['topic']
+        hostname = prepared_data['hostname']
+        port = prepared_data['port']
+        client_id = prepared_data['client_id']
+
+	# clean up the object
+	del prepared_data['topic']
+        del prepared_data['hostname']
+        del prepared_data['port']
+        del prepared_data['client_id']
+
+        self.logger.info("timestamp: "+ str(timestamp) + ". publishing on topic [" + topic + "] to hostname [" + hostname + "] and port ["+ port +"] with a client_id ["+client_id +"]")
+
+        mosquittoClient = mosquitto.Mosquitto(client_id)
+        mosquittoClient.connect(hostname, port)
+
+        mosquittoClient.publish(topic,json.dumps(prepared_data))
+
+        """ commented out as sending the data as a json object (above)
+        for item in prepared_data:
+            if prepared_data[item] =='':
+                prepared_data[item] = 'None'
+            mosquittoClient.publish(topic + "/" + item + "/" + str(timestamp),prepared_data[item])
+            time.sleep(0.200)
+        """
+
+        self.logger.info("published data: %s", prepared_data)
+        mosquittoClient.disconnect()
+        return True
+
 
     def aprs_send_data(self, timestamp, prepared_data, ignore_last_update=False):
         """Upload a weather data record using APRS.
@@ -545,3 +583,4 @@ def main(argv=None):
 
 if __name__ == "__main__":
     sys.exit(main())
+

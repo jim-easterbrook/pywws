@@ -91,6 +91,38 @@ CWOP uploads are rate-limited by pywws, so you can safely add it to both the ``[
 
 The CWOP/APRS uploader is based on code by Marco Trevisan <mail@3v1n0.net>.
 
+MQTT
+^^^^
+
+.. versionadded:: 14.12.dev1261
+
+MQTT is a "message broker" system, typically running on ``localhost`` or another computer in your home network.
+
+* MQTT: http://mqtt.org/
+* Mosquitto (a lightweight broker): http://mosquitto.org/
+* Example ``weather.ini`` section::
+
+    [mqtt]
+    topic = /weather/pywws
+    hostname = localhost
+    port = 1883
+    client_id = pywws
+
+pywws will publish a JSON string of the data specified in the ``mqtt_template_1080.txt`` file.
+This data will be published to the broker running under the hostname, on the port number specified here.
+Note, an IP address can be used.
+The client_id is a note of who published the data to the topic.
+The topic can be any string value, this needs to be the topic that a subscriber is aware of.
+If nothing is subscribing to this topic the broker discards the message, otherwise subscribers will pick it up.
+
+If these aren't obvious to you it's worth doing a bit of reading around MQTT.
+It's a great lightweight messaging system from IBM, recently made more popular when Facebook published information on their use of it.
+
+This has been tested with the Mosquitto Open Source MQTT broker, running on a Raspberry Pi (Raspian OS).
+TLS (mqtt data encryption) is not yet implemented.
+
+Thanks to Matt Thompson for writing the MQTT code.
+
 UK Met Office
 ^^^^^^^^^^^^^
 
