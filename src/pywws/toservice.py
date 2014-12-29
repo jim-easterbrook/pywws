@@ -287,22 +287,31 @@ class ToService(object):
         hostname = prepared_data['hostname']
         port = prepared_data['port']
         client_id = prepared_data['client_id']
+        retain = prepared_data['retain']
 
         # clean up the object
         del prepared_data['topic']
         del prepared_data['hostname']
         del prepared_data['port']
         del prepared_data['client_id']
+        del prepared_data['retain']
+
+        if retain == 'True':
+            self.logger.debug("retain is unknown, setting to True")
+            retain = True
+        else:
+            retain = False
 
         self.logger.info(
             "timestamp: " + str(timestamp) + ". publishing on topic [" +
             topic + "] to hostname [" + hostname + "] and port ["+ port +
-            "] with a client_id [" + client_id + "]")
+            "] with a client_id [" + client_id + "] and retain is "+ str(retain))
 
         mosquittoClient = mosquitto.Mosquitto(client_id)
         mosquittoClient.connect(hostname, port)
 
-        mosquittoClient.publish(topic, json.dumps(prepared_data))
+        mosquittoClient.publish(topic, json.dumps(prepared_data),
+                                retain=retain)
 
 ##        commented out as sending the data as a json object (above)
 ##        for item in prepared_data:
