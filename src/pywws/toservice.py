@@ -296,12 +296,7 @@ class ToService(object):
         del prepared_data['client_id']
         del prepared_data['retain']
 
-        if retain == 'True':
-            self.logger.debug("retain is set to True")
-            retain = True
-        else:
-            self.logger.debug("retain is unknown, setting to False")
-            retain = False
+        retain = retain == True
 
         self.logger.info(
             "timestamp: " + str(timestamp) + ". publishing on topic [" +
