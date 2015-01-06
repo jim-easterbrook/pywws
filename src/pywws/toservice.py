@@ -297,9 +297,10 @@ class ToService(object):
         del prepared_data['retain']
 
         if retain == 'True':
-            self.logger.debug("retain is unknown, setting to True")
+            self.logger.debug("retain is set to True")
             retain = True
         else:
+            self.logger.debug("retain is unknown, setting to False")
             retain = False
 
         self.logger.info(
