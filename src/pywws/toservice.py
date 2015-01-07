@@ -296,7 +296,7 @@ class ToService(object):
         del prepared_data['client_id']
         del prepared_data['retain']
 
-        retain = retain == True
+        retain = retain == 'True'
 
         self.logger.info(
             "timestamp: " + str(timestamp) + ". publishing on topic [" +
