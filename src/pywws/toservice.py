@@ -236,6 +236,9 @@ class ToService(object):
             user = self.params.get(config_section, 'user', 'unknown')
             password = self.params.get(config_section, 'password', 'unknown')
             self.auth = 'Basic %s' % base64.b64encode('%s:%s' % (user, password))
+        elif  self.auth_type == 'mqtt':
+            self.user = self.params.get(config_section, 'user', 'unknown')
+            self.password = self.params.get(config_section, 'password', 'unknown')
         self.catchup = eval(service_params.get('config', 'catchup'))
         self.expected_result = eval(service_params.get('config', 'result'))
         self.interval = eval(service_params.get('config', 'interval'))
@@ -288,6 +291,7 @@ class ToService(object):
         port = prepared_data['port']
         client_id = prepared_data['client_id']
         retain = prepared_data['retain']
+        auth = prepared_data['auth']
 
         # clean up the object
         del prepared_data['topic']
@@ -295,15 +299,24 @@ class ToService(object):
         del prepared_data['port']
         del prepared_data['client_id']
         del prepared_data['retain']
+        del prepared_data['auth']
 
         retain = retain == 'True'
+        auth = auth == 'True'
+
+        mosquittoClient = mosquitto.Mosquitto(client_id)
+
+        if auth is True:
+            self.logger.info("Username and password configured")
+            mosquittoClient.username_pw_set(self.user, self.password)
+        else:
+            self.logger.info("Username and password unconfigured, ignoring")
 
         self.logger.info(
             "timestamp: " + str(timestamp) + ". publishing on topic [" +
             topic + "] to hostname [" + hostname + "] and port ["+ port +
             "] with a client_id [" + client_id + "] and retain is "+ str(retain))
 
-        mosquittoClient = mosquitto.Mosquitto(client_id)
         mosquittoClient.connect(hostname, port)
 
         mosquittoClient.publish(topic, json.dumps(prepared_data),
