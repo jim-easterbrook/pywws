@@ -2,7 +2,7 @@
 
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-14  Jim Easterbrook  jim@jim-easterbrook.me.uk
+# Copyright (C) 2008-15  Jim Easterbrook  jim@jim-easterbrook.me.uk
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -144,6 +144,7 @@ import os
 import pkg_resources
 import re
 import socket
+import StringIO
 import sys
 import urllib
 import urllib2
@@ -200,8 +201,11 @@ class ToService(object):
         # open params file
         service_params = SafeConfigParser()
         service_params.optionxform = str
-        service_params.readfp(pkg_resources.resource_stream(
-            'pywws', 'services/%s.ini' % (self.service_name)))
+        param_string = pkg_resources.resource_string(
+            'pywws', 'services/%s.ini' % (self.service_name))
+        if sys.version_info[0] >= 3:
+            param_string = param_string.decode('utf-8')
+        service_params.readfp(StringIO.StringIO(param_string))
         # get URL
         self.server = service_params.get('config', 'url')
         parsed_url = urlparse.urlsplit(self.server)
