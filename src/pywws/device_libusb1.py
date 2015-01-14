@@ -115,7 +115,9 @@ class USBDevice(object):
         :rtype: list(int)
 
         """
-        result = map(ord, self.dev.bulkRead(0x81, size, timeout=1200))
+        result = self.dev.bulkRead(0x81, size, timeout=1200)
+        if sys.version_info[0] < 3:
+            result = map(ord, result)
         if not result or len(result) < size:
             raise IOError('pywws.device_libusb1.USBDevice.read_data failed')
         return list(result)
@@ -135,7 +137,10 @@ class USBDevice(object):
         :rtype: bool
 
         """
-        str_buf = ''.join(map(chr, buf))
+        if sys.version_info[0] < 3:
+            str_buf = ''.join(map(chr, buf))
+        else:
+            str_buf = bytes(buf)
         result = self.dev.controlWrite(
             libusb1.LIBUSB_ENDPOINT_OUT | libusb1.LIBUSB_TYPE_CLASS |
             libusb1.LIBUSB_RECIPIENT_INTERFACE,
