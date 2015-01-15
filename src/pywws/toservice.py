@@ -241,7 +241,7 @@ class ToService(object):
             password = self.params.get(config_section, 'password', 'unknown')
             details = user + ':' + password
             self.auth = 'Basic ' + base64.b64encode(details.encode('utf-8')).decode('utf-8')
-        elif  self.auth_type == 'mqtt':
+        elif self.auth_type == 'mqtt':
             self.user = self.params.get(config_section, 'user', 'unknown')
             self.password = self.params.get(config_section, 'password', 'unknown')
         self.catchup = eval(service_params.get('config', 'catchup'))
@@ -298,9 +298,8 @@ class ToService(object):
         hostname = prepared_data['hostname']
         port = prepared_data['port']
         client_id = prepared_data['client_id']
-        retain = prepared_data['retain']
-        auth = prepared_data['auth']
-
+        retain = prepared_data['retain'] == 'True'
+        auth = prepared_data['auth'] == 'True'
         # clean up the object
         del prepared_data['topic']
         del prepared_data['hostname']
@@ -309,37 +308,30 @@ class ToService(object):
         del prepared_data['retain']
         del prepared_data['auth']
 
-        retain = retain == 'True'
-        auth = auth == 'True'
-
-        mosquittoClient = mosquitto.Mosquitto(client_id)
-
-        if auth is True:
-            self.logger.info("Username and password configured")
-            mosquittoClient.username_pw_set(self.user, self.password)
+        mosquitto_client = mosquitto.Mosquitto(client_id)
+        if auth:
+            self.logger.debug("Username and password configured")
+            mosquitto_client.username_pw_set(self.user, self.password)
         else:
-            self.logger.info("Username and password unconfigured, ignoring")
+            self.logger.debug("Username and password unconfigured, ignoring")
+        self.logger.debug(
+            "timestamp: %s. publishing on topic [%s] to hostname [%s] and " +
+            "port [%s] with a client_id [%s] and retain is %s",
+            timestamp.isoformat(' '), topic, hostname, port, client_id, retain)
 
-        self.logger.info(
-            "timestamp: " + str(timestamp) + ". publishing on topic [" +
-            topic + "] to hostname [" + hostname + "] and port ["+ port +
-            "] with a client_id [" + client_id + "] and retain is "+ str(retain))
-
-        mosquittoClient.connect(hostname, port)
-
-        mosquittoClient.publish(topic, json.dumps(prepared_data),
-                                retain=retain)
+        mosquitto_client.connect(hostname, port)
+        mosquitto_client.publish(topic, json.dumps(prepared_data), retain=retain)
 
 ##        commented out as sending the data as a json object (above)
 ##        for item in prepared_data:
 ##            if prepared_data[item] == '':
 ##                prepared_data[item] = 'None'
-##            mosquittoClient.publish(
+##            mosquitto_client.publish(
 ##                topic + "/" + item + "/" + str(timestamp), prepared_data[item])
 ##            time.sleep(0.200)
 
-        self.logger.info("published data: %s", prepared_data)
-        mosquittoClient.disconnect()
+        self.logger.debug("published data: %s", prepared_data)
+        mosquitto_client.disconnect()
         return True
 
     def aprs_send_data(self, timestamp, prepared_data, ignore_last_update=False):
