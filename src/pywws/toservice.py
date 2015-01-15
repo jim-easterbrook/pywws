@@ -281,8 +281,11 @@ class ToService(object):
         if data['temp_out'] is None:
             return None
         # convert data
-        prepared_data = eval(self.templater.make_text(self.template_file, data))
+        data_str = self.templater.make_text(self.template_file, data)
         self.template_file.seek(0)
+        if not data_str:
+            return None
+        prepared_data = eval(data_str)
         prepared_data.update(self.fixed_data)
         return prepared_data
 
