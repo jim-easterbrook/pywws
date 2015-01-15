@@ -187,6 +187,22 @@ Posting to Twitter requires these modules:
 .. versionchanged:: 13.06_r1023
    pywws previously used the ``tweepy`` library instead of ``python-twitter`` and ``python-oauth2``.
 
+.. _dependencies-mqtt:
+
+MQTT
+----
+
+.. versionadded:: 14.12.0.dev1260
+
+The :py:mod:`pywws.toservice` module can be used to send weather data to an MQTT broker.
+This requires the paho-mqtt module:
+
+*  `paho-mqtt <https://pypi.python.org/pypi/paho-mqtt>`_
+
+::
+
+  sudo pip install paho-mqtt
+
 .. _dependencies-translations:
 
 To create new language translations
