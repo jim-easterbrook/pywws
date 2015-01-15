@@ -239,7 +239,8 @@ class ToService(object):
         if self.auth_type == 'basic':
             user = self.params.get(config_section, 'user', 'unknown')
             password = self.params.get(config_section, 'password', 'unknown')
-            self.auth = 'Basic %s' % base64.b64encode('%s:%s' % (user, password))
+            details = user + ':' + password
+            self.auth = 'Basic ' + base64.b64encode(details.encode('utf-8')).decode('utf-8')
         elif  self.auth_type == 'mqtt':
             self.user = self.params.get(config_section, 'user', 'unknown')
             self.password = self.params.get(config_section, 'password', 'unknown')
@@ -375,6 +376,8 @@ class ToService(object):
             __version__
             )
         self.logger.debug('packet: "%s"', packet)
+        login = login.encode('ASCII')
+        packet = packet.encode('ASCII')
         sock = socket.socket()
         try:
             sock.connect(self.server)
@@ -429,9 +432,9 @@ class ToService(object):
         try:
             try:
                 if self.use_get:
-                    request = urllib2.Request('%s?%s' % (self.server, coded_data))
+                    request = urllib2.Request(self.server + '?' + coded_data)
                 else:
-                    request = urllib2.Request(self.server, coded_data)
+                    request = urllib2.Request(self.server, coded_data.encode('ASCII'))
                 if self.auth_type == 'basic':
                     request.add_header('Authorization', self.auth)
                 wudata = urllib2.urlopen(request)
@@ -443,6 +446,7 @@ class ToService(object):
             wudata.close()
             if len(response) == len(self.expected_result):
                 for actual, expected in zip(response, self.expected_result):
+                    actual = actual.decode('utf-8')
                     if not re.match(expected, actual):
                         break
                 else:

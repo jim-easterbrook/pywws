@@ -3,7 +3,7 @@
 
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-14  Jim Easterbrook  jim@jim-easterbrook.me.uk
+# Copyright (C) 2008-15  Jim Easterbrook  jim@jim-easterbrook.me.uk
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -353,13 +353,11 @@ class Template(object):
         # open template file, if not already a file(like) object
         if hasattr(template_file, 'readline'):
             tmplt = template_file
-        elif sys.version_info[0] >= 3:
-            tmplt = open(template_file, 'r', encoding=self.encoding)
         else:
-            tmplt = open(template_file, 'r')
+            tmplt = open(template_file, 'rb')
         # do the text processing
         while True:
-            line = tmplt.readline()
+            line = tmplt.readline().decode(self.encoding)
             if line == '':
                 break
             parts = line.split('#')
@@ -372,6 +370,8 @@ class Template(object):
                 if parts[i] and parts[i][0] == '!':
                     # comment
                     continue
+                if sys.version_info[0] < 3:
+                    parts[i] = parts[i].encode(self.encoding)
                 command = shlex.split(parts[i])
                 if command == []:
                     # empty command == print a single '#'
