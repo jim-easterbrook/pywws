@@ -1,6 +1,6 @@
 .. pywws - Python software for USB Wireless Weather Stations
    http://github.com/jim-easterbrook/pywws
-   Copyright (C) 2008-14  Jim Easterbrook  jim@jim-easterbrook.me.uk
+   Copyright (C) 2008-15  Jim Easterbrook  jim@jim-easterbrook.me.uk
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -44,16 +44,16 @@ If you find a problem with Python 3, please send a message to the `mailing list 
 
 * `pip <http://www.pip-installer.org/>`_
 
-You will probably be able to install pip with your system's package manager, where it may be called python-pip.
+You will probably be able to install pip with your system's package manager, where it may be called python-pip or python3-pip or something similar.
 If not, download and run the ``get-pip.py`` file from the pip web site.
 In either case you should immediately use pip to install the latest version of itself::
 
   sudo pip install --upgrade pip
 
-Installing pip should also have installed the python setuptools package.
-If not, use pip to install it::
+Make sure you install the correct Python version's pip.
+If you want to install pywws for both Python 2 and Python 3 you will need pip2 and pip3.
 
-  sudo pip install setuptools
+.. _dependencies-usb:
 
 USB library
 ^^^^^^^^^^^
@@ -79,24 +79,38 @@ If you can't install ctypes then you can try the Cython interface to hidapi inst
 Other systems
 """""""""""""
 
-*  `libusb <http://www.libusb.org/>`_ version 0.1 or version 1.0 (should be available from the package manager)
-*  `PyUSB <http://sourceforge.net/apps/trac/pyusb/>`_ version 1.0
+Other systems use a Python interface to the libusb system library.
+There is a choice of interface and library version - install the latest that is available for your computer.
+
+*  `libusb <http://www.libusb.org/>`_ version 1.x (should be available from the package manager)
+*  `python-libusb1 <https://github.com/vpelletier/python-libusb1>`_ version 1.3
+
+::
+
+  pip install libusb1
+
+**or**
+
+*  `libusb <http://www.libusb.org/>`_ version 1.x or version 0.1 (should be available from the package manager)
+*  `PyUSB <http://walac.github.io/pyusb/>`_ version 1.0
 
 ::
 
   pip install pyusb --pre
 
-The ``--pre`` flag enables the installation of "pre release" versions, such as the current beta release (1.0.0b1) of pyusb.
+The ``--pre`` flag enables the installation of "pre release" versions, such as the current beta release (1.0.0b2) of pyusb.
 
-If you have problems with version 1 of PyUSB then version 0.4 can be used, provided you install version 0.1 of libusb.
-Your system package manager should have both libraries.
-As a last resort you can use hidapi -- see the Mac OS X instructions above.
+If neither of these options works for you then you can use hidapi -- see the Mac OS X instructions above.
+
+.. versionchanged:: 15.01.0.dev1265
+   added ability to use python-libusb1 interface.
 
 Flexible timed tasks
 --------------------
 
 The :py:mod:`pywws.Tasks` module can do tasks at particular times and/or dates.
-This requires the croniter library:
+This requires the croniter library.
+(Simple hourly, daily or 'live' tasks don't need this library.)
 
 *  `croniter <https://pypi.python.org/pypi/croniter/>`_
 

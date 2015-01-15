@@ -23,49 +23,30 @@ Introduction
 
 This module handles low level communication with the weather station
 via the `python-libusb1
-<https://github.com/vpelletier/python-libusb1>`_ library. Alternative
-modules, :doc:`pywws.device_pyusb`, :doc:`pywws.device_ctypes_hidapi`,
-and :doc:`pywws.device_cython_hidapi`, use different libraries. The
-choice of which module to use depends on which libraries are available
-for your computer.
-
-Users of recent versions of Mac OS have less choice. The operating
-system makes it very difficult to access HID devices (such as the
-weather station) directly, so the ``hidapi`` library has to be used.
-
-Installation
-============
-
-Some of this software may already be installed on your machine, so do
-check before downloading sources and compiling them yourself.
-
-#.  Install libusb and PyUSB.
-
-    These should be available as packages for your operating system,
-    but their names may vary. For example, on Ubuntu Linux::
-
-        sudo apt-get install python-usb
-
-    On some embedded linux systems::
-
-        ipkg install libusb py25-usb
+<https://github.com/vpelletier/python-libusb1>`_ library. It is one of
+several USB device modules, each of which uses a different USB library
+interface. See :ref:`Installation - USB library<dependencies-usb>` for
+details.
 
 Testing
 =======
 
-Run ``TestWeatherStation.py`` with increased verbosity so it reports
-which USB device access module is being used::
+Run :py:mod:`pywws-testweatherstation <pywws.TestWeatherStation>` with
+increased verbosity so it reports which USB device access module is
+being used::
 
-    python TestWeatherStation.py -vv
-    18:28:09:pywws.WeatherStation.CUSBDrive:using pywws.device_pyusb1
-    0000 55 aa ff ff ff ff ff ff ff ff ff ff ff ff ff ff 05 20 01 41 11 00 00 00 81 00 00 0f 05 00 e0 51
-    0020 03 27 ce 27 00 00 00 00 00 00 00 12 02 14 18 27 41 23 c8 00 00 00 46 2d 2c 01 64 80 c8 00 00 00
+    pywws-testweatherstation -vv
+    11:30:35:pywws.Logger:pywws version 15.01.0
+    11:30:35:pywws.Logger:Python version 3.3.5 (default, Mar 27 2014, 17:16:46) [GCC]
+    11:30:35:pywws.WeatherStation.CUSBDrive:using pywws.device_libusb1
+    0000 55 aa ff ff ff ff ff ff ff ff ff ff ff ff ff ff 05 20 01 41 11 00 00 00 81 7f 00 f0 0f 00 50 04
+    0020 f9 25 74 26 00 00 00 00 00 00 00 15 01 15 11 31 41 23 c8 00 00 00 46 2d 2c 01 64 80 c8 00 00 00
     0040 64 00 64 80 a0 28 80 25 a0 28 80 25 03 36 00 05 6b 00 00 0a 00 f4 01 12 00 00 00 00 00 00 00 00
-    0060 00 00 49 0a 63 12 05 01 7f 00 36 01 60 80 36 01 60 80 bc 00 7b 80 95 28 12 26 6c 28 25 26 c8 01
-    0080 1d 02 d8 00 de 00 ff 00 ff 00 ff 00 00 11 10 06 01 29 12 02 01 19 32 11 09 09 05 18 12 01 22 13
-    00a0 14 11 11 04 15 04 11 12 17 05 12 11 09 02 15 26 12 02 11 07 05 11 09 02 15 26 12 02 11 07 05 11
-    00c0 09 10 09 12 12 02 02 12 38 12 02 07 19 00 11 12 16 03 27 12 02 03 11 00 11 12 16 03 27 11 12 26
-    00e0 21 32 11 12 26 21 32 12 02 06 19 57 12 02 06 19 57 12 02 06 19 57 12 02 06 19 57 12 02 06 19 57
+    0060 00 00 5a 0a 63 0a 41 01 70 00 dc 01 08 81 dc 01 c5 81 68 01 75 81 95 28 e0 25 24 29 d9 25 fd 02
+    0080 b9 02 f4 ff fd ff 85 ff 91 ff 6c 09 00 14 10 19 06 29 12 02 01 19 32 11 09 09 05 18 12 03 28 13
+    00a0 00 13 07 19 18 28 13 01 18 23 21 13 09 24 13 02 13 09 24 13 33 13 09 24 13 02 12 07 28 12 50 13
+    00c0 09 24 13 02 13 10 14 16 18 12 02 07 19 00 14 02 14 22 39 13 01 04 10 28 15 01 15 03 48 12 03 10
+    00e0 22 02 13 01 30 21 24 12 07 28 11 59 13 03 06 06 43 12 04 13 00 04 12 04 13 00 04 12 07 31 03 34
 
 API
 ===

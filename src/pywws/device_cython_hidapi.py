@@ -1,6 +1,6 @@
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-13  Jim Easterbrook  jim@jim-easterbrook.me.uk
+# Copyright (C) 2008-15  Jim Easterbrook  jim@jim-easterbrook.me.uk
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -23,61 +23,17 @@ Introduction
 
 This module handles low level communication with the weather station
 via the `cython-hidapi <https://github.com/gbishop/cython-hidapi>`_
-library. An alternative module, :doc:`pywws.device_pyusb`, uses the
-`PyUSB <http://sourceforge.net/apps/trac/pyusb/>`_ library. The choice
-of which module to use depends on which libraries are available for
-you computer.
-
-Users of recent versions of Mac OS have no choice. The operating
-system makes it very difficult to access HID devices (such as the
-weather station) directly, so the ``hidapi`` library has to be used.
-``cython-hidapi`` is a Python interface to that library.
-
-Users of OpenWRT and similar embedded Linux platforms will probably
-not be able to install ``cython-hidapi``, so are constrained to use
-``libusb`` and its ``PyUSB`` Python interface.
-
-Installation
-============
-
-Some of this software may already be installed on your machine, so do
-check before downloading sources and compiling them yourself.
-
-#.  Install hidapi.
-
-    Create a local copy of the git repository, change to the new
-    directory and then follow the instructions in ``README.txt``::
-
-        git clone https://github.com/signal11/hidapi.git
-        cd hidapi
-        more README.txt
-
-#.  Install cython.
-
-    This should be available as a package for your operating system.
-    For example::
-
-        sudo apt-get install cython
-
-#.  Install cython-hidapi.
-
-    This also needs to be downloaded and built::
-
-        git clone https://github.com/gbishop/cython-hidapi.git
-        cd cython-hidapi
-        python setup.py build
-        sudo python setup.py install
-
-    Replace ``setup.py`` with ``setup-mac.py`` or ``setup-windows.py``
-    if you are using Mac OS or Windows.
+library. It is one of several USB device modules, each of which uses a
+different USB library interface. See :ref:`Installation - USB
+library<dependencies-usb>` for details.
 
 Testing
 =======
 
-Run ``TestWeatherStation.py`` with increased verbosity so it reports
-which USB device access module is being used::
+Run :py:mod:`pywws.TestWeatherStation` with increased verbosity so it
+reports which USB device access module is being used::
 
-    python TestWeatherStation.py -vv
+    python -m pywws.TestWeatherStation -vv
     18:10:27:pywws.WeatherStation.CUSBDrive:using pywws.device_cython_hidapi
     0000 55 aa ff ff ff ff ff ff ff ff ff ff ff ff ff ff 05 20 01 51 11 00 00 00 81 00 00 07 01 00 d0 56
     0020 61 1c 61 1c 00 00 00 00 00 00 00 12 02 14 18 09 41 23 c8 00 32 80 47 2d 2c 01 2c 81 5e 01 1e 80
