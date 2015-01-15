@@ -525,7 +525,12 @@ def calibrate_data(logger, params, raw_data, calib_data):
             logger.info("calib: %s", idx.isoformat(' '))
         elif count % 500 == 0:
             logger.debug("calib: %s", idx.isoformat(' '))
-        calib_data[idx] = calibrator.calib(data)
+        for key in ('rain', 'abs_pressure', 'temp_in'):
+            if data[key] is None:
+                logger.error('Ignoring invalid data at %s', idx.isoformat(' '))
+                break
+        else:
+            calib_data[idx] = calibrator.calib(data)
     return start
 
 def generate_hourly(logger, calib_data, hourly_data, process_from):
