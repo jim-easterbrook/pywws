@@ -84,33 +84,15 @@ import sys
 import time
 
 from . import Localisation
-USBDevice = None
-if not USBDevice:
+for module_name in ('device_libusb1', 'device_pyusb1', 'device_pyusb',
+                    'device_ctypes_hidapi', 'device_cython_hidapi'):
     try:
-        from .device_libusb1 import USBDevice
+        module = __import__(module_name, globals(), locals(), level=1)
+        USBDevice = getattr(module, 'USBDevice')
+        break
     except ImportError:
         pass
-if not USBDevice:
-    try:
-        from .device_pyusb1 import USBDevice
-    except ImportError:
-        pass
-if not USBDevice:
-    try:
-        from .device_pyusb import USBDevice
-    except ImportError:
-        pass
-if not USBDevice:
-    try:
-        from .device_ctypes_hidapi import USBDevice
-    except ImportError:
-        pass
-if not USBDevice:
-    try:
-        from .device_cython_hidapi import USBDevice
-    except ImportError:
-        pass
-if not USBDevice:
+else:
     raise ImportError('No USB library found')
 
 def decode_status(status):
