@@ -1,6 +1,6 @@
 .. pywws - Python software for USB Wireless Weather Stations
    http://github.com/jim-easterbrook/pywws
-   Copyright (C) 2008-14  Jim Easterbrook  jim@jim-easterbrook.me.uk
+   Copyright (C) 2008-15  Jim Easterbrook  jim@jim-easterbrook.me.uk
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -29,14 +29,14 @@ YoWindow
 To display data from your station pywws needs to write to a local file, typically every 48 seconds when new data is received.
 This is easy to do:
 
- #. Stop all pywws software
- #. Copy the ``yowindow.xml`` example template to your text template directory.
- #. If you haven't already done so, edit ``weather.ini`` and set the ``local_files`` entry in the ``[paths]`` section to a suitable directory for your yowindow file.
- #. Add the yowindow template to the ``[live]`` tasks in ``weather.ini``. Set its flags to ``'L'`` so the result is copied to your local directory instead of being uploaded to an ftp site::
+#. Stop all pywws software
+#. Copy the ``yowindow.xml`` example template to your text template directory.
+#. If you haven't already done so, edit ``weather.ini`` and set the ``local_files`` entry in the ``[paths]`` section to a suitable directory for your yowindow file.
+#. Add the yowindow template to the ``[live]`` tasks in ``weather.ini``. Set its flags to ``'L'`` so the result is copied to your local directory instead of being uploaded to an ftp site::
 
      [live]
      text = [('yowindow.xml', 'L')]
- #. Restart pywws live logging.
+#. Restart pywws live logging.
 
 You can check the file is being updated every 48 seconds by using ``more`` or ``cat`` to dump it to the screen.
 
@@ -94,9 +94,11 @@ The CWOP/APRS uploader is based on code by Marco Trevisan <mail@3v1n0.net>.
 MQTT
 ^^^^
 
-.. versionadded:: 14.12.dev1261
+.. versionadded:: 14.12.0.dev1260
 
 MQTT is a "message broker" system, typically running on ``localhost`` or another computer in your home network.
+Use of MQTT with pywws requires an additional library.
+See :ref:`Dependencies - MQTT <dependencies-mqtt>` for details.
 
 * MQTT: http://mqtt.org/
 * Mosquitto (a lightweight broker): http://mosquitto.org/
@@ -108,17 +110,22 @@ MQTT is a "message broker" system, typically running on ``localhost`` or another
     port = 1883
     client_id = pywws
     retain = True
+    auth = False
+    user = unknown
+    password = unknown
 
 pywws will publish a JSON string of the data specified in the ``mqtt_template_1080.txt`` file.
-This data will be published to the broker running under the hostname, on the port number specified here.
-Note, an IP address can be used.
+This data will be published to the broker running on hostname, with the port number specified.
+(An IP address can be used instead of a host name.)
 ``client_id`` is a note of who published the data to the topic.
 ``topic`` can be any string value, this needs to be the topic that a subscriber is aware of.
-If nothing is subscribing to this topic the broker discards the message, otherwise subscribers will pick it up.
 
 ``retain`` is a boolean and should be set to ``True`` or ``False`` (or left at the default ``unknown``).
 If set to ``True`` this will flag the message sent to the broker to be retained.
-This is useful for clients who subscribe to a topic, who otherwise might have to wait a long time for a message to be published.
+Otherwise the broker discards the message if no client is subscribing to this topic.
+This allows clients to get an immediate response when they subscribe to a topic, without having to wait until the next message is published.
+
+``auth``, ``user`` and ``password`` can be used for MQTT authentication.
 
 If these aren't obvious to you it's worth doing a bit of reading around MQTT.
 It's a great lightweight messaging system from IBM, recently made more popular when Facebook published information on their use of it.
@@ -126,7 +133,7 @@ It's a great lightweight messaging system from IBM, recently made more popular w
 This has been tested with the Mosquitto Open Source MQTT broker, running on a Raspberry Pi (Raspian OS).
 TLS (mqtt data encryption) is not yet implemented.
 
-Thanks to Matt Thompson for writing the MQTT code and to Robin Kearney for adding the retain option.
+Thanks to Matt Thompson for writing the MQTT code and to Robin Kearney for adding the retain and auth options.
 
 UK Met Office
 ^^^^^^^^^^^^^
