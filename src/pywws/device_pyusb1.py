@@ -81,8 +81,9 @@ class USBDevice(object):
                     self.dev.detach_kernel_driver(0)
                 except usb.core.USBError:
                     pass
-        self.dev.set_configuration()
         self.dev.reset()
+        self.dev.set_configuration()
+        usb.util.claim_interface(self.dev, 0)
 
     def read_data(self, size):
         """Receive data from the device.
