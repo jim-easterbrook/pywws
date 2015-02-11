@@ -80,6 +80,7 @@ class USBDevice(object):
             if self.dev.kernelDriverActive(0):
                 self.dev.detachKernelDriver(0)
         self.dev.resetDevice()
+        self.dev.claimInterface(0)
 
     def read_data(self, size):
         """Receive data from the device.
