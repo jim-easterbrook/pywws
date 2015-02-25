@@ -2,7 +2,7 @@
 
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-14  Jim Easterbrook  jim@jim-easterbrook.me.uk
+# Copyright (C) 2008-15  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -53,8 +53,12 @@ twitter = None
 tweepy = None
 try:
     import twitter
-except ImportError:
-    import tweepy
+except ImportError as ex:
+    try:
+        import tweepy
+    except ImportError:
+        # raise exception on the preferred library
+        raise ex
 
 from .constants import Twitter as pct
 from . import DataStore
@@ -63,6 +67,7 @@ from .Logger import ApplicationLogger
 
 class TweepyHandler(object):
     def __init__(self, key, secret, latitude, longitude):
+        self.logger = logging.getLogger('pywws.ToTwitter')
         auth = tweepy.OAuthHandler(pct.consumer_key, pct.consumer_secret)
         auth.set_access_token(key, secret)
         self.api = tweepy.API(auth)
@@ -72,8 +77,10 @@ class TweepyHandler(object):
             self.kwargs = {}
 
     def post(self, status, media):
+        if len(media) > 1:
+            self.logger.error('Tweepy library cannot post multiple media')
         if media:
-            self.api.update_with_media(media, status[:117], **self.kwargs)
+            self.api.update_with_media(media[0], status[:117], **self.kwargs)
         else:
             self.api.update_status(status[:140], **self.kwargs)
 
@@ -84,13 +91,16 @@ class PythonTwitterHandler(object):
             consumer_secret=pct.consumer_secret,
             access_token_key=key, access_token_secret=secret)
         if latitude is not None and longitude is not None:
-            self.kwargs = {'latitude' : latitude, 'longitude' : longitude}
+            self.kwargs = {'latitude' : latitude, 'longitude' : longitude,
+                           'display_coordinates' : True}
         else:
             self.kwargs = {}
 
     def post(self, status, media):
-        if media:
-            self.api.PostMedia(status[:117], media, **self.kwargs)
+        if len(media) > 1:
+            self.api.PostMultipleMedia(status[:117], media, **self.kwargs)
+        elif media:
+            self.api.PostMedia(status[:117], media[0], **self.kwargs)
         else:
             self.api.PostUpdate(status[:140], **self.kwargs)
 
@@ -116,11 +126,11 @@ class ToTwitter(object):
     def Upload(self, tweet):
         if not tweet:
             return True
-        if tweet.startswith('media'):
-            media, tweet = tweet.split('\n', 1)
-            media = media.split()[1]
-        else:
-            media = None
+        media = []
+        while tweet.startswith('media'):
+            media_item, tweet = tweet.split('\n', 1)
+            media_item = media_item.split()[1]
+            media.append(media_item)
         if not isinstance(tweet, unicode):
             tweet = tweet.decode(self.encoding)
         try:
