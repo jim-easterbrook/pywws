@@ -1,6 +1,6 @@
 .. pywws - Python software for USB Wireless Weather Stations
    http://github.com/jim-easterbrook/pywws
-   Copyright (C) 2008-14  Jim Easterbrook  jim@jim-easterbrook.me.uk
+   Copyright (C) 2008-15  pywws contributors
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -141,8 +141,16 @@ This can be tested by running the command as root::
 
    sudo pywws-testweatherstation
 
-If this works then you may be able to allow your normal user account to access the weather station by setting up a 'udev' rule.
-See the compatibility wiki page http://code.google.com/p/pywws/wiki/Compatibility for more details.
+If this works then you may be able to allow your normal user account to access the weather station by setting up a `'udev' <http://en.wikipedia.org/wiki/Udev>`_ rule.
+The exact method may depend on your Linux version, but this is typically done by creating a file ``/etc/udev/rules.d/39-weather-station.rules`` containing the following::
+
+   ACTION!="add|change", GOTO="weatherstation_end"
+   SUBSYSTEM=="usb", ATTRS{idVendor}=="1941", ATTRS{idProduct}=="8021", GROUP="weatherstation"
+   LABEL="weatherstation_end"
+
+Unplug and replug the station's USB connection to force ``udev`` to apply the new rule.
+This allows any user in the group ``weatherstation`` to access the weather station.
+You need to create this group and add your normal user account to it -- many Linux systems have a GUI for user and group management.
 
 If you have any other problem, please ask for help on the pywws mailing list: http://groups.google.com/group/pywws
 
