@@ -3,7 +3,7 @@
 
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-14  Jim Easterbrook  jim@jim-easterbrook.me.uk
+# Copyright (C) 2008-15  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -463,7 +463,7 @@ from .conversions import *
 from . import DataStore
 from . import Localisation
 from .Logger import ApplicationLogger
-from .TimeZone import Local
+from .TimeZone import Local, utc
 
 class GraphNode(object):
     def __init__(self, node):
@@ -702,6 +702,10 @@ set timefmt "%Y-%m-%dT%H:%M:%S"
         pressure_offset = self.pressure_offset
         # label x axis of last plot
         if plot_no == self.plot_count - 1:
+            x_lo = (self.x_lo -
+                    self.utcoffset).replace(tzinfo=utc).astimezone(Local)
+            x_hi = (self.x_hi -
+                    self.utcoffset).replace(tzinfo=utc).astimezone(Local)
             if self.duration <= timedelta(hours=24):
                 # TX_NOTE Keep the "(%Z)" formatting string
                 xlabel = _('Time (%Z)')
@@ -712,14 +716,13 @@ set timefmt "%Y-%m-%dT%H:%M:%S"
             xlabel = self.graph.get_value('xlabel', xlabel)
             if sys.version_info[0] < 3:
                 xlabel = xlabel.encode(self.encoding)
-            result += 'set xlabel "%s"\n' % (
-                self.x_hi.replace(tzinfo=Local).strftime(xlabel))
+            result += 'set xlabel "%s"\n' % (x_hi.strftime(xlabel))
             dateformat = '%Y/%m/%d'
             dateformat = self.graph.get_value('dateformat', dateformat)
             if sys.version_info[0] < 3:
                 dateformat = dateformat.encode(self.encoding)
-            ldat = self.x_lo.replace(tzinfo=Local).strftime(dateformat)
-            rdat = self.x_hi.replace(tzinfo=Local).strftime(dateformat)
+            ldat = x_lo.strftime(dateformat)
+            rdat = x_hi.strftime(dateformat)
             if ldat:
                 result += 'set label "%s" at "%s", graph -0.3 left\n' % (
                     ldat, self.x_lo.isoformat())
