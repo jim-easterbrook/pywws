@@ -110,18 +110,6 @@ class DataLogger(object):
 
     def check_fixed_block(self):
         fixed_block = self.ws.get_fixed_block(unbuffered=True)
-        # check clocks
-        try:
-            s_time = DataStore.safestrptime(
-                fixed_block['date_time'], '%Y-%m-%d %H:%M')
-        except Exception:
-            s_time = None
-        if s_time:
-            c_time = datetime.now().replace(second=0, microsecond=0)
-            diff = abs(s_time - c_time)
-            if diff > timedelta(minutes=2):
-                self.logger.warning(
-                    "Computer and weather station clocks disagree by %s (H:M:S).", str(diff))
         # store info from fixed block
         self.status.unset('fixed', 'pressure offset')
         if not self.params.get('config', 'pressure offset'):
@@ -129,9 +117,6 @@ class DataLogger(object):
                 fixed_block['rel_pressure'] - fixed_block['abs_pressure']))
         self.params.unset('fixed', 'fixed block')
         self.status.set('fixed', 'fixed block', str(fixed_block))
-        # check ws type
-        if (fixed_block['lux_wm2_coeff'] == 0.0) != (self.ws.ws_type == '1080'):
-            self.logger.warning('weather station type appears to be incorrect')
         return fixed_block
 
     def catchup(self, last_date, last_ptr):
