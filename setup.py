@@ -212,6 +212,7 @@ setup(name = 'pywws',
               'pywws-version            = pywws.version:main',
               ],
           },
+      install_requires = ['tzlocal'],
       extras_require = {
           'daemon'  : ['python-daemon'],
           'sftp'    : ['paramiko', 'pycrypto'],

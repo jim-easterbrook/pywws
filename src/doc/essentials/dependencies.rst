@@ -53,6 +53,13 @@ In either case you should immediately use pip to install the latest version of i
 Make sure you install the correct Python version's pip.
 If you want to install pywws for both Python 2 and Python 3 you will need pip2 and pip3.
 
+* `tzlocal <https://github.com/regebro/tzlocal>`_
+
+This is a handy little module that provides information on your local time zone.
+It's best installed with ``pip``::
+
+  sudo pip install tzlocal
+
 .. _dependencies-usb:
 
 USB library
