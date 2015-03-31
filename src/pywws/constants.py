@@ -2,7 +2,7 @@
 
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-13  Jim Easterbrook  jim@jim-easterbrook.me.uk
+# Copyright (C) 2008-15  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -30,6 +30,8 @@ __docformat__ = "restructuredtext en"
 from datetime import timedelta
 
 SECOND = timedelta(seconds=1)
+HOUR = timedelta(hours=1)
+DAY = timedelta(hours=24)
 
 class Twitter(object):
     consumer_key = '62moSmU9ERTs0LK0g2xHAg'

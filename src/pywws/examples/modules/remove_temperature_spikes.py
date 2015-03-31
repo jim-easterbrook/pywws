@@ -19,7 +19,7 @@
 from datetime import timedelta
 import logging
 
-from pywws.Process import SECOND
+from pywws.constants import SECOND
 
 MINUTEx30 = timedelta(minutes=30)
 

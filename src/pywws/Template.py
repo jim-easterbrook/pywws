@@ -3,7 +3,7 @@
 
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-15  Jim Easterbrook  jim@jim-easterbrook.me.uk
+# Copyright (C) 2008-15  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -275,6 +275,7 @@ import os
 import shlex
 import sys
 
+from .constants import HOUR, SECOND, DAY
 from . import conversions
 from .conversions import *
 from . import DataStore
@@ -282,10 +283,6 @@ from .Forecast import Zambretti, ZambrettiCode
 from . import Localisation
 from .Logger import ApplicationLogger
 from .TimeZone import Local, utc
-
-SECOND = timedelta(seconds=1)
-HOUR = timedelta(hours=1)
-DAY = timedelta(hours=24)
 
 class Template(object):
     def __init__(self, params, status,

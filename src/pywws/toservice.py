@@ -2,7 +2,7 @@
 
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-15  Jim Easterbrook  jim@jim-easterbrook.me.uk
+# Copyright (C) 2008-15  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -457,6 +457,7 @@ class ToService(object):
             new_ex = str(ex)
             extra_ex = str(ex.info()).split('\n')
             for line in ex.readlines():
+                line = line.decode('utf-8')
                 extra_ex.append(re.sub('<.+?>', '', line))
         except Exception, ex:
             new_ex = str(ex)

@@ -16,7 +16,7 @@ import sys
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '../../..'))
 from pywws import DataStore
-from pywws.Process import SECOND
+from pywws.constants import SECOND
 
 def main(argv=None):
     if argv is None:

@@ -3,7 +3,7 @@
 
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-14  Jim Easterbrook  jim@jim-easterbrook.me.uk
+# Copyright (C) 2008-15  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -84,15 +84,14 @@ import os
 import sys
 
 from .calib import Calib
+from .constants import HOUR, DAY, SECOND
 from . import DataStore
 from .Logger import ApplicationLogger
-from .TimeZone import STDOFFSET, HOUR
+from .TimeZone import STDOFFSET
 
-SECOND = timedelta(seconds=1)
 TIME_ERR = timedelta(seconds=45)
 MINUTEx5 = timedelta(minutes=5)
 HOURx3 = timedelta(hours=3)
-DAY = timedelta(hours=24)
 WEEK = timedelta(days=7)
 
 class Average(object):
