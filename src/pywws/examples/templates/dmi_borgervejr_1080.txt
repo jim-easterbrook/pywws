@@ -15,21 +15,23 @@
 #! You should have received a copy of the GNU General Public License               #
 #! along with this program; if not, write to the Free Software                     #
 #! Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA. #
-#live#
-{
-#idx          '"idx"            : "%Y-%m-%d %H:%M:%S",'#
-#wind_dir     '"wind_dir"       : "%.0f",' '' 'winddir_degrees(x)'#
-#wind_ave     '"wind_ave"       : "%.2f",' '' 'wind_mph(x)'#
-#wind_gust    '"wind_gust"      : "%.2f",' '' 'wind_mph(x)'#
-#hum_out      '"hum_out"        : "%.d",'#
-#hum_in       '"hum_in"         : "%.d",'#
-#temp_in      '"temp_in_c"      : "%.1f",'#
-#temp_in      '"temp_in_f"      : "%.1f",' '' 'temp_f(x)'#
-#temp_out     '"temp_out_c"     : "%.1f",'#
-#temp_out     '"temp_out_f"     : "%.1f",' '' 'temp_f(x)'#
-#rel_pressure '"rel_pressue"    : "%.4f",' '' 'pressure_inhg(x)'#
-#calc 'rain_inch(rain_hour(data))' '"rainin" : "%g",'#
-#calc 'rain_inch(rain_day(data))' '"dailyrainin" : "%g",'#
-#calc 'rain_hour(data)' '"rain" : "%g",'#
-#calc 'rain_day(data)' '"dailyrain" : "%g",'#
-}
+#raw#
+#timezone local#
+#idx "%d/%m/%Y %H:%M:%S"#
+
+Humidity: #hum_out "%d%%"#
+
+Temp: #temp_out "%.1fC"#
+
+Raw Barom: #rel_pressure "%.2fhPa"#
+
+Solar: 0W/sqm
+
+Wind Dir: #wind_dir "%.0f" "" "winddir_degrees(x)"#
+
+Wind Spd: #wind_ave "%.0fmps"#
+
+Wind Gust: #wind_gust "%.0fmps"#
+
+Tot Rain: #rain "%0.1fmm"#
+
