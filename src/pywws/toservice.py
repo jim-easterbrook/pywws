@@ -228,12 +228,18 @@ class ToService(object):
         self.templater = Template.Template(
             self.params, self.status, self.data, self.data, None, None,
             use_locale=False)
-        template_name = 'services/%s_template_%s.txt' % (
-            config_section, self.params.get('config', 'ws type'))
-        if not pkg_resources.resource_exists('pywws', template_name):
-            template_name = 'services/%s_template_1080.txt' % (config_section)
-        self.template_file = pkg_resources.resource_stream(
-            'pywws', template_name)
+        if self.params.get(config_section, 'template') != None:
+            template_name = self.params.get(config_section, 'template')
+            template_dir = self.params.get(
+                'paths', 'templates', os.path.expanduser('~/weather/templates/'))
+            self.template_file = open(os.path.join(template_dir, template_name), 'rb')
+        else:
+            template_name = 'services/%s_template_%s.txt' % (
+                config_section, self.params.get('config', 'ws type'))
+            if not pkg_resources.resource_exists('pywws', template_name):
+                template_name = 'services/%s_template_1080.txt' % (config_section)
+            self.template_file = pkg_resources.resource_stream(
+                'pywws', template_name)
         # get other parameters
         self.auth_type = service_params.get('config', 'auth_type')
         if self.auth_type == 'basic':
