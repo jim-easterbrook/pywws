@@ -2,7 +2,7 @@
 
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-14  Jim Easterbrook  jim@jim-easterbrook.me.uk
+# Copyright (C) 2008-15  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -177,6 +177,8 @@ class RegularTasks(object):
                 service.logger.info('%d records sent', count)
         while self.uploads_queue:
             file = self.uploads_queue.popleft()
+            if not os.path.exists(file):
+                continue
             targ = os.path.join(self.uploads_directory, os.path.basename(file))
             if os.path.exists(targ):
                 os.unlink(targ)
