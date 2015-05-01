@@ -270,15 +270,13 @@ set zeroaxis
 set grid polar 22.5
 set size square
 unset border
-set noytics
+set xtics axis
+unset ytics
 """
         if self.gnuplot_version >= 4.6:
-            result += """set noxtics
-set rtics nomirror
-unset raxis
+            result += """unset raxis
+set rtics format ''
 """
-        else:
-            result += 'set xtics axis nomirror\n'
         lmargin = eval(self.graph.get_value('lmargin', '-1'))
         result += 'set lmargin %g\n' % (lmargin)
         lmargin = eval(self.graph.get_value('rmargin', '-1'))
