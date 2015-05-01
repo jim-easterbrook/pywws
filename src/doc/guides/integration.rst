@@ -1,6 +1,6 @@
 .. pywws - Python software for USB Wireless Weather Stations
    http://github.com/jim-easterbrook/pywws
-   Copyright (C) 2008-15  Jim Easterbrook  jim@jim-easterbrook.me.uk
+   Copyright (C) 2008-15  pywws contributors
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -71,6 +71,13 @@ Citizen Weather Observer Program
     designator = EW9999
     latitude = 5130.06N
     longitude = 00008.52E
+    template = default
+
+    [logged]
+    services = ['cwop', 'underground']
+
+    [live]
+    services = ['cwop', 'underground_rf']
 
   or, for radio hams::
 
@@ -79,6 +86,13 @@ Citizen Weather Observer Program
     passcode = xxxxxx
     latitude = 5130.06N
     longitude = 00008.52E
+    template = default
+
+    [logged]
+    services = ['cwop_ham', 'underground']
+
+    [live]
+    services = ['cwop_ham', 'underground_rf']
 
 Note that the latitude and longitude must be in "LORAN" format and leading zeros are required.
 See question 3 in the `CWOP FAQ <http://www.wxqa.com/faq.html>`_ for more information.
@@ -113,6 +127,10 @@ See :ref:`Dependencies - MQTT <dependencies-mqtt>` for details.
     auth = False
     user = unknown
     password = unknown
+    template = default
+
+    [logged]
+    services = ['mqtt', 'underground']
 
 pywws will publish a JSON string of the data specified in the ``mqtt_template_1080.txt`` file.
 This data will be published to the broker running on hostname, with the port number specified.
@@ -147,6 +165,10 @@ UK Met Office
     [metoffice]
     site id = 12345678
     aws pin = 987654
+    template = default
+
+    [logged]
+    services = ['metoffice', 'underground']
 
 Open Weather Map
 ^^^^^^^^^^^^^^^^
@@ -163,6 +185,10 @@ Open Weather Map
     user = Elizabeth Windsor
     password = corgi
     id = Buck House
+    template = default
+
+    [logged]
+    services = ['openweathermap', 'underground']
 
 The default behaviour is to use your user name to identify the weather station.
 However, it's possible for a user to have more than one weather station, so there is an undocumented ``name`` parameter in the API that can be used to identify the station.
@@ -180,6 +206,10 @@ PWS Weather
     [pwsweather]
     station = ABCDEFGH1
     password = xxxxxxx
+    template = default
+
+    [logged]
+    services = ['pwsweather', 'underground']
 
 temperatur.nu
 ^^^^^^^^^^^^^
@@ -190,6 +220,10 @@ temperatur.nu
     [temperaturnu]
     id = ???
     town = ???
+    template = default
+
+    [logged]
+    services = ['temperaturnu', 'underground']
 
 Weather Underground
 ^^^^^^^^^^^^^^^^^^^
@@ -201,6 +235,10 @@ Weather Underground
     [underground]
     station = ABCDEFGH1
     password = xxxxxxx
+    template = default
+
+    [logged]
+    services = ['underground', 'metoffice']
 
 Weather Underground "RapidFire" updates
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -211,7 +249,7 @@ If you run pywws in 'live logging' mode (see :doc:`livelogging`) you can use thi
  services = ['underground_rf']
 
  [logged]
- services = ['underground']
+ services = ['underground', 'metoffice']
 
 Make sure you still have an 'underground' service in ``[logged]`` or ``[hourly]``.
 This will ensure that 'catchup' records are sent to fill in any gaps if your station goes offline for some reason.
@@ -226,3 +264,10 @@ wetter.com
     [wetterarchivde]
     user_id = 12345
     kennwort = ab1d3456i8
+    template = default
+
+    [logged]
+    services = ['wetterarchivde', 'underground']
+
+    [live]
+    services = ['wetterarchivde', 'underground_rf']

@@ -115,6 +115,16 @@ Restart your regular pywws program (:py:mod:`pywws.Hourly` or
 :py:mod:`pywws.LiveLog`) and visit the appropriate web site to
 see regular updates from your weather station.
 
+Using a different template
+--------------------------
+
+For some services (mainly MQTT) you might want to write your own
+template to give greater control over the uploaded data. Copy the
+default template file from ``pywws/services`` to your template directory
+and then edit it to do what you want. Now edit ``weather.ini`` and
+change the ``template`` value from ``default`` to the name of your
+custom template.
+
 API
 ---
 
@@ -228,11 +238,12 @@ class ToService(object):
         self.templater = Template.Template(
             self.params, self.status, self.data, self.data, None, None,
             use_locale=False)
-        if self.params.get(config_section, 'template') != None:
-            template_name = self.params.get(config_section, 'template')
+        template_name = self.params.get(config_section, 'template', 'default')
+        if template_name != 'default':
             template_dir = self.params.get(
                 'paths', 'templates', os.path.expanduser('~/weather/templates/'))
-            self.template_file = open(os.path.join(template_dir, template_name), 'rb')
+            self.template_file = open(
+                os.path.join(template_dir, template_name), 'rb')
         else:
             template_name = 'services/%s_template_%s.txt' % (
                 config_section, self.params.get('config', 'ws type'))
