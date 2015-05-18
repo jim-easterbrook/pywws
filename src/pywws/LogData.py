@@ -110,6 +110,11 @@ class DataLogger(object):
 
     def check_fixed_block(self):
         fixed_block = self.ws.get_fixed_block(unbuffered=True)
+        # check 'magic number'
+        if (fixed_block['magic_0'], fixed_block['magic_1']) not in (
+                (0x55, 0xAA),):
+            self.logger.critical("Unrecognised 'magic number' %02x %02x",
+                                 fixed_block['magic_0'], fixed_block['magic_1'])
         # store info from fixed block
         self.status.unset('fixed', 'pressure offset')
         if not self.params.get('config', 'pressure offset'):

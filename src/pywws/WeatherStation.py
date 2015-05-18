@@ -639,11 +639,6 @@ class weather_station(object):
         result = []
         for mempos in range(0x0000, hi, 0x0020):
             result += self._read_block(mempos)
-        # check 'magic number'
-        if result[:2] not in ([0x55, 0xAA], [0xFF, 0xFF],
-                              [0x55, 0x55], [0xC4, 0x00]):
-            self.logger.critical(
-                "Unrecognised 'magic number' %02x %02x", result[0], result[1])
         return result
 
     def _write_byte(self, ptr, value):
@@ -725,6 +720,8 @@ class weather_station(object):
         'current_pos'   : (30, 'us', None),
         }
     fixed_format = {
+        'magic_0'       : (0,  'pb', None),
+        'magic_1'       : (1,  'pb', None),
         'rel_pressure'  : (32, 'us', 0.1),
         'abs_pressure'  : (34, 'us', 0.1),
         'lux_wm2_coeff' : (36, 'us', 0.1),
