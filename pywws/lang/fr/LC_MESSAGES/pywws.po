@@ -1,7 +1,7 @@
 # French translations for pywws package.
-# Traduction française pour pywws
+# Traduction franÃ§aise pour pywws
 # Copyright (C) 2010 Jim Easterbrook
-# Ce fichier est distributé sous licence du logiciel pywws.
+# Ce fichier est distributÃ© sous licence du logiciel pywws.
 # Jim Easterbrook <jim@jim-easterbrook.me.uk>, 2010.
 #
 msgid ""
@@ -14,7 +14,7 @@ msgstr ""
 "Language-Team: French\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
@@ -36,7 +36,7 @@ msgstr "O"
 
 #: pywws/conversions.py:51
 msgid "rising very rapidly"
-msgstr "en hausse très rapide"
+msgstr "en hausse trÃ¨s rapide"
 
 #: pywws/conversions.py:53
 msgid "rising quickly"
@@ -52,7 +52,7 @@ msgstr "en hausse lente"
 
 #: pywws/conversions.py:59
 msgid "falling very rapidly"
-msgstr "en baisse très rapide"
+msgstr "en baisse trÃ¨s rapide"
 
 #: pywws/conversions.py:61
 msgid "falling quickly"
@@ -120,7 +120,7 @@ msgstr "NNO"
 
 #: pywws/ZambrettiCore.py:27
 msgid "Settled fine"
-msgstr "Beau temps établi"
+msgstr "Beau temps Ã©tabli"
 
 #: pywws/ZambrettiCore.py:28
 msgid "Fine weather"
@@ -128,11 +128,11 @@ msgstr "Beau temps"
 
 #: pywws/ZambrettiCore.py:29
 msgid "Becoming fine"
-msgstr "en amélioration"
+msgstr "en amÃ©lioration"
 
 #: pywws/ZambrettiCore.py:30
 msgid "Fine, becoming less settled"
-msgstr "Beau temps, tendance à se dégrader"
+msgstr "Beau temps, tendance Ã  se dÃ©grader"
 
 #: pywws/ZambrettiCore.py:31
 msgid "Fine, possible showers"
@@ -140,87 +140,87 @@ msgstr "Beau, averses possibles"
 
 #: pywws/ZambrettiCore.py:32
 msgid "Fairly fine, improving"
-msgstr "Plutôt beau, en amélioration"
+msgstr "PlutÃ´t beau, en amÃ©lioration"
 
 #: pywws/ZambrettiCore.py:33
 msgid "Fairly fine, possible showers early"
-msgstr "Plutôt beau, averses possibles en matinée"
+msgstr "PlutÃ´t beau, averses possibles en matinÃ©e"
 
 #: pywws/ZambrettiCore.py:34
 msgid "Fairly fine, showery later"
-msgstr "Plutôt beau, averse en soirée"
+msgstr "PlutÃ´t beau, averse en soirÃ©e"
 
 #: pywws/ZambrettiCore.py:35
 msgid "Showery early, improving"
-msgstr "Averse en matinée, en amélioration"
+msgstr "Averse en matinÃ©e, en amÃ©lioration"
 
 #: pywws/ZambrettiCore.py:36
 msgid "Changeable, mending"
-msgstr "Variable, en amélioration"
+msgstr "Variable, en amÃ©lioration"
 
 #: pywws/ZambrettiCore.py:37
 msgid "Fairly fine, showers likely"
-msgstr "Plutôt beau, averse possible"
+msgstr "PlutÃ´t beau, averse possible"
 
 #: pywws/ZambrettiCore.py:38
 msgid "Rather unsettled clearing later"
-msgstr "plutôt variable, en amélioration."
+msgstr "plutÃ´t variable, en amÃ©lioration."
 
 #: pywws/ZambrettiCore.py:39
 msgid "Unsettled, probably improving"
-msgstr "Perturbé, amélioration probable"
+msgstr "PerturbÃ©, amÃ©lioration probable"
 
 #: pywws/ZambrettiCore.py:40
 msgid "Showery, bright intervals"
-msgstr "Averses éparses, belles éclaircies"
+msgstr "Averses Ã©parses, belles Ã©claircies"
 
 #: pywws/ZambrettiCore.py:41
 msgid "Showery, becoming less settled"
-msgstr "Averses, temps se découvrant"
+msgstr "Averses, temps se dÃ©couvrant"
 
 #: pywws/ZambrettiCore.py:42
 msgid "Changeable, some rain"
-msgstr "Variable, quelques précipitations"
+msgstr "Variable, quelques prÃ©cipitations"
 
 #: pywws/ZambrettiCore.py:43
 msgid "Unsettled, short fine intervals"
-msgstr "Perturbé, de rares éclairces"
+msgstr "PerturbÃ©, de rares Ã©clairces"
 
 #: pywws/ZambrettiCore.py:44
 msgid "Unsettled, rain later"
-msgstr "Variable, quelques précipitations tardives"
+msgstr "Variable, quelques prÃ©cipitations tardives"
 
 #: pywws/ZambrettiCore.py:45
 msgid "Unsettled, some rain"
-msgstr "Variable, quelques précipitations"
+msgstr "Variable, quelques prÃ©cipitations"
 
 #: pywws/ZambrettiCore.py:46
 msgid "Mostly very unsettled"
-msgstr "Très perturbé"
+msgstr "TrÃ¨s perturbÃ©"
 
 #: pywws/ZambrettiCore.py:47
 msgid "Occasional rain, worsening"
-msgstr "Précipitations occasionnelles, se dégradant"
+msgstr "PrÃ©cipitations occasionnelles, se dÃ©gradant"
 
 #: pywws/ZambrettiCore.py:48
 msgid "Rain at times, very unsettled"
-msgstr "Quelques précipitations, très perturbé"
+msgstr "Quelques prÃ©cipitations, trÃ¨s perturbÃ©"
 
 #: pywws/ZambrettiCore.py:49
 msgid "Rain at frequent intervals"
-msgstr "Precipitations à intervalles fréquents"
+msgstr "Precipitations Ã  intervalles frÃ©quents"
 
 #: pywws/ZambrettiCore.py:50
 msgid "Rain, very unsettled"
-msgstr "Pluie, très perturbé"
+msgstr "Pluie, trÃ¨s perturbÃ©"
 
 #: pywws/ZambrettiCore.py:51
 msgid "Stormy, may improve"
-msgstr "Tempête, pourrait s'améliorer"
+msgstr "TempÃªte, pourrait s'amÃ©liorer"
 
 #: pywws/ZambrettiCore.py:52
 msgid "Stormy, much rain"
-msgstr "Tempête, fortes pluies"
+msgstr "TempÃªte, fortes pluies"
 
 #: pywws/Plot.py:671
 msgid "Time (%Z)"
