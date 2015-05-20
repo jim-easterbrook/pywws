@@ -8,9 +8,10 @@ pywws is a collection of Python modules to read, store and process data from pop
 The software has been developed to run in a low power, low memory environment such as a router or Raspberry Pi. It can be used to create graphs and web pages showing recent weather readings, typically updated every hour. It can also send "live" data to services such as `Weather Underground <http://www.wunderground.com/>`_ and post messages to `Twitter <https://twitter.com/>`_.
 
 The development version of pywws is hosted on GitHub.
-   * code: https://github.com/jim-easterbrook/pywws
-   * documentation: http://jim-easterbrook.github.io/pywws
+   * https://github.com/jim-easterbrook/pywws
 
 "Snapshot" releases of pywws are available from the Python Package Index (PyPI).
-   * code: https://pypi.python.org/pypi/pywws
-   * documentation: http://pythonhosted.org/pywws
+   * https://pypi.python.org/pypi/pywws
+
+Documentation is hosted on Read the Docs.
+   * http://pywws.readthedocs.org/
