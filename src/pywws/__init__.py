@@ -1,3 +1,3 @@
-__version__ = '15.05.0.dev1288'
-_release = '1288'
-_commit = 'e8bb1d8'
+__version__ = '15.05.0.dev1289'
+_release = '1289'
+_commit = '1f02186'
