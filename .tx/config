@@ -2,32 +2,32 @@
 host = https://www.transifex.com
 type = PO
 
-[pywws_devel.pywws]
+[pywws.pywws]
 file_filter = src/pywws/lang/<lang>/LC_MESSAGES/pywws.po
 source_file = build/gettext/pywws.pot
 source_lang = en
 
-[pywws_devel.api]
+[pywws.api]
 file_filter = src/pywws/lang/<lang>/LC_MESSAGES/api.po
 source_file = build/gettext/api.pot
 source_lang = en
 
-[pywws_devel.api_index]
+[pywws.api_index]
 file_filter = src/pywws/lang/<lang>/LC_MESSAGES/api_index.po
 source_file = build/gettext/api_index.pot
 source_lang = en
 
-[pywws_devel.essentials]
+[pywws.essentials]
 file_filter = src/pywws/lang/<lang>/LC_MESSAGES/essentials.po
 source_file = build/gettext/essentials.pot
 source_lang = en
 
-[pywws_devel.guides]
+[pywws.guides]
 file_filter = src/pywws/lang/<lang>/LC_MESSAGES/guides.po
 source_file = build/gettext/guides.pot
 source_lang = en
 
-[pywws_devel.index]
+[pywws.index]
 file_filter = src/pywws/lang/<lang>/LC_MESSAGES/index.po
 source_file = build/gettext/index.pot
 source_lang = en
