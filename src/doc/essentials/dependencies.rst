@@ -250,7 +250,7 @@ To 'compile' the documentation
 
 The documentation of pywws is written in "ReStructured text".
 A program called Sphinx is used to convert this easy to write format into HTML for use with a web browser.
-If you'd like to create a local copy of the documentation (so you don't have to rely on the online version, or to test a translation you're working on) you need to install Sphinx.
+If you'd like to create a local copy of the documentation (so you don't have to rely on the online version, or to test a translation you're working on) you need to install Sphinx, version 1.3 or later.
 
 *  `Sphinx <http://sphinx-doc.org/>`_
 
