@@ -30,9 +30,9 @@ pywws
 
 This document is available in the following languages (non-English versions may not be complete or up to date):
 
-   * `English <../../en/html/index.html>`_
-   * `Français <../../fr/html/index.html>`_
-   * `Italiano <../../it/html/index.html>`_
+   * `English <../../en/>`_
+   * `Français <../../fr/>`_
+   * `Italiano <../../it/>`_
 
 ************
 Introduction
