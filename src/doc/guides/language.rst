@@ -63,7 +63,6 @@ As well as the pywws software you need to install the Babel python library (see 
 This is used to convert the language file you create into code that is used when the pywws software is run.
 You also need to download and extract the pywws software instead of installing it with pip.
 See :doc:`getstarted`.
-It's probably better to use the most recent "snapshot" release rather than the ever changing GitHub repository.
 
 .. _using-transifex:
 
@@ -72,15 +71,15 @@ Translating the easy way - the Transifex web site
 
 `Transifex <https://www.transifex.com/>`_ is a web based system for coordinating teams of translators.
 It is free to use for open source projects such as pywws.
-In May 2014 I created a `pywws project <https://www.transifex.com/organization/jim-easterbrook>`_ on Transifex.
-If you'd like to use Transifex to help translate pywws, please create an account and join the appropriate language team.
+In May 2014 I created a `pywws project <https://www.transifex.com/projects/p/pywws/>`_ on Transifex.
+If you'd like to use Transifex to help translate pywws, please create an account (it's free) and join the appropriate language team.
 
-Visit the newest pywws project page on Transifex and click on your language, then click on the "resource" you want to translate.
+Visit the pywws project page on Transifex and click on your language, then click on the "resource" you want to translate.
 (``pywws`` contains the program strings used when running pywws, the others contain strings from the pywws documentation.)
 This opens a dialog where you can choose to download a file to work on or translate the strings online.
 Please read :ref:`translator-notes` before you start.
 
-When you've finished translating ``pywws`` select the "download for use" option and save the file to ``pywws/lang/fr/LC_MESSAGES/pywws.po`` (replace ``fr`` with your language code).
+When you've finished translating ``pywws`` select the "download for use" option and save the file to ``src/pywws/lang/fr/LC_MESSAGES/pywws.po`` (replace ``fr`` with your language code).
 Now you can :ref:`test-translation`.
 
 .. versionadded:: 14.05.dev1221
@@ -103,6 +102,7 @@ Extract source strings
 Program messages are marked in the Python source with an underscore character.
 These strings are extracted using setup.py::
 
+   mkdir -p build/gettext
    python setup.py extract_messages
 
 This creates the file ``build/gettext/pywws.pot``.
@@ -135,6 +135,8 @@ This is done with setup.py::
 
 After compilation you can test the translation::
 
+   python setup.py build
+   sudo python setup.py install
    python -m pywws.Localisation -t fr
 
 Don't forget to do this every time you edit a language file.
@@ -170,13 +172,13 @@ Send Jim the translation
 I'm sure you would like others to benefit from the work you've done in translating pywws.
 If you've been using Transifex then please send me an email (jim@jim-easterbrook.me.uk) to let me know there's a new translation available.
 Otherwise, please email me any .po files you create.
-Please include details of which version of pywws your work is based on -- the easiest way to do this is to include the value of ``_commit`` from the file ``pywws/__init__.py`` in your email.
+Please include details of which version of pywws your work is based on -- the easiest way to do this is to include the value of ``_commit`` from the file ``src/pywws/__init__.py`` in your email.
 
 Translating the documentation
 -----------------------------
 
 The Sphinx program used to compile the pywws documentation has good support for translation into other languages, but the process is a bit complicated.
-I recommend reading `this overview <http://sphinx-doc.org/latest/intl.html>`_, but don't follow its instructions too closely.
+I recommend reading `this overview <http://sphinx-doc.org/latest/intl.html>`_, but don't follow its instructions.
 I've tried to simplify the process, as described below.
 
 As before, the easiest way to contribute to the pywws documentation translations is via the Transifex web site (see :ref:`using-transifex`).
@@ -204,11 +206,7 @@ The sphinx-intl command is used to create or update the .po files::
 Viewing your translated documentation
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-First compile your newly edited language file(s)::
-
-   sphinx-intl build --locale-dir src/pywws/lang -l fr
-
-Then delete the old documentation (if it exists) and rebuild using your language::
+First delete the old documentation (if it exists) and then rebuild using your language::
 
    rm -rf doc/fr
    LANG=fr python setup.py build_sphinx
