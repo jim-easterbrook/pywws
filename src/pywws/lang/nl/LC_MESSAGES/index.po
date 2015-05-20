@@ -1,0 +1,239 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2008-15, Jim Easterbrook
+# This file is distributed under the same license as the pywws package.
+# 
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: pywws\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-05-20 08:01+0100\n"
+"PO-Revision-Date: 2015-05-20 07:04+0000\n"
+"Last-Translator: Jim Easterbrook <jim@jim-easterbrook.me.uk>\n"
+"Language-Team: Dutch (http://www.transifex.com/projects/p/pywws/language/nl/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: nl\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: ../../README.rst:2
+msgid "pywws"
+msgstr "pywws"
+
+#: ../../README.rst:4
+msgid "Python software for USB Wireless WeatherStations."
+msgstr ""
+
+#: ../../README.rst:6
+msgid ""
+"pywws is a collection of Python modules to read, store and process data from"
+" popular USB wireless weather stations such as Elecsa AstroTouch 6975, "
+"Watson W-8681, WH-1080PC, WH1080, WH1081, WH3080 etc. I assume any model "
+"that is supplied with the EasyWeather Windows software is compatible, but "
+"cannot guarantee this."
+msgstr ""
+
+#: ../../README.rst:8
+msgid ""
+"The software has been developed to run in a low power, low memory "
+"environment such as a router or Raspberry Pi. It can be used to create "
+"graphs and web pages showing recent weather readings, typically updated "
+"every hour. It can also send \"live\" data to services such as `Weather "
+"Underground <http://www.wunderground.com/>`_ and post messages to `Twitter "
+"<https://twitter.com/>`_."
+msgstr ""
+
+#: ../../README.rst:11
+msgid "The development version of pywws is hosted on GitHub."
+msgstr ""
+
+#: ../../README.rst:11
+msgid "https://github.com/jim-easterbrook/pywws"
+msgstr ""
+
+#: ../../README.rst:14
+msgid ""
+"\"Snapshot\" releases of pywws are available from the Python Package Index "
+"(PyPI)."
+msgstr ""
+
+#: ../../README.rst:14
+msgid "https://pypi.python.org/pypi/pywws"
+msgstr ""
+
+#: ../../README.rst:17
+msgid "Documentation is hosted on Read the Docs."
+msgstr ""
+
+#: ../../README.rst:17
+msgid "http://pywws.readthedocs.org/"
+msgstr ""
+
+#: ../../src/doc/index.rst:27
+msgid ""
+"Documentation is available in the following languages (non-English versions "
+"may not be complete or up to date):"
+msgstr ""
+
+#: ../../src/doc/index.rst:25
+msgid "`English <../../en/>`_"
+msgstr ""
+
+#: ../../src/doc/index.rst:26
+msgid "`Français <../../fr/>`_ -- translated by Jacques Desroches"
+msgstr ""
+
+#: ../../src/doc/index.rst:27
+msgid "`Italiano <../../it/>`_ -- translated by Edoardo"
+msgstr ""
+
+#: ../../src/doc/index.rst:29
+msgid ""
+"I have written this software to meet my needs, but have tried to make it "
+"adaptable to other people's requirements. You may want to edit some or all "
+"of the modules, or write some new ones, to get it to do exactly what you "
+"want. One of the reasons for using Python is that it makes such alterations "
+"so easy. Don't be afraid, just jump in and have a go."
+msgstr ""
+
+#: ../../src/doc/index.rst:33
+msgid "Requirements"
+msgstr ""
+
+#: ../../src/doc/index.rst:35
+msgid ""
+"The software you'll need to run pywws depends on what you plan to do with "
+"it. You'll need Python 2.5 or later -- Python 3 is partially supported, some"
+" functionality depends on libraries that have not yet been ported to Python "
+"3."
+msgstr ""
+
+#: ../../src/doc/index.rst:38
+msgid "For more detail, see :doc:`essentials/dependencies`."
+msgstr ""
+
+#: ../../src/doc/index.rst:42
+msgid "Installing and upgrading pywws"
+msgstr ""
+
+#: ../../src/doc/index.rst:44
+msgid ""
+"pywws can be installed directly from the `Python Package Index (PyPI) "
+"<http://pypi.python.org/pypi/pywws/>`_ using the pip command. See "
+":doc:`guides/getstarted` for full instructions."
+msgstr ""
+
+#: ../../src/doc/index.rst:47
+msgid ""
+"Some new versions of pywws change what's stored in the hourly, daily or "
+"monthly summary data files. These new versions are incompatible with "
+"processed data from earlier versions. The :py:mod:`pywws.Reprocess` script "
+"regenerates all the summary data. It should be run after any major upgrade."
+msgstr ""
+
+#: ../../src/doc/index.rst:53
+msgid "Documentation"
+msgstr ""
+
+#: ../../src/doc/index.rst:55
+msgid ""
+"Documentation is included with pywws downloads, and is also available "
+"`online <http://pythonhosted.org/pywws>`_. A good starting place is "
+":doc:`guides/getstarted` which describes in more detail how to install "
+"pywws."
+msgstr ""
+
+#: ../../src/doc/index.rst:57
+msgid ""
+"If you have questions not answered in the documentation, please join the "
+"`pywws Google mailing list / discussion group "
+"<http://groups.google.com/group/pywws>`_ and ask there. Note that your first"
+" message to the group will not appear immediately -- new posters have to be "
+"approved by a moderator, to prevent spam messages."
+msgstr ""
+
+#: ../../src/doc/index.rst:60
+msgid "Contents"
+msgstr ""
+
+#: ../../src/doc/index.rst:72
+msgid "Indices and tables"
+msgstr ""
+
+#: ../../src/doc/index.rst:74
+msgid ":ref:`genindex`"
+msgstr ":ref:`genindex`"
+
+#: ../../src/doc/index.rst:75
+msgid ":ref:`modindex`"
+msgstr ":ref:`modindex`"
+
+#: ../../src/doc/index.rst:76
+msgid ":ref:`search`"
+msgstr ":ref:`search`"
+
+#: ../../src/doc/index.rst:80
+msgid "Credits"
+msgstr ""
+
+#: ../../src/doc/index.rst:82
+msgid ""
+"I would not have been able to get any information from the weather station "
+"without access to the source of Michael Pendec's \"wwsr\" program. I am also"
+" indebted to Dave Wells for decoding the `weather station's \"fixed block\" "
+"data <http://www.jim-easterbrook.me.uk/weather/mm/>`_."
+msgstr ""
+
+#: ../../src/doc/index.rst:84
+msgid ""
+"Last of all, a big thank you to all the pywws users who have helped with "
+"questions and suggestions, and especially to those who have translated pywws"
+" and its documentation into other languages."
+msgstr ""
+
+#: ../../src/doc/index.rst:88
+msgid "Legalese"
+msgstr ""
+
+#: ../../src/doc/index.rst:90
+msgid "pywws - Python software for USB Wireless WeatherStations."
+msgstr ""
+
+#: ../../src/doc/index.rst:91
+msgid "http://github.com/jim-easterbrook/pywws"
+msgstr "http://github.com/jim-easterbrook/pywws"
+
+#: ../../src/doc/index.rst:92
+msgid "Copyright (C) 2008-14 Jim Easterbrook jim@jim-easterbrook.me.uk"
+msgstr ""
+
+#: ../../src/doc/index.rst:94
+msgid ""
+"This program is free software; you can redistribute it and/or modify it "
+"under the terms of the GNU General Public License as published by the Free "
+"Software Foundation; either version 2 of the License, or (at your option) "
+"any later version."
+msgstr ""
+
+#: ../../src/doc/index.rst:96
+msgid ""
+"This program is distributed in the hope that it will be useful, but WITHOUT "
+"ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or "
+"FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for "
+"more details."
+msgstr ""
+
+#: ../../src/doc/index.rst:98
+msgid ""
+"You should have received a copy of the `GNU General Public License "
+"<essentials/LICENCE.html>`_ along with this program; if not, write to the "
+"Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA "
+"02110-1301 USA"
+msgstr ""
+
+#: ../../src/doc/index.rst:102
+msgid ""
+"Comments or questions? Please subscribe to the pywws mailing list "
+"http://groups.google.com/group/pywws and let us know."
+msgstr ""

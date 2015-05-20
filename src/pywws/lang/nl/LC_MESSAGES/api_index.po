@@ -1,0 +1,322 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2008-15, Jim Easterbrook
+# This file is distributed under the same license as the pywws package.
+# 
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: pywws\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-05-20 08:01+0100\n"
+"PO-Revision-Date: 2015-05-20 07:04+0000\n"
+"Last-Translator: Jim Easterbrook <jim@jim-easterbrook.me.uk>\n"
+"Language-Team: Dutch (http://www.transifex.com/projects/p/pywws/language/nl/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: nl\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: ../../src/doc/api_index.rst:20
+msgid "Python programs and modules"
+msgstr "Python programma´s en modules"
+
+#: ../../src/doc/api_index.rst:23
+msgid "Set up and configure pywws"
+msgstr "Instellen en configureren pywws"
+
+#: ../../<autosummary>:1
+msgid ":obj:`pywws.TestWeatherStation <pywws.TestWeatherStation>`\\"
+msgstr ":obj:`pywws.TestWeatherStation <pywws.TestWeatherStation>`\\"
+
+#: ../../<autosummary>:1
+msgid "Test connection to weather station."
+msgstr "Test verbinding met weerstation. "
+
+#: ../../<autosummary>:1
+msgid ":obj:`pywws.SetWeatherStation <pywws.SetWeatherStation>`\\"
+msgstr ":obj:`pywws.SetWeatherStation <pywws.SetWeatherStation>`\\"
+
+#: ../../<autosummary>:1
+msgid "Set some weather station parameters."
+msgstr "Stel enkele weerstation parameters in. "
+
+#: ../../<autosummary>:1
+msgid ":obj:`pywws.version <pywws.version>`\\"
+msgstr ":obj:`pywws.version <pywws.version>`\\"
+
+#: ../../<autosummary>:1
+msgid "Display pywws version information."
+msgstr "Toon pywss versieinformatie. "
+
+#: ../../<autosummary>:1
+msgid ":obj:`pywws.Reprocess <pywws.Reprocess>`\\"
+msgstr ":obj:`pywws.Reprocess <pywws.Reprocess>`\\"
+
+#: ../../<autosummary>:1
+msgid "Regenerate hourly and daily summary data."
+msgstr "Regenereer van uur tot uur en dagelijkse samenvatting van gegevens."
+
+#: ../../<autosummary>:1
+msgid ":obj:`pywws.TwitterAuth <pywws.TwitterAuth>`\\"
+msgstr ":obj:`pywws.TwitterAuth <pywws.TwitterAuth>`\\"
+
+#: ../../<autosummary>:1
+msgid "Authorise pywws to post to your Twitter account"
+msgstr "Sta pywws toe berichten te plaatsen op je Twitter account. "
+
+#: ../../<autosummary>:1
+msgid ":obj:`pywws.USBQualityTest <pywws.USBQualityTest>`\\"
+msgstr ":obj:`pywws.USBQualityTest <pywws.USBQualityTest>`\\"
+
+#: ../../<autosummary>:1
+msgid "Test quality of USB connection to weather station"
+msgstr "Test kwaliteit van USB verbinding naar weerstation"
+
+#: ../../<autosummary>:1
+msgid ":obj:`pywws.EWtoPy <pywws.EWtoPy>`\\"
+msgstr ":obj:`pywws.EWtoPy <pywws.EWtoPy>`\\"
+
+#: ../../<autosummary>:1
+msgid "Convert EasyWeather.dat data to pywws format"
+msgstr "Converteer EasyWeather.dat gegevens naar pywws formaat."
+
+#: ../../src/doc/api_index.rst:37
+msgid "Get data and process it"
+msgstr "Verkrijg gegevens en verwerk ze"
+
+#: ../../<autosummary>:1
+msgid ":obj:`pywws.Hourly <pywws.Hourly>`\\"
+msgstr ":obj:`pywws.Hourly <pywws.Hourly>`\\"
+
+#: ../../<autosummary>:1
+msgid ""
+"Get weather data, process it, prepare graphs & text files and upload to a "
+"web site."
+msgstr "Verkrijg gegevens, verwerk ze, bereid grafieken en testbestanden voor en upload ze naar een website."
+
+#: ../../<autosummary>:1
+msgid ":obj:`pywws.LiveLog <pywws.LiveLog>`\\"
+msgstr ":obj:`pywws.LiveLog <pywws.LiveLog>`\\"
+
+#: ../../<autosummary>:1
+msgid "Get weather data, store it, and process it."
+msgstr "Verkrijg weergegevens, sla ze op en verwerk ze"
+
+#: ../../<autosummary>:1
+msgid ":obj:`pywws.livelogdaemon <pywws.livelogdaemon>`\\"
+msgstr ":obj:`pywws.livelogdaemon <pywws.livelogdaemon>`\\"
+
+#: ../../<autosummary>:1
+msgid "Run 'live logging' as a UNIX daemon."
+msgstr "Voer 'live logging'  als een UNIX daemon uit. "
+
+#: ../../src/doc/api_index.rst:47
+msgid "\"Internal\" modules"
+msgstr "' Interne'  modules"
+
+#: ../../<autosummary>:1
+msgid ":obj:`pywws.Tasks <pywws.Tasks>`\\"
+msgstr ":obj:`pywws.Tasks <pywws.Tasks>`\\"
+
+#: ../../<autosummary>:1
+msgid ""
+"Routines to perform common tasks such as plotting gaphs or uploading files."
+msgstr "Routines om algemene taken uit te voeren zoals het tekenen van grafieken of het uploaden van bestanden. "
+
+#: ../../<autosummary>:1
+msgid ":obj:`pywws.LogData <pywws.LogData>`\\"
+msgstr ":obj:`pywws.LogData <pywws.LogData>`\\"
+
+#: ../../<autosummary>:1
+msgid "Save weather station history to file"
+msgstr "Sla weerstation geschiedenis op naar bestand. "
+
+#: ../../<autosummary>:1
+msgid ":obj:`pywws.Process <pywws.Process>`\\"
+msgstr ":obj:`pywws.Process <pywws.Process>`\\"
+
+#: ../../<autosummary>:1
+msgid "Generate hourly, daily & monthly summaries of raw weather station"
+msgstr "Genereer van uur tot uur, dagelijkse en maandelijkse samenvattingen van onbewerkt weerstation"
+
+#: ../../<autosummary>:1
+msgid ":obj:`pywws.calib <pywws.calib>`\\"
+msgstr ":obj:`pywws.calib <pywws.calib>`\\"
+
+#: ../../<autosummary>:1
+msgid "Calibrate raw weather station data"
+msgstr "Calibreer onbewerkte weerstation gegevens. "
+
+#: ../../<autosummary>:1
+msgid ":obj:`pywws.Plot <pywws.Plot>`\\"
+msgstr ":obj:`pywws.Plot <pywws.Plot>`\\"
+
+#: ../../<autosummary>:1
+msgid "Plot graphs of weather data according to an XML recipe"
+msgstr ""
+
+#: ../../<autosummary>:1
+msgid ":obj:`pywws.WindRose <pywws.WindRose>`\\"
+msgstr ":obj:`pywws.WindRose <pywws.WindRose>`\\"
+
+#: ../../<autosummary>:1
+msgid "Plot a \"wind rose\""
+msgstr ""
+
+#: ../../<autosummary>:1
+msgid ":obj:`pywws.Template <pywws.Template>`\\"
+msgstr ":obj:`pywws.Template <pywws.Template>`\\"
+
+#: ../../<autosummary>:1
+msgid "Create text data file based on a template"
+msgstr ""
+
+#: ../../<autosummary>:1
+msgid ":obj:`pywws.Forecast <pywws.Forecast>`\\"
+msgstr ":obj:`pywws.Forecast <pywws.Forecast>`\\"
+
+#: ../../<autosummary>:1
+msgid "Predict future weather using recent data"
+msgstr ""
+
+#: ../../<autosummary>:1
+msgid ":obj:`pywws.ZambrettiCore <pywws.ZambrettiCore>`\\"
+msgstr ":obj:`pywws.ZambrettiCore <pywws.ZambrettiCore>`\\"
+
+#: ../../<autosummary>:1
+msgid ":obj:`pywws.Upload <pywws.Upload>`\\"
+msgstr ":obj:`pywws.Upload <pywws.Upload>`\\"
+
+#: ../../<autosummary>:1
+msgid "Upload files to a web server by ftp or copy them to a local directory"
+msgstr ""
+
+#: ../../<autosummary>:1
+msgid ":obj:`pywws.ToTwitter <pywws.ToTwitter>`\\"
+msgstr ":obj:`pywws.ToTwitter <pywws.ToTwitter>`\\"
+
+#: ../../<autosummary>:1
+msgid "Post a message to Twitter"
+msgstr ""
+
+#: ../../<autosummary>:1
+msgid ":obj:`pywws.toservice <pywws.toservice>`\\"
+msgstr ":obj:`pywws.toservice <pywws.toservice>`\\"
+
+#: ../../<autosummary>:1
+msgid "Post weather update to services such as Weather Underground"
+msgstr ""
+
+#: ../../<autosummary>:1
+msgid ":obj:`pywws.YoWindow <pywws.YoWindow>`\\"
+msgstr ":obj:`pywws.YoWindow <pywws.YoWindow>`\\"
+
+#: ../../<autosummary>:1
+msgid "Generate YoWindow XML file"
+msgstr ""
+
+#: ../../<autosummary>:1
+msgid ":obj:`pywws.WeatherStation <pywws.WeatherStation>`\\"
+msgstr ":obj:`pywws.WeatherStation <pywws.WeatherStation>`\\"
+
+#: ../../<autosummary>:1
+msgid "Get data from WH1080/WH3080 compatible weather stations."
+msgstr ""
+
+#: ../../<autosummary>:1
+msgid ":obj:`pywws.device_libusb1 <pywws.device_libusb1>`\\"
+msgstr ""
+
+#: ../../<autosummary>:1
+msgid "Low level USB interface to weather station, using python-libusb1."
+msgstr ""
+
+#: ../../<autosummary>:1
+msgid ":obj:`pywws.device_pyusb1 <pywws.device_pyusb1>`\\"
+msgstr ":obj:`pywws.device_pyusb1 <pywws.device_pyusb1>`\\"
+
+#: ../../<autosummary>:1
+msgid "Low level USB interface to weather station, using PyUSB v1.0."
+msgstr ""
+
+#: ../../<autosummary>:1
+msgid ":obj:`pywws.device_pyusb <pywws.device_pyusb>`\\"
+msgstr ":obj:`pywws.device_pyusb <pywws.device_pyusb>`\\"
+
+#: ../../<autosummary>:1
+msgid "Low level USB interface to weather station, using PyUSB v0.4."
+msgstr ""
+
+#: ../../<autosummary>:1
+msgid ":obj:`pywws.device_ctypes_hidapi <pywws.device_ctypes_hidapi>`\\"
+msgstr ":obj:`pywws.device_ctypes_hidapi <pywws.device_ctypes_hidapi>`\\"
+
+#: ../../<autosummary>:1
+msgid ""
+"Low level USB interface to weather station, using ctypes to access hidapi."
+msgstr ""
+
+#: ../../<autosummary>:1
+msgid ":obj:`pywws.device_cython_hidapi <pywws.device_cython_hidapi>`\\"
+msgstr ":obj:`pywws.device_cython_hidapi <pywws.device_cython_hidapi>`\\"
+
+#: ../../<autosummary>:1
+msgid "Low level USB interface to weather station, using cython-hidapi."
+msgstr ""
+
+#: ../../<autosummary>:1
+msgid ":obj:`pywws.DataStore <pywws.DataStore>`\\"
+msgstr ":obj:`pywws.DataStore <pywws.DataStore>`\\"
+
+#: ../../<autosummary>:1
+msgid "DataStore.py - stores readings in easy to access files"
+msgstr ""
+
+#: ../../<autosummary>:1
+msgid ":obj:`pywws.TimeZone <pywws.TimeZone>`\\"
+msgstr ":obj:`pywws.TimeZone <pywws.TimeZone>`\\"
+
+#: ../../<autosummary>:1
+msgid ""
+"Provide a couple of :py:class:`datetime.tzinfo` compatible objects "
+"representing local time and UTC."
+msgstr ""
+
+#: ../../<autosummary>:1
+msgid ":obj:`pywws.Localisation <pywws.Localisation>`\\"
+msgstr ":obj:`pywws.Localisation <pywws.Localisation>`\\"
+
+#: ../../<autosummary>:1
+msgid "Localisation.py - provide translations of strings into local"
+msgstr ""
+
+#: ../../<autosummary>:1
+msgid ":obj:`pywws.conversions <pywws.conversions>`\\"
+msgstr ":obj:`pywws.conversions <pywws.conversions>`\\"
+
+#: ../../<autosummary>:1
+msgid "conversions.py - a set of functions to convert pywws native units"
+msgstr ""
+
+#: ../../<autosummary>:1
+msgid ":obj:`pywws.Logger <pywws.Logger>`\\"
+msgstr ":obj:`pywws.Logger <pywws.Logger>`\\"
+
+#: ../../<autosummary>:1
+msgid "Common code for logging info and errors."
+msgstr ""
+
+#: ../../<autosummary>:1
+msgid ":obj:`pywws.constants <pywws.constants>`\\"
+msgstr ":obj:`pywws.constants <pywws.constants>`\\"
+
+#: ../../<autosummary>:1
+msgid "Bits of data used in several places."
+msgstr ""
+
+#: ../../src/doc/api_index.rst:81
+msgid ""
+"Comments or questions? Please subscribe to the pywws mailing list "
+"http://groups.google.com/group/pywws and let us know."
+msgstr ""

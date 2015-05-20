@@ -1,0 +1,2106 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2008-15, Jim Easterbrook
+# This file is distributed under the same license as the pywws package.
+# 
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: pywws\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-05-20 08:01+0100\n"
+"PO-Revision-Date: 2015-05-20 07:04+0000\n"
+"Last-Translator: Jim Easterbrook <jim@jim-easterbrook.me.uk>\n"
+"Language-Team: Dutch (http://www.transifex.com/projects/p/pywws/language/nl/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: nl\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: ../../src/doc/guides/getstarted.rst:20
+msgid "How to get started with pywws"
+msgstr ""
+
+#: ../../src/doc/guides/getstarted.rst:23
+msgid "Installation"
+msgstr ""
+
+#: ../../src/doc/guides/getstarted.rst:25
+msgid ""
+"First of all you need to install Python and a USB library (to allow Python "
+"to access the weather station). See :doc:`../essentials/dependencies` for "
+"more detail."
+msgstr ""
+
+#: ../../src/doc/guides/getstarted.rst:28
+msgid ""
+"Create a directory for all your weather related files and change to it. For "
+"example (on a Linux or similar operating system)::"
+msgstr ""
+
+#: ../../src/doc/guides/getstarted.rst:35
+msgid "Easy installation"
+msgstr ""
+
+#: ../../src/doc/guides/getstarted.rst:37
+msgid "The easiest way to install pywws is with the pip command::"
+msgstr ""
+
+#: ../../src/doc/guides/getstarted.rst:41
+msgid "Upgrading pywws is also a one line command::"
+msgstr ""
+
+#: ../../src/doc/guides/getstarted.rst:45
+msgid "Now you are ready to :ref:`test-weather-station`."
+msgstr ""
+
+#: ../../src/doc/guides/getstarted.rst:48
+msgid "Download and extract"
+msgstr ""
+
+#: ../../src/doc/guides/getstarted.rst:50
+msgid ""
+"If you prefer not to use pip, or you want easy access to the pywws source "
+"files (e.g. to translate the documentation -- see :doc:`language`), you can "
+"download and extract the files into your weather directory."
+msgstr ""
+
+#: ../../src/doc/guides/getstarted.rst:52
+msgid ""
+"Visit http://pypi.python.org/pypi/pywws/ and download one of the .tar.gz or "
+".zip files. Put it in your weather directory, then extract all the files, "
+"for example::"
+msgstr ""
+
+#: ../../src/doc/guides/getstarted.rst:57
+msgid "or::"
+msgstr ""
+
+#: ../../src/doc/guides/getstarted.rst:62
+msgid ""
+"This should create a directory (called ``pywws-14.03.dev1178`` in this "
+"example) containing all the pywws source files. It is convenient to create a"
+" soft link to this awkwardly named directory::"
+msgstr ""
+
+#: ../../src/doc/guides/getstarted.rst:68
+msgid ""
+"Upgrading a downloaded snapshot is the same process as the first "
+"installation. Download the .tar.gz or .zip file, extract its contents, then "
+"delete the soft link pointing to the old download and create one pointing to"
+" the new download. Once you are satisfied the new version is working OK you "
+"can delete the old download entirely."
+msgstr ""
+
+#: ../../src/doc/guides/getstarted.rst:73
+msgid "Clone the repository"
+msgstr ""
+
+#: ../../src/doc/guides/getstarted.rst:75
+msgid ""
+"The PyPI files contain a snapshot release of the software - a new one is "
+"issued every few months. If you want to use the very latest version of "
+"pywws, e.g. to work on fixing a bug, you can get all the files you need from"
+" the `GitHub repository <https://github.com/jim-easterbrook/pywws>`_. "
+"Install git and use it to clone the repos::"
+msgstr ""
+
+#: ../../src/doc/guides/getstarted.rst:82
+msgid "To upgrade you use git to pull any changes::"
+msgstr ""
+
+#: ../../src/doc/guides/getstarted.rst:88
+msgid "Install scripts"
+msgstr ""
+
+#: ../../src/doc/guides/getstarted.rst:90
+msgid ""
+"If you have not installed pywws with pip, you need to use setup.py to "
+"generate the \"entry point\" scripts for common pywws tasks::"
+msgstr ""
+
+#: ../../src/doc/guides/getstarted.rst:96
+msgid ""
+"Note to Python 3 users: this will generate and use Python 3 versions of the "
+"pywws software in ``~/weather/pywws/build/lib``."
+msgstr ""
+
+#: ../../src/doc/guides/getstarted.rst:99
+msgid "Compile documentation (optional)"
+msgstr ""
+
+#: ../../src/doc/guides/getstarted.rst:101
+msgid ""
+"If you'd like to have a local copy of the pywws documentation (and have "
+"downloaded the source or cloned the repo) you can \"compile\" the English "
+"documentation. This requires the sphinx package::"
+msgstr ""
+
+#: ../../src/doc/guides/getstarted.rst:107
+msgid ""
+"Compiling the documentation in another language requires the additional step"
+" of compiling the translation files, which requires the sphinx-intl package."
+" For example, to compile the French documentation::"
+msgstr ""
+
+#: ../../src/doc/guides/getstarted.rst:114
+msgid ""
+"The compiled documentation should then be found at "
+"``~/weather/pywws/doc/fr/html/index.html``. See :doc:`language` for more "
+"detail."
+msgstr ""
+
+#: ../../src/doc/guides/getstarted.rst:120
+msgid "Test the weather station connection"
+msgstr ""
+
+#: ../../src/doc/guides/getstarted.rst:122
+msgid ""
+"Now you're ready to test your pywws installation. Connect the weather "
+"station (if not already connected) then run the "
+":py:mod:`pywws.TestWeatherStation` module::"
+msgstr ""
+
+#: ../../src/doc/guides/getstarted.rst:127
+msgid ""
+"If everything is working correctly, this should dump a load of numbers to "
+"the screen, for example::"
+msgstr ""
+
+#: ../../src/doc/guides/getstarted.rst:138
+msgid ""
+"There are several reasons why this might not work. Most likely is a "
+"'permissions' problem. This can be tested by running the command as root::"
+msgstr ""
+
+#: ../../src/doc/guides/getstarted.rst:144
+msgid ""
+"If this works then you may be able to allow your normal user account to "
+"access the weather station by setting up a `'udev' "
+"<http://en.wikipedia.org/wiki/Udev>`_ rule. The exact method may depend on "
+"your Linux version, but this is typically done by creating a file "
+"``/etc/udev/rules.d/39-weather-station.rules`` containing the following::"
+msgstr ""
+
+#: ../../src/doc/guides/getstarted.rst:151
+msgid ""
+"Unplug and replug the station's USB connection to force ``udev`` to apply "
+"the new rule. This allows any user in the group ``weatherstation`` to access"
+" the weather station. You need to create this group and add your normal user"
+" account to it -- many Linux systems have a GUI for user and group "
+"management."
+msgstr ""
+
+#: ../../src/doc/guides/getstarted.rst:155
+msgid ""
+"If you have any other problem, please ask for help on the pywws mailing "
+"list: http://groups.google.com/group/pywws"
+msgstr ""
+
+#: ../../src/doc/guides/getstarted.rst:158
+msgid "Set up your weather station"
+msgstr ""
+
+#: ../../src/doc/guides/getstarted.rst:160
+msgid ""
+"If you haven't already done so, you should set your weather station to "
+"display the correct relative atmospheric pressure. (See the manual for "
+"details of how to do this.) pywws gets the offset between relative and "
+"absolute pressure from the station, so this should be set before using "
+"pywws."
+msgstr ""
+
+#: ../../src/doc/guides/getstarted.rst:164
+msgid ""
+"You can get the correct relative pressure from your location by looking on "
+"the internet for weather reports from a nearby station, ideally an official "
+"one such as an airport. This is best done during calm weather when the "
+"pressure is almost constant over a large area."
+msgstr ""
+
+#: ../../src/doc/guides/getstarted.rst:168
+msgid "Set the weather station logging interval"
+msgstr ""
+
+#: ../../src/doc/guides/getstarted.rst:170
+msgid ""
+"Your weather station probably left the factory with a 30 minute logging "
+"interval. This enables the station to store about 11 weeks of data. Most "
+"pywws users set up their computers to read data from the station every hour,"
+" or more often, and only need the station to store enough data to cover "
+"computer failures. The recommended interval is 5 minutes, which still allows"
+" 2 weeks of storage. Use :py:mod:`pywws.SetWeatherStation` to set the "
+"interval::"
+msgstr ""
+
+#: ../../src/doc/guides/getstarted.rst:179
+msgid "Log your weather station data"
+msgstr ""
+
+#: ../../src/doc/guides/getstarted.rst:181
+msgid ""
+"First, choose a directory to store all your weather station data. This will "
+"be written to quite frequently, so a disk drive is preferable to a flash "
+"memory stick or card, as these have a limited number of writes. In most "
+"cases your home directory is suitable, for example::"
+msgstr ""
+
+#: ../../src/doc/guides/getstarted.rst:187
+msgid ""
+"This directory is referred to elsewhere in the pywws documentation as your "
+"data directory."
+msgstr ""
+
+#: ../../src/doc/guides/getstarted.rst:189
+msgid ""
+"Make sure your computer has the right date & time, and time zone, as these "
+"are used to label the weather station data. If you haven't already done so, "
+"it's worth setting up NTP to synchronise your computer to a 'time server'."
+msgstr ""
+
+#: ../../src/doc/guides/getstarted.rst:192
+msgid ""
+"The first time you run :py:mod:`pywws.LogData` it will create a "
+"configuration file in your data directory called 'weather.ini' and then "
+"stop. You need to edit the configuration file and change the line ``ws type "
+"= Unknown`` to ``ws type = 1080`` or ``ws type = 3080``. (If your weather "
+"station console displays solar illuminance you have a 3080 type, all others "
+"are 1080.) Then run :py:mod:`pywws.LogData` again. This may take several "
+"minutes, as it will copy all the data stored in your station's memory. The "
+":py:mod:`pywws.LogData` program has a 'verbose' option that increases the "
+"amount of messages it displays while running. This is useful when running it"
+" manually, for example::"
+msgstr ""
+
+#: ../../src/doc/guides/getstarted.rst:202
+msgid ""
+"(Replace ``~/weather/data`` with your data directory, if it's different.)"
+msgstr ""
+
+#: ../../src/doc/guides/getstarted.rst:204
+msgid "You should now have some data files you can look at. For example::"
+msgstr ""
+
+#: ../../src/doc/guides/getstarted.rst:209
+msgid "(Replace the year, month and day with ones that you have data for.)"
+msgstr ""
+
+#: ../../src/doc/guides/getstarted.rst:212
+msgid "Convert old EasyWeather data (optional)"
+msgstr ""
+
+#: ../../src/doc/guides/getstarted.rst:214
+msgid ""
+"If you had been running EasyWeather before deciding to use pywws, you can "
+"convert the data EasyWeather had logged to the pywws format. Find your "
+"EasyWeather.dat file and then convert it::"
+msgstr ""
+
+#: ../../src/doc/guides/getstarted.rst:220
+msgid "Set some configuration options"
+msgstr ""
+
+#: ../../src/doc/guides/getstarted.rst:222
+msgid ""
+"After running :py:mod:`pywws.LogData` there should be a configuration file "
+"in your data directory called 'weather.ini'. Open this with a text editor. "
+"You should find something like the following::"
+msgstr ""
+
+#: ../../src/doc/guides/getstarted.rst:230
+msgid ""
+"You need to add a new entry in the ``[config]`` section called ``day end "
+"hour``. This tells pywws what convention you want to use when calculating "
+"daily summary data. In the UK, the 'meteorological day' is usually from "
+"09:00 to 09:00 GMT (10:00 to 10:00 BST during summer), so I use a day end "
+"hour value of 9. In other countries a value of 24 (or 0) might be more "
+"suitable. Note that the value is set in local winter time. You should not "
+"need to change it when daylight savings time is in effect."
+msgstr ""
+
+#: ../../src/doc/guides/getstarted.rst:237
+msgid "After editing, your weather.ini file should look something like this::"
+msgstr ""
+
+#: ../../src/doc/guides/getstarted.rst:245
+msgid ""
+"You can also edit the ``pressure offset`` value to adjust how pywws "
+"calculates the relative (sea level) air pressure from the absolute value "
+"that the station measures. If you change the pressure offset or day end hour"
+" in future, you must update all your stored data by running "
+":py:mod:`pywws.Reprocess`."
+msgstr ""
+
+#: ../../src/doc/guides/getstarted.rst:248
+msgid ""
+"For more detail on the configuration file options, see "
+":doc:`../guides/weather_ini`."
+msgstr ""
+
+#: ../../src/doc/guides/getstarted.rst:250
+#: ../../src/doc/guides/weather_ini.rst:77
+msgid ""
+"made ``pressure offset`` a config item. Previously it was always read from "
+"the weather station."
+msgstr ""
+
+#: ../../src/doc/guides/getstarted.rst:255
+msgid "Process the raw data"
+msgstr ""
+
+#: ../../src/doc/guides/getstarted.rst:257
+msgid ""
+":py:mod:`pywws.LogData` just copies the raw data from the weather station. "
+"To do something useful with that data you probably need hourly, daily and "
+"monthly summaries. These are created by :py:mod:`pywws.Process`. For "
+"example::"
+msgstr ""
+
+#: ../../src/doc/guides/getstarted.rst:263
+msgid "You should now have some processed files to look at::"
+msgstr ""
+
+#: ../../src/doc/guides/getstarted.rst:267
+msgid ""
+"If you ever change your ``day end hour`` configuration setting, you will "
+"need to reprocess all your weather data. You can do this by running "
+":py:mod:`pywws.Reprocess`::"
+msgstr ""
+
+#: ../../src/doc/guides/getstarted.rst:272
+msgid ""
+"You are now ready to set up regular or continuous logging, as described in "
+":doc:`hourlylogging` or :doc:`livelogging`."
+msgstr ""
+
+#: ../../src/doc/guides/getstarted.rst:275
+msgid "Read the documentation"
+msgstr ""
+
+#: ../../src/doc/guides/getstarted.rst:277
+msgid ""
+"You're looking at it right now! The :doc:`index` section is probably the "
+"most useful bit to read first, but the :doc:`../api_index` section has a lot"
+" more detail on the various pywws modules and commands."
+msgstr ""
+
+#: ../../src/doc/guides/getstarted.rst:282
+#: ../../src/doc/guides/hourlylogging.rst:165
+#: ../../src/doc/guides/humidex.rst:138 ../../src/doc/guides/index.rst:39
+#: ../../src/doc/guides/integration.rst:278
+#: ../../src/doc/guides/language.rst:223
+#: ../../src/doc/guides/livelogging.rst:205
+#: ../../src/doc/guides/twitter.rst:133
+#: ../../src/doc/guides/weather_ini.rst:369
+#: ../../src/doc/guides/weather_ini.rst:373
+msgid ""
+"Comments or questions? Please subscribe to the pywws mailing list "
+"http://groups.google.com/group/pywws and let us know."
+msgstr ""
+
+#: ../../src/doc/guides/hourlylogging.rst:20
+msgid "How to set up 'hourly' logging with pywws"
+msgstr ""
+
+#: ../../src/doc/guides/hourlylogging.rst:23
+#: ../../src/doc/guides/humidex.rst:32 ../../src/doc/guides/language.rst:23
+#: ../../src/doc/guides/livelogging.rst:23
+msgid "Introduction"
+msgstr ""
+
+#: ../../src/doc/guides/hourlylogging.rst:25
+#: ../../src/doc/guides/livelogging.rst:25
+msgid ""
+"There are two quite different modes of operation with pywws. Traditionally "
+":py:mod:`pywws.Hourly` would be run at regular intervals (usually an hour) "
+"from cron. This is suitable for fairly static websites, but more frequent "
+"updates can be useful for sites such as Weather Underground "
+"(http://www.wunderground.com/). The newer :py:mod:`pywws.LiveLog` program "
+"runs continuously and can upload data every 48 seconds."
+msgstr ""
+
+#: ../../src/doc/guides/hourlylogging.rst:30
+msgid ""
+"Note that although this document (and the program name) refers to 'hourly' "
+"logging, you can run  :py:mod:`pywws.Hourly` as often or as infrequently as "
+"you like, but don't try to run it more often than double your logging "
+"interval. For example, if your logging interval is 10 minutes, don't run "
+":py:mod:`pywws.Hourly` more often than every 20 minutes."
+msgstr ""
+
+#: ../../src/doc/guides/hourlylogging.rst:34
+#: ../../src/doc/guides/livelogging.rst:31
+msgid "Getting started"
+msgstr ""
+
+#: ../../src/doc/guides/hourlylogging.rst:36
+#: ../../src/doc/guides/livelogging.rst:33
+msgid ""
+"First of all, you need to install pywws and make sure it can get data from "
+"your weather station. See :doc:`getstarted` for details."
+msgstr ""
+
+#: ../../src/doc/guides/hourlylogging.rst:39
+msgid ""
+"Try running :py:mod:`pywws.Hourly` from the command line, with a high level "
+"of verbosity so you can see what's happening. Use the ``pywws-hourly`` "
+"command to run :py:mod:`pywws.Hourly`::"
+msgstr ""
+
+#: ../../src/doc/guides/hourlylogging.rst:44
+msgid ""
+"Within five minutes (assuming you have set a 5 minute logging interval) you "
+"should see a 'live_data new ptr' message, followed by fetching any new data "
+"from the weather station and processing it."
+msgstr ""
+
+#: ../../src/doc/guides/hourlylogging.rst:46
+msgid "the ``pywws-hourly`` command replaced ``scripts/pywws-hourly.py``."
+msgstr ""
+
+#: ../../src/doc/guides/hourlylogging.rst:50
+#: ../../src/doc/guides/livelogging.rst:51
+msgid "Configuring file locations"
+msgstr ""
+
+#: ../../src/doc/guides/hourlylogging.rst:52
+#: ../../src/doc/guides/livelogging.rst:53
+msgid ""
+"Open your weather.ini file with a text editor. You should have a ``[paths]``"
+" section similar to the following (where ``xxx`` is your user name)::"
+msgstr ""
+
+#: ../../src/doc/guides/hourlylogging.rst:61
+#: ../../src/doc/guides/livelogging.rst:62
+msgid ""
+"Edit these to suit your installation and preferences. ``work`` is a "
+"temporary directory used to store intermediate files, ``templates`` is the "
+"directory where you keep your text template files, ``graph_templates`` is "
+"the directory where you keep your graph template files and ``local_files`` "
+"is a directory where template output that is not uploaded to your web site "
+"is put. Don't use the pywws example directories for your templates, as they "
+"will get over-written when you upgrade pywws."
+msgstr ""
+
+#: ../../src/doc/guides/hourlylogging.rst:65
+#: ../../src/doc/guides/livelogging.rst:66
+msgid ""
+"Copy your text and graph templates to the appropriate directories. You may "
+"find some of the examples provided with pywws useful to get started. The "
+"``pywws-version -v`` command should show you where the examples are on your "
+"computer."
+msgstr ""
+
+#: ../../src/doc/guides/hourlylogging.rst:69
+#: ../../src/doc/guides/livelogging.rst:70
+msgid "the ``pywws-version`` command."
+msgstr ""
+
+#: ../../src/doc/guides/hourlylogging.rst:73
+#: ../../src/doc/guides/livelogging.rst:74
+msgid "Configuring periodic tasks"
+msgstr ""
+
+#: ../../src/doc/guides/hourlylogging.rst:75
+msgid ""
+"In weather.ini you should have ``[logged]``, ``[hourly]``, ``[12 hourly]`` "
+"and ``[daily]`` sections similar to the following::"
+msgstr ""
+
+#: ../../src/doc/guides/hourlylogging.rst:85
+msgid ""
+"These specify what :py:mod:`pywws.Hourly` should do when it is run. Tasks in"
+" the ``[logged]`` section are done every time there is new logged data, "
+"tasks in the ``[hourly]`` section are done every hour, tasks in the ``[12 "
+"hourly]`` section are done twice daily and tasks in the ``[daily]`` section "
+"are done once per day."
+msgstr ""
+
+#: ../../src/doc/guides/hourlylogging.rst:88
+msgid ""
+"The ``services`` entry is a list of online weather services to upload data "
+"to. The ``plot`` and ``text`` entries are lists of template files for plots "
+"and text files to be processed and, optionally, uploaded to your web site. "
+"Add the names of your template files and weather services to the appropriate"
+" entries, for example::"
+msgstr ""
+
+#: ../../src/doc/guides/hourlylogging.rst:112
+#: ../../src/doc/guides/livelogging.rst:121
+msgid ""
+"Note the use of the ``'T'`` flag -- this tells pywws to send the template "
+"result to Twitter instead of uploading it to your ftp site."
+msgstr ""
+
+#: ../../src/doc/guides/hourlylogging.rst:114
+msgid ""
+"You can test that all these are working by removing the ``[last update]`` "
+"section from status.ini, then running :py:mod:`pywws.Hourly` again::"
+msgstr ""
+
+#: ../../src/doc/guides/hourlylogging.rst:118
+#: ../../src/doc/guides/livelogging.rst:123
+msgid ""
+"``[cron name]`` sections. If you need more flexibility in when tasks are "
+"done you can use ``[cron name]`` sections. See :doc:`weather_ini` for more "
+"detail."
+msgstr ""
+
+#: ../../src/doc/guides/hourlylogging.rst:123
+#: ../../src/doc/guides/livelogging.rst:128
+#: ../../src/doc/guides/twitter.rst:100
+#: ../../src/doc/guides/weather_ini.rst:223
+msgid ""
+"added the ``'T'`` flag. Previously Twitter templates were listed separately "
+"in ``twitter`` entries in the ``[hourly]`` and other sections. The older "
+"syntax still works, but is deprecated."
+msgstr ""
+
+#: ../../src/doc/guides/hourlylogging.rst:128
+msgid ""
+"the last update information was previously stored in weather.ini, with "
+"``last update`` entries in several sections."
+msgstr ""
+
+#: ../../src/doc/guides/hourlylogging.rst:132
+msgid "Run as a cron job"
+msgstr ""
+
+#: ../../src/doc/guides/hourlylogging.rst:134
+msgid ""
+"Most UNIX/Linux systems have a 'cron' daemon that can run programs at "
+"certain times, even if you are not logged in to the computer. You edit a "
+"'crontab' file to specify what to run and when to run  it. For example, to "
+"run :py:mod:`pywws.Hourly` every hour, at zero minutes past the hour::"
+msgstr ""
+
+#: ../../src/doc/guides/hourlylogging.rst:140
+msgid ""
+"This might work, but if it didn't you probably won't get any error messages "
+"to tell you what went wrong. It's much better to run a script that runs "
+":py:mod:`pywws.Hourly` and then emails you any output it produces. Here's "
+"the script I use::"
+msgstr ""
+
+#: ../../src/doc/guides/hourlylogging.rst:161
+msgid ""
+"You’ll need to edit this quite a lot to suit your file locations and so on, "
+"but it gives some idea of what to do."
+msgstr ""
+
+#: ../../src/doc/guides/humidex.rst:20
+msgid "Humidity Index (Humidex)"
+msgstr ""
+
+#: ../../src/doc/guides/humidex.rst:25
+msgid "Background"
+msgstr ""
+
+#: ../../src/doc/guides/humidex.rst:27
+msgid ""
+"Using your weather station can be fun, and reporting daily to various "
+"weather data sites can be very useful for your neighbours to check out the "
+"weather. However, at some point you may want to know how the weather effects"
+" your body, and if there is a way to tell when it's good or not to work "
+"outdoors."
+msgstr ""
+
+#: ../../src/doc/guides/humidex.rst:29
+msgid ""
+"Here enters a whole realm of calculations based on energy transferring "
+"though walls, and the resistance offered by them. It can be a great learning"
+" adventure, and can save you a great deal of money, finding out how energy "
+"moves around."
+msgstr ""
+
+#: ../../src/doc/guides/humidex.rst:34
+msgid ""
+"Humidex is a tool to determine how an individuals body will react to the "
+"combination of Wind, Humidity and Temperature. The background of which is a "
+"heat balance across from your midriff to your skin, and is complimentary to "
+"ISO 7243 \"Hot Environments - Estimation of the heat stress on working "
+"man\". A few important notes,"
+msgstr ""
+
+#: ../../src/doc/guides/humidex.rst:36
+msgid ""
+"These indices are based off a number of assumptions which may result in over"
+" or under-estimation of your bodies internal state"
+msgstr ""
+
+#: ../../src/doc/guides/humidex.rst:37
+msgid ""
+"A personal weather station may not show the correct conditions, and may have"
+" an over or under estimation of the humidity, wind or temperature"
+msgstr ""
+
+#: ../../src/doc/guides/humidex.rst:38
+msgid ""
+"Clothing choices effect the personal fatigue and the bodies ability to "
+"reject heat, a low Humidity Index doesn't mean you can wear anything"
+msgstr ""
+
+#: ../../src/doc/guides/humidex.rst:39
+msgid ""
+"An individuals fitness will effect their bodies response to changing "
+"temperature, and experience will aid in knowing when to stop working"
+msgstr ""
+
+#: ../../src/doc/guides/humidex.rst:40
+msgid ""
+"The duration of activities that can be performed requires knowledge on the "
+"intensity, which cannot be represented though this index"
+msgstr ""
+
+#: ../../src/doc/guides/humidex.rst:44
+msgid "Assumptions"
+msgstr ""
+
+#: ../../src/doc/guides/humidex.rst:46
+msgid ""
+"There are a number of assumptions that have been made to make this work "
+"which will directly affect its useability. These assumptions however have "
+"not been made available from Environment Canada, who are the original "
+"developers of the Humidex used in the PYWWS function cadhumidex. It is safe "
+"enough however to say that the following would have been some assumptions:"
+msgstr ""
+
+#: ../../src/doc/guides/humidex.rst:48
+msgid "Clothing type, thickness"
+msgstr ""
+
+#: ../../src/doc/guides/humidex.rst:49
+msgid "Skin area exposed to free air"
+msgstr ""
+
+#: ../../src/doc/guides/humidex.rst:50
+msgid "Sun exposure"
+msgstr ""
+
+#: ../../src/doc/guides/humidex.rst:52
+msgid ""
+"However, there are a number of assumptions pywws needs to make in "
+"calculating the Humidex:"
+msgstr ""
+
+#: ../../src/doc/guides/humidex.rst:54
+msgid "The humidity, wind and temperature readings are correct"
+msgstr ""
+
+#: ../../src/doc/guides/humidex.rst:56
+msgid ""
+"There are also assumptions about the individuals body type and "
+"'acclimatisation'"
+msgstr ""
+
+#: ../../src/doc/guides/humidex.rst:58
+msgid ""
+"An individuals fitness will effect their bodies response to changing "
+"temperature"
+msgstr ""
+
+#: ../../src/doc/guides/humidex.rst:59
+msgid "Experience will aid in knowing when to stop working"
+msgstr ""
+
+#: ../../src/doc/guides/humidex.rst:62
+msgid "Important References"
+msgstr ""
+
+#: ../../src/doc/guides/humidex.rst:64
+msgid ""
+"Being Prepared for Summer - http://www.ec.gc.ca/meteo-"
+"weather/default.asp?lang=En&n=86C0425B-1"
+msgstr ""
+
+#: ../../src/doc/guides/humidex.rst:67
+msgid "How to use"
+msgstr ""
+
+#: ../../src/doc/guides/humidex.rst:69
+msgid ""
+"The function is descriptively named ``cadhumidex`` and has the parameters "
+"temperature and humidity, essentially the function operates as a conversion "
+"and can be used in a straightforward manner::"
+msgstr ""
+
+#: ../../src/doc/guides/humidex.rst:73
+msgid ""
+"Putting it together, I have added colours that follow basic warning colors "
+"and the different brackets to produce a decent graph::"
+msgstr ""
+
+#: ../../src/doc/guides/humidex.rst:129
+msgid "Not running the latest update?"
+msgstr ""
+
+#: ../../src/doc/guides/humidex.rst:131
+msgid ""
+"If you are not running the latest update / do not want to, then this can be "
+"implemented using a longer <ycalc> as follows::"
+msgstr ""
+
+#: ../../src/doc/guides/index.rst:20
+msgid "User guides"
+msgstr ""
+
+#: ../../src/doc/guides/index.rst:22
+msgid "Contents:"
+msgstr ""
+
+#: ../../src/doc/guides/integration.rst:20
+msgid "How to integrate pywws with various weather services"
+msgstr ""
+
+#: ../../src/doc/guides/integration.rst:22
+msgid ""
+"This guide gives brief instructions on how to use pywws with some other "
+"weather services and software. It is not comprehensive, and some services "
+"(such as Twitter) are covered in more detail elsewhere."
+msgstr ""
+
+#: ../../src/doc/guides/integration.rst:26
+msgid "YoWindow"
+msgstr "YoWindow"
+
+#: ../../src/doc/guides/integration.rst:28
+msgid ""
+"`YoWindow <http://yowindow.com/>`_ is a weather display widget that can "
+"display data from an internet source, or from your weather station. To "
+"display data from your station pywws needs to write to a local file, "
+"typically every 48 seconds when new data is received. This is easy to do:"
+msgstr ""
+
+#: ../../src/doc/guides/integration.rst:32
+msgid "Stop all pywws software"
+msgstr ""
+
+#: ../../src/doc/guides/integration.rst:33
+msgid ""
+"Copy the ``yowindow.xml`` example template to your text template directory."
+msgstr ""
+
+#: ../../src/doc/guides/integration.rst:34
+msgid ""
+"If you haven't already done so, edit ``weather.ini`` and set the "
+"``local_files`` entry in the ``[paths]`` section to a suitable directory for"
+" your yowindow file."
+msgstr ""
+
+#: ../../src/doc/guides/integration.rst:35
+msgid ""
+"Add the yowindow template to the ``[live]`` tasks in ``weather.ini``. Set "
+"its flags to ``'L'`` so the result is copied to your local directory instead"
+" of being uploaded to an ftp site::"
+msgstr ""
+
+#: ../../src/doc/guides/integration.rst:39
+msgid "Restart pywws live logging."
+msgstr ""
+
+#: ../../src/doc/guides/integration.rst:41
+msgid ""
+"You can check the file is being updated every 48 seconds by using ``more`` "
+"or ``cat`` to dump it to the screen."
+msgstr ""
+
+#: ../../src/doc/guides/integration.rst:43
+msgid ""
+"Finally configure yowindow to use this file. See "
+"`<http://yowindow.com/pws_setup.php>`_ for instructions on how to do this."
+msgstr ""
+
+#: ../../src/doc/guides/integration.rst:47
+msgid "Twitter"
+msgstr "Twitter"
+
+#: ../../src/doc/guides/integration.rst:49
+msgid "See :doc:`twitter` for full instructions."
+msgstr ""
+
+#: ../../src/doc/guides/integration.rst:54
+msgid "Other \"services\""
+msgstr ""
+
+#: ../../src/doc/guides/integration.rst:56
+msgid ""
+"The remaining weather service uploads are handled by the "
+":py:mod:`pywws.toservice` module. See the module's documentation for general"
+" configuration options. The following subsections give further information "
+"about some of the available services."
+msgstr ""
+
+#: ../../src/doc/guides/integration.rst:61
+msgid "Citizen Weather Observer Program"
+msgstr "Citizen Weather Observer Program"
+
+#: ../../src/doc/guides/integration.rst:65
+msgid "Web site: http://www.wxqa.com/"
+msgstr ""
+
+#: ../../src/doc/guides/integration.rst:66
+msgid "Create account: http://www.wxqa.com/SIGN-UP.html"
+msgstr ""
+
+#: ../../src/doc/guides/integration.rst:67
+msgid "API: http://www.wxqa.com/faq.html"
+msgstr ""
+
+#: ../../src/doc/guides/integration.rst:68
+#: ../../src/doc/guides/integration.rst:119
+#: ../../src/doc/guides/integration.rst:163
+#: ../../src/doc/guides/integration.rst:179
+#: ../../src/doc/guides/integration.rst:204
+#: ../../src/doc/guides/integration.rst:218
+#: ../../src/doc/guides/integration.rst:233
+#: ../../src/doc/guides/integration.rst:262
+msgid "Example ``weather.ini`` section::"
+msgstr ""
+
+#: ../../src/doc/guides/integration.rst:82
+msgid "or, for radio hams::"
+msgstr ""
+
+#: ../../src/doc/guides/integration.rst:97
+msgid ""
+"Note that the latitude and longitude must be in \"LORAN\" format and leading"
+" zeros are required. See question 3 in the `CWOP FAQ "
+"<http://www.wxqa.com/faq.html>`_ for more information."
+msgstr ""
+
+#: ../../src/doc/guides/integration.rst:100
+msgid ""
+"Licensed radio hams use their callsign as the designator and need a "
+"passcode. They should use the service name ``cwop_ham`` instead of ``cwop`` "
+"when running :py:mod:`pywws.toservice` directly and in the ``weather.ini`` "
+"``services`` entries. (The same ``[cwop]`` config section is used for both.)"
+msgstr ""
+
+#: ../../src/doc/guides/integration.rst:104
+msgid ""
+"CWOP uploads are rate-limited by pywws, so you can safely add it to both the"
+" ``[live]`` and ``[logged]`` sections in ``weather.ini``."
+msgstr ""
+
+#: ../../src/doc/guides/integration.rst:106
+msgid ""
+"The CWOP/APRS uploader is based on code by Marco Trevisan <mail@3v1n0.net>."
+msgstr ""
+
+#: ../../src/doc/guides/integration.rst:109
+msgid "MQTT"
+msgstr ""
+
+#: ../../src/doc/guides/integration.rst:113
+msgid ""
+"MQTT is a \"message broker\" system, typically running on ``localhost`` or "
+"another computer in your home network. Use of MQTT with pywws requires an "
+"additional library. See :ref:`Dependencies - MQTT <dependencies-mqtt>` for "
+"details."
+msgstr ""
+
+#: ../../src/doc/guides/integration.rst:117
+msgid "MQTT: http://mqtt.org/"
+msgstr ""
+
+#: ../../src/doc/guides/integration.rst:118
+msgid "Mosquitto (a lightweight broker): http://mosquitto.org/"
+msgstr ""
+
+#: ../../src/doc/guides/integration.rst:135
+msgid ""
+"pywws will publish a JSON string of the data specified in the "
+"``mqtt_template_1080.txt`` file. This data will be published to the broker "
+"running on hostname, with the port number specified. (An IP address can be "
+"used instead of a host name.) ``client_id`` is a note of who published the "
+"data to the topic. ``topic`` can be any string value, this needs to be the "
+"topic that a subscriber is aware of."
+msgstr ""
+
+#: ../../src/doc/guides/integration.rst:141
+msgid ""
+"``retain`` is a boolean and should be set to ``True`` or ``False`` (or left "
+"at the default ``unknown``). If set to ``True`` this will flag the message "
+"sent to the broker to be retained. Otherwise the broker discards the message"
+" if no client is subscribing to this topic. This allows clients to get an "
+"immediate response when they subscribe to a topic, without having to wait "
+"until the next message is published."
+msgstr ""
+
+#: ../../src/doc/guides/integration.rst:146
+msgid ""
+"``auth``, ``user`` and ``password`` can be used for MQTT authentication."
+msgstr ""
+
+#: ../../src/doc/guides/integration.rst:148
+msgid ""
+"If these aren't obvious to you it's worth doing a bit of reading around "
+"MQTT. It's a great lightweight messaging system from IBM, recently made more"
+" popular when Facebook published information on their use of it."
+msgstr ""
+
+#: ../../src/doc/guides/integration.rst:151
+msgid ""
+"This has been tested with the Mosquitto Open Source MQTT broker, running on "
+"a Raspberry Pi (Raspian OS). TLS (mqtt data encryption) is not yet "
+"implemented."
+msgstr ""
+
+#: ../../src/doc/guides/integration.rst:154
+msgid ""
+"Thanks to Matt Thompson for writing the MQTT code and to Robin Kearney for "
+"adding the retain and auth options."
+msgstr ""
+
+#: ../../src/doc/guides/integration.rst:157
+msgid "UK Met Office"
+msgstr "UK Met Office"
+
+#: ../../src/doc/guides/integration.rst:159
+msgid "Web site: http://wow.metoffice.gov.uk/"
+msgstr ""
+
+#: ../../src/doc/guides/integration.rst:0
+msgid "Create account:"
+msgstr ""
+
+#: ../../src/doc/guides/integration.rst:0
+msgid ""
+"https://register.metoffice.gov.uk/WaveRegistrationClient/public/newaccount.do?service=weatherobservations"
+msgstr ""
+
+#: ../../src/doc/guides/integration.rst:162
+msgid "API: http://wow.metoffice.gov.uk/support/dataformats#automatic"
+msgstr ""
+
+#: ../../src/doc/guides/integration.rst:174
+msgid "Open Weather Map"
+msgstr "Open Weather Map"
+
+#: ../../src/doc/guides/integration.rst:176
+msgid "Web site: http://openweathermap.org/"
+msgstr ""
+
+#: ../../src/doc/guides/integration.rst:177
+msgid "Create account: http://openweathermap.org/login"
+msgstr ""
+
+#: ../../src/doc/guides/integration.rst:178
+msgid "API: http://openweathermap.org/API"
+msgstr ""
+
+#: ../../src/doc/guides/integration.rst:193
+msgid ""
+"The default behaviour is to use your user name to identify the weather "
+"station. However, it's possible for a user to have more than one weather "
+"station, so there is an undocumented ``name`` parameter in the API that can "
+"be used to identify the station. This appears as ``id`` in ``weather.ini``. "
+"Make sure you don't choose a name that is already in use."
+msgstr ""
+
+#: ../../src/doc/guides/integration.rst:199
+msgid "PWS Weather"
+msgstr "PWS Weather"
+
+#: ../../src/doc/guides/integration.rst:201
+msgid "Web site: http://www.pwsweather.com/"
+msgstr ""
+
+#: ../../src/doc/guides/integration.rst:202
+msgid "Create account: http://www.pwsweather.com/register.php"
+msgstr ""
+
+#: ../../src/doc/guides/integration.rst:203
+msgid ""
+"API based on WU protocol: `<http://wiki.wunderground.com/index.php/PWS_-"
+"_Upload_Protocol>`_"
+msgstr ""
+
+#: ../../src/doc/guides/integration.rst:215
+msgid "temperatur.nu"
+msgstr "temperatur.nu"
+
+#: ../../src/doc/guides/integration.rst:217
+msgid "Web site: http://www.temperatur.nu/"
+msgstr ""
+
+#: ../../src/doc/guides/integration.rst:229
+msgid "Weather Underground"
+msgstr "Weather Underground"
+
+#: ../../src/doc/guides/integration.rst:231
+msgid "Create account: http://www.wunderground.com/members/signup.asp"
+msgstr ""
+
+#: ../../src/doc/guides/integration.rst:232
+msgid "API: `<http://wiki.wunderground.com/index.php/PWS_-_Upload_Protocol>`_"
+msgstr ""
+
+#: ../../src/doc/guides/integration.rst:244
+msgid "Weather Underground \"RapidFire\" updates"
+msgstr ""
+
+#: ../../src/doc/guides/integration.rst:245
+msgid ""
+"Weather Underground has a second upload URL for real time updates as little "
+"as 2.5 seconds apart. If you run pywws in 'live logging' mode (see "
+":doc:`livelogging`) you can use this to send updates every 48 seconds, by "
+"adding 'underground_rf' to the ``[live]`` tasks section in ``weather.ini``::"
+msgstr ""
+
+#: ../../src/doc/guides/integration.rst:254
+msgid ""
+"Make sure you still have an 'underground' service in ``[logged]`` or "
+"``[hourly]``. This will ensure that 'catchup' records are sent to fill in "
+"any gaps if your station goes offline for some reason."
+msgstr ""
+
+#: ../../src/doc/guides/integration.rst:258
+msgid "wetter.com"
+msgstr "wetter.com"
+
+#: ../../src/doc/guides/integration.rst:260
+msgid "Web site: http://www.wetter.com/wetter_aktuell/wetternetzwerk/"
+msgstr ""
+
+#: ../../src/doc/guides/integration.rst:261
+msgid ""
+"Register station: "
+"http://www.wetter.com/mein_wetter/wetterstation/willkommen/"
+msgstr ""
+
+#: ../../src/doc/guides/language.rst:20
+msgid "How to use pywws in another language"
+msgstr ""
+
+#: ../../src/doc/guides/language.rst:25
+msgid ""
+"Some parts of pywws can be configured to use your local language instead of "
+"British English. This requires an appropriate language file which contains "
+"translations of the various strings used in pywws. The pywws project relies "
+"on users to provide these translations."
+msgstr ""
+
+#: ../../src/doc/guides/language.rst:29
+msgid ""
+"The pywws documentation can also be translated into other languages. This is"
+" a lot more work, but could be very useful to potential users who do not "
+"read English very well."
+msgstr ""
+
+#: ../../src/doc/guides/language.rst:33
+msgid "Using an existing language file"
+msgstr ""
+
+#: ../../src/doc/guides/language.rst:35
+msgid ""
+"There may already be a pywws translation for your preferred language. First "
+"you need to choose the appropriate two-letter code from the list at "
+"http://www.w3schools.com/tags/ref_language_codes.asp. For example, ``fr`` is"
+" the code for French. Now use the :py:mod:`pywws.Localisation` module to do "
+"a quick test::"
+msgstr ""
+
+#: ../../src/doc/guides/language.rst:42
+msgid "This should produce output something like this::"
+msgstr ""
+
+#: ../../src/doc/guides/language.rst:54
+msgid ""
+"This shows that pywws is already able to generate French output, and that "
+"your installation is correctly configured. Now you can edit the language "
+"entry in your ``weather.ini`` file to use your language code."
+msgstr ""
+
+#: ../../src/doc/guides/language.rst:57
+msgid ""
+"If the above test shows no translations into your language then you need to "
+"create a new language file, as described below."
+msgstr ""
+
+#: ../../src/doc/guides/language.rst:60
+msgid "Dependencies"
+msgstr ""
+
+#: ../../src/doc/guides/language.rst:62
+msgid ""
+"As well as the pywws software you need to install the Babel python library "
+"(see :ref:`dependencies <dependencies-translations>`). This is used to "
+"convert the language file you create into code that is used when the pywws "
+"software is run. You also need to download and extract the pywws software "
+"instead of installing it with pip. See :doc:`getstarted`."
+msgstr ""
+
+#: ../../src/doc/guides/language.rst:70
+msgid "Translating the easy way - the Transifex web site"
+msgstr ""
+
+#: ../../src/doc/guides/language.rst:72
+msgid ""
+"`Transifex <https://www.transifex.com/>`_ is a web based system for "
+"coordinating teams of translators. It is free to use for open source "
+"projects such as pywws. In May 2014 I created a `pywws project "
+"<https://www.transifex.com/projects/p/pywws/>`_ on Transifex. If you'd like "
+"to use Transifex to help translate pywws, please create an account (it's "
+"free) and join the appropriate language team."
+msgstr ""
+
+#: ../../src/doc/guides/language.rst:77
+msgid ""
+"Visit the pywws project page on Transifex and click on your language, then "
+"click on the \"resource\" you want to translate. (``pywws`` contains the "
+"program strings used when running pywws, the others contain strings from the"
+" pywws documentation.) This opens a dialog where you can choose to download "
+"a file to work on or translate the strings online. Please read :ref"
+":`translator-notes` before you start."
+msgstr ""
+
+#: ../../src/doc/guides/language.rst:82
+msgid ""
+"When you've finished translating ``pywws`` select the \"download for use\" "
+"option and save the file to ``src/pywws/lang/fr/LC_MESSAGES/pywws.po`` "
+"(replace ``fr`` with your language code). Now you can :ref:`test-"
+"translation`."
+msgstr ""
+
+#: ../../src/doc/guides/language.rst:85
+msgid ""
+"pywws now includes a config file for the ``transifex-client`` program (see "
+":ref:`dependencies <dependencies-translations>`). This simplifies the "
+"process of downloading files for testing (or uploading files you've been "
+"editing on your computer)."
+msgstr ""
+
+#: ../../src/doc/guides/language.rst:89
+msgid ""
+"For example, this command downloads any updated files for the French "
+"language::"
+msgstr ""
+
+#: ../../src/doc/guides/language.rst:94
+msgid "Translating the hard way - using local files"
+msgstr ""
+
+#: ../../src/doc/guides/language.rst:96
+msgid ""
+"If you prefer not to use the Transifex web site you can edit language files "
+"on your own computer. This is done in several stages, as follows."
+msgstr ""
+
+#: ../../src/doc/guides/language.rst:100 ../../src/doc/guides/language.rst:188
+msgid "Extract source strings"
+msgstr ""
+
+#: ../../src/doc/guides/language.rst:102
+msgid ""
+"Program messages are marked in the Python source with an underscore "
+"character. These strings are extracted using setup.py::"
+msgstr ""
+
+#: ../../src/doc/guides/language.rst:107
+msgid ""
+"This creates the file ``build/gettext/pywws.pot``. This is a \"portable "
+"object template\" file that contains the English language strings to be "
+"translated."
+msgstr ""
+
+#: ../../src/doc/guides/language.rst:111 ../../src/doc/guides/language.rst:197
+msgid "Create language files"
+msgstr ""
+
+#: ../../src/doc/guides/language.rst:113
+msgid ""
+"The .pot files have headers that need to be initialised. This can be done "
+"manually, but the Babel library has an ``init_catalog`` command to simplify "
+"the process::"
+msgstr ""
+
+#: ../../src/doc/guides/language.rst:118
+msgid ""
+"If a .po file for your language already exists, but needs updating with new "
+"source strings, you should use the ``update_catalog`` command instead::"
+msgstr ""
+
+#: ../../src/doc/guides/language.rst:122
+msgid ""
+"Now you can open the ``src/pywws/lang/fr/LC_MESSAGES/pywws.po`` file in your"
+" favourite text editor and start filling in the empty ``msgstr`` strings "
+"with your translation of the corresponding ``msgid`` string. Please read "
+":ref:`translator-notes` before you start."
+msgstr ""
+
+#: ../../src/doc/guides/language.rst:128
+msgid "Test the pywws translation"
+msgstr ""
+
+#: ../../src/doc/guides/language.rst:130
+msgid ""
+"After you've edited your language file it needs to be compiled so that pywws"
+" can use it. This is done with setup.py::"
+msgstr ""
+
+#: ../../src/doc/guides/language.rst:135
+msgid "After compilation you can test the translation::"
+msgstr ""
+
+#: ../../src/doc/guides/language.rst:139
+msgid "Don't forget to do this every time you edit a language file."
+msgstr ""
+
+#: ../../src/doc/guides/language.rst:144
+msgid "Notes for translators"
+msgstr ""
+
+#: ../../src/doc/guides/language.rst:146
+msgid ""
+"The pywws program strings (``pywws.po``) are quite simple. They comprise "
+"simple weather forecasts (\"Fine weather\"), air pressure changes (\"rising "
+"quickly\") and the 16 points of the compass (\"NNE\"). Leave the \"(%Z)\" in"
+" \"Time (%Z)\" unchanged and make sure your translation's punctuation "
+"matches the original."
+msgstr ""
+
+#: ../../src/doc/guides/language.rst:150
+msgid ""
+"The other files contain strings from the pywws documentation. These are in "
+"`reStructuredText <http://docutils.sourceforge.net/rst.html>`_. This is "
+"mostly plain text, but uses characters such as backquotes (\\`), colons "
+"(\\:) and asterisks (\\*) for special purposes. You need to take care to "
+"preserve this special punctuation. Do not translate program source, computer"
+" instructions and cross-references like these::"
+msgstr ""
+
+#: ../../src/doc/guides/language.rst:162
+msgid ""
+"Translating all of the pywws documentation is a lot of work. However, when "
+"the documentation is \"compiled\" any untranslated strings revert to their "
+"English original. This means that a partial translation could still be "
+"useful -- I suggest starting with the documentation front page, "
+"``index.po``."
+msgstr ""
+
+#: ../../src/doc/guides/language.rst:167
+msgid "Send Jim the translation"
+msgstr ""
+
+#: ../../src/doc/guides/language.rst:169
+msgid ""
+"I'm sure you would like others to benefit from the work you've done in "
+"translating pywws. If you've been using Transifex then please send me an "
+"email (jim@jim-easterbrook.me.uk) to let me know there's a new translation "
+"available. Otherwise, please email me any .po files you create. Please "
+"include details of which version of pywws your work is based on -- the "
+"easiest way to do this is to include the value of ``_commit`` from the file "
+"``pywws/__init__.py`` in your email."
+msgstr ""
+
+#: ../../src/doc/guides/language.rst:175
+msgid "Translating the documentation"
+msgstr ""
+
+#: ../../src/doc/guides/language.rst:177
+msgid ""
+"The Sphinx program used to compile the pywws documentation has good support "
+"for translation into other languages, but the process is a bit complicated. "
+"I recommend reading `this overview <http://sphinx-"
+"doc.org/latest/intl.html>`_, but don't follow its instructions too closely. "
+"I've tried to simplify the process, as described below."
+msgstr ""
+
+#: ../../src/doc/guides/language.rst:181
+msgid ""
+"As before, the easiest way to contribute to the pywws documentation "
+"translations is via the Transifex web site (see :ref:`using-transifex`). You"
+" don't need to translate everything -- even a partial translation could be "
+"useful. Just let me know when you've done enough to be worth publishing."
+msgstr ""
+
+#: ../../src/doc/guides/language.rst:185
+msgid ""
+"If you prefer not to use Transifex then please follow these instructions."
+msgstr ""
+
+#: ../../src/doc/guides/language.rst:190
+msgid "Documentation strings are extracted using setup.py::"
+msgstr ""
+
+#: ../../src/doc/guides/language.rst:194
+msgid "This creates several .pot files in the ``build/gettext/`` directory."
+msgstr ""
+
+#: ../../src/doc/guides/language.rst:199
+msgid "The sphinx-intl command is used to create or update the .po files::"
+msgstr ""
+
+#: ../../src/doc/guides/language.rst:204
+msgid "Viewing your translated documentation"
+msgstr ""
+
+#: ../../src/doc/guides/language.rst:206
+msgid "First compile your newly edited language file(s)::"
+msgstr ""
+
+#: ../../src/doc/guides/language.rst:210
+msgid ""
+"Then delete the old documentation (if it exists) and rebuild using your "
+"language::"
+msgstr ""
+
+#: ../../src/doc/guides/language.rst:215
+msgid ""
+"Note that the ``build_sphinx`` command doesn't have a ``--locale`` (or "
+"``-l``) option, so the language is set by a temporary environment variable."
+msgstr ""
+
+#: ../../src/doc/guides/language.rst:217
+msgid ""
+"Finally you can view the translated documentation by using a web browser to "
+"read the file ``doc/fr/html/index.html``."
+msgstr ""
+
+#: ../../src/doc/guides/language.rst:219
+msgid ""
+"As before, please make sure you send your translation to jim@jim-"
+"easterbrook.me.uk so other pywws users can benefit from your work."
+msgstr ""
+
+#: ../../src/doc/guides/livelogging.rst:20
+msgid "How to set up 'live' logging with pywws"
+msgstr ""
+
+#: ../../src/doc/guides/livelogging.rst:36
+msgid ""
+"If you have previously been using :py:mod:`pywws.Hourly` then disable your "
+"'cron' job (or whatever else you use to run it) so it no longer runs. You "
+"should not run :py:mod:`pywws.Hourly` and :py:mod:`pywws.LiveLog` at the "
+"same time."
+msgstr ""
+
+#: ../../src/doc/guides/livelogging.rst:39
+msgid ""
+"Try running :py:mod:`pywws.LiveLog` from the command line, with a high level"
+" of verbosity so you can see what's happening. Use the ``pywws-livelog`` "
+"command to run :py:mod:`pywws.LiveLog`::"
+msgstr ""
+
+#: ../../src/doc/guides/livelogging.rst:44
+msgid ""
+"Within five minutes (assuming you have set a 5 minute logging interval) you "
+"should see a 'live_data new ptr' message, followed by fetching any new data "
+"from the weather station and processing it. Let :py:mod:`pywws.LiveLog` run "
+"for a minute or two longer, then kill the process by typing '<Ctrl>C'."
+msgstr ""
+
+#: ../../src/doc/guides/livelogging.rst:47
+msgid "the ``pywws-livelog`` command replaced ``scripts/pywws-livelog.py``."
+msgstr ""
+
+#: ../../src/doc/guides/livelogging.rst:76
+msgid ""
+"In weather.ini you should have a ``[live]`` section similar to the "
+"following::"
+msgstr ""
+
+#: ../../src/doc/guides/livelogging.rst:83
+msgid ""
+"This section specifies what pywws should do every time it gets a new reading"
+" from the weather station, i.e. every 48 seconds. The ``services`` entry is "
+"a list of online weather services to upload data to, e.g. "
+"``['underground_rf']``. The ``plot`` and ``text`` entries are lists of "
+"template files for plots and text files to be processed and, optionally, "
+"uploaded to your web site. You should probably leave all of these blank "
+"except for ``services``."
+msgstr ""
+
+#: ../../src/doc/guides/livelogging.rst:88
+msgid ""
+"If you use YoWindow (http://yowindow.com/) you can add an entry to the "
+"``[live]`` section to specify your YoWindow file, e.g.::"
+msgstr ""
+
+#: ../../src/doc/guides/livelogging.rst:95
+msgid ""
+"Note the use of the ``'L'`` flag -- this tells pywws to copy the template "
+"result to your \"local files\" directory instead of uploading it to your ftp"
+" site."
+msgstr ""
+
+#: ../../src/doc/guides/livelogging.rst:97
+msgid ""
+"If you don't already have them, create four more sections in your "
+"weather.ini file: ``[logged]``, ``[hourly]``, ``[12 hourly]`` and "
+"``[daily]``. These sections should have similar entries to the ``[live]`` "
+"section, and specify what to do every time data is logged (5 to 30 minutes, "
+"depending on your logging interval), every hour, twice daily and once per "
+"day. Add the names of your template files to the appropriate entries, for "
+"example::"
+msgstr ""
+
+#: ../../src/doc/guides/livelogging.rst:133
+#: ../../src/doc/guides/weather_ini.rst:140
+msgid ""
+"added a ``'yowindow.xml'`` template. Previously yowindow files were "
+"generated by a separate module, invoked by a ``yowindow`` entry in the "
+"``[live]`` section. This older syntax still works, but is deprecated."
+msgstr ""
+
+#: ../../src/doc/guides/livelogging.rst:139
+msgid "Asynchronous uploads"
+msgstr ""
+
+#: ../../src/doc/guides/livelogging.rst:143
+msgid ""
+"Uploading data to web sites or 'services' can sometimes take a long time, "
+"particularly if a site has gone off line and the upload times out. In normal"
+" operation pywws waits until all uploads have been processed before fetching"
+" any more data from the weather station. This can lead to data sometimes "
+"being missed."
+msgstr ""
+
+#: ../../src/doc/guides/livelogging.rst:147
+msgid ""
+"The ``asynchronous`` item in the ``[config]`` section of weather.ini can be "
+"set to ``True`` to tell :py:mod:`pywws.LiveLog` to do these uploads in a "
+"separate thread."
+msgstr ""
+
+#: ../../src/doc/guides/livelogging.rst:150
+msgid "Run in the background"
+msgstr ""
+
+#: ../../src/doc/guides/livelogging.rst:154
+msgid ""
+"In order to have :py:mod:`pywws.LiveLog` carry on running after you finish "
+"using your computer it needs to be run as a \"background job\". On most "
+"Linux / UNIX systems you can do this by putting an ampersand ('&') at the "
+"end of the command line. Running a job in the background like this doesn't "
+"always work as expected: the job may suspend when you log out. It's much "
+"better to run as a proper UNIX 'daemon' process."
+msgstr ""
+
+#: ../../src/doc/guides/livelogging.rst:159
+msgid ""
+"The :py:mod:`pywws.livelogdaemon` program does this, if you have the "
+"`python-daemon <https://pypi.python.org/pypi/python-daemon/>`_ library "
+"installed::"
+msgstr ""
+
+#: ../../src/doc/guides/livelogging.rst:163
+msgid "Note that the log file is a required parameter, not an option."
+msgstr ""
+
+#: ../../src/doc/guides/livelogging.rst:166
+msgid "Automatic restarting"
+msgstr ""
+
+#: ../../src/doc/guides/livelogging.rst:168
+msgid ""
+"There are various ways of configuring a Linux system to start a program when"
+" the machine boots up. Typically these involve putting a file in "
+"``/etc/init.d/``, which requires root privileges. A slightly harder problem "
+"is ensuring a program restarts if it crashes. My solution to both problems "
+"is to run the following script from cron, several times an hour. ::"
+msgstr ""
+
+#: ../../src/doc/guides/livelogging.rst:198
+msgid ""
+"The process id of the daemon is stored in ``pidfile``. If the process is "
+"running, the script does nothing. If the process has crashed, it emails the "
+"last 40 lines of the log file to me (using a script that creates a message "
+"and passes it to sendmail) and then restarts :py:mod:`pywws.livelogdaemon`. "
+"You'll need to edit this quite a lot to suit your file locations and so on, "
+"but it gives some idea of what to do."
+msgstr ""
+
+#: ../../src/doc/guides/twitter.rst:20
+msgid "How to configure pywws to post messages to Twitter"
+msgstr ""
+
+#: ../../src/doc/guides/twitter.rst:23
+msgid "Install dependencies"
+msgstr ""
+
+#: ../../src/doc/guides/twitter.rst:25
+msgid ""
+"Posting to Twitter requires some extra software. See "
+":doc:`../essentials/dependencies` - :ref:`dependencies-twitter`."
+msgstr ""
+
+#: ../../src/doc/guides/twitter.rst:29
+msgid "Create a Twitter account"
+msgstr ""
+
+#: ../../src/doc/guides/twitter.rst:31
+msgid ""
+"You could post weather updates to your 'normal' Twitter account, but I think"
+" it's better to have a separate account just for weather reports. This could"
+" be useful to someone who lives in your area, but doesn't want to know what "
+"you had for breakfast."
+msgstr ""
+
+#: ../../src/doc/guides/twitter.rst:35
+msgid "Authorise pywws to post to your Twitter account"
+msgstr "Sta pywws toe berichten te plaatsen op je Twitter account. "
+
+#: ../../src/doc/guides/twitter.rst:37
+msgid ""
+"If you run pywws on a low power device such as a router, you may find it "
+"easier to run this authorisation step on another computer, as long as it has"
+" ``python-oauth2`` installed. Use an empty 'data' directory -- a "
+"``weather.ini`` file will be created whose contents can be copied into your "
+"real ``weather.ini`` file using any text editor."
+msgstr ""
+
+#: ../../src/doc/guides/twitter.rst:40
+msgid ""
+"Make sure no other pywws software is running, then run "
+":py:mod:`~pywws.TwitterAuth`::"
+msgstr ""
+
+#: ../../src/doc/guides/twitter.rst:44
+msgid "(Replace ``~/weather/data`` with your data directory.)"
+msgstr ""
+
+#: ../../src/doc/guides/twitter.rst:46
+msgid ""
+"This will open a web browser window (or give you a URL to copy to your web "
+"browser) where you can log in to your Twitter account and authorise pywws to"
+" post. Your web browser will then show a 7 digit number which you need to "
+"copy to the :py:mod:`~pywws.TwitterAuth` program. If successful, your "
+"``weather.ini`` file will now have a ``[twitter]`` section with ``secret`` "
+"and ``key`` entries. (Don't disclose these to anyone else.)"
+msgstr ""
+
+#: ../../src/doc/guides/twitter.rst:52
+msgid "Add location data (optional)"
+msgstr ""
+
+#: ../../src/doc/guides/twitter.rst:54
+msgid ""
+"Edit your ``weather.ini`` file and add ``latitude`` and ``longitude`` "
+"entries to the ``[twitter]`` section. For example::"
+msgstr ""
+
+#: ../../src/doc/guides/twitter.rst:64
+msgid "Create a template"
+msgstr ""
+
+#: ../../src/doc/guides/twitter.rst:66
+msgid ""
+"Twitter messages are generated using a template, just like creating files to"
+" upload to a website. Copy the example template 'tweet.txt' to your template"
+" directory, then test it::"
+msgstr ""
+
+#: ../../src/doc/guides/twitter.rst:72
+msgid ""
+"(Replace ``~/weather/data`` and ``~/weather/templates`` with your data and "
+"template directories.) If you need to change the template (e.g. to change "
+"the units or language used) you can edit it now or later."
+msgstr ""
+
+#: ../../src/doc/guides/twitter.rst:76
+msgid "Post your first weather Tweet"
+msgstr ""
+
+#: ../../src/doc/guides/twitter.rst:78
+msgid "Now everything is prepared for :py:mod:`~pywws.ToTwitter` to be run::"
+msgstr ""
+
+#: ../../src/doc/guides/twitter.rst:82
+msgid ""
+"If this works, your new Twitter account will have posted its first weather "
+"report. (You should delete the tweet.txt file now.)"
+msgstr ""
+
+#: ../../src/doc/guides/twitter.rst:86
+msgid "Add Twitter updates to your hourly tasks"
+msgstr ""
+
+#: ../../src/doc/guides/twitter.rst:88
+msgid ""
+"Edit your ``weather.ini`` file and edit the ``[hourly]`` section. For "
+"example::"
+msgstr ""
+
+#: ../../src/doc/guides/twitter.rst:96
+msgid ""
+"Note the use of the ``'T'`` flag -- this tells pywws to tweet the template "
+"result instead of uploading it to your ftp site."
+msgstr ""
+
+#: ../../src/doc/guides/twitter.rst:98
+msgid ""
+"You could change the ``[logged]``, ``[12 hourly]`` or ``[daily]`` sections "
+"instead, but I think ``[hourly]`` is most appropriate for Twitter updates."
+msgstr ""
+
+#: ../../src/doc/guides/twitter.rst:106
+msgid "Include an image in your tweet"
+msgstr ""
+
+#: ../../src/doc/guides/twitter.rst:110
+msgid ""
+"You can add an image to your tweets by specifying an image file location in "
+"the tweet template. Make the first line of the tweet ``media path`` where "
+"``path`` is the absolute location of the file. The \"tweet_media.txt\" "
+"example template shows how to do this."
+msgstr ""
+
+#: ../../src/doc/guides/twitter.rst:114
+msgid ""
+"The image could be from a web cam, or for a weather forecast it could be an "
+"icon representing the forecast. To add a weather graph you need to make sure"
+" the graph is drawn before the tweet is sent. I do this by using two ``[cron"
+" xxx]`` sections in weather.ini::"
+msgstr ""
+
+#: ../../src/doc/guides/weather_ini.rst:20
+msgid "weather.ini - configuration file format"
+msgstr ""
+
+#: ../../src/doc/guides/weather_ini.rst:22
+msgid ""
+"Nearly all configuration of pywws is via a single file in the data "
+"directory: weather.ini. This file has a structure similar to that of "
+"Microsoft Windows INI files. It is divided into \"sections\", each of which "
+"has a number of \"name = value\" entries. The order in which sections appear"
+" is not important."
+msgstr ""
+
+#: ../../src/doc/guides/weather_ini.rst:28
+msgid ""
+"Any plain text editor can be used to do edit the file. (Don't try to edit it"
+" while any other pywws software is running.) In many cases pywws will "
+"initialise the entries to sensible values."
+msgstr ""
+
+#: ../../src/doc/guides/weather_ini.rst:32
+msgid ""
+"Another file, status.ini, is used to store some information that pywws uses "
+"internally. It is described at the end of this document. In normal use you "
+"should not need to edit it."
+msgstr ""
+
+#: ../../src/doc/guides/weather_ini.rst:36
+msgid "The following sections are currently in use:"
+msgstr ""
+
+#: ../../src/doc/guides/weather_ini.rst:38
+msgid "config: miscellaneous system configuration."
+msgstr ""
+
+#: ../../src/doc/guides/weather_ini.rst:39
+msgid "paths: directories in which templates etc. are stored."
+msgstr ""
+
+#: ../../src/doc/guides/weather_ini.rst:40
+msgid "live: tasks to be done every 48 seconds."
+msgstr ""
+
+#: ../../src/doc/guides/weather_ini.rst:41
+msgid "logged: tasks to be done every time the station logs a data record."
+msgstr ""
+
+#: ../../src/doc/guides/weather_ini.rst:42
+msgid "cron: tasks to be done at a particular time or date."
+msgstr ""
+
+#: ../../src/doc/guides/weather_ini.rst:43
+msgid "hourly: tasks to be done every hour."
+msgstr ""
+
+#: ../../src/doc/guides/weather_ini.rst:44
+msgid "12 hourly: tasks to be done every 12 hours."
+msgstr ""
+
+#: ../../src/doc/guides/weather_ini.rst:45
+msgid "daily: tasks to be done every day."
+msgstr ""
+
+#: ../../src/doc/guides/weather_ini.rst:46
+msgid "ftp: configuration of uploading to a website."
+msgstr ""
+
+#: ../../src/doc/guides/weather_ini.rst:47
+msgid "twitter: configuration of posting to Twitter."
+msgstr ""
+
+#: ../../src/doc/guides/weather_ini.rst:48
+msgid ""
+"underground, metoffice, temperaturnu etc: configuration of posting to "
+"'services'."
+msgstr ""
+
+#: ../../src/doc/guides/weather_ini.rst:51
+msgid "config: miscellaneous system configuration"
+msgstr ""
+
+#: ../../src/doc/guides/weather_ini.rst:68
+msgid ""
+"``ws type`` is the \"class\" of weather station. It should be set to "
+"``1080`` for most weather stations, or ``3080`` if your station console "
+"displays solar illuminance."
+msgstr ""
+
+#: ../../src/doc/guides/weather_ini.rst:70
+msgid ""
+"``day end hour`` is the end of the \"`meteorological day "
+"<http://en.wikipedia.org/wiki/Meteorological_day>`_\", in local time without"
+" daylight savings time. Typical values are 21, 9, or 24. You must update all"
+" your stored data by running :py:mod:`pywws.Reprocess` after you change this"
+" value."
+msgstr ""
+
+#: ../../src/doc/guides/weather_ini.rst:73
+msgid ""
+"``pressure offset`` is the difference between absolute and relative (sea "
+"level) air pressure. The initial value is copied from the weather station, "
+"assuming you have set it up to display the correct relative pressure, but "
+"you can adjust the value in weather.ini to calibrate your station. You must "
+"update all your stored data by running :py:mod:`pywws.Reprocess` after you "
+"change this value."
+msgstr ""
+
+#: ../../src/doc/guides/weather_ini.rst:81
+msgid ""
+"``gnuplot encoding`` is the text encoding used when plotting graphs. The "
+"default value of ``iso_8859_1`` allows the degree symbol, which is useful in"
+" a weather application! Other values might be needed if your language "
+"includes accented characters. The possible values depend on your gnuplot "
+"installation so some experimentation may be needed."
+msgstr ""
+
+#: ../../src/doc/guides/weather_ini.rst:83
+msgid ""
+"``template encoding`` is the text encoding used for templates. The default "
+"value is ``iso-8859-1``, which is the encoding used in the example "
+"templates. If you create templates with a different character set, you "
+"should change this value to match your templates."
+msgstr ""
+
+#: ../../src/doc/guides/weather_ini.rst:87
+msgid ""
+"``language`` is used to localise pywws. It's optional, as pywws usually uses"
+" the computer's default language as set by the LANG environment variable. "
+"The available languages are those in the ``translations`` subdirectory of "
+"your pywws installation. If you set any other language, pywws will fall back"
+" to using English."
+msgstr ""
+
+#: ../../src/doc/guides/weather_ini.rst:89
+msgid ""
+"``logdata sync`` sets the quality of synchronisation used by "
+":doc:`../api/pywws.LogData`. Set it to 0 for fast & inaccurate or 1 for "
+"slower but precise."
+msgstr ""
+
+#: ../../src/doc/guides/weather_ini.rst:91
+msgid ""
+"``rain day threshold`` is the amount of rain (in mm) that has to fall in one"
+" day for it to qualify as a rainy day in the monthly summary data. You must "
+"update all your stored data by running :py:mod:`pywws.Reprocess` after you "
+"change this value."
+msgstr ""
+
+#: ../../src/doc/guides/weather_ini.rst:94
+msgid ""
+"``asynchrouous`` controls the use of a separate upload thread in "
+":py:mod:`pywws.LiveLog`."
+msgstr ""
+
+#: ../../src/doc/guides/weather_ini.rst:97
+msgid ""
+"``usb activity margin`` controls the algorithm that avoids the \"USB "
+"lockup\" problem that affects some stations. It sets the number of seconds "
+"either side of expected station activity (receiving a reading from outside "
+"or logging a reading) that pywws does not get data from the station. If your"
+" station is not affected by the USB lockup problem you can set ``usb "
+"activity margin`` to 0.0."
+msgstr ""
+
+#: ../../src/doc/guides/weather_ini.rst:102
+msgid ""
+"``gnuplot version`` tells :py:mod:`pywws.Plot` and :py:mod:`pywws.WindRose` "
+"what version of gnuplot is installed on your computer. This allows them to "
+"use version-specific features to give improved plot quality."
+msgstr ""
+
+#: ../../src/doc/guides/weather_ini.rst:106
+msgid ""
+"``frequent writes`` tells :py:mod:`pywws.Tasks` to save weather data and "
+"status to file every time there is new logged data. The default is to save "
+"the files every hour, to reduce \"wear\" on solid state memory such as the "
+"SD cards used with Raspberry Pi computers. If your weather data directory is"
+" stored on a conventional disc drive you can set ``frequent writes`` to "
+"``True``."
+msgstr ""
+
+#: ../../src/doc/guides/weather_ini.rst:112
+msgid "paths: directories in which templates etc. are stored"
+msgstr ""
+
+#: ../../src/doc/guides/weather_ini.rst:122
+msgid ""
+"These entries specify where your text templates and graph templates are "
+"stored, where temporary files should be created, where template output (that"
+" is not uploaded) should be put, and (if you have one) the location of your "
+"calibration module."
+msgstr ""
+
+#: ../../src/doc/guides/weather_ini.rst:125
+msgid "live: tasks to be done every 48 seconds"
+msgstr ""
+
+#: ../../src/doc/guides/weather_ini.rst:133
+msgid ""
+"This section specifies tasks that are to be carried out for every data "
+"sample during 'live logging', i.e. every 48 seconds."
+msgstr ""
+
+#: ../../src/doc/guides/weather_ini.rst:135
+msgid ""
+"``services`` is a list of 'services' to upload data to. Each one listed must"
+" have a configuration file in ``pywws/services/``. See "
+":doc:`../api/pywws.toservice` for more detail. pywws will automatically "
+"limit the frequency of service uploads according to each service's "
+"specification."
+msgstr ""
+
+#: ../../src/doc/guides/weather_ini.rst:138
+#: ../../src/doc/guides/weather_ini.rst:158
+#: ../../src/doc/guides/weather_ini.rst:221
+#: ../../src/doc/guides/weather_ini.rst:242
+#: ../../src/doc/guides/weather_ini.rst:258
+msgid ""
+"``text`` and ``plot`` are lists of text and plot templates to be processed "
+"and, optionally, uploaded to your website."
+msgstr ""
+
+#: ../../src/doc/guides/weather_ini.rst:146
+msgid "logged: tasks to be done every time the station logs a data record"
+msgstr ""
+
+#: ../../src/doc/guides/weather_ini.rst:154
+msgid ""
+"This section specifies tasks that are to be carried out every time a data "
+"record is logged when 'live logging' or every time an hourly cron job is "
+"run."
+msgstr ""
+
+#: ../../src/doc/guides/weather_ini.rst:156
+#: ../../src/doc/guides/weather_ini.rst:219
+#: ../../src/doc/guides/weather_ini.rst:240
+#: ../../src/doc/guides/weather_ini.rst:256
+msgid ""
+"``services`` is a list of 'services' to upload data to. Each one listed must"
+" have a configuration file in ``pywws/services/``. See "
+":doc:`../api/pywws.toservice` for more detail."
+msgstr ""
+
+#: ../../src/doc/guides/weather_ini.rst:161
+msgid "cron: tasks to be done at a particular time or date"
+msgstr ""
+
+#: ../../src/doc/guides/weather_ini.rst:198
+msgid ""
+"``[cron name]`` sections provide a very flexible way to specify tasks to be "
+"done at a particular time and/or date. ``name`` can be anything you like, "
+"but each ``[cron name]`` section must have a unique name."
+msgstr ""
+
+#: ../../src/doc/guides/weather_ini.rst:201
+msgid ""
+"To use ``[cron name]`` sections you need to install the \"croniter\" "
+"package. See :doc:`../essentials/dependencies` for more detail."
+msgstr ""
+
+#: ../../src/doc/guides/weather_ini.rst:204
+msgid ""
+"``format`` specifies when the tasks should be done (in local time), in the "
+"usual crontab format. (See ``man 5 crontab`` on any Linux computer.) "
+"Processing is not done exactly on the minute, but when the next live or "
+"logged data arrives."
+msgstr ""
+
+#: ../../src/doc/guides/weather_ini.rst:209
+msgid "hourly: tasks to be done every hour"
+msgstr ""
+
+#: ../../src/doc/guides/weather_ini.rst:217
+msgid ""
+"This section specifies tasks that are to be carried out every hour when "
+"'live logging' or running an hourly cron job."
+msgstr ""
+
+#: ../../src/doc/guides/weather_ini.rst:229
+msgid "12 hourly: tasks to be done every 12 hours"
+msgstr ""
+
+#: ../../src/doc/guides/weather_ini.rst:237
+msgid ""
+"This section specifies tasks that are to be carried out every 12 hours when "
+"'live logging' or running an hourly cron job. Use it for things that don't "
+"change very often, such as monthly graphs. The tasks are done at your day "
+"end hour, and 12 hours later."
+msgstr ""
+
+#: ../../src/doc/guides/weather_ini.rst:245
+msgid "daily: tasks to be done every 24 hours"
+msgstr ""
+
+#: ../../src/doc/guides/weather_ini.rst:253
+msgid ""
+"This section specifies tasks that are to be carried out every day when 'live"
+" logging' or running an hourly cron job. Use it for things that don't change"
+" very often, such as monthly or yearly graphs. The tasks are done at your "
+"day end hour."
+msgstr ""
+
+#: ../../src/doc/guides/weather_ini.rst:261
+msgid "ftp: configuration of uploading to a website"
+msgstr ""
+
+#: ../../src/doc/guides/weather_ini.rst:273
+msgid ""
+"These entries provide details of your website (or local directory) where "
+"processed text files and graph images should be transferred to."
+msgstr ""
+
+#: ../../src/doc/guides/weather_ini.rst:275
+msgid ""
+"``local site`` specifies whether the files should be copied to a local "
+"directory or sent to a remote site. You may want to set this if you run your"
+" web server on the same machine as you are running pywws on."
+msgstr ""
+
+#: ../../src/doc/guides/weather_ini.rst:277
+msgid ""
+"``secure`` specifies whether to transfer files using SFTP (secure FTP) "
+"instead of the more common FTP. Your web site provider should be able to "
+"tell you if you can use SFTP. Note that you may need to change the ``port`` "
+"value when you change to or from secure mode."
+msgstr ""
+
+#: ../../src/doc/guides/weather_ini.rst:280
+msgid "``site`` is the web address of the FTP site to transfer files to."
+msgstr ""
+
+#: ../../src/doc/guides/weather_ini.rst:282
+msgid ""
+"``user`` and ``password`` are the FTP site login details. Your web site "
+"provider should have provided them to you."
+msgstr ""
+
+#: ../../src/doc/guides/weather_ini.rst:284
+msgid ""
+"``directory`` specifies where on the FTP site (or local file system) the "
+"files should be stored. Note that you may have to experiment with this a bit"
+" - you might need a '/' character at the start of the path."
+msgstr ""
+
+#: ../../src/doc/guides/weather_ini.rst:286
+msgid ""
+"``port`` specifies the port number to use. Default value is 21 for FTP, 22 "
+"for SFTP. Your web site provider may tell you to use a different port "
+"number."
+msgstr ""
+
+#: ../../src/doc/guides/weather_ini.rst:292
+msgid "twitter: configuration of posting to Twitter"
+msgstr ""
+
+#: ../../src/doc/guides/weather_ini.rst:301
+msgid ""
+"``secret`` and ``key`` are authentication data provided by Twitter. To set "
+"them, run :py:mod:`pywws.TwitterAuth`."
+msgstr ""
+
+#: ../../src/doc/guides/weather_ini.rst:303
+msgid ""
+"``latitude`` and ``longitude`` are optional location data. If you include "
+"them then your weather station tweets will have location information so "
+"users can see where your weather station is. It might also enable people to "
+"find your weather station tweets if they search by location."
+msgstr ""
+
+#: ../../src/doc/guides/weather_ini.rst:306
+msgid ""
+"underground, metoffice, temperaturnu etc: configuration of posting to "
+"'services'"
+msgstr ""
+
+#: ../../src/doc/guides/weather_ini.rst:313
+msgid ""
+"These sections contain information such as passwords and station IDs needed "
+"to upload data to weather services. The names of the data entries depend on "
+"the service. The example shown is for Weather Underground."
+msgstr ""
+
+#: ../../src/doc/guides/weather_ini.rst:315
+msgid ""
+"``station`` is the PWS ID allocated to your weather station by Weather "
+"Underground."
+msgstr ""
+
+#: ../../src/doc/guides/weather_ini.rst:317
+msgid "``password`` is your Weather Underground password."
+msgstr ""
+
+#: ../../src/doc/guides/weather_ini.rst:320
+msgid "status.ini - status file format"
+msgstr ""
+
+#: ../../src/doc/guides/weather_ini.rst:322
+msgid ""
+"This file is written by pywws and should not (usually) be edited. The "
+"following sections are currently in use:"
+msgstr ""
+
+#: ../../src/doc/guides/weather_ini.rst:325
+msgid "fixed: values copied from the weather station's \"fixed block\"."
+msgstr ""
+
+#: ../../src/doc/guides/weather_ini.rst:326
+msgid "clock: synchronisation information."
+msgstr ""
+
+#: ../../src/doc/guides/weather_ini.rst:327
+msgid "last update: date and time of most recent task completions."
+msgstr ""
+
+#: ../../src/doc/guides/weather_ini.rst:330
+msgid "fixed: values copied from the weather station's \"fixed block\""
+msgstr ""
+
+#: ../../src/doc/guides/weather_ini.rst:336
+msgid ""
+"``fixed block`` is all the data stored in the first 256 bytes of the "
+"station's memory. This includes maximum and minimum values, alarm threshold "
+"settings, display units and so on."
+msgstr ""
+
+#: ../../src/doc/guides/weather_ini.rst:340
+msgid "clock: synchronisation information"
+msgstr ""
+
+#: ../../src/doc/guides/weather_ini.rst:347
+msgid ""
+"These values record the measured times when the station's clock logged some "
+"data and when the outside sensors transmitted a new set of data. They are "
+"used to try and prevent the USB interface crashing if the computer accesses "
+"the weather station at the same time as either of these events, a common "
+"problem with many EasyWeather compatible stations. The times are measured "
+"every 24 hours to allow for drift in the clocks."
+msgstr ""
+
+#: ../../src/doc/guides/weather_ini.rst:352
+msgid "last update: date and time of most recent task completions"
+msgstr ""
+
+#: ../../src/doc/guides/weather_ini.rst:364
+msgid ""
+"These record date & time of the last successful completion of various tasks."
+" They are used to allow unsuccessful tasks (e.g. network failure preventing "
+"uploads) to be retried after a few minutes."
+msgstr ""

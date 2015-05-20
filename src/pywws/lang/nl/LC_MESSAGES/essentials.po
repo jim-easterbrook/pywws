@@ -1,0 +1,395 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2008-15, Jim Easterbrook
+# This file is distributed under the same license as the pywws package.
+# 
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: pywws\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-05-20 08:01+0100\n"
+"PO-Revision-Date: 2015-05-20 07:04+0000\n"
+"Last-Translator: Jim Easterbrook <jim@jim-easterbrook.me.uk>\n"
+"Language-Team: Dutch (http://www.transifex.com/projects/p/pywws/language/nl/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: nl\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: ../../src/doc/essentials/CHANGELOG.rst:20
+msgid "Change Log"
+msgstr ""
+
+#: ../../src/doc/essentials/CHANGELOG.rst:26
+#: ../../src/doc/essentials/LICENCE.rst:26
+#: ../../src/doc/essentials/dependencies.rst:264
+msgid ""
+"Comments or questions? Please subscribe to the pywws mailing list "
+"http://groups.google.com/group/pywws and let us know."
+msgstr ""
+
+#: ../../src/doc/essentials/LICENCE.rst:20
+msgid "GNU General Public License"
+msgstr ""
+
+#: ../../src/doc/essentials/dependencies.rst:20
+msgid "Dependencies"
+msgstr ""
+
+#: ../../src/doc/essentials/dependencies.rst:22
+msgid ""
+"The list of other software that pywws depends on looks frighteningly long at"
+" first glance. However, many of these packages won't be needed by most "
+"users. What you need depends on what you want to do with pywws. Remember, "
+"it's a \"kit of parts\" rather than a monolithic application."
+msgstr ""
+
+#: ../../src/doc/essentials/dependencies.rst:27
+msgid ""
+"Some of the requirements are Python packages that can be downloaded from the"
+" `Python Package Index (PyPI) <http://pypi.python.org/pypi>`_. I recommend "
+"using `pip <http://www.pip-installer.org/>`_ to install these."
+msgstr ""
+
+#: ../../src/doc/essentials/dependencies.rst:30
+msgid ""
+"You should be able to install the remaining dependencies using your "
+"operating system's package manager. This is a lot easier than downloading "
+"and compiling source files from the project websites. Note that some Linux "
+"distributions use different names for some of the packages, e.g. in Ubuntu, "
+"pyusb is called python-usb."
+msgstr ""
+
+#: ../../src/doc/essentials/dependencies.rst:34
+msgid ""
+"Note: some of these libraries may have their own dependencies that you may "
+"need to install. Follow the links to read more about each library's "
+"requirements."
+msgstr ""
+
+#: ../../src/doc/essentials/dependencies.rst:38
+msgid "Essential"
+msgstr ""
+
+#: ../../src/doc/essentials/dependencies.rst:40
+msgid "`Python <http://python.org/>`_ version 2.5 or higher"
+msgstr ""
+
+#: ../../src/doc/essentials/dependencies.rst:42
+msgid ""
+"Python 3 is supported, but some things might not work properly. If you find "
+"a problem with Python 3, please send a message to the `mailing list "
+"<http://groups.google.com/group/pywws>`_ or submit a `bug report on GitHub "
+"<https://github.com/jim-easterbrook/pywws/issues>`_."
+msgstr ""
+
+#: ../../src/doc/essentials/dependencies.rst:45
+msgid "`pip <http://www.pip-installer.org/>`_"
+msgstr "`pip <http://www.pip-installer.org/>`_"
+
+#: ../../src/doc/essentials/dependencies.rst:47
+msgid ""
+"You will probably be able to install pip with your system's package manager,"
+" where it may be called python-pip or python3-pip or something similar. If "
+"not, download and run the ``get-pip.py`` file from the pip web site. In "
+"either case you should immediately use pip to install the latest version of "
+"itself::"
+msgstr ""
+
+#: ../../src/doc/essentials/dependencies.rst:53
+msgid ""
+"Make sure you install the correct Python version's pip. If you want to "
+"install pywws for both Python 2 and Python 3 you will need pip2 and pip3."
+msgstr ""
+
+#: ../../src/doc/essentials/dependencies.rst:56
+msgid "`tzlocal <https://github.com/regebro/tzlocal>`_"
+msgstr ""
+
+#: ../../src/doc/essentials/dependencies.rst:58
+msgid ""
+"This is a handy little module that provides information on your local time "
+"zone. It's best installed with ``pip``::"
+msgstr ""
+
+#: ../../src/doc/essentials/dependencies.rst:66
+msgid "USB library"
+msgstr ""
+
+#: ../../src/doc/essentials/dependencies.rst:68
+msgid ""
+"To retrieve data from a weather station pywws needs a python library that "
+"allows it to communicate via USB. There is a variety of USB libraries that "
+"can be used. Not all of them are available on all computing platforms, which"
+" may restrict your choice."
+msgstr ""
+
+#: ../../src/doc/essentials/dependencies.rst:73
+msgid "Mac OS X"
+msgstr ""
+
+#: ../../src/doc/essentials/dependencies.rst:75
+msgid ""
+"On MacOS X the operating system's generic hid driver \"claims\" the weather "
+"station, which makes it very difficult to use any other USB interface. "
+"Unfortunately, you will need to download and compile hidapi yourself."
+msgstr ""
+
+#: ../../src/doc/essentials/dependencies.rst:78
+msgid "`hidapi <http://www.signal11.us/oss/hidapi/>`_"
+msgstr "`hidapi <http://www.signal11.us/oss/hidapi/>`_"
+
+#: ../../src/doc/essentials/dependencies.rst:79
+msgid ""
+"`ctypes <http://docs.python.org/2/library/ctypes.html>`_ (your package "
+"manager may know it as python-ctypes)"
+msgstr ""
+
+#: ../../src/doc/essentials/dependencies.rst:81
+msgid ""
+"If you can't install ctypes then you can try the Cython interface to hidapi "
+"instead:"
+msgstr ""
+
+#: ../../src/doc/essentials/dependencies.rst:83
+msgid "`cython-hidapi <https://github.com/gbishop/cython-hidapi>`_"
+msgstr "`cython-hidapi <https://github.com/gbishop/cython-hidapi>`_"
+
+#: ../../src/doc/essentials/dependencies.rst:84
+msgid ""
+"`cython <http://cython.org/>`_ (your package manager may know it as python-"
+"Cython)"
+msgstr ""
+
+#: ../../src/doc/essentials/dependencies.rst:87
+msgid "Other systems"
+msgstr ""
+
+#: ../../src/doc/essentials/dependencies.rst:89
+msgid ""
+"Other systems use a Python interface to the libusb system library. There is "
+"a choice of interface and library version - install the latest that is "
+"available for your computer."
+msgstr ""
+
+#: ../../src/doc/essentials/dependencies.rst:92
+msgid ""
+"`libusb <http://www.libusb.org/>`_ version 1.x (should be available from the"
+" package manager)"
+msgstr ""
+
+#: ../../src/doc/essentials/dependencies.rst:93
+msgid ""
+"`python-libusb1 <https://github.com/vpelletier/python-libusb1>`_ version 1.3"
+msgstr ""
+
+#: ../../src/doc/essentials/dependencies.rst:99
+#: ../../src/doc/essentials/dependencies.rst:181
+msgid "**or**"
+msgstr ""
+
+#: ../../src/doc/essentials/dependencies.rst:101
+msgid ""
+"`libusb <http://www.libusb.org/>`_ version 1.x or version 0.1 (should be "
+"available from the package manager)"
+msgstr ""
+
+#: ../../src/doc/essentials/dependencies.rst:102
+msgid "`PyUSB <http://walac.github.io/pyusb/>`_ version 1.0"
+msgstr ""
+
+#: ../../src/doc/essentials/dependencies.rst:108
+msgid ""
+"The ``--pre`` flag enables the installation of \"pre release\" versions, "
+"such as the current beta release (1.0.0b2) of pyusb."
+msgstr ""
+
+#: ../../src/doc/essentials/dependencies.rst:110
+msgid ""
+"If neither of these options works for you then you can use hidapi -- see the"
+" Mac OS X instructions above."
+msgstr ""
+
+#: ../../src/doc/essentials/dependencies.rst:112
+msgid "added ability to use python-libusb1 interface."
+msgstr ""
+
+#: ../../src/doc/essentials/dependencies.rst:116
+msgid "Flexible timed tasks"
+msgstr ""
+
+#: ../../src/doc/essentials/dependencies.rst:118
+msgid ""
+"The :py:mod:`pywws.Tasks` module can do tasks at particular times and/or "
+"dates. This requires the croniter library. (Simple hourly, daily or 'live' "
+"tasks don't need this library.)"
+msgstr ""
+
+#: ../../src/doc/essentials/dependencies.rst:122
+msgid "`croniter <https://pypi.python.org/pypi/croniter/>`_"
+msgstr ""
+
+#: ../../src/doc/essentials/dependencies.rst:129
+msgid "Running as a daemon"
+msgstr ""
+
+#: ../../src/doc/essentials/dependencies.rst:131
+msgid ""
+"The :py:mod:`pywws.livelogdaemon` program runs pywws live logging as a "
+"proper UNIX daemon process. It requires the python-daemon library:"
+msgstr ""
+
+#: ../../src/doc/essentials/dependencies.rst:134
+msgid "`python-daemon <https://pypi.python.org/pypi/python-daemon/>`_"
+msgstr "`python-daemon <https://pypi.python.org/pypi/python-daemon/>`_"
+
+#: ../../src/doc/essentials/dependencies.rst:141
+msgid "Graph drawing"
+msgstr ""
+
+#: ../../src/doc/essentials/dependencies.rst:143
+msgid ""
+"The :py:mod:`pywws.Plot` module uses gnuplot to draw graphs. If you want to "
+"produce graphs of weather data, e.g. to include in a web page, you need to "
+"install the gnuplot application:"
+msgstr ""
+
+#: ../../src/doc/essentials/dependencies.rst:146
+msgid ""
+"`gnuplot <http://www.gnuplot.info/>`_ v4.2 or higher (should be available "
+"from the package manager)"
+msgstr ""
+
+#: ../../src/doc/essentials/dependencies.rst:148
+msgid ""
+"After installing gnuplot you should edit weather.ini (see "
+":doc:`../guides/weather_ini`) and set the ``gnuplot version`` config item. "
+"Finding out the installed gnuplot version is easy::"
+msgstr ""
+
+#: ../../src/doc/essentials/dependencies.rst:154
+msgid "Secure website uploading (sftp)"
+msgstr ""
+
+#: ../../src/doc/essentials/dependencies.rst:156
+msgid ""
+"The :py:mod:`pywws.Upload` module can use \"ftp over ssh\" (sftp) to upload "
+"files to your web-site. Normal uploading just uses Python's standard "
+"modules, but if you want to use sftp you need to install these two modules:"
+msgstr ""
+
+#: ../../src/doc/essentials/dependencies.rst:159
+msgid "`paramiko <https://github.com/paramiko/paramiko>`_"
+msgstr "`paramiko <https://github.com/paramiko/paramiko>`_"
+
+#: ../../src/doc/essentials/dependencies.rst:160
+msgid "`pycrypto <http://www.dlitz.net/software/pycrypto/>`_"
+msgstr "`pycrypto <http://www.dlitz.net/software/pycrypto/>`_"
+
+#: ../../src/doc/essentials/dependencies.rst:169
+msgid "Twitter updates"
+msgstr ""
+
+#: ../../src/doc/essentials/dependencies.rst:171
+msgid ""
+"The :py:mod:`pywws.ToTwitter` module can be used to send weather status "
+"messages to Twitter. Posting to Twitter requires these modules:"
+msgstr ""
+
+#: ../../src/doc/essentials/dependencies.rst:174
+msgid ""
+"`python-twitter <https://github.com/bear/python-twitter>`_ v1.0 or higher"
+msgstr ""
+
+#: ../../src/doc/essentials/dependencies.rst:175
+#: ../../src/doc/essentials/dependencies.rst:184
+msgid "`python-oauth2 <https://github.com/simplegeo/python-oauth2>`_"
+msgstr "`python-oauth2 <https://github.com/simplegeo/python-oauth2>`_"
+
+#: ../../src/doc/essentials/dependencies.rst:183
+msgid "`tweepy <https://github.com/tweepy/tweepy>`_ v2.0 or higher"
+msgstr ""
+
+#: ../../src/doc/essentials/dependencies.rst:190
+msgid ""
+"reenabled use of ``tweepy`` library as an alternative to ``python-twitter``."
+" ``python-oauth2`` is still required by :py:mod:`pywws.TwitterAuth`."
+msgstr ""
+
+#: ../../src/doc/essentials/dependencies.rst:194
+msgid ""
+"pywws previously used the ``tweepy`` library instead of ``python-twitter`` "
+"and ``python-oauth2``."
+msgstr ""
+
+#: ../../src/doc/essentials/dependencies.rst:200
+msgid "MQTT"
+msgstr ""
+
+#: ../../src/doc/essentials/dependencies.rst:204
+msgid ""
+"The :py:mod:`pywws.toservice` module can be used to send weather data to an "
+"MQTT broker. This requires the paho-mqtt module:"
+msgstr ""
+
+#: ../../src/doc/essentials/dependencies.rst:207
+msgid "`paho-mqtt <https://pypi.python.org/pypi/paho-mqtt>`_"
+msgstr ""
+
+#: ../../src/doc/essentials/dependencies.rst:216
+msgid "To create new language translations"
+msgstr ""
+
+#: ../../src/doc/essentials/dependencies.rst:218
+msgid ""
+"pywws can be configured to use languages other than English, as described in"
+" :doc:`../guides/language`. The babel package is required to extract the "
+"strings to be translated and compile the translation files."
+msgstr ""
+
+#: ../../src/doc/essentials/dependencies.rst:221
+msgid "`babel <http://babel.pocoo.org/>`_"
+msgstr "`babel <http://babel.pocoo.org/>`_"
+
+#: ../../src/doc/essentials/dependencies.rst:227
+msgid "Translating the documentation also needs the sphinx-intl package."
+msgstr ""
+
+#: ../../src/doc/essentials/dependencies.rst:229
+msgid "`sphinx-intl <https://pypi.python.org/pypi/sphinx-intl>`_"
+msgstr ""
+
+#: ../../src/doc/essentials/dependencies.rst:235
+msgid ""
+"Copying files to or from Transifex is made easier with the transifex-client "
+"package."
+msgstr ""
+
+#: ../../src/doc/essentials/dependencies.rst:237
+msgid ""
+"`transifex-client "
+"<http://support.transifex.com/customer/portal/topics/440187-transifex-"
+"client>`_"
+msgstr ""
+
+#: ../../src/doc/essentials/dependencies.rst:243
+msgid "pywws previously used the gettext package."
+msgstr ""
+
+#: ../../src/doc/essentials/dependencies.rst:249
+msgid "To 'compile' the documentation"
+msgstr ""
+
+#: ../../src/doc/essentials/dependencies.rst:251
+msgid ""
+"The documentation of pywws is written in \"ReStructured text\". A program "
+"called Sphinx is used to convert this easy to write format into HTML for use"
+" with a web browser. If you'd like to create a local copy of the "
+"documentation (so you don't have to rely on the online version, or to test a"
+" translation you're working on) you need to install Sphinx."
+msgstr ""
+
+#: ../../src/doc/essentials/dependencies.rst:255
+msgid "`Sphinx <http://sphinx-doc.org/>`_"
+msgstr "`Sphinx <http://sphinx-doc.org/>`_"
