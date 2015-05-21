@@ -22,3 +22,5 @@ pywws Contributors
 The copywright to pywws and its documentation is jointly held by the following contributors.
 
 .. literalinclude:: ../contributors/contributors.txt
+
+.. include:: ../../CONTRIBUTING.rst
