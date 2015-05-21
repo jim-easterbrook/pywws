@@ -17,6 +17,11 @@ file_filter = src/pywws/lang/<lang>/LC_MESSAGES/api_index.po
 source_file = build/gettext/api_index.pot
 source_lang = en
 
+[pywws.copyright]
+file_filter = src/pywws/lang/<lang>/LC_MESSAGES/copyright.po
+source_file = build/gettext/copyright.pot
+source_lang = en
+
 [pywws.essentials]
 file_filter = src/pywws/lang/<lang>/LC_MESSAGES/essentials.po
 source_file = build/gettext/essentials.pot
