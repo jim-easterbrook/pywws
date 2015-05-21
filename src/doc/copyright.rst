@@ -19,4 +19,6 @@
 pywws Contributors
 ==================
 
-.. literalinclude:: ../../contributors/contributors.txt
+The copywright to pywws and its documentation is jointly held by the following contributors.
+
+.. literalinclude:: ../contributors/contributors.txt
