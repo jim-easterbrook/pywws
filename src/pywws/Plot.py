@@ -563,9 +563,14 @@ class BasePlotter(object):
             if not self.x_hi:
                 self.x_hi = datetime.utcnow()    # only if no hourly data
             self.x_hi += Local.utcoffset(self.x_hi)
-            # set end of graph to start of the next hour after last item
-            self.x_hi += timedelta(minutes=55)
-            self.x_hi = self.x_hi.replace(minute=0, second=0)
+            if self.duration < timedelta(hours=6):
+                # set end of graph to start of the next minute after last item
+                self.x_hi += timedelta(seconds=55)
+                self.x_hi = self.x_hi.replace(second=0)
+            else:
+                # set end of graph to start of the next hour after last item
+                self.x_hi += timedelta(minutes=55)
+                self.x_hi = self.x_hi.replace(minute=0, second=0)
             self.x_lo = self.x_hi - self.duration
         self.utcoffset = Local.utcoffset(self.x_hi)
         # open gnuplot command file
