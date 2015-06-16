@@ -2,7 +2,7 @@
 
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-14  Jim Easterbrook  jim@jim-easterbrook.me.uk
+# Copyright (C) 2008-15  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -80,12 +80,6 @@ graph
 This is the root element of the graph XML file. It does not have to be
 called "graph", but there must be exactly one root element.
 
-windrose
-^^^^^^^^
-
-A separate plot is drawn for each windrose element, but all share the
-same time period.
-
 start
 ^^^^^
 
@@ -148,9 +142,21 @@ find the best values.
 title
 ^^^^^
 
-Sets the overall title of the plots. A single line of text, for
-example: ``<title>Today's weather</title>``. This title appears at the
+Sets the overall title of the plots. A single line of text, for example:
+``<title>Today's wind direction</title>``. This title appears at the
 very top, outside any plot area.
+
+.. versionadded:: 15.06.0.dev1301
+   If the title contains any "%%" characters it will be used as a
+   strftime style format string for the datetime of the stop value. This
+   allows you to include the graph's date or time in the title, for
+   example: ``<title>Wind over 24 hours ending %%H:%%M (mph)</title>``
+
+windrose
+^^^^^^^^
+
+A separate plot is drawn for each windrose element, but all share the
+same time period.
 
 xcalc
 ^^^^^

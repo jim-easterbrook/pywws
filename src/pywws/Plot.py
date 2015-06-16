@@ -239,6 +239,11 @@ Sets the title of the graph. A single line of text, for example:
 ``<title>Today's weather</title>``. This title appears at the very top
 of the graph, outside any plot area.
 
+.. versionadded:: 15.06.0.dev1301
+   If the title contains any "%%" characters it will be used as a
+   strftime style format string for the datetime of the stop value. This
+   allows you to include the graph's date or time in the title.
+
 subplot
 ^^^^^^^
 
@@ -608,6 +613,10 @@ class BasePlotter(object):
         if title:
             if sys.version_info[0] < 3:
                 title = title.encode(self.encoding)
+            if '%' in title:
+                x_hi = (self.x_hi -
+                        self.utcoffset).replace(tzinfo=utc).astimezone(Local)
+                title = x_hi.strftime(title)
             title = 'title "%s"' % title
         of.write('set multiplot layout %d, %d %s\n' % (self.rows, self.cols, title))
         # do actual plots
