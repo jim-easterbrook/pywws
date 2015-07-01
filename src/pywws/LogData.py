@@ -167,7 +167,8 @@ class DataLogger(object):
                     duplicates.append(last_date)
                     saved_date = self.raw_data.before(saved_date)
                     saved_ptr = self.ws.dec_ptr(saved_ptr)
-            if data['delay'] is None or data['delay'] > 30:
+            if (data['delay'] is None or
+                    data['delay'] > max(fixed_block['read_period'] * 2, 35)):
                 self.logger.error('invalid data at %04x, %s',
                                   last_ptr, last_date.isoformat(' '))
                 last_date -= timedelta(minutes=fixed_block['read_period'])
