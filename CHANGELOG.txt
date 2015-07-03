@@ -16,6 +16,12 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
+Changes in v15.07.0:
+    1/ Can include multiple media in Twitter messages.
+    2/ Attempt to fix bug in wind rose axes labels.
+    3/ Enable inclusion of time & date in wind rose title.
+    4/ Various bug fixes and minor improvements.
+
 Changes in v15.01.0:
     1/ Added 'MQTT' service.
     2/ Added another USB library option.
