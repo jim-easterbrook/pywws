@@ -157,8 +157,7 @@ UK Met Office
 ^^^^^^^^^^^^^
 
 * Web site: http://wow.metoffice.gov.uk/
-* | Create account:
-  | https://register.metoffice.gov.uk/WaveRegistrationClient/public/newaccount.do?service=weatherobservations
+* Create account: https://register.metoffice.gov.uk/WaveRegistrationClient/public/newaccount.do?service=weatherobservations
 * API: http://wow.metoffice.gov.uk/support/dataformats#automatic
 * Example ``weather.ini`` section::
 
@@ -174,8 +173,8 @@ Open Weather Map
 ^^^^^^^^^^^^^^^^
 
 * Web site: http://openweathermap.org/
-* Create account: http://openweathermap.org/login
-* API: http://openweathermap.org/API
+* Create account: http://home.openweathermap.org/users/sign_up
+* API: http://openweathermap.org/stations#trans
 * Example ``weather.ini`` section::
 
     [openweathermap]
@@ -191,7 +190,7 @@ Open Weather Map
     services = ['openweathermap', 'underground']
 
 The default behaviour is to use your user name to identify the weather station.
-However, it's possible for a user to have more than one weather station, so there is an undocumented ``name`` parameter in the API that can be used to identify the station.
+However, it's possible for a user to have more than one weather station, so there is an optional ``name`` parameter in the API that can be used to identify the station.
 This appears as ``id`` in ``weather.ini``.
 Make sure you don't choose a name that is already in use.
 
@@ -244,6 +243,11 @@ Weather Underground "RapidFire" updates
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Weather Underground has a second upload URL for real time updates as little as 2.5 seconds apart.
 If you run pywws in 'live logging' mode (see :doc:`livelogging`) you can use this to send updates every 48 seconds, by adding 'underground_rf' to the ``[live]`` tasks section in ``weather.ini``::
+
+ [underground]
+ station = ABCDEFGH1
+ password = xxxxxxx
+ template = default
 
  [live]
  services = ['underground_rf']
