@@ -52,6 +52,7 @@ __doc__ %= __usage__ % ('python -m pywws.TestWeatherStation')
 
 import datetime
 import getopt
+import pprint
 import sys
 import time
 
@@ -119,7 +120,7 @@ def main(argv=None):
         return 3
     if decode:
         # dump entire fixed block
-        print ws.get_fixed_block()
+        pprint.pprint(ws.get_fixed_block())
         # dump a few selected items
         print "min -> temp_out ->", ws.get_fixed_block(['min', 'temp_out'])
         print "alarm -> hum_out ->", ws.get_fixed_block(['alarm', 'hum_out'])
@@ -146,7 +147,8 @@ def main(argv=None):
         for i in range(history_count):
             if decode:
                 data = ws.get_data(ptr)
-                print date, data
+                print date
+                pprint.pprint(data)
                 date = date - datetime.timedelta(minutes=data['delay'])
             else:
                 raw_dump(ptr, ws.get_raw_data(ptr))
