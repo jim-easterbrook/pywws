@@ -419,9 +419,10 @@ class weather_station(object):
         now = time.time()
         next_live = self._sensor_clock.before(now + live_interval)
         if next_live:
-            last_log = (next_live - live_interval) - (old_data['delay'] * 60.0)
+            now = next_live - live_interval
         else:
-            last_log = now - ((old_data['delay'] + 1) * 60.0)
+            now -= live_interval
+        last_log = now - (old_data['delay'] * 60.0)
         next_log = self._station_clock.before(last_log + log_interval)
         ptr_time = 0
         data_time = 0
@@ -436,8 +437,8 @@ class weather_station(object):
                 pause = self.min_pause
             if next_log:
                 pause = min(pause, next_log - advance)
-            else:
-                pause = min(pause, last_log + log_interval - advance)
+            elif old_data['delay'] >= read_period - 1:
+                pause = self.min_pause
             pause = max(pause, self.min_pause)
             self.logger.debug(
                 'delay %s, pause %g', str(old_data['delay']), pause)
@@ -504,7 +505,6 @@ class weather_station(object):
                         self._station_clock.invalidate()
                 else:
                     self.logger.warning('missed ptr change time')
-                    last_log -= live_interval
                 if read_period > new_data['delay']:
                     read_period = new_data['delay']
                     self.logger.warning('reset read period %d', read_period)
