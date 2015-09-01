@@ -1,6 +1,6 @@
 .. pywws - Python software for USB Wireless Weather Stations
    http://github.com/jim-easterbrook/pywws
-   Copyright (C) 2008-14  Jim Easterbrook  jim@jim-easterbrook.me.uk
+   Copyright (C) 2008-15  pywws contributors
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -46,6 +46,8 @@ The following sections are currently in use:
   * ftp: configuration of uploading to a website.
   * twitter: configuration of posting to Twitter.
   * underground, metoffice, temperaturnu etc: configuration of posting to 'services'.
+
+.. _weather_ini-config:
 
 config: miscellaneous system configuration
 ------------------------------------------
@@ -363,7 +365,3 @@ last update: date and time of most recent task completions
 
 These record date & time of the last successful completion of various tasks.
 They are used to allow unsuccessful tasks (e.g. network failure preventing uploads) to be retried after a few minutes.
-
-----
-
-Comments or questions? Please subscribe to the pywws mailing list http://groups.google.com/group/pywws and let us know.
