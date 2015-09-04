@@ -123,7 +123,24 @@ This leads to error messages like these:
 
 To avoid swamping the log files duplicate messages are not logged, so you cannot tell how long the network outage lasted from the log files.
 
-log extended
+Status
+------
+
+.. code-block:: none
+
+   2015-09-01 21:50:21:pywws.weather_station:status {'unknown': 0, 'invalid_wind_dir': 2048, 'lost_connection': 64, 'rain_overflow': 0}
+
+The raw weather station data includes some "status" bits.
+If any of these bits is non-zero when pywws starts, or the status changes value when pywws is running, the status value is logged.
+The most common problem is ``lost_connection``: the weather station console is not receiving data from the outside sensors.
+Contact is often restored a few minutes later, but if not you may need to reset your weather station console by taking its batteries out.
+The ``invalid_wind_dir`` bit indicates that the wind direction sensor value is missing or invalid.
+The ``rain_overflow`` bit is set when the rain gauge counter has reached its maximum value and gone back to zero.
+
+Please let me know if you ever get a non-zero value for ``unknown``, particularly if you are able to correlate it with some other event.
+There are 6 bits of data in the status byte whose function is not yet known.
+
+Log extended
 ------------
 
 .. code-block:: none
@@ -138,7 +155,7 @@ To avoid a clash the station delays logging by one minute.
 As the external readings are at 48 second intervals this avoids the problem until 16 minutes later (with the normal 5 minute logging interval) when another one minute delay is needed.
 Eventually the clocks drift apart and normal operation is resumed.
 
-rain reset
+Rain reset
 ----------
 
 .. code-block:: none
