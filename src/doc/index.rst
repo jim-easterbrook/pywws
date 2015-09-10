@@ -22,9 +22,9 @@
 .. include:: ../../README.rst
 
 Documentation is available in the following languages (non-English versions may not be complete or up to date):
-   * `English <../../en/>`_
-   * `Français <../../fr/>`_ -- translated by Jacques Desroches
-   * `Italiano <../../it/>`_ -- translated by Edoardo
+   * `English <http://pywws.readthedocs.org/en/>`_
+   * `Français <http://pywws.readthedocs.org/fr/>`_ -- translated by Jacques Desroches
+   * `Italiano <http://pywws.readthedocs.org/it/>`_ -- translated by Edoardo
 
 I have written this software to meet my needs, but have tried to make it adaptable to other people's requirements. You may want to edit some or all of the modules, or write some new ones, to get it to do exactly what you want. One of the reasons for using Python is that it makes such alterations so easy. Don't be afraid, just jump in and have a go.
 

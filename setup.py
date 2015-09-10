@@ -122,7 +122,7 @@ try:
     cmdclass['build_sphinx'] = BuildDoc
     command_options['build_sphinx'] = {
         'source_dir' : ('setup.py', 'src/doc'),
-        'build_dir'  : ('setup.py', 'doc/%s' % (lang)),
+        'build_dir'  : ('setup.py', 'doc'),
         'builder'    : ('setup.py', 'html'),
         }
     # extract strings for translation

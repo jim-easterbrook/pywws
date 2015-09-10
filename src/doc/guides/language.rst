@@ -1,6 +1,6 @@
 .. pywws - Python software for USB Wireless Weather Stations
    http://github.com/jim-easterbrook/pywws
-   Copyright (C) 2008-14  Jim Easterbrook  jim@jim-easterbrook.me.uk
+   Copyright (C) 2008-15  pywws contributors
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -192,6 +192,7 @@ Extract source strings
 
 Documentation strings are extracted using setup.py::
 
+   cd ~/weather/pywws
    python setup.py extract_messages_doc
 
 This creates several .pot files in the ``build/gettext/`` directory.
@@ -201,6 +202,7 @@ Create language files
 
 The sphinx-intl command is used to create or update the .po files::
 
+   cd ~/weather/pywws
    sphinx-intl update --locale-dir src/pywws/lang -p build/gettext -l fr
 
 Viewing your translated documentation
@@ -208,11 +210,12 @@ Viewing your translated documentation
 
 First delete the old documentation (if it exists) and then rebuild using your language::
 
-   rm -rf doc/fr
+   cd ~/weather/pywws
+   rm -rf doc
    LANG=fr python setup.py build_sphinx
 
 Note that the ``build_sphinx`` command doesn't have a ``--locale`` (or ``-l``) option, so the language is set by a temporary environment variable.
 
-Finally you can view the translated documentation by using a web browser to read the file ``doc/fr/html/index.html``.
+Finally you can view the translated documentation by using a web browser to read the file ``doc/html/index.html``.
 
 As before, please make sure you send your translation to jim@jim-easterbrook.me.uk so other pywws users can benefit from your work.

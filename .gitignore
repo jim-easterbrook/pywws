@@ -17,9 +17,7 @@ develop-eggs
 *~
 
 # Compiled documentation
-doc/en
-doc/fr
-doc/it
+doc
 src/doc/api/pywws.*.rst
 
 # Compiled language files

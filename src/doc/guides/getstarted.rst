@@ -111,7 +111,7 @@ For example, to compile the French documentation::
    sphinx-intl build --locale-dir src/pywws/lang -l fr
    LANG=fr python setup.py build_sphinx
 
-The compiled documentation should then be found at ``~/weather/pywws/doc/fr/html/index.html``.
+The compiled documentation should then be found at ``~/weather/pywws/doc/html/index.html``.
 See :doc:`language` for more detail.
 
 .. _test-weather-station:
