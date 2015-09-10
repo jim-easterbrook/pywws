@@ -29,8 +29,11 @@ The pywws project relies on users to provide these translations.
 The pywws documentation can also be translated into other languages.
 This is a lot more work, but could be very useful to potential users who do not read English very well.
 
-Using an existing language file
--------------------------------
+Using existing language files
+-----------------------------
+
+Program strings
+^^^^^^^^^^^^^^^
 
 There may already be a pywws translation for your preferred language.
 First you need to choose the appropriate two-letter code from the list at http://www.w3schools.com/tags/ref_language_codes.asp.
@@ -52,86 +55,101 @@ This should produce output something like this::
      'Rain at times, very unsettled' => 'Quelques précipitations, très perturbé'
 
 This shows that pywws is already able to generate French output, and that your installation is correctly configured.
-Now you can edit the language entry in your ``weather.ini`` file to use your language code.
+Now you can edit the ``language`` entry in your :ref:`weather.ini <weather_ini-config>` file to use your language code.
 
 If the above test shows no translations into your language then you need to create a new language file, as described below.
 
-Dependencies
-------------
+Documentation
+^^^^^^^^^^^^^
 
-As well as the pywws software you need to install the Babel python library (see :ref:`dependencies <dependencies-translations>`).
-This is used to convert the language file you create into code that is used when the pywws software is run.
-You also need to download and extract the pywws software instead of installing it with pip.
-See :doc:`getstarted`.
+If you have downloaded the pywws source files, or cloned the GitHub repository (see :ref:`how to get started with pywws <getstarted-download>`), you can compile a non-English copy of the documentation.
+This requires the `Sphinx <http://sphinx-doc.org/>`_ package, see :ref:`dependencies <dependencies-compile-documentation>`.
+
+First delete the old documentation (if it exists) and then recompile using your language::
+
+   cd ~/weather/pywws
+   rm -rf doc
+   LANG=fr python setup.py build_sphinx
+
+Note that the ``build_sphinx`` command doesn't have a ``--locale`` (or ``-l``) option, so the language is set by a temporary environment variable.
+
+You can view the translated documentation by using a web browser to read the file ``~/weather/pywws/doc/html/index.html``.
+
+Writing new language files
+--------------------------
+
+There are two ways to write new language files (or update existing ones) -- use the `Transifex <https://www.transifex.com/>`_ online system or use local files.
+Transifex is preferred as it allows several people to work on the same language, and makes your work instantly available to others.
+
+To test your translation you will need to have downloaded the pywws source files, or cloned the GitHub repository (see :ref:`how to get started with pywws <getstarted-download>`).
+You will also need to install the ``Babel`` package, see :ref:`dependencies <dependencies-translations>`.
 
 .. _using-transifex:
 
-Translating the easy way - the Transifex web site
--------------------------------------------------
+Using Transifex
+^^^^^^^^^^^^^^^
 
-`Transifex <https://www.transifex.com/>`_ is a web based system for coordinating teams of translators.
-It is free to use for open source projects such as pywws.
-In May 2014 I created a `pywws project <https://www.transifex.com/projects/p/pywws/>`_ on Transifex.
-If you'd like to use Transifex to help translate pywws, please create an account (it's free) and join the appropriate language team.
+If you'd like to use Transifex, please go to the `pywws Transifex project <https://www.transifex.com/projects/p/pywws/>`_, click on "help translate pywws" and create a free account.
 
 Visit the pywws project page on Transifex and click on your language, then click on the "resource" you want to translate.
 (``pywws`` contains the program strings used when running pywws, the others contain strings from the pywws documentation.)
-This opens a dialog where you can choose to download a file to work on or translate the strings online.
+This opens a dialog where you can choose to translate the strings online.
 Please read :ref:`translator-notes` before you start.
 
-When you've finished translating ``pywws`` select the "download for use" option and save the file to ``src/pywws/lang/fr/LC_MESSAGES/pywws.po`` (replace ``fr`` with your language code).
-Now you can :ref:`test-translation`.
-
-.. versionadded:: 14.05.dev1221
-   pywws now includes a config file for the ``transifex-client`` program (see :ref:`dependencies <dependencies-translations>`).
-   This simplifies the process of downloading files for testing (or uploading files you've been editing on your computer).
-
+When you have finished translating you should use the ``transifex-client`` program (see :ref:`dependencies <dependencies-translations>`) to download files for testing.
 For example, this command downloads any updated files for the French language::
    
+   cd ~/weather/pywws
    tx pull -l fr
 
-Translating the hard way - using local files
---------------------------------------------
+Now you are ready to :ref:`test-translation`.
+
+Using local files
+^^^^^^^^^^^^^^^^^
 
 If you prefer not to use the Transifex web site you can edit language files on your own computer.
-This is done in several stages, as follows.
+This is done in two stages, as follows.
 
 Extract source strings
-^^^^^^^^^^^^^^^^^^^^^^
+""""""""""""""""""""""
 
-Program messages are marked in the Python source with an underscore character.
-These strings are extracted using setup.py::
+Program messages are extracted using the ``Babel`` package::
 
+   cd ~/weather/pywws
    mkdir -p build/gettext
    python setup.py extract_messages
 
 This creates the file ``build/gettext/pywws.pot``.
 This is a "portable object template" file that contains the English language strings to be translated.
 
+The documentation strings are extracted using the ``Sphinx`` package::
+
+   cd ~/weather/pywws
+   python setup.py extract_messages_doc
+
+This creates several ``.pot`` files in the ``build/gettext/`` directory.
+
 Create language files
-^^^^^^^^^^^^^^^^^^^^^
+"""""""""""""""""""""
 
-The .pot files have headers that need to be initialised.
-This can be done manually, but the Babel library has an ``init_catalog`` command to simplify the process::
+The ``sphinx-intl`` command is used to convert the ``.pot`` files to language specific ``.po`` files::
 
-   python setup.py init_catalog --locale fr
+   cd ~/weather/pywws
+   sphinx-intl update --locale-dir src/pywws/lang -p build/gettext -l fr
 
-If a .po file for your language already exists, but needs updating with new source strings, you should use the ``update_catalog`` command instead::
-
-   python setup.py update_catalog --locale fr
-
-Now you can open the ``src/pywws/lang/fr/LC_MESSAGES/pywws.po`` file in your favourite text editor and start filling in the empty ``msgstr`` strings with your translation of the corresponding ``msgid`` string.
+Now you can open the ``.po`` files in ``src/pywws/lang/fr/LC_MESSAGES/`` with your favourite text editor and start filling in the empty ``msgstr`` strings with your translation of the corresponding ``msgid`` string.
 Please read :ref:`translator-notes` before you start.
 
 .. _test-translation:
 
-Test the pywws translation
---------------------------
+Test the pywws translations
+---------------------------
 
-After you've edited your language file it needs to be compiled so that pywws can use it.
-This is done with setup.py::
+The ``Babel`` package is used to compile program strings::
 
    python setup.py compile_catalog --locale fr
+
+(Replace ``fr`` with the code for the language you are testing.)
 
 After compilation you can test the translation::
 
@@ -139,7 +157,13 @@ After compilation you can test the translation::
    sudo python setup.py install
    python -m pywws.Localisation -t fr
 
-Don't forget to do this every time you edit a language file.
+``Sphinx`` is used to build the translated documentation::
+
+   cd ~/weather/pywws
+   rm -rf doc
+   LANG=fr python setup.py build_sphinx
+
+You can view the translated documentation by using a web browser to read the file ``~/weather/pywws/doc/html/index.html``.
 
 .. _translator-notes:
 
@@ -171,51 +195,4 @@ Send Jim the translation
 
 I'm sure you would like others to benefit from the work you've done in translating pywws.
 If you've been using Transifex then please send me an email (jim@jim-easterbrook.me.uk) to let me know there's a new translation available.
-Otherwise, please email me any .po files you create.
-Please include details of which version of pywws your work is based on -- the easiest way to do this is to include the value of ``_commit`` from the file ``src/pywws/__init__.py`` in your email.
-
-Translating the documentation
------------------------------
-
-The Sphinx program used to compile the pywws documentation has good support for translation into other languages, but the process is a bit complicated.
-I recommend reading `this overview <http://sphinx-doc.org/latest/intl.html>`_, but don't follow its instructions.
-I've tried to simplify the process, as described below.
-
-As before, the easiest way to contribute to the pywws documentation translations is via the Transifex web site (see :ref:`using-transifex`).
-You don't need to translate everything -- even a partial translation could be useful.
-Just let me know when you've done enough to be worth publishing.
-
-If you prefer not to use Transifex then please follow these instructions.
-
-Extract source strings
-^^^^^^^^^^^^^^^^^^^^^^
-
-Documentation strings are extracted using setup.py::
-
-   cd ~/weather/pywws
-   python setup.py extract_messages_doc
-
-This creates several .pot files in the ``build/gettext/`` directory.
-
-Create language files
-^^^^^^^^^^^^^^^^^^^^^
-
-The sphinx-intl command is used to create or update the .po files::
-
-   cd ~/weather/pywws
-   sphinx-intl update --locale-dir src/pywws/lang -p build/gettext -l fr
-
-Viewing your translated documentation
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-First delete the old documentation (if it exists) and then rebuild using your language::
-
-   cd ~/weather/pywws
-   rm -rf doc
-   LANG=fr python setup.py build_sphinx
-
-Note that the ``build_sphinx`` command doesn't have a ``--locale`` (or ``-l``) option, so the language is set by a temporary environment variable.
-
-Finally you can view the translated documentation by using a web browser to read the file ``doc/html/index.html``.
-
-As before, please make sure you send your translation to jim@jim-easterbrook.me.uk so other pywws users can benefit from your work.
+Otherwise, please email me any ``.po`` files you create.

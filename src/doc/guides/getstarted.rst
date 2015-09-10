@@ -44,6 +44,8 @@ Upgrading pywws is also a one line command::
 
 Now you are ready to :ref:`test-weather-station`.
 
+.. _getstarted-download:
+
 Download and extract
 ^^^^^^^^^^^^^^^^^^^^
 
