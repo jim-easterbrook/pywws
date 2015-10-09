@@ -68,6 +68,7 @@ from .Logger import ApplicationLogger
 class TweepyHandler(object):
     def __init__(self, key, secret, latitude, longitude):
         self.logger = logging.getLogger('pywws.ToTwitter')
+        self.logger.info('Using tweepy library')
         auth = tweepy.OAuthHandler(pct.consumer_key, pct.consumer_secret)
         auth.set_access_token(key, secret)
         self.api = tweepy.API(auth)
@@ -86,10 +87,13 @@ class TweepyHandler(object):
 
 class PythonTwitterHandler(object):
     def __init__(self, key, secret, latitude, longitude):
+        self.logger = logging.getLogger('pywws.ToTwitter')
+        self.logger.info('Using python-twitter library')
         self.api = twitter.Api(
             consumer_key=pct.consumer_key,
             consumer_secret=pct.consumer_secret,
-            access_token_key=key, access_token_secret=secret)
+            access_token_key=key, access_token_secret=secret,
+            timeout=30)
         if latitude is not None and longitude is not None:
             self.kwargs = {'latitude' : latitude, 'longitude' : longitude,
                            'display_coordinates' : True}
