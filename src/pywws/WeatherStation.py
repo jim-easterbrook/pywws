@@ -329,14 +329,6 @@ class DriftingClock(object):
         error = (now - self.clock) % self._real_period
         return now - error
 
-    def nearest(self, now):
-        if not self.clock:
-            return None
-        error = (now - self.clock) % self._real_period
-        if error > (self._real_period / 2.0):
-            error -= self._real_period
-        return now - error
-
     def avoid(self):
         if not self.clock:
             return 1000.0
@@ -480,7 +472,7 @@ class weather_station(object):
                     self.logger.warning('old data %s', str(old_data))
                     self.logger.warning('new data %s', str(new_data))
                     self._sensor_clock.invalidate()
-                next_live = self._sensor_clock.nearest(data_time)
+                next_live = self._sensor_clock.before(data_time + self.margin)
                 if next_live:
                     if not logged_only:
                         result = dict(new_data)
@@ -509,7 +501,7 @@ class weather_station(object):
                     read_period = new_data['delay']
                     self.logger.warning('reset read period %d', read_period)
                     log_interval = float(read_period * 60)
-                next_log = self._station_clock.nearest(ptr_time)
+                next_log = self._station_clock.before(ptr_time + self.margin)
                 if next_log:
                     result = dict(new_data)
                     result['idx'] = datetime.utcfromtimestamp(int(next_log))
