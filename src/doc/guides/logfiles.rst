@@ -168,6 +168,28 @@ The raw rainfall data from the outside sensors is the total number of times the 
 This number should only ever increase, so the :py:mod:`pywws.Process` module warns of any decrease in the value as it may indicate corrupted data that needs manually correcting.
 The logging message includes the UTC time stamp of the problem data to help you find it.
 
+Live data missed
+----------------
+
+.. code-block:: none
+   :linenos:
+
+   2015-10-30 04:48:19:pywws.ToService(underground_rf):1 records sent
+   2015-10-30 04:49:07:pywws.ToService(underground_rf):1 records sent
+   2015-10-30 04:49:56:pywws.weather_station:live_data missed
+   2015-10-30 04:50:44:pywws.ToService(underground_rf):1 records sent
+   2015-10-30 04:51:31:pywws.ToService(underground_rf):1 records sent
+
+Line 3 indicate that pywws failed to capture live data.
+
+There are two possible causes. One is that a new data record is identical to the previous one so pywws doesn't detect a change. This is unlikely to happen if you are receiving wind data properly.
+
+The more likely reason is that processing the previous record took so long that the next one arrived when pywws wasn't ready for it. "Processing" can include uploading to the Internet which is often prone to delays.  A solution to this is to set "asynchronous" to True in weather.ini. This uses a separate thread to do the uploading.
+
+You may run with higher verbosity to get more information.  The "pause" values should indicate how soon it's ready for the next data.
+
+Note that this is just an occasional missing "live" record though, so if it does not happen often you shouldn't worry too much about it.
+
 "Live log" synchronisation
 --------------------------
 
