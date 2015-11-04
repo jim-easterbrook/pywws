@@ -217,12 +217,14 @@ temperatur.nu
 * Example ``weather.ini`` section::
 
     [temperaturnu]
-    id = ???
-    town = ???
+    hash = ???
     template = default
 
     [logged]
     services = ['temperaturnu', 'underground']
+
+You receive the hash value from the temperatur.nu admins during sign
+up.  It looks like "d3b07384d113edec49eaa6238ad5ff00".
 
 Weather Underground
 ^^^^^^^^^^^^^^^^^^^
