@@ -1,0 +1,237 @@
+# Translations template for pywws.
+# Copyright (C) 2015 Jim Easterbrook
+# This file is distributed under the same license as the pywws project.
+# 
+# Translators:
+# Tech <tech2304@gmail.com>, 2015
+msgid ""
+msgstr ""
+"Project-Id-Version: pywws\n"
+"Report-Msgid-Bugs-To: jim@jim-easterbrook.me.uk\n"
+"POT-Creation-Date: 2015-09-10 11:50+0100\n"
+"PO-Revision-Date: 2015-11-06 22:53+0000\n"
+"Last-Translator: Tech <tech2304@gmail.com>\n"
+"Language-Team: Russian (http://www.transifex.com/jim-easterbrook/pywws/language/ru/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.0\n"
+"Language: ru\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);\n"
+
+#. Keep the "(%Z)" formatting string
+#: src/pywws/Plot.py:725
+msgid "Time (%Z)"
+msgstr "Время (%Z)"
+
+#: src/pywws/Plot.py:727
+msgid "Day"
+msgstr "День"
+
+#: src/pywws/Plot.py:729
+msgid "Date"
+msgstr "Дата"
+
+#: src/pywws/WindRose.py:366 src/pywws/conversions.py:162
+msgid "N"
+msgstr "С"
+
+#: src/pywws/WindRose.py:366 src/pywws/conversions.py:163
+msgid "E"
+msgstr "В"
+
+#: src/pywws/WindRose.py:366 src/pywws/conversions.py:164
+msgid "S"
+msgstr "Ю"
+
+#: src/pywws/WindRose.py:366 src/pywws/conversions.py:165
+msgid "W"
+msgstr "З"
+
+#: src/pywws/ZambrettiCore.py:29
+msgid "Settled fine"
+msgstr "Установилась хорошая"
+
+#: src/pywws/ZambrettiCore.py:30
+msgid "Fine weather"
+msgstr "Хорошая погода"
+
+#: src/pywws/ZambrettiCore.py:31
+msgid "Becoming fine"
+msgstr "Становится хорошей"
+
+#: src/pywws/ZambrettiCore.py:32
+msgid "Fine, becoming less settled"
+msgstr "Хорошая, становится менее стабильной"
+
+#: src/pywws/ZambrettiCore.py:33
+msgid "Fine, possible showers"
+msgstr "Хорошая, возможен дождь"
+
+#: src/pywws/ZambrettiCore.py:34
+msgid "Fairly fine, improving"
+msgstr "Довольно хорошая, улучшается"
+
+#: src/pywws/ZambrettiCore.py:35
+msgid "Fairly fine, possible showers early"
+msgstr "Довольно хорошая, утром возможны осадки"
+
+#: src/pywws/ZambrettiCore.py:36
+msgid "Fairly fine, showery later"
+msgstr "Довольно хорошая, позже возможен дождь"
+
+#: src/pywws/ZambrettiCore.py:37
+msgid "Showery early, improving"
+msgstr "Утром дождь, улучшается"
+
+#: src/pywws/ZambrettiCore.py:38
+msgid "Changeable, mending"
+msgstr "Переменчивая, улучшается"
+
+#: src/pywws/ZambrettiCore.py:39
+msgid "Fairly fine, showers likely"
+msgstr "Очень хорошая, вероятны осадки"
+
+#: src/pywws/ZambrettiCore.py:40
+msgid "Rather unsettled clearing later"
+msgstr "Нестабильная с прояснениями "
+
+#: src/pywws/ZambrettiCore.py:41
+msgid "Unsettled, probably improving"
+msgstr "Нестабильная, вероятно улучшение"
+
+#: src/pywws/ZambrettiCore.py:42
+msgid "Showery, bright intervals"
+msgstr "Дожди с интервалами"
+
+#: src/pywws/ZambrettiCore.py:43
+msgid "Showery, becoming less settled"
+msgstr "Дожди, ухудшение"
+
+#: src/pywws/ZambrettiCore.py:44
+msgid "Changeable, some rain"
+msgstr "Переменная, возможен дождь"
+
+#: src/pywws/ZambrettiCore.py:45
+msgid "Unsettled, short fine intervals"
+msgstr "Нестабильная с просветлениями"
+
+#: src/pywws/ZambrettiCore.py:46
+msgid "Unsettled, rain later"
+msgstr "Нестабильная, позже дождь"
+
+#: src/pywws/ZambrettiCore.py:47
+msgid "Unsettled, some rain"
+msgstr "Нестабильная, позже дождь"
+
+#: src/pywws/ZambrettiCore.py:48
+msgid "Mostly very unsettled"
+msgstr "Облачно неустойчива"
+
+#: src/pywws/ZambrettiCore.py:49
+msgid "Occasional rain, worsening"
+msgstr "Временами осадки"
+
+#: src/pywws/ZambrettiCore.py:50
+msgid "Rain at times, very unsettled"
+msgstr "Временами осадки, неустойчива"
+
+#: src/pywws/ZambrettiCore.py:51
+msgid "Rain at frequent intervals"
+msgstr "Дождь с частыми интервалами"
+
+#: src/pywws/ZambrettiCore.py:52
+msgid "Rain, very unsettled"
+msgstr "Дождь, очень неустойчива"
+
+#: src/pywws/ZambrettiCore.py:53
+msgid "Stormy, may improve"
+msgstr "Ветер, возможно улучшение"
+
+#: src/pywws/ZambrettiCore.py:54
+msgid "Stormy, much rain"
+msgstr "Ветер с дождем"
+
+#: src/pywws/conversions.py:56
+msgid "rising very rapidly"
+msgstr "очень быстро повышается"
+
+#: src/pywws/conversions.py:58
+msgid "rising quickly"
+msgstr "быстро повышается"
+
+#: src/pywws/conversions.py:60
+msgid "rising"
+msgstr "повышается"
+
+#: src/pywws/conversions.py:62
+msgid "rising slowly"
+msgstr "медленно повышается"
+
+#: src/pywws/conversions.py:64
+msgid "falling very rapidly"
+msgstr "очень быстро понижается"
+
+#: src/pywws/conversions.py:66
+msgid "falling quickly"
+msgstr "быстро понижается"
+
+#: src/pywws/conversions.py:68
+msgid "falling"
+msgstr "понижается"
+
+#: src/pywws/conversions.py:70
+msgid "falling slowly"
+msgstr "медленно понижается"
+
+#: src/pywws/conversions.py:71
+msgid "steady"
+msgstr "давление стабильно"
+
+#: src/pywws/conversions.py:162
+msgid "NNE"
+msgstr "ССВ"
+
+#: src/pywws/conversions.py:162
+msgid "NE"
+msgstr "СВ"
+
+#: src/pywws/conversions.py:162
+msgid "ENE"
+msgstr "ВСВ"
+
+#: src/pywws/conversions.py:163
+msgid "ESE"
+msgstr "ВЮВ"
+
+#: src/pywws/conversions.py:163
+msgid "SE"
+msgstr "ЮВ"
+
+#: src/pywws/conversions.py:163
+msgid "SSE"
+msgstr "ЮЮВ"
+
+#: src/pywws/conversions.py:164
+msgid "SSW"
+msgstr "ЮЮЗ"
+
+#: src/pywws/conversions.py:164
+msgid "SW"
+msgstr "ЮЗ"
+
+#: src/pywws/conversions.py:164
+msgid "WSW"
+msgstr "ЗЮЗ"
+
+#: src/pywws/conversions.py:165
+msgid "WNW"
+msgstr "ЗСЗ"
+
+#: src/pywws/conversions.py:165
+msgid "NW"
+msgstr "СЗ"
+
+#: src/pywws/conversions.py:165
+msgid "NNW"
+msgstr "ССЗ"
