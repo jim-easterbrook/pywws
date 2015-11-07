@@ -404,10 +404,13 @@ class ToService(object):
             finally:
                 sock.close()
         except Exception, ex:
-            e = str(ex)
-            if e != self.old_ex:
-                self.logger.error(e)
-                self.old_ex = e
+            new_ex = str(ex)
+            if new_ex == self.old_ex:
+                log = self.logger.debug
+            else:
+                log = self.logger.error
+                self.old_ex = new_ex
+            log('exc: %s', new_ex)
             return False
         if not ignore_last_update:
             self.set_last_update(timestamp)
@@ -440,22 +443,24 @@ class ToService(object):
         coded_data = urllib.urlencode(prepared_data)
         self.logger.debug(coded_data)
         new_ex = self.old_ex
-        extra_ex = []
+        ex_info = []
         try:
-            try:
-                if self.use_get:
-                    request = urllib2.Request(self.server + '?' + coded_data)
-                else:
-                    request = urllib2.Request(self.server, coded_data.encode('ASCII'))
-                if self.auth_type == 'basic':
-                    request.add_header('Authorization', self.auth)
-                wudata = urllib2.urlopen(request)
-            except urllib2.HTTPError, ex:
-                if ex.code != 400:
-                    raise
-                wudata = ex
-            response = wudata.readlines()
-            wudata.close()
+            if self.use_get:
+                request = urllib2.Request(self.server + '?' + coded_data)
+            else:
+                request = urllib2.Request(self.server, coded_data.encode('ASCII'))
+            if self.auth_type == 'basic':
+                request.add_header('Authorization', self.auth)
+            rsp = urllib2.urlopen(request)
+            response = rsp.readlines()
+            rsp.close()
+            if response == self.old_response:
+                log = self.logger.debug
+            else:
+                log = self.logger.error
+                self.old_response = response
+            for line in response:
+                log('rsp: %s', line.strip())
             if len(response) == len(self.expected_result):
                 for actual, expected in zip(response, self.expected_result):
                     actual = actual.decode('utf-8')
@@ -466,16 +471,18 @@ class ToService(object):
                     if not ignore_last_update:
                         self.set_last_update(timestamp)
                     return True
-            if response != self.old_response:
-                for line in response:
-                    self.logger.error(line.strip())
-            self.old_response = response
+            return False
         except urllib2.HTTPError, ex:
-            new_ex = str(ex)
-            extra_ex = str(ex.info()).split('\n')
-            for line in ex.readlines():
-                line = line.decode('utf-8')
-                extra_ex.append(re.sub('<.+?>', '', line))
+            new_ex = '[%d]%s' % (ex.code, ex.reason)
+            ex_info = str(ex.info()).split('\n')
+            try:
+                for line in ex.readlines():
+                    line = line.decode('utf-8')
+                    ex_info.append(re.sub('<.+?>', '', line))
+            except Exception:
+                pass
+        except urllib2.URLError, ex:
+            new_ex = str(ex.reason)
         except Exception, ex:
             new_ex = str(ex)
         if new_ex == self.old_ex:
@@ -483,11 +490,11 @@ class ToService(object):
         else:
             log = self.logger.error
             self.old_ex = new_ex
-        log(new_ex)
-        for extra in extra_ex:
+        log('exc: %s', new_ex)
+        for extra in ex_info:
             extra = extra.strip()
             if extra:
-                log(extra)
+                log('info: %s', extra)
         return False
 
     def next_data(self, catchup, live_data, ignore_last_update=False):
