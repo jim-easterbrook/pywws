@@ -54,6 +54,9 @@ class RegularTasks(object):
         self.flush = eval(self.params.get('config', 'frequent writes', 'False'))
         # get directories
         self.work_dir = self.params.get('paths', 'work', '/tmp/weather')
+        if not os.path.isdir(self.work_dir):
+            raise RuntimeError(
+                'Directory "' + self.work_dir + '" does not exist.')
         self.template_dir = self.params.get(
             'paths', 'templates', os.path.expanduser('~/weather/templates/'))
         self.graph_template_dir = self.params.get(
@@ -77,7 +80,7 @@ class RegularTasks(object):
         self.uploader = Upload.Upload(self.params)
         self.uploads_directory = os.path.join(self.work_dir, 'uploads')
         if not os.path.isdir(self.uploads_directory):
-            os.makedirs(self.uploads_directory)
+            os.mkdir(self.uploads_directory)
         # delay creation of a Twitter object until we know it's needed
         self.twitter = None
         # create a YoWindow object
@@ -250,7 +253,8 @@ class RegularTasks(object):
                     uploads.append(upload)
         if local_files:
             if not os.path.isdir(self.local_dir):
-                os.makedirs(self.local_dir)
+                raise RuntimeError(
+                    'Directory "' + self.local_dir + '" does not exist.')
             for file in local_files:
                 targ = os.path.join(
                     self.local_dir, os.path.basename(file))

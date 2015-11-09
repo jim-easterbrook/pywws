@@ -519,9 +519,10 @@ class BasePlotter(object):
             params.get('config', 'gnuplot version', '4.2'))
         # set language related stuff
         self.encoding = params.get('config', 'gnuplot encoding', 'iso_8859_1')
-        # create work directory
+        # check work directory exists
         if not os.path.isdir(self.work_dir):
-            os.makedirs(self.work_dir)
+            raise RuntimeError(
+                'Directory "' + self.work_dir + '" does not exist.')
 
     def _local_offset(self, time):
         try:

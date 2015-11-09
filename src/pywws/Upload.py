@@ -154,7 +154,8 @@ class _copy(object):
     def connect(self):
         self.logger.info("Copying to local directory")
         if not os.path.isdir(self.directory):
-            os.makedirs(self.directory)
+            raise RuntimeError(
+                'Directory "' + self.directory + '" does not exist.')
 
     def put(self, src, dest):
         shutil.copy2(src, os.path.join(self.directory, dest))

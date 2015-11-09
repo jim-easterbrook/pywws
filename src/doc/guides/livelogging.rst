@@ -60,7 +60,7 @@ You should have a ``[paths]`` section similar to the following (where ``xxx`` is
   local_files = /home/xxx/weather/results/
 
 Edit these to suit your installation and preferences.
-``work`` is a temporary directory used to store intermediate files, ``templates`` is the directory where you keep your text template files, ``graph_templates`` is the directory where you keep your graph template files and ``local_files`` is a directory where template output that is not uploaded to your web site is put.
+``work`` is an existing temporary directory used to store intermediate files, ``templates`` is the directory where you keep your text template files, ``graph_templates`` is the directory where you keep your graph template files and ``local_files`` is a directory where template output that is not uploaded to your web site is put.
 Don't use the pywws example directories for your templates, as they will get over-written when you upgrade pywws.
 
 Copy your text and graph templates to the appropriate directories.
