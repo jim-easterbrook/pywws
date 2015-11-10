@@ -388,7 +388,7 @@ class RegularTasks(object):
             self.twitter = ToTwitter.ToTwitter(self.params)
         self.logger.info("Templating %s", template)
         input_file = os.path.join(self.template_dir, template)
-        tweet = self.templater.make_text(input_file, live_data=data)[:140]
+        tweet = self.templater.make_text(input_file, live_data=data)
         self.tweet_queue.append(tweet)
         if self.asynch:
             self.wake_thread.set()
