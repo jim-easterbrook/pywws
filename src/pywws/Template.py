@@ -351,10 +351,10 @@ class Template(object):
         if hasattr(template_file, 'readline'):
             tmplt = template_file
         else:
-            tmplt = codecs.open(template_file, 'r', encoding=self.encoding)
+            tmplt = open(template_file, 'rb')
         # do the text processing
         while True:
-            line = tmplt.readline()
+            line = tmplt.readline().decode(self.encoding)
             if not line:
                 break
             parts = line.split('#')
