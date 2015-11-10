@@ -298,7 +298,7 @@ class Template(object):
         self.use_locale = use_locale
         self.midnight = None
         self.rain_midnight = None
-        # get character encoding of template input & output
+        # get character encoding of template input & output files
         self.encoding = params.get('config', 'template encoding', 'iso-8859-1')
 
     def process(self, live_data, template_file):
@@ -351,11 +351,11 @@ class Template(object):
         if hasattr(template_file, 'readline'):
             tmplt = template_file
         else:
-            tmplt = open(template_file, 'rb')
+            tmplt = codecs.open(template_file, 'r', encoding=self.encoding)
         # do the text processing
         while True:
-            line = tmplt.readline().decode(self.encoding)
-            if line == '':
+            line = tmplt.readline()
+            if not line:
                 break
             parts = line.split('#')
             for i in range(len(parts)):
@@ -367,12 +367,15 @@ class Template(object):
                 if parts[i] and parts[i][0] == '!':
                     # comment
                     continue
+                # Python 2 shlex can't handle unicode
                 if sys.version_info[0] < 3:
                     parts[i] = parts[i].encode(self.encoding)
                 command = shlex.split(parts[i])
+                if sys.version_info[0] < 3:
+                    command = map(lambda x: x.decode(self.encoding), command)
                 if command == []:
                     # empty command == print a single '#'
-                    yield '#'
+                    yield u'#'
                 elif command[0] in data.keys() + ['calc']:
                     # output a value
                     if not valid_data:
@@ -394,7 +397,7 @@ class Template(object):
                     if x != None and len(command) > 3:
                         x = eval(command[3])
                     # get format
-                    fmt = '%s'
+                    fmt = u'%s'
                     if len(command) > 1:
                         fmt = command[1]
                     # write output
@@ -402,7 +405,7 @@ class Template(object):
                         if len(command) > 2:
                             yield command[2]
                     elif isinstance(x, datetime):
-                        yield x.strftime(fmt)
+                        yield unicode(x.strftime(fmt))
                     elif not use_locale:
                         yield fmt % (x)
                     elif sys.version_info >= (2, 7) or '%%' not in fmt:
@@ -478,21 +481,14 @@ class Template(object):
                     return
 
     def make_text(self, template_file, live_data=None):
-        result = ''
+        result = u''
         for text in self.process(live_data, template_file):
-            if sys.version_info[0] < 3 and isinstance(text, unicode):
-                text = text.encode(self.encoding)
             result += text
         return result
 
     def make_file(self, template_file, output_file, live_data=None):
-        if sys.version_info[0] >= 3:
-            of = open(output_file, 'w', encoding=self.encoding)
-        else:
-            of = open(output_file, 'w')
+        of = codecs.open(output_file, 'w', encoding=self.encoding)
         for text in self.process(live_data, template_file):
-            if sys.version_info[0] < 3 and isinstance(text, unicode):
-                text = text.encode(self.encoding)
             of.write(text)
         of.close()
         return 0

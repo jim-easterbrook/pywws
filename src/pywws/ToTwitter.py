@@ -135,8 +135,6 @@ class ToTwitter(object):
             media_item, tweet = tweet.split('\n', 1)
             media_item = media_item.split()[1]
             media.append(media_item)
-        if not isinstance(tweet, unicode):
-            tweet = tweet.decode(self.encoding)
         try:
             self.api.post(tweet, media)
             return True
