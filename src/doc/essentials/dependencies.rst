@@ -187,6 +187,9 @@ Posting to Twitter requires these modules:
 
   sudo pip install tweepy oauth2
 
+Note that ``tweepy`` appears to be the less reliable of the two.
+If you have problems, e.g. with character encoding, try installing ``python-twitter`` instead.
+
 .. versionchanged:: 13.10_r1086
    reenabled use of ``tweepy`` library as an alternative to ``python-twitter``.
    ``python-oauth2`` is still required by :py:mod:`pywws.TwitterAuth`.
