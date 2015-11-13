@@ -51,24 +51,24 @@ def pressure_trend_text(trend):
     office.
 
     """
-    _ = _Localisation.translation.gettext
+    _ = _Localisation.translation.ugettext
     if trend > 6.0:
-        return _('rising very rapidly')
+        return _(u'rising very rapidly')
     elif trend > 3.5:
-        return _('rising quickly')
+        return _(u'rising quickly')
     elif trend > 1.5:
-        return _('rising')
+        return _(u'rising')
     elif trend >= 0.1:
-        return _('rising slowly')
+        return _(u'rising slowly')
     elif trend < -6.0:
-        return _('falling very rapidly')
+        return _(u'falling very rapidly')
     elif trend < -3.5:
-        return _('falling quickly')
+        return _(u'falling quickly')
     elif trend < -1.5:
-        return _('falling')
+        return _(u'falling')
     elif trend <= -0.1:
-        return _('falling slowly')
-    return _('steady')
+        return _(u'falling slowly')
+    return _(u'steady')
 
 def rain_inch(mm):
     "Convert rainfall from millimetres to inches"
@@ -157,12 +157,12 @@ def winddir_text(pts):
     if not isinstance(pts, int):
         pts = int(pts + 0.5) % 16
     if not _winddir_text_array:
-        _ = _Localisation.translation.gettext
+        _ = _Localisation.translation.ugettext
         _winddir_text_array = (
-            _('N'), _('NNE'), _('NE'), _('ENE'),
-            _('E'), _('ESE'), _('SE'), _('SSE'),
-            _('S'), _('SSW'), _('SW'), _('WSW'),
-            _('W'), _('WNW'), _('NW'), _('NNW'),
+            _(u'N'), _(u'NNE'), _(u'NE'), _(u'ENE'),
+            _(u'E'), _(u'ESE'), _(u'SE'), _(u'SSE'),
+            _(u'S'), _(u'SSW'), _(u'SW'), _(u'WSW'),
+            _(u'W'), _(u'WNW'), _(u'NW'), _(u'NNW'),
             )
     return _winddir_text_array[pts]
 
