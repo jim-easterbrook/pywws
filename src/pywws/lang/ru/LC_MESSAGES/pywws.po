@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: pywws\n"
 "Report-Msgid-Bugs-To: jim@jim-easterbrook.me.uk\n"
 "POT-Creation-Date: 2015-09-10 11:50+0100\n"
-"PO-Revision-Date: 2015-11-06 22:53+0000\n"
+"PO-Revision-Date: 2015-11-09 20:32+0000\n"
 "Last-Translator: Tech <tech2304@gmail.com>\n"
 "Language-Team: Russian (http://www.transifex.com/jim-easterbrook/pywws/language/ru/)\n"
 "MIME-Version: 1.0\n"
@@ -58,11 +58,11 @@ msgstr "Хорошая погода"
 
 #: src/pywws/ZambrettiCore.py:31
 msgid "Becoming fine"
-msgstr "Становится хорошей"
+msgstr "Улучшается"
 
 #: src/pywws/ZambrettiCore.py:32
 msgid "Fine, becoming less settled"
-msgstr "Хорошая, становится менее стабильной"
+msgstr "Хорошая, переменно"
 
 #: src/pywws/ZambrettiCore.py:33
 msgid "Fine, possible showers"
@@ -94,11 +94,11 @@ msgstr "Очень хорошая, вероятны осадки"
 
 #: src/pywws/ZambrettiCore.py:40
 msgid "Rather unsettled clearing later"
-msgstr "Нестабильная с прояснениями "
+msgstr "Нестабильно, возможно улучшение"
 
 #: src/pywws/ZambrettiCore.py:41
 msgid "Unsettled, probably improving"
-msgstr "Нестабильная, вероятно улучшение"
+msgstr "Нестабильно, вероятно улучшение"
 
 #: src/pywws/ZambrettiCore.py:42
 msgid "Showery, bright intervals"
@@ -106,27 +106,27 @@ msgstr "Дожди с интервалами"
 
 #: src/pywws/ZambrettiCore.py:43
 msgid "Showery, becoming less settled"
-msgstr "Дожди, ухудшение"
+msgstr "Дождь, ухудшение"
 
 #: src/pywws/ZambrettiCore.py:44
 msgid "Changeable, some rain"
-msgstr "Переменная, возможен дождь"
+msgstr "Переменно, возможен дождь"
 
 #: src/pywws/ZambrettiCore.py:45
 msgid "Unsettled, short fine intervals"
-msgstr "Нестабильная с просветлениями"
+msgstr "Нестабильно с просветлениями"
 
 #: src/pywws/ZambrettiCore.py:46
 msgid "Unsettled, rain later"
-msgstr "Нестабильная, позже дождь"
+msgstr "Нестабильно, к вечеру дождь"
 
 #: src/pywws/ZambrettiCore.py:47
 msgid "Unsettled, some rain"
-msgstr "Нестабильная, позже дождь"
+msgstr "Нестабильно, возможен дождь"
 
 #: src/pywws/ZambrettiCore.py:48
 msgid "Mostly very unsettled"
-msgstr "Облачно неустойчива"
+msgstr "Облачно переменно"
 
 #: src/pywws/ZambrettiCore.py:49
 msgid "Occasional rain, worsening"
@@ -134,7 +134,7 @@ msgstr "Временами осадки"
 
 #: src/pywws/ZambrettiCore.py:50
 msgid "Rain at times, very unsettled"
-msgstr "Временами осадки, неустойчива"
+msgstr "Временами осадки, неустойчиво"
 
 #: src/pywws/ZambrettiCore.py:51
 msgid "Rain at frequent intervals"
@@ -142,7 +142,7 @@ msgstr "Дождь с частыми интервалами"
 
 #: src/pywws/ZambrettiCore.py:52
 msgid "Rain, very unsettled"
-msgstr "Дождь, очень неустойчива"
+msgstr "Дождь, очень неустойчиво"
 
 #: src/pywws/ZambrettiCore.py:53
 msgid "Stormy, may improve"
@@ -154,35 +154,35 @@ msgstr "Ветер с дождем"
 
 #: src/pywws/conversions.py:56
 msgid "rising very rapidly"
-msgstr "очень быстро повышается"
+msgstr "очень быстро растет"
 
 #: src/pywws/conversions.py:58
 msgid "rising quickly"
-msgstr "быстро повышается"
+msgstr "быстро растет"
 
 #: src/pywws/conversions.py:60
 msgid "rising"
-msgstr "повышается"
+msgstr "растет"
 
 #: src/pywws/conversions.py:62
 msgid "rising slowly"
-msgstr "медленно повышается"
+msgstr "медленно растет"
 
 #: src/pywws/conversions.py:64
 msgid "falling very rapidly"
-msgstr "очень быстро понижается"
+msgstr "очень быстро падает"
 
 #: src/pywws/conversions.py:66
 msgid "falling quickly"
-msgstr "быстро понижается"
+msgstr "быстро падает"
 
 #: src/pywws/conversions.py:68
 msgid "falling"
-msgstr "понижается"
+msgstr "падает"
 
 #: src/pywws/conversions.py:70
 msgid "falling slowly"
-msgstr "медленно понижается"
+msgstr "медленно падает"
 
 #: src/pywws/conversions.py:71
 msgid "steady"
