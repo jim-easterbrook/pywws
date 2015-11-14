@@ -39,6 +39,27 @@ look at some of the examples in the example_graph_templates directory.
 If (like I was) you are unfamiliar with XML, I suggest reading the W3
 Schools XML tutorial.
 
+Text encoding
+^^^^^^^^^^^^^
+
+The ``[config]`` section of :ref:`weather.ini <weather_ini-config>` has
+a ``gnuplot encoding`` entry that sets the text encoding pywws uses to
+write a gnuplot command file. The default value, ``iso_8859_1``, is
+suitable for most western European languages, but may need changing if
+you use another language. It can be set to any text encoding recognised
+by both the Python :py:mod:`codecs` module and the `gnuplot
+<http://www.gnuplot.info/documentation.html>`_ ``set encoding`` command.
+If Python and gnuplot have different names for the same encoding, give
+both names separated by a space, Python name first. For example::
+
+    [config]
+    gnuplot encoding = koi8_r koi8r
+
+Note that you need to choose an encoding for which ``gnuplot`` has a
+suitable font. You may need to set the font with a terminal_ element.
+Note also that this encoding is unrelated to the encoding of your XML
+graph file, which is set in the XML header.
+
 XML graph file syntax
 ^^^^^^^^^^^^^^^^^^^^^
 
@@ -55,13 +76,12 @@ temperature for the last 24 hours. ::
     </plot>
   </graph>
 
-In this example, the root element graph has one plot element, which
-has one subplot element. The subplot element contains a title element
-and a ycalc element. To plot more data on the same set of axes (for
-example dew point and temperature), we can add more subplot elements.
-To plot more than one set of axes (for example wind speed is measured
-in different units from temperature) in the same file we can add more
-plot elements.
+In this example, the root element graph has one plot element, which has
+one subplot element. The subplot element contains a title element and a
+ycalc element. To plot more data on the same graph (for example dew
+point and temperature), we can add more subplot elements. To plot more
+than one graph (for example wind speed is measured in different units
+from temperature) in the same file we can add more plot elements.
 
 The complete element hierarchy is shown below. ::
 
@@ -519,6 +539,10 @@ class BasePlotter(object):
             params.get('config', 'gnuplot version', '4.2'))
         # set language related stuff
         self.encoding = params.get('config', 'gnuplot encoding', 'iso_8859_1')
+        if ' ' in self.encoding:
+            self.encoding = self.encoding.split()
+        else:
+            self.encoding = [self.encoding, self.encoding]
         # check work directory exists
         if not os.path.isdir(self.work_dir):
             raise RuntimeError(
@@ -593,7 +617,7 @@ class BasePlotter(object):
         self.tmp_files = []
         cmd_file = os.path.join(self.work_dir, 'plot.cmd')
         self.tmp_files.append(cmd_file)
-        of = codecs.open(cmd_file, 'w', encoding=self.encoding)
+        of = codecs.open(cmd_file, 'w', encoding=self.encoding[0])
         # write gnuplot set up
         self.rows = self.GetDefaultRows()
         self.cols = (self.plot_count + self.rows - 1) // self.rows
@@ -610,7 +634,7 @@ class BasePlotter(object):
         else:
             terminal = '%s large size %d,%d' % (fileformat, w, h)
         terminal = self.graph.get_value('terminal', terminal)
-        of.write('set encoding %s\n' % (self.encoding))
+        of.write('set encoding %s\n' % (self.encoding[1]))
         lcl = locale.getlocale()
         if lcl[0]:
             of.write('set locale "%s.%s"\n' % lcl)
@@ -623,10 +647,10 @@ class BasePlotter(object):
                 x_hi = (self.x_hi -
                         self.utcoffset).replace(tzinfo=utc).astimezone(Local)
                 if sys.version_info[0] < 3:
-                    title = title.encode(self.encoding)
+                    title = title.encode(self.encoding[0])
                 title = x_hi.strftime(title)
                 if sys.version_info[0] < 3:
-                    title = title.decode(self.encoding)
+                    title = title.decode(self.encoding[0])
             title = 'title "%s"' % title
         of.write('set multiplot layout %d, %d %s\n' % (self.rows, self.cols, title))
         # do actual plots
@@ -731,20 +755,20 @@ set timefmt "%Y-%m-%dT%H:%M:%S"
                 xlabel = _('Date')
             xlabel = self.graph.get_value('xlabel', xlabel)
             if sys.version_info[0] < 3:
-                xlabel = xlabel.encode(self.encoding)
+                xlabel = xlabel.encode(self.encoding[0])
             xlabel = x_hi.strftime(xlabel)
             if sys.version_info[0] < 3:
-                xlabel = xlabel.decode(self.encoding)
+                xlabel = xlabel.decode(self.encoding[0])
             result += u'set xlabel "%s"\n' % xlabel
             dateformat = '%Y/%m/%d'
             dateformat = self.graph.get_value('dateformat', dateformat)
             if sys.version_info[0] < 3:
-                dateformat = dateformat.encode(self.encoding)
+                dateformat = dateformat.encode(self.encoding[0])
             ldat = x_lo.strftime(dateformat)
             rdat = x_hi.strftime(dateformat)
             if sys.version_info[0] < 3:
-                ldat = ldat.decode(self.encoding)
-                rdat = rdat.decode(self.encoding)
+                ldat = ldat.decode(self.encoding[0])
+                rdat = rdat.decode(self.encoding[0])
             if ldat:
                 result += u'set label "%s" at "%s", graph -0.3 left\n' % (
                     ldat, self.x_lo.isoformat())

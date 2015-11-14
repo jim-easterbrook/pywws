@@ -59,6 +59,14 @@ Now you can edit the ``language`` entry in your :ref:`weather.ini <weather_ini-c
 
 If the above test shows no translations into your language then you need to create a new language file, as described below.
 
+Text encodings
+^^^^^^^^^^^^^^
+
+The pywws default text encoding is ISO-8859-1, also known as Latin-1.
+This is suitable for several western European languages but not for some others.
+If you encounter problems you may need to use a different encoding.
+See the documentation of :py:mod:`pywws.Template` and :py:mod:`pywws.Plot` for more details.
+
 Documentation
 ^^^^^^^^^^^^^
 

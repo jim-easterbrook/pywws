@@ -44,6 +44,20 @@ actions is carried out.
 Before writing your own template files, it might be useful to look at
 some of the examples in the example_templates directory.
 
+Text encoding
+^^^^^^^^^^^^^
+
+The ``[config]`` section of :ref:`weather.ini <weather_ini-config>` has
+a ``template encoding`` entry that tells pywws what text encoding your
+template files use. The default value, ``iso-8859-1``, is suitable for
+most western European languages, but may need changing if you use
+another language. It can be set to any text encoding recognised by the
+Python :py:mod:`codecs` module.
+
+Make sure all your templates use the text encoding you set. The `iconv
+<http://man7.org/linux/man-pages/man1/iconv.1.html>`_ program can be
+used to transcode files.
+
 Processing instructions
 -----------------------
 
