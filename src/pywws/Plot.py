@@ -593,10 +593,7 @@ class BasePlotter(object):
         self.tmp_files = []
         cmd_file = os.path.join(self.work_dir, 'plot.cmd')
         self.tmp_files.append(cmd_file)
-        if sys.version_info[0] >= 3:
-            of = open(cmd_file, 'w', encoding=self.encoding)
-        else:
-            of = open(cmd_file, 'w')
+        of = codecs.open(cmd_file, 'w', encoding=self.encoding)
         # write gnuplot set up
         self.rows = self.GetDefaultRows()
         self.cols = (self.plot_count + self.rows - 1) // self.rows
@@ -622,12 +619,14 @@ class BasePlotter(object):
         # set overall title
         title = self.graph.get_value('title', '')
         if title:
-            if sys.version_info[0] < 3:
-                title = title.encode(self.encoding)
             if '%' in title:
                 x_hi = (self.x_hi -
                         self.utcoffset).replace(tzinfo=utc).astimezone(Local)
+                if sys.version_info[0] < 3:
+                    title = title.encode(self.encoding)
                 title = x_hi.strftime(title)
+                if sys.version_info[0] < 3:
+                    title = title.decode(self.encoding)
             title = 'title "%s"' % title
         of.write('set multiplot layout %d, %d %s\n' % (self.rows, self.cols, title))
         # do actual plots
@@ -636,14 +635,10 @@ class BasePlotter(object):
             plot = plot_list[plot_no]
             # set key / title location
             title = plot.get_value('title', '')
-            if sys.version_info[0] < 3:
-                title = title.encode(self.encoding)
             of.write('set key horizontal title "%s"\n' % title)
             # optional yaxis labels
             ylabel = plot.get_value('ylabel', '')
             if ylabel:
-                if sys.version_info[0] < 3:
-                    ylabel = ylabel.encode(self.encoding)
                 ylabelangle = plot.get_value('ylabelangle', '')
                 if ylabelangle:
                     ylabelangle = ' rotate by %s' % (ylabelangle)
@@ -652,8 +647,6 @@ class BasePlotter(object):
                 of.write('set ylabel\n')
             y2label = plot.get_value('y2label', '')
             if y2label:
-                if sys.version_info[0] < 3:
-                    y2label = y2label.encode(self.encoding)
                 y2labelangle = plot.get_value('y2labelangle', '')
                 if y2labelangle:
                     y2labelangle = ' rotate by %s' % (y2labelangle)
@@ -692,16 +685,16 @@ class GraphPlotter(BasePlotter):
         return 200 // self.cols, 600 // self.cols
 
     def GetPreamble(self):
-        result = """set style fill solid
+        result = u"""set style fill solid
 set xdata time
 set timefmt "%Y-%m-%dT%H:%M:%S"
 """
-        result += 'set xrange ["%s":"%s"]\n' % (
+        result += u'set xrange ["%s":"%s"]\n' % (
             self.x_lo.isoformat(), self.x_hi.isoformat())
         lmargin = eval(self.graph.get_value('lmargin', '5'))
-        result += 'set lmargin %g\n' % (lmargin)
+        result += u'set lmargin %g\n' % (lmargin)
         rmargin = eval(self.graph.get_value('rmargin', '-1'))
-        result += 'set rmargin %g\n' % (rmargin)
+        result += u'set rmargin %g\n' % (rmargin)
         if self.duration <= timedelta(hours=24):
             xformat = '%H%M'
         elif self.duration <= timedelta(days=7):
@@ -709,12 +702,10 @@ set timefmt "%Y-%m-%dT%H:%M:%S"
         else:
             xformat = '%Y/%m/%d'
         xformat = self.graph.get_value('xformat', xformat)
-        result += 'set format x "%s"\n' % xformat
+        result += u'set format x "%s"\n' % xformat
         xtics = self.graph.get_value('xtics', None)
         if xtics:
-            result += 'set xtics %d\n' % (eval(xtics) * 3600)
-        if sys.version_info[0] < 3:
-            result = result.encode(self.encoding)
+            result += u'set xtics %d\n' % (eval(xtics) * 3600)
         return result
 
     def PlotData(self, plot_no, plot, source):
@@ -722,8 +713,8 @@ set timefmt "%Y-%m-%dT%H:%M:%S"
         subplot_list = plot.get_children('subplot')
         subplot_count = len(subplot_list)
         if subplot_count < 1:
-            return ''
-        result = ''
+            return u''
+        result = u''
         pressure_offset = self.pressure_offset
         # label x axis of last plot
         if plot_no == self.plot_count - 1:
@@ -741,22 +732,28 @@ set timefmt "%Y-%m-%dT%H:%M:%S"
             xlabel = self.graph.get_value('xlabel', xlabel)
             if sys.version_info[0] < 3:
                 xlabel = xlabel.encode(self.encoding)
-            result += 'set xlabel "%s"\n' % (x_hi.strftime(xlabel))
+            xlabel = x_hi.strftime(xlabel)
+            if sys.version_info[0] < 3:
+                xlabel = xlabel.decode(self.encoding)
+            result += u'set xlabel "%s"\n' % xlabel
             dateformat = '%Y/%m/%d'
             dateformat = self.graph.get_value('dateformat', dateformat)
             if sys.version_info[0] < 3:
                 dateformat = dateformat.encode(self.encoding)
             ldat = x_lo.strftime(dateformat)
             rdat = x_hi.strftime(dateformat)
+            if sys.version_info[0] < 3:
+                ldat = ldat.decode(self.encoding)
+                rdat = rdat.decode(self.encoding)
             if ldat:
-                result += 'set label "%s" at "%s", graph -0.3 left\n' % (
+                result += u'set label "%s" at "%s", graph -0.3 left\n' % (
                     ldat, self.x_lo.isoformat())
             if rdat != ldat:
-                result += 'set label "%s" at "%s", graph -0.3 right\n' % (
+                result += u'set label "%s" at "%s", graph -0.3 right\n' % (
                     rdat, self.x_hi.isoformat())
         # set bottom margin
         bmargin = eval(plot.get_value('bmargin', '-1'))
-        result += 'set bmargin %g\n' % (bmargin)
+        result += u'set bmargin %g\n' % (bmargin)
         # set y ranges and tics
         yrange = plot.get_value('yrange', None)
         y2range = plot.get_value('y2range', None)
@@ -767,20 +764,20 @@ set timefmt "%Y-%m-%dT%H:%M:%S"
         elif y2range and not y2tics:
             y2tics = 'autofreq'
         if yrange:
-            result += 'set yrange [%s]\n' % (yrange.replace(',', ':'))
+            result += u'set yrange [%s]\n' % (yrange.replace(',', ':'))
         else:
-            result += 'set yrange [*:*]\n'
+            result += u'set yrange [*:*]\n'
         if y2range:
-            result += 'set y2range [%s]\n' % (y2range.replace(',', ':'))
+            result += u'set y2range [%s]\n' % (y2range.replace(',', ':'))
         if y2tics:
-            result += 'set ytics nomirror %s; set y2tics %s\n' % (ytics, y2tics)
+            result += u'set ytics nomirror %s; set y2tics %s\n' % (ytics, y2tics)
         else:
-            result += 'unset y2tics; set ytics mirror %s\n' % (ytics)
+            result += u'unset y2tics; set ytics mirror %s\n' % (ytics)
         # set grid
-        result += 'unset grid\n'
+        result += u'unset grid\n'
         grid = plot.get_value('grid', None)
         if grid is not None:
-            result += 'set grid %s\n' % grid
+            result += u'set grid %s\n' % grid
         # x_lo & x_hi are in local time, data is indexed in UTC
         start = self.x_lo - self.utcoffset
         stop = self.x_hi - self.utcoffset
@@ -799,10 +796,10 @@ set timefmt "%Y-%m-%dT%H:%M:%S"
             interval = timedelta(hours=36)
             boxwidth = 2800 * 24
         boxwidth = eval(plot.get_value('boxwidth', str(boxwidth)))
-        result += 'set boxwidth %d\n' % boxwidth
+        result += u'set boxwidth %d\n' % boxwidth
         command = plot.get_value('command', None)
         if command:
-            result += '%s\n' % command
+            result += u'%s\n' % command
         stop = source.after(stop)
         if stop:
             stop = stop + timedelta(minutes=1)
@@ -858,7 +855,7 @@ set timefmt "%Y-%m-%dT%H:%M:%S"
             subplot.dat.write('%s ?\n' % (idx.isoformat()))
             subplot.dat.close()
         # plot data
-        result += 'plot '
+        result += u'plot '
         colour = 0
         for subplot_no in range(subplot_count):
             subplot = subplots[subplot_no]
@@ -880,13 +877,11 @@ set timefmt "%Y-%m-%dT%H:%M:%S"
                 style = 'smooth unique lc %d lw %d' % (colour, width)
             axes = subplot.subplot.get_value('axes', 'x1y1')
             title = subplot.subplot.get_value('title', '')
-            result += ' "%s" using 1:($2) axes %s title "%s" %s' % (
+            result += u' "%s" using 1:($2) axes %s title "%s" %s' % (
                 subplot.dat_file, axes, title, style)
             if subplot_no != subplot_count - 1:
-                result += ', \\'
-            result += '\n'
-        if sys.version_info[0] < 3:
-            result = result.encode(self.encoding)
+                result += u', \\'
+            result += u'\n'
         return result
 
 def main(argv=None):

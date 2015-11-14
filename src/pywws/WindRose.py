@@ -270,7 +270,7 @@ class RosePlotter(BasePlotter):
         return 600 // self.rows, 600 // self.rows
 
     def GetPreamble(self):
-        result = """set polar
+        result = u"""set polar
 set angles degrees
 set zeroaxis
 set grid polar 22.5
@@ -280,17 +280,17 @@ set xtics axis
 unset ytics
 """
         if self.gnuplot_version >= 4.6:
-            result += """unset raxis
+            result += u"""unset raxis
 set rtics format ''
 """
         lmargin = eval(self.graph.get_value('lmargin', '-1'))
-        result += 'set lmargin %g\n' % (lmargin)
+        result += u'set lmargin %g\n' % (lmargin)
         lmargin = eval(self.graph.get_value('rmargin', '-1'))
-        result += 'set rmargin %g\n' % (lmargin)
+        result += u'set rmargin %g\n' % (lmargin)
         lmargin = eval(self.graph.get_value('tmargin', '-1'))
-        result += 'set tmargin %g\n' % (lmargin)
+        result += u'set tmargin %g\n' % (lmargin)
         lmargin = eval(self.graph.get_value('bmargin', '-1'))
-        result += 'set bmargin %g\n' % (lmargin)
+        result += u'set bmargin %g\n' % (lmargin)
         return result
 
     def PlotData(self, plot_no, plot, source):
@@ -342,7 +342,7 @@ set rtics format ''
         total = 0
         for n in range(16):
             total += histograms[-1][n]
-        result = ''
+        result = u''
         yrange = plot.get_value('yrange', '31')
         if yrange == '*':
             # auto-ranging
@@ -360,17 +360,17 @@ set rtics format ''
                 yrange = 21
         else:
             yrange = eval(yrange)
-        result += 'set rrange [0:%d]\n' % (yrange)
-        result += 'set xrange [-%d:%d]\n' % (yrange, yrange)
-        result += 'set yrange [-%d:%d]\n' % (yrange, yrange)
+        result += u'set rrange [0:%d]\n' % (yrange)
+        result += u'set xrange [-%d:%d]\n' % (yrange, yrange)
+        result += u'set yrange [-%d:%d]\n' % (yrange, yrange)
         points = [_('N'), _('S'), _('E'), _('W')]
         points = eval(plot.get_value('points', str(points)))
-        result += 'set label 1000 "%s" at 0, %d center front\n' % (points[0], yrange)
-        result += 'set label 1001 "%s" at 0, -%d center front\n' % (points[1], yrange)
-        result += 'set label 1002 "%s" at %d, 0 center front\n' % (points[2], yrange)
-        result += 'set label 1003 "%s" at -%d, 0 center front\n' % (points[3], yrange)
+        result += u'set label 1000 "%s" at 0, %d center front\n' % (points[0], yrange)
+        result += u'set label 1001 "%s" at 0, -%d center front\n' % (points[1], yrange)
+        result += u'set label 1002 "%s" at %d, 0 center front\n' % (points[2], yrange)
+        result += u'set label 1003 "%s" at -%d, 0 center front\n' % (points[3], yrange)
         # plot segments for each speed-direction
-        result += 'plot '
+        result += u'plot '
         for i in reversed(range(len(thresh))):
             dat_file = os.path.join(self.work_dir, 'plot_%d_%d.dat' % (plot_no, i))
             self.tmp_files.append(dat_file)
@@ -409,11 +409,11 @@ set rtics format ''
                 title = '> %g (%.3g%%)' % (thresh[i-1], value)
             else:
                 title = '%g .. %g (%.3g%%)' % (thresh[i-1], thresh[i], value)
-            result += '"%s" using 1:2 title "%s" with filledcurve lt %d' % (
+            result += u'"%s" using 1:2 title "%s" with filledcurve lt %d' % (
                 dat_file, title, colour[i % len(colour)])
             if i > 0:
-                result += ', \\'
-            result += '\n'
+                result += u', \\'
+            result += u'\n'
         return result
 
 def main(argv=None):
