@@ -394,18 +394,23 @@ class Template(object):
                         x = x.replace(tzinfo=utc)
                         x = x.astimezone(time_zone)
                     # convert data
-                    if x != None and len(command) > 3:
+                    if x is not None and len(command) > 3:
                         x = eval(command[3])
                     # get format
                     fmt = u'%s'
                     if len(command) > 1:
                         fmt = command[1]
                     # write output
-                    if x == None:
+                    if x is None:
                         if len(command) > 2:
                             yield command[2]
                     elif isinstance(x, datetime):
-                        yield unicode(x.strftime(fmt))
+                        if sys.version_info[0] < 3:
+                            fmt = fmt.encode(self.encoding)
+                        x = x.strftime(fmt)
+                        if sys.version_info[0] < 3:
+                            x = x.decode(self.encoding)
+                        yield x
                     elif not use_locale:
                         yield fmt % (x)
                     elif sys.version_info >= (2, 7) or '%%' not in fmt:
