@@ -461,9 +461,11 @@ gnuplot style can be set: ``<style>smooth unique lc 5 lw 3</style>``.
 colour
 ^^^^^^
 
-Sets the colour of the subplot line or boxes. Any integer value is
-accepted. The mapping of colours to numbers is set by gnuplot. Default
-value is the previous colour plus one.
+Sets the colour of the subplot line or boxes. This can be in any form
+that gnuplot accepts, typically a single integer or an rgb specification
+such as ``rgb "cyan"`` or ``rgb "FF00FF"``. The mapping of integer
+values to colours is set by gnuplot. Default value is an ever
+incrementing integer.
 
 .. _subplot-title:
 
@@ -909,25 +911,26 @@ set timefmt "%Y-%m-%dT%H:%M:%S"
             subplot.dat.close()
         # plot data
         result += u'plot '
-        colour = 0
+        colour_idx = 0
         for subplot_no in range(subplot_count):
             subplot = subplots[subplot_no]
-            colour = eval(subplot.subplot.get_value('colour', str(colour+1)))
+            colour_idx += 1
+            colour = subplot.subplot.get_value('colour', str(colour_idx))
             style = subplot.subplot.get_value(
-                'style', 'smooth unique lc %d lw 1' % (colour))
+                'style', 'smooth unique lc %s lw 1' % (colour))
             words = style.split()
             if len(words) > 1 and words[0] in ('+', 'x', 'line'):
-                width = int(words[1])
+                width = float(words[1])
             else:
                 width = 1
             if style == 'box':
-                style = 'lc %d lw 0 with boxes' % (colour)
+                style = 'lc %s lw 0 with boxes' % (colour)
             elif words[0] == '+':
-                style = 'lc %d lw %d pt 1 with points' % (colour, width)
+                style = 'lc %s lw %g pt 1 with points' % (colour, width)
             elif words[0] == 'x':
-                style = 'lc %d lw %d pt 2 with points' % (colour, width)
+                style = 'lc %s lw %g pt 2 with points' % (colour, width)
             elif words[0] == 'line':
-                style = 'smooth unique lc %d lw %d' % (colour, width)
+                style = 'smooth unique lc %s lw %g' % (colour, width)
             axes = subplot.subplot.get_value('axes', 'x1y1')
             title = subplot.subplot.get_value('title', '')
             result += u' "%s" using 1:2 axes %s %s title "%s"' % (
