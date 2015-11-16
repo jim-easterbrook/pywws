@@ -53,26 +53,26 @@ last 24 hours. ::
 In this example, the root element graph has one windrose element which
 contains nothing more than a ycalc element.
 
-The complete element hierarchy is shown below. ::
+The complete element hierarchy is shown below.
 
-    graph
-        windrose
-            xcalc
-            ycalc
-            threshold
-            colour
-            yrange
-            points
-            source
-            title
-        start
-        stop
-        duration
-        layout
-        size
-        fileformat
-        lmargin, rmargin, tmargin, bmargin
-        title
+|    graph_
+|        windrose_
+|            xcalc_
+|            ycalc_
+|            threshold_
+|            colour_
+|            yrange_
+|            points_
+|            source_
+|            :ref:`title <plot-title>`
+|        start_
+|        stop_
+|        duration_
+|        layout_
+|        size_
+|        fileformat_
+|        `lmargin, rmargin, tmargin, bmargin`_
+|        :ref:`title <graph-title>`
 
 graph
 ^^^^^
@@ -139,6 +139,8 @@ margin. Supply any positive real number, for example
 ``<lmargin>1.3</lmargin>``. Some experimentation may be necessary to
 find the best values.
 
+.. _graph-title:
+
 title
 ^^^^^
 
@@ -190,9 +192,12 @@ scale, if ycalc has been set to convert windspeeds to mph.
 colour
 ^^^^^^
 
-Sets the colours of the threshold petal segments. Any sequence of
-integer values is accepted. The mapping of colours to numbers is set
-by gnuplot. Default value is 0, 1, 2, 3, etc.
+Sets the colours of the threshold petal segments. Can be any sequence of
+values accepted by gnuplot. Default value is a sequence of integer
+colour indexes, which is probably not what you want. You may need to
+experiment with more complicated values such as ::
+
+  <colour>'rgb "grey"','rgb "#0000FF"','rgb "#00A080"','rgb "#00FF00"','rgb "#A0FF00"','rgb "#FFFF00"'</colour>
 
 yrange
 ^^^^^^
@@ -219,6 +224,8 @@ Select the weather data to be plotted. Permitted values are
 ``<source>daily</source>`` and ``<source>monthly</source>``. Default
 is raw. Note that the different sources have different data
 dictionaries, so this choice affects ycalc.
+
+.. _plot-title:
 
 title
 ^^^^^
@@ -409,7 +416,7 @@ set rtics format ''
                 title = '> %g (%.3g%%)' % (thresh[i-1], value)
             else:
                 title = '%g .. %g (%.3g%%)' % (thresh[i-1], thresh[i], value)
-            result += u'"%s" using 1:2 title "%s" with filledcurve lt %d' % (
+            result += u'"%s" using 1:2 title "%s" with filledcurve lt %s' % (
                 dat_file, title, colour[i % len(colour)])
             if i > 0:
                 result += u', \\'
