@@ -408,6 +408,9 @@ center horizontal width 1 noreverse enhanced autotitles box linetype
 -1 linewidth 1</command>``. (Don't ask me what this example does — I'm
 not an advanced user).
 
+.. versionadded:: 15.11.0.dev1333
+   This element can be repeated to allow several things to be set.
+
 xcalc
 ^^^^^
 
@@ -530,6 +533,12 @@ class GraphNode(object):
                 else:
                     return ''
         return default
+
+    def get_values(self, name):
+        for child in self.node.childNodes:
+            if child.localName == name:
+                if child.childNodes:
+                    yield child.childNodes[0].data.strip()
 
 class GraphFileReader(GraphNode):
     def __init__(self, input_file):
@@ -842,8 +851,7 @@ set timefmt "%Y-%m-%dT%H:%M:%S"
             boxwidth = 2800 * 24
         boxwidth = eval(plot.get_value('boxwidth', str(boxwidth)))
         result += u'set boxwidth %d\n' % boxwidth
-        command = plot.get_value('command', None)
-        if command:
+        for command in plot.get_values('command'):
             result += u'%s\n' % command
         stop = source.after(stop)
         if stop:
