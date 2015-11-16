@@ -27,12 +27,12 @@
 Introduction
 ------------
 
-Like Template.py this is one of the more difficult to use modules in
-the weather station software collection. It plots a graph (or set of
-graphs) of weather data. Almost everything about the graph is
-controlled by an XML file. I refer to these files as templates, but
-they aren't templates in the same sense as Template.py uses to create
-text files.
+Like :py:mod:`pywws.Template` this is one of the more difficult to use
+modules in the weather station software collection. It plots a graph (or
+set of graphs) of weather data. Almost everything about the graph is
+controlled by an XML file. I refer to these files as templates, but they
+aren't templates in the same sense as :py:mod:`pywws.Template` uses to
+create text files.
 
 Before writing your own graph template files, it might be useful to
 look at some of the examples in the example_graph_templates directory.
@@ -83,45 +83,45 @@ point and temperature), we can add more subplot elements. To plot more
 than one graph (for example wind speed is measured in different units
 from temperature) in the same file we can add more plot elements.
 
-The complete element hierarchy is shown below. ::
+The complete element hierarchy is shown below.
 
-    graph
-        plot
-            subplot
-                xcalc
-                ycalc
-                axes
-                style
-                colour
-                title
-            bmargin
-            yrange
-            y2range
-            ytics
-            y2tics
-            ylabel
-            ylabelangle
-            y2label
-            y2labelangle
-            grid
-            source
-            boxwidth
-            title
-            command
-        start
-        stop
-        duration
-        layout
-        size
-        fileformat
-        terminal
-        lmargin
-        rmargin
-        xformat
-        xlabel
-        dateformat
-        xtics
-        title
+|    graph_
+|        plot_
+|            subplot_
+|                xcalc_
+|                ycalc_
+|                axes_
+|                style_
+|                colour_
+|                :ref:`title <subplot-title>`
+|            bmargin_
+|            yrange_
+|            y2range_
+|            ytics_
+|            y2tics_
+|            ylabel_
+|            ylabelangle_
+|            y2label_
+|            y2labelangle_
+|            grid_
+|            source_
+|            boxwidth_
+|            :ref:`title <plot-title>`
+|            command_
+|        start_
+|        stop_
+|        duration_
+|        layout_
+|        size_
+|        fileformat_
+|        terminal_
+|        lmargin_
+|        rmargin_
+|        xformat_
+|        xlabel_
+|        dateformat_
+|        xtics_
+|        :ref:`title <graph-title>`
 
 graph
 ^^^^^
@@ -190,19 +190,31 @@ fileformat
 ^^^^^^^^^^
 
 Sets the image format of the file containing the graph. Default is
-png. Any string recognised by your installation of gnuplot should do.
-For example: ``<fileformat>gif</fileformat>`` will produce a GIF
+``png``. Any string recognised by your installation of gnuplot should
+do. For example: ``<fileformat>gif</fileformat>`` will produce a GIF
 image.
+
+If your installation of gnuplot supports it, ``pngcairo`` is an
+alternative to ``png`` that can yield much better looking results.
+
+.. versionadded:: 15.11.0.dev1331
+   You can also set terminal_ options in this string, for example:
+   ``<fileformat>pngcairo font "arial,8" rounded</fileformat>`` will use
+   a small "Arial" font and round the ends of line segments.
 
 terminal
 ^^^^^^^^
 
-Allows complete control of gnuplot's 'terminal' settings. You may want
+Allows complete control of gnuplot's "terminal" settings. You may want
 to use this if you are plotting to an unusual image format. Any string
 recognised by your installation of gnuplot's 'set terminal' command
-should do. For example: ``<terminal>svg enhanced font "arial,9" size
-600,800 dynamic rounded</terminal>``. This setting overwrites both
-size and fileformat.
+should do. For example: ``<terminal>svg enhanced font "arial,9" dynamic
+rounded size 600,800</terminal>``. This setting overwrites both size_
+and fileformat_.
+
+.. versionchanged:: 15.11.0.dev1331
+   The size_ and fileformat_ elements are now the preferred way to set
+   the gnuplot "terminal".
 
 lmargin
 ^^^^^^^
@@ -251,6 +263,8 @@ xtics
 Sets the spacing of the "tic" marks on the X axis. The value is an
 integer number of hours. The default is to allow gnuplot to set an
 appropriate interval.
+
+.. _graph-title:
 
 title
 ^^^^^
@@ -374,12 +388,14 @@ Sets the width of the "boxes" used when drawing bar graphs. The value
 is an integer expression yielding a number of seconds. Default depends
 on source: raw is 240, hourly is 2800 and daily is 2800 * 24.
 
+.. _plot-title:
+
 title
 ^^^^^
 
 Sets the title of the plot. A single line of text, for example:
 ``<title>Temperature (°C)</title>``. This title appears within the
-plot area, above any subplot titles.
+plot area, above any :ref:`subplot titles <subplot-title>`.
 
 command
 ^^^^^^^
@@ -445,6 +461,8 @@ colour
 Sets the colour of the subplot line or boxes. Any integer value is
 accepted. The mapping of colours to numbers is set by gnuplot. Default
 value is the previous colour plus one.
+
+.. _subplot-title:
 
 title
 ^^^^^
