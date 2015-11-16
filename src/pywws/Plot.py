@@ -619,6 +619,10 @@ class BasePlotter(object):
         self.tmp_files.append(cmd_file)
         of = codecs.open(cmd_file, 'w', encoding=self.encoding[0])
         # write gnuplot set up
+        of.write('set encoding %s\n' % (self.encoding[1]))
+        lcl = locale.getlocale()
+        if lcl[0]:
+            of.write('set locale "%s.%s"\n' % lcl)
         self.rows = self.GetDefaultRows()
         self.cols = (self.plot_count + self.rows - 1) // self.rows
         self.rows, self.cols = eval(self.graph.get_value(
@@ -629,15 +633,14 @@ class BasePlotter(object):
         w, h = eval(self.graph.get_value('size', '(%d, %d)' % (w, h)))
         fileformat = self.graph.get_value('fileformat', 'png')
         if fileformat == 'svg':
-            terminal = '%s enhanced font "arial,9" size %d,%d dynamic rounded' % (
-                fileformat, w, h)
+            terminal = 'svg enhanced font "arial,9" dynamic rounded'
+        elif u' ' not in fileformat:
+            terminal = '%s large' % (fileformat)
         else:
-            terminal = '%s large size %d,%d' % (fileformat, w, h)
+            terminal = fileformat
+        if u'size' not in terminal:
+            terminal += u' size %d,%d' % (w, h)
         terminal = self.graph.get_value('terminal', terminal)
-        of.write('set encoding %s\n' % (self.encoding[1]))
-        lcl = locale.getlocale()
-        if lcl[0]:
-            of.write('set locale "%s.%s"\n' % lcl)
         of.write('set terminal %s\n' % (terminal))
         of.write('set output "%s"\n' % (output_file))
         # set overall title
@@ -901,8 +904,8 @@ set timefmt "%Y-%m-%dT%H:%M:%S"
                 style = 'smooth unique lc %d lw %d' % (colour, width)
             axes = subplot.subplot.get_value('axes', 'x1y1')
             title = subplot.subplot.get_value('title', '')
-            result += u' "%s" using 1:($2) axes %s title "%s" %s' % (
-                subplot.dat_file, axes, title, style)
+            result += u' "%s" using 1:2 axes %s %s title "%s"' % (
+                subplot.dat_file, axes, style, title)
             if subplot_no != subplot_count - 1:
                 result += u', \\'
             result += u'\n'
