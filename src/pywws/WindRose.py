@@ -286,6 +286,8 @@ unset border
 set xtics axis
 unset ytics
 """
+        if self.gnuplot_version >= 4.4:
+            result += u'set style fill solid noborder\n'
         if self.gnuplot_version >= 4.6:
             result += u"""unset raxis
 set rtics format ''
@@ -341,12 +343,12 @@ set rtics format ''
         for n in range(16):
             total += histograms[0][n]
         for n in range(16):
-            histograms[0][n] = total // 16
+            histograms[0][n] = float(total) / 16.0
         # integrate histograms
         for i in range(1, len(thresh)):
             for n in range(16):
                 histograms[i][n] += histograms[i-1][n]
-        total = 0
+        total = 0.0
         for n in range(16):
             total += histograms[-1][n]
         result = u''
@@ -354,7 +356,7 @@ set rtics format ''
         if yrange == '*':
             # auto-ranging
             if total > 0:
-                max_petal = 100.0 * float(max(histograms[-1])) / float(total)
+                max_petal = 100.0 * float(max(histograms[-1])) / total
             else:
                 max_petal = 0.0
             if max_petal > 40.0:
@@ -367,9 +369,9 @@ set rtics format ''
                 yrange = 21
         else:
             yrange = eval(yrange)
-        result += u'set rrange [0:%d]\n' % (yrange)
-        result += u'set xrange [-%d:%d]\n' % (yrange, yrange)
-        result += u'set yrange [-%d:%d]\n' % (yrange, yrange)
+        result += u'set rrange [0:%f]\n' % (yrange)
+        result += u'set xrange [-%f:%f]\n' % (yrange, yrange)
+        result += u'set yrange [-%f:%f]\n' % (yrange, yrange)
         points = [_('N'), _('S'), _('E'), _('W')]
         points = eval(plot.get_value('points', str(points)))
         result += u'set label 1000 "%s" at 0, %d center front\n' % (points[0], yrange)
@@ -383,27 +385,42 @@ set rtics format ''
             self.tmp_files.append(dat_file)
             dat = open(dat_file, 'w')
             sub_total = 0
-            for n in range(16):
-                angle = 90.0 - (n * 22.5)
-                sub_total += histograms[i][n]
-                if i > 0:
-                    sub_total -= histograms[i-1][n]
+            if i == 0:
+                for n in range(16):
+                    sub_total += histograms[i][n]
                 if total > 0:
-                    value = 100.0 * float(histograms[i][n]) / float(total)
+                    value = 100.0 * float(histograms[i][0]) / float(total)
                 else:
                     value = 0.0
-                if i == 0:
-                    dat.write('%g %g\n' % (angle - 11.24, value * 0.994))
+                if self.gnuplot_version >= 4.4:
+                    dat.write('0 0 %g 0 360\n' % (value))
                 else:
-                    dat.write('%g %g\n' % (angle - 8.1, 0))
-                dat.write('%g %g\n' % (angle - 8.0, value * 0.997))
-                dat.write('%g %g\n' % (angle, value))
-                dat.write('%g %g\n' % (angle + 8.0, value * 0.997))
-                if i == 0:
-                    dat.write('%g %g\n' % (angle + 11.24, value * 0.994))
-                    dat.write('%g %g\n' % (angle + 11.25, 0))
-                else:
-                    dat.write('%g %g\n' % (angle + 8.1, 0))
+                    for n in range(16):
+                        angle = 90.0 - (n * 22.5)
+                        dat.write('%g %g\n' % (angle - 11.24, value * 0.994))
+                        dat.write('%g %g\n' % (angle - 8.0, value * 0.997))
+                        dat.write('%g %g\n' % (angle, value))
+                        dat.write('%g %g\n' % (angle + 8.0, value * 0.997))
+                        dat.write('%g %g\n' % (angle + 11.24, value * 0.994))
+                        dat.write('%g %g\n' % (angle + 11.25, 0))
+            else:
+                for n in range(16):
+                    angle = 90.0 - (n * 22.5)
+                    sub_total += histograms[i][n]
+                    sub_total -= histograms[i-1][n]
+                    if total > 0:
+                        value = 100.0 * float(histograms[i][n]) / float(total)
+                    else:
+                        value = 0.0
+                    if self.gnuplot_version >= 4.4:
+                        dat.write(
+                            '0 0 %g %g %g\n' % (value, angle - 10, angle + 10))
+                    else:
+                        dat.write('%g %g\n' % (angle - 8.1, 0))
+                        dat.write('%g %g\n' % (angle - 8.0, value * 0.997))
+                        dat.write('%g %g\n' % (angle, value))
+                        dat.write('%g %g\n' % (angle + 8.0, value * 0.997))
+                        dat.write('%g %g\n' % (angle + 8.1, 0))
             dat.close()
             # plot data
             if total > 0:
@@ -416,8 +433,12 @@ set rtics format ''
                 title = '> %g (%.3g%%)' % (thresh[i-1], value)
             else:
                 title = '%g .. %g (%.3g%%)' % (thresh[i-1], thresh[i], value)
-            result += u'"%s" using 1:2 title "%s" with filledcurve lt %s' % (
-                dat_file, title, colour[i % len(colour)])
+            if self.gnuplot_version >= 4.4:
+                result += u'"%s" using 1:2:3:4:5 title "%s" with circles lc %s' % (
+                    dat_file, title, colour[i % len(colour)])
+            else:
+                result += u'"%s" using 1:2 title "%s" with filledcurve lt %s' % (
+                    dat_file, title, colour[i % len(colour)])
             if i > 0:
                 result += u', \\'
             result += u'\n'
