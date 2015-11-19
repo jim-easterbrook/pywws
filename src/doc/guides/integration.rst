@@ -181,7 +181,7 @@ Open Weather Map
     lat = 51.501
     long = -0.142
     alt = 10
-    user = Elizabeth Windsor
+    user = ElizabethWindsor
     password = corgi
     id = Buck House
     template = default
@@ -189,10 +189,13 @@ Open Weather Map
     [logged]
     services = ['openweathermap', 'underground']
 
+When choosing a user name you should avoid spaces (and probably non-ascii characters as well).
+Having a space in your user name causes strange "internal server error" responses from the server.
+
 The default behaviour is to use your user name to identify the weather station.
 However, it's possible for a user to have more than one weather station, so there is an optional ``name`` parameter in the API that can be used to identify the station.
 This appears as ``id`` in ``weather.ini``.
-Make sure you don't choose a name that is already in use.
+Make sure you choose a name that is not already in use.
 
 PWS Weather
 ^^^^^^^^^^^
