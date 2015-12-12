@@ -2,7 +2,7 @@
 
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-14  Jim Easterbrook  jim@jim-easterbrook.me.uk
+# Copyright (C) 2008-15  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -65,6 +65,7 @@ class Runner(DaemonRunner):
         # initialise daemon runner
         DaemonRunner.__init__(self, self)
         self.daemon_context.files_preserve = files_preserve
+        self.daemon_context.initgroups = False
         self.action = action
 
     def parse_args(self, argv=None):
