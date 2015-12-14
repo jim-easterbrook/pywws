@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<graph>
+  <fileformat>pngcairo enhanced font "arial,10" rounded</fileformat>
+  <size>600, 600</size>
+  <lmargin>5</lmargin>
+  <start>year=2015, month=1, day=1, hour=0</start>
+  <stop>year=2015, month=12, day=31, hour=0</stop>
+  <xformat>%b</xformat>
+  <xlabel>%Y</xlabel>
+  <dateformat></dateformat>
+  <plot>
+    <bmargin>1</bmargin>
+    <title>Temperature (°C)</title>
+    <yrange>-10, 55</yrange>
+    <y2range>-10, 55</y2range>
+    <source>monthly</source>
+    <grid></grid>
+    <boxwidth>boxwidth / 2</boxwidth>
+    <subplot>
+      <style>box</style>
+      <colour>1</colour>
+      <title>Mean daytime max</title>
+      <xcalc>data['start'] + timedelta(days=20)</xcalc>
+      <ycalc>data['temp_out_max_ave']</ycalc>
+    </subplot>
+    <subplot>
+      <style>+</style>
+      <colour>8</colour>
+      <title>Highest daytime max</title>
+      <xcalc>data['temp_out_max_hi_t']</xcalc>
+      <ycalc>data['temp_out_max_hi']</ycalc>
+    </subplot>
+    <subplot>
+      <style>box</style>
+      <colour>3</colour>
+      <title>Mean nighttime min</title>
+      <xcalc>data['start'] + timedelta(days=7)</xcalc>
+      <ycalc>data['temp_out_min_ave']</ycalc>
+    </subplot>
+    <subplot>
+      <style>+</style>
+      <colour>5</colour>
+      <title>Lowest nighttime min</title>
+      <xcalc>data['temp_out_min_lo_t']</xcalc>
+      <ycalc>data['temp_out_min_lo']</ycalc>
+    </subplot>
+  </plot>
+  <plot>
+    <yrange>0, 180</yrange>
+    <y2range>0, 180</y2range>
+    <source>monthly</source>
+    <grid></grid>
+    <subplot>
+      <colour>5</colour>
+      <style>box</style>
+      <xcalc>data['start'] + timedelta(days=14)</xcalc>
+      <ycalc>data['rain']</ycalc>
+      <title>Monthly rainfall (mm)</title>
+    </subplot>
+  </plot>
+</graph>

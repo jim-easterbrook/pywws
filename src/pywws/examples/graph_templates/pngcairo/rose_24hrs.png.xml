@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<graph>
+  <fileformat>pngcairo enhanced font "arial,10" rounded</fileformat>
+  <title>Wind speed (Beaufort) distribution over 24 hours ending %H:%M</title>
+  <duration>hours=24</duration>
+  <windrose>
+    <source>raw</source>
+    <ycalc>wind_bft(data['wind_ave'])</ycalc>
+    <yrange>36</yrange>
+    <threshold>1, 2, 3, 4, 5</threshold>
+    <colour>'rgb "yellow"', 'rgb "blue"', 'rgb "cyan"', 'rgb "magenta"', 'rgb "green"', 'rgb "red"'</colour>
+  </windrose>
+</graph>

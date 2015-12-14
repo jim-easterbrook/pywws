@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<graph>
+  <fileformat>pngcairo enhanced font "arial,8" rounded</fileformat>
+  <size>506, 253</size>
+  <lmargin>7</lmargin>
+  <rmargin>7</rmargin>
+  <duration>hours=24</duration>
+  <xtics>2</xtics>
+  <xformat>%H%M</xformat>
+  <xlabel></xlabel>
+  <dateformat></dateformat>
+  <plot>
+    <bmargin>1</bmargin>
+    <yrange>-10, 35</yrange>
+    <y2range>-10, 35</y2range>
+    <ytics>10</ytics>
+    <y2tics>10</y2tics>
+    <source>raw</source>
+    <grid></grid>
+    <subplot>
+      <colour>1</colour>
+      <title>Temperature (°C)</title>
+      <ycalc>data['temp_out']</ycalc>
+    </subplot>
+    <subplot>
+      <colour>3</colour>
+      <ycalc>dew_point(data['temp_out'], data['hum_out'])</ycalc>
+      <title>Dew point (°C)</title>
+    </subplot>
+  </plot>
+  <plot>
+    <bmargin>1.6</bmargin>
+    <title>Rainfall (mm)</title>
+    <yrange>0, 10</yrange>
+    <y2range>0, 50</y2range>
+    <ylabel>hourly</ylabel>
+    <y2label>total</y2label>
+    <source>hourly</source>
+    <grid></grid>
+    <subplot>
+      <colour>5</colour>
+      <style>box</style>
+      <xcalc>data['idx'].replace(minute=30, second=0)</xcalc>
+      <ycalc>data['rain']</ycalc>
+      <title>hourly</title>
+    </subplot>
+    <subplot>
+      <colour>3</colour>
+      <axes>x1y2</axes>
+      <ycalc>data['rain'] + last_ycalc</ycalc>
+      <title>total</title>
+    </subplot>
+  </plot>
+</graph>

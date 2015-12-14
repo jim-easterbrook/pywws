@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<graph>
+  <fileformat>pngcairo enhanced font "arial,10" rounded</fileformat>
+  <size>600, 1000</size>
+  <lmargin>7</lmargin>
+  <rmargin>7</rmargin>
+  <duration>hours=24</duration>
+  <xtics>2</xtics>
+  <xformat>%H%M</xformat>
+  <dateformat></dateformat>
+  <plot>
+    <command>set style circle radius 150</command>
+    <bmargin>1</bmargin>
+    <yrange>-10, 35</yrange>
+    <y2range>-10, 35</y2range>
+    <source>raw</source>
+    <grid></grid>
+    <subplot>
+      <colour>rgb "red"</colour>
+      <title>Temperature (°C)</title>
+      <ycalc>data['temp_out']</ycalc>
+    </subplot>
+    <subplot>
+      <colour>rgb "green"</colour>
+      <ycalc>dew_point(data['temp_out'], data['hum_out'])</ycalc>
+      <title>Dew point (°C)</title>
+    </subplot>
+  </plot>
+  <plot>
+    <bmargin>1</bmargin>
+    <title>Wind speed (mph)</title>
+    <yrange>0, 35</yrange>
+    <y2range>0, 35</y2range>
+    <source>raw</source>
+    <grid></grid>
+    <subplot>
+      <colour>rgb "blue"</colour>
+      <ycalc>wind_mph(data['wind_ave'])</ycalc>
+      <title>average</title>
+    </subplot>
+    <subplot>
+      <style>with circles lc rgb "orange"</style>
+      <ycalc>(None,wind_mph(data['wind_gust']))[data['wind_gust']-data['wind_ave']>1.0]</ycalc>
+      <title>gust</title>
+    </subplot>
+  </plot>
+  <plot>
+    <bmargin>1</bmargin>
+    <yrange>0, 360</yrange>
+    <ytics>45</ytics>
+    <y2tics>('N' 0, 'E' 90, 'S' 180, 'W' 270, 'N' 360)</y2tics>
+    <source>raw</source>
+    <grid></grid>
+    <subplot>
+      <style>with circles lc rgb "blue"</style>
+      <colour>2</colour>
+      <ycalc>(None,winddir_degrees(data['wind_dir']))[data['wind_ave']>0.5]</ycalc>
+      <title>Wind direction</title>
+    </subplot>
+  </plot>
+  <plot>
+    <title>Rainfall (mm)</title>
+    <bmargin>1</bmargin>
+    <yrange>0, 10</yrange>
+    <y2range>0, 50</y2range>
+    <ylabel>hourly</ylabel>
+    <y2label>total</y2label>
+    <source>hourly</source>
+    <grid></grid>
+    <subplot>
+      <colour>rgb "cyan"</colour>
+      <style>box</style>
+      <xcalc>data['idx'].replace(minute=30, second=0)</xcalc>
+      <ycalc>data['rain']</ycalc>
+      <title>hourly</title>
+    </subplot>
+    <subplot>
+      <colour>rgb "blue"</colour>
+      <axes>x1y2</axes>
+      <ycalc>data['rain'] + last_ycalc</ycalc>
+      <title>total</title>
+    </subplot>
+  </plot>
+  <plot>
+    <source>hourly</source>
+    <grid></grid>
+    <subplot>
+      <colour>rgb "black"</colour>
+      <ycalc>data['rel_pressure']</ycalc>
+      <title>Pressure (hPa)</title>
+    </subplot>
+    <yrange>960, 1060</yrange>
+    <y2range>960, 1060</y2range>
+  </plot>
+</graph>
