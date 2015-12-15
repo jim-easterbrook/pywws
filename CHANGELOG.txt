@@ -16,6 +16,12 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
+Changes in v15.12.0:
+    1/ Fix bug with Twitter messages being excessively truncated.
+    2/ Improve handling of utf-8 encoded templates.
+    3/ Improved plots and wind roses with 'pngcairo' "terminal".
+    4/ Various bug fixes and minor improvements.
+
 Changes in v15.11.0:
     1/ Add Russian translation of program text.
     2/ Improved documentation.
