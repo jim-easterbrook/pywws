@@ -147,7 +147,7 @@ command_options['upload_docs'] = {
 class upload_and_tag(upload):
     def run(self):
         import git
-        message = ''
+        message = next_release + '\n\n'
         with open('CHANGELOG.txt') as cl:
             while not cl.readline().startswith('Changes'):
                 pass
