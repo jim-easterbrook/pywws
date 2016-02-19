@@ -336,7 +336,7 @@ class ToService(object):
             "port [%s] with a client_id [%s] and retain is %s",
             timestamp.isoformat(' '), topic, hostname, port, client_id, retain)
 
-        mosquitto_client.connect(hostname, port)
+        mosquitto_client.connect(hostname, int(port))
         mosquitto_client.publish(topic, json.dumps(prepared_data), retain=retain)
 
 ##        commented out as sending the data as a json object (above)
