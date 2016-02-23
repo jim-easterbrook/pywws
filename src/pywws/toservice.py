@@ -473,7 +473,10 @@ class ToService(object):
                     return True
             return False
         except urllib2.HTTPError, ex:
-            new_ex = '[%d]%s' % (ex.code, ex.reason)
+            if sys.version_info >= (2, 7):
+                new_ex = '[%d]%s' % (ex.code, ex.reason)
+            else:
+                new_ex = str(ex)
             ex_info = str(ex.info()).split('\n')
             try:
                 for line in ex.readlines():
