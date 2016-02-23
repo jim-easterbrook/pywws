@@ -86,14 +86,14 @@ class TweepyHandler(object):
             self.api.update_status(status[:140], **self.kwargs)
 
 class PythonTwitterHandler(object):
-    def __init__(self, key, secret, latitude, longitude):
+    def __init__(self, key, secret, latitude, longitude, timeout):
         self.logger = logging.getLogger('pywws.ToTwitter')
         self.logger.info('Using python-twitter library')
         self.api = twitter.Api(
             consumer_key=pct.consumer_key,
             consumer_secret=pct.consumer_secret,
             access_token_key=key, access_token_secret=secret,
-            timeout=30)
+            timeout=timeout)
         if latitude is not None and longitude is not None:
             self.kwargs = {'latitude' : latitude, 'longitude' : longitude,
                            'display_coordinates' : True}
@@ -123,7 +123,12 @@ class ToTwitter(object):
         longitude = params.get('twitter', 'longitude')
         # open API
         if twitter:
-            self.api = PythonTwitterHandler(key, secret, latitude, longitude)
+            if eval(params.get('config', 'asynchronous', 'False')):
+                timeout = 60
+            else:
+                timeout = 20
+            self.api = PythonTwitterHandler(
+                key, secret, latitude, longitude, timeout)
         else:
             self.api = TweepyHandler(key, secret, latitude, longitude)
 

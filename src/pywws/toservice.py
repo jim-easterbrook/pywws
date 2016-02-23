@@ -207,7 +207,10 @@ class ToService(object):
         self.old_response = None
         self.old_ex = None
         # set default socket timeout, so urlopen calls don't hang forever
-        socket.setdefaulttimeout(30)
+        if eval(self.params.get('config', 'asynchronous', 'False')):
+            socket.setdefaulttimeout(60)
+        else:
+            socket.setdefaulttimeout(20)
         # open params file
         service_params = SafeConfigParser()
         service_params.optionxform = str
