@@ -35,8 +35,8 @@ else:
 
 # get GitHub repo information
 # requires GitPython - 'sudo pip install gitpython --pre'
-last_commit = _commit
-last_release = None
+next_release = '.'.join(__version__.split('.')[:3])
+version = next_release
 try:
     import git
 except ImportError:
@@ -46,38 +46,37 @@ if git:
         repo = git.Repo()
         if repo.is_dirty():
             latest = 0
+            last_release = None
             for tag in repo.tags:
                 if tag.tag.tagged_date > latest:
                     latest = tag.tag.tagged_date
                     last_release = str(tag)
             last_commit = str(repo.head.commit)[:7]
+            # regenerate version info, if required
+            if last_commit != _commit:
+                _release = str(int(_release) + 1)
+                _commit = last_commit
+            if last_release:
+                major, minor, patch = last_release.split('.')
+                today = date.today()
+                if today.strftime('%y%m') == major + minor:
+                    patch = int(patch) + 1
+                else:
+                    patch = 0
+                next_release = today.strftime('%y.%m') + '.%d' % patch
+                version = next_release + '.dev%s' % _release
+            vf = open('src/pywws/__init__.py', 'r')
+            old_init_str = vf.read()
+            vf.close()
+            new_init_str = "__version__ = '" + version + "'\n"
+            new_init_str += "_release = '" + _release + "'\n"
+            new_init_str += "_commit = '" + _commit + "'\n"
+            if new_init_str != old_init_str:
+                vf = open('src/pywws/__init__.py', 'w')
+                vf.write(new_init_str)
+                vf.close()
     except (git.exc.InvalidGitRepositoryError, git.exc.GitCommandNotFound):
         pass
-
-# regenerate version info, if required
-if last_commit != _commit:
-    _release = str(int(_release) + 1)
-    _commit = last_commit
-if last_release:
-    major, minor, patch = last_release.split('.')
-    today = date.today()
-    if today.strftime('%m') == minor:
-        patch = int(patch) + 1
-    else:
-        patch = 0
-    next_release = today.strftime('%y.%m') + '.%d' % patch
-    version = next_release + '.dev%s' % _release
-else:
-    next_release = '.'.join(__version__.split('.')[:3])
-    version = next_release
-
-if version != __version__:
-    vf = open('src/pywws/__init__.py', 'w')
-    vf.write("""__version__ = '%s'
-_release = '%s'
-_commit = '%s'
-""" % (version, _release, _commit))
-    vf.close()
 
 cmdclass = {}
 command_options = {}
