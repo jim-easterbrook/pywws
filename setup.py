@@ -35,8 +35,6 @@ else:
 
 # get GitHub repo information
 # requires GitPython - 'sudo pip install gitpython --pre'
-next_release = '.'.join(__version__.split('.')[:3])
-version = next_release
 try:
     import git
 except ImportError:
@@ -63,12 +61,11 @@ if git:
                     patch = int(patch) + 1
                 else:
                     patch = 0
-                next_release = today.strftime('%y.%m') + '.%d' % patch
-                version = next_release + '.dev%s' % _release
+                __version__ = today.strftime('%y.%m') + '.%d' % patch
             vf = open('src/pywws/__init__.py', 'r')
             old_init_str = vf.read()
             vf.close()
-            new_init_str = "__version__ = '" + version + "'\n"
+            new_init_str = "__version__ = '" + __version__ + "'\n"
             new_init_str += "_release = '" + _release + "'\n"
             new_init_str += "_commit = '" + _commit + "'\n"
             if new_init_str != old_init_str:
@@ -148,7 +145,7 @@ command_options['upload_docs'] = {
 class upload_and_tag(upload):
     def run(self):
         import git
-        message = next_release + '\n\n'
+        message = __version__ + '\n\n'
         with open('CHANGELOG.txt') as cl:
             while not cl.readline().startswith('Changes'):
                 pass
@@ -158,7 +155,7 @@ class upload_and_tag(upload):
                     break
                 message += line + '\n'
         repo = git.Repo()
-        tag = repo.create_tag(next_release, message=message)
+        tag = repo.create_tag(__version__, message=message)
         remote = repo.remotes.origin
         remote.push(tags=True)
         return upload.run(self)
@@ -173,12 +170,12 @@ with open('README.rst') as ldf:
     long_description = ldf.read()
 
 setup(name = 'pywws',
-      version = next_release,
+      version = __version__,
       description = 'Python software for wireless weather stations',
       author = 'Jim Easterbrook',
       author_email = 'jim@jim-easterbrook.me.uk',
       url = 'http://jim-easterbrook.github.com/pywws/',
-      download_url = 'https://pypi.python.org/pypi/pywws/%s' % next_release,
+      download_url = 'https://pypi.python.org/pypi/pywws/%s' % __version__,
       long_description = long_description,
       classifiers = [
           'Development Status :: 5 - Production/Stable',

@@ -2,7 +2,7 @@
 
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-14  Jim Easterbrook  jim@jim-easterbrook.me.uk
+# Copyright (C) 2008-16  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -28,7 +28,7 @@ import logging
 import logging.handlers
 import sys
 
-from . import __version__
+from . import __version__, _release, _commit
 
 def ApplicationLogger(verbose, logfile=None):
     logger = logging.getLogger('')
@@ -45,6 +45,7 @@ def ApplicationLogger(verbose, logfile=None):
         logging.Formatter('%(asctime)s:%(name)s:%(message)s', datefmt))
     logger.addHandler(handler)
     pywws_logger = logging.getLogger('pywws.Logger')
-    pywws_logger.warning('pywws version %s', __version__)
+    pywws_logger.warning(
+        'pywws version %s, build %s (%s)', __version__, _release, _commit)
     pywws_logger.info('Python version %s', sys.version)
     return logger
