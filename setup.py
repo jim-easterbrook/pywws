@@ -2,7 +2,7 @@
 
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-14  Jim Easterbrook  jim@jim-easterbrook.me.uk
+# Copyright (C) 2008-16  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -39,18 +39,20 @@ last_commit = _commit
 last_release = None
 try:
     import git
+except ImportError:
+    git = None
+if git:
     try:
         repo = git.Repo()
-        latest = 0
-        for tag in repo.tags:
-            if tag.tag.tagged_date > latest:
-                latest = tag.tag.tagged_date
-                last_release = str(tag)
-        last_commit = str(repo.head.commit)[:7]
-    except git.exc.InvalidGitRepositoryError:
+        if repo.is_dirty():
+            latest = 0
+            for tag in repo.tags:
+                if tag.tag.tagged_date > latest:
+                    latest = tag.tag.tagged_date
+                    last_release = str(tag)
+            last_commit = str(repo.head.commit)[:7]
+    except (git.exc.InvalidGitRepositoryError, git.exc.GitCommandNotFound):
         pass
-except ImportError:
-    pass
 
 # regenerate version info, if required
 if last_commit != _commit:
