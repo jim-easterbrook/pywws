@@ -24,3 +24,4 @@ Ramiro                          ramiro.sanchez@telefonica.net
 Rick Sulman                     rick@sulman.org
 Pyttsen                         weather@spacelab.se
 Tech2304                        tech2304@gmail.com
+Pablo Vera                      pablo.vera82@gmail.com
