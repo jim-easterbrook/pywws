@@ -580,7 +580,7 @@ class BasePlotter(object):
     def _local_offset(self, time):
         try:
             result = Local.utcoffset(time)
-        except pytz.AmbiguousTimeError:
+        except pytz.InvalidTimeError:
             result = Local.utcoffset(time + HOUR)
         return result
 
