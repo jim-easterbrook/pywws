@@ -2,7 +2,7 @@
 
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-15  pywws contributors
+# Copyright (C) 2008-16  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -111,9 +111,8 @@ class PythonTwitterHandler(object):
 class ToTwitter(object):
     def __init__(self, params):
         self.logger = logging.getLogger('pywws.ToTwitter')
+        self.params = params
         self.old_ex = None
-        # get character encoding of template output
-        self.encoding = params.get('config', 'template encoding', 'iso-8859-1')
         # get parameters
         key = params.get('twitter', 'key')
         secret = params.get('twitter', 'secret')
@@ -153,7 +152,9 @@ class ToTwitter(object):
         return False
 
     def UploadFile(self, file):
-        tweet_file = codecs.open(file, 'r', encoding=self.encoding)
+        # get default character encoding of template output
+        encoding = self.params.get('config', 'template encoding', 'iso-8859-1')
+        tweet_file = codecs.open(file, 'r', encoding=encoding)
         tweet = tweet_file.read()
         tweet_file.close()
         return self.Upload(tweet)

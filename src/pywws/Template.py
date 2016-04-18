@@ -3,7 +3,7 @@
 
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-15  pywws contributors
+# Copyright (C) 2008-16  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -48,15 +48,19 @@ Text encoding
 ^^^^^^^^^^^^^
 
 The ``[config]`` section of :ref:`weather.ini <weather_ini-config>` has
-a ``template encoding`` entry that tells pywws what text encoding your
-template files use. The default value, ``iso-8859-1``, is suitable for
-most western European languages, but may need changing if you use
-another language. It can be set to any text encoding recognised by the
-Python :py:mod:`codecs` module.
+a ``template encoding`` entry that tells pywws what text encoding most
+of your template files use. The default value, ``iso-8859-1``, is
+suitable for most western European languages, but may need changing if
+you use another language. It can be set to any text encoding recognised
+by the Python :py:mod:`codecs` module.
 
-Make sure all your templates use the text encoding you set. The `iconv
+Make sure your templates use the text encoding you set. The `iconv
 <http://man7.org/linux/man-pages/man1/iconv.1.html>`_ program can be
 used to transcode files.
+
+.. versionadded:: 16.04.0
+   the ``#encoding#`` processing instruction can be used to set the text
+   encoding of a template file.
 
 Processing instructions
 -----------------------
@@ -127,6 +131,18 @@ switch use of 'locale' on or off, according to ``expr``. When locale
 is on floating point numbers may use a comma as the decimal separator
 instead of a point, depending on your localisation settings. Use
 ``"True"`` or ``"False"`` for expr.
+
+``#encoding expr#``
+^^^^^^^^^^^^^^^^^^^
+
+.. versionadded:: 16.04.0
+
+set the template text encoding to ``expr``, e.g. ``ascii``, ``utf8`` or
+``html``. The ``html`` encoding is a special case. It writes ``ascii``
+files but with non ASCII characters converted to HTML entities.
+
+Any ``#encoding#`` directive should be placed near the beginning of the
+template file, before any non-ASCII characters are used.
 
 ``#roundtime expr#``
 ^^^^^^^^^^^^^^^^^^^^
@@ -312,8 +328,6 @@ class Template(object):
         self.use_locale = use_locale
         self.midnight = None
         self.rain_midnight = None
-        # get character encoding of template input & output files
-        self.encoding = params.get('config', 'template encoding', 'iso-8859-1')
 
     def process(self, live_data, template_file):
         def jump(idx, count):
@@ -335,9 +349,14 @@ class Template(object):
         if not live_data:
             idx = self.calib_data.before(datetime.max)
             if not idx:
-                self.logger.error("No calib data - run Process.py first")
+                self.logger.error("No calib data - run pywws.Process first")
                 return
             live_data = self.calib_data[idx]
+        # get default character encoding of template input & output files
+        self.encoding = params.get('config', 'template encoding', 'iso-8859-1')
+        file_encoding = self.encoding
+        if file_encoding == 'html':
+            file_encoding = 'ascii'
         # get conversions module to create its 'private' wind dir text
         # array, then copy it to deprecated wind_dir_text variable
         winddir_text(0)
@@ -358,7 +377,7 @@ class Template(object):
         # jump to last item
         idx, valid_data = jump(datetime.max, -1)
         if not valid_data:
-            self.logger.error("No summary data - run Process.py first")
+            self.logger.error("No summary data - run pywws.Process first")
             return
         data = data_set[idx]
         # open template file, if not already a file(like) object
@@ -368,7 +387,7 @@ class Template(object):
             tmplt = open(template_file, 'rb')
         # do the text processing
         while True:
-            line = tmplt.readline().decode(self.encoding)
+            line = tmplt.readline().decode(file_encoding)
             if not line:
                 break
             parts = line.split('#')
@@ -383,10 +402,10 @@ class Template(object):
                     continue
                 # Python 2 shlex can't handle unicode
                 if sys.version_info[0] < 3:
-                    parts[i] = parts[i].encode(self.encoding)
+                    parts[i] = parts[i].encode(file_encoding)
                 command = shlex.split(parts[i])
                 if sys.version_info[0] < 3:
-                    command = map(lambda x: x.decode(self.encoding), command)
+                    command = map(lambda x: x.decode(file_encoding), command)
                 if command == []:
                     # empty command == print a single '#'
                     yield u'#'
@@ -420,10 +439,10 @@ class Template(object):
                             yield command[2]
                     elif isinstance(x, datetime):
                         if sys.version_info[0] < 3:
-                            fmt = fmt.encode(self.encoding)
+                            fmt = fmt.encode(file_encoding)
                         x = x.strftime(fmt)
                         if sys.version_info[0] < 3:
-                            x = x.decode(self.encoding)
+                            x = x.decode(file_encoding)
                         yield x
                     elif not use_locale:
                         yield fmt % (x)
@@ -463,6 +482,11 @@ class Template(object):
                         return
                 elif command[0] == 'locale':
                     use_locale = eval(command[1])
+                elif command[0] == 'encoding':
+                    self.encoding = command[1]
+                    file_encoding = self.encoding
+                    if file_encoding == 'html':
+                        file_encoding = 'ascii'
                 elif command[0] == 'roundtime':
                     if eval(command[1]):
                         round_time = timedelta(seconds=30)
@@ -506,9 +530,13 @@ class Template(object):
         return result
 
     def make_file(self, template_file, output_file, live_data=None):
-        of = codecs.open(output_file, 'w', encoding=self.encoding)
-        for text in self.process(live_data, template_file):
-            of.write(text)
+        text = self.make_text(template_file, live_data)
+        if self.encoding == 'html':
+            of = codecs.open(output_file, 'w', encoding='ascii',
+                             errors='xmlcharrefreplace')
+        else:
+            of = codecs.open(output_file, 'w', encoding=self.encoding)
+        of.write(text)
         of.close()
         return 0
 

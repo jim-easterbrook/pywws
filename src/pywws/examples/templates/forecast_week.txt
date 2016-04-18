@@ -1,6 +1,6 @@
 #! pywws - Python software for USB Wireless Weather Stations                       #
 #! http://github.com/jim-easterbrook/pywws                                         #
-#! Copyright (C) 2008-13  Jim Easterbrook  jim@jim-easterbrook.me.uk               #
+#! Copyright (C) 2008-16  pywws contributors                                       #
 #!                                                                                 #
 #! This program is free software; you can redistribute it and/or                   #
 #! modify it under the terms of the GNU General Public License                     #
@@ -15,6 +15,7 @@
 #! You should have received a copy of the GNU General Public License               #
 #! along with this program; if not, write to the Free Software                     #
 #! Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA. #
+#encoding html#
 <table border="1" rules="all">
   <tr>
     <th>date &amp; time</th>
