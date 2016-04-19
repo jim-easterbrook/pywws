@@ -214,7 +214,7 @@ setup(name = 'pywws',
       extras_require = {
           'daemon'  : ['python-daemon'],
           'sftp'    : ['paramiko', 'pycrypto'],
-          'twitter' : ['python-twitter >= 1.0', 'oauth2'],
+          'twitter' : ['python-twitter >= 2.1', 'oauth2'],
           },
       zip_safe = False,
       use_2to3 = True,

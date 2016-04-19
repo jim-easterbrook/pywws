@@ -1,6 +1,6 @@
 .. pywws - Python software for USB Wireless Weather Stations
    http://github.com/jim-easterbrook/pywws
-   Copyright (C) 2008-15  pywws contributors
+   Copyright (C) 2008-16  pywws contributors
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -171,7 +171,7 @@ Twitter updates
 The :py:mod:`pywws.ToTwitter` module can be used to send weather status messages to Twitter.
 Posting to Twitter requires these modules:
 
-*  `python-twitter <https://github.com/bear/python-twitter>`_ v1.0 or higher
+*  `python-twitter <https://github.com/bear/python-twitter>`_ v2.1 or higher
 *  `python-oauth2 <https://github.com/simplegeo/python-oauth2>`_
 
 ::
