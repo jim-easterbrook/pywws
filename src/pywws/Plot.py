@@ -3,7 +3,7 @@
 
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-15  pywws contributors
+# Copyright (C) 2008-16  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -310,6 +310,12 @@ temperatures with no value going off the graph: ``<yrange>-10,
 You can use an asterisk to have gnuplot choose a suitable value. For
 example, to have the upper value auto scale whilst fixing the lower
 value at zero, use ``<yrange>0:*</yrange>``.
+
+Since gnuplot version 4.6 you can set lower and/or upper bounds of the
+auto scaled range. The gnuplot syntax for this is ``lo < * < hi``, but
+as the plot template is an XML file we need to replace the ``<``
+characters with ``&lt;``. For example, if we want the upper value to
+always be 20 or more we can use ``<yrange>0:20 &lt; *</yrange>``.
 
 y2range
 ^^^^^^^
