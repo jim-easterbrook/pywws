@@ -2,7 +2,7 @@
 
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-15  pywws contributors
+# Copyright (C) 2008-16  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -65,6 +65,7 @@ The complete element hierarchy is shown below.
 |            points_
 |            source_
 |            :ref:`title <plot-title>`
+|            command_
 |        start_
 |        stop_
 |        duration_
@@ -212,9 +213,9 @@ points
 ^^^^^^
 
 Sets the text of the compass points. The defaults are 'N', 'S', 'E' &
-'W'. For graphs in another language you can over-ride this, for
-example: ``<points>'No', 'Zu', 'Oo', 'We'</points>``. (The preferred
-way to do this is to create a language file, see Localisation.py.)
+'W'. For graphs in another language you can over-ride this, for example:
+``<points>'No', 'Zu', 'Oo', 'We'</points>``. (The preferred way to do
+this is to create a language file, see :py:mod:`pywws.Localisation`.)
 
 source
 ^^^^^^
@@ -233,6 +234,21 @@ title
 Sets the title of the plot. A single line of text, for example:
 ``<title>Morning winds</title>``. This title appears within the plot
 area, above the threshold colour key.
+
+command
+^^^^^^^
+
+.. versionadded:: 16.06.0
+
+Execute any gnuplot command, just before the main "plot" command. This
+option allows advanced users to have greater control over the graph
+appearance. The value is any valid gnuplot command, typically
+beginning with the word set.
+
+For example, ``<command>set grid front</command>`` will stop the grid
+being hidden by the coloured wedges, and ``<command>set key outside
+above right maxrows 1</command>`` will place the key outside the plot
+area.
 
 Detailed API
 ------------
@@ -374,10 +390,13 @@ set rtics format ''
         result += u'set yrange [-%f:%f]\n' % (yrange, yrange)
         points = [_('N'), _('S'), _('E'), _('W')]
         points = eval(plot.get_value('points', str(points)))
-        result += u'set label 1000 "%s" at 0, %d center front\n' % (points[0], yrange)
-        result += u'set label 1001 "%s" at 0, -%d center front\n' % (points[1], yrange)
-        result += u'set label 1002 "%s" at %d, 0 center front\n' % (points[2], yrange)
-        result += u'set label 1003 "%s" at -%d, 0 center front\n' % (points[3], yrange)
+        result += u'set label 1000 "%s" at 0, %d center front\n' % (points[0], yrange + 1)
+        result += u'set label 1001 "%s" at 0, -%d center front\n' % (points[1], yrange + 1)
+        result += u'set label 1002 "%s" at %d, 0 center front\n' % (points[2], yrange + 1)
+        result += u'set label 1003 "%s" at -%d, 0 center front\n' % (points[3], yrange + 1)
+        # additional commands for gnuplot
+        for command in plot.get_values('command'):
+            result += u'%s\n' % command
         # plot segments for each speed-direction
         result += u'plot '
         for i in reversed(range(len(thresh))):
