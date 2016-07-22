@@ -160,10 +160,10 @@ import urllib
 import urllib2
 import urlparse
 
-from . import DataStore
-from .Logger import ApplicationLogger
-from . import Template
-from . import __version__
+from pywws import DataStore
+from pywws.Logger import ApplicationLogger
+from pywws import Template
+from pywws import __version__
 
 PARENT_MARGIN = timedelta(minutes=2)
 

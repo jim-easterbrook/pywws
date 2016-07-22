@@ -515,12 +515,12 @@ import xml.dom.minidom
 
 import pytz
 
-from .constants import HOUR
-from .conversions import *
-from . import DataStore
-from . import Localisation
-from .Logger import ApplicationLogger
-from .TimeZone import Local, utc
+from pywws.constants import HOUR
+from pywws.conversions import *
+from pywws import DataStore
+from pywws import Localisation
+from pywws.Logger import ApplicationLogger
+from pywws.TimeZone import Local, utc
 
 class GraphNode(object):
     def __init__(self, node):

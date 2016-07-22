@@ -2,7 +2,7 @@
 
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-14  Jim Easterbrook  jim@jim-easterbrook.me.uk
+# Copyright (C) 2008-16  pywws contributors
 # Inspired by beteljuice.com Java algorithm, as converted to Python by
 # honeysucklecottage.me.uk, and further information from
 # http://www.meteormetrics.com/zambretti.htm
@@ -102,7 +102,7 @@ def ZambrettiText(letter):
     return forecast_text[letter]
 
 def main(argv=None):
-    from .conversions import winddir_text
+    from pywws.conversions import winddir_text
     for pressure in range(1030, 960, -10):
         for trend_txt in ('S', 'R-S', 'R-W', 'F-W', 'F-S'):
             trend, month = {

@@ -39,7 +39,7 @@ import os
 from pkg_resources import resource_filename
 import sys
 
-from . import __version__, _release, _commit
+from pywws import __version__, _release, _commit
 
 def main(argv=None):
     if argv is None:
@@ -71,7 +71,7 @@ def main(argv=None):
         print 'commit:', _commit
         print 'Python:', sys.version
         try:
-            from .WeatherStation import USBDevice
+            from pywws.WeatherStation import USBDevice
             print 'USB:   ', USBDevice.__module__
         except ImportError:
             print 'USB:    missing'

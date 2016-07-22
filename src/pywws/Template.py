@@ -305,14 +305,14 @@ import os
 import shlex
 import sys
 
-from .constants import HOUR, SECOND, DAY
-from . import conversions
-from .conversions import *
-from . import DataStore
-from .Forecast import Zambretti, ZambrettiCode
-from . import Localisation
-from .Logger import ApplicationLogger
-from .TimeZone import Local, utc
+from pywws.constants import HOUR, SECOND, DAY
+from pywws import conversions
+from pywws.conversions import *
+from pywws import DataStore
+from pywws.Forecast import Zambretti, ZambrettiCode
+from pywws import Localisation
+from pywws.Logger import ApplicationLogger
+from pywws.TimeZone import Local, utc
 
 class Template(object):
     def __init__(self, params, status,

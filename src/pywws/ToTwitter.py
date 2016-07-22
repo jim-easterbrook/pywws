@@ -60,10 +60,10 @@ except ImportError as ex:
         # raise exception on the preferred library
         raise ex
 
-from .constants import Twitter as pct
-from . import DataStore
-from . import Localisation
-from .Logger import ApplicationLogger
+from pywws.constants import Twitter as pct
+from pywws import DataStore
+from pywws import Localisation
+from pywws.Logger import ApplicationLogger
 
 class TweepyHandler(object):
     def __init__(self, key, secret, latitude, longitude):

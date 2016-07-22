@@ -2,7 +2,7 @@
 
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-14  Jim Easterbrook  jim@jim-easterbrook.me.uk
+# Copyright (C) 2008-16  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -65,8 +65,8 @@ import getopt
 import os
 import sys
 
-from . import DataStore
-from . import TimeZone
+from pywws import DataStore
+from pywws import TimeZone
 
 def main(argv=None):
     if argv is None:

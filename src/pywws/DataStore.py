@@ -1,6 +1,6 @@
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-15  pywws contributors
+# Copyright (C) 2008-16  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -78,7 +78,7 @@ import sys
 from threading import Lock
 import time
 
-from .constants import DAY
+from pywws.constants import DAY
 
 def safestrptime(date_string, format=None):
     # time.strptime is time consuming (because it's so flexible?) so don't use

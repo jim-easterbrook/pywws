@@ -2,7 +2,7 @@
 
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-14  Jim Easterbrook  jim@jim-easterbrook.me.uk
+# Copyright (C) 2008-16  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -53,8 +53,8 @@ import sys
 import urlparse
 import webbrowser
 
-from .constants import Twitter
-from . import DataStore
+from pywws.constants import Twitter
+from pywws import DataStore
 
 def TwitterAuth(params):
     consumer = oauth.Consumer(Twitter.consumer_key, Twitter.consumer_secret)

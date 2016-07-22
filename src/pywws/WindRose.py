@@ -278,11 +278,11 @@ import os
 import sys
 import xml.dom.minidom
 
-from .conversions import *
-from . import DataStore
-from . import Localisation
-from .Logger import ApplicationLogger
-from .Plot import BasePlotter
+from pywws.conversions import *
+from pywws import DataStore
+from pywws import Localisation
+from pywws.Logger import ApplicationLogger
+from pywws.Plot import BasePlotter
 
 class RosePlotter(BasePlotter):
     plot_name = 'windrose'

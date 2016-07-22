@@ -28,7 +28,7 @@ import logging
 import logging.handlers
 import sys
 
-from . import __version__, _release, _commit
+from pywws import __version__, _release, _commit
 
 def ApplicationLogger(verbose, logfile=None):
     logger = logging.getLogger('')

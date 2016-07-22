@@ -2,7 +2,7 @@
 
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-15  pywws contributors
+# Copyright (C) 2008-16  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -29,14 +29,14 @@ import os
 import shutil
 import threading
 
-from .calib import Calib
-from . import Plot
-from . import Template
-from .TimeZone import STDOFFSET, Local
-from .toservice import ToService
-from . import Upload
-from . import WindRose
-from . import YoWindow
+from pywws.calib import Calib
+from pywws import Plot
+from pywws import Template
+from pywws.TimeZone import STDOFFSET, Local
+from pywws.toservice import ToService
+from pywws import Upload
+from pywws import WindRose
+from pywws import YoWindow
 
 class RegularTasks(object):
     def __init__(self, params, status,
@@ -384,7 +384,7 @@ class RegularTasks(object):
 
     def do_twitter(self, template, data=None):
         if not self.twitter:
-            from . import ToTwitter
+            from pywws import ToTwitter
             self.twitter = ToTwitter.ToTwitter(self.params)
         self.logger.info("Templating %s", template)
         input_file = os.path.join(self.template_dir, template)

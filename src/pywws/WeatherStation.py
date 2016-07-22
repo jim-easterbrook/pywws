@@ -1,6 +1,6 @@
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-15  pywws contributors
+# Copyright (C) 2008-16  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -83,7 +83,7 @@ import logging
 import sys
 import time
 
-from . import Localisation
+from pywws import Localisation
 for module_name in ('device_libusb1', 'device_pyusb1', 'device_pyusb',
                     'device_ctypes_hidapi', 'device_cython_hidapi'):
     try:

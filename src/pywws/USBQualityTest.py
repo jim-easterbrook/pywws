@@ -2,7 +2,7 @@
 
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-14  Jim Easterbrook  jim@jim-easterbrook.me.uk
+# Copyright (C) 2008-16  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -68,8 +68,8 @@ __usage__ = __doc__.split('\n')[0] + __usage__
 import getopt
 import sys
 
-from .Logger import ApplicationLogger
-from . import WeatherStation
+from pywws.Logger import ApplicationLogger
+from pywws import WeatherStation
 
 def main(argv=None):
     if argv is None:

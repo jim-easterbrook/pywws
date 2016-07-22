@@ -2,7 +2,7 @@
 
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-14  Jim Easterbrook  jim@jim-easterbrook.me.uk
+# Copyright (C) 2008-16  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -31,8 +31,8 @@ import math
 
 # rename imports to prevent them being imported when
 # doing 'from pywws.conversions import *'
-from . import Localisation as _Localisation
-from .Process import WindFilter as _WindFilter
+from pywws import Localisation as _Localisation
+from pywws.Process import WindFilter as _WindFilter
 
 def illuminance_wm2(lux):
     "Approximate conversion of illuminance in lux to solar radiation in W/m2"
