@@ -53,7 +53,7 @@ twitter = None
 tweepy = None
 try:
     import twitter
-except ImportError as ex:
+except ImportError, ex:
     try:
         import tweepy
     except ImportError:
