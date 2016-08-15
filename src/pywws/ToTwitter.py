@@ -101,12 +101,23 @@ class PythonTwitterHandler(object):
             self.kwargs = {}
 
     def post(self, status, media):
+        max_len = 140
+        if media:
+            max_len -= len(media[:4]) * 23
+        status = status.encode('utf8')[:max_len].decode('utf8', errors='ignore')
+        if tuple(map(int, twitter.__version__.split('.'))) >= (3, 0):
+            args = dict(self.kwargs)
+            if media:
+                args['media'] = media
+            args['verify_status_length'] = False
+            self.api.PostUpdate(status, **args)
+            return
         if len(media) > 1:
-            self.api.PostMultipleMedia(status[:117], media, **self.kwargs)
+            self.api.PostMultipleMedia(status, media[:4], **self.kwargs)
         elif media:
-            self.api.PostMedia(status[:117], media[0], **self.kwargs)
+            self.api.PostMedia(status, media[0], **self.kwargs)
         else:
-            self.api.PostUpdate(status[:140], **self.kwargs)
+            self.api.PostUpdate(status, **self.kwargs)
 
 class ToTwitter(object):
     def __init__(self, params):
