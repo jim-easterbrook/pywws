@@ -16,6 +16,10 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
+Changes in v16.08.0:
+    1/ Fix Python 2.5 incompatibilities.
+    2/ Fix python-twitter v3 tweet length problem.
+
 Changes in v16.07.1:
     1/ Further changes to handle UK Met Office server quirks.
 
