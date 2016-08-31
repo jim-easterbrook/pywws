@@ -104,7 +104,7 @@ class PythonTwitterHandler(object):
         max_len = 140
         if media:
             max_len -= len(media[:4]) * 23
-        status = status.encode('utf8')[:max_len].decode('utf8', errors='ignore')
+        status = status.strip()[:max_len]
         if tuple(map(int, twitter.__version__.split('.'))) >= (3, 0):
             args = dict(self.kwargs)
             if media:
