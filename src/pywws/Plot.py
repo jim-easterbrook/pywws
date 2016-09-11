@@ -475,7 +475,7 @@ For candlesticks plots you can specify line thickness as well, e.g.
 ``<style>candlesticks 1.5</style>``. If you add whiskerbars, you can
 change the width of the whiskerbars with a second parameter, e.g.
 ``<style>candlesticksw 2 0.5</style>`` would plot the whiskerbars with
-50% width of the candlesticks.
+50%% width of the candlesticks.
 
 colour
 ^^^^^^
