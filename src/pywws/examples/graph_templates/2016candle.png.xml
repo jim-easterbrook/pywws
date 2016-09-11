@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<graph>
+  <!--
+  pywws - Python software for USB Wireless Weather Stations
+  http://github.com/jim-easterbrook/pywws
+  Copyright (C) 2008-13  Jim Easterbrook  jim@jim-easterbrook.me.uk
+
+  This program is free software; you can redistribute it and/or
+  modify it under the terms of the GNU General Public License
+  as published by the Free Software Foundation; either version 2
+  of the License, or (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program; if not, write to the Free Software
+  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+  -->
+  <size>600, 600</size>
+  <fileformat>pngcairo font "arial,11"</fileformat>
+
+  <start>year=2016, month=1, day=1, hour=0</start>
+  <stop>year=2016, month=12, day=31, hour=23</stop>
+  <xformat>%b</xformat>
+  <xlabel>%Y</xlabel>
+  <dateformat/>
+
+  <plot>
+    <title>Temperatur (℃)</title>
+    <yrange>-20, 50</yrange>
+    <grid>ytics</grid>
+    <source>monthly</source>
+    <subplot>
+      <!-- Candlesticks plot with whiskerbars, line width: 2, whiskerbar width: 50% -->
+      <style>candlesticksw 2 0.5</style>
+      <colour>rgb "#f44336"</colour>
+      <xcalc>data['start'] + timedelta(days=15)</xcalc>
+      <!-- 4 values as tuple in that order: NightAvg, NightMin, DayMax, DayAvg -->
+      <ycalc>(data['temp_out_min_ave'], data['temp_out_min_lo'], data['temp_out_max_hi'], data['temp_out_max_ave'])</ycalc>
+    </subplot>
+    <subplot>
+        <!-- This is the median line as per gnuplot documentation -->
+        <style>candlesticks 1.5</style>
+        <colour>rgb "#607d8b"</colour>
+        <xcalc>data['start'] + timedelta(days=15)</xcalc>
+        <!-- 4 times the same value as we don't want a bar but only a line -->
+        <ycalc>(data['temp_out_ave'], data['temp_out_ave'], data['temp_out_ave'], data['temp_out_ave'])</ycalc>
+    </subplot>
+  </plot>
+
+</graph>
