@@ -309,7 +309,7 @@ from pywws.constants import HOUR, SECOND, DAY
 from pywws import conversions
 from pywws.conversions import *
 from pywws import DataStore
-from pywws.Forecast import Zambretti, ZambrettiCode
+from pywws.Forecast import Zambretti, ZambrettiCode, ZambrettiLetter
 from pywws import Localisation
 from pywws.Logger import ApplicationLogger
 from pywws.TimeZone import Local, utc
