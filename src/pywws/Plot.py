@@ -966,8 +966,8 @@ set timefmt "%Y-%m-%dT%H:%M:%S"
                 style = 'smooth unique lc %s lw %g' % (colour, width)
             axes = subplot.subplot.get_value('axes', 'x1y1')
             title = subplot.subplot.get_value('title', '')
-            using = ':'.join(str(x) for x in range(1, len(values)+1))
-            result += u' "%s" using %s axes %s %s title "%s"%s' % (
+            using = ':'.join('($%d)' % x for x in range(2, len(values)+1))
+            result += u' "%s" using 1:%s axes %s %s title "%s"%s' % (
                 subplot.dat_file, using, axes, style, title, whiskerbars)
             if subplot_no != subplot_count - 1:
                 result += u', \\'
