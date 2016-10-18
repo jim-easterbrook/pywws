@@ -269,6 +269,23 @@ def apparent_temp(temp, rh, wind):
         17.27 * temp / (237.7 + temp))
     return temp + (0.33 * vap_press) - (0.70 * wind) - 4.00
 
+def cloud_base(temp, hum):
+    """Calculate cumulus cloud base in metres, using formula from
+    https://en.wikipedia.org/wiki/Cloud_base or
+    https://de.wikipedia.org/wiki/Kondensationsniveau#Konvektionskondensationsniveau
+    """
+    if temp is None or hum is None:
+        return None
+    dew_pt = dew_point(temp, hum)
+    spread = float(temp) - dew_pt
+    return spread * 125.0
+
+def cloud_ft(m):
+    "Convert cloud base from metres to feet."
+    if m is None:
+        return None
+    return float(m) * 3.28084
+
 def _main(argv=None):
     global _winddir_text_array
     # run some simple tests
@@ -286,6 +303,10 @@ def _main(argv=None):
     _winddir_text_array = None
     for pts in range(16):
         print winddir_text(pts),
+    print
+    print 'Cloud base in m and ft:'
+    for hum in range(25, 75, 5):
+        print "%8.3f m / %8.3f ft" % (cloud_base(15.0, hum), cloud_ft(cloud_base(15.0, hum)))
     print
 
 if __name__ == "__main__":
