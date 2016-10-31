@@ -41,12 +41,23 @@ import sys
 import pytz
 import tzlocal
 
+from pywws.constants import HOUR
+
 utc = pytz.utc
 Local = tzlocal.get_localzone()
 
 _now = datetime.now(tz=Local)
 STDOFFSET = _now.utcoffset() - _now.dst()
 del _now
+
+def local_utc_offset(time):
+    try:
+        result = Local.utcoffset(time)
+    except pytz.InvalidTimeError:
+        result = Local.utcoffset(time + HOUR)
+    except pytz.AmbiguousTimeError:
+        result = Local.utcoffset(time - HOUR)
+    return result
 
 def main():
     print datetime.now().strftime('%Y/%m/%d %H:%M %Z')

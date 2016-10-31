@@ -32,7 +32,7 @@ import threading
 from pywws.calib import Calib
 from pywws import Plot
 from pywws import Template
-from pywws.TimeZone import STDOFFSET, Local
+from pywws.TimeZone import STDOFFSET, local_utc_offset
 from pywws.toservice import ToService
 from pywws import Upload
 from pywws import WindRose
@@ -99,7 +99,7 @@ class RegularTasks(object):
             self.cron[section].get_prev()
             last_update = self.status.get_datetime('last update', section)
             if last_update:
-                last_update = last_update + Local.utcoffset(last_update)
+                last_update = last_update + local_utc_offset(last_update)
                 while self.cron[section].get_current(datetime) <= last_update:
                     self.cron[section].get_next()
         # create service uploader objects
@@ -279,7 +279,7 @@ class RegularTasks(object):
         if not now:
             now = datetime.utcnow()
         # convert to local time
-        local_now = now + Local.utcoffset(now)
+        local_now = now + local_utc_offset(now)
         # get list of due sections
         sections = []
         for section in self.cron:

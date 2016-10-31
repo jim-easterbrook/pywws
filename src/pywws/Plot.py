@@ -533,7 +533,7 @@ from pywws.conversions import *
 from pywws import DataStore
 from pywws import Localisation
 from pywws.Logger import ApplicationLogger
-from pywws.TimeZone import Local, utc
+from pywws.TimeZone import Local, local_utc_offset, utc
 
 class GraphNode(object):
     def __init__(self, node):
@@ -596,19 +596,12 @@ class BasePlotter(object):
             raise RuntimeError(
                 'Directory "' + self.work_dir + '" does not exist.')
 
-    def _local_offset(self, time):
-        try:
-            result = Local.utcoffset(time)
-        except pytz.InvalidTimeError:
-            result = Local.utcoffset(time + HOUR)
-        return result
-
     def _eval_time(self, time_str):
         # get timestamp of last data item
         result = self.hourly_data.before(datetime.max)
         if not result:
             result = datetime.utcnow()    # only if no hourly data
-        result += self._local_offset(result)
+        result += local_utc_offset(result)
         # set to start of the day
         result = result.replace(hour=0, minute=0, second=0, microsecond=0)
         # apply time string
@@ -650,7 +643,7 @@ class BasePlotter(object):
             self.x_hi = self.hourly_data.before(datetime.max)
             if not self.x_hi:
                 self.x_hi = datetime.utcnow()    # only if no hourly data
-            self.x_hi += self._local_offset(self.x_hi)
+            self.x_hi += local_utc_offset(self.x_hi)
             if self.duration < timedelta(hours=6):
                 # set end of graph to start of the next minute after last item
                 self.x_hi += timedelta(seconds=55)
@@ -660,7 +653,7 @@ class BasePlotter(object):
                 self.x_hi += timedelta(minutes=55)
                 self.x_hi = self.x_hi.replace(minute=0, second=0)
             self.x_lo = self.x_hi - self.duration
-        self.utcoffset = self._local_offset(self.x_hi)
+        self.utcoffset = local_utc_offset(self.x_hi)
         # open gnuplot command file
         self.tmp_files = []
         cmd_file = os.path.join(self.work_dir, 'plot.cmd')
