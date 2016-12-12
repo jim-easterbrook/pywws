@@ -1,391 +1,244 @@
-# French translations for pywws package.
-# Copyright (C) 2008-12, Jim Easterbrook
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2008-16, pywws contributors
 # This file is distributed under the same license as the pywws package.
-# Jim Easterbrook <jim@jim-easterbrook.me.uk>, 2012.
-# Jacques Desroches <jacques.desroches@100fil.ca>, 2013.
-#
+# 
+# Translators:
+# Jacques Desroches <jacques.desroches@weatherbyyou.com>, 2015
+# Jacques Desroches <metelsto@gmail.com>, 2016
 msgid ""
 msgstr ""
-"Project-Id-Version: pywws 12.12\n"
+"Project-Id-Version: pywws\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-09-18 17:53\n"
-"PO-Revision-Date: 2013-09-18 18:20-0500\n"
-"Last-Translator: Jacques DesRoches <jacques.desroches@weatherbyyou.com>\n"
-"Language-Team: French\n"
-"Language: fr\n"
+"POT-Creation-Date: 2016-02-25 10:44+0000\n"
+"PO-Revision-Date: 2016-10-23 12:45+0000\n"
+"Last-Translator: Jacques Desroches <metelsto@gmail.com>\n"
+"Language-Team: French (http://www.transifex.com/jim-easterbrook/pywws/language/fr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: fr\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 1.5.4\n"
 
-# cd88ebee83774e018942a877ca1772e8
-#: ../../doc_src/index.rst:21
+#: ../../README.rst:2
 msgid "pywws"
-msgstr ""
+msgstr "pywws"
 
-# 6a49ae8c2df04f35966f04532993d308
-#: ../../doc_src/index.rst:26
-msgid "Python software for USB Wireless WeatherStations"
-msgstr "Logiciel Python pour Station météo USB sans-fil"
+#: ../../README.rst:4
+msgid "Python software for USB Wireless WeatherStations."
+msgstr "Logiciel Python pour stations météo USB sans-fil"
 
-# 842ce429b4674f78b6641cb040884577
-#: ../../doc_src/index.rst:27
-msgid "http://pythonhosted.org/pywws"
-msgstr ""
-
-# 574f7b6e121e48cc85000a5f3b181224
-# 95d0c8cdcb00404898bb5aaf87b1d452
-#: ../../doc_src/index.rst:28
-msgid "http://jim-easterbrook.github.com/pywws/"
-msgstr ""
-
-# 2ae38bd4695f49ebafa120d4a2864db5
-#: ../../doc_src/index.rst:29
-msgid "http://github.com/jim-easterbrook/pywws/"
-msgstr ""
-
-# df557c8210344184b07dc7f8133e9d22
-#: ../../doc_src/index.rst:31
+#: ../../README.rst:6
 msgid ""
-"This document is available in the following languages (non-English versions "
-"may not be complete or up to date):"
-msgstr ""
-"Ce document est disponible dans les langues suivantes (Les versions autres "
-"que anglais peuvent ne pas être complètes ou à jour):"
+"pywws is a collection of Python modules to read, store and process data from"
+" popular USB wireless weather stations such as Elecsa AstroTouch 6975, "
+"Watson W-8681, WH-1080PC, WH1080, WH1081, WH3080 etc. I assume any model "
+"that is supplied with the EasyWeather Windows software is compatible, but "
+"cannot guarantee this."
+msgstr "Pywws est une collection de modules Python pour lire, enregistrer et traiter les données provenant de stations météorologiques sans fil USB populaires comme AstroTouch Elecsa 6975, Watson W-8681, WH-1080PC, WH1080, WH1081, WH3080 etc. Je suppose que n'importe quel modèle qui est fourni avec le logiciel Windows EasyWeather est compatible, mais ne peut le garantir. "
 
-# d2a7ee26da27441d8f4c6b9b7e2221b5
-#: ../../doc_src/index.rst:33
-msgid "`English <../../en/html/index.html>`_"
-msgstr ""
-
-# 6cb3c3307489478487d64904f0167a89
-#: ../../doc_src/index.rst:34
-msgid "`Français <../../fr/html/index.html>`_"
-msgstr ""
-
-# 43bf1af6e9774e96a9fbfa1eda07d0f6
-#: ../../doc_src/index.rst:35
-msgid "`Italiano <../../it/html/index.html>`_"
-msgstr ""
-
-# 719f2538746b4613a98b5accfe7f5e89
-#: ../../doc_src/index.rst:39
-msgid "Introduction"
-msgstr ""
-
-# aee02ed2f1c14f6b85fe42eb1c4a94d0
-#: ../../doc_src/index.rst:41
-msgid ""
-"pywws is a collection of Python scripts to read, store and process data from "
-"popular USB wireless weather stations such as Elecsa AstroTouch 6975, Watson "
-"W-8681, WH-1080PC, WH1080, WH1081, WH3080 etc. I assume any model that is "
-"supplied with the EasyWeather Windows software is compatible, but cannot "
-"guarantee this."
-msgstr ""
-"pywws est une collection de scripts Python pour lire, stocker et traiter les "
-"données des stations météorologiques sans fil USB courantes tels que Elecsa "
-"AstroTouch 6975, Watson W-8681, WH-1080PC, WH1080, WH1081, WH3080 etc. Je "
-"suppose que tout modèle de station équipée du logiciel EasyWeather pour "
-"Windows est compatible, sans pouvoir le garantir."
-
-# fd044a4c520c42789b392fa7d0083110
-#: ../../doc_src/index.rst:43
+#: ../../README.rst:8
 msgid ""
 "The software has been developed to run in a low power, low memory "
-"environment such as a router. It can be used to create graphs and web pages "
-"showing recent weather readings, typically updated every hour. It can also "
-"send data to services such as `Weather Underground <http://www.wunderground."
-"com/>`_ and post messages to `Twitter <https://twitter.com/>`_."
-msgstr ""
-"Le logiciel a été développé pour fonctionner dans environnement de faible "
-"puissance, avec peu de mémoire  tel un routeur. Il peut être utilisé pour "
-"créer des graphiques et des pages Web affichant de récentes lectures "
-"météorologiques, généralement mis à jour à chaque heure. Il peut également "
-"envoyer des données à des services tels que: Weather Underground `<http://"
-"www.wunderground.com/>`_ et poster des messages sur `Twitter <https://"
-"twitter.com/>`_."
+"environment such as a router or Raspberry Pi. It can be used to create "
+"graphs and web pages showing recent weather readings, typically updated "
+"every hour. It can also send \"live\" data to services such as `Weather "
+"Underground <http://www.wunderground.com/>`_ and post messages to `Twitter "
+"<https://twitter.com/>`_."
+msgstr "Le logiciel a été développé pour être exécuté dans un environnement de basse puissance, avec peu de mémoire tel un routeur ou un Raspberry Pi. Il peut être utilisé pour créer des graphiques et les pages web affichant les relevés météorologiques récents, généralement mis à jour toutes les heures. Il peut également envoyer des données 'live' pour des services tels que `Weather Underground <http://www.wunderground.com/>`_ et poster des messages sur  `Twitter <https://twitter.com/>`_."
 
-# 77c52a1087c443a4ba2f553401b44490
-#: ../../doc_src/index.rst:45
+#: ../../README.rst:11
+msgid "The development version of pywws is hosted on GitHub."
+msgstr "La version de développement de pywws est hébergé sur GitHub. "
+
+#: ../../README.rst:11
+msgid "https://github.com/jim-easterbrook/pywws"
+msgstr "https://github.com/jim-easterbrook/pywws"
+
+#: ../../README.rst:14
+msgid ""
+"\"Snapshot\" releases of pywws are available from the Python Package Index "
+"(PyPI)."
+msgstr "Les versions «Snapshot» de pywws sont disponibles à partir du Python Package Index (PyPI)."
+
+#: ../../README.rst:14
+msgid "https://pypi.python.org/pypi/pywws"
+msgstr "https://pypi.python.org/pypi/pywws"
+
+#: ../../README.rst:17
+msgid "Documentation is hosted on Read the Docs."
+msgstr "La documentation est hébergé sur Read the Docs."
+
+#: ../../README.rst:17
+msgid "http://pywws.readthedocs.org/"
+msgstr "http://pywws.readthedocs.org/"
+
+#: ../../src/doc/index.rst:27
+msgid ""
+"Documentation is available in the following languages (non-English versions "
+"may not be complete or up to date):"
+msgstr "La documentation est disponible dans les langues suivantes (les versions non anglaises peuvent ne pas être complètes ou à jour) : "
+
+#: ../../src/doc/index.rst:25
+msgid "`English <http://pywws.readthedocs.org/en/>`_"
+msgstr "`English <http://pywws.readthedocs.org/en/>`_"
+
+#: ../../src/doc/index.rst:26
+msgid ""
+"`Français <http://pywws.readthedocs.org/fr/>`_ -- translated by Jacques "
+"Desroches"
+msgstr "`Français <http://pywws.readthedocs.org/fr/>`_ -- traduit par Jacques Desroches"
+
+#: ../../src/doc/index.rst:27
+msgid ""
+"`Italiano <http://pywws.readthedocs.org/it/>`_ -- translated by Edoardo"
+msgstr "`Italiano <http://pywws.readthedocs.org/it/>`_ -- translated by Edoardo"
+
+#: ../../src/doc/index.rst:29
 msgid ""
 "I have written this software to meet my needs, but have tried to make it "
 "adaptable to other people's requirements. You may want to edit some or all "
 "of the modules, or write some new ones, to get it to do exactly what you "
 "want. One of the reasons for using Python is that it makes such alterations "
 "so easy. Don't be afraid, just jump in and have a go."
-msgstr ""
-"J'ai écrit ce logiciel pour répondre à mes besoins, mais ai essayé de le "
-"rendre adaptable aux besoins des autres. Vous voudrez peut-être modifier "
-"certains ou tous les modules, ou en écrire de nouveaux, pour lui faire faire "
-"exactement ce que vous souhaitez. L'une des raisons pour lesquelles Python "
-"est utilisé est qu'il rend de telles modifications si facile. N'ayez pas "
-"peur, essayez-le vous verrez.."
+msgstr "J'ai écrit ce logiciel pour répondre à mes besoins, mais ai essayé de le rendre adaptable aux besoins des autres. Vous voudrez peut-être modifier certains ou tous les modules, ou en écrire de nouveaux, pour lui faire faire exactement ce que vous souhaitez. L'une des raisons pour lesquelles Python est utilisé est qu'il rend de telles modifications si facile. N'ayez pas peur, essayez-le vous verrez.."
 
-# 0a70bb01d03248cd92072d1282978b3e
-#: ../../doc_src/index.rst:49
+#: ../../src/doc/index.rst:33
 msgid "Requirements"
 msgstr "Exigences"
 
-# ff2e2bdfb5eb484c916c3cd8c3a4a41b
-#: ../../doc_src/index.rst:51
+#: ../../src/doc/index.rst:35
 msgid ""
 "The software you'll need to run pywws depends on what you plan to do with "
-"it. You'll need Python 2.5 or later -- Python 3 is partially supported, some "
-"functionality depends on libraries that have not yet been ported to Python 3."
-msgstr ""
-"Les logiciels dont vous aurez besoin pour exécuter pywws dépend de ce que "
-"vous comptez en faire. Vous aurez besoin de Python 2.5 ou plus récent -- "
-"Python 3 est partiellement supporté, certaine fonctionnalité dépendent de "
-"librairies qui n'ont pas été portées sur Python3."
+"it. You'll need Python 2.5 or later -- Python 3 is partially supported, some"
+" functionality depends on libraries that have not yet been ported to Python "
+"3."
+msgstr "Les logiciels dont vous aurez besoin pour exécuter pywws dépend de ce que vous comptez en faire. Vous aurez besoin de Python 2.5 ou plus récent -- Python 3 est partiellement supporté, certaine fonctionnalité dépendent de librairies qui n'ont pas été portées sur Python3."
 
-# a178169c5a3748e79b7bc9b4dfa8b8a3
-#: ../../doc_src/index.rst:54
+#: ../../src/doc/index.rst:38
 msgid "For more detail, see :doc:`essentials/dependencies`."
 msgstr "Pour plus de détails, voir :doc:`essentials/dependencies`."
 
-# f640267057cd4181b8ad471b5111ca78
-#: ../../doc_src/index.rst:58
-msgid "Getting a copy of pywws"
-msgstr "Obtenir une copie de pywws"
+#: ../../src/doc/index.rst:42
+msgid "Installing and upgrading pywws"
+msgstr "Installation et mise à niveau de pywws  "
 
-# d0e00e01eab94bee9fe841ac3a02b17d
-#: ../../doc_src/index.rst:60
+#: ../../src/doc/index.rst:44
 msgid ""
-"The simplest way to obtain pywws is to use ``pip`` to install it directly "
-"from the `Python Package Index (PyPI) <http://pypi.python.org/pypi/pywws/"
-">`_. Note that this will probably require 'root' privileges, so will need to "
-"be run using ``sudo``::"
-msgstr ""
-"La façon la plus simple d'obtenir pywws est de télécharger le fichier zip ou "
-"tar.gz depuis `l'Index des paquets Python (PyPI) <http://pypi.python.org/"
-"pypi/pywws/>`_ et ensuite extraire les fichiers dans un répertoire distinct "
-"sur votre ordinateur. Ces fichiers 'archives' contiennent la toute dernière "
-"version du logiciel - une nouvelle version sort tous les quelques mois."
+"pywws can be installed directly from the `Python Package Index (PyPI) "
+"<http://pypi.python.org/pypi/pywws/>`_ using the pip command. See "
+":doc:`guides/getstarted` for full instructions."
+msgstr "Pywws peut être installé directement à partir du  `Python Package Index (PyPI) <http://pypi.python.org/pypi/pywws/>`_ en utilisant la commande PIP. Voir  :doc:`guides/getstarted` pour obtenir des instructions complètes. "
 
-# afbacbebbb3e4684af902b1b46fc15e5
-#: ../../doc_src/index.rst:65
+#: ../../src/doc/index.rst:47
 msgid ""
-"If you don't have root privileges, or don't want to install pywws, you can "
-"download a zip or tar.gz file from PyPI and then extract the files into a "
-"convenient directory on your computer."
-msgstr ""
-"Si vous n'avez pas les privilèges sur la racine, ou ne désirez pas installer "
-"pywws, vous pouvez télécharger le fichier zip ou .tar.gz  à partir de PyPI "
-"et extraire les fichiers dans un dossier  de votre choix, sur votre "
-"ordinateur"
-
-# 7edb21e786b443aaa73cacff31c730de
-#: ../../doc_src/index.rst:67
-msgid ""
-"The PyPI files contain a snapshot release of the software - a new one is "
-"issued every few months. If you'd like to keep up to date with latest "
-"developments of pywws, you should use ``git`` to clone the pywws repository::"
-msgstr ""
-"Les fichiers PyPI contiennent un instantané de la version du logiciel - une "
-"nouvelle version est publiée tous les quelques mois.  Si vous souhaitez être "
-"au fait des derniers développements de pywws, vous pouvez utiliser ``git`` "
-"pour cloner le répertoire pywws::"
-
-# 76cac2dfb5a4487c824d52946f1a3532
-#: ../../doc_src/index.rst:72
-msgid ""
-"After doing so you can compile the documentation and language localisation "
-"files (which will require the ``sphinx`` and ``gettext`` dependencies)::"
-msgstr ""
-"Par la suite, vous pouvez compiler la documentation et les fichiers de "
-"localisation de langue (ce qui nécessite les logiciels ``gettext`` et "
-"``sphinx``)::"
-
-# a178169c5a3748e79b7bc9b4dfa8b8a3
-#: ../../doc_src/index.rst:78
-msgid "For more details, see :doc:`guides/getstarted`."
-msgstr "Pour plus de détails, voir :doc:`guides/getstarted`."
-
-# a4dc6f8b5a734ef8b82d088be09b747a
-#: ../../doc_src/index.rst:81
-msgid "Upgrading pywws"
-msgstr "Mettre à jour pywws"
-
-# fb364972e66d437d997dae55c4dae0c8
-#: ../../doc_src/index.rst:83
-msgid ""
-"The method used to upgrade pywws depends on how you originally obtained it. "
-"If you downloaded a zip or tar.gz file, you just need to do the same again, "
-"with the new version, then delete your old download when you've finished "
-"setting up the new one. (Note that upgrading is much easier if you do not "
-"keep your templates, user modules and weather data in the same directory as "
-"the downloaded files.) If you used ``pip`` you just need to repeat the "
-"command. ``git`` users just need to do a ``git pull`` command."
-msgstr ""
-"La méthode employée pour faire la mise à jour de pywws dépend de la façon "
-"dont vous l'avez à l'origine obtenu. Si vous avez téléchargé un fichier zip "
-"ou tar.gz, vous devez procédé de la même manière avec la nouvelle version, "
-"puis supprimez le téléchargement obsolète quand vous avez terminé "
-"l'installation de la nouvelle version.  (Notez que l'évolution est beaucoup "
-"plus facile si vous n'entreposez pas vos fichiers de calibration, modules "
-"utilisateur et données météo dans le même répertoire que les fichiers "
-"téléchargés.) Si vous aviez utilisé  ``pip`` vous n'avez qu'à répéter la "
-"commande. Les utilisateurs de ``git`` n'ont qu'à faire la commande ``git "
-"pull``.  "
-
-# c1c263923c044a83995234bcb7aa03c0
-#: ../../doc_src/index.rst:85
-msgid ""
-"Some new versions of pywws have changed what's stored in the hourly, daily "
-"or monthly summary data files. These new versions are incompatible with "
-"processed data from earlier versions. The :py:mod:`pywws.Reprocess` module "
+"Some new versions of pywws change what's stored in the hourly, daily or "
+"monthly summary data files. These new versions are incompatible with "
+"processed data from earlier versions. The :py:mod:`pywws.Reprocess` script "
 "regenerates all the summary data. It should be run after any major upgrade."
-msgstr ""
-"Certaines récentes versions de pywws ont changé ce qui est stocké dans les "
-"fichiers de données horaires, quotidiens ou mensuels. Ces nouvelles versions "
-"sont incompatibles avec les données traitées par les versions antérieures. : "
-"le module :py:mod:`pywws.Reprocess` régénère toutes les données "
-"récapitulatives. Il devrait être exécuté après chaque mise à jour principale "
+msgstr "Certaines nouvelles versions de pywws modifient ce qui est stocké dans des fichiers de données de synthèse horaire, quotidien ou mensuel. Ces nouvelles versions sont incompatibles avec les données traitées à partir de versions antérieures. Le script  :py:mod:`pywws.Reprocess` régénère toutes les données résumé. Il doit être exécuté après toute mise à niveau majeure. "
 
-# 0b3a80d922be4eeeaa369518bfe85fd1
-#: ../../doc_src/index.rst:89
+#: ../../src/doc/index.rst:53
 msgid "Documentation"
-msgstr ""
+msgstr "Documentation"
 
-# c2731eb456ae42cd976bb447c5562216
-#: ../../doc_src/index.rst:91
+#: ../../src/doc/index.rst:55
 msgid ""
 "Documentation is included with pywws downloads, and is also available "
-"`online <http://pythonhosted.org/pywws>`_. A good starting place is :doc:"
-"`guides/getstarted` which describes in more detail how to install pywws."
-msgstr ""
-"La documentation est inclue avec le téléchargement de pywws, et est "
-"également disponible `en ligne <http://pythonhosted.org/pywws>`_. Un bon "
-"point de départ est le `Guide de démarrage <guides/getstarted.html>`_ qui "
-"décrit plus en détail comment installer pywws."
+"`online <http://pythonhosted.org/pywws>`_. A good starting place is "
+":doc:`guides/getstarted` which describes in more detail how to install "
+"pywws."
+msgstr "La documentation est inclue avec le téléchargement de pywws, et est également disponible `en ligne <http://pythonhosted.org/pywws>`_. Un bon point de départ est le `Guide de démarrage <guides/getstarted.html>`_ qui décrit plus en détail comment installer pywws."
 
-# 29eb805323c5461cbe144e67b421e6cc
-#: ../../doc_src/index.rst:93
+#: ../../src/doc/index.rst:57
 msgid ""
 "If you have questions not answered in the documentation, please join the "
-"`pywws Google mailing list / discussion group <http://groups.google.com/"
-"group/pywws>`_ and ask there. Note that your first message to the group will "
-"not appear immediately -- new posters have to be approved by a moderator, to "
-"prevent spam messages."
-msgstr ""
-"Si vous avez des questions dont vous ne trouvez pas réponse dans la "
-"documentation, s'il vous plaît joindre la `liste / groupe de discussion "
-"pywws Google <http://groups.google.com/group/pywws>`_ et y poser votre "
-"question. Notez que votre premier message n'apparaît pas immédiatement -- "
-"les nouveaux membres doivent être approuvés par un modérateur, pour empêcher "
-"les pourriels. "
+"`pywws Google mailing list / discussion group "
+"<http://groups.google.com/group/pywws>`_ and ask there. Note that your first"
+" message to the group will not appear immediately -- new posters have to be "
+"approved by a moderator, to prevent spam messages."
+msgstr "Si vous avez des questions dont vous ne trouvez pas réponse dans la documentation, s'il vous plaît joindre la `liste / groupe de discussion pywws Google <http://groups.google.com/group/pywws>`_ et y poser votre question. Notez que votre premier message n'apparaît pas immédiatement -- les nouveaux membres doivent être approuvés par un modérateur, pour empêcher les pourriels. "
 
-# 6659c20cdf1244fca2a951636dd69e84
-#: ../../doc_src/index.rst:96
+#: ../../src/doc/index.rst:60
 msgid "Contents"
 msgstr "Contenu"
 
-# ffda77fefb5a40d4ba13a60357dfbf12
-#: ../../doc_src/index.rst:108
+#: ../../src/doc/index.rst:73
 msgid "Indices and tables"
 msgstr "Index et tables"
 
-# 02e95c27800942e3a6c6dbcbf589fad1
-#: ../../doc_src/index.rst:110
+#: ../../src/doc/index.rst:75
 msgid ":ref:`genindex`"
-msgstr ""
+msgstr ":ref:`genindex`"
 
-# 8e184652399443dfb3063d1955b2ea55
-#: ../../doc_src/index.rst:111
+#: ../../src/doc/index.rst:76
 msgid ":ref:`modindex`"
-msgstr ""
+msgstr ":ref:`modindex`"
 
-# 53ae38f4984c461cafa2840ced95c778
-#: ../../doc_src/index.rst:112
+#: ../../src/doc/index.rst:77
 msgid ":ref:`search`"
-msgstr ""
+msgstr ":ref:`search`"
 
-# aad7bc05013e456aaa670375d74d547e
-#: ../../doc_src/index.rst:116
+#: ../../src/doc/index.rst:81
 msgid "Credits"
 msgstr "Crédits"
 
-# fe8af95a151b4e2496f9701daf323ec0
-#: ../../doc_src/index.rst:118
+#: ../../src/doc/index.rst:83
 msgid ""
 "I would not have been able to get any information from the weather station "
-"without access to the source of Michael Pendec's \"wwsr\" program. I am also "
-"indebted to Dave Wells for decoding the `weather station's \"fixed block\" "
+"without access to the source of Michael Pendec's \"wwsr\" program. I am also"
+" indebted to Dave Wells for decoding the `weather station's \"fixed block\" "
 "data <http://www.jim-easterbrook.me.uk/weather/mm/>`_."
-msgstr ""
-"Je n'aurais pas été en mesure d'obtenir d'informations de la station "
-"météorologique sans accès aux sources du programme \"wwsr\" de Michael "
-"Pendec . Je suis également redevable à Dave Wells pour le décodage du `"
-"\"bloc fixe\" de données de la station météorologique <http://www.jim-"
-"easterbrook.me.uk/weather/mm/>`_."
+msgstr "Je n'aurais pas été en mesure d'obtenir d'informations de la station météorologique sans accès aux sources du programme \"wwsr\" de Michael Pendec . Je suis également redevable à Dave Wells pour le décodage du `\"bloc fixe\" de données de la station météorologique <http://www.jim-easterbrook.me.uk/weather/mm/>`_."
 
-# d39df5459e9e4cdda2584079d0a21a6c
-#: ../../doc_src/index.rst:120
+#: ../../src/doc/index.rst:85
 msgid ""
 "Last of all, a big thank you to all the pywws users who have helped with "
-"questions and suggestions, and especially to those who have translated pywws "
-"and its documentation into other languages."
-msgstr ""
-"En dernier lieu, un grand vous remercie à tous les utilisateurs de pywws qui "
-"ont aidé avec leur questions et suggestions, et particulièrement à ceux qui "
-"ont traduit pywws et sa documentation en d'autres langues."
+"questions and suggestions, and especially to those who have translated pywws"
+" and its documentation into other languages."
+msgstr "En dernier lieu, un grand vous remercie à tous les utilisateurs de pywws qui ont aidé avec leur questions et suggestions, et particulièrement à ceux qui ont traduit pywws et sa documentation en d'autres langues."
 
-# 0c2cd35b864e48a986dc233a1a242a77
-#: ../../doc_src/index.rst:124
+#: ../../src/doc/index.rst:89
 msgid "Legalese"
 msgstr "Termes"
 
-# b24429c2feef4b42bb886afc03f5a27e
-#: ../../doc_src/index.rst:126
+#: ../../src/doc/index.rst:91
 msgid "pywws - Python software for USB Wireless WeatherStations."
 msgstr "pywws - Logiciel Python pour stations météo USB sans-fil."
 
-# 79d918bc9364410f9cb83723b6d26577
-#: ../../doc_src/index.rst:127
+#: ../../src/doc/index.rst:92
 msgid "http://github.com/jim-easterbrook/pywws"
-msgstr ""
+msgstr "http://github.com/jim-easterbrook/pywws"
 
-# 581b2b2c4f814baf80fdec643871594c
-#: ../../doc_src/index.rst:128
-msgid "Copyright (C) 2008-13 Jim Easterbrook jim@jim-easterbrook.me.uk"
-msgstr ""
+#: ../../src/doc/index.rst:93
+msgid "Copyright (C) 2008-15  :doc:`pywws contributors <copyright>`"
+msgstr "Copyright (C) 2008-15  :doc:`pywws contributors <copyright>`"
 
-# ab190802fabb46b3822a10708fc960cd
-#: ../../doc_src/index.rst:130
+#: ../../src/doc/index.rst:95
 msgid ""
 "This program is free software; you can redistribute it and/or modify it "
 "under the terms of the GNU General Public License as published by the Free "
 "Software Foundation; either version 2 of the License, or (at your option) "
 "any later version."
-msgstr ""
-"Ce programme est un logiciel libre, vous pouvez le redistribuer et/ou le "
-"modifier selon les termes de la Licence Publique Générale GNU telle que "
-"publiée par la Free Software Foundation, soit la version 2 de la Licence, ou "
-"(à votre choix) toute version ultérieure."
+msgstr "Ce programme est un logiciel libre, vous pouvez le redistribuer et/ou le modifier selon les termes de la Licence Publique Générale GNU telle que publiée par la Free Software Foundation, soit la version 2 de la Licence, ou (à votre choix) toute version ultérieure."
 
-# 987f995fe77b485e8de51bfea29e4a74
-#: ../../doc_src/index.rst:132
+#: ../../src/doc/index.rst:97
 msgid ""
 "This program is distributed in the hope that it will be useful, but WITHOUT "
 "ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or "
 "FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for "
 "more details."
-msgstr ""
-"Ce programme est distribué dans l'espoir qu'il sera utile, mais SANS AUCUNE "
-"GARANTIE, sans même la garantie implicite de COMMERCIALISATION ou "
-"D'ADAPTATION A UN USAGE PARTICULIER. Voir la licence GNU General Public pour "
-"plus de détails."
+msgstr "Ce programme est distribué dans l'espoir qu'il sera utile, mais SANS AUCUNE GARANTIE, sans même la garantie implicite de COMMERCIALISATION ou D'ADAPTATION A UN USAGE PARTICULIER. Voir la licence GNU General Public pour plus de détails."
 
-# 89238fd6f030485985b3a239a7c256ea
-#: ../../doc_src/index.rst:134
+#: ../../src/doc/index.rst:99
 msgid ""
 "You should have received a copy of the `GNU General Public License "
 "<essentials/LICENCE.html>`_ along with this program; if not, write to the "
 "Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA "
 "02110-1301 USA"
-msgstr ""
-"Vous devriez avoir reçu une copie de la licence `GNU General Public License "
-"<essentials/LICENCE.html>`_ avec ce programme, sinon, écrivez à Free "
-"Software Foundation, Inc, 51 Franklin Street, Fifth Floor, Boston, MA "
-"02110-1301, USA"
+msgstr "Vous devriez avoir reçu une copie de la licence `GNU General Public License <essentials/LICENCE.html>`_ avec ce programme, sinon, écrivez à Free Software Foundation, Inc, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA"
+
+#: ../../src/doc/index.rst:103
+msgid ""
+"Comments or questions? Please subscribe to the pywws mailing list "
+"http://groups.google.com/group/pywws and let us know."
+msgstr "Commentaires et questions? SVP, abonnez-vous à la liste pywws  http://groups.google.com/group/pywws et faites-vous entendre."

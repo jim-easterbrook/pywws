@@ -1,0 +1,118 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2008-16, pywws contributors
+# This file is distributed under the same license as the pywws package.
+# 
+# Translators:
+# Jacques Desroches <jacques.desroches@weatherbyyou.com>, 2015
+msgid ""
+msgstr ""
+"Project-Id-Version: pywws\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-02-25 10:44+0000\n"
+"PO-Revision-Date: 2015-06-07 13:46+0000\n"
+"Last-Translator: Jacques Desroches <jacques.desroches@weatherbyyou.com>\n"
+"Language-Team: French (http://www.transifex.com/jim-easterbrook/pywws/language/fr/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: fr\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: ../../src/doc/copyright.rst:20
+msgid "pywws Contributors"
+msgstr "Contributeurs de pywws"
+
+#: ../../src/doc/copyright.rst:22
+msgid ""
+"The copywright to pywws and its documentation is jointly held by the "
+"following contributors."
+msgstr "Le copywright de pywws et sa documentation est détenu conjointement par les contributeurs suivants. "
+
+#: ../../CONTRIBUTING.rst:2
+msgid "Contributing to pywws"
+msgstr "Contribuant à pywws"
+
+#: ../../CONTRIBUTING.rst:4
+msgid ""
+"If you would like to add a feature to pywws (or fix a problem with it) then "
+"please do. Open source software thrives when its users become active "
+"contributors. The process is quite simple:"
+msgstr "Si vous souhaitez ajouter une fonctionnalité à pywws (ou résoudre un problème) s'il vous plaît faites le. Les logiciel Open Source se développent lorsque ses utilisateurs deviennent des contributeurs actifs. Le processus est assez simple:"
+
+#: ../../CONTRIBUTING.rst:8
+msgid "Join `GitHub <https://github.com/>`_ - it's free."
+msgstr "Join `GitHub <https://github.com/>`_ - c'est gratuit."
+
+#: ../../CONTRIBUTING.rst:9
+msgid ""
+"Fork the pywws repo - see `Fork a Repo "
+"<https://help.github.com/articles/fork-a-repo/>`_ for help."
+msgstr "Fork le projet pywws - voir `Fork un dépôt <https://help.github.com/articles/fork-a-repo/>`_ pour l'aide."
+
+#: ../../CONTRIBUTING.rst:10
+msgid "Clone your fork to a computer you can use to develop your new feature."
+msgstr "Clonez votre fork sur un ordinateur que vous pouvez utiliser pour développer votre nouvelle fonction."
+
+#: ../../CONTRIBUTING.rst:11
+msgid ""
+"Use git to commit changes as you make them and push the changes to your fork"
+" of pywws."
+msgstr "Utilisez git pour valider les modifications que vous produisez et poussez les modifications à votre fork de pywws.  "
+
+#: ../../CONTRIBUTING.rst:13
+msgid ""
+"Please add a signed-off-by line to your commits which certify your developer"
+" certificate of origin (see below). For example, if your name is “John "
+"Smith”, and your email address is \"jsmith@example.com\", just include the "
+"following line at the bottom of your commit messages:"
+msgstr "Veuillez ajouter un signed-off-by à votre envoi qui certifie votre certificat de développeur d'origine (voir ci-dessous). Par exemple, si votre nom est \" John Smith \", et votre adresse e-mail est 'Jsmith@example.com', il suffit d'inclure la ligne suivante au bas de vos messages de commit : "
+
+#: ../../CONTRIBUTING.rst:16
+msgid "Signed-off-by: John Smith <jsmith@example.com>"
+msgstr "Signed-off-by: John Smith <jsmith@example.com>"
+
+#: ../../CONTRIBUTING.rst:18
+msgid ""
+"You should be able to do this automatically by using the ``-s`` option on "
+"your ``git commit`` commands."
+msgstr "Vous devriez être capable de faire cela automatiquement en utilisant l'option ``-s`` de l'option sur votre commande ''git commit''. "
+
+#: ../../CONTRIBUTING.rst:19
+msgid ""
+"Add your name and email to the ``src/contributors/contributors.txt`` file. "
+"Don't forget the ``-s`` option when you commit this change."
+msgstr "Ajoutez votre nom et email au fichier ``src/contributors/contributors.txt``. N'oubliez pas l'option ''-s'' lorsque vous validez ce changement. "
+
+#: ../../CONTRIBUTING.rst:21
+msgid "Test your changes!"
+msgstr "Testez vos modifications!"
+
+#: ../../CONTRIBUTING.rst:22
+msgid ""
+"When everything's working as you expect, submit a `Pull Request "
+"<https://help.github.com/articles/using-pull-requests/>`_."
+msgstr "Quand tout fonctionne comme prévu, soumettez une requête `Pull <https://help.github.com/articles/using-pull-requests/>`_."
+
+#: ../../CONTRIBUTING.rst:25
+msgid "Developer Certificate of Origin"
+msgstr "Certificat d'origine de développeur"
+
+#: ../../CONTRIBUTING.rst:27
+msgid ""
+"Including a signed-off-by line in your commits indicates that you certify "
+"the following::"
+msgstr "Incluez un Signed-off-by dans votre envoi indique que vous certifiez ce qui suit:: "
+
+#: ../../CONTRIBUTING.rst:66
+msgid ""
+"Clauses (a), (b) and (c) reassure pywws users that the project will remain "
+"open source well in to the future. Clause (d) reminds you that your "
+"contributions will be publicly available, and you do not have the right to "
+"withdraw them in future."
+msgstr "Les clauses (a), (b) et (c) rassurent les utilisateurs de pywws que le projet restera bien en Open Source à l'avenir. La division (d) vous rappelle que vos contributions seront disponibles publiquement, et vous n'avez pas le droit de les retirer à l'avenir. "
+
+#: ../../src/doc/copyright.rst:31
+msgid ""
+"Comments or questions? Please subscribe to the pywws mailing list "
+"http://groups.google.com/group/pywws and let us know."
+msgstr "Commentaires et questions? SVP, abonnez-vous à la liste pywws  http://groups.google.com/group/pywws et faites-vous entendre."
