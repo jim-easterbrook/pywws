@@ -98,10 +98,11 @@ class USBDevice(object):
 
         """
         result = self.dev.bulkRead(0x81, size, timeout=1200)
-        if sys.version_info[0] < 3:
-            result = map(ord, result)
         if not result or len(result) < size:
             raise IOError('pywws.device_libusb1.USBDevice.read_data failed')
+        # Python2 libusb1 version 1.5 and earlier returns a string
+        if not isinstance(result[0], int):
+            result = map(ord, result)
         return list(result)
 
     def write_data(self, buf):
