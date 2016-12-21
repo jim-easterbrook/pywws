@@ -1,6 +1,6 @@
 .. pywws - Python software for USB Wireless Weather Stations
    http://github.com/jim-easterbrook/pywws
-   Copyright (C) 2008-15  pywws contributors
+   Copyright (C) 2008-16  pywws contributors
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -92,8 +92,12 @@ Install pywws
 If you have downloaded or cloned the pywws source files, you need to use setup.py to install it::
 
    cd ~/weather/pywws
+   python setup.py compile_catalog
    python setup.py build
    sudo python setup.py install
+
+The ``python setup.py compile_catalog`` step is only needed if you want to use pywws in a language other than English.
+See :ref:`test-translation` for more detail.
 
 Note to Python 3 users: this will generate and use Python 3 versions of the pywws software in ``~/weather/pywws/build/lib``.
 
