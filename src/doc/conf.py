@@ -2,7 +2,7 @@
 #
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-16  pywws contributors
+# Copyright (C) 2008-17  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -36,7 +36,11 @@ import sys, os
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #sys.path.insert(0, os.path.abspath('.'))
 
-sys.path.insert(0, os.path.abspath('..'))
+# do not use Python2 source if building with Python3, requires pywws to
+# be installed with Python3 first
+if sys.version_info[0] < 3:
+    sys.path.insert(0, os.path.abspath('..'))
+
 on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 
 # cludge to allow documentation to be compiled without installing dependencies
