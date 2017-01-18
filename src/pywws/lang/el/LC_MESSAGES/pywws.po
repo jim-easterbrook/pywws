@@ -1,238 +1,238 @@
-# Greek translations for user package.
-# Copyright (C) 2010 THE user'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the user package.
-# Πέτρος <nouvakis@sch.gr>, 2010.
+# Translations template for pywws.
+# Copyright (C) 2016 Jim Easterbrook
+# This file is distributed under the same license as the pywws project.
 # 
+# Translators:
+# Jim Easterbrook <jim@jim-easterbrook.me.uk>, 2017
+# Petros Nouvakis <nouvakis@gmail.com>, 2017
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: pywws\n"
 "Report-Msgid-Bugs-To: jim@jim-easterbrook.me.uk\n"
-"POT-Creation-Date: 2012-11-16 11:57+0000\n"
-"PO-Revision-Date: 2010-06-01 00:02+0300\n"
-"Last-Translator:  <nouvakis@sch.gr>\n"
-"Language-Team: Greek\n"
-"Language: \n"
+"POT-Creation-Date: 2016-12-13 08:34+0000\n"
+"PO-Revision-Date: 2017-01-18 11:13+0000\n"
+"Last-Translator: Jim Easterbrook <jim@jim-easterbrook.me.uk>\n"
+"Language-Team: Greek (http://www.transifex.com/jim-easterbrook/pywws/language/el/)\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.3.3\n"
+"Language: el\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: code/pywws/Plot.py:226
+#. Keep the "(%Z)" formatting string
+#: src/pywws/Plot.py:795
 msgid "Time (%Z)"
-msgstr "Ωρα"
+msgstr "Ωρα (%Z)"
 
-#: code/pywws/Plot.py:228
+#: src/pywws/Plot.py:797
 msgid "Day"
 msgstr "Ημέρα"
 
-#: code/pywws/Plot.py:230
+#: src/pywws/Plot.py:799
 msgid "Date"
 msgstr "Ημερομηνία"
 
-#: code/pywws/WeatherStation.py:114 code/pywws/WindRose.py:123
-#: code/pywws/conversions.py:52
+#: src/pywws/WindRose.py:391 src/pywws/conversions.py:162
 msgid "N"
 msgstr "Β"
 
-#: code/pywws/WeatherStation.py:114 code/pywws/conversions.py:52
-msgid "NNE"
-msgstr "ΒΒΑ"
-
-#: code/pywws/WeatherStation.py:114 code/pywws/conversions.py:52
-msgid "NE"
-msgstr "ΒΑ"
-
-#: code/pywws/WeatherStation.py:114 code/pywws/conversions.py:52
-msgid "ENE"
-msgstr "ΑΒΑ"
-
-#: code/pywws/WeatherStation.py:115 code/pywws/WindRose.py:123
-#: code/pywws/conversions.py:53
+#: src/pywws/WindRose.py:391 src/pywws/conversions.py:163
 msgid "E"
 msgstr "Α"
 
-#: code/pywws/WeatherStation.py:115 code/pywws/conversions.py:53
-msgid "ESE"
-msgstr "ΑΝΑ"
-
-#: code/pywws/WeatherStation.py:115 code/pywws/conversions.py:53
-msgid "SE"
-msgstr "ΝΑ"
-
-#: code/pywws/WeatherStation.py:115 code/pywws/conversions.py:53
-msgid "SSE"
-msgstr "ΝΝΑ"
-
-#: code/pywws/WeatherStation.py:116 code/pywws/WindRose.py:123
-#: code/pywws/conversions.py:54
+#: src/pywws/WindRose.py:391 src/pywws/conversions.py:164
 msgid "S"
 msgstr "Ν"
 
-#: code/pywws/WeatherStation.py:116 code/pywws/conversions.py:54
-msgid "SSW"
-msgstr "ΝΝΔ"
-
-#: code/pywws/WeatherStation.py:116 code/pywws/conversions.py:54
-msgid "SW"
-msgstr "ΝΔ"
-
-#: code/pywws/WeatherStation.py:116 code/pywws/conversions.py:54
-msgid "WSW"
-msgstr "ΔΝΔ"
-
-#: code/pywws/WeatherStation.py:117 code/pywws/WindRose.py:123
-#: code/pywws/conversions.py:55
+#: src/pywws/WindRose.py:391 src/pywws/conversions.py:165
 msgid "W"
 msgstr "Δ"
 
-#: code/pywws/WeatherStation.py:117 code/pywws/conversions.py:55
-msgid "WNW"
-msgstr "ΔΒΔ"
-
-#: code/pywws/WeatherStation.py:117 code/pywws/conversions.py:55
-msgid "NW"
-msgstr "ΒΔ"
-
-#: code/pywws/WeatherStation.py:117 code/pywws/conversions.py:55
-msgid "NNW"
-msgstr "ΒΒΔ"
-
-#: code/pywws/WeatherStation.py:127
-msgid "rising very rapidly"
-msgstr "ραγδαία άνοδος"
-
-#: code/pywws/WeatherStation.py:129
-msgid "rising quickly"
-msgstr "γρήγορη άνοδος"
-
-#: code/pywws/WeatherStation.py:131
-msgid "rising"
-msgstr "άνοδος"
-
-#: code/pywws/WeatherStation.py:133
-msgid "rising slowly"
-msgstr "αργή άνοδος"
-
-#: code/pywws/WeatherStation.py:135
-msgid "falling very rapidly"
-msgstr "ραγδαία πτώση"
-
-#: code/pywws/WeatherStation.py:137
-msgid "falling quickly"
-msgstr "γρήγορη πτώση"
-
-#: code/pywws/WeatherStation.py:139
-msgid "falling"
-msgstr "πτώση"
-
-#: code/pywws/WeatherStation.py:141
-msgid "falling slowly"
-msgstr "αργή πτώση"
-
-#: code/pywws/WeatherStation.py:142
-msgid "steady"
-msgstr "σταθερή"
-
-#: code/pywws/ZambrettiCore.py:6
+#: src/pywws/ZambrettiCore.py:29
 msgid "Settled fine"
 msgstr ""
 
-#: code/pywws/ZambrettiCore.py:7
+#: src/pywws/ZambrettiCore.py:30
 msgid "Fine weather"
-msgstr ""
+msgstr "περίφημος καιρός"
 
-#: code/pywws/ZambrettiCore.py:8
+#: src/pywws/ZambrettiCore.py:31
 msgid "Becoming fine"
 msgstr ""
 
-#: code/pywws/ZambrettiCore.py:9
+#: src/pywws/ZambrettiCore.py:32
 msgid "Fine, becoming less settled"
 msgstr ""
 
-#: code/pywws/ZambrettiCore.py:10
+#: src/pywws/ZambrettiCore.py:33
 msgid "Fine, possible showers"
 msgstr ""
 
-#: code/pywws/ZambrettiCore.py:11
+#: src/pywws/ZambrettiCore.py:34
 msgid "Fairly fine, improving"
 msgstr ""
 
-#: code/pywws/ZambrettiCore.py:12
+#: src/pywws/ZambrettiCore.py:35
 msgid "Fairly fine, possible showers early"
 msgstr ""
 
-#: code/pywws/ZambrettiCore.py:13
+#: src/pywws/ZambrettiCore.py:36
 msgid "Fairly fine, showery later"
 msgstr ""
 
-#: code/pywws/ZambrettiCore.py:14
+#: src/pywws/ZambrettiCore.py:37
 msgid "Showery early, improving"
 msgstr ""
 
-#: code/pywws/ZambrettiCore.py:15
+#: src/pywws/ZambrettiCore.py:38
 msgid "Changeable, mending"
 msgstr ""
 
-#: code/pywws/ZambrettiCore.py:16
+#: src/pywws/ZambrettiCore.py:39
 msgid "Fairly fine, showers likely"
 msgstr ""
 
-#: code/pywws/ZambrettiCore.py:17
+#: src/pywws/ZambrettiCore.py:40
 msgid "Rather unsettled clearing later"
 msgstr ""
 
-#: code/pywws/ZambrettiCore.py:18
+#: src/pywws/ZambrettiCore.py:41
 msgid "Unsettled, probably improving"
 msgstr ""
 
-#: code/pywws/ZambrettiCore.py:19
+#: src/pywws/ZambrettiCore.py:42
 msgid "Showery, bright intervals"
 msgstr ""
 
-#: code/pywws/ZambrettiCore.py:20
+#: src/pywws/ZambrettiCore.py:43
 msgid "Showery, becoming less settled"
 msgstr ""
 
-#: code/pywws/ZambrettiCore.py:21
+#: src/pywws/ZambrettiCore.py:44
 msgid "Changeable, some rain"
 msgstr ""
 
-#: code/pywws/ZambrettiCore.py:22
+#: src/pywws/ZambrettiCore.py:45
 msgid "Unsettled, short fine intervals"
 msgstr ""
 
-#: code/pywws/ZambrettiCore.py:23
+#: src/pywws/ZambrettiCore.py:46
 msgid "Unsettled, rain later"
 msgstr ""
 
-#: code/pywws/ZambrettiCore.py:24
+#: src/pywws/ZambrettiCore.py:47
 msgid "Unsettled, some rain"
 msgstr ""
 
-#: code/pywws/ZambrettiCore.py:25
+#: src/pywws/ZambrettiCore.py:48
 msgid "Mostly very unsettled"
 msgstr ""
 
-#: code/pywws/ZambrettiCore.py:26
+#: src/pywws/ZambrettiCore.py:49
 msgid "Occasional rain, worsening"
 msgstr ""
 
-#: code/pywws/ZambrettiCore.py:27
+#: src/pywws/ZambrettiCore.py:50
 msgid "Rain at times, very unsettled"
 msgstr ""
 
-#: code/pywws/ZambrettiCore.py:28
+#: src/pywws/ZambrettiCore.py:51
 msgid "Rain at frequent intervals"
 msgstr ""
 
-#: code/pywws/ZambrettiCore.py:29
+#: src/pywws/ZambrettiCore.py:52
 msgid "Rain, very unsettled"
 msgstr ""
 
-#: code/pywws/ZambrettiCore.py:30
+#: src/pywws/ZambrettiCore.py:53
 msgid "Stormy, may improve"
 msgstr ""
 
-#: code/pywws/ZambrettiCore.py:31
+#: src/pywws/ZambrettiCore.py:54
 msgid "Stormy, much rain"
 msgstr ""
+
+#: src/pywws/conversions.py:56
+msgid "rising very rapidly"
+msgstr "ραγδαία άνοδος"
+
+#: src/pywws/conversions.py:58
+msgid "rising quickly"
+msgstr "γρήγορη άνοδος"
+
+#: src/pywws/conversions.py:60
+msgid "rising"
+msgstr "άνοδος"
+
+#: src/pywws/conversions.py:62
+msgid "rising slowly"
+msgstr "αργή άνοδος"
+
+#: src/pywws/conversions.py:64
+msgid "falling very rapidly"
+msgstr "ραγδαία πτώση"
+
+#: src/pywws/conversions.py:66
+msgid "falling quickly"
+msgstr "γρήγορη πτώση"
+
+#: src/pywws/conversions.py:68
+msgid "falling"
+msgstr "πτώση"
+
+#: src/pywws/conversions.py:70
+msgid "falling slowly"
+msgstr "αργή πτώση"
+
+#: src/pywws/conversions.py:71
+msgid "steady"
+msgstr "σταθερή"
+
+#: src/pywws/conversions.py:162
+msgid "NNE"
+msgstr "ΒΒΑ"
+
+#: src/pywws/conversions.py:162
+msgid "NE"
+msgstr "ΒΑ"
+
+#: src/pywws/conversions.py:162
+msgid "ENE"
+msgstr "ΑΒΑ"
+
+#: src/pywws/conversions.py:163
+msgid "ESE"
+msgstr "ΑΝΑ"
+
+#: src/pywws/conversions.py:163
+msgid "SE"
+msgstr "ΝΑ"
+
+#: src/pywws/conversions.py:163
+msgid "SSE"
+msgstr "ΝΝΑ"
+
+#: src/pywws/conversions.py:164
+msgid "SSW"
+msgstr "ΝΝΔ"
+
+#: src/pywws/conversions.py:164
+msgid "SW"
+msgstr "ΝΔ"
+
+#: src/pywws/conversions.py:164
+msgid "WSW"
+msgstr "ΔΝΔ"
+
+#: src/pywws/conversions.py:165
+msgid "WNW"
+msgstr "ΔΒΔ"
+
+#: src/pywws/conversions.py:165
+msgid "NW"
+msgstr "ΒΔ"
+
+#: src/pywws/conversions.py:165
+msgid "NNW"
+msgstr "ΒΒΔ"
