@@ -887,6 +887,7 @@ set timefmt "%Y-%m-%dT%H:%M:%S"
             subplot.ycalc = compile(subplot.ycalc, '<string>', 'eval')
             subplot.last_ycalcs = 0.0
             subplot.last_idx = None
+            subplot.using = '($2)'
             subplots.append(subplot)
         for data in source[start:stop]:
             for subplot in subplots:
@@ -915,6 +916,8 @@ set timefmt "%Y-%m-%dT%H:%M:%S"
                     values = (idx.isoformat(),) + value
                     vformat = '%s' + (' %g' * len(value)) + '\n'
                     subplot.dat.write(vformat % values)
+                    subplot.using = ':'.join(
+                        '($%d)' % x for x in range(2, len(values)+1))
                     subplot.last_ycalcs = value[0]
                 except TypeError:
                     if not subplot.cummulative:
@@ -959,9 +962,8 @@ set timefmt "%Y-%m-%dT%H:%M:%S"
                 style = 'smooth unique lc %s lw %g' % (colour, width)
             axes = subplot.subplot.get_value('axes', 'x1y1')
             title = subplot.subplot.get_value('title', '')
-            using = ':'.join('($%d)' % x for x in range(2, len(values)+1))
             result += u' "%s" using 1:%s axes %s %s title "%s"%s' % (
-                subplot.dat_file, using, axes, style, title, whiskerbars)
+                subplot.dat_file, subplot.using, axes, style, title, whiskerbars)
             if subplot_no != subplot_count - 1:
                 result += u', \\'
             result += u'\n'
