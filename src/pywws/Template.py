@@ -3,7 +3,7 @@
 
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-16  pywws contributors
+# Copyright (C) 2008-17  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -442,7 +442,10 @@ class Template(object):
                             fmt = fmt.encode(file_encoding)
                         x = x.strftime(fmt)
                         if sys.version_info[0] < 3:
-                            x = x.decode(file_encoding)
+                            if self.encoding == 'html':
+                                x = x.decode('ascii', errors='xmlcharrefreplace')
+                            else:
+                                x = x.decode(file_encoding)
                         yield x
                     elif not use_locale:
                         yield fmt % (x)
