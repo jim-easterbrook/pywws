@@ -1,50 +1,50 @@
 # Translations template for pywws.
-# Copyright (C) 2015 Jim Easterbrook
+# Copyright (C) 2017 Jim Easterbrook
 # This file is distributed under the same license as the pywws project.
 # 
 # Translators:
-# Tech <tech2304@gmail.com>, 2015
+# Tech <tech2304@gmail.com>, 2015,2017
 msgid ""
 msgstr ""
 "Project-Id-Version: pywws\n"
 "Report-Msgid-Bugs-To: jim@jim-easterbrook.me.uk\n"
-"POT-Creation-Date: 2015-11-19 14:12+0000\n"
-"PO-Revision-Date: 2015-11-18 13:50+0000\n"
+"POT-Creation-Date: 2017-02-07 13:52+0000\n"
+"PO-Revision-Date: 2017-03-18 18:10+0000\n"
 "Last-Translator: Tech <tech2304@gmail.com>\n"
 "Language-Team: Russian (http://www.transifex.com/jim-easterbrook/pywws/language/ru/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.0\n"
+"Generated-By: Babel 2.3.3\n"
 "Language: ru\n"
 "Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);\n"
 
 #. Keep the "(%Z)" formatting string
-#: src/pywws/Plot.py:783
+#: src/pywws/Plot.py:795
 msgid "Time (%Z)"
 msgstr "Время (%Z)"
 
-#: src/pywws/Plot.py:785
+#: src/pywws/Plot.py:797
 msgid "Day"
 msgstr "День"
 
-#: src/pywws/Plot.py:787
+#: src/pywws/Plot.py:799
 msgid "Date"
 msgstr "Дата"
 
-#: src/pywws/WindRose.py:375 src/pywws/conversions.py:162
+#: src/pywws/WindRose.py:391 src/pywws/conversions.py:162
 msgid "N"
 msgstr "С"
 
-#: src/pywws/WindRose.py:375 src/pywws/conversions.py:163
+#: src/pywws/WindRose.py:391 src/pywws/conversions.py:163
 msgid "E"
 msgstr "В"
 
-#: src/pywws/WindRose.py:375 src/pywws/conversions.py:164
+#: src/pywws/WindRose.py:391 src/pywws/conversions.py:164
 msgid "S"
 msgstr "Ю"
 
-#: src/pywws/WindRose.py:375 src/pywws/conversions.py:165
+#: src/pywws/WindRose.py:391 src/pywws/conversions.py:165
 msgid "W"
 msgstr "З"
 
@@ -74,7 +74,7 @@ msgstr "Довольно хорошая погода и улучшится"
 
 #: src/pywws/ZambrettiCore.py:35
 msgid "Fairly fine, possible showers early"
-msgstr "Довольно хорошаяд, утром возможны осадки"
+msgstr "Довольно хорошая, утром возможны осадки"
 
 #: src/pywws/ZambrettiCore.py:36
 msgid "Fairly fine, showery later"
