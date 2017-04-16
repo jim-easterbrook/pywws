@@ -68,6 +68,10 @@ def Zambretti(params, hourly_data):
     code = ZambrettiCode(params, hourly_data)
     return Localisation.translation.ugettext(ZambrettiCore.ZambrettiText(code))
 
+def ZambrettiLetter(params, hourly_data):
+    code = ZambrettiCode(params, hourly_data)
+    return ZambrettiCore.ZambrettiLetter(code)
+  
 def main(argv=None):
     if argv is None:
         argv = sys.argv

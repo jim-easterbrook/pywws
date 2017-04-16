@@ -101,6 +101,9 @@ def ZambrettiCode(pressure, month, wind, trend,
 def ZambrettiText(letter):
     return forecast_text[letter]
 
+def ZambrettiLetter(letter):
+    return letter
+
 def main(argv=None):
     from pywws.conversions import winddir_text
     for pressure in range(1030, 960, -10):
