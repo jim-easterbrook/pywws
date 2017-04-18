@@ -192,7 +192,7 @@ First, choose a directory to store all your weather station data.
 This will be written to quite frequently, so a disk drive is preferable to a flash memory stick or card, as these have a limited number of writes.
 In most cases your home directory is suitable, for example::
 
-   mkdir ~/weather/data
+   mkdir -p ~/weather/data
 
 This directory is referred to elsewhere in the pywws documentation as your data directory.
 
