@@ -2,7 +2,7 @@
 
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-16  pywws contributors
+# Copyright (C) 2008-17  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -352,6 +352,8 @@ class RegularTasks(object):
             self.monthly_data.flush()
 
     def _do_uploads(self):
+        if not os.path.isdir(self.uploads_directory):
+            return True
         # get list of pending uploads
         uploads = []
         for name in os.listdir(self.uploads_directory):
