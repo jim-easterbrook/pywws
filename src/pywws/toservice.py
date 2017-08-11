@@ -331,7 +331,10 @@ class ToService(object):
         mosquitto_client = mosquitto.Mosquitto(client_id)
         if auth:
             self.logger.debug("Username and password configured")
-            mosquitto_client.username_pw_set(self.user, self.password)
+            if(self.password == "unknown"):
+                mosquitto_client.username_pw_set(self.user)
+            else:
+                mosquitto_client.username_pw_set(self.user, self.password)
         else:
             self.logger.debug("Username and password unconfigured, ignoring")
         self.logger.debug(
