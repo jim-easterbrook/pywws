@@ -206,6 +206,7 @@ class ToService(object):
             self.parent = config_section
         self.old_response = None
         self.old_ex = None
+        self.http_headers = None
         # set default socket timeout, so urlopen calls don't hang forever
         if eval(self.params.get('config', 'asynchronous', 'False')):
             socket.setdefaulttimeout(60)
@@ -269,6 +270,8 @@ class ToService(object):
         self.interval = eval(service_params.get('config', 'interval'))
         self.interval = max(self.interval, 40)
         self.interval = timedelta(seconds=self.interval)
+        if service_params.has_option('config', 'http_headers'):
+            self.http_headers = eval(service_params.get('config', 'http_headers'))
         # move 'last update' from params to status
         last_update = self.params.get_datetime(self.service_name, 'last update')
         if last_update:
@@ -458,6 +461,9 @@ class ToService(object):
                 request = urllib2.Request(self.server, coded_data.encode('ASCII'))
             if self.auth_type == 'basic':
                 request.add_header('Authorization', self.auth)
+            if self.http_headers is not None:
+                for header in self.http_headers:
+                    request.add_header(header[0], header[1])
             rsp = urllib2.urlopen(request)
             response = rsp.readlines()
             rsp.close()
