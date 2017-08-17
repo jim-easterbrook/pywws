@@ -16,7 +16,7 @@
    along with this program; if not, write to the Free Software
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-How to integrate pywws with various weather services 
+How to integrate pywws with various weather services
 ====================================================
 
 This guide gives brief instructions on how to use pywws with some other weather services and software.
@@ -280,3 +280,23 @@ wetter.com
 
     [live]
     services = ['wetterarchivde', 'underground_rf']
+
+Custom Request Headers
+----------------------
+
+The :py:mod:`pywws.toservice` module does support the injection of one or more
+custom request headers for special cases where you want to integrate with a
+service that, for example, requires you to pass an authentication key header
+along with each request, such as ``x-api-key``.
+
+These headers can be added to your ``a_service.ini`` file in the format of key
+value pairs::
+
+    [config]
+    url		= https://my-aws-api-gw.execute-api.eu-west-1.amazonaws.com/test/station
+    catchup		= 100
+    interval	= 0
+    use get		= True
+    result		= []
+    auth_type	= None
+    http_headers	= [('x-api-key', 'my-api-key'), ('x-some-header', 'value')]
