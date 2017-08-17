@@ -1,0 +1,35 @@
+#! pywws - Python software for USB Wireless Weather Stations                       #
+#! http://github.com/jim-easterbrook/pywws                                         #
+#! Copyright (C) 2008-13  Jim Easterbrook  jim@jim-easterbrook.me.uk               #
+#!                                                                                 #
+#! This program is free software; you can redistribute it and/or                   #
+#! modify it under the terms of the GNU General Public License                     #
+#! as published by the Free Software Foundation; either version 2                  #
+#! of the License, or (at your option) any later version.                          #
+#!                                                                                 #
+#! This program is distributed in the hope that it will be useful,                 #
+#! but WITHOUT ANY WARRANTY; without even the implied warranty of                  #
+#! MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                   #
+#! GNU General Public License for more details.                                    #
+#!                                                                                 #
+#! You should have received a copy of the GNU General Public License               #
+#! along with this program; if not, write to the Free Software                     #
+#! Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA. #
+#live#
+{
+#hum_in       "'hum_in'     : '%.d',"#
+#temp_in      "'temp_in'    : '%.1f',"#
+#hum_out      "'hum_out'    : '%.d',"#
+#temp_out     "'temp_out'   : '%.1f',"#
+#calc "dew_point(data['temp_out'], data['hum_out'])" "'temp_dewpt'  : '%.1f',"#
+#rel_pressure "'abs_pressure'   : '%.4f',"#
+#wind_ave     "'wind_ave'   : '%.2f',"#
+#wind_gust    "'wind_gust'  : '%.2f',"#
+#wind_dir     "'wind_dir'   : '%.0f'," "" "winddir_degrees(x)"#
+#calc "rain_hour(data)" "'rain'     : '%g',"#
+#calc "rain_day(data)" 	"'rain_day'     : '%g',"#
+#calc "wind_chill(data['temp_out'], data['wind_ave'])" "'wind_chill'	: '%.1f',"#
+#calc "apparent_temp(data['temp_out'], data['hum_out'], data['wind_ave'])" "'temp_apprt'	:  '%.1f',"#
+#idx          "'tdate'      : '%Y-%m-%d',"#
+#idx          "'ttime'      : '%H:%M:%S',"#
+}
