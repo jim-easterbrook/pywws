@@ -11,6 +11,7 @@ Simon Josefsson                 simon@josefsson.org
 Matthew Hilton                  matthilton2005@gmail.com
 Sabine Tobolka			oe1yvw@gmail.com
 Markus Birth                    markus@birth-online.de
+Chris Ramsay                    chris@ramsay-family.net
 
 Translators
 -----------
