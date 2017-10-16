@@ -283,6 +283,10 @@ Note that you may need to change the ``port`` value when you change to or from s
 
 ``user`` and ``password`` are the FTP site login details. Your web site provider should have provided them to you.
 
+``privkey`` is the path to a private SSH-key_. For SFTP (secure FTP) this can be used for authentication instead of a password, which offers additional benefits in terms of security. When this is used the password-parameter can be left empty.
+
+.. _SSH-key: https://www.ssh.com/ssh/public-key-authentication
+
 ``directory`` specifies where on the FTP site (or local file system) the files should be stored. Note that you may have to experiment with this a bit - you might need a '/' character at the start of the path.
 
 .. versionadded:: 13.12.dev1120
