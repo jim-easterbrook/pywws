@@ -9,9 +9,10 @@ Rod Persky
 Morten Høybye Frederiksen       morten@mfd-consult.dk
 Simon Josefsson                 simon@josefsson.org
 Matthew Hilton                  matthilton2005@gmail.com
-Sabine Tobolka			oe1yvw@gmail.com
+Sabine Tobolka			            oe1yvw@gmail.com
 Markus Birth                    markus@birth-online.de
 Chris Ramsay                    chris@ramsay-family.net
+Christian Benke                 benkokakao@gmail.com
 
 Translators
 -----------

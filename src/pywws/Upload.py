@@ -122,22 +122,29 @@ class _ftp(object):
         self.ftp.close()
 
 class _sftp(object):
-    def __init__(self, logger, site, user, password, directory, port):
+    def __init__(self, logger, site, user, password, privkey, directory, port):
         global paramiko
         import paramiko
         self.logger = logger
         self.site = site
         self.user = user
         self.password = password
+        self.privkey = privkey
         self.directory = directory
         self.port = port
 
     def connect(self):
         self.logger.info("Uploading to web site with SFTP")
         self.transport = paramiko.Transport((self.site, self.port))
-        self.transport.connect(username=self.user, password=self.password)
+        self.transport.start_client()
+        if self.privkey:
+            self.get_private_key(self.privkey)
+            self.transport.auth_publickey(username=self.user, key=self.pkey)
+        else:
+            self.transport.auth_password(username=self.user, password=self.password)
         self.ftp = paramiko.SFTPClient.from_transport(self.transport)
         self.ftp.chdir(self.directory)
+
 
     def put(self, src, dest):
         self.ftp.put(src, dest)
@@ -145,6 +152,15 @@ class _sftp(object):
     def close(self):
         self.ftp.close()
         self.transport.close()
+
+    def get_private_key(self, privkey):
+        import StringIO
+        f = open(privkey, 'r')
+        s = f.read()
+        keyfile = StringIO.StringIO(s)
+        self.pkey = paramiko.RSAKey.from_private_key(keyfile)
+
+        
 
 class _copy(object):
     def __init__(self, logger, directory):
@@ -178,13 +194,18 @@ class Upload(object):
             # get remote site details
             site = self.params.get('ftp', 'site', 'ftp.username.your_isp.co.uk')
             user = self.params.get('ftp', 'user', 'username')
-            password = self.params.get('ftp', 'password', 'secret')
+            # we don't set a default password, as we might use a private ssh key 
+            if self.params.get('ftp','password'):
+                password = self.params.get('ftp', 'password')
+            else:
+                password = ''
             directory = self.params.get(
                 'ftp', 'directory', 'public_html/weather/data/')
             if eval(self.params.get('ftp', 'secure', 'False')):
                 port = eval(self.params.get('ftp', 'port', '22'))
+                privkey = self.params.get('ftp', 'privkey')
                 self.uploader = _sftp(
-                    self.logger, site, user, password, directory, port)
+                    self.logger, site, user, password, privkey, directory, port)
             else:
                 port = eval(self.params.get('ftp', 'port', '21'))
                 self.uploader = _ftp(
