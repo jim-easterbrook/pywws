@@ -323,6 +323,7 @@ class ToService(object):
         client_id = prepared_data['client_id']
         retain = prepared_data['retain'] == 'True'
         auth = prepared_data['auth'] == 'True'
+        multi_topic = prepared_data['multi_topic'] == 'True'
         # clean up the object
         del prepared_data['topic']
         del prepared_data['hostname']
@@ -330,6 +331,7 @@ class ToService(object):
         del prepared_data['client_id']
         del prepared_data['retain']
         del prepared_data['auth']
+        del prepared_data['multi_topic']
 
         mosquitto_client = mosquitto.Mosquitto(client_id)
         if auth:
@@ -349,12 +351,12 @@ class ToService(object):
         mosquitto_client.publish(topic, json.dumps(prepared_data), retain=retain)
 
 ##        commented out as sending the data as a json object (above)
-##        for item in prepared_data:
-##            if prepared_data[item] == '':
-##                prepared_data[item] = 'None'
-##            mosquitto_client.publish(
-##                topic + "/" + item + "/" + str(timestamp), prepared_data[item])
-##            time.sleep(0.200)
+        if multi_topic:
+            for item in prepared_data:
+                if prepared_data[item] == '':
+                    prepared_data[item] = 'None'
+                mosquitto_client.publish(topic + "/" + item, prepared_data[item], retain=retain)
+            time.sleep(0.200)
 
         self.logger.debug("published data: %s", prepared_data)
         mosquitto_client.disconnect()
