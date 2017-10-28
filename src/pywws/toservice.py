@@ -333,7 +333,7 @@ class ToService(object):
         del prepared_data['auth']
         del prepared_data['multi_topic']
 
-        mosquitto_client = mosquitto.Mosquitto(client_id)
+        mosquitto_client = mosquitto.Client(client_id, protocol=mosquitto.MQTTv31)
         if auth:
             self.logger.debug("Username and password configured")
             if(self.password == "unknown"):
