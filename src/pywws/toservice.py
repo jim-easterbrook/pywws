@@ -351,11 +351,13 @@ class ToService(object):
         mosquitto_client.publish(topic, json.dumps(prepared_data), retain=retain)
 
         if multi_topic:
+            #Publish a messages, one for each item in prepared_data to separate Subtopics. 
             for item in prepared_data:
                 if prepared_data[item] == '':
                     prepared_data[item] = 'None'
                 mosquitto_client.publish(topic + "/" + item, prepared_data[item], retain=retain)
-            time.sleep(0.200)
+            #Need to make sure the messages have been flushed to the server.
+            mosquitto_client.loop(timeout=0.5) 
 
         self.logger.debug("published data: %s", prepared_data)
         mosquitto_client.disconnect()
