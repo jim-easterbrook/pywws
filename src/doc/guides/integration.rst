@@ -128,6 +128,7 @@ See :ref:`Dependencies - MQTT <dependencies-mqtt>` for details.
     user = unknown
     password = unknown
     template = default
+    multi_topic = False
 
     [logged]
     services = ['mqtt', 'underground']
@@ -144,6 +145,10 @@ Otherwise the broker discards the message if no client is subscribing to this to
 This allows clients to get an immediate response when they subscribe to a topic, without having to wait until the next message is published.
 
 ``auth``, ``user`` and ``password`` can be used for MQTT authentication.
+
+``multi_topic`` is a boolean and should be set to ``True`` or ``False``.
+If set to ``True`` pywws will also publish all the data each as separate subtopics of the configured ``topic``;
+i.e., with the ``topic`` set to /weather/pywws pywws will also publish the outside temperature to ``/weather/pywws/temp_out`` and the inside temperature to ``/weather/pywws/temp_in``.  
 
 If these aren't obvious to you it's worth doing a bit of reading around MQTT.
 It's a great lightweight messaging system from IBM, recently made more popular when Facebook published information on their use of it.

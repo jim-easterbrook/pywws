@@ -323,6 +323,7 @@ class ToService(object):
         client_id = prepared_data['client_id']
         retain = prepared_data['retain'] == 'True'
         auth = prepared_data['auth'] == 'True'
+        multi_topic = prepared_data['multi_topic'] == 'True'
         # clean up the object
         del prepared_data['topic']
         del prepared_data['hostname']
@@ -330,6 +331,7 @@ class ToService(object):
         del prepared_data['client_id']
         del prepared_data['retain']
         del prepared_data['auth']
+        del prepared_data['multi_topic']
 
         mosquitto_client = mosquitto.Client(client_id, protocol=mosquitto.MQTTv31)
         if auth:
@@ -348,13 +350,14 @@ class ToService(object):
         mosquitto_client.connect(hostname, int(port))
         mosquitto_client.publish(topic, json.dumps(prepared_data), retain=retain)
 
-##        commented out as sending the data as a json object (above)
-##        for item in prepared_data:
-##            if prepared_data[item] == '':
-##                prepared_data[item] = 'None'
-##            mosquitto_client.publish(
-##                topic + "/" + item + "/" + str(timestamp), prepared_data[item])
-##            time.sleep(0.200)
+        if multi_topic:
+            #Publish a messages, one for each item in prepared_data to separate Subtopics. 
+            for item in prepared_data:
+                if prepared_data[item] == '':
+                    prepared_data[item] = 'None'
+                mosquitto_client.publish(topic + "/" + item, prepared_data[item], retain=retain)
+            #Need to make sure the messages have been flushed to the server.
+            mosquitto_client.loop(timeout=0.5) 
 
         self.logger.debug("published data: %s", prepared_data)
         mosquitto_client.disconnect()
