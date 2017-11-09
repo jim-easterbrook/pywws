@@ -1,6 +1,6 @@
 .. pywws - Python software for USB Wireless Weather Stations
    http://github.com/jim-easterbrook/pywws
-   Copyright (C) 2008-14  Jim Easterbrook  jim@jim-easterbrook.me.uk
+   Copyright (C) 2008-17  pywws contributors
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -107,8 +107,9 @@ Include an image in your tweet
 
 .. versionadded:: 14.05.dev1216
 
-You can add an image to your tweets by specifying an image file location in the tweet template.
+You can add up to four images to your tweets by specifying the image file locations in the tweet template.
 Make the first line of the tweet ``media path`` where ``path`` is the absolute location of the file.
+Repeat for any additional image files.
 The "tweet_media.txt" example template shows how to do this.
 
 The image could be from a web cam, or for a weather forecast it could be an icon representing the forecast.

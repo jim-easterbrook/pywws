@@ -2,7 +2,7 @@
 
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-16  pywws contributors
+# Copyright (C) 2008-17  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -81,9 +81,9 @@ class TweepyHandler(object):
         if len(media) > 1:
             self.logger.error('Tweepy library cannot post multiple media')
         if media:
-            self.api.update_with_media(media[0], status[:117], **self.kwargs)
+            self.api.update_with_media(media[0], status[:257], **self.kwargs)
         else:
-            self.api.update_status(status[:140], **self.kwargs)
+            self.api.update_status(status[:280], **self.kwargs)
 
 class PythonTwitterHandler(object):
     def __init__(self, key, secret, latitude, longitude, timeout):
@@ -99,25 +99,18 @@ class PythonTwitterHandler(object):
                            'display_coordinates' : True}
         else:
             self.kwargs = {}
+        self.kwargs['verify_status_length'] = False
 
     def post(self, status, media):
-        max_len = 140
+        max_len = 280
         if media:
             max_len -= len(media[:4]) * 23
         status = status.strip()[:max_len]
-        if tuple(map(int, twitter.__version__.split('.'))) >= (3, 0):
-            args = dict(self.kwargs)
-            if media:
-                args['media'] = media
-            args['verify_status_length'] = False
-            self.api.PostUpdate(status, **args)
-            return
-        if len(media) > 1:
-            self.api.PostMultipleMedia(status, media[:4], **self.kwargs)
-        elif media:
-            self.api.PostMedia(status, media[0], **self.kwargs)
-        else:
-            self.api.PostUpdate(status, **self.kwargs)
+        args = dict(self.kwargs)
+        if media:
+            args['media'] = media
+        self.api.PostUpdate(status, **args)
+
 
 class ToTwitter(object):
     def __init__(self, params):
