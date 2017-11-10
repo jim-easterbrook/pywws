@@ -163,7 +163,7 @@ cmdclass['upload'] = upload_and_tag
 
 # set options for building distributions
 command_options['sdist'] = {
-    'formats'        : ('setup.py', 'gztar zip'),
+    'formats'        : ('setup.py', 'gztar'),
     }
 
 with open('README.rst') as ldf:
