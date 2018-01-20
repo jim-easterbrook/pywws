@@ -3,7 +3,7 @@
 
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-16  pywws contributors
+# Copyright (C) 2008-18  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -181,7 +181,7 @@ class WindFilter(object):
     """
     def __init__(self, decay=1.0):
         self.decay = decay
-        self.Ve = 0.0
+        self.Ve = None
         self.Vn = 0.0
         self.total = 0.0
         self.weight = 1.0
@@ -189,9 +189,8 @@ class WindFilter(object):
         self.last_idx = None
 
     def add(self, data):
-        direction = data['wind_dir']
         speed = data['wind_ave']
-        if direction is None or speed is None:
+        if speed is None:
             return
         if self.last_idx and self.decay != 1.0:
             interval = data['idx'] - self.last_idx
@@ -203,6 +202,13 @@ class WindFilter(object):
             self.weight = self.weight / decay
         self.last_idx = data['idx']
         speed = speed * self.weight
+        self.total += speed
+        self.total_weight += self.weight
+        direction = data['wind_dir']
+        if direction is None:
+            return
+        if self.Ve is None:
+            self.Ve = 0.0
         if isinstance(direction, int):
             self.Ve -= speed * sin_LUT[direction]
             self.Vn -= speed * cos_LUT[direction]
@@ -210,12 +216,12 @@ class WindFilter(object):
             direction = math.radians(float(direction) * 22.5)
             self.Ve -= speed * math.sin(direction)
             self.Vn -= speed * math.cos(direction)
-        self.total += speed
-        self.total_weight += self.weight
 
     def result(self):
         if self.total_weight == 0.0:
             return (None, None)
+        if self.Ve is None:
+            return (self.total / self.total_weight, None)
         return (self.total / self.total_weight,
                 (math.degrees(math.atan2(self.Ve, self.Vn)) + 180.0) / 22.5)
 
