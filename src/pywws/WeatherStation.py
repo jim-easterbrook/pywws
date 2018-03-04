@@ -419,6 +419,7 @@ class weather_station(object):
         ptr_time = 0
         data_time = 0
         last_status = decode_status(0)
+        not_logging = False
         while True:
             # sleep until just before next reading is due
             now = time.time()
@@ -427,7 +428,9 @@ class weather_station(object):
                 pause = next_live - advance
             else:
                 pause = self.min_pause
-            if next_log:
+            if not_logging:
+                pass
+            elif next_log:
                 pause = min(pause, next_log - advance)
             elif old_data['delay'] >= read_period - 1:
                 pause = self.min_pause
@@ -479,6 +482,15 @@ class weather_station(object):
                         result['idx'] = datetime.utcfromtimestamp(int(next_live))
                         yield result, old_ptr, False
                     next_live += live_interval
+                    if not_logging:
+                        # simulate logging if station is not logging
+                        if not next_log:
+                            next_log = next_live
+                        if next_live > next_log:
+                            result = dict(new_data)
+                            result['idx'] = datetime.utcfromtimestamp(int(next_log))
+                            yield result, old_ptr, True
+                            next_log += log_interval
             elif next_live and data_time > next_live + 6.0:
                 self.logger.info('live_data missed')
                 next_live += live_interval
@@ -486,6 +498,7 @@ class weather_station(object):
             # has ptr changed?
             if new_ptr != old_ptr:
                 self.logger.info('live_data new ptr: %06x', new_ptr)
+                not_logging = False
                 last_log = ptr_time - self.margin
                 if ptr_time - last_ptr_time < self.margin:
                     # pointer has just changed, so definitely at a logging time
@@ -513,7 +526,8 @@ class weather_station(object):
             elif ptr_time > last_log + log_interval + 180.0:
                 # if station stops logging data, don't keep reading
                 # USB until it locks up
-                raise IOError('station is not logging data')
+                self.logger.error('station is not logging data')
+                not_logging = True
             elif next_log and ptr_time > next_log + 6.0:
                 self.logger.warning('live_data log extended')
                 next_log += 60.0
