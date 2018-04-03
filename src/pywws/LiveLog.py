@@ -2,7 +2,7 @@
 
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-16  pywws contributors
+# Copyright (C) 2008-18  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -74,6 +74,9 @@ def LiveLog(data_dir):
     tasks = Tasks.RegularTasks(params, status, raw_data, calib_data,
                                hourly_data, daily_data, monthly_data,
                                asynch=asynch)
+    # clear any processing backlog
+    Process.Process(params, raw_data, calib_data,
+                    hourly_data, daily_data, monthly_data)
     # get live data
     try:
         for data, logged in datalogger.live_data(
