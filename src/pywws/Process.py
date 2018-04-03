@@ -143,10 +143,10 @@ class Maximum(object):
             return self.value, self.time
         return None, None
 
-sin_LUT = map(
-    lambda x: math.sin(math.radians(float(x * 360) / 16.0)), range(16))
-cos_LUT = map(
-    lambda x: math.cos(math.radians(float(x * 360) / 16.0)), range(16))
+sin_LUT = list(map(
+    lambda x: math.sin(math.radians(float(x * 360) / 16.0)), range(16)))
+cos_LUT = list(map(
+    lambda x: math.cos(math.radians(float(x * 360) / 16.0)), range(16)))
 
 class WindFilter(object):
     """Compute average wind speed and direction.
