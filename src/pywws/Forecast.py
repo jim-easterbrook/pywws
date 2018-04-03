@@ -73,7 +73,7 @@ def main(argv=None):
         argv = sys.argv
     try:
         opts, args = getopt.getopt(argv[1:], "h", ['help'])
-    except getopt.error, msg:
+    except getopt.error as msg:
         print('Error: %s\n' % msg, file=sys.stderr)
         print(__usage__.strip(), file=sys.stderr)
         return 1
@@ -92,15 +92,15 @@ def main(argv=None):
     Localisation.SetApplicationLanguage(params)
     hourly_data = DataStore.hourly_store(data_dir)
     idx = hourly_data.before(datetime.max)
-    print 'Zambretti (current):', Zambretti(params, hourly_data[idx])
+    print('Zambretti (current):', Zambretti(params, hourly_data[idx]))
     idx = idx.replace(tzinfo=utc).astimezone(Local)
     if idx.hour < 8 or (idx.hour == 8 and idx.minute < 30):
         idx -= timedelta(hours=24)
     idx = idx.replace(hour=9, minute=0, second=0)
     idx = hourly_data.nearest(idx.astimezone(utc).replace(tzinfo=None))
     lcl = idx.replace(tzinfo=utc).astimezone(Local)
-    print 'Zambretti (at %s):' % lcl.strftime('%H:%M %Z'), Zambretti(
-        params, hourly_data[idx])
+    print('Zambretti (at %s):' % lcl.strftime('%H:%M %Z'), Zambretti(
+        params, hourly_data[idx]))
     return 0
 
 if __name__ == "__main__":

@@ -214,7 +214,7 @@ class Upload(object):
     def connect(self):
         try:
             self.uploader.connect()
-        except Exception, ex:
+        except Exception as ex:
             e = str(ex)
             if e == self.old_ex:
                 self.logger.debug(e)
@@ -229,7 +229,7 @@ class Upload(object):
         try:
             self.uploader.put(file, target)
             return True
-        except Exception, ex:
+        except Exception as ex:
             e = str(ex)
             if e == self.old_ex:
                 self.logger.debug(e)
@@ -257,7 +257,7 @@ def main(argv=None):
         argv = sys.argv
     try:
         opts, args = getopt.getopt(argv[1:], "h", ['help'])
-    except getopt.error, msg:
+    except getopt.error as msg:
         print('Error: %s\n' % msg, file=sys.stderr)
         print(__usage__.strip(), file=sys.stderr)
         return 1

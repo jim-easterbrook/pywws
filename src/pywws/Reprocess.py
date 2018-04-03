@@ -108,7 +108,7 @@ def main(argv=None):
     try:
         opts, args = getopt.getopt(
             argv[1:], "huv", ['help', 'update', 'verbose'])
-    except getopt.error, msg:
+    except getopt.error as msg:
         print('Error: %s\n' % msg, file=sys.stderr)
         print(usage, file=sys.stderr)
         return 1

@@ -276,7 +276,7 @@ def main(argv=None):
     try:
         opts, args = getopt.getopt(
             argv[1:], "hcs:v", ('help', 'clear', 'sync=', 'verbose'))
-    except getopt.error, msg:
+    except getopt.error as msg:
         print('Error: %s\n' % msg, file=sys.stderr)
         print(__usage__.strip(), file=sys.stderr)
         return 1

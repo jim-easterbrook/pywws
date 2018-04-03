@@ -82,7 +82,7 @@ def main(argv=None):
     try:
         opts, args = getopt.getopt(
             argv[1:], "hp:v", ['help', 'pid=', 'verbose'])
-    except getopt.error, msg:
+    except getopt.error as msg:
         print('Error: %s\n' % msg, file=sys.stderr)
         print(usage, file=sys.stderr)
         return 1
@@ -108,7 +108,7 @@ def main(argv=None):
         args[0], args[2], map(lambda x: x.stream, logger.handlers), pid_file)
     try:
         runner.do_action()
-    except Exception, ex:
+    except Exception as ex:
         logger.exception(ex)
         return 3
     return 0

@@ -86,7 +86,7 @@ def main(argv=None):
     usage = (__usage__ % (argv[0])).strip()
     try:
         opts, args = getopt.getopt(argv[1:], "hv", ['help', 'verbose'])
-    except getopt.error, msg:
+    except getopt.error as msg:
         print('Error: %s\n' % msg, file=sys.stderr)
         print(usage, file=sys.stderr)
         return 1

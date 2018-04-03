@@ -73,7 +73,7 @@ def main(argv=None):
         argv = sys.argv
     try:
         opts, args = getopt.getopt(argv[1:], "h", ['help'])
-    except getopt.error, msg:
+    except getopt.error as msg:
         print('Error: %s\n' % msg, file=sys.stderr)
         print(__usage__.strip(), file=sys.stderr)
         return 1
@@ -119,24 +119,24 @@ def main(argv=None):
         data['temp_in'] = float(items[5])
         try:
             data['hum_out'] = int(items[6])
-        except:
+        except Exception:
             data['hum_out'] = None
         try:
             data['temp_out'] = float(items[7])
-        except:
+        except Exception:
             data['temp_out'] = None
         data['abs_pressure'] = float(items[10])
         try:
             data['wind_ave'] = float(items[12])
-        except:
+        except Exception:
             data['wind_ave'] = None
         try:
             data['wind_gust'] = float(items[14])
-        except:
+        except Exception:
             data['wind_gust'] = None
         try:
             data['wind_dir'] = int(items[16])
-        except:
+        except Exception:
             data['wind_dir'] = None
         data['rain'] = int(items[18]) * 0.3
         data['status'] = int(items[35].split()[15], 16)

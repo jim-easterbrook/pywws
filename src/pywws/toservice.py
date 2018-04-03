@@ -416,7 +416,7 @@ class ToService(object):
                 sock.shutdown(socket.SHUT_RDWR)
             finally:
                 sock.close()
-        except Exception, ex:
+        except Exception as ex:
             new_ex = str(ex)
             if new_ex == self.old_ex:
                 log = self.logger.debug
@@ -489,7 +489,7 @@ class ToService(object):
                     self.set_last_update(timestamp)
                 return True
             return False
-        except urllib2.HTTPError, ex:
+        except urllib2.HTTPError as ex:
             if ex.code == 429 and self.service_name == 'metoffice':
                 # UK Met Office server uses 429 to signal duplicate data
                 success = True
@@ -504,9 +504,9 @@ class ToService(object):
                     ex_info.append(re.sub('<.+?>', '', line))
             except Exception:
                 pass
-        except urllib2.URLError, ex:
+        except urllib2.URLError as ex:
             new_ex = str(ex.reason)
-        except Exception, ex:
+        except Exception as ex:
             new_ex = str(ex)
         if new_ex == self.old_ex:
             log = self.logger.debug
@@ -628,7 +628,7 @@ def main(argv=None):
     try:
         opts, args = getopt.getopt(
             argv[1:], "hcv", ['help', 'catchup', 'verbose'])
-    except getopt.error, msg:
+    except getopt.error as msg:
         print('Error: %s\n' % msg, file=sys.stderr)
         print(__usage__.strip(), file=sys.stderr)
         return 1

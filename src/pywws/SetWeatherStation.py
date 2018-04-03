@@ -63,7 +63,7 @@ def main(argv=None):
             argv[1:], "hcp:r:vz",
             ['help', 'clock', 'pressure=', 'read_period=',
              'verbose', 'zero_memory'])
-    except getopt.error, msg:
+    except getopt.error as msg:
         print('Error: %s\n' % msg, file=sys.stderr)
         print(__usage__.strip(), file=sys.stderr)
         return 1

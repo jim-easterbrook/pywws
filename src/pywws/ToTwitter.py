@@ -53,7 +53,7 @@ twitter = None
 tweepy = None
 try:
     import twitter
-except ImportError, ex:
+except ImportError as ex:
     try:
         import tweepy
     except ImportError:
@@ -146,7 +146,7 @@ class ToTwitter(object):
         try:
             self.api.post(tweet, media)
             return True
-        except Exception, ex:
+        except Exception as ex:
             e = str(ex)
             if 'is a duplicate' in e:
                 return True
@@ -168,7 +168,7 @@ def main(argv=None):
         argv = sys.argv
     try:
         opts, args = getopt.getopt(argv[1:], "h", ['help'])
-    except getopt.error, msg:
+    except getopt.error as msg:
         print('Error: %s\n' % msg, file=sys.stderr)
         print(__usage__.strip(), file=sys.stderr)
         return 1

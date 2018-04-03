@@ -89,7 +89,7 @@ def LiveLog(data_dir):
                 tasks.do_tasks()
             else:
                 tasks.do_live(data)
-    except Exception, ex:
+    except Exception as ex:
         logger.exception(ex)
     finally:
         tasks.stop_thread()
@@ -101,7 +101,7 @@ def main(argv=None):
     usage = (__usage__ % (argv[0])).strip()
     try:
         opts, args = getopt.getopt(argv[1:], "hl:v", ['help', 'log=', 'verbose'])
-    except getopt.error, msg:
+    except getopt.error as msg:
         print('Error: %s\n' % msg, file=sys.stderr)
         print(usage, file=sys.stderr)
         return 1
@@ -131,5 +131,5 @@ if __name__ == "__main__":
         sys.exit(main())
     except KeyboardInterrupt:
         pass
-    except Exception, e:
+    except Exception as e:
         logger.exception(str(e))

@@ -2,7 +2,7 @@
 
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-17  pywws contributors
+# Copyright (C) 2008-18  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -153,7 +153,7 @@ class RegularTasks(object):
                     timeout = 2
                 self.logger.debug('Doing asynchronous tasks')
                 self._do_queued_tasks()
-        except Exception, ex:
+        except Exception as ex:
             self.logger.exception(ex)
 
     def _do_queued_tasks(self):
