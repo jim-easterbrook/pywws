@@ -409,7 +409,7 @@ class Template(object):
                 if command == []:
                     # empty command == print a single '#'
                     yield u'#'
-                elif command[0] in data.keys() + ['calc']:
+                elif command[0] in list(data.keys()) + ['calc']:
                     # output a value
                     if not valid_data:
                         continue
