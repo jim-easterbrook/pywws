@@ -70,13 +70,17 @@ Detailed API
 
 from __future__ import with_statement
 
-from ConfigParser import RawConfigParser
 import csv
 from datetime import date, datetime, timedelta, MAXYEAR
 import os
 import sys
 from threading import Lock
 import time
+
+if sys.version_info[0] >= 3:
+    from configparser import RawConfigParser
+else:
+    from ConfigParser import RawConfigParser
 
 from pywws.constants import DAY
 

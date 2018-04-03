@@ -154,12 +154,14 @@ class _sftp(object):
         self.transport.close()
 
     def get_private_key(self, privkey):
-        import StringIO
+        if sys.version_info[0] >= 3:
+            from io import StringIO
+        else:
+            from StringIO import StringIO
         f = open(privkey, 'r')
         s = f.read()
-        keyfile = StringIO.StringIO(s)
+        keyfile = StringIO(s)
         self.pkey = paramiko.RSAKey.from_private_key(keyfile)
-
         
 
 class _copy(object):

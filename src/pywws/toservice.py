@@ -146,7 +146,6 @@ __doc__ %= __usage__
 __usage__ = __doc__.split('\n')[0] + __usage__
 
 import base64
-from ConfigParser import SafeConfigParser
 from datetime import datetime, timedelta
 import getopt
 import logging
@@ -154,11 +153,20 @@ import os
 import pkg_resources
 import re
 import socket
-import StringIO
 import sys
-import urllib
-import urllib2
-import urlparse
+
+if sys.version_info[0] >= 3:
+    from configparser import SafeConfigParser
+    from io import StringIO
+    from urllib.error import HTTPError, URLError
+    from urllib.parse import urlencode, urlsplit
+    from urllib.request import Request, urlopen
+else:
+    from ConfigParser import SafeConfigParser
+    from StringIO import StringIO
+    from urllib import urlencode
+    from urllib2 import HTTPError, Request, URLError, urlopen
+    from urlparse import urlsplit
 
 from pywws import DataStore
 from pywws.Logger import ApplicationLogger
@@ -219,10 +227,10 @@ class ToService(object):
             'pywws', 'services/%s.ini' % (self.service_name))
         if sys.version_info[0] >= 3:
             param_string = param_string.decode('utf-8')
-        service_params.readfp(StringIO.StringIO(param_string))
+        service_params.readfp(StringIO(param_string))
         # get URL
         self.server = service_params.get('config', 'url')
-        parsed_url = urlparse.urlsplit(self.server)
+        parsed_url = urlsplit(self.server)
         if parsed_url.scheme == 'aprs':
             self.send_data = self.aprs_send_data
             server, port = parsed_url.netloc.split(':')
@@ -453,22 +461,22 @@ class ToService(object):
         :rtype: bool
 
         """
-        coded_data = urllib.urlencode(prepared_data)
+        coded_data = urlencode(prepared_data)
         self.logger.debug(coded_data)
         new_ex = self.old_ex
         ex_info = []
         success = False
         try:
             if self.use_get:
-                request = urllib2.Request(self.server + '?' + coded_data)
+                request = Request(self.server + '?' + coded_data)
             else:
-                request = urllib2.Request(self.server, coded_data.encode('ASCII'))
+                request = Request(self.server, coded_data.encode('ASCII'))
             if self.auth_type == 'basic':
                 request.add_header('Authorization', self.auth)
             if self.http_headers is not None:
                 for header in self.http_headers:
                     request.add_header(header[0], header[1])
-            rsp = urllib2.urlopen(request)
+            rsp = urlopen(request)
             response = rsp.readlines()
             rsp.close()
             if response == self.old_response:
@@ -489,7 +497,7 @@ class ToService(object):
                     self.set_last_update(timestamp)
                 return True
             return False
-        except urllib2.HTTPError as ex:
+        except HTTPError as ex:
             if ex.code == 429 and self.service_name == 'metoffice':
                 # UK Met Office server uses 429 to signal duplicate data
                 success = True
@@ -504,7 +512,7 @@ class ToService(object):
                     ex_info.append(re.sub('<.+?>', '', line))
             except Exception:
                 pass
-        except urllib2.URLError as ex:
+        except URLError as ex:
             new_ex = str(ex.reason)
         except Exception as ex:
             new_ex = str(ex)
