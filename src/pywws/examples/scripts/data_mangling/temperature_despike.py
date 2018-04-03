@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+from __future__ import print_function
+
 __usage__ = """
 Remove temperature spikes from raw data.
  usage: %s [options] data_dir
@@ -8,8 +10,6 @@ Remove temperature spikes from raw data.
   -n or --noaction show what would be done but don't modify data
  data_dir is the root directory of the weather data (e.g. $(HOME)/weather/data)
 """ % __file__
-
-from __future__ import print_function
 
 from datetime import datetime, timedelta
 import getopt
