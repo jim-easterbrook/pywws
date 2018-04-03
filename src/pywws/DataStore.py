@@ -109,9 +109,6 @@ class ParamStore(object):
             self._config = RawConfigParser()
             self._config.read(self._path)
 
-    def __del__(self):
-        self.flush()
-
     def flush(self):
         if not self._dirty:
             return
@@ -258,9 +255,6 @@ class core_store(object):
             self._lo_limit.year, self._lo_limit.month, self._lo_limit.day)
         self._hi_limit_dt = datetime(
             self._hi_limit.year, self._hi_limit.month, self._hi_limit.day)
-
-    def __del__(self):
-        self.flush()
 
     def _slice(self, i):
         if i.step is not None:

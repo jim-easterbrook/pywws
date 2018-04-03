@@ -93,6 +93,9 @@ def LiveLog(data_dir):
         logger.exception(ex)
     finally:
         tasks.stop_thread()
+    raw_data.flush()
+    params.flush()
+    status.flush()
     return 0
 
 def main(argv=None):

@@ -71,13 +71,18 @@ def Hourly(data_dir):
     monthly_data = DataStore.monthly_store(data_dir)
     # get weather station data
     DataLogger(params, status, raw_data).log_data()
+    raw_data.flush()
     # do the processing
     Process.Process(params,
                     raw_data, calib_data, hourly_data, daily_data, monthly_data)
     # do tasks
     if not Tasks.RegularTasks(params, status, raw_data, calib_data,
                               hourly_data, daily_data, monthly_data).do_tasks():
+        params.flush()
+        status.flush()
         return 1
+    params.flush()
+    status.flush()
     return 0
 
 def main(argv=None):
