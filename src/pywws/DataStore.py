@@ -114,9 +114,8 @@ class ParamStore(object):
             return
         with self._lock:
             self._dirty = False
-            of = open(self._path, 'w')
-            self._config.write(of)
-            of.close()
+            with open(self._path, 'w') as of:
+                self._config.write(of)
 
     def get(self, section, option, default=None):
         """Get a parameter value and return a string.
@@ -444,19 +443,19 @@ class core_store(object):
         if not os.path.exists(cache.path):
             return
         if sys.version_info[0] >= 3:
-            csvfile = open(cache.path, 'r', newline='')
+            kwds = {'mode': 'r', 'newline': ''}
         else:
-            csvfile = open(cache.path, 'rb')
-        reader = csv.reader(csvfile, quoting=csv.QUOTE_NONE)
-        for row in reader:
-            result = {}
-            for key, value in zip(self.key_list, row):
-                if value == '':
-                    result[key] = None
-                else:
-                    result[key] = self.conv[key](value)
-            cache.data.append(result)
-        csvfile.close()
+            kwds = {'mode': 'rb'}
+        with open(cache.path, **kwds) as csvfile:
+            reader = csv.reader(csvfile, quoting=csv.QUOTE_NONE)
+            for row in reader:
+                result = {}
+                for key, value in zip(self.key_list, row):
+                    if value == '':
+                        result[key] = None
+                    else:
+                        result[key] = self.conv[key](value)
+                cache.data.append(result)
 
     def flush(self):
         self._flush(self._wr_cache)
@@ -475,19 +474,19 @@ class core_store(object):
         if not os.path.isdir(dir):
             os.makedirs(dir)
         if sys.version_info[0] >= 3:
-            csvfile = open(cache.path, 'w', newline='')
+            kwds = {'mode': 'w', 'newline': ''}
         else:
-            csvfile = open(cache.path, 'wb')
-        writer = csv.writer(csvfile, quoting=csv.QUOTE_NONE)
-        for data in cache.data:
-            row = []
-            for key in self.key_list[0:len(data)]:
-                if isinstance(data[key], float):
-                    row.append(str(data[key]))
-                else:
-                    row.append(data[key])
-            writer.writerow(row)
-        csvfile.close()
+            kwds = {'mode': 'wb'}
+        with open(cache.path, **kwds) as csvfile:
+            writer = csv.writer(csvfile, quoting=csv.QUOTE_NONE)
+            for data in cache.data:
+                row = []
+                for key in self.key_list[0:len(data)]:
+                    if isinstance(data[key], float):
+                        row.append(str(data[key]))
+                    else:
+                        row.append(data[key])
+                writer.writerow(row)
 
     def _get_cache_path(self, target_date):
         # default implementation - one file per day

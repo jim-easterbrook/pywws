@@ -158,9 +158,8 @@ class ToTwitter(object):
     def UploadFile(self, file):
         # get default character encoding of template output
         encoding = self.params.get('config', 'template encoding', 'iso-8859-1')
-        tweet_file = codecs.open(file, 'r', encoding=encoding)
-        tweet = tweet_file.read()
-        tweet_file.close()
+        with codecs.open(file, 'r', encoding=encoding) as tweet_file:
+            tweet = tweet_file.read()
         return self.Upload(tweet)
 
 def main(argv=None):

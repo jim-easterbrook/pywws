@@ -109,14 +109,14 @@ class _ftp(object):
     def put(self, src, dest):
         text_file = os.path.splitext(src)[1] in ('.txt', '.xml', '.html')
         if text_file and sys.version_info[0] < 3:
-            f = open(src, 'r')
+            mode = 'r'
         else:
-            f = open(src, 'rb')
-        if text_file:
-            self.ftp.storlines('STOR %s' % (dest), f)
-        else:
-            self.ftp.storbinary('STOR %s' % (dest), f)
-        f.close()
+            mode = 'rb'
+        with open(src, mode) as f:
+            if text_file:
+                self.ftp.storlines('STOR %s' % (dest), f)
+            else:
+                self.ftp.storbinary('STOR %s' % (dest), f)
 
     def close(self):
         self.ftp.close()
@@ -158,8 +158,8 @@ class _sftp(object):
             from io import StringIO
         else:
             from StringIO import StringIO
-        f = open(privkey, 'r')
-        s = f.read()
+        with open(privkey, 'r') as f:
+            s = f.read()
         keyfile = StringIO(s)
         self.pkey = paramiko.RSAKey.from_private_key(keyfile)
         

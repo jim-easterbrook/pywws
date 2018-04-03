@@ -535,12 +535,11 @@ class Template(object):
     def make_file(self, template_file, output_file, live_data=None):
         text = self.make_text(template_file, live_data)
         if self.encoding == 'html':
-            of = codecs.open(output_file, 'w', encoding='ascii',
-                             errors='xmlcharrefreplace')
+            kwds = {'encoding': 'ascii', 'errors': 'xmlcharrefreplace'}
         else:
-            of = codecs.open(output_file, 'w', encoding=self.encoding)
-        of.write(text)
-        of.close()
+            kwds = {'encoding': self.encoding}
+        with codecs.open(output_file, 'w', **kwds) as of:
+            of.write(text)
         return 0
 
     def _hour_diff(self, data, key):

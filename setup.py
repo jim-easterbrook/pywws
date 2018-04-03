@@ -62,16 +62,14 @@ if git:
                 else:
                     patch = 0
                 __version__ = today.strftime('%y.%m') + '.%d' % patch
-            vf = open('src/pywws/__init__.py', 'r')
-            old_init_str = vf.read()
-            vf.close()
+            with open('src/pywws/__init__.py', 'r') as vf:
+                old_init_str = vf.read()
             new_init_str = "__version__ = '" + __version__ + "'\n"
             new_init_str += "_release = '" + _release + "'\n"
             new_init_str += "_commit = '" + _commit + "'\n"
             if new_init_str != old_init_str:
-                vf = open('src/pywws/__init__.py', 'w')
-                vf.write(new_init_str)
-                vf.close()
+                with open('src/pywws/__init__.py', 'w') as vf:
+                    vf.write(new_init_str)
     except (git.exc.InvalidGitRepositoryError, git.exc.GitCommandNotFound):
         pass
 
