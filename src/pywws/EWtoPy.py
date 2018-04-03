@@ -2,7 +2,7 @@
 
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-16  pywws contributors
+# Copyright (C) 2008-18  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -47,7 +47,7 @@ Detailed API
 
 """
 
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function
 
 __docformat__ = "restructuredtext en"
 __usage__ = """
@@ -74,18 +74,18 @@ def main(argv=None):
     try:
         opts, args = getopt.getopt(argv[1:], "h", ['help'])
     except getopt.error, msg:
-        print >>sys.stderr, 'Error: %s\n' % msg
-        print >>sys.stderr, __usage__.strip()
+        print('Error: %s\n' % msg, file=sys.stderr)
+        print(__usage__.strip(), file=sys.stderr)
         return 1
     # process options
     for o, a in opts:
         if o in ('-h', '--help'):
-            print >>sys.stderr, __usage__.strip()
+            print(__usage__.strip(), file=sys.stderr)
             return 0
     # check arguments
     if len(args) != 2:
-        print >>sys.stderr, 'Error: 2 arguments required\n'
-        print >>sys.stderr, __usage__.strip()
+        print('Error: 2 arguments required\n', file=sys.stderr)
+        print(__usage__.strip(), file=sys.stderr)
         return 2
     # process arguments
     in_name = args[0]
@@ -108,8 +108,8 @@ def main(argv=None):
         date = local_date.astimezone(TimeZone.utc)
         if last_date and date < last_date:
             date = date + timedelta(hours=1)
-            print "Corrected DST ambiguity %s %s -> %s" % (
-                local_date, local_date.tzname(), date)
+            print("Corrected DST ambiguity %s %s -> %s" % (
+                local_date, local_date.tzname(), date))
         last_date = date
         date = date.replace(tzinfo=None)
         # get data
@@ -145,7 +145,7 @@ def main(argv=None):
             break
         ds[date] = data
         count += 1
-    print "%d records written" % count
+    print("%d records written" % count)
     in_file.close()
     del ds
     return 0

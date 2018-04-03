@@ -2,7 +2,7 @@
 
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-16  pywws contributors
+# Copyright (C) 2008-18  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -31,7 +31,7 @@ For more information on 'live logging' see :doc:`../guides/livelogging`.
 
 """
 
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function
 
 __docformat__ = "restructuredtext en"
 __usage__ = """
@@ -83,16 +83,16 @@ def main(argv=None):
         opts, args = getopt.getopt(
             argv[1:], "hp:v", ['help', 'pid=', 'verbose'])
     except getopt.error, msg:
-        print >>sys.stderr, 'Error: %s\n' % msg
-        print >>sys.stderr, usage
+        print('Error: %s\n' % msg, file=sys.stderr)
+        print(usage, file=sys.stderr)
         return 1
     # process options
     pid_file = '/run/lock/pywws.pid'
     verbose = 0
     for o, a in opts:
         if o in ('-h', '--help'):
-            print __doc__.split('\n\n')[0]
-            print usage
+            print(__doc__.split('\n\n')[0])
+            print(usage)
             return 0
         elif o in ('-p', '--pid'):
             pid_file = a
@@ -100,8 +100,8 @@ def main(argv=None):
             verbose += 1
     # check arguments
     if len(args) != 3:
-        print >>sys.stderr, 'Error: 3 arguments required\n'
-        print >>sys.stderr, usage
+        print('Error: 3 arguments required\n', file=sys.stderr)
+        print(usage, file=sys.stderr)
         return 2
     logger = ApplicationLogger(verbose, args[1])
     runner = Runner(

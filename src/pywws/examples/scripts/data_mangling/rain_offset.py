@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+from __future__ import print_function
+
 __usage__ = """
 Remove rain offset from raw data.
  usage: %s [options] data_dir
@@ -22,18 +24,18 @@ def main(argv=None):
     try:
         opts, args = getopt.getopt(argv[1:], "h", ['help'])
     except getopt.error, msg:
-        print >>sys.stderr, 'Error: %s\n' % msg
-        print >>sys.stderr, __usage__.strip()
+        print('Error: %s\n' % msg, file=sys.stderr)
+        print(__usage__.strip(), file=sys.stderr)
         return 1
     # process options
     for o, a in opts:
         if o == '-h' or o == '--help':
-            print __usage__.strip()
+            print(__usage__.strip())
             return 0
     # check arguments
     if len(args) != 1:
-        print >>sys.stderr, 'Error: 1 argument required\n'
-        print >>sys.stderr, __usage__.strip()
+        print('Error: 1 argument required\n', file=sys.stderr)
+        print(__usage__.strip(), file=sys.stderr)
         return 2
     data_dir = args[0]
     # date & time range of data to be changed, in UTC!

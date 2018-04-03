@@ -2,7 +2,7 @@
 
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-16  pywws contributors
+# Copyright (C) 2008-18  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -35,7 +35,7 @@ You are advised to backup your data before using the ``-u`` option.
 
 """
 
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function
 
 __docformat__ = "restructuredtext en"
 __usage__ = """
@@ -109,16 +109,16 @@ def main(argv=None):
         opts, args = getopt.getopt(
             argv[1:], "huv", ['help', 'update', 'verbose'])
     except getopt.error, msg:
-        print >>sys.stderr, 'Error: %s\n' % msg
-        print >>sys.stderr, usage
+        print('Error: %s\n' % msg, file=sys.stderr)
+        print(usage, file=sys.stderr)
         return 1
     # process options
     update = False
     verbose = 0
     for o, a in opts:
         if o in ('-h', '--help'):
-            print __doc__.split('\n\n')[0]
-            print usage
+            print(__doc__.split('\n\n')[0])
+            print(usage)
             return 0
         elif o in ('-u', '--update'):
             update = True
@@ -126,8 +126,8 @@ def main(argv=None):
             verbose += 1
     # check arguments
     if len(args) != 1:
-        print >>sys.stderr, 'Error: 1 argument required\n'
-        print >>sys.stderr, usage
+        print('Error: 1 argument required\n', file=sys.stderr)
+        print(usage, file=sys.stderr)
         return 2
     logger = ApplicationLogger(verbose)
     data_dir = args[0]

@@ -2,7 +2,7 @@
 
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-16  pywws contributors
+# Copyright (C) 2008-18  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -25,7 +25,7 @@
 
 """
 
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function
 
 __docformat__ = "restructuredtext en"
 __usage__ = """
@@ -74,18 +74,18 @@ def main(argv=None):
     try:
         opts, args = getopt.getopt(argv[1:], "h", ['help'])
     except getopt.error, msg:
-        print >>sys.stderr, 'Error: %s\n' % msg
-        print >>sys.stderr, __usage__.strip()
+        print('Error: %s\n' % msg, file=sys.stderr)
+        print(__usage__.strip(), file=sys.stderr)
         return 1
     # process options
     for o, a in opts:
         if o in ('-h', '--help'):
-            print __usage__.strip()
+            print(__usage__.strip())
             return 0
     # check arguments
     if len(args) != 1:
-        print >>sys.stderr, "Error: 1 argument required"
-        print >>sys.stderr, __usage__.strip()
+        print("Error: 1 argument required", file=sys.stderr)
+        print(__usage__.strip(), file=sys.stderr)
         return 2
     data_dir = args[0]
     params = DataStore.params(data_dir)

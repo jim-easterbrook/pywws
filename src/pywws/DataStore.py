@@ -1,6 +1,6 @@
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-16  pywws contributors
+# Copyright (C) 2008-18  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -41,7 +41,7 @@ might do the following::
   from pywws import DataStore
   hourly = DataStore.hourly_store('weather_data')
   for data in hourly[datetime(2009, 12, 25):datetime(2009, 12, 26)]:
-      print data['idx'], data['temp_out']
+      print(data['idx'], data['temp_out'])
 
 Some more examples of data access::
 

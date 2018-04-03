@@ -2,7 +2,7 @@
 
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-16 pywws contributors
+# Copyright (C) 2008-18  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -51,7 +51,7 @@ Detailed API
 
 """
 
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function
 
 __docformat__ = "restructuredtext en"
 __usage__ = """
@@ -96,12 +96,12 @@ class DataLogger(object):
         # check for valid weather station type
         fixed_block = self.check_fixed_block()
         if ws_type not in ('1080', '3080'):
-            print "Unknown weather station type. Please edit weather.ini"
-            print "and set 'ws type' to '1080' or '3080', as appropriate."
+            print("Unknown weather station type. Please edit weather.ini")
+            print("and set 'ws type' to '1080' or '3080', as appropriate.")
             if fixed_block['lux_wm2_coeff'] == 0.0:
-                print "Your station is probably a '1080' type."
+                print("Your station is probably a '1080' type.")
             else:
-                print "Your station is probably a '3080' type."
+                print("Your station is probably a '3080' type.")
             sys.exit(1)
         # check computer clock isn't earlier than last stored data
         last_stored = self.raw_data.before(datetime.max)
@@ -277,8 +277,8 @@ def main(argv=None):
         opts, args = getopt.getopt(
             argv[1:], "hcs:v", ('help', 'clear', 'sync=', 'verbose'))
     except getopt.error, msg:
-        print >>sys.stderr, 'Error: %s\n' % msg
-        print >>sys.stderr, __usage__.strip()
+        print('Error: %s\n' % msg, file=sys.stderr)
+        print(__usage__.strip(), file=sys.stderr)
         return 1
     # process options
     clear = False
@@ -286,7 +286,7 @@ def main(argv=None):
     verbose = 0
     for o, a in opts:
         if o in ('-h', '--help'):
-            print __usage__.strip()
+            print(__usage__.strip())
             return 0
         elif o in ('-c', '--clear'):
             clear = True
@@ -296,8 +296,8 @@ def main(argv=None):
             verbose += 1
     # check arguments
     if len(args) != 1:
-        print >>sys.stderr, 'Error: 1 argument required\n'
-        print >>sys.stderr, __usage__.strip()
+        print('Error: 1 argument required\n', file=sys.stderr)
+        print(__usage__.strip(), file=sys.stderr)
         return 2
     logger = ApplicationLogger(verbose)
     root_dir = args[0]

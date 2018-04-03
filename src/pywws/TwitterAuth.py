@@ -2,7 +2,7 @@
 
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-16  pywws contributors
+# Copyright (C) 2008-18  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -35,7 +35,7 @@ pywws.
 
 """
 
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function
 
 __docformat__ = "restructuredtext en"
 __usage__ = """
@@ -63,15 +63,15 @@ def TwitterAuth(params):
     resp, content = client.request(
         'https://api.twitter.com/oauth/request_token', 'POST')
     if resp['status'] != '200':
-        print 'Failed to get request token. [%s]' % resp['status']
+        print('Failed to get request token. [%s]' % resp['status'])
         return 1
     request_token = dict(urlparse.parse_qsl(content))
     # step 2 - redirect the user
     redirect_url = 'https://api.twitter.com/oauth/authorize?oauth_token=%s' % (
         request_token['oauth_token'])
     if not webbrowser.open(redirect_url, new=2, autoraise=0):
-        print 'Please use a web browser to open the following URL'
-        print redirect_url
+        print('Please use a web browser to open the following URL')
+        print(redirect_url)
     pin = raw_input('Please enter the PIN shown in your web browser: ').strip()
     # step 3 - convert the request token to an access token
     token = oauth.Token(
@@ -81,12 +81,12 @@ def TwitterAuth(params):
     resp, content = client.request(
         'https://api.twitter.com/oauth/access_token', 'POST')
     if resp['status'] != '200':
-        print 'Failed to get access token. [%s]' % resp['status']
+        print('Failed to get access token. [%s]' % resp['status'])
         return 1
     access_token = dict(urlparse.parse_qsl(content))
     params.set('twitter', 'key', access_token['oauth_token'])
     params.set('twitter', 'secret', access_token['oauth_token_secret'])
-    print 'Success! Authorisation data has been stored in %s' % params._path
+    print('Success! Authorisation data has been stored in %s' % params._path)
     return 0
 
 def main(argv=None):
@@ -95,18 +95,18 @@ def main(argv=None):
     try:
         opts, args = getopt.getopt(argv[1:], "h", ['help'])
     except getopt.error, msg:
-        print >>sys.stderr, 'Error: %s\n' % msg
-        print >>sys.stderr, __usage__.strip()
+        print('Error: %s\n' % msg, file=sys.stderr)
+        print(__usage__.strip(), file=sys.stderr)
         return 1
     # process options
     for o, a in opts:
         if o in ('-h', '--help'):
-            print __usage__.strip()
+            print(__usage__.strip())
             return 0
     # check arguments
     if len(args) != 1:
-        print >>sys.stderr, "Error: 1 argument required"
-        print >>sys.stderr, __usage__.strip()
+        print("Error: 1 argument required", file=sys.stderr)
+        print(__usage__.strip(), file=sys.stderr)
         return 2
     return TwitterAuth(DataStore.params(args[0]))
 

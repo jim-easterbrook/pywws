@@ -1,6 +1,6 @@
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-16  pywws contributors
+# Copyright (C) 2008-18  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -52,13 +52,13 @@ allows useful subsets of data to be decoded. For example, to decode
 the entire block ``get_fixed_block`` is called with no parameters::
 
   ws = WeatherStation.weather_station()
-  print ws.get_fixed_block()
+  print(ws.get_fixed_block())
 
 To get the stored minimum external temperature, ``get_fixed_block`` is
 called with a sequence of keys::
 
   ws = WeatherStation.weather_station()
-  print ws.get_fixed_block(['min', 'temp_out', 'val'])
+  print(ws.get_fixed_block(['min', 'temp_out', 'val']))
 
 Often there is no requirement to read and decode the entire fixed
 block, as its first 64 bytes contain the most useful data: the

@@ -3,7 +3,7 @@
 
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-13  Jim Easterbrook  jim@jim-easterbrook.me.uk
+# Copyright (C) 2008-18  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -110,6 +110,8 @@ need to create one. See :doc:`../guides/language` for detailed
 instructions.
 
 """
+
+from __future__ import print_function
 
 __docformat__ = "restructuredtext en"
 
@@ -226,44 +228,44 @@ def main(argv=None):
     try:
         opts, args = getopt.getopt(argv[1:], "ht:", ['help', 'test='])
     except getopt.error, msg:
-        print >>sys.stderr, 'Error: %s\n' % msg
-        print >>sys.stderr, __usage__.strip()
+        print('Error: %s\n' % msg, file=sys.stderr)
+        print(__usage__.strip(), file=sys.stderr)
         return 1
     # process options
     code = None
     for o, a in opts:
         if o in ('-h', '--help'):
-            print __usage__.strip()
+            print(__usage__.strip())
             return 0
         elif o in ('-t', '--test'):
             code = a
     # check arguments
     if len(args) != 0:
-        print >>sys.stderr, 'Error: no arguments required\n'
-        print >>sys.stderr, __usage__.strip()
+        print('Error: no arguments required\n', file=sys.stderr)
+        print(__usage__.strip(), file=sys.stderr)
         return 2
     # test language code
     if code:
         old_locale = locale.getlocale()
         if SetLocale(code):
             new_locale = locale.getlocale()
-            print "Locale changed from", old_locale, "to", new_locale
+            print("Locale changed from", old_locale, "to", new_locale)
         else:
-            print "Failed to set locale:", code
+            print("Failed to set locale:", code)
         if SetTranslation(code):
-            print "Translation set OK"
+            print("Translation set OK")
         else:
-            print "No translation file found for:", code
+            print("No translation file found for:", code)
     # try a few locale / translation effects
-    print "Locale"
-    print "  decimal point:", locale.format("%4.1f", 23.2)
-    print "  date & time:", time.strftime("%A, %d %B (%x %X)")
-    print "Translations"
-    print "  'NNW' => '%s'" % (translation.lgettext('NNW'))
-    print "  'rising very rapidly' => '%s'" % (
-        translation.lgettext('rising very rapidly'))
-    print "  'Rain at times, very unsettled' => '%s'" % (
-        translation.lgettext('Rain at times, very unsettled'))
+    print("Locale")
+    print("  decimal point:", locale.format("%4.1f", 23.2))
+    print("  date & time:", time.strftime("%A, %d %B (%x %X)"))
+    print("Translations")
+    print("  'NNW' => '%s'" % (translation.lgettext('NNW')))
+    print("  'rising very rapidly' => '%s'" % (
+        translation.lgettext('rising very rapidly')))
+    print("  'Rain at times, very unsettled' => '%s'" % (
+        translation.lgettext('Rain at times, very unsettled')))
     return 0
 
 if __name__ == "__main__":

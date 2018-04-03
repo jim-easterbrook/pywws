@@ -28,7 +28,7 @@ For more information on using ``LiveLog.py``, see
 
 """
 
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function
 
 __docformat__ = "restructuredtext en"
 __usage__ = """
@@ -102,16 +102,16 @@ def main(argv=None):
     try:
         opts, args = getopt.getopt(argv[1:], "hl:v", ['help', 'log=', 'verbose'])
     except getopt.error, msg:
-        print >>sys.stderr, 'Error: %s\n' % msg
-        print >>sys.stderr, usage
+        print('Error: %s\n' % msg, file=sys.stderr)
+        print(usage, file=sys.stderr)
         return 1
     # process options
     logfile = None
     verbose = 0
     for o, a in opts:
         if o in ('-h', '--help'):
-            print __doc__.split('\n\n')[0]
-            print usage
+            print(__doc__.split('\n\n')[0])
+            print(usage)
             return 0
         elif o in ('-l', '--log'):
             logfile = a
@@ -119,8 +119,8 @@ def main(argv=None):
             verbose += 1
     # check arguments
     if len(args) != 1:
-        print >>sys.stderr, 'Error: 1 argument required\n'
-        print >>sys.stderr, usage
+        print('Error: 1 argument required\n', file=sys.stderr)
+        print(usage, file=sys.stderr)
         return 2
     logger = ApplicationLogger(verbose, logfile)
     return LiveLog(args[0])

@@ -32,7 +32,7 @@ weather station to your computer!
 
 """
 
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function
 
 __usage__ = """
  usage: %s [options]
@@ -60,10 +60,10 @@ from pywws.Logger import ApplicationLogger
 from pywws import WeatherStation
 
 def raw_dump(pos, data):
-    print "%04x" % pos,
+    print("%04x" % pos, end='')
     for item in data:
-        print "%02x" % item,
-    print
+        print("%02x" % item, end='')
+    print('')
 
 def main(argv=None):
     if argv is None:
@@ -75,13 +75,13 @@ def main(argv=None):
             ('help', 'change', 'decode', 'history=', 'live', 'logged',
              'unknown', 'verbose'))
     except getopt.error, msg:
-        print >>sys.stderr, 'Error: %s\n' % msg
-        print >>sys.stderr, usage
+        print('Error: %s\n' % msg, file=sys.stderr)
+        print(usage, file=sys.stderr)
         return 1
     # check arguments
     if len(args) != 0:
-        print >>sys.stderr, 'Error: no arguments allowed\n'
-        print >>sys.stderr, usage
+        print('Error: no arguments allowed\n', file=sys.stderr)
+        print(usage, file=sys.stderr)
         return 2
     # process options
     change = False
@@ -93,8 +93,8 @@ def main(argv=None):
     verbose = 0
     for o, a in opts:
         if o == '--help':
-            print __doc__.split('\n\n')[0]
-            print usage
+            print(__doc__.split('\n\n')[0])
+            print(usage)
             return 0
         elif o in ('-c', '--change'):
             change = True
@@ -117,41 +117,41 @@ def main(argv=None):
     ws = WeatherStation.weather_station()
     raw_fixed = ws.get_raw_fixed_block()
     if not raw_fixed:
-        print "No valid data block found"
+        print("No valid data block found")
         return 3
     if decode:
         # dump entire fixed block
         pprint.pprint(ws.get_fixed_block())
         # dump a few selected items
-        print "min -> temp_out ->", ws.get_fixed_block(['min', 'temp_out'])
-        print "alarm -> hum_out ->", ws.get_fixed_block(['alarm', 'hum_out'])
-        print "rel_pressure ->", ws.get_fixed_block(['rel_pressure'])
-        print "abs_pressure ->", ws.get_fixed_block(['abs_pressure'])
+        print("min -> temp_out ->", ws.get_fixed_block(['min', 'temp_out']))
+        print("alarm -> hum_out ->", ws.get_fixed_block(['alarm', 'hum_out']))
+        print("rel_pressure ->", ws.get_fixed_block(['rel_pressure']))
+        print("abs_pressure ->", ws.get_fixed_block(['abs_pressure']))
     else:
         for ptr in range(0x0000, 0x0100, 0x20):
             raw_dump(ptr, raw_fixed[ptr:ptr+0x20])
     if unknown:
         for k in sorted(ws.fixed_format):
             if 'unk' in k:
-                print k, ws.get_fixed_block([k])
+                print(k, ws.get_fixed_block([k]))
         for k in sorted(ws.fixed_format):
             if 'settings' in k or 'display' in k or 'alarm' in k:
                 bits = ws.get_fixed_block([k])
                 for b in sorted(bits):
                     if 'bit' in b:
-                        print k, b, bits[b]
+                        print(k, b, bits[b])
     if history_count > 0:
         fixed_block = ws.get_fixed_block()
-        print "Recent history"
+        print("Recent history")
         ptr = fixed_block['current_pos']
         date = datetime.datetime.now().replace(second=0, microsecond=0)
         for i in range(history_count):
             if decode:
-                print "0x%04x" % ptr,
+                print("0x%04x" % ptr, end='')
                 if i < fixed_block['data_count']:
-                    print date
+                    print(date)
                 else:
-                    print
+                    print('')
                 data = ws.get_data(ptr)
                 pprint.pprint(data)
                 if data['delay']:
@@ -164,23 +164,23 @@ def main(argv=None):
             new_fixed = ws.get_raw_fixed_block(unbuffered=True)
             for ptr in range(len(new_fixed)):
                 if new_fixed[ptr] != raw_fixed[ptr]:
-                    print datetime.datetime.now().strftime('%H:%M:%S'),
-                    print ' %04x (%d)  %02x -> %02x' % (
-                        ptr, ptr, raw_fixed[ptr], new_fixed[ptr])
+                    print(datetime.datetime.now().strftime('%H:%M:%S'), end='')
+                    print(' %04x (%d)  %02x -> %02x' % (
+                        ptr, ptr, raw_fixed[ptr], new_fixed[ptr]))
             raw_fixed = new_fixed
             time.sleep(0.5)
     if live:
         for data, ptr, logged in ws.live_data():
-            print "%04x" % ptr,
-            print data['idx'].strftime('%H:%M:%S'),
+            print("%04x" % ptr, end='')
+            print(data['idx'].strftime('%H:%M:%S'), end='')
             del data['idx']
-            print data
+            print(data)
     if logged:
         for data, ptr, logged in ws.live_data(logged_only=True):
-            print "%04x" % ptr,
-            print data['idx'].strftime('%H:%M:%S'),
+            print("%04x" % ptr, end='')
+            print(data['idx'].strftime('%H:%M:%S'), end='')
             del data['idx']
-            print data
+            print(data)
     del ws
     return 0
 if __name__ == "__main__":

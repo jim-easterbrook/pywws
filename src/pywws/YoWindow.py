@@ -2,7 +2,7 @@
 
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-16  pywws contributors
+# Copyright (C) 2008-18  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -25,7 +25,7 @@
 
 """
 
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function
 
 __docformat__ = "restructuredtext en"
 __usage__ = """
@@ -127,21 +127,21 @@ def main(argv=None):
     try:
         opts, args = getopt.getopt(argv[1:], "hv", ['help', 'verbose'])
     except getopt.error, msg:
-        print >>sys.stderr, 'Error: %s\n' % msg
-        print >>sys.stderr, __usage__.strip()
+        print('Error: %s\n' % msg, file=sys.stderr)
+        print(__usage__.strip(), file=sys.stderr)
         return 1
     # process options
     verbose = 0
     for o, a in opts:
         if o == '-h' or o == '--help':
-            print __usage__.strip()
+            print(__usage__.strip())
             return 0
         elif o == '-v' or o == '--verbose':
             verbose += 1
     # check arguments
     if len(args) != 2:
-        print >>sys.stderr, "Error: 2 arguments required"
-        print >>sys.stderr, __usage__.strip()
+        print("Error: 2 arguments required", file=sys.stderr)
+        print(__usage__.strip(), file=sys.stderr)
         return 2
     logger = ApplicationLogger(verbose)
     return YoWindow(DataStore.calib_store(args[0])).write_file(args[1])

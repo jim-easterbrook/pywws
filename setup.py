@@ -2,7 +2,7 @@
 
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-17  pywws contributors
+# Copyright (C) 2008-18  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -34,7 +34,7 @@ else:
     execfile('src/pywws/__init__.py')
 
 # get GitHub repo information
-# requires GitPython - 'sudo pip install gitpython --pre'
+# requires GitPython - 'sudo pip install gitpython'
 try:
     import git
 except ImportError:
@@ -175,7 +175,7 @@ setup(name = 'pywws',
       author = 'Jim Easterbrook',
       author_email = 'jim@jim-easterbrook.me.uk',
       url = 'http://jim-easterbrook.github.com/pywws/',
-      download_url = 'https://pypi.python.org/pypi/pywws/%s' % __version__,
+      download_url = 'https://pypi.python.org/pypi/pywws/' + __version__,
       long_description = long_description,
       classifiers = [
           'Development Status :: 5 - Production/Stable',
@@ -217,5 +217,4 @@ setup(name = 'pywws',
           'twitter' : ['python-twitter >= 3.0', 'oauth2'],
           },
       zip_safe = False,
-      use_2to3 = True,
       )

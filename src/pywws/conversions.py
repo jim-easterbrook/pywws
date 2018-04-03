@@ -2,7 +2,7 @@
 
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-16  pywws contributors
+# Copyright (C) 2008-18  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -23,7 +23,7 @@
 
 """
 
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function
 
 __docformat__ = "restructuredtext en"
 
@@ -289,25 +289,25 @@ def cloud_ft(m):
 def _main(argv=None):
     global _winddir_text_array
     # run some simple tests
-    print 'Wind speed:'
-    print '%6s %8s %8s %8s %6s' % ('m/s', 'km/h', 'mph', 'knots', 'bft')
+    print('Wind speed:')
+    print('%6s %8s %8s %8s %6s' % ('m/s', 'km/h', 'mph', 'knots', 'bft'))
     for ms in (0, 1, 2, 4, 6, 9, 12, 15, 18, 22, 26, 30, 34):
-        print '%6g %8.3f %8.3f %8.3f %6d' % (
-            ms, wind_kmph(ms), wind_mph(ms), wind_kn(ms), wind_bft(ms))
-    print 'Wind direction:'
+        print('%6g %8.3f %8.3f %8.3f %6d' % (
+            ms, wind_kmph(ms), wind_mph(ms), wind_kn(ms), wind_bft(ms)))
+    print('Wind direction:')
     for pts in range(16):
-        print winddir_text(pts),
-    print
-    print 'Wind direction, in Swedish:'
+        print(winddir_text(pts), end='')
+    print('')
+    print('Wind direction, in Swedish:')
     _Localisation.SetTranslation('sv')
     _winddir_text_array = None
     for pts in range(16):
-        print winddir_text(pts),
-    print
-    print 'Cloud base in m and ft:'
+        print(winddir_text(pts), end='')
+    print('')
+    print('Cloud base in m and ft:')
     for hum in range(25, 75, 5):
-        print "%8.3f m / %8.3f ft" % (cloud_base(15.0, hum), cloud_ft(cloud_base(15.0, hum)))
-    print
+        print("%8.3f m / %8.3f ft" % (cloud_base(15.0, hum), cloud_ft(cloud_base(15.0, hum))))
+    print('')
 
 if __name__ == "__main__":
     _main()

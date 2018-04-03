@@ -9,6 +9,8 @@ Remove temperature spikes from raw data.
  data_dir is the root directory of the weather data (e.g. $(HOME)/weather/data)
 """ % __file__
 
+from __future__ import print_function
+
 from datetime import datetime, timedelta
 import getopt
 import os
@@ -24,21 +26,21 @@ def main(argv=None):
     try:
         opts, args = getopt.getopt(argv[1:], "hn", ['help', 'noaction'])
     except getopt.error, msg:
-        print >>sys.stderr, 'Error: %s\n' % msg
-        print >>sys.stderr, __usage__.strip()
+        print('Error: %s\n' % msg, file=sys.stderr)
+        print(__usage__.strip(), file=sys.stderr)
         return 1
     # process options
     noaction = False
     for o, a in opts:
         if o == '-h' or o == '--help':
-            print __usage__.strip()
+            print(__usage__.strip())
             return 0
         elif o == '-n' or o == '--noaction':
             noaction = True
     # check arguments
     if len(args) != 1:
-        print >>sys.stderr, 'Error: 1 argument required\n'
-        print >>sys.stderr, __usage__.strip()
+        print('Error: 1 argument required\n', file=sys.stderr)
+        print(__usage__.strip(), file=sys.stderr)
         return 2
     data_dir = args[0]
     # date & time range of data to be changed, in UTC!
@@ -67,7 +69,7 @@ def main(argv=None):
         median = temp_list[len(temp_list) / 2]
         # remove anything too far from median
         if abs(data['temp_out'] - median) >= 2.5:
-            print str(idx), temp_list, data['temp_out']
+            print(str(idx), temp_list, data['temp_out'])
             changed = dict(data)
             changed['temp_out'] = None
             changes.append(changed)
