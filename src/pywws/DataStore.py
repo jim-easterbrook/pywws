@@ -483,7 +483,7 @@ class core_store(object):
                 row = []
                 for key in self.key_list[0:len(data)]:
                     if isinstance(data[key], float):
-                        row.append(str(data[key]))
+                        row.append('{:.10g}'.format(data[key]))
                     else:
                         row.append(data[key])
                 writer.writerow(row)
