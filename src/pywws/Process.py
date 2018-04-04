@@ -755,12 +755,8 @@ def main(argv=None):
         return 2
     logger = ApplicationLogger(verbose)
     data_dir = args[0]
-    return Process(DataStore.params(data_dir),
-                   DataStore.data_store(data_dir),
-                   DataStore.calib_store(data_dir),
-                   DataStore.hourly_store(data_dir),
-                   DataStore.daily_store(data_dir),
-                   DataStore.monthly_store(data_dir))
+    with DataStore.pywws_data(data_dir) as pywws_data:
+        return Process(pywws_data)
 
 if __name__ == "__main__":
     sys.exit(main())

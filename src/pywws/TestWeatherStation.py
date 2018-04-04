@@ -60,9 +60,9 @@ from pywws.Logger import ApplicationLogger
 from pywws import WeatherStation
 
 def raw_dump(pos, data):
-    print("%04x" % pos, end='')
+    print("%04x" % pos, end=' ')
     for item in data:
-        print("%02x" % item, end='')
+        print("%02x" % item, end=' ')
     print('')
 
 def main(argv=None):
@@ -147,7 +147,7 @@ def main(argv=None):
         date = datetime.datetime.now().replace(second=0, microsecond=0)
         for i in range(history_count):
             if decode:
-                print("0x%04x" % ptr, end='')
+                print("0x%04x" % ptr, end=' ')
                 if i < fixed_block['data_count']:
                     print(date)
                 else:
@@ -164,21 +164,21 @@ def main(argv=None):
             new_fixed = ws.get_raw_fixed_block(unbuffered=True)
             for ptr in range(len(new_fixed)):
                 if new_fixed[ptr] != raw_fixed[ptr]:
-                    print(datetime.datetime.now().strftime('%H:%M:%S'), end='')
+                    print(datetime.datetime.now().strftime('%H:%M:%S'), end=' ')
                     print(' %04x (%d)  %02x -> %02x' % (
                         ptr, ptr, raw_fixed[ptr], new_fixed[ptr]))
             raw_fixed = new_fixed
             time.sleep(0.5)
     if live:
         for data, ptr, logged in ws.live_data():
-            print("%04x" % ptr, end='')
-            print(data['idx'].strftime('%H:%M:%S'), end='')
+            print("%04x" % ptr, end=' ')
+            print(data['idx'].strftime('%H:%M:%S'), end=' ')
             del data['idx']
             print(data)
     if logged:
         for data, ptr, logged in ws.live_data(logged_only=True):
-            print("%04x" % ptr, end='')
-            print(data['idx'].strftime('%H:%M:%S'), end='')
+            print("%04x" % ptr, end=' ')
+            print(data['idx'].strftime('%H:%M:%S'), end=' ')
             del data['idx']
             print(data)
     del ws
