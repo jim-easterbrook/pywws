@@ -165,15 +165,6 @@ class ParamStore(object):
                 self._config.remove_section(section)
                 self._dirty = True
 
-class params(ParamStore):
-    def __init__(self, root_dir):
-        """Parameters are stored in a file "weather.ini" in root_dir."""
-        super(params, self).__init__(root_dir, 'weather.ini')
-
-class status(ParamStore):
-    def __init__(self, root_dir):
-        """Status is stored in a file "status.ini" in root_dir."""
-        super(status, self).__init__(root_dir, 'status.ini')
 
 class _Cache(object):
     def __init__(self):
@@ -216,7 +207,7 @@ class _Cache(object):
 
 class core_store(object):
     def __init__(self, root_dir):
-        self._root_dir = root_dir
+        self._root_dir = os.path.join(root_dir, self.dir_name)
         if not os.path.isdir(self._root_dir):
             os.mkdir(self._root_dir)
         # initialise caches
@@ -501,9 +492,7 @@ class core_store(object):
 
 class data_store(core_store):
     """Stores raw weather station data."""
-    def __init__(self, root_dir):
-        super(data_store, self).__init__(os.path.join(root_dir, 'raw'))
-
+    dir_name = 'raw'
     key_list = [
         'idx', 'delay', 'hum_in', 'temp_in', 'hum_out', 'temp_out',
         'abs_pressure', 'wind_ave', 'wind_gust', 'wind_dir', 'rain',
@@ -528,9 +517,7 @@ class data_store(core_store):
 
 class calib_store(core_store):
     """Stores 'calibrated' weather station data."""
-    def __init__(self, root_dir):
-        super(calib_store, self).__init__(os.path.join(root_dir, 'calib'))
-
+    dir_name = 'calib'
     key_list = [
         'idx', 'delay', 'hum_in', 'temp_in', 'hum_out', 'temp_out',
         'abs_pressure', 'rel_pressure', 'wind_ave', 'wind_gust', 'wind_dir',
@@ -556,9 +543,7 @@ class calib_store(core_store):
 
 class hourly_store(core_store):
     """Stores hourly summary weather station data."""
-    def __init__(self, root_dir):
-        super(hourly_store, self).__init__(os.path.join(root_dir, 'hourly'))
-
+    dir_name = 'hourly'
     key_list = [
         'idx', 'hum_in', 'temp_in', 'hum_out', 'temp_out',
         'abs_pressure', 'rel_pressure', 'pressure_trend',
@@ -583,9 +568,7 @@ class hourly_store(core_store):
 
 class daily_store(core_store):
     """Stores daily summary weather station data."""
-    def __init__(self, root_dir):
-        super(daily_store, self).__init__(os.path.join(root_dir, 'daily'))
-
+    dir_name = 'daily'
     key_list = [
         'idx', 'start',
         'hum_out_ave',
@@ -670,9 +653,7 @@ class daily_store(core_store):
 
 class monthly_store(core_store):
     """Stores monthly summary weather station data."""
-    def __init__(self, root_dir):
-        super(monthly_store, self).__init__(os.path.join(root_dir, 'monthly'))
-
+    dir_name = 'monthly'
     key_list = [
         'idx', 'start',
         'hum_out_ave',
@@ -787,8 +768,8 @@ class _PywwsData(object):
 def pywws_data(data_dir):
     data = _PywwsData()
     # open params and status files
-    data.params = params(data_dir)
-    data.status = status(data_dir)
+    data.params = ParamStore(data_dir, 'weather.ini')
+    data.status = ParamStore(data_dir, 'status.ini')
     # open data file stores
     data.raw_data = data_store(data_dir)
     data.calib_data = calib_store(data_dir)
