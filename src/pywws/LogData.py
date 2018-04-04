@@ -79,11 +79,11 @@ from pywws.Logger import ApplicationLogger
 from pywws.WeatherStation import weather_station
 
 class DataLogger(object):
-    def __init__(self, params, status, raw_data):
+    def __init__(self, pywws_data):
         self.logger = logging.getLogger('pywws.DataLogger')
-        self.params = params
-        self.status = status
-        self.raw_data = raw_data
+        self.params = pywws_data.params
+        self.status = pywws_data.status
+        self.raw_data = pywws_data.raw_data
         # connect to weather station
         ws_type = self.params.get('fixed', 'ws type')
         if ws_type:

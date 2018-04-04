@@ -70,6 +70,7 @@ Detailed API
 
 from __future__ import with_statement
 
+from contextlib import contextmanager
 import csv
 from datetime import date, datetime, timedelta, MAXYEAR
 import os
@@ -778,3 +779,29 @@ class monthly_store(core_store):
             hi = lo
             lo = hi.replace(year=hi.year-1)
         return path, lo, hi
+
+class _PywwsData(object):
+    pass
+
+@contextmanager
+def pywws_data(data_dir):
+    data = _PywwsData()
+    # open params and status files
+    data.params = params(data_dir)
+    data.status = status(data_dir)
+    # open data file stores
+    data.raw_data = data_store(data_dir)
+    data.calib_data = calib_store(data_dir)
+    data.hourly_data = hourly_store(data_dir)
+    data.daily_data = daily_store(data_dir)
+    data.monthly_data = monthly_store(data_dir)
+    # return control to main program
+    yield data
+    # flush all unsaved data
+    data.params.flush()
+    data.status.flush()
+    data.raw_data.flush()
+    data.calib_data.flush()
+    data.hourly_data.flush()
+    data.daily_data.flush()
+    data.monthly_data.flush()

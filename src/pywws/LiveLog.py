@@ -57,45 +57,31 @@ from pywws import Tasks
 
 def LiveLog(data_dir):
     logger = logging.getLogger('pywws.LiveLog')
-    params = DataStore.params(data_dir)
-    status = DataStore.status(data_dir)
-    # localise application
-    Localisation.SetApplicationLanguage(params)
-    # open data file stores
-    raw_data = DataStore.data_store(data_dir)
-    calib_data = DataStore.calib_store(data_dir)
-    hourly_data = DataStore.hourly_store(data_dir)
-    daily_data = DataStore.daily_store(data_dir)
-    monthly_data = DataStore.monthly_store(data_dir)
-    # create a DataLogger object
-    datalogger = DataLogger(params, status, raw_data)
-    # create a RegularTasks object
-    asynch = eval(params.get('config', 'asynchronous', 'False'))
-    tasks = Tasks.RegularTasks(params, status, raw_data, calib_data,
-                               hourly_data, daily_data, monthly_data,
-                               asynch=asynch)
-    # clear any processing backlog
-    Process.Process(params, raw_data, calib_data,
-                    hourly_data, daily_data, monthly_data)
-    # get live data
-    try:
-        for data, logged in datalogger.live_data(
-                                    logged_only=(not tasks.has_live_tasks())):
-            if logged:
-                # process new data
-                Process.Process(params, raw_data, calib_data,
-                                hourly_data, daily_data, monthly_data)
-                # do tasks
-                tasks.do_tasks()
-            else:
-                tasks.do_live(data)
-    except Exception as ex:
-        logger.exception(ex)
-    finally:
-        tasks.stop_thread()
-    raw_data.flush()
-    params.flush()
-    status.flush()
+    with DataStore.pywws_data(data_dir) as pywws_data:
+        # localise application
+        Localisation.SetApplicationLanguage(pywws_data.params)
+        # create a DataLogger object
+        datalogger = DataLogger(pywws_data)
+        # create a RegularTasks object
+        asynch = eval(pywws_data.params.get('config', 'asynchronous', 'False'))
+        tasks = Tasks.RegularTasks(pywws_data, asynch=asynch)
+        # clear any processing backlog
+        Process.Process(pywws_data)
+        # get live data
+        try:
+            for data, logged in datalogger.live_data(
+                                        logged_only=(not tasks.has_live_tasks())):
+                if logged:
+                    # process new data
+                    Process.Process(pywws_data)
+                    # do tasks
+                    tasks.do_tasks()
+                else:
+                    tasks.do_live(data)
+        except Exception as ex:
+            logger.exception(ex)
+        finally:
+            tasks.stop_thread()
     return 0
 
 def main(argv=None):

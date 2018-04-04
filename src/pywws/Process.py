@@ -700,8 +700,7 @@ def generate_monthly(logger, rain_day_threshold, day_end_hour,
         month_start = month_end
     return start
 
-def Process(params,
-            raw_data, calib_data, hourly_data, daily_data, monthly_data):
+def Process(pywws_data):
     """Generate summaries from raw weather station data.
 
     The meteorological day end (typically 2100 or 0900 local time) is
@@ -713,23 +712,23 @@ def Process(params,
     logger = logging.getLogger('pywws.Process')
     logger.info('Generating summary data')
     # get time of last record
-    last_raw = raw_data.before(datetime.max)
+    last_raw = pywws_data.raw_data.before(datetime.max)
     if last_raw is None:
         raise IOError('No data found. Check data directory parameter.')
     # get daytime end hour (in local time)
-    day_end_hour = eval(params.get('config', 'day end hour', '21')) % 24
+    day_end_hour = eval(pywws_data.params.get('config', 'day end hour', '21')) % 24
     # get other config
-    rain_day_threshold = eval(params.get('config', 'rain day threshold', '0.2'))
+    rain_day_threshold = eval(pywws_data.params.get('config', 'rain day threshold', '0.2'))
     # calibrate raw data
-    start = calibrate_data(logger, params, raw_data, calib_data)
+    start = calibrate_data(logger, pywws_data.params, pywws_data.raw_data, pywws_data.calib_data)
     # generate hourly data
-    start = generate_hourly(logger, calib_data, hourly_data, start)
+    start = generate_hourly(logger, pywws_data.calib_data, pywws_data.hourly_data, start)
     # generate daily data
     start = generate_daily(logger, day_end_hour,
-                           calib_data, hourly_data, daily_data, start)
+                           pywws_data.calib_data, pywws_data.hourly_data, pywws_data.daily_data, start)
     # generate monthly data
     generate_monthly(logger, rain_day_threshold, day_end_hour,
-                     daily_data, monthly_data, start)
+                     pywws_data.daily_data, pywws_data.monthly_data, start)
     return 0
 
 def main(argv=None):

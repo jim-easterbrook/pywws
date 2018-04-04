@@ -39,17 +39,15 @@ from pywws import WindRose
 from pywws import YoWindow
 
 class RegularTasks(object):
-    def __init__(self, params, status,
-                 raw_data, calib_data, hourly_data, daily_data, monthly_data,
-                 asynch=False):
+    def __init__(self, pywws_data, asynch=False):
         self.logger = logging.getLogger('pywws.Tasks.RegularTasks')
-        self.params = params
-        self.status = status
-        self.raw_data = raw_data
-        self.calib_data = calib_data
-        self.hourly_data = hourly_data
-        self.daily_data = daily_data
-        self.monthly_data = monthly_data
+        self.params = pywws_data.params
+        self.status = pywws_data.status
+        self.raw_data = pywws_data.raw_data
+        self.calib_data = pywws_data.calib_data
+        self.hourly_data = pywws_data.hourly_data
+        self.daily_data = pywws_data.daily_data
+        self.monthly_data = pywws_data.monthly_data
         self.asynch = asynch
         self.flush = eval(self.params.get('config', 'frequent writes', 'False'))
         # get directories
@@ -86,7 +84,7 @@ class RegularTasks(object):
         # create a YoWindow object
         self.yowindow = YoWindow.YoWindow(self.calib_data)
         # get daytime end hour, in UTC
-        self.day_end_hour = eval(params.get('config', 'day end hour', '21'))
+        self.day_end_hour = eval(self.params.get('config', 'day end hour', '21'))
         self.day_end_hour = (self.day_end_hour - (STDOFFSET.seconds // 3600)) % 24
         # parse "cron" sections
         self.cron = {}
