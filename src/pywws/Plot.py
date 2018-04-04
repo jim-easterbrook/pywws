@@ -568,7 +568,7 @@ class GraphFileReader(GraphNode):
         graphs = self.doc.get_children('graph')
         if not graphs:
             raise RuntimeError('%s has no graph node' % input_file)
-        GraphNode.__init__(self, graphs[0].node)
+        super(GraphFileReader, self).__init__(graphs[0].node)
 
     def close(self):
         self.doc.node.unlink()

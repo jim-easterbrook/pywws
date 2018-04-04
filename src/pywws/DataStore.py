@@ -168,12 +168,12 @@ class ParamStore(object):
 class params(ParamStore):
     def __init__(self, root_dir):
         """Parameters are stored in a file "weather.ini" in root_dir."""
-        ParamStore.__init__(self, root_dir, 'weather.ini')
+        super(params, self).__init__(root_dir, 'weather.ini')
 
 class status(ParamStore):
     def __init__(self, root_dir):
         """Status is stored in a file "status.ini" in root_dir."""
-        ParamStore.__init__(self, root_dir, 'status.ini')
+        super(status, self).__init__(root_dir, 'status.ini')
 
 class _Cache(object):
     def __init__(self):
@@ -502,7 +502,7 @@ class core_store(object):
 class data_store(core_store):
     """Stores raw weather station data."""
     def __init__(self, root_dir):
-        core_store.__init__(self, os.path.join(root_dir, 'raw'))
+        super(data_store, self).__init__(os.path.join(root_dir, 'raw'))
 
     key_list = [
         'idx', 'delay', 'hum_in', 'temp_in', 'hum_out', 'temp_out',
@@ -529,7 +529,7 @@ class data_store(core_store):
 class calib_store(core_store):
     """Stores 'calibrated' weather station data."""
     def __init__(self, root_dir):
-        core_store.__init__(self, os.path.join(root_dir, 'calib'))
+        super(calib_store, self).__init__(os.path.join(root_dir, 'calib'))
 
     key_list = [
         'idx', 'delay', 'hum_in', 'temp_in', 'hum_out', 'temp_out',
@@ -557,7 +557,7 @@ class calib_store(core_store):
 class hourly_store(core_store):
     """Stores hourly summary weather station data."""
     def __init__(self, root_dir):
-        core_store.__init__(self, os.path.join(root_dir, 'hourly'))
+        super(hourly_store, self).__init__(os.path.join(root_dir, 'hourly'))
 
     key_list = [
         'idx', 'hum_in', 'temp_in', 'hum_out', 'temp_out',
@@ -584,7 +584,7 @@ class hourly_store(core_store):
 class daily_store(core_store):
     """Stores daily summary weather station data."""
     def __init__(self, root_dir):
-        core_store.__init__(self, os.path.join(root_dir, 'daily'))
+        super(daily_store, self).__init__(os.path.join(root_dir, 'daily'))
 
     key_list = [
         'idx', 'start',
@@ -671,7 +671,7 @@ class daily_store(core_store):
 class monthly_store(core_store):
     """Stores monthly summary weather station data."""
     def __init__(self, root_dir):
-        core_store.__init__(self, os.path.join(root_dir, 'monthly'))
+        super(monthly_store, self).__init__(os.path.join(root_dir, 'monthly'))
 
     key_list = [
         'idx', 'start',
