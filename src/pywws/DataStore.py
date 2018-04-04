@@ -796,12 +796,14 @@ def pywws_data(data_dir):
     data.daily_data = daily_store(data_dir)
     data.monthly_data = monthly_store(data_dir)
     # return control to main program
-    yield data
+    try:
+        yield data
     # flush all unsaved data
-    data.params.flush()
-    data.status.flush()
-    data.raw_data.flush()
-    data.calib_data.flush()
-    data.hourly_data.flush()
-    data.daily_data.flush()
-    data.monthly_data.flush()
+    finally:
+        data.params.flush()
+        data.status.flush()
+        data.raw_data.flush()
+        data.calib_data.flush()
+        data.hourly_data.flush()
+        data.daily_data.flush()
+        data.monthly_data.flush()
