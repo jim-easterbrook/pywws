@@ -45,72 +45,89 @@ __usage__ = """
 """
 __doc__ %= __usage__ % ('python -m pywws.livelogdaemon')
 
-from daemon.runner import DaemonRunner
 import getopt
 import os
 import sys
 
+from daemon.daemon import DaemonContext
+from daemon.runner import DaemonRunner, make_pidlockfile
+
 from pywws.LiveLog import LiveLog
 from pywws.Logger import ApplicationLogger
 
-class Runner(DaemonRunner):
-    def __init__(self, data_dir, action, files_preserve, pid_file):
-        self.data_dir = os.path.abspath(data_dir)
-        # attributes required by daemon runner
-        self.stdin_path = '/dev/null'
-        self.stdout_path = '/dev/null'
-        self.stderr_path = '/dev/null'
-        self.pidfile_path = pid_file
-        self.pidfile_timeout = 5
-        # initialise daemon runner
-        DaemonRunner.__init__(self, self)
-        self.daemon_context.files_preserve = files_preserve
-        self.daemon_context.initgroups = False
-        self.action = action
+class PatchedDaemonRunner(DaemonRunner):
+    # modify DaemonRunner to work with Python3
+    def __init__(self, app):
+        self.parse_args()
+        self.app = app
+        self.daemon_context = DaemonContext()
+        self.daemon_context.stdin = open(app.stdin_path, 'rt')
+        self.daemon_context.stdout = open(app.stdout_path, 'w+t')
+        if sys.version_info[0] >= 3:
+            self.daemon_context.stderr = open(
+                    app.stderr_path, 'w+b', buffering=0)
+        else:
+            self.daemon_context.stderr = open(
+                    app.stderr_path, 'w+t', buffering=0)
 
-    def parse_args(self, argv=None):
-        # don't let daemon runner do its own command line parsing
-        pass
+        self.pidfile = None
+        if app.pidfile_path is not None:
+            self.pidfile = make_pidlockfile(
+                    app.pidfile_path, app.pidfile_timeout)
+        self.daemon_context.pidfile = self.pidfile
+
+
+class App(object):
+    # attributes required by daemon runner
+    stdin_path = '/dev/null'
+    stdout_path = '/dev/null'
+    stderr_path = '/dev/null'
+    pidfile_path = '/run/lock/pywws.pid'
+    pidfile_timeout = 5
+
+    def __init__(self, argv):
+        usage = (__usage__ % (argv[0])).strip()
+        try:
+            opts, args = getopt.getopt(
+                argv[1:], "hp:v", ['help', 'pid=', 'verbose'])
+        except getopt.error as msg:
+            print('Error: %s\n' % msg, file=sys.stderr)
+            print(usage, file=sys.stderr)
+            sys.exit(1)
+        # process options
+        self.verbose = 0
+        for o, a in opts:
+            if o in ('-h', '--help'):
+                print(__doc__.split('\n\n')[0])
+                print(usage)
+                sys.exit(0)
+            elif o in ('-p', '--pid'):
+                self.pidfile_path = os.path.abspath(a)
+            elif o in ('-v', '--verbose'):
+                self.verbose += 1
+        # check arguments
+        if len(args) != 3:
+            print('Error: 3 arguments required\n', file=sys.stderr)
+            print(usage, file=sys.stderr)
+            sys.exit(2)
+        self.data_dir = os.path.abspath(args[0])
+        self.logfile = os.path.abspath(args[1])
+        # leave remaining argument for daemon runner to parse
+        sys.argv = [argv[0], args[2]]
 
     def run(self):
-        LiveLog(self.data_dir)
+        logger = ApplicationLogger(self.verbose, self.logfile)
+        try:
+            LiveLog(self.data_dir)
+        except Exception as ex:
+            logger.exception(ex)
+
 
 def main(argv=None):
     if argv is None:
         argv = sys.argv
-    usage = (__usage__ % (argv[0])).strip()
-    try:
-        opts, args = getopt.getopt(
-            argv[1:], "hp:v", ['help', 'pid=', 'verbose'])
-    except getopt.error as msg:
-        print('Error: %s\n' % msg, file=sys.stderr)
-        print(usage, file=sys.stderr)
-        return 1
-    # process options
-    pid_file = '/run/lock/pywws.pid'
-    verbose = 0
-    for o, a in opts:
-        if o in ('-h', '--help'):
-            print(__doc__.split('\n\n')[0])
-            print(usage)
-            return 0
-        elif o in ('-p', '--pid'):
-            pid_file = a
-        elif o in ('-v', '--verbose'):
-            verbose += 1
-    # check arguments
-    if len(args) != 3:
-        print('Error: 3 arguments required\n', file=sys.stderr)
-        print(usage, file=sys.stderr)
-        return 2
-    logger = ApplicationLogger(verbose, args[1])
-    runner = Runner(
-        args[0], args[2], map(lambda x: x.stream, logger.handlers), pid_file)
-    try:
-        runner.do_action()
-    except Exception as ex:
-        logger.exception(ex)
-        return 3
+    runner = PatchedDaemonRunner(App(argv))
+    runner.do_action()
     return 0
 
 if __name__ == "__main__":
