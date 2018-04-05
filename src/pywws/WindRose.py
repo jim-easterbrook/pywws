@@ -484,14 +484,8 @@ def main(argv=None):
         return 2
     logger = ApplicationLogger(2)
     with DataStore.pywws_context(args[0]) as context:
-        params = context.params
-        Localisation.SetApplicationLanguage(params)
-        return RosePlotter(
-            params, context.status,
-            context.calib_data, context.hourly_data,
-            context.daily_data, context.monthly_data,
-            args[1]
-            ).DoPlot(args[2], args[3])
+        Localisation.SetApplicationLanguage(context.params)
+        return RosePlotter(context, args[1]).DoPlot(args[2], args[3])
 
 if __name__ == "__main__":
     sys.exit(main())

@@ -68,12 +68,8 @@ class RegularTasks(object):
             self.params, self.status, self.calib_data, self.hourly_data,
             self.daily_data, self.monthly_data)
         # create plotter objects
-        self.plotter = Plot.GraphPlotter(
-            self.params, self.status, self.calib_data, self.hourly_data,
-            self.daily_data, self.monthly_data, self.work_dir)
-        self.roseplotter = WindRose.RosePlotter(
-            self.params, self.status, self.calib_data, self.hourly_data,
-            self.daily_data, self.monthly_data, self.work_dir)
+        self.plotter = Plot.GraphPlotter(context, self.work_dir)
+        self.roseplotter = WindRose.RosePlotter(context, self.work_dir)
         # create FTP uploader object
         self.uploader = Upload.Upload(self.params)
         self.uploads_directory = os.path.join(self.work_dir, 'uploads')

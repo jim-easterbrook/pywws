@@ -574,19 +574,20 @@ class GraphFileReader(GraphNode):
         self.doc.node.unlink()
 
 class BasePlotter(object):
-    def __init__(self, params, status, raw_data, hourly_data,
-                 daily_data, monthly_data, work_dir):
+    def __init__(self, context, work_dir):
         self.logger = logging.getLogger('pywws.%s' % self.__class__.__name__)
-        self.raw_data = raw_data
-        self.hourly_data = hourly_data
-        self.daily_data = daily_data
-        self.monthly_data = monthly_data
+        self.raw_data = context.raw_data
+        self.hourly_data = context.hourly_data
+        self.daily_data = context.daily_data
+        self.monthly_data = context.monthly_data
         self.work_dir = work_dir
-        self.pressure_offset = eval(params.get('config', 'pressure offset'))
+        self.pressure_offset = eval(
+            context.params.get('config', 'pressure offset'))
         self.gnuplot_version = eval(
-            params.get('config', 'gnuplot version', '4.2'))
+            context.params.get('config', 'gnuplot version', '4.2'))
         # set language related stuff
-        self.encoding = params.get('config', 'gnuplot encoding', 'iso_8859_1')
+        self.encoding = context.params.get(
+            'config', 'gnuplot encoding', 'iso_8859_1')
         if ' ' in self.encoding:
             self.encoding = self.encoding.split()
         else:
@@ -990,15 +991,9 @@ def main(argv=None):
         return 2
     logger = ApplicationLogger(2)
     with DataStore.pywws_context(args[0]) as context:
-        params = context.params
-        status = context.status
-        Localisation.SetApplicationLanguage(params)
-        return GraphPlotter(
-            params, status,
-            context.calib_data, context.hourly_data,
-            context.daily_data, context.monthly_data,
-            args[1]
-            ).DoPlot(GraphFileReader(args[2]), args[3])
+        Localisation.SetApplicationLanguage(context.params)
+        return GraphPlotter(context, args[1]).DoPlot(
+            GraphFileReader(args[2]), args[3])
 
 if __name__ == "__main__":
     sys.exit(main())
