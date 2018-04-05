@@ -41,7 +41,7 @@ __usage__ = """
 """
 __doc__ %= __usage__ % ('python -m pywws.LiveLog')
 
-from datetime import datetime, timedelta
+from datetime import datetime
 import getopt
 import logging
 import os
@@ -66,7 +66,8 @@ def LiveLog(data_dir):
         asynch = eval(context.params.get('config', 'asynchronous', 'False'))
         tasks = Tasks.RegularTasks(context, asynch=asynch)
         # clear any processing backlog
-        Process.Process(context)
+        if context.raw_data.before(datetime.max):
+            Process.Process(context)
         # get live data
         try:
             for data, logged in datalogger.live_data(
