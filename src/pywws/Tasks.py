@@ -64,9 +64,7 @@ class RegularTasks(object):
         # create calibration object
         self.calibrator = Calib(self.params, self.raw_data)
         # create templater object
-        self.templater = Template.Template(
-            self.params, self.status, self.calib_data, self.hourly_data,
-            self.daily_data, self.monthly_data)
+        self.templater = Template.Template(context)
         # create plotter objects
         self.plotter = Plot.GraphPlotter(context, self.work_dir)
         self.roseplotter = WindRose.RosePlotter(context, self.work_dir)

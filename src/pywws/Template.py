@@ -315,16 +315,14 @@ from pywws.Logger import ApplicationLogger
 from pywws.TimeZone import Local, utc
 
 class Template(object):
-    def __init__(self, params, status,
-                 calib_data, hourly_data, daily_data, monthly_data,
-                 use_locale=True):
+    def __init__(self, context, use_locale=True):
         self.logger = logging.getLogger('pywws.Template')
-        self.params = params
-        self.status = status
-        self.calib_data = calib_data
-        self.hourly_data = hourly_data
-        self.daily_data = daily_data
-        self.monthly_data = monthly_data
+        self.params = context.params
+        self.status = context.status
+        self.calib_data = context.calib_data
+        self.hourly_data = context.hourly_data
+        self.daily_data = context.daily_data
+        self.monthly_data = context.monthly_data
         self.use_locale = use_locale
         self.midnight = None
         self.rain_midnight = None
@@ -587,14 +585,8 @@ def main(argv=None):
             return 0
     logger = ApplicationLogger(1)
     with DataStore.pywws_context(args[0]) as context:
-        params = context.params
-        status = context.status
-        Localisation.SetApplicationLanguage(params)
-        return Template(
-            params, status,
-            context.calib_data, context.hourly_data,
-            context.daily_data, context.monthly_data
-            ).make_file(args[1], args[2])
+        Localisation.SetApplicationLanguage(context.params)
+        return Template(context).make_file(args[1], args[2])
 
 if __name__ == "__main__":
     sys.exit(main())

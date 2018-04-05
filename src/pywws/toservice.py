@@ -239,9 +239,7 @@ class ToService(object):
                 value = self.params.get(config_section, value[1:], 'unknown')
             self.fixed_data[name] = value
         # create templater
-        self.templater = Template.Template(
-            self.params, self.status, self.data, self.data, None, None,
-            use_locale=False)
+        self.templater = Template.Template(context, use_locale=False)
         template_name = self.params.get(config_section, 'template', 'default')
         if template_name != 'default':
             template_dir = self.params.get(
