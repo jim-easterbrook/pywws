@@ -989,14 +989,14 @@ def main(argv=None):
         print(__usage__.strip(), file=sys.stderr)
         return 2
     logger = ApplicationLogger(2)
-    with DataStore.pywws_data(args[0]) as pywws_data:
-        params = pywws_data.params
-        status = pywws_data.status
+    with DataStore.pywws_context(args[0]) as context:
+        params = context.params
+        status = context.status
         Localisation.SetApplicationLanguage(params)
         return GraphPlotter(
             params, status,
-            pywws_data.calib_data, pywws_data.hourly_data,
-            pywws_data.daily_data, pywws_data.monthly_data,
+            context.calib_data, context.hourly_data,
+            context.daily_data, context.monthly_data,
             args[1]
             ).DoPlot(GraphFileReader(args[2]), args[3])
 

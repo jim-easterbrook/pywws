@@ -39,15 +39,15 @@ from pywws import WindRose
 from pywws import YoWindow
 
 class RegularTasks(object):
-    def __init__(self, pywws_data, asynch=False):
+    def __init__(self, context, asynch=False):
         self.logger = logging.getLogger('pywws.Tasks.RegularTasks')
-        self.params = pywws_data.params
-        self.status = pywws_data.status
-        self.raw_data = pywws_data.raw_data
-        self.calib_data = pywws_data.calib_data
-        self.hourly_data = pywws_data.hourly_data
-        self.daily_data = pywws_data.daily_data
-        self.monthly_data = pywws_data.monthly_data
+        self.params = context.params
+        self.status = context.status
+        self.raw_data = context.raw_data
+        self.calib_data = context.calib_data
+        self.hourly_data = context.hourly_data
+        self.daily_data = context.daily_data
+        self.monthly_data = context.monthly_data
         self.asynch = asynch
         self.flush = eval(self.params.get('config', 'frequent writes', 'False'))
         # get directories

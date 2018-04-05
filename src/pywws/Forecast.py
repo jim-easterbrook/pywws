@@ -88,10 +88,10 @@ def main(argv=None):
         print(__usage__.strip(), file=sys.stderr)
         return 2
     data_dir = args[0]
-    with DataStore.pywws_data(data_dir) as pywws_data:
-        params = pywws_data.params
+    with DataStore.pywws_context(data_dir) as context:
+        params = context.params
         Localisation.SetApplicationLanguage(params)
-        hourly_data = pywws_data.hourly_data
+        hourly_data = context.hourly_data
         idx = hourly_data.before(datetime.max)
         print('Zambretti (current):', Zambretti(params, hourly_data[idx]))
         idx = idx.replace(tzinfo=utc).astimezone(Local)

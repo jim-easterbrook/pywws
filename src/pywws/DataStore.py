@@ -761,30 +761,30 @@ class monthly_store(core_store):
             lo = hi.replace(year=hi.year-1)
         return path, lo, hi
 
-class _PywwsData(object):
-    pass
-
 @contextmanager
-def pywws_data(data_dir):
-    data = _PywwsData()
+def pywws_context(data_dir):
+    class PywwsContext(object):
+        pass
+
+    ctx = PywwsContext()
     # open params and status files
-    data.params = ParamStore(data_dir, 'weather.ini')
-    data.status = ParamStore(data_dir, 'status.ini')
+    ctx.params = ParamStore(data_dir, 'weather.ini')
+    ctx.status = ParamStore(data_dir, 'status.ini')
     # open data file stores
-    data.raw_data = data_store(data_dir)
-    data.calib_data = calib_store(data_dir)
-    data.hourly_data = hourly_store(data_dir)
-    data.daily_data = daily_store(data_dir)
-    data.monthly_data = monthly_store(data_dir)
+    ctx.raw_data = data_store(data_dir)
+    ctx.calib_data = calib_store(data_dir)
+    ctx.hourly_data = hourly_store(data_dir)
+    ctx.daily_data = daily_store(data_dir)
+    ctx.monthly_data = monthly_store(data_dir)
     # return control to main program
     try:
-        yield data
+        yield ctx
     # flush all unsaved data
     finally:
-        data.params.flush()
-        data.status.flush()
-        data.raw_data.flush()
-        data.calib_data.flush()
-        data.hourly_data.flush()
-        data.daily_data.flush()
-        data.monthly_data.flush()
+        ctx.params.flush()
+        ctx.status.flush()
+        ctx.raw_data.flush()
+        ctx.calib_data.flush()
+        ctx.hourly_data.flush()
+        ctx.daily_data.flush()
+        ctx.monthly_data.flush()

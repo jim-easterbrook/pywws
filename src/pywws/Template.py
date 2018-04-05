@@ -586,14 +586,14 @@ def main(argv=None):
             print(__usage__.strip())
             return 0
     logger = ApplicationLogger(1)
-    with DataStore.pywws_data(args[0]) as pywws_data:
-        params = pywws_data.params
-        status = pywws_data.status
+    with DataStore.pywws_context(args[0]) as context:
+        params = context.params
+        status = context.status
         Localisation.SetApplicationLanguage(params)
         return Template(
             params, status,
-            pywws_data.calib_data, pywws_data.hourly_data,
-            pywws_data.daily_data, pywws_data.monthly_data
+            context.calib_data, context.hourly_data,
+            context.daily_data, context.monthly_data
             ).make_file(args[1], args[2])
 
 if __name__ == "__main__":

@@ -274,8 +274,8 @@ def main(argv=None):
         print(__usage__.strip(), file=sys.stderr)
         return 2
     logger = ApplicationLogger(1)
-    with DataStore.pywws_data(args[0]) as pywws_data:
-        if Upload(pywws_data.params).upload(args[1:]):
+    with DataStore.pywws_context(args[0]) as context:
+        if Upload(context.params).upload(args[1:]):
             return 0
     return 3
 

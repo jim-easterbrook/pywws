@@ -58,15 +58,15 @@ from pywws import Process
 from pywws import Tasks
 
 def Hourly(data_dir):
-    with DataStore.pywws_data(data_dir) as pywws_data:
+    with DataStore.pywws_context(data_dir) as context:
         # localise application
-        Localisation.SetApplicationLanguage(pywws_data.params)
+        Localisation.SetApplicationLanguage(context.params)
         # get weather station data
-        DataLogger(pywws_data).log_data()
+        DataLogger(context).log_data()
         # do the processing
-        Process.Process(pywws_data)
+        Process.Process(context)
         # do tasks
-        if not Tasks.RegularTasks(pywws_data).do_tasks():
+        if not Tasks.RegularTasks(context).do_tasks():
             return 1
     return 0
 

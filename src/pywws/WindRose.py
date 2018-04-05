@@ -483,13 +483,13 @@ def main(argv=None):
         print(__usage__.strip(), file=sys.stderr)
         return 2
     logger = ApplicationLogger(2)
-    with DataStore.pywws_data(args[0]) as pywws_data:
-        params = pywws_data.params
+    with DataStore.pywws_context(args[0]) as context:
+        params = context.params
         Localisation.SetApplicationLanguage(params)
         return RosePlotter(
-            params, pywws_data.status,
-            pywws_data.calib_data, pywws_data.hourly_data,
-            pywws_data.daily_data, pywws_data.monthly_data,
+            params, context.status,
+            context.calib_data, context.hourly_data,
+            context.daily_data, context.monthly_data,
             args[1]
             ).DoPlot(args[2], args[3])
 

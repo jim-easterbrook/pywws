@@ -145,8 +145,8 @@ def main(argv=None):
         print(__usage__.strip(), file=sys.stderr)
         return 2
     logger = ApplicationLogger(verbose)
-    with DataStore.pywws_data(args[0]) as pywws_data:
-        return YoWindow(pywws_data.calib_data).write_file(args[1])
+    with DataStore.pywws_context(args[0]) as context:
+        return YoWindow(context.calib_data).write_file(args[1])
 
 if __name__ == "__main__":
     sys.exit(main())

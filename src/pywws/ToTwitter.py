@@ -182,8 +182,8 @@ def main(argv=None):
         print(__usage__.strip(), file=sys.stderr)
         return 2
     logger = ApplicationLogger(1)
-    with DataStore.pywws_data(args[0]) as pywws_data:
-        params = pywws_data.params
+    with DataStore.pywws_context(args[0]) as context:
+        params = context.params
         Localisation.SetApplicationLanguage(params)
         if ToTwitter(params).UploadFile(args[1]):
             return 0

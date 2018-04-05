@@ -79,11 +79,11 @@ from pywws.Logger import ApplicationLogger
 from pywws.WeatherStation import weather_station
 
 class DataLogger(object):
-    def __init__(self, pywws_data):
+    def __init__(self, context):
         self.logger = logging.getLogger('pywws.DataLogger')
-        self.params = pywws_data.params
-        self.status = pywws_data.status
-        self.raw_data = pywws_data.raw_data
+        self.params = context.params
+        self.status = context.status
+        self.raw_data = context.raw_data
         # connect to weather station
         ws_type = self.params.get('fixed', 'ws type')
         if ws_type:
@@ -301,8 +301,8 @@ def main(argv=None):
         return 2
     logger = ApplicationLogger(verbose)
     root_dir = args[0]
-    with DataStore.pywws_data(root_dir) as pywws_data:
-        DataLogger(pywws_data).log_data(sync=sync, clear=clear)
+    with DataStore.pywws_context(root_dir) as context:
+        DataLogger(context).log_data(sync=sync, clear=clear)
 
 if __name__ == "__main__":
     sys.exit(main())

@@ -657,10 +657,10 @@ def main(argv=None):
         print(__usage__.strip(), file=sys.stderr)
         return 2
     logger = ApplicationLogger(verbose)
-    with DataStore.pywws_data(args[0]) as pywws_data:
+    with DataStore.pywws_context(args[0]) as context:
         return ToService(
-            pywws_data.params, pywws_data.status,
-            pywws_data.calib_data, args[1]).Upload(
+            context.params, context.status,
+            context.calib_data, args[1]).Upload(
                 catchup=catchup, ignore_last_update=not catchup)
 
 if __name__ == "__main__":

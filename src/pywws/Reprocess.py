@@ -91,8 +91,8 @@ def Reprocess(data_dir, update):
             os.rmdir(root)
     # create data summaries
     logger.warning('Generating hourly and daily summaries')
-    with DataStore.pywws_data(data_dir) as pywws_data:
-        Process.Process(pywws_data)
+    with DataStore.pywws_context(data_dir) as context:
+        Process.Process(context)
     return 0
 
 def main(argv=None):
