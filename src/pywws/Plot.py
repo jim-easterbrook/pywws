@@ -576,7 +576,7 @@ class GraphFileReader(GraphNode):
 class BasePlotter(object):
     def __init__(self, context, work_dir):
         self.logger = logging.getLogger('pywws.%s' % self.__class__.__name__)
-        self.raw_data = context.raw_data
+        self.calib_data = context.calib_data
         self.hourly_data = context.hourly_data
         self.daily_data = context.daily_data
         self.monthly_data = context.monthly_data
@@ -725,7 +725,7 @@ class BasePlotter(object):
             # set data source
             source = plot.get_value('source', 'raw')
             if source == 'raw':
-                source = self.raw_data
+                source = self.calib_data
             elif source == 'hourly':
                 source = self.hourly_data
             elif source == 'monthly':
@@ -851,7 +851,7 @@ set timefmt "%Y-%m-%dT%H:%M:%S"
         start = self.x_lo - self.utcoffset
         stop = self.x_hi - self.utcoffset
         cumu_start = start
-        if source == self.raw_data:
+        if source == self.calib_data:
             boxwidth = 240      # assume 5 minute data interval
             start = source.before(start)
         elif source == self.hourly_data:
@@ -900,7 +900,7 @@ set timefmt "%Y-%m-%dT%H:%M:%S"
                     idx = data['idx']
                 idx += self.utcoffset
                 if not subplot.cummulative and subplot.last_idx:
-                    if source == self.raw_data:
+                    if source == self.calib_data:
                         interval = timedelta(minutes=((data['delay']*3)+1)//2)
                     if idx - subplot.last_idx > interval:
                         # missing data
