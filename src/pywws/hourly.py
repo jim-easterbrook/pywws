@@ -29,7 +29,7 @@ This script does little more than call other modules in sequence to
 get data from the weather station, process it, plot some graphs,
 generate some text files and upload the results to a web site.
 
-For more information on using ``Hourly.py``, see
+For more information on using ``pywws.hourly``, see
 :doc:`../guides/hourlylogging`.
 
 """
@@ -44,7 +44,7 @@ __usage__ = """
   -v or --verbose  increase amount of reassuring messages
  data_dir is the root directory of the weather data (e.g. $(HOME)/weather/data)
 """
-__doc__ %= __usage__ % ('python -m pywws.Hourly')
+__doc__ %= __usage__ % ('python -m pywws.hourly')
 
 import getopt
 import os
@@ -57,7 +57,8 @@ from pywws.Logger import ApplicationLogger
 from pywws import Process
 from pywws import Tasks
 
-def Hourly(data_dir):
+
+def hourly(data_dir):
     with DataStore.pywws_context(data_dir) as context:
         # localise application
         Localisation.SetApplicationLanguage(context.params)
@@ -69,6 +70,7 @@ def Hourly(data_dir):
         if not Tasks.RegularTasks(context).do_tasks():
             return 1
     return 0
+
 
 def main(argv=None):
     if argv is None:
@@ -95,7 +97,8 @@ def main(argv=None):
         print(usage, file=sys.stderr)
         return 2
     logger = ApplicationLogger(verbose)
-    return Hourly(args[0])
+    return hourly(args[0])
+
 
 if __name__ == "__main__":
     sys.exit(main())

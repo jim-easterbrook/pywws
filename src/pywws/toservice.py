@@ -109,9 +109,9 @@ section, depending on how often you want to send data. For example::
 Note that the ``[live]`` section is only used when running
 :py:mod:`pywws.LiveLog`. It is a good idea to repeat any
 service selected in ``[live]`` in the ``[logged]`` or ``[hourly]``
-section in case you switch to running :py:mod:`pywws.Hourly`.
+section in case you switch to running :py:mod:`pywws.hourly`.
 
-Restart your regular pywws program (:py:mod:`pywws.Hourly` or
+Restart your regular pywws program (:py:mod:`pywws.hourly` or
 :py:mod:`pywws.LiveLog`) and visit the appropriate web site to
 see regular updates from your weather station.
 

@@ -198,7 +198,7 @@ setup(name = 'pywws',
       command_options = command_options,
       entry_points = {
           'console_scripts' : [
-              'pywws-hourly             = pywws.Hourly:main',
+              'pywws-hourly             = pywws.hourly:main',
               'pywws-livelog            = pywws.LiveLog:main',
               'pywws-livelog-daemon     = pywws.livelogdaemon:main',
               'pywws-reprocess          = pywws.Reprocess:main',
