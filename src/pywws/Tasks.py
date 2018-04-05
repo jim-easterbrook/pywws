@@ -36,7 +36,7 @@ from pywws.TimeZone import STDOFFSET, local_utc_offset
 from pywws.toservice import ToService
 from pywws import Upload
 import pywws.windrose
-from pywws import YoWindow
+import pywws.yowindow
 
 class RegularTasks(object):
     def __init__(self, context, asynch=False):
@@ -76,7 +76,7 @@ class RegularTasks(object):
         # delay creation of a Twitter object until we know it's needed
         self.twitter = None
         # create a YoWindow object
-        self.yowindow = YoWindow.YoWindow(self.calib_data)
+        self.yowindow = pywws.yowindow.YoWindow(self.calib_data)
         # get daytime end hour, in UTC
         self.day_end_hour = eval(self.params.get('config', 'day end hour', '21'))
         self.day_end_hour = (self.day_end_hour - (STDOFFSET.seconds // 3600)) % 24

@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
 # Copyright (C) 2008-18  pywws contributors
@@ -29,7 +27,7 @@ from __future__ import absolute_import, print_function
 
 __docformat__ = "restructuredtext en"
 __usage__ = """
- usage: python -m pywws.YoWindow [options] data_dir output_file
+ usage: python -m pywws.yowindow [options] data_dir output_file
  options are:
   -h or --help     display this help
   -v or --verbose  increase amount of reassuring messages
@@ -49,13 +47,14 @@ from pywws.Logger import ApplicationLogger
 from pywws.TimeZone import Local, utc
 from pywws.conversions import apparent_temp
 
+
 class YoWindow(object):
-    """
-    Class to write YoWindow XML file.
+    """Class to write YoWindow XML file.
+
     For file spec see http://yowindow.com/doc/yowindow_pws_format.xml
     """
     def __init__(self, calib_data):
-        self.logger = logging.getLogger('pywws.YoWindow')
+        self.logger = logging.getLogger('pywws.yowindow')
         self.data = calib_data
         # compute local midnight
         self.midnight = datetime.utcnow().replace(tzinfo=utc).astimezone(
@@ -64,6 +63,7 @@ class YoWindow(object):
         self.day = timedelta(hours=24)
         self.hour = timedelta(hours=1)
         self.last_update = None
+
     def write_file(self, file_name, data=None):
         if not data:
             data = self.data[self.data.before(datetime.max)]
@@ -122,6 +122,7 @@ class YoWindow(object):
         of.write('</response>\n')
         of.close()
 
+
 def main(argv=None):
     if argv is None:
         argv = sys.argv
@@ -147,6 +148,7 @@ def main(argv=None):
     logger = ApplicationLogger(verbose)
     with DataStore.pywws_context(args[0]) as context:
         return YoWindow(context.calib_data).write_file(args[1])
+
 
 if __name__ == "__main__":
     sys.exit(main())
