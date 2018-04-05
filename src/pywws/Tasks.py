@@ -30,7 +30,7 @@ import shutil
 import threading
 
 from pywws.calib import Calib
-from pywws import Plot
+import pywws.plot
 from pywws import Template
 from pywws.TimeZone import STDOFFSET, local_utc_offset
 from pywws.toservice import ToService
@@ -66,7 +66,7 @@ class RegularTasks(object):
         # create templater object
         self.templater = Template.Template(context)
         # create plotter objects
-        self.plotter = Plot.GraphPlotter(context, self.work_dir)
+        self.plotter = pywws.plot.GraphPlotter(context, self.work_dir)
         self.roseplotter = pywws.windrose.RosePlotter(context, self.work_dir)
         # create FTP uploader object
         self.uploader = Upload.Upload(self.params)
@@ -389,7 +389,7 @@ class RegularTasks(object):
         self.logger.info("Graphing %s", template)
         input_file = os.path.join(self.graph_template_dir, template)
         output_file = os.path.join(self.work_dir, os.path.splitext(template)[0])
-        input_xml = Plot.GraphFileReader(input_file)
+        input_xml = pywws.plot.GraphFileReader(input_file)
         if (input_xml.get_children(self.plotter.plot_name) and
                         self.plotter.DoPlot(input_xml, output_file) == 0):
             return output_file

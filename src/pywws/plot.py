@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
 # Copyright (C) 2008-18  pywws contributors
@@ -505,7 +502,7 @@ from __future__ import absolute_import, print_function
 
 __docformat__ = "restructuredtext en"
 __usage__ = """
- usage: python -m pywws.Plot [options] data_dir temp_dir xml_file output_file
+ usage: python -m pywws.plot [options] data_dir temp_dir xml_file output_file
  options are:
   -h or --help    display this help
  data_dir is the root directory of the weather data
@@ -535,6 +532,7 @@ from pywws import Localisation
 from pywws.Logger import ApplicationLogger
 from pywws.TimeZone import Local, local_utc_offset, utc
 
+
 class GraphNode(object):
     def __init__(self, node):
         self.node = node
@@ -561,6 +559,7 @@ class GraphNode(object):
                 if child.childNodes:
                     yield child.childNodes[0].data.strip()
 
+
 class GraphFileReader(GraphNode):
     def __init__(self, input_file):
         self.input_file = input_file
@@ -572,6 +571,7 @@ class GraphFileReader(GraphNode):
 
     def close(self):
         self.doc.node.unlink()
+
 
 class BasePlotter(object):
     def __init__(self, context, work_dir):
@@ -742,8 +742,10 @@ class BasePlotter(object):
             os.unlink(file)
         return 0
 
+
 class Record(object):
     pass
+
 
 class GraphPlotter(BasePlotter):
     plot_name = 'plot'
@@ -970,6 +972,7 @@ set timefmt "%Y-%m-%dT%H:%M:%S"
             result += u'\n'
         return result
 
+
 def main(argv=None):
     if argv is None:
         argv = sys.argv
@@ -994,6 +997,7 @@ def main(argv=None):
         Localisation.SetApplicationLanguage(context.params)
         return GraphPlotter(context, args[1]).DoPlot(
             GraphFileReader(args[2]), args[3])
+
 
 if __name__ == "__main__":
     sys.exit(main())

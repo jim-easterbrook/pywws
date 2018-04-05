@@ -27,7 +27,7 @@ Introduction
 
 This routine plots one or more "wind roses" (see `Wikipedia
 <http://en.wikipedia.org/wiki/Wind_rose>`_ for a description). Like
-:py:mod:`pywws.Plot` almost everything is controlled by an XML
+:py:mod:`pywws.plot` almost everything is controlled by an XML
 "recipe" / template file.
 
 Before writing your own template files, it might be useful to look at
@@ -280,7 +280,7 @@ from pywws.conversions import *
 from pywws import DataStore
 from pywws import Localisation
 from pywws.Logger import ApplicationLogger
-from pywws.Plot import BasePlotter
+from pywws.plot import BasePlotter
 
 
 class RosePlotter(BasePlotter):
