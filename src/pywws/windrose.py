@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
 # Copyright (C) 2008-18  pywws contributors
@@ -259,7 +257,7 @@ from __future__ import absolute_import, print_function
 
 __docformat__ = "restructuredtext en"
 __usage__ = """
- usage: python -m pywws.WindRose [options] data_dir temp_dir xml_file output_file
+ usage: python -m pywws.windrose [options] data_dir temp_dir xml_file output_file
  options are:
   -h or --help    display this help
  data_dir is the root directory of the weather data
@@ -283,6 +281,7 @@ from pywws import DataStore
 from pywws import Localisation
 from pywws.Logger import ApplicationLogger
 from pywws.Plot import BasePlotter
+
 
 class RosePlotter(BasePlotter):
     plot_name = 'windrose'
@@ -463,6 +462,7 @@ set rtics format ''
             result += u'\n'
         return result
 
+
 def main(argv=None):
     if argv is None:
         argv = sys.argv
@@ -486,6 +486,7 @@ def main(argv=None):
     with DataStore.pywws_context(args[0]) as context:
         Localisation.SetApplicationLanguage(context.params)
         return RosePlotter(context, args[1]).DoPlot(args[2], args[3])
+
 
 if __name__ == "__main__":
     sys.exit(main())

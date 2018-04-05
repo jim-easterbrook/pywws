@@ -35,7 +35,7 @@ from pywws import Template
 from pywws.TimeZone import STDOFFSET, local_utc_offset
 from pywws.toservice import ToService
 from pywws import Upload
-from pywws import WindRose
+import pywws.windrose
 from pywws import YoWindow
 
 class RegularTasks(object):
@@ -67,7 +67,7 @@ class RegularTasks(object):
         self.templater = Template.Template(context)
         # create plotter objects
         self.plotter = Plot.GraphPlotter(context, self.work_dir)
-        self.roseplotter = WindRose.RosePlotter(context, self.work_dir)
+        self.roseplotter = pywws.windrose.RosePlotter(context, self.work_dir)
         # create FTP uploader object
         self.uploader = Upload.Upload(self.params)
         self.uploads_directory = os.path.join(self.work_dir, 'uploads')

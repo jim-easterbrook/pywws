@@ -29,7 +29,7 @@ language
 Introduction
 ------------
 
-Some of the pywws modules, such as WindRose.py, can automatically use
+Some of the pywws modules, such as pywws.windrose, can automatically use
 your local language for such things as wind directions. The
 Localisation.py module, mostly copied from examples in the Python
 documentation, enables this.
