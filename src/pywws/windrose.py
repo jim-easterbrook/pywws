@@ -285,13 +285,13 @@ from pywws.plot import BasePlotter
 
 class RosePlotter(BasePlotter):
     plot_name = 'windrose'
-    def GetDefaultRows(self):
+    def get_default_rows(self):
         return int(math.sqrt(self.plot_count))
 
-    def GetDefaultPlotSize(self):
+    def get_default_plot_size(self):
         return 600 // self.rows, 600 // self.rows
 
-    def GetPreamble(self):
+    def get_preamble(self):
         result = u"""set polar
 set angles degrees
 set zeroaxis
@@ -317,7 +317,7 @@ set rtics format ''
         result += u'set bmargin %g\n' % (lmargin)
         return result
 
-    def PlotData(self, plot_no, plot, source):
+    def plot_data(self, plot_no, plot, source):
         _ = Localisation.translation.ugettext
         # get statistics
         thresh = eval(plot.get_value(
@@ -485,7 +485,7 @@ def main(argv=None):
     logger = ApplicationLogger(2)
     with DataStore.pywws_context(args[0]) as context:
         Localisation.SetApplicationLanguage(context.params)
-        return RosePlotter(context, args[1]).DoPlot(args[2], args[3])
+        return RosePlotter(context, args[1]).do_plot(args[2], args[3])
 
 
 if __name__ == "__main__":

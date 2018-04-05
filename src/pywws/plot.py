@@ -608,7 +608,7 @@ class BasePlotter(object):
         # apply time string
         return eval('result.replace(%s)' % time_str)
 
-    def DoPlot(self, input_file, output_file):
+    def do_plot(self, input_file, output_file):
         if isinstance(input_file, GraphFileReader):
             self.graph = input_file
         else:
@@ -665,11 +665,11 @@ class BasePlotter(object):
         lcl = locale.getlocale()
         if lcl[0]:
             of.write('set locale "%s.%s"\n' % lcl)
-        self.rows = self.GetDefaultRows()
+        self.rows = self.get_default_rows()
         self.cols = (self.plot_count + self.rows - 1) // self.rows
         self.rows, self.cols = eval(self.graph.get_value(
             'layout', '%d, %d' % (self.rows, self.cols)))
-        w, h = self.GetDefaultPlotSize()
+        w, h = self.get_default_plot_size()
         w = w * self.cols
         h = h * self.rows
         w, h = eval(self.graph.get_value('size', '(%d, %d)' % (w, h)))
@@ -699,7 +699,7 @@ class BasePlotter(object):
             title = 'title "%s"' % title
         of.write('set multiplot layout %d, %d %s\n' % (self.rows, self.cols, title))
         # do actual plots
-        of.write(self.GetPreamble())
+        of.write(self.get_preamble())
         for plot_no in range(self.plot_count):
             plot = plot_list[plot_no]
             # set key / title location
@@ -733,7 +733,7 @@ class BasePlotter(object):
             else:
                 source = self.daily_data
             # do the plot
-            of.write(self.PlotData(plot_no, plot, source))
+            of.write(self.plot_data(plot_no, plot, source))
         of.close()
         self.graph.close()
         # run gnuplot on file
@@ -743,19 +743,15 @@ class BasePlotter(object):
         return 0
 
 
-class Record(object):
-    pass
-
-
 class GraphPlotter(BasePlotter):
     plot_name = 'plot'
-    def GetDefaultRows(self):
+    def get_default_rows(self):
         return self.plot_count
 
-    def GetDefaultPlotSize(self):
+    def get_default_plot_size(self):
         return 200 // self.cols, 600 // self.cols
 
-    def GetPreamble(self):
+    def get_preamble(self):
         result = u"""set style fill solid
 set xdata time
 set timefmt "%Y-%m-%dT%H:%M:%S"
@@ -779,7 +775,10 @@ set timefmt "%Y-%m-%dT%H:%M:%S"
             result += u'set xtics %d\n' % (eval(xtics) * 3600)
         return result
 
-    def PlotData(self, plot_no, plot, source):
+    def plot_data(self, plot_no, plot, source):
+        class Record(object):
+            pass
+
         _ = Localisation.translation.ugettext
         subplot_list = plot.get_children('subplot')
         subplot_count = len(subplot_list)
@@ -995,7 +994,7 @@ def main(argv=None):
     logger = ApplicationLogger(2)
     with DataStore.pywws_context(args[0]) as context:
         Localisation.SetApplicationLanguage(context.params)
-        return GraphPlotter(context, args[1]).DoPlot(
+        return GraphPlotter(context, args[1]).do_plot(
             GraphFileReader(args[2]), args[3])
 
 

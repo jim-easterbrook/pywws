@@ -391,10 +391,10 @@ class RegularTasks(object):
         output_file = os.path.join(self.work_dir, os.path.splitext(template)[0])
         input_xml = pywws.plot.GraphFileReader(input_file)
         if (input_xml.get_children(self.plotter.plot_name) and
-                        self.plotter.DoPlot(input_xml, output_file) == 0):
+                        self.plotter.do_plot(input_xml, output_file) == 0):
             return output_file
         if (input_xml.get_children(self.roseplotter.plot_name) and
-                        self.roseplotter.DoPlot(input_xml, output_file) == 0):
+                        self.roseplotter.do_plot(input_xml, output_file) == 0):
             return output_file
         self.logger.warning('nothing to graph in %s', input_file)
         return None
