@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
 # Copyright (C) 2008-18  pywws contributors
@@ -139,9 +137,10 @@ command_options['upload_docs'] = {
     }
 
 # modify upload class to add appropriate tag
-# requires GitPython - 'sudo pip install gitpython --pre'
+# requires GitPython - 'sudo pip install gitpython'
 class upload_and_tag(upload):
     def run(self):
+        result = upload.run(self)
         import git
         message = __version__ + '\n\n'
         with open('CHANGELOG.txt') as cl:
@@ -156,7 +155,7 @@ class upload_and_tag(upload):
         tag = repo.create_tag(__version__, message=message)
         remote = repo.remotes.origin
         remote.push(tags=True)
-        return upload.run(self)
+        return result
 cmdclass['upload'] = upload_and_tag
 
 # set options for building distributions
@@ -181,7 +180,7 @@ setup(name = 'pywws',
           'License :: OSI Approved :: GNU General Public License v2 (GPLv2)',
           'Operating System :: OS Independent',
           'Programming Language :: Python',
-          'Programming Language :: Python :: 2',
+          'Programming Language :: Python :: 2.7',
           'Programming Language :: Python :: 3',
           ],
       license = 'GNU GPL',
