@@ -150,7 +150,7 @@ class RegularTasks(object):
         while self.tweet_queue:
             tweet = self.tweet_queue[0]
             self.logger.info("Tweeting")
-            if not self.twitter.Upload(tweet):
+            if not self.twitter.upload(tweet):
                 break
             self.tweet_queue.popleft()
         for name in self.service_queue:
@@ -376,8 +376,8 @@ class RegularTasks(object):
 
     def do_twitter(self, template, data=None):
         if not self.twitter:
-            from pywws import ToTwitter
-            self.twitter = ToTwitter.ToTwitter(self.params)
+            import pywws.totwitter
+            self.twitter = pywws.totwitter.ToTwitter(self.params)
         self.logger.info("Templating %s", template)
         input_file = os.path.join(self.template_dir, template)
         tweet = self.templater.make_text(input_file, live_data=data)

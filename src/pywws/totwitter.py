@@ -35,7 +35,7 @@ from __future__ import absolute_import, print_function
 
 __docformat__ = "restructuredtext en"
 __usage__ = """
- usage: python -m pywws.ToTwitter [options] data_dir file
+ usage: python -m pywws.totwitter [options] data_dir file
  options are:
   -h | --help  display this help
  data_dir is the root directory of the weather data
@@ -65,9 +65,10 @@ from pywws import DataStore
 import pywws.localisation
 from pywws.Logger import ApplicationLogger
 
+
 class TweepyHandler(object):
     def __init__(self, key, secret, latitude, longitude):
-        self.logger = logging.getLogger('pywws.ToTwitter')
+        self.logger = logging.getLogger('pywws.totwitter')
         self.logger.info('Using tweepy library')
         auth = tweepy.OAuthHandler(pct.consumer_key, pct.consumer_secret)
         auth.set_access_token(key, secret)
@@ -85,9 +86,10 @@ class TweepyHandler(object):
         else:
             self.api.update_status(status[:280], **self.kwargs)
 
+
 class PythonTwitterHandler(object):
     def __init__(self, key, secret, latitude, longitude, timeout):
-        self.logger = logging.getLogger('pywws.ToTwitter')
+        self.logger = logging.getLogger('pywws.totwitter')
         self.logger.info('Using python-twitter library')
         self.api = twitter.Api(
             consumer_key=pct.consumer_key,
@@ -100,6 +102,7 @@ class PythonTwitterHandler(object):
         else:
             self.kwargs = {}
         self.kwargs['verify_status_length'] = False
+
 
     def post(self, status, media):
         max_len = 280
@@ -135,7 +138,7 @@ class ToTwitter(object):
         else:
             self.api = TweepyHandler(key, secret, latitude, longitude)
 
-    def Upload(self, tweet):
+    def upload(self, tweet):
         if not tweet:
             return True
         media = []
@@ -155,12 +158,13 @@ class ToTwitter(object):
                 self.old_ex = e
         return False
 
-    def UploadFile(self, file):
+    def upload_file(self, file):
         # get default character encoding of template output
         encoding = self.params.get('config', 'template encoding', 'iso-8859-1')
         with codecs.open(file, 'r', encoding=encoding) as tweet_file:
             tweet = tweet_file.read()
-        return self.Upload(tweet)
+        return self.upload(tweet)
+
 
 def main(argv=None):
     if argv is None:
@@ -185,9 +189,10 @@ def main(argv=None):
     with DataStore.pywws_context(args[0]) as context:
         params = context.params
         pywws.localisation.set_application_language(params)
-        if ToTwitter(params).UploadFile(args[1]):
+        if ToTwitter(params).upload_file(args[1]):
             return 0
     return 3
+
 
 if __name__ == "__main__":
     sys.exit(main())

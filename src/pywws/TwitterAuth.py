@@ -23,7 +23,7 @@
 
 %s
 
-This program authorises :py:mod:`pywws.ToTwitter` to post to a Twitter
+This program authorises :py:mod:`pywws.totwitter` to post to a Twitter
 account. You need to create an account before running
 :py:mod:`TwitterAuth`. It opens a web browser window (or gives you a
 URL to copy to your web browser) where you log in to your Twitter
