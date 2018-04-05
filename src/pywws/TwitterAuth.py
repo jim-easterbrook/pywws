@@ -108,7 +108,8 @@ def main(argv=None):
         print("Error: 1 argument required", file=sys.stderr)
         print(__usage__.strip(), file=sys.stderr)
         return 2
-    return TwitterAuth(DataStore.params(args[0]))
+    with DataStore.pywws_data(args[0]) as pywws_data:
+        return TwitterAuth(pywws_data.params)
 
 if __name__ == "__main__":
     sys.exit(main())

@@ -586,14 +586,15 @@ def main(argv=None):
             print(__usage__.strip())
             return 0
     logger = ApplicationLogger(1)
-    params = DataStore.params(args[0])
-    status = DataStore.status(args[0])
-    Localisation.SetApplicationLanguage(params)
-    return Template(
-        params, status,
-        DataStore.calib_store(args[0]), DataStore.hourly_store(args[0]),
-        DataStore.daily_store(args[0]), DataStore.monthly_store(args[0])
-        ).make_file(args[1], args[2])
+    with DataStore.pywws_data(args[0]) as pywws_data:
+        params = pywws_data.params
+        status = pywws_data.status
+        Localisation.SetApplicationLanguage(params)
+        return Template(
+            params, status,
+            pywws_data.calib_data, pywws_data.hourly_data,
+            pywws_data.daily_data, pywws_data.monthly_data
+            ).make_file(args[1], args[2])
 
 if __name__ == "__main__":
     sys.exit(main())

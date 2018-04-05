@@ -121,6 +121,7 @@ class YoWindow(object):
         of.write('  </current_weather>\n')
         of.write('</response>\n')
         of.close()
+
 def main(argv=None):
     if argv is None:
         argv = sys.argv
@@ -144,6 +145,8 @@ def main(argv=None):
         print(__usage__.strip(), file=sys.stderr)
         return 2
     logger = ApplicationLogger(verbose)
-    return YoWindow(DataStore.calib_store(args[0])).write_file(args[1])
+    with DataStore.pywws_data(args[0]) as pywws_data:
+        return YoWindow(pywws_data.calib_data).write_file(args[1])
+
 if __name__ == "__main__":
     sys.exit(main())

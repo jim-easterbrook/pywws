@@ -989,15 +989,16 @@ def main(argv=None):
         print(__usage__.strip(), file=sys.stderr)
         return 2
     logger = ApplicationLogger(2)
-    params = DataStore.params(args[0])
-    status = DataStore.status(args[0])
-    Localisation.SetApplicationLanguage(params)
-    return GraphPlotter(
-        params, status,
-        DataStore.calib_store(args[0]), DataStore.hourly_store(args[0]),
-        DataStore.daily_store(args[0]), DataStore.monthly_store(args[0]),
-        args[1]
-        ).DoPlot(GraphFileReader(args[2]), args[3])
+    with DataStore.pywws_data(args[0]) as pywws_data:
+        params = pywws_data.params
+        status = pywws_data.status
+        Localisation.SetApplicationLanguage(params)
+        return GraphPlotter(
+            params, status,
+            pywws_data.calib_data, pywws_data.hourly_data,
+            pywws_data.daily_data, pywws_data.monthly_data,
+            args[1]
+            ).DoPlot(GraphFileReader(args[2]), args[3])
 
 if __name__ == "__main__":
     sys.exit(main())

@@ -274,8 +274,9 @@ def main(argv=None):
         print(__usage__.strip(), file=sys.stderr)
         return 2
     logger = ApplicationLogger(1)
-    if Upload(DataStore.params(args[0])).upload(args[1:]):
-        return 0
+    with DataStore.pywws_data(args[0]) as pywws_data:
+        if Upload(pywws_data.params).upload(args[1:]):
+            return 0
     return 3
 
 if __name__ == "__main__":

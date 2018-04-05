@@ -88,19 +88,20 @@ def main(argv=None):
         print(__usage__.strip(), file=sys.stderr)
         return 2
     data_dir = args[0]
-    params = DataStore.params(data_dir)
-    Localisation.SetApplicationLanguage(params)
-    hourly_data = DataStore.hourly_store(data_dir)
-    idx = hourly_data.before(datetime.max)
-    print('Zambretti (current):', Zambretti(params, hourly_data[idx]))
-    idx = idx.replace(tzinfo=utc).astimezone(Local)
-    if idx.hour < 8 or (idx.hour == 8 and idx.minute < 30):
-        idx -= timedelta(hours=24)
-    idx = idx.replace(hour=9, minute=0, second=0)
-    idx = hourly_data.nearest(idx.astimezone(utc).replace(tzinfo=None))
-    lcl = idx.replace(tzinfo=utc).astimezone(Local)
-    print('Zambretti (at %s):' % lcl.strftime('%H:%M %Z'), Zambretti(
-        params, hourly_data[idx]))
+    with DataStore.pywws_data(data_dir) as pywws_data:
+        params = pywws_data.params
+        Localisation.SetApplicationLanguage(params)
+        hourly_data = pywws_data.hourly_data
+        idx = hourly_data.before(datetime.max)
+        print('Zambretti (current):', Zambretti(params, hourly_data[idx]))
+        idx = idx.replace(tzinfo=utc).astimezone(Local)
+        if idx.hour < 8 or (idx.hour == 8 and idx.minute < 30):
+            idx -= timedelta(hours=24)
+        idx = idx.replace(hour=9, minute=0, second=0)
+        idx = hourly_data.nearest(idx.astimezone(utc).replace(tzinfo=None))
+        lcl = idx.replace(tzinfo=utc).astimezone(Local)
+        print('Zambretti (at %s):' % lcl.strftime('%H:%M %Z'), Zambretti(
+            params, hourly_data[idx]))
     return 0
 
 if __name__ == "__main__":

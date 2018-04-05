@@ -301,9 +301,8 @@ def main(argv=None):
         return 2
     logger = ApplicationLogger(verbose)
     root_dir = args[0]
-    DataLogger(
-        DataStore.params(root_dir), DataStore.status(root_dir),
-        DataStore.data_store(root_dir)).log_data(sync=sync, clear=clear)
+    with DataStore.pywws_data(root_dir) as pywws_data:
+        DataLogger(pywws_data).log_data(sync=sync, clear=clear)
 
 if __name__ == "__main__":
     sys.exit(main())
