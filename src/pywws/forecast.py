@@ -27,7 +27,7 @@ from __future__ import absolute_import, print_function
 
 __docformat__ = "restructuredtext en"
 __usage__ = """
- usage: python -m pywws.Forecast [options] data_dir
+ usage: python -m pywws.forecast [options] data_dir
  options are:
   -h | --help  display this help
  data_dir is the root directory of the weather data
@@ -78,7 +78,7 @@ _forecast_text = {
 del _
 
 
-def ZambrettiCode(params, hourly_data):
+def zambretti_code(params, hourly_data):
     """Simple implementation of Zambretti forecaster algorithm.
     Inspired by beteljuice.com Java algorithm, as converted to Python by
     honeysucklecottage.me.uk, and further information
@@ -136,8 +136,8 @@ def ZambrettiCode(params, hourly_data):
     return LUT[F]
 
 
-def Zambretti(params, hourly_data):
-    code = ZambrettiCode(params, hourly_data)
+def zambretti(params, hourly_data):
+    code = zambretti_code(params, hourly_data)
     return Localisation.translation.ugettext(_forecast_text[code])
 
 
@@ -166,14 +166,14 @@ def main(argv=None):
         Localisation.SetApplicationLanguage(params)
         hourly_data = context.hourly_data
         idx = hourly_data.before(datetime.max)
-        print('Zambretti (current):', Zambretti(params, hourly_data[idx]))
+        print('Zambretti (current):', zambretti(params, hourly_data[idx]))
         idx = idx.replace(tzinfo=utc).astimezone(Local)
         if idx.hour < 8 or (idx.hour == 8 and idx.minute < 30):
             idx -= timedelta(hours=24)
         idx = idx.replace(hour=9, minute=0, second=0)
         idx = hourly_data.nearest(idx.astimezone(utc).replace(tzinfo=None))
         lcl = idx.replace(tzinfo=utc).astimezone(Local)
-        print('Zambretti (at %s):' % lcl.strftime('%H:%M %Z'), Zambretti(
+        print('Zambretti (at %s):' % lcl.strftime('%H:%M %Z'), zambretti(
             params, hourly_data[idx]))
     return 0
 

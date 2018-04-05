@@ -309,10 +309,14 @@ from pywws.constants import HOUR, SECOND, DAY
 from pywws import conversions
 from pywws.conversions import *
 from pywws import DataStore
-from pywws.Forecast import Zambretti, ZambrettiCode
+from pywws.forecast import zambretti, zambretti_code
 from pywws import Localisation
 from pywws.Logger import ApplicationLogger
 from pywws.TimeZone import Local, utc
+
+# aliases for compatibility with old templates
+Zambretti = zambretti
+ZambrettiCode = zambretti_code
 
 class Template(object):
     def __init__(self, context, use_locale=True):
