@@ -102,9 +102,7 @@ class RegularTasks(object):
                        'live', 'logged', 'hourly', '12 hourly', 'daily']:
             for name in eval(self.params.get(section, 'services', '[]')):
                 if name not in self.services:
-                    self.services[name] = ToService(
-                        self.params, self.status, self.calib_data,
-                        service_name=name)
+                    self.services[name] = ToService(context, name)
             # check for deprecated syntax
             if self.params.get(section, 'twitter') not in (None, '[]'):
                 self.logger.warning(

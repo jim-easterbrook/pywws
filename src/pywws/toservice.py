@@ -180,20 +180,12 @@ class ToService(object):
     Underground.
 
     """
-    def __init__(self, params, status, calib_data, service_name):
+    def __init__(self, context, service_name):
         """
 
-        :param params: pywws configuration.
+        :param context: pywws "context".
 
-        :type params: :class:`pywws.DataStore.params`
-
-        :param status: pywws status store.
-
-        :type status: :class:`pywws.DataStore.status`
-
-        :param calib_data: 'calibrated' data.
-
-        :type calib_data: :class:`pywws.DataStore.calib_store`
+        :type context: object
 
         :param service_name: name of service to upload to.
 
@@ -201,9 +193,9 @@ class ToService(object):
 
         """
         self.logger = logging.getLogger('pywws.ToService(%s)' % service_name)
-        self.params = params
-        self.status = status
-        self.data = calib_data
+        self.params = context.params
+        self.status = context.status
+        self.data = context.calib_data
         self.service_name = service_name
         # 'derived' services such as 'underground_rf' share their
         # parent's config and templates
@@ -658,10 +650,8 @@ def main(argv=None):
         return 2
     logger = ApplicationLogger(verbose)
     with DataStore.pywws_context(args[0]) as context:
-        return ToService(
-            context.params, context.status,
-            context.calib_data, args[1]).Upload(
-                catchup=catchup, ignore_last_update=not catchup)
+        return ToService(context, args[1]).Upload(
+            catchup=catchup, ignore_last_update=not catchup)
 
 if __name__ == "__main__":
     sys.exit(main())
