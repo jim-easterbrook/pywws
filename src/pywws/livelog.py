@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
 # Copyright (C) 2008-18  pywws contributors
@@ -23,7 +21,7 @@
 Run this continuously, having set what tasks are to be done. This
 script can also be run with the ``pywws-livelog`` command. ::
 %s
-For more information on using ``LiveLog.py``, see
+For more information on using ``pywws.livelog``, see
 :doc:`../guides/livelogging`.
 
 """
@@ -39,7 +37,7 @@ __usage__ = """
   -v      or --verbose   increase amount of reassuring messages
  data_dir is the root directory of the weather data (e.g. ~/weather/data)
 """
-__doc__ %= __usage__ % ('python -m pywws.LiveLog')
+__doc__ %= __usage__ % ('python -m pywws.livelog')
 
 from datetime import datetime
 import getopt
@@ -49,17 +47,18 @@ import sys
 import time
 
 from pywws import DataStore
-from pywws import Localisation
+import pywws.localisation
 from pywws.LogData import DataLogger
 from pywws.Logger import ApplicationLogger
 from pywws import Process
 from pywws import Tasks
 
-def LiveLog(data_dir):
-    logger = logging.getLogger('pywws.LiveLog')
+
+def live_log(data_dir):
+    logger = logging.getLogger('pywws.live_log')
     with DataStore.pywws_context(data_dir) as context:
         # localise application
-        Localisation.SetApplicationLanguage(context.params)
+        pywws.localisation.set_application_language(context.params)
         # create a DataLogger object
         datalogger = DataLogger(context)
         # create a RegularTasks object
@@ -71,7 +70,7 @@ def LiveLog(data_dir):
         # get live data
         try:
             for data, logged in datalogger.live_data(
-                                        logged_only=(not tasks.has_live_tasks())):
+                                    logged_only=(not tasks.has_live_tasks())):
                 if logged:
                     # process new data
                     Process.Process(context)
@@ -84,6 +83,7 @@ def LiveLog(data_dir):
         finally:
             tasks.stop_thread()
     return 0
+
 
 def main(argv=None):
     if argv is None:
@@ -113,7 +113,8 @@ def main(argv=None):
         print(usage, file=sys.stderr)
         return 2
     logger = ApplicationLogger(verbose, logfile)
-    return LiveLog(args[0])
+    return live_log(args[0])
+
 
 if __name__ == "__main__":
     logger = logging.getLogger('pywws')

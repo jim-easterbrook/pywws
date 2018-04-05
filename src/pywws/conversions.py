@@ -29,9 +29,7 @@ __docformat__ = "restructuredtext en"
 
 import math
 
-# rename imports to prevent them being imported when
-# doing 'from pywws.conversions import *'
-from pywws import Localisation as _Localisation
+import pywws.localisation
 from pywws.Process import WindFilter as _WindFilter
 
 def illuminance_wm2(lux):
@@ -51,7 +49,7 @@ def pressure_trend_text(trend):
     office.
 
     """
-    _ = _Localisation.translation.ugettext
+    _ = pywws.localisation.translation.ugettext
     if trend > 6.0:
         return _(u'rising very rapidly')
     elif trend > 3.5:
@@ -157,7 +155,7 @@ def winddir_text(pts):
     if not isinstance(pts, int):
         pts = int(pts + 0.5) % 16
     if not _winddir_text_array:
-        _ = _Localisation.translation.ugettext
+        _ = pywws.localisation.translation.ugettext
         _winddir_text_array = (
             _(u'N'), _(u'NNE'), _(u'NE'), _(u'ENE'),
             _(u'E'), _(u'ESE'), _(u'SE'), _(u'SSE'),
@@ -299,7 +297,7 @@ def _main(argv=None):
         print(winddir_text(pts), end='')
     print('')
     print('Wind direction, in Swedish:')
-    _Localisation.SetTranslation('sv')
+    pywws.localisation.set_translation('sv')
     _winddir_text_array = None
     for pts in range(16):
         print(winddir_text(pts), end='')

@@ -199,7 +199,7 @@ setup(name = 'pywws',
       entry_points = {
           'console_scripts' : [
               'pywws-hourly             = pywws.hourly:main',
-              'pywws-livelog            = pywws.LiveLog:main',
+              'pywws-livelog            = pywws.livelog:main',
               'pywws-livelog-daemon     = pywws.livelogdaemon:main',
               'pywws-reprocess          = pywws.Reprocess:main',
               'pywws-setweatherstation  = pywws.SetWeatherStation:main',

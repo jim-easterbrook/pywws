@@ -62,7 +62,7 @@ except ImportError as ex:
 
 from pywws.constants import Twitter as pct
 from pywws import DataStore
-from pywws import Localisation
+import pywws.localisation
 from pywws.Logger import ApplicationLogger
 
 class TweepyHandler(object):
@@ -184,7 +184,7 @@ def main(argv=None):
     logger = ApplicationLogger(1)
     with DataStore.pywws_context(args[0]) as context:
         params = context.params
-        Localisation.SetApplicationLanguage(params)
+        pywws.localisation.set_application_language(params)
         if ToTwitter(params).UploadFile(args[1]):
             return 0
     return 3

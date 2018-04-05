@@ -213,7 +213,7 @@ points
 Sets the text of the compass points. The defaults are 'N', 'S', 'E' &
 'W'. For graphs in another language you can over-ride this, for example:
 ``<points>'No', 'Zu', 'Oo', 'We'</points>``. (The preferred way to do
-this is to create a language file, see :py:mod:`pywws.Localisation`.)
+this is to create a language file, see :py:mod:`pywws.localisation`.)
 
 source
 ^^^^^^
@@ -278,7 +278,7 @@ import xml.dom.minidom
 
 from pywws.conversions import *
 from pywws import DataStore
-from pywws import Localisation
+import pywws.localisation
 from pywws.Logger import ApplicationLogger
 from pywws.plot import BasePlotter
 
@@ -318,7 +318,7 @@ set rtics format ''
         return result
 
     def plot_data(self, plot_no, plot, source):
-        _ = Localisation.translation.ugettext
+        _ = pywws.localisation.translation.ugettext
         # get statistics
         thresh = eval(plot.get_value(
             'threshold', '0.0, 1.54, 3.09, 5.14, 8.23, 10.8, 15.5'))
@@ -484,7 +484,7 @@ def main(argv=None):
         return 2
     logger = ApplicationLogger(2)
     with DataStore.pywws_context(args[0]) as context:
-        Localisation.SetApplicationLanguage(context.params)
+        pywws.localisation.set_application_language(context.params)
         return RosePlotter(context, args[1]).do_plot(args[2], args[3])
 
 

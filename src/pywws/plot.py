@@ -528,7 +528,7 @@ import pytz
 from pywws.constants import HOUR
 from pywws.conversions import *
 from pywws import DataStore
-from pywws import Localisation
+import pywws.localisation
 from pywws.Logger import ApplicationLogger
 from pywws.TimeZone import Local, local_utc_offset, utc
 
@@ -779,7 +779,7 @@ set timefmt "%Y-%m-%dT%H:%M:%S"
         class Record(object):
             pass
 
-        _ = Localisation.translation.ugettext
+        _ = pywws.localisation.translation.ugettext
         subplot_list = plot.get_children('subplot')
         subplot_count = len(subplot_list)
         if subplot_count < 1:
@@ -993,7 +993,7 @@ def main(argv=None):
         return 2
     logger = ApplicationLogger(2)
     with DataStore.pywws_context(args[0]) as context:
-        Localisation.SetApplicationLanguage(context.params)
+        pywws.localisation.set_application_language(context.params)
         return GraphPlotter(context, args[1]).do_plot(
             GraphFileReader(args[2]), args[3])
 

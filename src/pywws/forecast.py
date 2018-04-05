@@ -40,7 +40,7 @@ import getopt
 import sys
 
 from pywws import DataStore
-from pywws import Localisation
+import pywws.localisation
 from pywws.TimeZone import Local, utc
 
 def _(msg):
@@ -138,7 +138,7 @@ def zambretti_code(params, hourly_data):
 
 def zambretti(params, hourly_data):
     code = zambretti_code(params, hourly_data)
-    return Localisation.translation.ugettext(_forecast_text[code])
+    return pywws.localisation.translation.ugettext(_forecast_text[code])
 
 
 def main(argv=None):
@@ -163,7 +163,7 @@ def main(argv=None):
     data_dir = args[0]
     with DataStore.pywws_context(data_dir) as context:
         params = context.params
-        Localisation.SetApplicationLanguage(params)
+        pywws.localisation.set_application_language(params)
         hourly_data = context.hourly_data
         idx = hourly_data.before(datetime.max)
         print('Zambretti (current):', zambretti(params, hourly_data[idx]))

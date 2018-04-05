@@ -83,7 +83,6 @@ import logging
 import sys
 import time
 
-from pywws import Localisation
 for module_name in ('device_libusb1', 'device_pyusb1', 'device_pyusb',
                     'device_ctypes_hidapi', 'device_cython_hidapi'):
     try:

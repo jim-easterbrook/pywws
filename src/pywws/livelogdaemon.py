@@ -52,7 +52,7 @@ import sys
 from daemon.daemon import DaemonContext
 from daemon.runner import DaemonRunner, make_pidlockfile
 
-from pywws.LiveLog import LiveLog
+import pywws.livelog
 from pywws.Logger import ApplicationLogger
 
 class PatchedDaemonRunner(DaemonRunner):
@@ -118,7 +118,7 @@ class App(object):
     def run(self):
         logger = ApplicationLogger(self.verbose, self.logfile)
         try:
-            LiveLog(self.data_dir)
+            pywws.livelog.live_log(self.data_dir)
         except Exception as ex:
             logger.exception(ex)
 

@@ -310,7 +310,7 @@ from pywws import conversions
 from pywws.conversions import *
 from pywws import DataStore
 from pywws.forecast import zambretti, zambretti_code
-from pywws import Localisation
+import pywws.localisation
 from pywws.Logger import ApplicationLogger
 from pywws.TimeZone import Local, utc
 
@@ -589,7 +589,7 @@ def main(argv=None):
             return 0
     logger = ApplicationLogger(1)
     with DataStore.pywws_context(args[0]) as context:
-        Localisation.SetApplicationLanguage(context.params)
+        pywws.localisation.set_application_language(context.params)
         return Template(context).make_file(args[1], args[2])
 
 if __name__ == "__main__":
