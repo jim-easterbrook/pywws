@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
 # Copyright (C) 2008-18  pywws contributors
@@ -27,11 +25,11 @@ This module gets data from the weather station's memory and stores it
 to file. Each time it is run it fetches all data that is newer than
 the last stored data, so it only needs to be run every hour or so. As
 the weather station typically stores two weeks' readings (depending on
-the logging interval), :py:mod:`pywws.LogData` could be run quite
+the logging interval), :py:mod:`pywws.logdata` could be run quite
 infrequently if you don't need up-to-date data.
 
 There is no date or time information in the raw weather station data,
-so :py:mod:`pywws.LogData` creates a time stamp for each reading. It
+so :py:mod:`pywws.logdata` creates a time stamp for each reading. It
 uses the computer's clock, rather than the weather station clock which
 can not be read accurately by the computer. A networked computer
 should have its clock set accurately by `ntp
@@ -55,7 +53,7 @@ from __future__ import absolute_import, print_function
 
 __docformat__ = "restructuredtext en"
 __usage__ = """
- usage: python -m pywws.LogData [options] data_dir
+ usage: python -m pywws.logdata [options] data_dir
  options are:
   -h   | --help     display this help
   -c   | --clear    clear weather station's memory full indicator
@@ -77,6 +75,7 @@ from pywws.constants import SECOND, HOUR
 from pywws import DataStore
 from pywws.Logger import ApplicationLogger
 from pywws.WeatherStation import weather_station
+
 
 class DataLogger(object):
     def __init__(self, context):
@@ -269,6 +268,7 @@ class DataLogger(object):
                     self.catchup(now, ptr)
                 next_ptr = self.ws.inc_ptr(ptr)
             yield data, logged
+
 
 def main(argv=None):
     if argv is None:

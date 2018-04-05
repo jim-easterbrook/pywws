@@ -33,7 +33,7 @@ discovering pywws.
 
 The ``EasyWeather.dat`` file is only used to provide data from before
 the start of the pywws data. As your weather station has its own
-memory, you should run :py:mod:`pywws.LogData` before
+memory, you should run :py:mod:`pywws.logdata` before
 :py:mod:`pywws.EWtoPy` to minimise use of the EasyWeather.dat file.
 
 :py:mod:`pywws.EWtoPy` converts the time stamps in EasyWeather.dat

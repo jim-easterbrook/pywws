@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
 # Copyright (C) 2008-18  pywws contributors
@@ -52,7 +50,7 @@ import sys
 
 from pywws import DataStore
 import pywws.localisation
-from pywws.LogData import DataLogger
+import pywws.logdata
 from pywws.Logger import ApplicationLogger
 from pywws import Process
 from pywws import Tasks
@@ -63,7 +61,7 @@ def hourly(data_dir):
         # localise application
         pywws.localisation.set_application_language(context.params)
         # get weather station data
-        DataLogger(context).log_data()
+        pywws.logdata.DataLogger(context).log_data()
         # do the processing
         Process.Process(context)
         # do tasks

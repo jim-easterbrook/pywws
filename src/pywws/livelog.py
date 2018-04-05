@@ -48,7 +48,7 @@ import time
 
 from pywws import DataStore
 import pywws.localisation
-from pywws.LogData import DataLogger
+import pywws.logdata
 from pywws.Logger import ApplicationLogger
 from pywws import Process
 from pywws import Tasks
@@ -60,7 +60,7 @@ def live_log(data_dir):
         # localise application
         pywws.localisation.set_application_language(context.params)
         # create a DataLogger object
-        datalogger = DataLogger(context)
+        datalogger = pywws.logdata.DataLogger(context)
         # create a RegularTasks object
         asynch = eval(context.params.get('config', 'asynchronous', 'False'))
         tasks = Tasks.RegularTasks(context, asynch=asynch)
