@@ -21,6 +21,7 @@
 from __future__ import absolute_import
 
 import logging
+import logging.handlers
 import sys
 
 from pywws import __version__, _release, _commit

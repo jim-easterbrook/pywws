@@ -209,7 +209,7 @@ setup(name = 'pywws',
           },
       install_requires = ['tzlocal'],
       extras_require = {
-          'daemon'  : ['python-daemon'],
+          'daemon'  : ['python-daemon == 2.1.2'],
           'sftp'    : ['paramiko', 'pycrypto'],
           'twitter' : ['python-twitter >= 3.0', 'oauth2'],
           },
