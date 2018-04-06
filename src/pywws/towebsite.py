@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
 # Copyright (C) 2008-18  pywws contributors
@@ -27,11 +25,11 @@ Introduction
 ------------
 
 This module uploads files to (typically) a website *via* ftp/sftp or
-copies files to a local directory (e.g. if you are running pywws on
-the your web server). Details of the upload destination are stored in
-the file ``weather.ini`` in your data directory. The only way to set
-these details is to edit the file. Run :py:mod:`pywws.Upload` once to
-set the default values, which you can then change. Here is what you're
+copies files to a local directory (e.g. if you are running pywws on the
+web server). Details of the upload destination are stored in the file
+``weather.ini`` in your data directory. The only way to set these
+details is to edit the file. Run :py:mod:`pywws.towebsite` once to set
+the default values, which you can then change. Here is what you're
 likely to find when you edit ``weather.ini``::
 
   [ftp]
@@ -66,7 +64,7 @@ from __future__ import absolute_import, print_function
 
 __docformat__ = "restructuredtext en"
 __usage__ = """
- usage: python -m pywws.Upload [options] data_dir file [file...]
+ usage: python -m pywws.towebsite [options] data_dir file [file...]
  options are:
   -h or --help    display this help
  data_dir is the root directory of the weather data
@@ -86,6 +84,7 @@ import sys
 
 from pywws import DataStore
 from pywws.Logger import ApplicationLogger
+
 
 class _ftp(object):
     def __init__(self, logger, site, user, password, directory, port):
@@ -121,6 +120,7 @@ class _ftp(object):
     def close(self):
         self.ftp.close()
 
+
 class _sftp(object):
     def __init__(self, logger, site, user, password, privkey, directory, port):
         global paramiko
@@ -144,7 +144,6 @@ class _sftp(object):
             self.transport.auth_password(username=self.user, password=self.password)
         self.ftp = paramiko.SFTPClient.from_transport(self.transport)
         self.ftp.chdir(self.directory)
-
 
     def put(self, src, dest):
         self.ftp.put(src, dest)
@@ -181,9 +180,10 @@ class _copy(object):
     def close(self):
         pass
 
-class Upload(object):
+
+class ToWebSite(object):
     def __init__(self, params):
-        self.logger = logging.getLogger('pywws.Upload')
+        self.logger = logging.getLogger('pywws.towebsite')
         self.params = params
         self.old_ex = None
         if eval(self.params.get('ftp', 'local site', 'False')):
@@ -254,6 +254,7 @@ class Upload(object):
         self.disconnect()
         return OK
 
+
 def main(argv=None):
     if argv is None:
         argv = sys.argv
@@ -275,9 +276,10 @@ def main(argv=None):
         return 2
     logger = ApplicationLogger(1)
     with DataStore.pywws_context(args[0]) as context:
-        if Upload(context.params).upload(args[1:]):
+        if ToWebSite(context.params).upload(args[1:]):
             return 0
     return 3
+
 
 if __name__ == "__main__":
     sys.exit(main())
