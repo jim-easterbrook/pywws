@@ -57,7 +57,7 @@ else:
 import oauth2 as oauth
 
 from pywws.constants import Twitter
-from pywws import DataStore
+import pywws.storage
 
 
 def twitter_auth(params):
@@ -121,7 +121,7 @@ def main(argv=None):
         print("Error: 1 argument required", file=sys.stderr)
         print(__usage__.strip(), file=sys.stderr)
         return 2
-    with DataStore.pywws_context(args[0]) as context:
+    with pywws.storage.pywws_context(args[0]) as context:
         return twitter_auth(context.params)
 
 

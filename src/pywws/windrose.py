@@ -277,10 +277,10 @@ import sys
 import xml.dom.minidom
 
 from pywws.conversions import *
-from pywws import DataStore
 import pywws.localisation
 from pywws.Logger import ApplicationLogger
 from pywws.plot import BasePlotter
+import pywws.storage
 
 
 class RosePlotter(BasePlotter):
@@ -483,7 +483,7 @@ def main(argv=None):
         print(__usage__.strip(), file=sys.stderr)
         return 2
     logger = ApplicationLogger(2)
-    with DataStore.pywws_context(args[0]) as context:
+    with pywws.storage.pywws_context(args[0]) as context:
         pywws.localisation.set_application_language(context.params)
         return RosePlotter(context, args[1]).do_plot(args[2], args[3])
 

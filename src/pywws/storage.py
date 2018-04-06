@@ -16,15 +16,14 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-"""
-DataStore.py - stores readings in easy to access files
+"""Store parameters and weather data in easy to access files
 
 Introduction
 ------------
 
-This module is at the core of pywws. It stores data on disc, but
-without the overhead of a full scale database system. I have designed
-it to run on a small memory machine such as my Asus router. To
+This module is at the core of pywws. It stores data on disc, but without
+the overhead of a full scale database system. I have designed it to run
+on a small memory machine such as a Raspberry Pi or even a router. To
 minimise memory usage it only loads one day's worth of raw data at a
 time into memory.
 
@@ -38,8 +37,8 @@ For example, to access the hourly data for Christmas day 2009, one
 might do the following::
 
   from datetime import datetime
-  from pywws import DataStore
-  hourly = DataStore.hourly_store('weather_data')
+  import pywws.storage
+  hourly = pywws.storage.HourlyStore('weather_data')
   for data in hourly[datetime(2009, 12, 25):datetime(2009, 12, 26)]:
       print(data['idx'], data['temp_out'])
 
@@ -56,12 +55,12 @@ Note that the :py:class:`datetime.datetime` index is in UTC. You may
 need to apply an offset to convert to local time.
 
 The module provides five classes to store different data.
-:py:class:`data_store` takes "raw" data from the weather station;
-:py:class:`calib_store`, :py:class:`hourly_store`,
-:py:class:`daily_store` and :py:class:`monthly_store` store processed
-data (see :py:mod:`pywws.Process`). All three are derived from the
-same ``core_store`` class, they only differ in the keys and types of
-data stored in each record.
+:py:class:`RawStore` takes "raw" data from the weather station;
+:py:class:`CalibStore`, :py:class:`HourlyStore`, :py:class:`DailyStore`
+and :py:class:`MonthlyStore` store processed data (see
+:py:mod:`pywws.Process`). All are derived from the same ``CoreStore``
+class, they only differ in the keys and types of data stored in each
+record.
 
 Detailed API
 ------------
@@ -85,6 +84,7 @@ else:
 
 from pywws.constants import DAY
 
+
 def safestrptime(date_string, format=None):
     # time.strptime is time consuming (because it's so flexible?) so don't use
     # it for the fixed format datetime strings in our csv files
@@ -96,6 +96,7 @@ def safestrptime(date_string, format=None):
                                date_string[11:13],
                                date_string[14:16],
                                date_string[17:19])))
+
 
 class ParamStore(object):
     def __init__(self, root_dir, file_name):
@@ -205,7 +206,8 @@ class _Cache(object):
                 hi = mid
         self.ptr = hi
 
-class core_store(object):
+
+class CoreStore(object):
     def __init__(self, root_dir):
         self._root_dir = os.path.join(root_dir, self.dir_name)
         if not os.path.isdir(self._root_dir):
@@ -490,7 +492,8 @@ class core_store(object):
         hi = lo + DAY
         return path, lo, hi
 
-class data_store(core_store):
+
+class RawStore(CoreStore):
     """Stores raw weather station data."""
     dir_name = 'raw'
     key_list = [
@@ -515,7 +518,8 @@ class data_store(core_store):
         'uv'           : int,
         }
 
-class calib_store(core_store):
+
+class CalibStore(CoreStore):
     """Stores 'calibrated' weather station data."""
     dir_name = 'calib'
     key_list = [
@@ -541,7 +545,8 @@ class calib_store(core_store):
         'uv'           : int,
         }
 
-class hourly_store(core_store):
+
+class HourlyStore(CoreStore):
     """Stores hourly summary weather station data."""
     dir_name = 'hourly'
     key_list = [
@@ -566,7 +571,8 @@ class hourly_store(core_store):
         'uv'                : int,
         }
 
-class daily_store(core_store):
+
+class DailyStore(CoreStore):
     """Stores daily summary weather station data."""
     dir_name = 'daily'
     key_list = [
@@ -651,7 +657,8 @@ class daily_store(core_store):
             lo = hi.replace(month=hi.month-1)
         return path, lo, hi
 
-class monthly_store(core_store):
+
+class MonthlyStore(CoreStore):
     """Stores monthly summary weather station data."""
     dir_name = 'monthly'
     key_list = [
@@ -761,6 +768,7 @@ class monthly_store(core_store):
             lo = hi.replace(year=hi.year-1)
         return path, lo, hi
 
+
 @contextmanager
 def pywws_context(data_dir):
     class PywwsContext(object):
@@ -771,11 +779,11 @@ def pywws_context(data_dir):
     ctx.params = ParamStore(data_dir, 'weather.ini')
     ctx.status = ParamStore(data_dir, 'status.ini')
     # open data file stores
-    ctx.raw_data = data_store(data_dir)
-    ctx.calib_data = calib_store(data_dir)
-    ctx.hourly_data = hourly_store(data_dir)
-    ctx.daily_data = daily_store(data_dir)
-    ctx.monthly_data = monthly_store(data_dir)
+    ctx.raw_data = RawStore(data_dir)
+    ctx.calib_data = CalibStore(data_dir)
+    ctx.hourly_data = HourlyStore(data_dir)
+    ctx.daily_data = DailyStore(data_dir)
+    ctx.monthly_data = MonthlyStore(data_dir)
     # return control to main program
     try:
         yield ctx

@@ -308,10 +308,10 @@ import sys
 from pywws.constants import HOUR, SECOND, DAY
 from pywws import conversions
 from pywws.conversions import *
-from pywws import DataStore
 from pywws.forecast import zambretti, zambretti_code
 import pywws.localisation
 from pywws.Logger import ApplicationLogger
+import pywws.storage
 from pywws.timezone import Local, utc
 
 # aliases for compatibility with old templates
@@ -508,7 +508,7 @@ class Template(object):
                     if '%' in time_str:
                         lcl = idx.replace(tzinfo=utc).astimezone(time_zone)
                         time_str = lcl.strftime(time_str)
-                    new_idx = DataStore.safestrptime(time_str)
+                    new_idx = pywws.storage.safestrptime(time_str)
                     new_idx = new_idx.replace(tzinfo=time_zone).astimezone(utc)
                     new_idx = data_set.after(new_idx.replace(tzinfo=None))
                     if new_idx:
@@ -590,7 +590,7 @@ def main(argv=None):
             print(__usage__.strip())
             return 0
     logger = ApplicationLogger(1)
-    with DataStore.pywws_context(args[0]) as context:
+    with pywws.storage.pywws_context(args[0]) as context:
         pywws.localisation.set_application_language(context.params)
         return Template(context).make_file(args[1], args[2])
 

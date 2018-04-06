@@ -46,17 +46,17 @@ import os
 import sys
 import time
 
-from pywws import DataStore
 import pywws.localisation
 import pywws.logdata
 from pywws.Logger import ApplicationLogger
 from pywws import Process
 import pywws.regulartasks
+import pywws.storage
 
 
 def live_log(data_dir):
     logger = logging.getLogger('pywws.live_log')
-    with DataStore.pywws_context(data_dir) as context:
+    with pywws.storage.pywws_context(data_dir) as context:
         # localise application
         pywws.localisation.set_application_language(context.params)
         # create a DataLogger object

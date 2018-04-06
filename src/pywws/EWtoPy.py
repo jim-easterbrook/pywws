@@ -65,7 +65,7 @@ import getopt
 import os
 import sys
 
-from pywws import DataStore
+import pywws.storage
 import pywws.timezone
 
 def main(argv=None):
@@ -93,7 +93,7 @@ def main(argv=None):
     # open input
     in_file = open(in_name, 'r')
     # open data file store
-    ds = DataStore.data_store(out_name)
+    ds = pywws.storage.RawStore(out_name)
     # get time to go forward to
     first_stored = ds.after(datetime.min)
     if first_stored == None:
@@ -103,7 +103,7 @@ def main(argv=None):
     count = 0
     for line in in_file:
         items = line.split(',')
-        local_date = DataStore.safestrptime(items[2].strip(), '%Y-%m-%d %H:%M:%S')
+        local_date = pywws.storage.safestrptime(items[2].strip(), '%Y-%m-%d %H:%M:%S')
         local_date = local_date.replace(tzinfo=pywws.timezone.Local)
         date = local_date.astimezone(pywws.timezone.utc)
         if last_date and date < last_date:

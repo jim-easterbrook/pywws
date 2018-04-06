@@ -72,8 +72,8 @@ import sys
 import time
 
 from pywws.constants import SECOND, HOUR
-from pywws import DataStore
 from pywws.Logger import ApplicationLogger
+import pywws.storage
 from pywws.weatherstation import WeatherStation
 
 
@@ -132,7 +132,7 @@ class DataLogger(object):
         if self.status.get('data', 'ptr'):
             saved_ptr, saved_date = self.status.get('data', 'ptr').split(',')
             saved_ptr = int(saved_ptr, 16)
-            saved_date = DataStore.safestrptime(saved_date)
+            saved_date = pywws.storage.safestrptime(saved_date)
             saved_date = self.raw_data.nearest(saved_date)
             while saved_date < last_stored:
                 saved_date = self.raw_data.after(saved_date + SECOND)
@@ -301,7 +301,7 @@ def main(argv=None):
         return 2
     logger = ApplicationLogger(verbose)
     root_dir = args[0]
-    with DataStore.pywws_context(root_dir) as context:
+    with pywws.storage.pywws_context(root_dir) as context:
         DataLogger(context).log_data(sync=sync, clear=clear)
 
 if __name__ == "__main__":

@@ -168,8 +168,8 @@ else:
     from urllib2 import HTTPError, Request, URLError, urlopen
     from urlparse import urlsplit
 
-from pywws import DataStore
 from pywws.Logger import ApplicationLogger
+import pywws.storage
 import pywws.template
 from pywws import __version__
 
@@ -286,7 +286,7 @@ class ToService(object):
 
         The :obj:`data` parameter contains the data to be encoded. It
         should be a 'calibrated' data record, as stored in
-        :class:`pywws.DataStore.calib_store`. The relevant data items
+        :class:`pywws.storage.CalibStore`. The relevant data items
         are extracted and converted to strings using a template, then
         merged with the station's "fixed" data.
 
@@ -647,7 +647,7 @@ def main(argv=None):
         print(__usage__.strip(), file=sys.stderr)
         return 2
     logger = ApplicationLogger(verbose)
-    with DataStore.pywws_context(args[0]) as context:
+    with pywws.storage.pywws_context(args[0]) as context:
         return ToService(context, args[1]).Upload(
             catchup=catchup, ignore_last_update=not catchup)
 

@@ -39,8 +39,8 @@ from datetime import datetime, timedelta
 import getopt
 import sys
 
-from pywws import DataStore
 import pywws.localisation
+import pywws.storage
 from pywws.timezone import Local, utc
 
 def _(msg):
@@ -161,7 +161,7 @@ def main(argv=None):
         print(__usage__.strip(), file=sys.stderr)
         return 2
     data_dir = args[0]
-    with DataStore.pywws_context(data_dir) as context:
+    with pywws.storage.pywws_context(data_dir) as context:
         params = context.params
         pywws.localisation.set_application_language(params)
         hourly_data = context.hourly_data

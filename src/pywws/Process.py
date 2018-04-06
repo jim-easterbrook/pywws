@@ -85,8 +85,8 @@ import sys
 
 from pywws.calib import Calib
 from pywws.constants import HOUR, DAY, SECOND
-from pywws import DataStore
 from pywws.Logger import ApplicationLogger
+import pywws.storage
 from pywws.timezone import STDOFFSET
 
 TIME_ERR = timedelta(seconds=45)
@@ -755,7 +755,7 @@ def main(argv=None):
         return 2
     logger = ApplicationLogger(verbose)
     data_dir = args[0]
-    with DataStore.pywws_context(data_dir) as context:
+    with pywws.storage.pywws_context(data_dir) as context:
         return Process(context)
 
 if __name__ == "__main__":

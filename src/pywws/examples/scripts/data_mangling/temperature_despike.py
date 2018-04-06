@@ -17,8 +17,8 @@ import os
 import sys
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '../../..'))
-from pywws import DataStore
 from pywws.constants import SECOND
+import pywws.storage
 
 def main(argv=None):
     if argv is None:
@@ -47,7 +47,7 @@ def main(argv=None):
     start = datetime(2013, 10, 27, 11, 21)
     stop  = datetime(2013, 10, 29, 18, 32)
     # open data store
-    raw_data = DataStore.data_store(data_dir)
+    raw_data = pywws.storage.RawStore(data_dir)
     # process the data
     aperture = timedelta(minutes=14, seconds=30)
     # make list of changes to apply after examining the data
@@ -80,7 +80,7 @@ def main(argv=None):
         # make sure it's saved
         raw_data.flush()
         # clear calibrated data that needs to be regenerated
-        calib_data = DataStore.calib_store(data_dir)
+        calib_data = pywws.storage.CalibStore(data_dir)
         del calib_data[changes[0]['idx']:]
         calib_data.flush()
     # done

@@ -59,9 +59,9 @@ except ImportError as ex:
         raise ex
 
 from pywws.constants import Twitter as pct
-from pywws import DataStore
 import pywws.localisation
 from pywws.Logger import ApplicationLogger
+import pywws.storage
 
 
 class TweepyHandler(object):
@@ -184,7 +184,7 @@ def main(argv=None):
         print(__usage__.strip(), file=sys.stderr)
         return 2
     logger = ApplicationLogger(1)
-    with DataStore.pywws_context(args[0]) as context:
+    with pywws.storage.pywws_context(args[0]) as context:
         params = context.params
         pywws.localisation.set_application_language(params)
         if ToTwitter(params).upload_file(args[1]):

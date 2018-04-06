@@ -215,7 +215,7 @@ def set_application_language(params):
     This function reads the language from the configuration file, then
     calls :func:`set_locale` and :func:`set_translation`.
 
-    :param params: a :class:`pywws.DataStore.params` object.
+    :param params: a :class:`pywws.storage.params` object.
 
     :type params: object
 

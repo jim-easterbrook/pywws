@@ -82,8 +82,8 @@ import os
 import shutil
 import sys
 
-from pywws import DataStore
 from pywws.Logger import ApplicationLogger
+import pywws.storage
 
 
 class _ftp(object):
@@ -275,7 +275,7 @@ def main(argv=None):
         print(__usage__.strip(), file=sys.stderr)
         return 2
     logger = ApplicationLogger(1)
-    with DataStore.pywws_context(args[0]) as context:
+    with pywws.storage.pywws_context(args[0]) as context:
         if ToWebSite(context.params).upload(args[1:]):
             return 0
     return 3

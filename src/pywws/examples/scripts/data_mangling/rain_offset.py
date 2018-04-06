@@ -16,7 +16,7 @@ import os
 import sys
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '../../..'))
-from pywws import DataStore
+import pywws.storage
 
 def main(argv=None):
     if argv is None:
@@ -42,7 +42,7 @@ def main(argv=None):
     start = datetime(2013, 10, 26, 15, 23)
     stop  = datetime(2013, 10, 30, 12, 47)
     # open data store
-    raw_data = DataStore.data_store(data_dir)
+    raw_data = pywws.storage.RawStore(data_dir)
     # change the data
     for data in raw_data[start:stop]:
         data['rain'] -= 263.1
@@ -50,7 +50,7 @@ def main(argv=None):
     # make sure it's saved
     raw_data.flush()
     # clear calibrated data that needs to be regenerated
-    calib_data = DataStore.calib_store(data_dir)
+    calib_data = pywws.storage.CalibStore(data_dir)
     del calib_data[start:]
     calib_data.flush()
     # done

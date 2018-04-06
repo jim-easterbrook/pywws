@@ -107,7 +107,7 @@ def winddir_average(data, threshold, min_count, decay=1.0):
 
     :param data: a slice of pywws raw/calib or hourly data.
 
-    :type data: pywws.DataStore.core_store
+    :type data: pywws.storage.CoreStore
 
     :param threshold: minimum average windspeed for there to be a
         valid wind direction.

@@ -53,13 +53,13 @@ import logging
 import os
 import sys
 
-from pywws import DataStore
 from pywws.Logger import ApplicationLogger
 from pywws import Process
+import pywws.storage
 
 def Reprocess(data_dir, update):
     logger = logging.getLogger('pywws.Reprocess')
-    raw_data = DataStore.data_store(data_dir)
+    raw_data = pywws.storage.RawStore(data_dir)
     if update:
         # update old data to copy high nibble of wind_dir to status
         logger.warning("Updating status to include extra bits from wind_dir")
@@ -91,7 +91,7 @@ def Reprocess(data_dir, update):
             os.rmdir(root)
     # create data summaries
     logger.warning('Generating hourly and daily summaries')
-    with DataStore.pywws_context(data_dir) as context:
+    with pywws.storage.pywws_context(data_dir) as context:
         Process.Process(context)
     return 0
 
