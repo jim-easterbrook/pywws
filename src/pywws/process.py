@@ -43,7 +43,7 @@ the meteorological day.
 
 To adjust the meteorological day to your preference, or that used by
 your local official weather station, edit the "day end hour" line in
-your ``weather.ini`` file, then run Reprocess.py to regenerate the
+your ``weather.ini`` file, then run pywws.reprocess to regenerate the
 summaries.
 
 Monthly summary data is computed from the daily summary data. If the

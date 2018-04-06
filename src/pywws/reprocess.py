@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
 # Copyright (C) 2008-18  pywws contributors
@@ -20,9 +18,9 @@
 
 """Regenerate hourly and daily summary data.
 
-This script can also be run with the ``pywws-reprocess`` command. ::
+This module can also be run with the ``pywws-reprocess`` command. ::
 %s
-This program recreates the calibrated, hourly, daily and monthly
+This module recreates the calibrated, hourly, daily and monthly
 summary data that is created by the :py:mod:`pywws.process` module. It
 should be run whenever you upgrade to a newer version of pywws (if the
 summary data format has changed), change your calibration module or
@@ -46,7 +44,7 @@ __usage__ = """
   -v | --verbose  increase number of informative messages
  data_dir is the root directory of the weather data
 """
-__doc__ %= __usage__ % ('python -m pywws.Reprocess')
+__doc__ %= __usage__ % ('python -m pywws.reprocess')
 
 import getopt
 import logging
@@ -57,13 +55,14 @@ from pywws.Logger import ApplicationLogger
 import pywws.process
 import pywws.storage
 
-def Reprocess(data_dir, update):
-    logger = logging.getLogger('pywws.Reprocess')
-    raw_data = pywws.storage.RawStore(data_dir)
+
+def reprocess(data_dir, update):
+    logger = logging.getLogger('pywws.reprocess')
     if update:
         # update old data to copy high nibble of wind_dir to status
         logger.warning("Updating status to include extra bits from wind_dir")
         count = 0
+        raw_data = pywws.storage.RawStore(data_dir)
         for data in raw_data[:]:
             count += 1
             idx = data['idx']
@@ -95,6 +94,7 @@ def Reprocess(data_dir, update):
         pywws.process.process_data(context)
     return 0
 
+
 def main(argv=None):
     if argv is None:
         argv = sys.argv
@@ -125,7 +125,8 @@ def main(argv=None):
         return 2
     logger = ApplicationLogger(verbose)
     data_dir = args[0]
-    return Reprocess(data_dir, update)
+    return reprocess(data_dir, update)
+
 
 if __name__ == "__main__":
     sys.exit(main())
