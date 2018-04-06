@@ -82,7 +82,7 @@ import sys
 
 from pywws.calib import Calib
 from pywws.constants import HOUR, DAY, SECOND
-from pywws.Logger import ApplicationLogger
+import pywws.logger
 import pywws.storage
 from pywws.timezone import STDOFFSET
 
@@ -765,7 +765,7 @@ def main(argv=None):
         print('Error: 1 argument required\n', file=sys.stderr)
         print(__usage__.strip(), file=sys.stderr)
         return 2
-    logger = ApplicationLogger(verbose)
+    pywws.logger.setup_handler(verbose)
     data_dir = args[0]
     with pywws.storage.pywws_context(data_dir) as context:
         return process_data(context)

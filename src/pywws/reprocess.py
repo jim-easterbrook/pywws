@@ -51,7 +51,7 @@ import logging
 import os
 import sys
 
-from pywws.Logger import ApplicationLogger
+import pywws.logger
 import pywws.process
 import pywws.storage
 
@@ -123,7 +123,7 @@ def main(argv=None):
         print('Error: 1 argument required\n', file=sys.stderr)
         print(usage, file=sys.stderr)
         return 2
-    logger = ApplicationLogger(verbose)
+    pywws.logger.setup_handler(verbose)
     data_dir = args[0]
     return reprocess(data_dir, update)
 

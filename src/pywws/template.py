@@ -310,7 +310,7 @@ from pywws import conversions
 from pywws.conversions import *
 from pywws.forecast import zambretti, zambretti_code
 import pywws.localisation
-from pywws.Logger import ApplicationLogger
+import pywws.logger
 import pywws.storage
 from pywws.timezone import Local, utc
 
@@ -589,7 +589,7 @@ def main(argv=None):
         if o == '--help':
             print(__usage__.strip())
             return 0
-    logger = ApplicationLogger(1)
+    pywws.logger.setup_handler(1)
     with pywws.storage.pywws_context(args[0]) as context:
         pywws.localisation.set_application_language(context.params)
         return Template(context).make_file(args[1], args[2])

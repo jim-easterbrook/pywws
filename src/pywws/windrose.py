@@ -278,7 +278,7 @@ import xml.dom.minidom
 
 from pywws.conversions import *
 import pywws.localisation
-from pywws.Logger import ApplicationLogger
+import pywws.logger
 from pywws.plot import BasePlotter
 import pywws.storage
 
@@ -482,7 +482,7 @@ def main(argv=None):
         print('Error: 4 arguments required\n', file=sys.stderr)
         print(__usage__.strip(), file=sys.stderr)
         return 2
-    logger = ApplicationLogger(2)
+    pywws.logger.setup_handler(2)
     with pywws.storage.pywws_context(args[0]) as context:
         pywws.localisation.set_application_language(context.params)
         return RosePlotter(context, args[1]).do_plot(args[2], args[3])

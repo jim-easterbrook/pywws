@@ -43,7 +43,7 @@ import sys
 from datetime import datetime, timedelta
 
 from pywws.conversions import apparent_temp
-from pywws.Logger import ApplicationLogger
+import pywws.logger
 import pywws.storage
 import pywws.timezone
 
@@ -147,7 +147,7 @@ def main(argv=None):
         print("Error: 2 arguments required", file=sys.stderr)
         print(__usage__.strip(), file=sys.stderr)
         return 2
-    logger = ApplicationLogger(verbose)
+    pywws.logger.setup_handler(verbose)
     with pywws.storage.pywws_context(args[0]) as context:
         return YoWindow(context.calib_data).write_file(args[1])
 

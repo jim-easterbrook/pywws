@@ -36,8 +36,8 @@ increased verbosity so it reports which USB device access module is
 being used::
 
     pywws-testweatherstation -vv
-    11:30:35:pywws.Logger:pywws version 15.01.0
-    11:30:35:pywws.Logger:Python version 3.3.5 (default, Mar 27 2014, 17:16:46) [GCC]
+    11:30:35:pywws.logger:pywws version 15.01.0
+    11:30:35:pywws.logger:Python version 3.3.5 (default, Mar 27 2014, 17:16:46) [GCC]
     11:30:35:pywws.weatherstation.CUSBDrive:using pywws.device_libusb1
     0000 55 aa ff ff ff ff ff ff ff ff ff ff ff ff ff ff 05 20 01 41 11 00 00 00 81 7f 00 f0 0f 00 50 04
     0020 f9 25 74 26 00 00 00 00 00 00 00 15 01 15 11 31 41 23 c8 00 00 00 46 2d 2c 01 64 80 c8 00 00 00

@@ -72,7 +72,7 @@ import sys
 import time
 
 from pywws.constants import SECOND, HOUR
-from pywws.Logger import ApplicationLogger
+import pywws.logger
 import pywws.storage
 from pywws.weatherstation import WeatherStation
 
@@ -299,7 +299,7 @@ def main(argv=None):
         print('Error: 1 argument required\n', file=sys.stderr)
         print(__usage__.strip(), file=sys.stderr)
         return 2
-    logger = ApplicationLogger(verbose)
+    pywws.logger.setup_handler(verbose)
     root_dir = args[0]
     with pywws.storage.pywws_context(root_dir) as context:
         DataLogger(context).log_data(sync=sync, clear=clear)

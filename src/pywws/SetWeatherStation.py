@@ -48,7 +48,7 @@ import logging
 import sys
 import time
 
-from pywws.Logger import ApplicationLogger
+import pywws.logger
 import pywws.weatherstation
 
 def bcd_encode(value):
@@ -92,7 +92,7 @@ def main(argv=None):
         print("Error: No arguments required", file=sys.stderr)
         print(__usage__.strip(), file=sys.stderr)
         return 2
-    logger = ApplicationLogger(verbose)
+    pywws.logger.setup_handler(verbose)
     # open connection to weather station
     ws = pywws.weatherstation.WeatherStation()
     # set data to be sent to station

@@ -82,7 +82,7 @@ import os
 import shutil
 import sys
 
-from pywws.Logger import ApplicationLogger
+import pywws.logger
 import pywws.storage
 
 
@@ -274,7 +274,7 @@ def main(argv=None):
         print("Error: at least 2 arguments required", file=sys.stderr)
         print(__usage__.strip(), file=sys.stderr)
         return 2
-    logger = ApplicationLogger(1)
+    pywws.logger.setup_handler(1)
     with pywws.storage.pywws_context(args[0]) as context:
         if ToWebSite(context.params).upload(args[1:]):
             return 0

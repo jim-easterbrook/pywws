@@ -54,7 +54,7 @@ import pprint
 import sys
 import time
 
-from pywws.Logger import ApplicationLogger
+import pywws.logger
 import pywws.weatherstation
 
 
@@ -113,7 +113,7 @@ def main(argv=None):
         elif o in ('-v', '--verbose'):
             verbose += 1
     # do it!
-    logger = ApplicationLogger(verbose)
+    pywws.logger.setup_handler(verbose)
     ws = pywws.weatherstation.WeatherStation()
     raw_fixed = ws.get_raw_fixed_block()
     if not raw_fixed:

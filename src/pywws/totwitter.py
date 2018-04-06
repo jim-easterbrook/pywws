@@ -60,7 +60,7 @@ except ImportError as ex:
 
 from pywws.constants import Twitter as pct
 import pywws.localisation
-from pywws.Logger import ApplicationLogger
+import pywws.logger
 import pywws.storage
 
 
@@ -183,7 +183,7 @@ def main(argv=None):
         print("Error: 2 arguments required", file=sys.stderr)
         print(__usage__.strip(), file=sys.stderr)
         return 2
-    logger = ApplicationLogger(1)
+    pywws.logger.setup_handler(1)
     with pywws.storage.pywws_context(args[0]) as context:
         params = context.params
         pywws.localisation.set_application_language(params)

@@ -66,7 +66,7 @@ __usage__ = __doc__.split('\n')[0] + __usage__
 import getopt
 import sys
 
-from pywws.Logger import ApplicationLogger
+import pywws.logger
 import pywws.weatherstation
 
 
@@ -93,7 +93,7 @@ def main(argv=None):
         elif o in ('-v', '--verbose'):
             verbose += 1
     # do it!
-    logger = ApplicationLogger(verbose)
+    pywws.logger.setup_handler(verbose)
     ws = pywws.weatherstation.WeatherStation()
     fixed_block = ws.get_fixed_block()
     if not fixed_block:

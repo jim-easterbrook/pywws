@@ -50,7 +50,7 @@ import sys
 
 import pywws.localisation
 import pywws.logdata
-from pywws.Logger import ApplicationLogger
+import pywws.logger
 import pywws.process
 import pywws.regulartasks
 import pywws.storage
@@ -94,7 +94,7 @@ def main(argv=None):
         print('Error: 1 argument required\n', file=sys.stderr)
         print(usage, file=sys.stderr)
         return 2
-    logger = ApplicationLogger(verbose)
+    pywws.logger.setup_handler(verbose)
     return hourly(args[0])
 
 

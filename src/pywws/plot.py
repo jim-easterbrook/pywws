@@ -528,7 +528,7 @@ import pytz
 from pywws.constants import HOUR
 from pywws.conversions import *
 import pywws.localisation
-from pywws.Logger import ApplicationLogger
+import pywws.logger
 import pywws.storage
 from pywws.timezone import Local, local_utc_offset, utc
 
@@ -991,7 +991,7 @@ def main(argv=None):
         print('Error: 4 arguments required\n', file=sys.stderr)
         print(__usage__.strip(), file=sys.stderr)
         return 2
-    logger = ApplicationLogger(2)
+    pywws.logger.setup_handler(2)
     with pywws.storage.pywws_context(args[0]) as context:
         pywws.localisation.set_application_language(context.params)
         return GraphPlotter(context, args[1]).do_plot(

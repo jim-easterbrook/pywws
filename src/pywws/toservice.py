@@ -168,7 +168,7 @@ else:
     from urllib2 import HTTPError, Request, URLError, urlopen
     from urlparse import urlsplit
 
-from pywws.Logger import ApplicationLogger
+import pywws.logger
 import pywws.storage
 import pywws.template
 from pywws import __version__
@@ -646,7 +646,7 @@ def main(argv=None):
         print("Error: 2 arguments required", file=sys.stderr)
         print(__usage__.strip(), file=sys.stderr)
         return 2
-    logger = ApplicationLogger(verbose)
+    pywws.logger.setup_handler(verbose)
     with pywws.storage.pywws_context(args[0]) as context:
         return ToService(context, args[1]).Upload(
             catchup=catchup, ignore_last_update=not catchup)
