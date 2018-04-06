@@ -52,6 +52,7 @@ _now = datetime.now(tz=Local)
 STDOFFSET = _now.utcoffset() - _now.dst()
 del _now
 
+
 def local_utc_offset(time):
     try:
         result = Local.utcoffset(time)
@@ -61,10 +62,12 @@ def local_utc_offset(time):
         result = Local.utcoffset(time - HOUR)
     return result
 
+
 def main():
     print(datetime.now().strftime('%Y/%m/%d %H:%M %Z'))
     print(datetime.now(utc).strftime('%Y/%m/%d %H:%M %Z'))
     print(datetime.now(Local).strftime('%Y/%m/%d %H:%M %Z'))
+
 
 if __name__ == "__main__":
     sys.exit(main())

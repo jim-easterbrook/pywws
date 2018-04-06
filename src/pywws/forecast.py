@@ -41,7 +41,7 @@ import sys
 
 from pywws import DataStore
 import pywws.localisation
-from pywws.TimeZone import Local, utc
+from pywws.timezone import Local, utc
 
 def _(msg):
     return msg

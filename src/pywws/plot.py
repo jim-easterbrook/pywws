@@ -530,7 +530,7 @@ from pywws.conversions import *
 from pywws import DataStore
 import pywws.localisation
 from pywws.Logger import ApplicationLogger
-from pywws.TimeZone import Local, local_utc_offset, utc
+from pywws.timezone import Local, local_utc_offset, utc
 
 
 class GraphNode(object):

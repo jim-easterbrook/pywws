@@ -87,7 +87,7 @@ from pywws.calib import Calib
 from pywws.constants import HOUR, DAY, SECOND
 from pywws import DataStore
 from pywws.Logger import ApplicationLogger
-from pywws.TimeZone import STDOFFSET
+from pywws.timezone import STDOFFSET
 
 TIME_ERR = timedelta(seconds=45)
 MINUTEx5 = timedelta(minutes=5)

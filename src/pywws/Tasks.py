@@ -32,7 +32,7 @@ import threading
 from pywws.calib import Calib
 import pywws.plot
 from pywws import Template
-from pywws.TimeZone import STDOFFSET, local_utc_offset
+from pywws.timezone import STDOFFSET, local_utc_offset
 from pywws.toservice import ToService
 from pywws import Upload
 import pywws.windrose

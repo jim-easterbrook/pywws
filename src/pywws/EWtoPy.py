@@ -66,7 +66,7 @@ import os
 import sys
 
 from pywws import DataStore
-from pywws import TimeZone
+import pywws.timezone
 
 def main(argv=None):
     if argv is None:
@@ -104,8 +104,8 @@ def main(argv=None):
     for line in in_file:
         items = line.split(',')
         local_date = DataStore.safestrptime(items[2].strip(), '%Y-%m-%d %H:%M:%S')
-        local_date = local_date.replace(tzinfo=TimeZone.Local)
-        date = local_date.astimezone(TimeZone.utc)
+        local_date = local_date.replace(tzinfo=pywws.timezone.Local)
+        date = local_date.astimezone(pywws.timezone.utc)
         if last_date and date < last_date:
             date = date + timedelta(hours=1)
             print("Corrected DST ambiguity %s %s -> %s" % (

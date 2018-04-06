@@ -44,7 +44,7 @@ from datetime import datetime, timedelta
 
 from pywws import DataStore
 from pywws.Logger import ApplicationLogger
-from pywws.TimeZone import Local, utc
+import pywws.timezone
 from pywws.conversions import apparent_temp
 
 
@@ -57,9 +57,11 @@ class YoWindow(object):
         self.logger = logging.getLogger('pywws.yowindow')
         self.data = calib_data
         # compute local midnight
-        self.midnight = datetime.utcnow().replace(tzinfo=utc).astimezone(
-            Local).replace(hour=0, minute=0, second=0).astimezone(
-                utc).replace(tzinfo=None)
+        self.midnight = datetime.utcnow().replace(
+            tzinfo=pywws.timezone.utc).astimezone(
+                pywws.timezone.Local).replace(
+                    hour=0, minute=0, second=0).astimezone(
+                        pywws.timezone.utc).replace(tzinfo=None)
         self.day = timedelta(hours=24)
         self.hour = timedelta(hours=1)
         self.last_update = None

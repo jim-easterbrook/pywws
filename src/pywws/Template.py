@@ -312,7 +312,7 @@ from pywws import DataStore
 from pywws.forecast import zambretti, zambretti_code
 import pywws.localisation
 from pywws.Logger import ApplicationLogger
-from pywws.TimeZone import Local, utc
+from pywws.timezone import Local, utc
 
 # aliases for compatibility with old templates
 Zambretti = zambretti
