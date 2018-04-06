@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
 # Copyright (C) 2008-18  pywws contributors
@@ -26,7 +24,7 @@
 This module posts a brief message to `Twitter
 <https://twitter.com/>`_. Before posting to Twitter you need to set up
 an account and then authorise pywws by running the
-:py:mod:`TwitterAuth` program. See :doc:`../guides/twitter` for
+:py:mod:`twitterauth` program. See :doc:`../guides/twitter` for
 detailed instructions.
 
 """
