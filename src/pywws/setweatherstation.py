@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
 # Copyright (C) 2008-18  pywws contributors
@@ -29,7 +27,7 @@ from __future__ import absolute_import, print_function
 
 __docformat__ = "restructuredtext en"
 __usage__ = """
- usage: python -m pywws.SetWeatherStation [options]
+ usage: python -m pywws.setweatherstation [options]
  options are:
   -h   | --help           display this help
   -c   | --clock          set weather station clock to computer time
@@ -51,10 +49,13 @@ import time
 import pywws.logger
 import pywws.weatherstation
 
+
 def bcd_encode(value):
     hi = value // 10
     lo = value % 10
     return (hi * 16) + lo
+
+
 def main(argv=None):
     if argv is None:
         argv = sys.argv
@@ -130,5 +131,7 @@ def main(argv=None):
     # send it all in one go
     if data:
         ws.write_data(data)
+
+
 if __name__ == "__main__":
     sys.exit(main())
