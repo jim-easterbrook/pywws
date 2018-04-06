@@ -74,7 +74,7 @@ import time
 from pywws.constants import SECOND, HOUR
 from pywws import DataStore
 from pywws.Logger import ApplicationLogger
-from pywws.WeatherStation import weather_station
+from pywws.weatherstation import WeatherStation
 
 
 class DataLogger(object):
@@ -90,7 +90,7 @@ class DataLogger(object):
             self.params.set('config', 'ws type', ws_type)
         ws_type = self.params.get('config', 'ws type', 'Unknown')
         avoid = eval(self.params.get('config', 'usb activity margin', '3.0'))
-        self.ws = weather_station(
+        self.ws = WeatherStation(
             ws_type=ws_type, status=self.status, avoid=avoid)
         # check for valid weather station type
         fixed_block = self.check_fixed_block()

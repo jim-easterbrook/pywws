@@ -57,7 +57,7 @@ import sys
 import time
 
 from pywws.Logger import ApplicationLogger
-from pywws import WeatherStation
+import pywws.weatherstation
 
 def raw_dump(pos, data):
     print("%04x" % pos, end=' ')
@@ -114,7 +114,7 @@ def main(argv=None):
             verbose += 1
     # do it!
     logger = ApplicationLogger(verbose)
-    ws = WeatherStation.weather_station()
+    ws = pywws.weatherstation.WeatherStation()
     raw_fixed = ws.get_raw_fixed_block()
     if not raw_fixed:
         print("No valid data block found")

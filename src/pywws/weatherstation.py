@@ -51,13 +51,13 @@ The use of nested dictionaries in the ``fixed_format`` dictionary
 allows useful subsets of data to be decoded. For example, to decode
 the entire block ``get_fixed_block`` is called with no parameters::
 
-  ws = WeatherStation.weather_station()
+  ws = pywws.weatherstation.WeatherStation()
   print(ws.get_fixed_block())
 
 To get the stored minimum external temperature, ``get_fixed_block`` is
 called with a sequence of keys::
 
-  ws = WeatherStation.weather_station()
+  ws = pywws.weatherstation.WeatherStation()
   print(ws.get_fixed_block(['min', 'temp_out', 'val']))
 
 Often there is no requirement to read and decode the entire fixed
@@ -66,7 +66,7 @@ interval between stored readings, the buffer address where the current
 reading is stored, and the current date & time. The
 ``get_lo_fix_block`` method provides easy access to these.
 
-For more examples of using the WeatherStation module, see the
+For more examples of using the pywws.weatherstation module, see the
 TestWeatherStation program.
 
 Detailed API
@@ -218,6 +218,7 @@ def _decode(raw, format):
             result = float(result) * scale
     return result
 
+
 class CUSBDrive(object):
     """Low level interface to weather station via USB.
 
@@ -233,7 +234,7 @@ class CUSBDrive(object):
     WriteCommandWord = 0xA2
 
     def __init__(self):
-        self.logger = logging.getLogger('pywws.WeatherStation.CUSBDrive')
+        self.logger = logging.getLogger('pywws.weatherstation.CUSBDrive')
         self.logger.info('using %s', USBDevice.__module__)
         self.dev = USBDevice(0x1941, 0x8021)
 
@@ -300,6 +301,7 @@ class CUSBDrive(object):
             if byte != 0xA5:
                 return False
         return True
+
 
 class DriftingClock(object):
     def __init__(self, logger, name, status, period, margin):
@@ -370,7 +372,8 @@ class DriftingClock(object):
     def invalidate(self):
         self.clock = None
 
-class weather_station(object):
+
+class WeatherStation(object):
     """Class that represents the weather station to user program."""
     # minimum interval between polling for data change
     min_pause = 0.5
@@ -378,7 +381,7 @@ class weather_station(object):
     margin = (min_pause * 2.0) - 0.1
     def __init__(self, ws_type='1080', status=None, avoid=3.0):
         """Connect to weather station and prepare to read data."""
-        self.logger = logging.getLogger('pywws.weather_station')
+        self.logger = logging.getLogger('pywws.WeatherStation')
         # create basic IO object
         self.cusb = CUSBDrive()
         # init variables

@@ -49,7 +49,7 @@ import sys
 import time
 
 from pywws.Logger import ApplicationLogger
-from pywws import WeatherStation
+import pywws.weatherstation
 
 def bcd_encode(value):
     hi = value // 10
@@ -94,7 +94,7 @@ def main(argv=None):
         return 2
     logger = ApplicationLogger(verbose)
     # open connection to weather station
-    ws = WeatherStation.weather_station()
+    ws = pywws.weatherstation.WeatherStation()
     # set data to be sent to station
     data = []
     # set relative pressure

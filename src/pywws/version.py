@@ -71,7 +71,7 @@ def main(argv=None):
         print('commit:', _commit)
         print('Python:', sys.version)
         try:
-            from pywws.WeatherStation import USBDevice
+            from pywws.weatherstation import USBDevice
             print('USB:   ', USBDevice.__module__)
         except ImportError:
             print('USB:    missing')

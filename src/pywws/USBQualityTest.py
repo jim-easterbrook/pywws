@@ -69,7 +69,7 @@ import getopt
 import sys
 
 from pywws.Logger import ApplicationLogger
-from pywws import WeatherStation
+import pywws.weatherstation
 
 def main(argv=None):
     if argv is None:
@@ -95,7 +95,7 @@ def main(argv=None):
             verbose += 1
     # do it!
     logger = ApplicationLogger(verbose)
-    ws = WeatherStation.weather_station()
+    ws = pywws.weatherstation.WeatherStation()
     fixed_block = ws.get_fixed_block()
     if not fixed_block:
         print("No valid data block found")
