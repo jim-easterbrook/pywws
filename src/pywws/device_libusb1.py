@@ -31,7 +31,7 @@ details.
 Testing
 =======
 
-Run :py:mod:`pywws-testweatherstation <pywws.TestWeatherStation>` with
+Run :py:mod:`pywws-testweatherstation <pywws.testweatherstation>` with
 increased verbosity so it reports which USB device access module is
 being used::
 

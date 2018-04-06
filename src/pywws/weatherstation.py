@@ -67,7 +67,7 @@ reading is stored, and the current date & time. The
 ``get_lo_fix_block`` method provides easy access to these.
 
 For more examples of using the pywws.weatherstation module, see the
-TestWeatherStation program.
+pywws.testweatherstation module.
 
 Detailed API
 ------------

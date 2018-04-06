@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
 # Copyright (C) 2008-18  pywws contributors
@@ -48,7 +46,7 @@ __usage__ = """
                       (repeat for even more messages e.g. -vvv)
 """
 
-__doc__ %= __usage__ % ('python -m pywws.TestWeatherStation')
+__doc__ %= __usage__ % ('python -m pywws.testweatherstation')
 
 import datetime
 import getopt
@@ -59,11 +57,13 @@ import time
 from pywws.Logger import ApplicationLogger
 import pywws.weatherstation
 
+
 def raw_dump(pos, data):
     print("%04x" % pos, end=' ')
     for item in data:
         print("%02x" % item, end=' ')
     print('')
+
 
 def main(argv=None):
     if argv is None:
@@ -183,6 +183,8 @@ def main(argv=None):
             print(data)
     del ws
     return 0
+
+
 if __name__ == "__main__":
     try:
         sys.exit(main())
