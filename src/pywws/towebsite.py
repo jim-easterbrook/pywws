@@ -85,12 +85,13 @@ import sys
 import pywws.logger
 import pywws.storage
 
+logger = logging.getLogger(__name__)
+
 
 class _ftp(object):
-    def __init__(self, logger, site, user, password, directory, port):
+    def __init__(self, site, user, password, directory, port):
         global ftplib
         import ftplib
-        self.logger = logger
         self.site = site
         self.user = user
         self.password = password
@@ -98,11 +99,11 @@ class _ftp(object):
         self.port = port
 
     def connect(self):
-        self.logger.info("Uploading to web site with FTP")
+        logger.info("Uploading to web site with FTP")
         self.ftp = ftplib.FTP()
         self.ftp.connect(self.site, self.port)
         self.ftp.login(self.user, self.password)
-        self.logger.debug(self.ftp.getwelcome())
+        logger.debug(self.ftp.getwelcome())
         self.ftp.cwd(self.directory)
 
     def put(self, src, dest):
@@ -122,10 +123,9 @@ class _ftp(object):
 
 
 class _sftp(object):
-    def __init__(self, logger, site, user, password, privkey, directory, port):
+    def __init__(self, site, user, password, privkey, directory, port):
         global paramiko
         import paramiko
-        self.logger = logger
         self.site = site
         self.user = user
         self.password = password
@@ -134,7 +134,7 @@ class _sftp(object):
         self.port = port
 
     def connect(self):
-        self.logger.info("Uploading to web site with SFTP")
+        logger.info("Uploading to web site with SFTP")
         self.transport = paramiko.Transport((self.site, self.port))
         self.transport.start_client()
         if self.privkey:
@@ -164,12 +164,11 @@ class _sftp(object):
         
 
 class _copy(object):
-    def __init__(self, logger, directory):
-        self.logger = logger
+    def __init__(self, directory):
         self.directory = directory
 
     def connect(self):
-        self.logger.info("Copying to local directory")
+        logger.info("Copying to local directory")
         if not os.path.isdir(self.directory):
             raise RuntimeError(
                 'Directory "' + self.directory + '" does not exist.')
@@ -183,7 +182,6 @@ class _copy(object):
 
 class ToWebSite(object):
     def __init__(self, params):
-        self.logger = logging.getLogger('pywws.towebsite')
         self.params = params
         self.old_ex = None
         if eval(self.params.get('ftp', 'local site', 'False')):
@@ -191,7 +189,7 @@ class ToWebSite(object):
             directory = self.params.get(
                 'ftp', 'directory',
                 os.path.expanduser('~/public_html/weather/data/'))
-            self.uploader = _copy(self.logger, directory)
+            self.uploader = _copy(directory)
         else:
             # get remote site details
             site = self.params.get('ftp', 'site', 'ftp.username.your_isp.co.uk')
@@ -207,11 +205,11 @@ class ToWebSite(object):
                 port = eval(self.params.get('ftp', 'port', '22'))
                 privkey = self.params.get('ftp', 'privkey')
                 self.uploader = _sftp(
-                    self.logger, site, user, password, privkey, directory, port)
+                    site, user, password, privkey, directory, port)
             else:
                 port = eval(self.params.get('ftp', 'port', '21'))
                 self.uploader = _ftp(
-                    self.logger, site, user, password, directory, port)
+                    site, user, password, directory, port)
 
     def connect(self):
         try:
@@ -219,9 +217,9 @@ class ToWebSite(object):
         except Exception as ex:
             e = str(ex)
             if e == self.old_ex:
-                self.logger.debug(e)
+                logger.debug(e)
             else:
-                self.logger.error(e)
+                logger.error(e)
                 self.old_ex = e
             return False
         return True
@@ -234,9 +232,9 @@ class ToWebSite(object):
         except Exception as ex:
             e = str(ex)
             if e == self.old_ex:
-                self.logger.debug(e)
+                logger.debug(e)
             else:
-                self.logger.error(e)
+                logger.error(e)
                 self.old_ex = e
         return False
 

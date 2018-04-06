@@ -86,6 +86,7 @@ import pywws.logger
 import pywws.storage
 from pywws.timezone import STDOFFSET
 
+logger = logging.getLogger(__name__)
 
 TIME_ERR = timedelta(seconds=45)
 MINUTEx5 = timedelta(minutes=5)
@@ -237,7 +238,6 @@ class HourAcc(object):
 
     """
     def __init__(self, last_rain):
-        self.logger = logging.getLogger('pywws.process.HourAcc')
         self.last_rain = last_rain
         self.copy_keys = ['idx', 'hum_in', 'temp_in', 'hum_out', 'temp_out',
                           'abs_pressure', 'rel_pressure']
@@ -260,11 +260,11 @@ class HourAcc(object):
             if self.last_rain is not None:
                 diff = rain - self.last_rain
                 if diff < -0.001:
-                    self.logger.warning(
+                    logger.warning(
                         '%s rain reset %.1f -> %.1f', str(idx), self.last_rain, rain)
                 elif diff > float(data['delay'] * 5):
                     # rain exceeds 5mm / minute, assume corrupt data and ignore it
-                    self.logger.warning(
+                    logger.warning(
                         '%s rain jump %.1f -> %.1f', str(idx), self.last_rain, rain)
                 else:
                     self.rain += max(0.0, diff)
@@ -304,7 +304,6 @@ class DayAcc(object):
 
     """
     def __init__(self):
-        self.logger = logging.getLogger('pywws.process.DayAcc')
         self.has_illuminance = False
         self.ave = {}
         self.max = {}
@@ -519,7 +518,7 @@ class MonthAcc(object):
         return result
 
 
-def calibrate_data(logger, params, raw_data, calib_data):
+def calibrate_data(params, raw_data, calib_data):
     """'Calibrate' raw data, using a user-supplied function."""
     start = calib_data.before(datetime.max)
     if start is None:
@@ -546,7 +545,7 @@ def calibrate_data(logger, params, raw_data, calib_data):
     return start
 
 
-def generate_hourly(logger, calib_data, hourly_data, process_from):
+def generate_hourly(calib_data, hourly_data, process_from):
     """Generate hourly summaries from calibrated data."""
     start = hourly_data.before(datetime.max)
     if start is None:
@@ -617,7 +616,7 @@ def generate_hourly(logger, calib_data, hourly_data, process_from):
     return start
 
 
-def generate_daily(logger, day_end_hour,
+def generate_daily(day_end_hour,
                    calib_data, hourly_data, daily_data, process_from):
     """Generate daily summaries from calibrated and hourly data."""
     start = daily_data.before(datetime.max)
@@ -662,7 +661,7 @@ def generate_daily(logger, day_end_hour,
     return start
 
 
-def generate_monthly(logger, rain_day_threshold, day_end_hour,
+def generate_monthly(rain_day_threshold, day_end_hour,
                      daily_data, monthly_data, process_from):
     """Generate monthly summaries from daily data."""
     start = monthly_data.before(datetime.max)
@@ -720,7 +719,6 @@ def process_data(context):
     weather station readings.
 
     """
-    logger = logging.getLogger('pywws.process.process_data')
     logger.info('Generating summary data')
     # get time of last record
     last_raw = context.raw_data.before(datetime.max)
@@ -731,14 +729,14 @@ def process_data(context):
     # get other config
     rain_day_threshold = eval(context.params.get('config', 'rain day threshold', '0.2'))
     # calibrate raw data
-    start = calibrate_data(logger, context.params, context.raw_data, context.calib_data)
+    start = calibrate_data(context.params, context.raw_data, context.calib_data)
     # generate hourly data
-    start = generate_hourly(logger, context.calib_data, context.hourly_data, start)
+    start = generate_hourly(context.calib_data, context.hourly_data, start)
     # generate daily data
-    start = generate_daily(logger, day_end_hour,
+    start = generate_daily(day_end_hour,
                            context.calib_data, context.hourly_data, context.daily_data, start)
     # generate monthly data
-    generate_monthly(logger, rain_day_threshold, day_end_hour,
+    generate_monthly(rain_day_threshold, day_end_hour,
                      context.daily_data, context.monthly_data, start)
     return 0
 

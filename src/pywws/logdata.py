@@ -76,10 +76,11 @@ import pywws.logger
 import pywws.storage
 from pywws.weatherstation import WeatherStation
 
+logger = logging.getLogger(__name__)
+
 
 class DataLogger(object):
     def __init__(self, context):
-        self.logger = logging.getLogger('pywws.DataLogger')
         self.params = context.params
         self.status = context.status
         self.raw_data = context.raw_data
@@ -112,8 +113,8 @@ class DataLogger(object):
         # check 'magic number'
         if (fixed_block['magic_0'], fixed_block['magic_1']) not in (
                 (0x55, 0xAA),):
-            self.logger.critical("Unrecognised 'magic number' %02x %02x",
-                                 fixed_block['magic_0'], fixed_block['magic_1'])
+            logger.critical("Unrecognised 'magic number' %02x %02x",
+                            fixed_block['magic_0'], fixed_block['magic_1'])
         # store info from fixed block
         self.status.unset('fixed', 'pressure offset')
         if not self.params.get('config', 'pressure offset'):
@@ -168,8 +169,8 @@ class DataLogger(object):
                     saved_ptr = self.ws.dec_ptr(saved_ptr)
             if (data['delay'] is None or
                     data['delay'] > max(fixed_block['read_period'] * 2, 35)):
-                self.logger.error('invalid data at %04x, %s',
-                                  last_ptr, last_date.isoformat(' '))
+                logger.error('invalid data at %04x, %s',
+                             last_ptr, last_date.isoformat(' '))
                 last_date -= timedelta(minutes=fixed_block['read_period'])
             else:
                 self.raw_data[last_date] = data
@@ -186,8 +187,8 @@ class DataLogger(object):
             gap = (next_date - last_date).seconds // 60
             gap -= fixed_block['read_period']
             if gap > 0:
-                self.logger.critical("%d minutes gap in data detected", gap)
-        self.logger.info("%d catchup records", count)
+                logger.critical("%d minutes gap in data detected", gap)
+        logger.info("%d catchup records", count)
 
     def log_data(self, sync=None, clear=False):
         fixed_block = self.check_fixed_block()
@@ -198,7 +199,7 @@ class DataLogger(object):
             else:
                 sync = int(self.params.get('config', 'logdata sync', '0'))
         # get address and date-time of last complete logged data
-        self.logger.info('Synchronising to weather station')
+        logger.info('Synchronising to weather station')
         range_hi = datetime.max
         range_lo = datetime.min
         last_delay = self.ws.get_data(self.ws.current_pos())['delay']
@@ -208,7 +209,7 @@ class DataLogger(object):
             prev_date = datetime.utcnow()
         for data, last_ptr, logged in self.ws.live_data(logged_only=(sync > 1)):
             last_date = data['idx']
-            self.logger.debug('Reading time %s', last_date.strftime('%H:%M:%S'))
+            logger.debug('Reading time %s', last_date.strftime('%H:%M:%S'))
             if logged:
                 break
             if sync < 2 and self.ws._station_clock.clock:
@@ -216,7 +217,7 @@ class DataLogger(object):
                     self.ws._station_clock.clock)
                 last_date -= timedelta(
                     minutes=data['delay'], seconds=err.seconds % 60)
-                self.logger.debug('log time %s', last_date.strftime('%H:%M:%S'))
+                logger.debug('log time %s', last_date.strftime('%H:%M:%S'))
                 last_ptr = self.ws.dec_ptr(last_ptr)
                 break
             if sync < 1:
@@ -234,17 +235,17 @@ class DataLogger(object):
                 range_lo = max(range_lo, lo)
                 err = (range_hi - range_lo) / 2
                 last_date = range_lo + err
-                self.logger.debug('est log time %s +- %ds (%s..%s)',
-                                  last_date.strftime('%H:%M:%S'), err.seconds,
-                                  lo.strftime('%H:%M:%S'), hi.strftime('%H:%M:%S'))
+                logger.debug('est log time %s +- %ds (%s..%s)',
+                             last_date.strftime('%H:%M:%S'), err.seconds,
+                             lo.strftime('%H:%M:%S'), hi.strftime('%H:%M:%S'))
                 if err < timedelta(seconds=15):
                     last_ptr = self.ws.dec_ptr(last_ptr)
                     break
         # go back through stored data, until we catch up with what we've already got
-        self.logger.info('Fetching data')
+        logger.info('Fetching data')
         self.catchup(last_date, last_ptr)
         if clear:
-            self.logger.info('Clearing weather station memory')
+            logger.info('Clearing weather station memory')
             ptr = self.ws.fixed_format['data_count'][0]
             self.ws.write_data([(ptr, 1), (ptr+1, 0)])
 

@@ -63,11 +63,12 @@ import pywws.localisation
 import pywws.logger
 import pywws.storage
 
+logger = logging.getLogger(__name__)
+
 
 class TweepyHandler(object):
     def __init__(self, key, secret, latitude, longitude):
-        self.logger = logging.getLogger('pywws.totwitter')
-        self.logger.info('Using tweepy library')
+        logger.info('Using tweepy library')
         auth = tweepy.OAuthHandler(pct.consumer_key, pct.consumer_secret)
         auth.set_access_token(key, secret)
         self.api = tweepy.API(auth)
@@ -78,7 +79,7 @@ class TweepyHandler(object):
 
     def post(self, status, media):
         if len(media) > 1:
-            self.logger.error('Tweepy library cannot post multiple media')
+            logger.error('Tweepy library cannot post multiple media')
         if media:
             self.api.update_with_media(media[0], status[:257], **self.kwargs)
         else:
@@ -87,8 +88,7 @@ class TweepyHandler(object):
 
 class PythonTwitterHandler(object):
     def __init__(self, key, secret, latitude, longitude, timeout):
-        self.logger = logging.getLogger('pywws.totwitter')
-        self.logger.info('Using python-twitter library')
+        logger.info('Using python-twitter library')
         self.api = twitter.Api(
             consumer_key=pct.consumer_key,
             consumer_secret=pct.consumer_secret,
@@ -115,7 +115,6 @@ class PythonTwitterHandler(object):
 
 class ToTwitter(object):
     def __init__(self, params):
-        self.logger = logging.getLogger('pywws.ToTwitter')
         self.params = params
         self.old_ex = None
         # get parameters
@@ -152,7 +151,7 @@ class ToTwitter(object):
             if 'is a duplicate' in e:
                 return True
             if e != self.old_ex:
-                self.logger.error(e)
+                logger.error(e)
                 self.old_ex = e
         return False
 

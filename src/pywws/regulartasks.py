@@ -36,10 +36,11 @@ import pywws.towebsite
 import pywws.windrose
 import pywws.yowindow
 
+logger = logging.getLogger(__name__)
+
 
 class RegularTasks(object):
     def __init__(self, context, asynch=False):
-        self.logger = logging.getLogger('pywws.Tasks.RegularTasks')
         self.params = context.params
         self.status = context.status
         self.raw_data = context.raw_data
@@ -102,10 +103,10 @@ class RegularTasks(object):
                     self.services[name] = ToService(context, name)
             # check for deprecated syntax
             if self.params.get(section, 'twitter') not in (None, '[]'):
-                self.logger.warning(
+                logger.warning(
                     'Deprecated twitter entry in [%s]', section)
             if self.params.get(section, 'yowindow'):
-                self.logger.warning(
+                logger.warning(
                     'Deprecated yowindow entry in [%s]', section)
         # create queues for things to upload / send
         self.tweet_queue = deque()
@@ -115,7 +116,7 @@ class RegularTasks(object):
         self.uploads_queue = deque()
         # start asynchronous thread to do uploads
         if self.asynch:
-            self.logger.info('Starting asynchronous thread')
+            logger.info('Starting asynchronous thread')
             self.shutdown_thread = threading.Event()
             self.wake_thread = threading.Event()
             self.thread = threading.Thread(target=self._asynch_thread)
@@ -127,7 +128,7 @@ class RegularTasks(object):
         self.shutdown_thread.set()
         self.wake_thread.set()
         self.thread.join()
-        self.logger.debug('Asynchronous thread terminated')
+        logger.debug('Asynchronous thread terminated')
 
     def _asynch_thread(self):
         try:
@@ -140,15 +141,15 @@ class RegularTasks(object):
                         break
                     self.wake_thread.clear()
                     timeout = 2
-                self.logger.debug('Doing asynchronous tasks')
+                logger.debug('Doing asynchronous tasks')
                 self._do_queued_tasks()
         except Exception as ex:
-            self.logger.exception(ex)
+            logger.exception(ex)
 
     def _do_queued_tasks(self):
         while self.tweet_queue:
             tweet = self.tweet_queue[0]
-            self.logger.info("Tweeting")
+            logger.info("Tweeting")
             if not self.twitter.upload(tweet):
                 break
             self.tweet_queue.popleft()
@@ -166,7 +167,7 @@ class RegularTasks(object):
                     break
                 self.service_queue[name].popleft()
             if count > 0:
-                service.logger.info('%d records sent', count)
+                logger.info('%d records sent', count)
         while self.uploads_queue:
             file = self.uploads_queue.popleft()
             if not os.path.exists(file):
@@ -377,7 +378,7 @@ class RegularTasks(object):
         if not self.twitter:
             import pywws.totwitter
             self.twitter = pywws.totwitter.ToTwitter(self.params)
-        self.logger.info("Templating %s", template)
+        logger.info("Templating %s", template)
         input_file = os.path.join(self.template_dir, template)
         tweet = self.templater.make_text(input_file, live_data=data)
         self.tweet_queue.append(tweet)
@@ -385,7 +386,7 @@ class RegularTasks(object):
             self.wake_thread.set()
 
     def do_plot(self, template):
-        self.logger.info("Graphing %s", template)
+        logger.info("Graphing %s", template)
         input_file = os.path.join(self.graph_template_dir, template)
         output_file = os.path.join(self.work_dir, os.path.splitext(template)[0])
         input_xml = pywws.plot.GraphFileReader(input_file)
@@ -395,11 +396,11 @@ class RegularTasks(object):
         if (input_xml.get_children(self.roseplotter.plot_name) and
                         self.roseplotter.do_plot(input_xml, output_file) == 0):
             return output_file
-        self.logger.warning('nothing to graph in %s', input_file)
+        logger.warning('nothing to graph in %s', input_file)
         return None
 
     def do_template(self, template, data=None):
-        self.logger.info("Templating %s", template)
+        logger.info("Templating %s", template)
         input_file = os.path.join(self.template_dir, template)
         output_file = os.path.join(self.work_dir, template)
         self.templater.make_file(input_file, output_file, live_data=data)

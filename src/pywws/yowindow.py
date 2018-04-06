@@ -54,7 +54,6 @@ class YoWindow(object):
     For file spec see http://yowindow.com/doc/yowindow_pws_format.xml
     """
     def __init__(self, calib_data):
-        self.logger = logging.getLogger('pywws.yowindow')
         self.data = calib_data
         # compute local midnight
         self.midnight = datetime.utcnow().replace(

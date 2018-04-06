@@ -55,9 +55,10 @@ import pywws.logger
 import pywws.process
 import pywws.storage
 
+logger = logging.getLogger(__name__)
+
 
 def reprocess(data_dir, update):
-    logger = logging.getLogger('pywws.reprocess')
     if update:
         # update old data to copy high nibble of wind_dir to status
         logger.warning("Updating status to include extra bits from wind_dir")

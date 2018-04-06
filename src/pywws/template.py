@@ -314,6 +314,8 @@ import pywws.logger
 import pywws.storage
 from pywws.timezone import Local, utc
 
+logger = logging.getLogger(__name__)
+
 # aliases for compatibility with old templates
 Zambretti = zambretti
 ZambrettiCode = zambretti_code
@@ -321,7 +323,6 @@ ZambrettiCode = zambretti_code
 
 class Template(object):
     def __init__(self, context, use_locale=True):
-        self.logger = logging.getLogger('pywws.template')
         self.params = context.params
         self.status = context.status
         self.calib_data = context.calib_data
@@ -352,7 +353,7 @@ class Template(object):
         if not live_data:
             idx = self.calib_data.before(datetime.max)
             if not idx:
-                self.logger.error("No calib data - run pywws.process first")
+                logger.error("No calib data - run pywws.process first")
                 return
             live_data = self.calib_data[idx]
         # get default character encoding of template input & output files
@@ -380,7 +381,7 @@ class Template(object):
         # jump to last item
         idx, valid_data = jump(datetime.max, -1)
         if not valid_data:
-            self.logger.error("No summary data - run pywws.process first")
+            logger.error("No summary data - run pywws.process first")
             return
         data = data_set[idx]
         # open template file, if not already a file(like) object
@@ -484,7 +485,7 @@ class Template(object):
                     elif command[1] == 'local':
                         time_zone = Local
                     else:
-                        self.logger.error("Unknown time zone: %s", command[1])
+                        logger.error("Unknown time zone: %s", command[1])
                         return
                 elif command[0] == 'locale':
                     use_locale = eval(command[1])
@@ -525,7 +526,7 @@ class Template(object):
                     if valid_data and loop_count > 0:
                         tmplt.seek(loop_start, 0)
                 else:
-                    self.logger.error(
+                    logger.error(
                         "Unknown processing directive: #%s#", parts[i])
                     return
 

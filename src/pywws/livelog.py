@@ -53,9 +53,10 @@ import pywws.process
 import pywws.regulartasks
 import pywws.storage
 
+logger = logging.getLogger(__name__)
+
 
 def live_log(data_dir):
-    logger = logging.getLogger('pywws.live_log')
     with pywws.storage.pywws_context(data_dir) as context:
         # localise application
         pywws.localisation.set_application_language(context.params)
@@ -117,7 +118,6 @@ def main(argv=None):
 
 
 if __name__ == "__main__":
-    logger = logging.getLogger('pywws')
     try:
         sys.exit(main())
     except KeyboardInterrupt:

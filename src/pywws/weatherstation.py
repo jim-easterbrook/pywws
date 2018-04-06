@@ -94,6 +94,9 @@ for module_name in ('device_libusb1', 'device_pyusb1', 'device_pyusb',
 else:
     raise ImportError('No USB library found')
 
+logger = logging.getLogger(__name__)
+
+
 def decode_status(status):
     result = {}
     for key, mask in (('invalid_wind_dir', 0x800),
@@ -234,8 +237,7 @@ class CUSBDrive(object):
     WriteCommandWord = 0xA2
 
     def __init__(self):
-        self.logger = logging.getLogger('pywws.weatherstation.CUSBDrive')
-        self.logger.info('using %s', USBDevice.__module__)
+        logger.info('using %s', USBDevice.__module__)
         self.dev = USBDevice(0x1941, 0x8021)
 
     def read_block(self, address):
@@ -304,8 +306,7 @@ class CUSBDrive(object):
 
 
 class DriftingClock(object):
-    def __init__(self, logger, name, status, period, margin):
-        self.logger = logger
+    def __init__(self, name, status, period, margin):
         self.name = name
         self.status = status
         self.period = period
@@ -346,9 +347,9 @@ class DriftingClock(object):
             diff = (now - self.clock) % self._real_period
             if diff < 2.0 or diff > self._real_period - 2.0:
                 return
-            self.logger.error('unexpected %s clock change', self.name)
+            logger.error('unexpected %s clock change', self.name)
         self.clock = now
-        self.logger.warning('setting %s clock %g', self.name, now % self.period)
+        logger.warning('setting %s clock %g', self.name, now % self.period)
         if self.status:
             self.status.set('clock', self.name, str(self.clock))
         if self.old_clock:
@@ -362,7 +363,7 @@ class DriftingClock(object):
             drift = (float(drift) * 24.0 * 3600.0 / float(diff))
             self.drift += max(min(drift - self.drift, 3.0), -3.0) / 4.0
             self._set_real_period()
-            self.logger.warning(
+            logger.warning(
                 '%s clock drift %g %g', self.name, drift, self.drift)
             if self.status:
                 self.status.set(
@@ -381,7 +382,6 @@ class WeatherStation(object):
     margin = (min_pause * 2.0) - 0.1
     def __init__(self, ws_type='1080', status=None, avoid=3.0):
         """Connect to weather station and prepare to read data."""
-        self.logger = logging.getLogger('pywws.WeatherStation')
         # create basic IO object
         self.cusb = CUSBDrive()
         # init variables
@@ -392,9 +392,9 @@ class WeatherStation(object):
         self._data_pos = None
         self._current_ptr = None
         self._station_clock = DriftingClock(
-            self.logger, 'station', self.status, 60, self.avoid)
+            'station', self.status, 60, self.avoid)
         self._sensor_clock = DriftingClock(
-            self.logger, 'sensor', self.status, 48, self.avoid)
+            'sensor', self.status, 48, self.avoid)
         self.ws_type = ws_type
 
     def live_data(self, logged_only=False):
@@ -405,7 +405,7 @@ class WeatherStation(object):
         # due. (During initialisation we get data every half second
         # anyway.)
         read_period = self.get_fixed_block(['read_period'])
-        self.logger.debug('read period %d', read_period)
+        logger.debug('read period %d', read_period)
         log_interval = float(read_period * 60)
         live_interval = 48.0
         old_ptr = self.current_pos()
@@ -437,7 +437,7 @@ class WeatherStation(object):
             elif old_data['delay'] >= read_period - 1:
                 pause = self.min_pause
             pause = max(pause, self.min_pause)
-            self.logger.debug(
+            logger.debug(
                 'delay %s, pause %g', str(old_data['delay']), pause)
             time.sleep(pause)
             # get new pointer
@@ -456,7 +456,7 @@ class WeatherStation(object):
             new_status = decode_status(new_data['status'])
             last_status['invalid_wind_dir'] = new_status['invalid_wind_dir']
             if new_status != last_status:
-                self.logger.warning('status %s', str(new_status))
+                logger.warning('status %s', str(new_status))
             last_status = new_status
             if (new_status['lost_connection'] and not
                 decode_status(old_data['status'])['lost_connection']):
@@ -467,15 +467,15 @@ class WeatherStation(object):
                     'hum_in', 'temp_in', 'hum_out', 'temp_out',
                     'abs_pressure', 'wind_ave', 'wind_gust', 'wind_dir',
                     'rain', 'status')):
-                self.logger.debug('live_data new data')
+                logger.debug('live_data new data')
                 if data_time - last_data_time < self.margin:
                     # data has just changed, so definitely at a 48s update time
                     self._sensor_clock.set_clock(data_time)
                 elif next_live and data_time < next_live - self.margin:
-                    self.logger.warning(
+                    logger.warning(
                         'live_data lost sync %g', data_time - next_live)
-                    self.logger.warning('old data %s', str(old_data))
-                    self.logger.warning('new data %s', str(new_data))
+                    logger.warning('old data %s', str(old_data))
+                    logger.warning('new data %s', str(new_data))
                     self._sensor_clock.invalidate()
                 next_live = self._sensor_clock.before(data_time + self.margin)
                 if next_live:
@@ -494,12 +494,12 @@ class WeatherStation(object):
                             yield result, old_ptr, True
                             next_log += log_interval
             elif next_live and data_time > next_live + 6.0:
-                self.logger.info('live_data missed')
+                logger.info('live_data missed')
                 next_live += live_interval
             old_data = new_data
             # has ptr changed?
             if new_ptr != old_ptr:
-                self.logger.info('live_data new ptr: %06x', new_ptr)
+                logger.info('live_data new ptr: %06x', new_ptr)
                 not_logging = False
                 last_log = ptr_time - self.margin
                 if ptr_time - last_ptr_time < self.margin:
@@ -507,14 +507,14 @@ class WeatherStation(object):
                     self._station_clock.set_clock(ptr_time)
                 elif next_log:
                     if ptr_time < next_log - self.margin:
-                        self.logger.warning(
+                        logger.warning(
                             'live_data lost log sync %g', ptr_time - next_log)
                         self._station_clock.invalidate()
                 else:
-                    self.logger.warning('missed ptr change time')
+                    logger.warning('missed ptr change time')
                 if read_period > new_data['delay']:
                     read_period = new_data['delay']
-                    self.logger.warning('reset read period %d', read_period)
+                    logger.warning('reset read period %d', read_period)
                     log_interval = float(read_period * 60)
                 next_log = self._station_clock.before(ptr_time + self.margin)
                 if next_log:
@@ -528,10 +528,10 @@ class WeatherStation(object):
             elif ptr_time > last_log + log_interval + 180.0:
                 # if station stops logging data, don't keep reading
                 # USB until it locks up
-                self.logger.error('station is not logging data')
+                logger.error('station is not logging data')
                 not_logging = True
             elif next_log and ptr_time > next_log + 6.0:
-                self.logger.warning('live_data log extended')
+                logger.warning('live_data log extended')
                 next_log += 60.0
 
     def inc_ptr(self, ptr):
@@ -603,7 +603,7 @@ class WeatherStation(object):
         if new_ptr == self._current_ptr:
             return self._current_ptr
         if self._current_ptr and new_ptr != self.inc_ptr(self._current_ptr):
-            self.logger.error(
+            logger.error(
                 'unexpected ptr change %06x -> %06x', self._current_ptr, new_ptr)
         self._current_ptr = new_ptr
         return self._current_ptr
@@ -634,7 +634,7 @@ class WeatherStation(object):
             pause = min(pause, self._sensor_clock.avoid())
             if pause >= self.avoid * 2.0:
                 return
-            self.logger.debug('avoid %s', str(pause))
+            logger.debug('avoid %s', str(pause))
             time.sleep(pause)
 
     def _read_block(self, ptr, retry=True):
@@ -648,7 +648,7 @@ class WeatherStation(object):
                 if (new_block == old_block) or not retry:
                     break
                 if old_block:
-                    self.logger.debug('_read_block changing %06x', ptr)
+                    logger.debug('_read_block changing %06x', ptr)
                 old_block = new_block
         return new_block
 
@@ -677,7 +677,7 @@ class WeatherStation(object):
                 self._read_fixed_block(0x0020), self.fixed_format['data_changed'])
             if ack == 0:
                 break
-            self.logger.debug('write_data waiting for ack')
+            logger.debug('write_data waiting for ack')
             time.sleep(6)
 
     # Tables of "meanings" for raw weather station data. Each key

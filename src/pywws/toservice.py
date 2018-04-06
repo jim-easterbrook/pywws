@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
 # Copyright (C) 2008-18  pywws contributors
@@ -173,7 +171,10 @@ import pywws.storage
 import pywws.template
 from pywws import __version__
 
+logger = logging.getLogger(__name__)
+
 PARENT_MARGIN = timedelta(minutes=2)
+
 
 class ToService(object):
     """Upload weather data to weather services such as Weather
@@ -192,7 +193,6 @@ class ToService(object):
         :type service_name: string
 
         """
-        self.logger = logging.getLogger('pywws.ToService(%s)' % service_name)
         self.params = context.params
         self.status = context.status
         self.data = context.calib_data
@@ -334,17 +334,20 @@ class ToService(object):
 
         mosquitto_client = mosquitto.Client(client_id, protocol=mosquitto.MQTTv31)
         if auth:
-            self.logger.debug("Username and password configured")
+            logger.debug(
+                "%s:Username and password configured", self.service_name)
             if(self.password == "unknown"):
                 mosquitto_client.username_pw_set(self.user)
             else:
                 mosquitto_client.username_pw_set(self.user, self.password)
         else:
-            self.logger.debug("Username and password unconfigured, ignoring")
-        self.logger.debug(
-            "timestamp: %s. publishing on topic [%s] to hostname [%s] and " +
+            logger.debug(
+                "%s:Username and password unconfigured, ignoring", self.service_name)
+        logger.debug(
+            "%s:timestamp: %s. publishing on topic [%s] to hostname [%s] and " +
             "port [%s] with a client_id [%s] and retain is %s",
-            timestamp.isoformat(' '), topic, hostname, port, client_id, retain)
+            self.service_name, timestamp.isoformat(' '), topic, hostname, port,
+            client_id, retain)
 
         mosquitto_client.connect(hostname, int(port))
         mosquitto_client.publish(topic, json.dumps(prepared_data), retain=retain)
@@ -358,7 +361,7 @@ class ToService(object):
             #Need to make sure the messages have been flushed to the server.
             mosquitto_client.loop(timeout=0.5) 
 
-        self.logger.debug("published data: %s", prepared_data)
+        logger.debug("%s:published data: %s", self.service_name, prepared_data)
         mosquitto_client.disconnect()
         return True
 
@@ -398,7 +401,7 @@ class ToService(object):
             prepared_data['rel_pressure'], prepared_data['hum_out'],
             __version__
             )
-        self.logger.debug('packet: "%s"', packet)
+        logger.debug('%s:packet: "%s"', self.service_name, packet)
         login = login.encode('ASCII')
         packet = packet.encode('ASCII')
         sock = socket.socket()
@@ -406,10 +409,12 @@ class ToService(object):
             sock.connect(self.server)
             try:
                 response = sock.recv(4096)
-                self.logger.debug('server software: %s', response.strip())
+                logger.debug('%s:server software: %s',
+                             self.service_name, response.strip())
                 sock.sendall(login)
                 response = sock.recv(4096)
-                self.logger.debug('server login ack: %s', response.strip())
+                logger.debug('%s:server login ack: %s',
+                             self.service_name, response.strip())
                 sock.sendall(packet)
                 sock.shutdown(socket.SHUT_RDWR)
             finally:
@@ -417,11 +422,11 @@ class ToService(object):
         except Exception as ex:
             new_ex = str(ex)
             if new_ex == self.old_ex:
-                log = self.logger.debug
+                log = logger.debug
             else:
-                log = self.logger.error
+                log = logger.error
                 self.old_ex = new_ex
-            log('exc: %s', new_ex)
+            log('%s:exc: %s', self.service_name, new_ex)
             return False
         if not ignore_last_update:
             self.set_last_update(timestamp)
@@ -452,7 +457,7 @@ class ToService(object):
 
         """
         coded_data = urlencode(prepared_data)
-        self.logger.debug(coded_data)
+        logger.debug('%s:%s', self.service_name, coded_data)
         new_ex = self.old_ex
         ex_info = []
         success = False
@@ -470,12 +475,12 @@ class ToService(object):
             response = rsp.readlines()
             rsp.close()
             if response == self.old_response:
-                log = self.logger.debug
+                log = logger.debug
             else:
-                log = self.logger.error
+                log = logger.error
                 self.old_response = response
             for line in response:
-                log('rsp: %s', line.strip())
+                log('%s:rsp: %s', self.service_name, line.strip())
             for n, expected in enumerate(self.expected_result):
                 if n < len(response):
                     actual = response[n].decode('utf-8')
@@ -507,11 +512,11 @@ class ToService(object):
         except Exception as ex:
             new_ex = str(ex)
         if new_ex == self.old_ex:
-            log = self.logger.debug
+            log = logger.debug
         else:
-            log = self.logger.error
+            log = logger.error
             self.old_ex = new_ex
-        log('exc: %s', new_ex)
+        log('%s:exc: %s', self.service_name, new_ex)
         for extra in ex_info:
             extra = extra.strip()
             if extra:
@@ -617,7 +622,7 @@ class ToService(object):
                 return False
             count += 1
         if count > 1:
-            self.logger.info('%d records sent', count)
+            logger.info('%s:%d records sent', self.service_name, count)
         return True
 
 def main(argv=None):

@@ -55,6 +55,8 @@ from daemon.runner import DaemonRunner, make_pidlockfile
 import pywws.livelog
 import pywws.logger
 
+logger = logging.getLogger(__name__)
+
 class PatchedDaemonRunner(DaemonRunner):
     # modify DaemonRunner to work with Python3
     def __init__(self, app):

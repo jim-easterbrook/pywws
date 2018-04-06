@@ -532,6 +532,8 @@ import pywws.logger
 import pywws.storage
 from pywws.timezone import Local, local_utc_offset, utc
 
+logger = logging.getLogger(__name__)
+
 
 class GraphNode(object):
     def __init__(self, node):
@@ -575,7 +577,6 @@ class GraphFileReader(GraphNode):
 
 class BasePlotter(object):
     def __init__(self, context, work_dir):
-        self.logger = logging.getLogger('pywws.%s' % self.__class__.__name__)
         self.calib_data = context.calib_data
         self.hourly_data = context.hourly_data
         self.daily_data = context.daily_data
@@ -619,7 +620,7 @@ class BasePlotter(object):
         self.plot_count = len(plot_list)
         if self.plot_count < 1:
             # nothing to plot
-            self.logger.info('%s has no %s nodes', self.graph.input_file, self.plot_name)
+            logger.info('%s has no %s nodes', self.graph.input_file, self.plot_name)
             self.graph.close()
             return 1
         # get start and end datetimes
