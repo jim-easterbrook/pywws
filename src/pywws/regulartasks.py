@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
 # Copyright (C) 2008-18  pywws contributors
@@ -37,6 +35,7 @@ from pywws.toservice import ToService
 import pywws.towebsite
 import pywws.windrose
 import pywws.yowindow
+
 
 class RegularTasks(object):
     def __init__(self, context, asynch=False):

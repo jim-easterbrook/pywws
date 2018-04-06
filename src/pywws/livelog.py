@@ -51,7 +51,7 @@ import pywws.localisation
 import pywws.logdata
 from pywws.Logger import ApplicationLogger
 from pywws import Process
-from pywws import Tasks
+import pywws.regulartasks
 
 
 def live_log(data_dir):
@@ -63,7 +63,7 @@ def live_log(data_dir):
         datalogger = pywws.logdata.DataLogger(context)
         # create a RegularTasks object
         asynch = eval(context.params.get('config', 'asynchronous', 'False'))
-        tasks = Tasks.RegularTasks(context, asynch=asynch)
+        tasks = pywws.regulartasks.RegularTasks(context, asynch=asynch)
         # clear any processing backlog
         if context.raw_data.before(datetime.max):
             Process.Process(context)

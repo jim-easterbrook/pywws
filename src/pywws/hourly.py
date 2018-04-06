@@ -53,7 +53,7 @@ import pywws.localisation
 import pywws.logdata
 from pywws.Logger import ApplicationLogger
 from pywws import Process
-from pywws import Tasks
+import pywws.regulartasks
 
 
 def hourly(data_dir):
@@ -65,7 +65,7 @@ def hourly(data_dir):
         # do the processing
         Process.Process(context)
         # do tasks
-        if not Tasks.RegularTasks(context).do_tasks():
+        if not pywws.regulartasks.RegularTasks(context).do_tasks():
             return 1
     return 0
 
