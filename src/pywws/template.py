@@ -286,7 +286,7 @@ from __future__ import absolute_import, print_function
 
 __docformat__ = "restructuredtext en"
 __usage__ = """
- usage: python -m pywws.Template [options] data_dir template_file output_file
+ usage: python -m pywws.template [options] data_dir template_file output_file
  options are:
   --help    display this help
  data_dir is the root directory of the weather data
@@ -318,9 +318,10 @@ from pywws.timezone import Local, utc
 Zambretti = zambretti
 ZambrettiCode = zambretti_code
 
+
 class Template(object):
     def __init__(self, context, use_locale=True):
-        self.logger = logging.getLogger('pywws.Template')
+        self.logger = logging.getLogger('pywws.template')
         self.params = context.params
         self.status = context.status
         self.calib_data = context.calib_data
@@ -568,6 +569,7 @@ class Template(object):
                 self.calib_data.nearest(self.midnight)]['rain']
         return max(0.0, data['rain'] - self.rain_midnight)
 
+
 def main(argv=None):
     if argv is None:
         argv = sys.argv
@@ -591,6 +593,7 @@ def main(argv=None):
     with DataStore.pywws_context(args[0]) as context:
         pywws.localisation.set_application_language(context.params)
         return Template(context).make_file(args[1], args[2])
+
 
 if __name__ == "__main__":
     sys.exit(main())

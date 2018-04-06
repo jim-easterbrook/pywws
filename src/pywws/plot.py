@@ -24,11 +24,11 @@
 Introduction
 ------------
 
-Like :py:mod:`pywws.Template` this is one of the more difficult to use
+Like :py:mod:`pywws.template` this is one of the more difficult to use
 modules in the weather station software collection. It plots a graph (or
 set of graphs) of weather data. Almost everything about the graph is
 controlled by an XML file. I refer to these files as templates, but they
-aren't templates in the same sense as :py:mod:`pywws.Template` uses to
+aren't templates in the same sense as :py:mod:`pywws.template` uses to
 create text files.
 
 Before writing your own graph template files, it might be useful to

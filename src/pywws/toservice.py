@@ -170,7 +170,7 @@ else:
 
 from pywws import DataStore
 from pywws.Logger import ApplicationLogger
-from pywws import Template
+import pywws.template
 from pywws import __version__
 
 PARENT_MARGIN = timedelta(minutes=2)
@@ -239,7 +239,7 @@ class ToService(object):
                 value = self.params.get(config_section, value[1:], 'unknown')
             self.fixed_data[name] = value
         # create templater
-        self.templater = Template.Template(context, use_locale=False)
+        self.templater = pywws.template.Template(context, use_locale=False)
         template_name = self.params.get(config_section, 'template', 'default')
         if template_name != 'default':
             template_dir = self.params.get(

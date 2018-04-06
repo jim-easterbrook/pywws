@@ -31,7 +31,7 @@ import threading
 
 from pywws.calib import Calib
 import pywws.plot
-from pywws import Template
+import pywws.template
 from pywws.timezone import STDOFFSET, local_utc_offset
 from pywws.toservice import ToService
 import pywws.towebsite
@@ -64,7 +64,7 @@ class RegularTasks(object):
         # create calibration object
         self.calibrator = Calib(self.params, self.raw_data)
         # create templater object
-        self.templater = Template.Template(context)
+        self.templater = pywws.template.Template(context)
         # create plotter objects
         self.plotter = pywws.plot.GraphPlotter(context, self.work_dir)
         self.roseplotter = pywws.windrose.RosePlotter(context, self.work_dir)
