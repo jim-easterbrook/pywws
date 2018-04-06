@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
 # Copyright (C) 2008-18  pywws contributors
@@ -55,7 +53,7 @@ from __future__ import absolute_import, print_function
 __docformat__ = "restructuredtext en"
 
 __usage__ = """
- usage: python -m pywws.USBQualityTest [options]
+ usage: python -m pywws.usbtest [options]
  options are:
   -h | --help           display this help
   -v | --verbose        increase amount of reassuring messages
@@ -70,6 +68,7 @@ import sys
 
 from pywws.Logger import ApplicationLogger
 import pywws.weatherstation
+
 
 def main(argv=None):
     if argv is None:
@@ -124,6 +123,7 @@ def main(argv=None):
         print("\r %d/%d " % (bad_count, total_count), end='', flush=True)
     print('')
     return 0
+
 
 if __name__ == "__main__":
     try:
