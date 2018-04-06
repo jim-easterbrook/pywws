@@ -30,7 +30,7 @@ __docformat__ = "restructuredtext en"
 import math
 
 import pywws.localisation
-from pywws.Process import WindFilter as _WindFilter
+import pywws.process
 
 def illuminance_wm2(lux):
     "Approximate conversion of illuminance in lux to solar radiation in W/m2"
@@ -126,7 +126,7 @@ def winddir_average(data, threshold, min_count, decay=1.0):
     :rtype: float
     
     """
-    wind_filter = _WindFilter()
+    wind_filter = pywws.process.WindFilter()
     count = 0
     for item in data:
         wind_filter.add(item)

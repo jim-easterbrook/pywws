@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
 # Copyright (C) 2008-18  pywws contributors
@@ -66,7 +63,7 @@ from __future__ import absolute_import, print_function
 
 __docformat__ = "restructuredtext en"
 __usage__ = """
- usage: python -m pywws.Process [options] data_dir
+ usage: python -m pywws.process [options] data_dir
  options are:
   -h or --help     display this help
   -v or --verbose  increase number of informative messages
@@ -89,10 +86,12 @@ from pywws.Logger import ApplicationLogger
 import pywws.storage
 from pywws.timezone import STDOFFSET
 
+
 TIME_ERR = timedelta(seconds=45)
 MINUTEx5 = timedelta(minutes=5)
 HOURx3 = timedelta(hours=3)
 WEEK = timedelta(days=7)
+
 
 class Average(object):
     """Compute average of multiple data values."""
@@ -111,6 +110,7 @@ class Average(object):
             return None
         return self.acc / float(self.count)
 
+
 class Minimum(object):
     """Compute minimum value and timestamp of multiple data values."""
     def __init__(self):
@@ -126,6 +126,7 @@ class Minimum(object):
         if self.time:
             return self.value, self.time
         return None, None
+
 
 class Maximum(object):
     """Compute maximum value and timestamp of multiple data values."""
@@ -143,10 +144,12 @@ class Maximum(object):
             return self.value, self.time
         return None, None
 
+
 sin_LUT = list(map(
     lambda x: math.sin(math.radians(float(x * 360) / 16.0)), range(16)))
 cos_LUT = list(map(
     lambda x: math.cos(math.radians(float(x * 360) / 16.0)), range(16)))
+
 
 class WindFilter(object):
     """Compute average wind speed and direction.
@@ -225,6 +228,7 @@ class WindFilter(object):
         return (self.total / self.total_weight,
                 (math.degrees(math.atan2(self.Ve, self.Vn)) + 180.0) / 22.5)
 
+
 class HourAcc(object):
     """'Accumulate' raw weather data to produce hourly summary.
 
@@ -233,7 +237,7 @@ class HourAcc(object):
 
     """
     def __init__(self, last_rain):
-        self.logger = logging.getLogger('pywws.Process.HourAcc')
+        self.logger = logging.getLogger('pywws.process.HourAcc')
         self.last_rain = last_rain
         self.copy_keys = ['idx', 'hum_in', 'temp_in', 'hum_out', 'temp_out',
                           'abs_pressure', 'rel_pressure']
@@ -286,6 +290,7 @@ class HourAcc(object):
         self.retval['rain'] = self.rain
         return self.retval
 
+
 class DayAcc(object):
     """'Accumulate' weather data to produce daily summary.
 
@@ -299,7 +304,7 @@ class DayAcc(object):
 
     """
     def __init__(self):
-        self.logger = logging.getLogger('pywws.Process.DayAcc')
+        self.logger = logging.getLogger('pywws.process.DayAcc')
         self.has_illuminance = False
         self.ave = {}
         self.max = {}
@@ -380,6 +385,7 @@ class DayAcc(object):
                 (self.retval['%s_max' % i],
                  self.retval['%s_max_t' % i]) = self.max[i].result()
         return self.retval
+
 
 class MonthAcc(object):
     """'Accumulate' daily weather data to produce monthly summary.
@@ -512,6 +518,7 @@ class MonthAcc(object):
                  result['%s_max_hi_t' % i]) = self.max_hi[i].result()
         return result
 
+
 def calibrate_data(logger, params, raw_data, calib_data):
     """'Calibrate' raw data, using a user-supplied function."""
     start = calib_data.before(datetime.max)
@@ -537,6 +544,7 @@ def calibrate_data(logger, params, raw_data, calib_data):
         else:
             calib_data[idx] = calibrator.calib(data)
     return start
+
 
 def generate_hourly(logger, calib_data, hourly_data, process_from):
     """Generate hourly summaries from calibrated data."""
@@ -608,6 +616,7 @@ def generate_hourly(logger, calib_data, hourly_data, process_from):
         hour_start = hour_end
     return start
 
+
 def generate_daily(logger, day_end_hour,
                    calib_data, hourly_data, daily_data, process_from):
     """Generate daily summaries from calibrated and hourly data."""
@@ -651,6 +660,7 @@ def generate_daily(logger, day_end_hour,
             daily_data[new_data['idx']] = new_data
         day_start = day_end
     return start
+
 
 def generate_monthly(logger, rain_day_threshold, day_end_hour,
                      daily_data, monthly_data, process_from):
@@ -700,7 +710,8 @@ def generate_monthly(logger, rain_day_threshold, day_end_hour,
         month_start = month_end
     return start
 
-def Process(context):
+
+def process_data(context):
     """Generate summaries from raw weather station data.
 
     The meteorological day end (typically 2100 or 0900 local time) is
@@ -709,7 +720,7 @@ def Process(context):
     weather station readings.
 
     """
-    logger = logging.getLogger('pywws.Process')
+    logger = logging.getLogger('pywws.process.process_data')
     logger.info('Generating summary data')
     # get time of last record
     last_raw = context.raw_data.before(datetime.max)
@@ -730,6 +741,7 @@ def Process(context):
     generate_monthly(logger, rain_day_threshold, day_end_hour,
                      context.daily_data, context.monthly_data, start)
     return 0
+
 
 def main(argv=None):
     if argv is None:
@@ -756,7 +768,8 @@ def main(argv=None):
     logger = ApplicationLogger(verbose)
     data_dir = args[0]
     with pywws.storage.pywws_context(data_dir) as context:
-        return Process(context)
+        return process_data(context)
+
 
 if __name__ == "__main__":
     sys.exit(main())

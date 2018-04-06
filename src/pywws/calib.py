@@ -21,7 +21,7 @@ Calibrate raw weather station data
 ==================================
 
 This module allows adjustment of raw data from the weather station as
-part of the 'processing' step (see :doc:`pywws.Process`). For example,
+part of the 'processing' step (see :doc:`pywws.process`). For example,
 if you have fitted a funnel to double your rain gauge's collection
 area, you can write a calibration routine to double the rain value.
 

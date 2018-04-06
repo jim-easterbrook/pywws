@@ -51,7 +51,7 @@ import sys
 import pywws.localisation
 import pywws.logdata
 from pywws.Logger import ApplicationLogger
-from pywws import Process
+import pywws.process
 import pywws.regulartasks
 import pywws.storage
 
@@ -63,7 +63,7 @@ def hourly(data_dir):
         # get weather station data
         pywws.logdata.DataLogger(context).log_data()
         # do the processing
-        Process.Process(context)
+        pywws.process.process_data(context)
         # do tasks
         if not pywws.regulartasks.RegularTasks(context).do_tasks():
             return 1

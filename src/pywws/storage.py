@@ -58,7 +58,7 @@ The module provides five classes to store different data.
 :py:class:`RawStore` takes "raw" data from the weather station;
 :py:class:`CalibStore`, :py:class:`HourlyStore`, :py:class:`DailyStore`
 and :py:class:`MonthlyStore` store processed data (see
-:py:mod:`pywws.Process`). All are derived from the same ``CoreStore``
+:py:mod:`pywws.process`). All are derived from the same ``CoreStore``
 class, they only differ in the keys and types of data stored in each
 record.
 

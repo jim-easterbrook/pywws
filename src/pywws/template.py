@@ -352,7 +352,7 @@ class Template(object):
         if not live_data:
             idx = self.calib_data.before(datetime.max)
             if not idx:
-                self.logger.error("No calib data - run pywws.Process first")
+                self.logger.error("No calib data - run pywws.process first")
                 return
             live_data = self.calib_data[idx]
         # get default character encoding of template input & output files
@@ -380,7 +380,7 @@ class Template(object):
         # jump to last item
         idx, valid_data = jump(datetime.max, -1)
         if not valid_data:
-            self.logger.error("No summary data - run pywws.Process first")
+            self.logger.error("No summary data - run pywws.process first")
             return
         data = data_set[idx]
         # open template file, if not already a file(like) object

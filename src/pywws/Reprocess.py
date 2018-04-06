@@ -23,7 +23,7 @@
 This script can also be run with the ``pywws-reprocess`` command. ::
 %s
 This program recreates the calibrated, hourly, daily and monthly
-summary data that is created by the :py:mod:`pywws.Process` module. It
+summary data that is created by the :py:mod:`pywws.process` module. It
 should be run whenever you upgrade to a newer version of pywws (if the
 summary data format has changed), change your calibration module or
 alter your pressure offset.
@@ -54,7 +54,7 @@ import os
 import sys
 
 from pywws.Logger import ApplicationLogger
-from pywws import Process
+import pywws.process
 import pywws.storage
 
 def Reprocess(data_dir, update):
@@ -92,7 +92,7 @@ def Reprocess(data_dir, update):
     # create data summaries
     logger.warning('Generating hourly and daily summaries')
     with pywws.storage.pywws_context(data_dir) as context:
-        Process.Process(context)
+        pywws.process.process_data(context)
     return 0
 
 def main(argv=None):
