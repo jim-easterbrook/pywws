@@ -167,7 +167,7 @@ class RegularTasks(object):
                     break
                 self.service_queue[name].popleft()
             if count > 0:
-                logger.info('%d records sent', count)
+                logger.info('%s:%d records sent', name, count)
         while self.uploads_queue:
             file = self.uploads_queue.popleft()
             if not os.path.exists(file):
