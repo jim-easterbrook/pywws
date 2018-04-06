@@ -46,6 +46,7 @@ __usage__ = """
 __doc__ %= __usage__ % ('python -m pywws.livelogdaemon')
 
 import getopt
+import logging
 import os
 import sys
 
