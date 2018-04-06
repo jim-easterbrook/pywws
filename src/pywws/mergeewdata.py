@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
 # Copyright (C) 2008-18  pywws contributors
@@ -26,21 +24,21 @@
 Introduction
 ------------
 
-This program converts data from the format used by the EasyWeather
+This modlue converts data from the format used by the EasyWeather
 program supplied with the weather station to the format used by pywws.
 It is useful if you've been using EasyWeather for a while before
 discovering pywws.
 
 The ``EasyWeather.dat`` file is only used to provide data from before
-the start of the pywws data. As your weather station has its own
-memory, you should run :py:mod:`pywws.logdata` before
-:py:mod:`pywws.EWtoPy` to minimise use of the EasyWeather.dat file.
+the start of the pywws data. As your weather station has its own memory,
+you should run :py:mod:`pywws.logdata` before
+:py:mod:`pywws.mergeewdata` to minimise use of the EasyWeather.dat file.
 
-:py:mod:`pywws.EWtoPy` converts the time stamps in EasyWeather.dat
+:py:mod:`pywws.mergeewdata` converts the time stamps in EasyWeather.dat
 from local time to UTC. This can cause problems when daylight savings
 time ends, as local time appears to jump back one hour. The program
-attempts to detect this and correct the affected time stamps, but I
-have not been able to test this on a variety of time zones.
+attempts to detect this and correct the affected time stamps, but I have
+not been able to test this on a variety of time zones.
 
 Detailed API
 ------------
@@ -51,7 +49,7 @@ from __future__ import absolute_import, print_function
 
 __docformat__ = "restructuredtext en"
 __usage__ = """
- usage: python -m pywws.EWtoPy [options] EasyWeather_file data_dir
+ usage: python -m pywws.mergeewdata [options] EasyWeather_file data_dir
  options are:
   -h or --help    display this help
  EasyWeather_file is the input data file, e.g. EasyWeather.dat
@@ -67,6 +65,7 @@ import sys
 
 import pywws.storage
 import pywws.timezone
+
 
 def main(argv=None):
     if argv is None:
@@ -147,8 +146,8 @@ def main(argv=None):
         count += 1
     print("%d records written" % count)
     in_file.close()
-    del ds
     return 0
+
 
 if __name__ == "__main__":
     sys.exit(main())
