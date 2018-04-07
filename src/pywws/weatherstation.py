@@ -108,30 +108,6 @@ def decode_status(status):
     return result
 
 # decode weather station raw data formats
-def _plain_byte(raw, offset):
-    return raw[offset]
-
-def _unsigned_byte(raw, offset):
-    res = raw[offset]
-    if res == 0xFF:
-        return None
-    return res
-
-def _signed_byte(raw, offset):
-    res = raw[offset]
-    if res == 0xFF:
-        return None
-    if res >= 128:
-        return 128 - res
-    return res
-
-def _unsigned_short(raw, offset):
-    lo = raw[offset]
-    hi = raw[offset+1]
-    if lo == 0xFF and hi == 0xFF:
-        return None
-    return (hi * 256) + lo
-
 def _unsigned_int3(raw, offset):
     lo = raw[offset]
     md = raw[offset+1]
@@ -182,10 +158,6 @@ def _bit_field(raw, offset):
     return result
 
 _decoders = {
-    'pb' : _plain_byte,
-    'ub' : _unsigned_byte,
-    'sb' : _signed_byte,
-    'us' : _unsigned_short,
     'u3' : _unsigned_int3,
     'dt' : _date_time,
     'tt' : _time,
@@ -195,9 +167,9 @@ _decoders = {
     }
 
 
-class WSFloat(float):
+class WSInt(int):
     @staticmethod
-    def from_raw(raw, pos, signed=False, scale=1.0):
+    def from_raw(raw, pos, signed=False):
         # decode two bytes to an int
         lo = raw[pos]
         hi = raw[pos+1]
@@ -207,6 +179,29 @@ class WSFloat(float):
             value = ((128 - hi) * 256) - lo
         else:
             value = (hi * 256) + lo
+        return WSInt(value)
+
+
+class WSInt1(WSInt):
+    @staticmethod
+    def from_raw(raw, pos, signed=False):
+        # decode one byte to an int
+        value = raw[pos]
+        if value == 0xFF:
+            return None
+        if signed and value >= 128:
+            value = 128 - value
+        return WSInt1(value)
+
+
+class WSFloat(float):
+    @staticmethod
+    def from_raw(raw, pos, signed=False, scale=1.0):
+        # decode two bytes to an int
+        value = WSInt.from_raw(raw, pos, signed=signed)
+        if value is None:
+            return None
+        # convert to float
         return WSFloat(float(value) * scale)
 
     # don't display excessive precision
@@ -215,6 +210,17 @@ class WSFloat(float):
 
     def __repr__(self):
         return '{:.12g}'.format(self)
+
+
+class WSFloat1(WSFloat):
+    @staticmethod
+    def from_raw(raw, pos, signed=False, scale=1.0):
+        # decode one byte to an int
+        value = WSInt1.from_raw(raw, pos, signed=signed)
+        if value is None:
+            return None
+        # convert to float
+        return WSFloat1(float(value) * scale)
 
 
 def _decode(raw, format_):
@@ -702,25 +708,25 @@ class WeatherStation(object):
     # depends on weather station type
     _reading_format = {}
     _reading_format['1080'] = {
-        'delay'        : (0, 'ub', None),
-        'hum_in'       : (1, 'ub', None),
+        'delay'        : (0, WSInt1, {'signed': False}),
+        'hum_in'       : (1, WSInt1, {'signed': False}),
         'temp_in'      : (2, WSFloat, {'signed': True, 'scale': 0.1}),
-        'hum_out'      : (4, 'ub', None),
+        'hum_out'      : (4, WSInt1, {'signed': False}),
         'temp_out'     : (5, WSFloat, {'signed': True, 'scale': 0.1}),
         'abs_pressure' : (7, WSFloat, {'signed': False, 'scale': 0.1}),
         'wind_ave'     : (9, 'wa', 0.1),
         'wind_gust'    : (10, 'wg', 0.1),
-        'wind_dir'     : (12, 'ub', None),
+        'wind_dir'     : (12, WSInt1, {'signed': False}),
         'rain'         : (13, WSFloat, {'signed': False, 'scale': 0.3}),
-        'status'       : (15, 'pb', None),
+        'status'       : (15, WSInt1, {'signed': False}),
         }
     _reading_format['3080'] = {
         'illuminance' : (16, 'u3', 0.1),
-        'uv'          : (19, 'ub', None),
+        'uv'          : (19, WSInt1, {'signed': False}),
         }
     _reading_format['3080'].update(_reading_format['1080'])
     lo_fix_format = {
-        'read_period'   : (16, 'ub', None),
+        'read_period'   : (16, WSInt1, {'signed': False}),
         'settings_1'    : (17, 'bf', ('temp_in_F', 'temp_out_F', 'rain_in',
                                       'bit3', 'bit4', 'pressure_hPa',
                                       'pressure_inHg', 'pressure_mmHg')),
@@ -744,27 +750,29 @@ class WeatherStation(object):
                                       'temp_out_lo', 'temp_out_hi',
                                       'wind_chill_lo', 'wind_chill_hi',
                                       'dew_point_lo', 'dew_point_hi')),
-        'timezone'      : (24, 'sb', None),
-        'unknown_01'    : (25, 'pb', None),
-        'data_changed'  : (26, 'ub', None),
-        'data_count'    : (27, 'us', None),
+        'timezone'      : (24, WSInt1, {'signed': True}),
+        'unknown_01'    : (25, WSInt1, {'signed': False}),
+        'data_changed'  : (26, WSInt1, {'signed': False}),
+        'data_count'    : (27, WSInt, {'signed': False}),
         'display_3'     : (29, 'bf', ('illuminance_fc', 'bit1', 'bit2', 'bit3',
                                       'bit4', 'bit5', 'bit6', 'bit7')),
-        'current_pos'   : (30, 'us', None),
+        'current_pos'   : (30, WSInt, {'signed': False}),
         }
     fixed_format = {
-        'magic_0'       : (0,  'pb', None),
-        'magic_1'       : (1,  'pb', None),
+        'magic_0'       : (0,  WSInt1, {'signed': False}),
+        'magic_1'       : (1,  WSInt1, {'signed': False}),
         'rel_pressure'  : (32, WSFloat, {'signed': False, 'scale': 0.1}),
         'abs_pressure'  : (34, WSFloat, {'signed': False, 'scale': 0.1}),
         'lux_wm2_coeff' : (36, WSFloat, {'signed': False, 'scale': 0.1}),
         'date_time'     : (43, 'dt', None),
-        'unknown_18'    : (97, 'pb', None),
+        'unknown_18'    : (97, WSInt1, {'signed': False}),
         'alarm'         : {
-            'hum_in'        : {'hi' : (48, 'ub', None), 'lo'  : (49, 'ub', None)},
+            'hum_in'        : {'hi' : (48, WSInt1, {'signed': False}),
+                               'lo' : (49, WSInt1, {'signed': False})},
             'temp_in'       : {'hi' : (50, WSFloat, {'signed': True, 'scale': 0.1}),
                                'lo' : (52, WSFloat, {'signed': True, 'scale': 0.1})},
-            'hum_out'       : {'hi' : (54, 'ub', None), 'lo'  : (55, 'ub', None)},
+            'hum_out'       : {'hi' : (54, WSInt1, {'signed': False}),
+                               'lo' : (55, WSInt1, {'signed': False})},
             'temp_out'      : {'hi' : (56, WSFloat, {'signed': True, 'scale': 0.1}),
                                'lo' : (58, WSFloat, {'signed': True, 'scale': 0.1})},
             'windchill'     : {'hi' : (60, WSFloat, {'signed': True, 'scale': 0.1}),
@@ -775,20 +783,23 @@ class WeatherStation(object):
                                'lo' : (70, WSFloat, {'signed': False, 'scale': 0.1})},
             'rel_pressure'  : {'hi' : (72, WSFloat, {'signed': False, 'scale': 0.1}),
                                'lo' : (74, WSFloat, {'signed': False, 'scale': 0.1})},
-            'wind_ave'      : {'bft' : (76, 'ub', None), 'ms' : (77, 'ub', 0.1)},
-            'wind_gust'     : {'bft' : (79, 'ub', None), 'ms' : (80, 'ub', 0.1)},
-            'wind_dir'      : (82, 'ub', None),
+            'wind_ave'      : {'bft': (76, WSInt1, {'signed': False}),
+                               'ms' : (77, WSFloat1, {'signed': False, 'scale': 0.1})},
+            'wind_gust'     : {'bft': (79, WSInt1, {'signed': False}),
+                               'ms' : (80, WSFloat1, {'signed': False, 'scale': 0.1})},
+            'wind_dir'      : (82, WSInt1, {'signed': False}),
             'rain'          : {'hour' : (83, WSFloat, {'signed': False, 'scale': 0.3}),
                                'day'  : (85, WSFloat, {'signed': False, 'scale': 0.3})},
             'time'          : (87, 'tt', None),
             'illuminance'   : (89, 'u3', 0.1),
-            'uv'            : (92, 'ub', None),
+            'uv'            : (92, WSInt1, {'signed': False}),
             },
         'max'           : {
-            'uv'            : {'val' : (93, 'ub', None)},
+            'uv'            : {'val' : (93, WSInt1, {'signed': False})},
             'illuminance'   : {'val' : (94, 'u3', 0.1)},
-            'hum_in'        : {'val' : (98, 'ub', None), 'date'   : (141, 'dt', None)},
-            'hum_out'       : {'val' : (100, 'ub', None), 'date'  : (151, 'dt', None)},
+            'hum_in'        : {'val' : (98, WSInt1, {'signed': False}),
+                               'date': (141, 'dt', None)},
+            'hum_out'       : {'val' : (100, WSInt1, {'signed': False}), 'date'  : (151, 'dt', None)},
             'temp_in'       : {'val' : (102, WSFloat, {'signed': True, 'scale': 0.1}),
                                'date': (161, 'dt', None)},
             'temp_out'      : {'val' : (106, WSFloat, {'signed': True, 'scale': 0.1}),
@@ -819,8 +830,10 @@ class WeatherStation(object):
                 },
             },
         'min'           : {
-            'hum_in'        : {'val' : (99, 'ub', None), 'date'   : (146, 'dt', None)},
-            'hum_out'       : {'val' : (101, 'ub', None), 'date'  : (156, 'dt', None)},
+            'hum_in'        : {'val' : (99, WSInt1, {'signed': False}),
+                               'date': (146, 'dt', None)},
+            'hum_out'       : {'val' : (101, WSInt1, {'signed': False}),
+                               'date': (156, 'dt', None)},
             'temp_in'       : {'val' : (104, WSFloat, {'signed': True, 'scale': 0.1}),
                                'date': (166, 'dt', None)},
             'temp_out'      : {'val' : (108, WSFloat, {'signed': True, 'scale': 0.1}),
