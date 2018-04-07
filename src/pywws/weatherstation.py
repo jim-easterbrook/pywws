@@ -113,6 +113,14 @@ class WSBits(dict):
     def from_raw(raw, pos, keys=[]):
         return WSBits.from_int(raw[pos], keys)
 
+    # don't display unknown bits
+    def __repr__(self):
+        result = {}
+        for key in self:
+            if self[key] or not key.startswith('bit'):
+                result[key] = self[key]
+        return repr(result)
+
 
 class WSStatus(WSBits):
     keys = ('bit0', 'bit1', 'bit2', 'bit3', 'bit4', 'bit5',
