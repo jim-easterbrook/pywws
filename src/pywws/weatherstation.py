@@ -132,15 +132,6 @@ def _unsigned_short(raw, offset):
         return None
     return (hi * 256) + lo
 
-def _signed_short(raw, offset):
-    lo = raw[offset]
-    hi = raw[offset+1]
-    if lo == 0xFF and hi == 0xFF:
-        return None
-    if hi >= 128:
-        return ((128 - hi) * 256) - lo
-    return (hi * 256) + lo
-
 def _unsigned_int3(raw, offset):
     lo = raw[offset]
     md = raw[offset+1]
@@ -195,7 +186,6 @@ _decoders = {
     'ub' : _unsigned_byte,
     'sb' : _signed_byte,
     'us' : _unsigned_short,
-    'ss' : _signed_short,
     'u3' : _unsigned_int3,
     'dt' : _date_time,
     'tt' : _time,
@@ -204,21 +194,47 @@ _decoders = {
     'bf' : _bit_field,
     }
 
-def _decode(raw, format):
+
+class WSFloat(float):
+    @staticmethod
+    def from_raw(raw, pos, signed=False, scale=1.0):
+        # decode two bytes to an int
+        lo = raw[pos]
+        hi = raw[pos+1]
+        if lo == 0xFF and hi == 0xFF:
+            return None
+        if signed and hi >= 128:
+            value = ((128 - hi) * 256) - lo
+        else:
+            value = (hi * 256) + lo
+        return WSFloat(float(value) * scale)
+
+    # don't display excessive precision
+    def __str__(self):
+        return '{:.12g}'.format(self)
+
+    def __repr__(self):
+        return '{:.12g}'.format(self)
+
+
+def _decode(raw, format_):
     if not raw:
         return None
-    if isinstance(format, dict):
+    if isinstance(format_, dict):
         result = {}
-        for key, value in format.items():
+        for key, value in format_.items():
             result[key] = _decode(raw, value)
-    else:
-        pos, type, scale = format
-        result = _decoders[type](raw, pos)
-        if type == 'bf':
+    elif isinstance(format_[1], str):
+        pos, type_, scale = format_
+        result = _decoders[type_](raw, pos)
+        if type_ == 'bf':
             # bit field - 'scale' is a list of bit names
             result = dict(zip(scale, result))
         elif scale and result:
             result = float(result) * scale
+    else:
+        pos, class_, kwds = format_
+        result = class_.from_raw(raw, pos, **kwds)
     return result
 
 
@@ -688,14 +704,14 @@ class WeatherStation(object):
     _reading_format['1080'] = {
         'delay'        : (0, 'ub', None),
         'hum_in'       : (1, 'ub', None),
-        'temp_in'      : (2, 'ss', 0.1),
+        'temp_in'      : (2, WSFloat, {'signed': True, 'scale': 0.1}),
         'hum_out'      : (4, 'ub', None),
-        'temp_out'     : (5, 'ss', 0.1),
-        'abs_pressure' : (7, 'us', 0.1),
+        'temp_out'     : (5, WSFloat, {'signed': True, 'scale': 0.1}),
+        'abs_pressure' : (7, WSFloat, {'signed': False, 'scale': 0.1}),
         'wind_ave'     : (9, 'wa', 0.1),
         'wind_gust'    : (10, 'wg', 0.1),
         'wind_dir'     : (12, 'ub', None),
-        'rain'         : (13, 'us', 0.3),
+        'rain'         : (13, WSFloat, {'signed': False, 'scale': 0.3}),
         'status'       : (15, 'pb', None),
         }
     _reading_format['3080'] = {
@@ -739,24 +755,31 @@ class WeatherStation(object):
     fixed_format = {
         'magic_0'       : (0,  'pb', None),
         'magic_1'       : (1,  'pb', None),
-        'rel_pressure'  : (32, 'us', 0.1),
-        'abs_pressure'  : (34, 'us', 0.1),
-        'lux_wm2_coeff' : (36, 'us', 0.1),
+        'rel_pressure'  : (32, WSFloat, {'signed': False, 'scale': 0.1}),
+        'abs_pressure'  : (34, WSFloat, {'signed': False, 'scale': 0.1}),
+        'lux_wm2_coeff' : (36, WSFloat, {'signed': False, 'scale': 0.1}),
         'date_time'     : (43, 'dt', None),
         'unknown_18'    : (97, 'pb', None),
         'alarm'         : {
             'hum_in'        : {'hi' : (48, 'ub', None), 'lo'  : (49, 'ub', None)},
-            'temp_in'       : {'hi' : (50, 'ss', 0.1), 'lo'  : (52, 'ss', 0.1)},
+            'temp_in'       : {'hi' : (50, WSFloat, {'signed': True, 'scale': 0.1}),
+                               'lo' : (52, WSFloat, {'signed': True, 'scale': 0.1})},
             'hum_out'       : {'hi' : (54, 'ub', None), 'lo'  : (55, 'ub', None)},
-            'temp_out'      : {'hi' : (56, 'ss', 0.1), 'lo'  : (58, 'ss', 0.1)},
-            'windchill'     : {'hi' : (60, 'ss', 0.1), 'lo'  : (62, 'ss', 0.1)},
-            'dewpoint'      : {'hi' : (64, 'ss', 0.1), 'lo'  : (66, 'ss', 0.1)},
-            'abs_pressure'  : {'hi' : (68, 'us', 0.1), 'lo'  : (70, 'us', 0.1)},
-            'rel_pressure'  : {'hi' : (72, 'us', 0.1), 'lo'  : (74, 'us', 0.1)},
+            'temp_out'      : {'hi' : (56, WSFloat, {'signed': True, 'scale': 0.1}),
+                               'lo' : (58, WSFloat, {'signed': True, 'scale': 0.1})},
+            'windchill'     : {'hi' : (60, WSFloat, {'signed': True, 'scale': 0.1}),
+                               'lo' : (62, WSFloat, {'signed': True, 'scale': 0.1})},
+            'dewpoint'      : {'hi' : (64, WSFloat, {'signed': True, 'scale': 0.1}),
+                               'lo' : (66, WSFloat, {'signed': True, 'scale': 0.1})},
+            'abs_pressure'  : {'hi' : (68, WSFloat, {'signed': False, 'scale': 0.1}),
+                               'lo' : (70, WSFloat, {'signed': False, 'scale': 0.1})},
+            'rel_pressure'  : {'hi' : (72, WSFloat, {'signed': False, 'scale': 0.1}),
+                               'lo' : (74, WSFloat, {'signed': False, 'scale': 0.1})},
             'wind_ave'      : {'bft' : (76, 'ub', None), 'ms' : (77, 'ub', 0.1)},
             'wind_gust'     : {'bft' : (79, 'ub', None), 'ms' : (80, 'ub', 0.1)},
             'wind_dir'      : (82, 'ub', None),
-            'rain'          : {'hour' : (83, 'us', 0.3), 'day'   : (85, 'us', 0.3)},
+            'rain'          : {'hour' : (83, WSFloat, {'signed': False, 'scale': 0.3}),
+                               'day'  : (85, WSFloat, {'signed': False, 'scale': 0.3})},
             'time'          : (87, 'tt', None),
             'illuminance'   : (89, 'u3', 0.1),
             'uv'            : (92, 'ub', None),
@@ -766,31 +789,50 @@ class WeatherStation(object):
             'illuminance'   : {'val' : (94, 'u3', 0.1)},
             'hum_in'        : {'val' : (98, 'ub', None), 'date'   : (141, 'dt', None)},
             'hum_out'       : {'val' : (100, 'ub', None), 'date'  : (151, 'dt', None)},
-            'temp_in'       : {'val' : (102, 'ss', 0.1), 'date'  : (161, 'dt', None)},
-            'temp_out'      : {'val' : (106, 'ss', 0.1), 'date'  : (171, 'dt', None)},
-            'windchill'     : {'val' : (110, 'ss', 0.1), 'date'  : (181, 'dt', None)},
-            'dewpoint'      : {'val' : (114, 'ss', 0.1), 'date'  : (191, 'dt', None)},
-            'abs_pressure'  : {'val' : (118, 'us', 0.1), 'date'  : (201, 'dt', None)},
-            'rel_pressure'  : {'val' : (122, 'us', 0.1), 'date'  : (211, 'dt', None)},
-            'wind_ave'      : {'val' : (126, 'us', 0.1), 'date'  : (221, 'dt', None)},
-            'wind_gust'     : {'val' : (128, 'us', 0.1), 'date'  : (226, 'dt', None)},
+            'temp_in'       : {'val' : (102, WSFloat, {'signed': True, 'scale': 0.1}),
+                               'date': (161, 'dt', None)},
+            'temp_out'      : {'val' : (106, WSFloat, {'signed': True, 'scale': 0.1}),
+                               'date': (171, 'dt', None)},
+            'windchill'     : {'val' : (110, WSFloat, {'signed': True, 'scale': 0.1}),
+                               'date': (181, 'dt', None)},
+            'dewpoint'      : {'val' : (114, WSFloat, {'signed': True, 'scale': 0.1}),
+                               'date': (191, 'dt', None)},
+            'abs_pressure'  : {'val' : (118, WSFloat, {'signed': False, 'scale': 0.1}),
+                               'date': (201, 'dt', None)},
+            'rel_pressure'  : {'val' : (122, WSFloat, {'signed': False, 'scale': 0.1}),
+                               'date': (211, 'dt', None)},
+            'wind_ave'      : {'val' : (126, WSFloat, {'signed': False, 'scale': 0.1}),
+                               'date': (221, 'dt', None)},
+            'wind_gust'     : {'val' : (128, WSFloat, {'signed': False, 'scale': 0.1}),
+                               'date': (226, 'dt', None)},
             'rain'          : {
-                'hour'          : {'val' : (130, 'us', 0.3), 'date'  : (231, 'dt', None)},
-                'day'           : {'val' : (132, 'us', 0.3), 'date'  : (236, 'dt', None)},
-                'week'          : {'val' : (134, 'us', 0.3), 'date'  : (241, 'dt', None)},
-                'month'         : {'val' : (136, 'us', 0.3), 'date'  : (246, 'dt', None)},
-                'total'         : {'val' : (138, 'us', 0.3), 'date'  : (251, 'dt', None)},
+                'hour'          : {'val' : (130, WSFloat, {'signed': False, 'scale': 0.3}),
+                                   'date': (231, 'dt', None)},
+                'day'           : {'val' : (132, WSFloat, {'signed': False, 'scale': 0.3}),
+                                   'date': (236, 'dt', None)},
+                'week'          : {'val' : (134, WSFloat, {'signed': False, 'scale': 0.3}),
+                                   'date': (241, 'dt', None)},
+                'month'         : {'val' : (136, WSFloat, {'signed': False, 'scale': 0.3}),
+                                   'date': (246, 'dt', None)},
+                'total'         : {'val' : (138, WSFloat, {'signed': False, 'scale': 0.3}),
+                                   'date': (251, 'dt', None)},
                 },
             },
         'min'           : {
             'hum_in'        : {'val' : (99, 'ub', None), 'date'   : (146, 'dt', None)},
             'hum_out'       : {'val' : (101, 'ub', None), 'date'  : (156, 'dt', None)},
-            'temp_in'       : {'val' : (104, 'ss', 0.1), 'date'  : (166, 'dt', None)},
-            'temp_out'      : {'val' : (108, 'ss', 0.1), 'date'  : (176, 'dt', None)},
-            'windchill'     : {'val' : (112, 'ss', 0.1), 'date'  : (186, 'dt', None)},
-            'dewpoint'      : {'val' : (116, 'ss', 0.1), 'date'  : (196, 'dt', None)},
-            'abs_pressure'  : {'val' : (120, 'us', 0.1), 'date'  : (206, 'dt', None)},
-            'rel_pressure'  : {'val' : (124, 'us', 0.1), 'date'  : (216, 'dt', None)},
+            'temp_in'       : {'val' : (104, WSFloat, {'signed': True, 'scale': 0.1}),
+                               'date': (166, 'dt', None)},
+            'temp_out'      : {'val' : (108, WSFloat, {'signed': True, 'scale': 0.1}),
+                               'date': (176, 'dt', None)},
+            'windchill'     : {'val' : (112, WSFloat, {'signed': True, 'scale': 0.1}),
+                               'date': (186, 'dt', None)},
+            'dewpoint'      : {'val' : (116, WSFloat, {'signed': True, 'scale': 0.1}),
+                               'date': (196, 'dt', None)},
+            'abs_pressure'  : {'val' : (120, WSFloat, {'signed': False, 'scale': 0.1}),
+                               'date': (206, 'dt', None)},
+            'rel_pressure'  : {'val' : (124, WSFloat, {'signed': False, 'scale': 0.1}),
+                               'date': (216, 'dt', None)},
             },
         }
     fixed_format.update(lo_fix_format)
