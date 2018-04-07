@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
 # Copyright (C) 2008-18  pywws contributors
@@ -110,7 +107,7 @@ instructions.
 
 """
 
-from __future__ import print_function
+from __future__ import print_function, unicode_literals
 
 __docformat__ = "restructuredtext en"
 
@@ -265,11 +262,11 @@ def main(argv=None):
     print("  decimal point:", locale.format("%4.1f", 23.2))
     print("  date & time:", time.strftime("%A, %d %B (%x %X)"))
     print("Translations")
-    print("  'NNW' => '%s'" % (translation.lgettext('NNW')))
+    print("  'NNW' => '%s'" % (translation.ugettext('NNW')))
     print("  'rising very rapidly' => '%s'" % (
-        translation.lgettext('rising very rapidly')))
+        translation.ugettext('rising very rapidly')))
     print("  'Rain at times, very unsettled' => '%s'" % (
-        translation.lgettext('Rain at times, very unsettled')))
+        translation.ugettext('Rain at times, very unsettled')))
     return 0
 
 
