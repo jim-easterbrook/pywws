@@ -152,14 +152,11 @@ class WSInt(int):
     @staticmethod
     def from_raw(raw, pos, signed=False):
         # decode two bytes to an int
-        lo = raw[pos]
-        hi = raw[pos+1]
-        if lo == 0xFF and hi == 0xFF:
+        value = raw[pos] + (raw[pos+1] << 8)
+        if value == 0xFFFF:
             return None
-        if signed and hi >= 128:
-            value = ((128 - hi) * 256) - lo
-        else:
-            value = (hi * 256) + lo
+        if signed and value >= 0x8000:
+            value = 0x8000 - value
         return WSInt(value)
 
 
@@ -170,8 +167,8 @@ class WSInt1(WSInt):
         value = raw[pos]
         if value == 0xFF:
             return None
-        if signed and value >= 128:
-            value = 128 - value
+        if signed and value >= 0x80:
+            value = 0x80 - value
         return WSInt(value)
 
 
@@ -200,6 +197,9 @@ class WSFloat(float):
     def __str__(self):
         return '{:.12g}'.format(self)
 
+    def __repr__(self):
+        return '{:.12g}'.format(self)
+
 
 class WSFloat1(WSFloat):
     @staticmethod
@@ -216,12 +216,9 @@ class Illuminance(WSFloat):
     @staticmethod
     def from_raw(raw, pos):
         # decode three bytes to an unsigned int
-        lo = raw[pos]
-        md = raw[pos+1]
-        hi = raw[pos+2]
-        if lo == 0xFF and md == 0xFF and hi == 0xFF:
+        value = raw[pos] + (raw[pos+1] << 8) + (raw[pos+2] << 16)
+        if value == 0xFFFFFF:
             return None
-        value = (hi * 256 * 256) + (md * 256) + lo
         # convert to float
         return WSFloat(float(value) * 0.1)
 
