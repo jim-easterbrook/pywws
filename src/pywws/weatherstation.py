@@ -195,8 +195,8 @@ class WindAve(WSFloat):
     @staticmethod
     def from_raw(raw, pos):
         # wind average - 12 bits split across a byte and a nibble
-        result = raw[pos] + ((raw[pos+2] & 0x0F) << 8)
-        if result == 0xFFF:
+        value = raw[pos] + ((raw[pos+2] & 0x0F) << 8)
+        if value == 0xFFF:
             return None
         # convert to float
         return WindAve(float(value) * 0.1)
@@ -206,8 +206,8 @@ class WindGust(WSFloat):
     @staticmethod
     def from_raw(raw, pos):
         # wind gust - 12 bits split across a byte and a nibble
-        result = raw[pos] + ((raw[pos+1] & 0xF0) << 4)
-        if result == 0xFFF:
+        value = raw[pos] + ((raw[pos+1] & 0xF0) << 4)
+        if value == 0xFFF:
             return None
         # convert to float
         return WindGust(float(value) * 0.1)
