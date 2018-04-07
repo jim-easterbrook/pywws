@@ -83,6 +83,7 @@ else:
     from ConfigParser import RawConfigParser
 
 from pywws.constants import DAY
+from pywws.weatherstation import WSFloat, WSInt, WSStatus
 
 
 def safestrptime(date_string, format=None):
@@ -471,16 +472,22 @@ class CoreStore(object):
             kwds = {'mode': 'w', 'newline': ''}
         else:
             kwds = {'mode': 'wb'}
+        conv = {
+            datetime  : str,
+            float     : lambda x: '{:.12g}'.format(x),
+            int       : str,
+            type(None): lambda x: '',
+            WSFloat   : str,
+            WSInt     : str,
+            WSStatus  : WSStatus.to_csv,
+            }
         with open(cache.path, **kwds) as csvfile:
-            writer = csv.writer(csvfile, quoting=csv.QUOTE_NONE)
             for data in cache.data:
                 row = []
-                for key in self.key_list[0:len(data)]:
-                    if isinstance(data[key], float):
-                        row.append('{:.10g}'.format(data[key]))
-                    else:
-                        row.append(data[key])
-                writer.writerow(row)
+                for key in self.key_list[:len(data)]:
+                    value = data[key]
+                    row.append(conv[type(value)](value))
+                csvfile.write(','.join(row) + '\n')
 
     def _get_cache_path(self, target_date):
         # default implementation - one file per day
@@ -513,7 +520,7 @@ class RawStore(CoreStore):
         'wind_gust'    : float,
         'wind_dir'     : int,
         'rain'         : float,
-        'status'       : int,
+        'status'       : WSStatus.from_csv,
         'illuminance'  : float,
         'uv'           : int,
         }
@@ -540,7 +547,7 @@ class CalibStore(CoreStore):
         'wind_gust'    : float,
         'wind_dir'     : float,
         'rain'         : float,
-        'status'       : int,
+        'status'       : WSStatus.from_csv,
         'illuminance'  : float,
         'uv'           : int,
         }

@@ -60,8 +60,7 @@ logger = logging.getLogger(__name__)
 
 def reprocess(data_dir, update):
     if update:
-        # update old data to copy high nibble of wind_dir to status
-        logger.warning("Updating status to include extra bits from wind_dir")
+        logger.warning("Updating status to detect invalid wind_dir")
         count = 0
         raw_data = pywws.storage.RawStore(data_dir)
         for data in raw_data[:]:
@@ -71,14 +70,9 @@ def reprocess(data_dir, update):
                 logger.info("update: %s", idx.isoformat(' '))
             elif count % 500 == 0:
                 logger.debug("update: %s", idx.isoformat(' '))
-            if data['wind_dir'] is not None:
-                if data['wind_dir'] >= 16:
-                    data['status'] |= (data['wind_dir'] & 0xF0) << 4
-                    data['wind_dir'] &= 0x0F
-                    raw_data[idx] = data
-                if data['status'] & 0x800:
-                    data['wind_dir'] = None
-                    raw_data[idx] = data
+            if data['wind_dir'] is not None and (data['wind_dir'] & 0x80):
+                data['wind_dir'] = None
+                raw_data[idx] = data
         raw_data.flush()
     # delete old format summary files
     logger.warning('Deleting old summaries')

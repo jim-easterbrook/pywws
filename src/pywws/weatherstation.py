@@ -97,28 +97,47 @@ else:
 logger = logging.getLogger(__name__)
 
 
-def decode_status(status):
-    result = {}
-    for key, mask in (('invalid_wind_dir', 0x800),
-                      ('rain_overflow',    0x080),
-                      ('lost_connection',  0x040),
-                      ('unknown',          0x73f),
-                      ):
-        result[key] = status & mask
-    return result
-
-
 class WSBits(dict):
     @staticmethod
-    def from_raw(raw, pos, keys=[]):
+    def from_int(value, keys):
         # convert byte to list of 8 booleans
         mask = 1
-        value = []
+        values = []
         for i in range(8):
-            value.append(raw[pos] & mask != 0)
+            values.append(value & mask != 0)
             mask = mask << 1
         # merge with keys to make a dict
-        return WSBits(zip(keys, value))
+        return WSBits(zip(keys, values))
+
+    @staticmethod
+    def from_raw(raw, pos, keys=[]):
+        return WSBits.from_int(raw[pos], keys)
+
+
+class WSStatus(WSBits):
+    keys = ('bit0', 'bit1', 'bit2', 'bit3', 'bit4', 'bit5',
+            'lost_connection', 'rain_overflow')
+
+    @classmethod
+    def from_raw(cls, raw, pos):
+        return WSStatus(WSBits.from_int(raw[pos], cls.keys))
+
+    # convert to stringified int
+    def to_csv(self):
+        mask = 1
+        value = 0
+        for key in self.keys:
+            if self[key]:
+                value += mask
+            mask = mask << 1
+        return str(value)
+
+    # convert from stringified int
+    @classmethod
+    def from_csv(cls, value):
+        if not value:
+            return None
+        return WSStatus(WSBits.from_int(int(value), cls.keys))
 
 
 class WSInt(int):
@@ -145,7 +164,18 @@ class WSInt1(WSInt):
             return None
         if signed and value >= 128:
             value = 128 - value
-        return WSInt1(value)
+        return WSInt(value)
+
+
+class WSWindDir(WSInt):
+    @staticmethod
+    def from_raw(raw, pos):
+        # decode one byte to an int
+        value = raw[pos]
+        # if bit 7 is 1, value is invalid
+        if value & 0x80:
+            return None
+        return WSInt(value)
 
 
 class WSFloat(float):
@@ -162,9 +192,6 @@ class WSFloat(float):
     def __str__(self):
         return '{:.12g}'.format(self)
 
-    def __repr__(self):
-        return '{:.12g}'.format(self)
-
 
 class WSFloat1(WSFloat):
     @staticmethod
@@ -174,7 +201,7 @@ class WSFloat1(WSFloat):
         if value is None:
             return None
         # convert to float
-        return WSFloat1(float(value) * scale)
+        return WSFloat(float(value) * scale)
 
 
 class Illuminance(WSFloat):
@@ -188,7 +215,7 @@ class Illuminance(WSFloat):
             return None
         value = (hi * 256 * 256) + (md * 256) + lo
         # convert to float
-        return Illuminance(float(value) * 0.1)
+        return WSFloat(float(value) * 0.1)
 
 
 class WindAve(WSFloat):
@@ -199,7 +226,7 @@ class WindAve(WSFloat):
         if value == 0xFFF:
             return None
         # convert to float
-        return WindAve(float(value) * 0.1)
+        return WSFloat(float(value) * 0.1)
 
 
 class WindGust(WSFloat):
@@ -210,7 +237,7 @@ class WindGust(WSFloat):
         if value == 0xFFF:
             return None
         # convert to float
-        return WindGust(float(value) * 0.1)
+        return WSFloat(float(value) * 0.1)
 
 
 def _bcd_decode(byte):
@@ -450,7 +477,7 @@ class WeatherStation(object):
         next_log = self._station_clock.before(last_log + log_interval)
         ptr_time = 0
         data_time = 0
-        last_status = decode_status(0)
+        last_status = {}
         not_logging = False
         while True:
             # sleep until just before next reading is due
@@ -482,14 +509,12 @@ class WeatherStation(object):
             if new_ptr != old_ptr:
                 for key in ('hum_in', 'temp_in', 'abs_pressure'):
                     old_data[key] = new_data[key]
-            # log any change of status except 'invalid_wind_dir'
-            new_status = decode_status(new_data['status'])
-            last_status['invalid_wind_dir'] = new_status['invalid_wind_dir']
-            if new_status != last_status:
-                logger.warning('status %s', str(new_status))
-            last_status = new_status
-            if (new_status['lost_connection'] and not
-                decode_status(old_data['status'])['lost_connection']):
+            # log any change of status
+            if new_data['status'] != last_status:
+                logger.warning('status %s', str(new_data['status']))
+            last_status = new_data['status']
+            if (new_data['status']['lost_connection'] and not
+                    old_data['status']['lost_connection']):
                 # 'lost connection' decision can happen at any time
                 old_data = new_data
             # has data changed?
@@ -617,13 +642,6 @@ class WeatherStation(object):
         earlier may be returned."""
         result = _decode(self.get_raw_data(ptr, unbuffered),
                          self._reading_format[self.ws_type])
-        # split up 'wind_dir' byte
-        if result['wind_dir'] is not None:
-            result['status'] |= (result['wind_dir'] & 0xF0) << 4
-            if result['wind_dir'] & 0x80:
-                result['wind_dir'] = None
-            else:
-                result['wind_dir'] &= 0x0F
         return result
 
     def current_pos(self):
@@ -724,9 +742,9 @@ class WeatherStation(object):
         'abs_pressure' : (7, WSFloat, {'signed': False, 'scale': 0.1}),
         'wind_ave'     : (9, WindAve, {}),
         'wind_gust'    : (10, WindGust, {}),
-        'wind_dir'     : (12, WSInt1, {'signed': False}),
+        'wind_dir'     : (12, WSWindDir, {}),
         'rain'         : (13, WSFloat, {'signed': False, 'scale': 0.3}),
-        'status'       : (15, WSInt1, {'signed': False}),
+        'status'       : (15, WSStatus, {}),
         }
     _reading_format['3080'] = {
         'illuminance' : (16, Illuminance, {}),
@@ -795,7 +813,7 @@ class WeatherStation(object):
                                'ms' : (77, WSFloat1, {'signed': False, 'scale': 0.1})},
             'wind_gust'     : {'bft': (79, WSInt1, {'signed': False}),
                                'ms' : (80, WSFloat1, {'signed': False, 'scale': 0.1})},
-            'wind_dir'      : (82, WSInt1, {'signed': False}),
+            'wind_dir'      : (82, WSWindDir, {}),
             'rain'          : {'hour' : (83, WSFloat, {'signed': False, 'scale': 0.3}),
                                'day'  : (85, WSFloat, {'signed': False, 'scale': 0.3})},
             'time'          : (87, WSTime, {}),
