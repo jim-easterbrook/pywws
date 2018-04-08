@@ -257,7 +257,19 @@ class WSTime(str):
         return WSTime('{:02d}:{:02d}'.format(hour, minute))
 
 
-class WSDateTime(str):
+class WSDateTime(datetime):
+    def __repr__(self):
+        return self.strftime('%Y-%m-%d %H:%M:%S')
+
+    @staticmethod
+    def from_csv(date_string):
+        return WSDateTime(*map(int, (date_string[0:4],
+                                     date_string[5:7],
+                                     date_string[8:10],
+                                     date_string[11:13],
+                                     date_string[14:16],
+                                     date_string[17:19])))
+
     @staticmethod
     def from_raw(raw, pos):
         year = _bcd_decode(raw[pos])
@@ -265,8 +277,7 @@ class WSDateTime(str):
         day = _bcd_decode(raw[pos+2])
         hour = _bcd_decode(raw[pos+3])
         minute = _bcd_decode(raw[pos+4])
-        return WSDateTime('{:4d}-{:02d}-{:02d} {:02d}:{:02d}'.format(
-            year + 2000, month, day, hour, minute))
+        return WSDateTime(year + 2000, month, day, hour, minute)
 
 
 def _decode(raw, format_):

@@ -83,20 +83,7 @@ else:
     from ConfigParser import RawConfigParser
 
 from pywws.constants import DAY
-from pywws.weatherstation import WSFloat, WSInt, WSStatus
-
-
-def safestrptime(date_string, format=None):
-    # time.strptime is time consuming (because it's so flexible?) so don't use
-    # it for the fixed format datetime strings in our csv files
-    if format:
-        return datetime(*(time.strptime(date_string, format)[0:6]))
-    return datetime(*map(int, (date_string[0:4],
-                               date_string[5:7],
-                               date_string[8:10],
-                               date_string[11:13],
-                               date_string[14:16],
-                               date_string[17:19])))
+from pywws.weatherstation import WSDateTime, WSFloat, WSInt, WSStatus
 
 
 class ParamStore(object):
@@ -138,7 +125,7 @@ class ParamStore(object):
     def get_datetime(self, section, option, default=None):
         result = self.get(section, option, default)
         if result:
-            return safestrptime(result)
+            return WSDateTime.from_csv(result)
         return result
 
     def set(self, section, option, value):
@@ -225,7 +212,7 @@ class CoreStore(object):
                 if file[0] == '.':
                     continue
                 path, self._lo_limit, hi = self._get_cache_path(
-                    safestrptime(file, "%Y-%m-%d.txt").date())
+                    datetime.strptime(file, "%Y-%m-%d.txt").date())
                 break
             else:
                 dirs.sort()
@@ -238,7 +225,7 @@ class CoreStore(object):
                 if file[0] == '.':
                     continue
                 path, lo, self._hi_limit = self._get_cache_path(
-                    safestrptime(file, "%Y-%m-%d.txt").date())
+                    datetime.strptime(file, "%Y-%m-%d.txt").date())
                 break
             else:
                 dirs.sort()
@@ -477,6 +464,7 @@ class CoreStore(object):
             float     : lambda x: '{:.12g}'.format(x),
             int       : str,
             type(None): lambda x: '',
+            WSDateTime: repr,
             WSFloat   : str,
             WSInt     : str,
             WSStatus  : WSStatus.to_csv,
@@ -509,7 +497,7 @@ class RawStore(CoreStore):
         'status', 'illuminance', 'uv',
         ]
     conv = {
-        'idx'          : safestrptime,
+        'idx'          : WSDateTime.from_csv,
         'delay'        : int,
         'hum_in'       : int,
         'temp_in'      : float,
@@ -535,7 +523,7 @@ class CalibStore(CoreStore):
         'rain', 'status', 'illuminance', 'uv',
         ]
     conv = {
-        'idx'          : safestrptime,
+        'idx'          : WSDateTime.from_csv,
         'delay'        : int,
         'hum_in'       : int,
         'temp_in'      : float,
@@ -562,7 +550,7 @@ class HourlyStore(CoreStore):
         'wind_ave', 'wind_gust', 'wind_dir', 'rain', 'illuminance', 'uv',
         ]
     conv = {
-        'idx'               : safestrptime,
+        'idx'               : WSDateTime.from_csv,
         'hum_in'            : int,
         'temp_in'           : float,
         'hum_out'           : int,
@@ -604,49 +592,49 @@ class DailyStore(CoreStore):
         'uv_ave', 'uv_max', 'uv_max_t',
         ]
     conv = {
-        'idx'                : safestrptime,
-        'start'              : safestrptime,
+        'idx'                : WSDateTime.from_csv,
+        'start'              : WSDateTime.from_csv,
         'hum_out_ave'        : float,
         'hum_out_min'        : int,
-        'hum_out_min_t'      : safestrptime,
+        'hum_out_min_t'      : WSDateTime.from_csv,
         'hum_out_max'        : int,
-        'hum_out_max_t'      : safestrptime,
+        'hum_out_max_t'      : WSDateTime.from_csv,
         'temp_out_ave'       : float,
         'temp_out_min'       : float,
-        'temp_out_min_t'     : safestrptime,
+        'temp_out_min_t'     : WSDateTime.from_csv,
         'temp_out_max'       : float,
-        'temp_out_max_t'     : safestrptime,
+        'temp_out_max_t'     : WSDateTime.from_csv,
         'hum_in_ave'         : float,
         'hum_in_min'         : int,
-        'hum_in_min_t'       : safestrptime,
+        'hum_in_min_t'       : WSDateTime.from_csv,
         'hum_in_max'         : int,
-        'hum_in_max_t'       : safestrptime,
+        'hum_in_max_t'       : WSDateTime.from_csv,
         'temp_in_ave'        : float,
         'temp_in_min'        : float,
-        'temp_in_min_t'      : safestrptime,
+        'temp_in_min_t'      : WSDateTime.from_csv,
         'temp_in_max'        : float,
-        'temp_in_max_t'      : safestrptime,
+        'temp_in_max_t'      : WSDateTime.from_csv,
         'abs_pressure_ave'   : float,
         'abs_pressure_min'   : float,
-        'abs_pressure_min_t' : safestrptime,
+        'abs_pressure_min_t' : WSDateTime.from_csv,
         'abs_pressure_max'   : float,
-        'abs_pressure_max_t' : safestrptime,
+        'abs_pressure_max_t' : WSDateTime.from_csv,
         'rel_pressure_ave'   : float,
         'rel_pressure_min'   : float,
-        'rel_pressure_min_t' : safestrptime,
+        'rel_pressure_min_t' : WSDateTime.from_csv,
         'rel_pressure_max'   : float,
-        'rel_pressure_max_t' : safestrptime,
+        'rel_pressure_max_t' : WSDateTime.from_csv,
         'wind_ave'           : float,
         'wind_gust'          : float,
-        'wind_gust_t'        : safestrptime,
+        'wind_gust_t'        : WSDateTime.from_csv,
         'wind_dir'           : float,
         'rain'               : float,
         'illuminance_ave'    : float,
         'illuminance_max'    : float,
-        'illuminance_max_t'  : safestrptime,
+        'illuminance_max_t'  : WSDateTime.from_csv,
         'uv_ave'             : float,
         'uv_max'             : int,
-        'uv_max_t'           : safestrptime,
+        'uv_max_t'           : WSDateTime.from_csv,
         }
 
     def _get_cache_path(self, target_date):
@@ -699,67 +687,67 @@ class MonthlyStore(CoreStore):
         'uv_max_lo', 'uv_max_lo_t', 'uv_max_hi', 'uv_max_hi_t', 'uv_max_ave',
         ]
     conv = {
-        'idx'                  : safestrptime,
-        'start'                : safestrptime,
+        'idx'                  : WSDateTime.from_csv,
+        'start'                : WSDateTime.from_csv,
         'hum_out_ave'          : float,
         'hum_out_min'          : int,
-        'hum_out_min_t'        : safestrptime,
+        'hum_out_min_t'        : WSDateTime.from_csv,
         'hum_out_max'          : int,
-        'hum_out_max_t'        : safestrptime,
+        'hum_out_max_t'        : WSDateTime.from_csv,
         'temp_out_ave'         : float,
         'temp_out_min_lo'      : float,
-        'temp_out_min_lo_t'    : safestrptime,
+        'temp_out_min_lo_t'    : WSDateTime.from_csv,
         'temp_out_min_hi'      : float,
-        'temp_out_min_hi_t'    : safestrptime,
+        'temp_out_min_hi_t'    : WSDateTime.from_csv,
         'temp_out_min_ave'     : float,
         'temp_out_max_lo'      : float,
-        'temp_out_max_lo_t'    : safestrptime,
+        'temp_out_max_lo_t'    : WSDateTime.from_csv,
         'temp_out_max_hi'      : float,
-        'temp_out_max_hi_t'    : safestrptime,
+        'temp_out_max_hi_t'    : WSDateTime.from_csv,
         'temp_out_max_ave'     : float,
         'hum_in_ave'           : float,
         'hum_in_min'           : int,
-        'hum_in_min_t'         : safestrptime,
+        'hum_in_min_t'         : WSDateTime.from_csv,
         'hum_in_max'           : int,
-        'hum_in_max_t'         : safestrptime,
+        'hum_in_max_t'         : WSDateTime.from_csv,
         'temp_in_ave'          : float,
         'temp_in_min_lo'       : float,
-        'temp_in_min_lo_t'     : safestrptime,
+        'temp_in_min_lo_t'     : WSDateTime.from_csv,
         'temp_in_min_hi'       : float,
-        'temp_in_min_hi_t'     : safestrptime,
+        'temp_in_min_hi_t'     : WSDateTime.from_csv,
         'temp_in_min_ave'      : float,
         'temp_in_max_lo'       : float,
-        'temp_in_max_lo_t'     : safestrptime,
+        'temp_in_max_lo_t'     : WSDateTime.from_csv,
         'temp_in_max_hi'       : float,
-        'temp_in_max_hi_t'     : safestrptime,
+        'temp_in_max_hi_t'     : WSDateTime.from_csv,
         'temp_in_max_ave'      : float,
         'abs_pressure_ave'     : float,
         'abs_pressure_min'     : float,
-        'abs_pressure_min_t'   : safestrptime,
+        'abs_pressure_min_t'   : WSDateTime.from_csv,
         'abs_pressure_max'     : float,
-        'abs_pressure_max_t'   : safestrptime,
+        'abs_pressure_max_t'   : WSDateTime.from_csv,
         'rel_pressure_ave'     : float,
         'rel_pressure_min'     : float,
-        'rel_pressure_min_t'   : safestrptime,
+        'rel_pressure_min_t'   : WSDateTime.from_csv,
         'rel_pressure_max'     : float,
-        'rel_pressure_max_t'   : safestrptime,
+        'rel_pressure_max_t'   : WSDateTime.from_csv,
         'wind_ave'             : float,
         'wind_gust'            : float,
-        'wind_gust_t'          : safestrptime,
+        'wind_gust_t'          : WSDateTime.from_csv,
         'wind_dir'             : float,
         'rain'                 : float,
         'rain_days'            : int,
         'illuminance_ave'      : float,
         'illuminance_max_lo'   : float,
-        'illuminance_max_lo_t' : safestrptime,
+        'illuminance_max_lo_t' : WSDateTime.from_csv,
         'illuminance_max_hi'   : float,
-        'illuminance_max_hi_t' : safestrptime,
+        'illuminance_max_hi_t' : WSDateTime.from_csv,
         'illuminance_max_ave'  : float,
         'uv_ave'               : float,
         'uv_max_lo'            : int,
-        'uv_max_lo_t'          : safestrptime,
+        'uv_max_lo_t'          : WSDateTime.from_csv,
         'uv_max_hi'            : int,
-        'uv_max_hi_t'          : safestrptime,
+        'uv_max_hi_t'          : WSDateTime.from_csv,
         'uv_max_ave'           : float,
         }
 

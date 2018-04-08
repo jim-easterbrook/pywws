@@ -313,6 +313,7 @@ import pywws.localisation
 import pywws.logger
 import pywws.storage
 from pywws.timezone import Local, utc
+import pywws.weatherstation
 
 logger = logging.getLogger(__name__)
 
@@ -509,7 +510,7 @@ class Template(object):
                     if '%' in time_str:
                         lcl = idx.replace(tzinfo=utc).astimezone(time_zone)
                         time_str = lcl.strftime(time_str)
-                    new_idx = pywws.storage.safestrptime(time_str)
+                    new_idx = pywws.weatherstation.WSDateTime.from_csv(time_str)
                     new_idx = new_idx.replace(tzinfo=time_zone).astimezone(utc)
                     new_idx = data_set.after(new_idx.replace(tzinfo=None))
                     if new_idx:
