@@ -150,19 +150,7 @@ class WSStatus(WSBits):
 
 class WSInt(int):
     @staticmethod
-    def from_raw(raw, pos, signed=False):
-        # decode two bytes to an int
-        value = raw[pos] + (raw[pos+1] << 8)
-        if value == 0xFFFF:
-            return None
-        if signed and value >= 0x8000:
-            value = 0x8000 - value
-        return WSInt(value)
-
-
-class WSInt1(WSInt):
-    @staticmethod
-    def from_raw(raw, pos, signed=False):
+    def from_1(raw, pos, signed=False):
         # decode one byte to an int
         value = raw[pos]
         if value == 0xFF:
@@ -171,10 +159,8 @@ class WSInt1(WSInt):
             value = 0x80 - value
         return WSInt(value)
 
-
-class WSWindDir(WSInt):
     @staticmethod
-    def from_raw(raw, pos):
+    def wind_dir(raw, pos):
         # decode one byte to an int
         value = raw[pos]
         # if bit 7 is 1, value is invalid
@@ -182,13 +168,69 @@ class WSWindDir(WSInt):
             return None
         return WSInt(value)
 
+    @staticmethod
+    def from_2(raw, pos, signed=False):
+        # decode two bytes to an int
+        value = raw[pos] + (raw[pos+1] << 8)
+        if value == 0xFFFF:
+            return None
+        if signed and value >= 0x8000:
+            value = 0x8000 - value
+        return WSInt(value)
+
+    @staticmethod
+    def from_3(raw, pos, signed=False):
+        # decode three bytes to an int
+        value = raw[pos] + (raw[pos+1] << 8) + (raw[pos+2] << 16)
+        if value == 0xFFFFFF:
+            return None
+        if signed and value >= 0x800000:
+            value = 0x800000 - value
+        return WSInt(value)
+
 
 class WSFloat(float):
     @staticmethod
-    def from_raw(raw, pos, signed=False, scale=1.0):
-        # decode two bytes to an int
-        value = WSInt.from_raw(raw, pos, signed=signed)
+    def from_1(raw, pos, signed=False, scale=1.0):
+        # decode one byte to an int
+        value = WSInt.from_1(raw, pos, signed=signed)
         if value is None:
+            return None
+        # convert to float
+        return WSFloat(float(value) * scale)
+
+    @staticmethod
+    def from_2(raw, pos, signed=False, scale=1.0):
+        # decode two bytes to an int
+        value = WSInt.from_2(raw, pos, signed=signed)
+        if value is None:
+            return None
+        # convert to float
+        return WSFloat(float(value) * scale)
+
+    @staticmethod
+    def from_3(raw, pos, signed=False, scale=1.0):
+        # decode three bytes to an int
+        value = WSInt.from_2(raw, pos, signed=signed)
+        if value is None:
+            return None
+        # convert to float
+        return WSFloat(float(value) * scale)
+
+    @staticmethod
+    def wind_ave(raw, pos, scale=1.0):
+        # wind average - 12 bits split across a byte and a nibble
+        value = raw[pos] + ((raw[pos+2] & 0x0F) << 8)
+        if value == 0xFFF:
+            return None
+        # convert to float
+        return WSFloat(float(value) * scale)
+
+    @staticmethod
+    def wind_gust(raw, pos, scale=1.0):
+        # wind gust - 12 bits split across a byte and a nibble
+        value = raw[pos] + ((raw[pos+1] & 0xF0) << 4)
+        if value == 0xFFF:
             return None
         # convert to float
         return WSFloat(float(value) * scale)
@@ -199,50 +241,6 @@ class WSFloat(float):
 
     def __repr__(self):
         return '{:.12g}'.format(self)
-
-
-class WSFloat1(WSFloat):
-    @staticmethod
-    def from_raw(raw, pos, signed=False, scale=1.0):
-        # decode one byte to an int
-        value = WSInt1.from_raw(raw, pos, signed=signed)
-        if value is None:
-            return None
-        # convert to float
-        return WSFloat(float(value) * scale)
-
-
-class Illuminance(WSFloat):
-    @staticmethod
-    def from_raw(raw, pos):
-        # decode three bytes to an unsigned int
-        value = raw[pos] + (raw[pos+1] << 8) + (raw[pos+2] << 16)
-        if value == 0xFFFFFF:
-            return None
-        # convert to float
-        return WSFloat(float(value) * 0.1)
-
-
-class WindAve(WSFloat):
-    @staticmethod
-    def from_raw(raw, pos):
-        # wind average - 12 bits split across a byte and a nibble
-        value = raw[pos] + ((raw[pos+2] & 0x0F) << 8)
-        if value == 0xFFF:
-            return None
-        # convert to float
-        return WSFloat(float(value) * 0.1)
-
-
-class WindGust(WSFloat):
-    @staticmethod
-    def from_raw(raw, pos):
-        # wind gust - 12 bits split across a byte and a nibble
-        value = raw[pos] + ((raw[pos+1] & 0xF0) << 4)
-        if value == 0xFFF:
-            return None
-        # convert to float
-        return WSFloat(float(value) * 0.1)
 
 
 def _bcd_decode(byte):
@@ -279,8 +277,8 @@ def _decode(raw, format_):
         for key, value in format_.items():
             result[key] = _decode(raw, value)
     else:
-        pos, class_, kwds = format_
-        result = class_.from_raw(raw, pos, **kwds)
+        pos, factory, kwds = format_
+        result = factory(raw, pos, **kwds)
     return result
 
 
@@ -734,150 +732,150 @@ class WeatherStation(object):
             time.sleep(6)
 
     # Tables of "meanings" for raw weather station data. Each key
-    # specifies an (offset, type, multiplier) tuple that is understood
+    # specifies an (offset, factory, kwds) tuple that is understood
     # by _decode.
     # depends on weather station type
     _reading_format = {}
     _reading_format['1080'] = {
-        'delay'        : (0, WSInt1, {'signed': False}),
-        'hum_in'       : (1, WSInt1, {'signed': False}),
-        'temp_in'      : (2, WSFloat, {'signed': True, 'scale': 0.1}),
-        'hum_out'      : (4, WSInt1, {'signed': False}),
-        'temp_out'     : (5, WSFloat, {'signed': True, 'scale': 0.1}),
-        'abs_pressure' : (7, WSFloat, {'signed': False, 'scale': 0.1}),
-        'wind_ave'     : (9, WindAve, {}),
-        'wind_gust'    : (10, WindGust, {}),
-        'wind_dir'     : (12, WSWindDir, {}),
-        'rain'         : (13, WSFloat, {'signed': False, 'scale': 0.3}),
-        'status'       : (15, WSStatus, {}),
+        'delay'        : (0, WSInt.from_1, {'signed': False}),
+        'hum_in'       : (1, WSInt.from_1, {'signed': False}),
+        'temp_in'      : (2, WSFloat.from_2, {'signed': True, 'scale': 0.1}),
+        'hum_out'      : (4, WSInt.from_1, {'signed': False}),
+        'temp_out'     : (5, WSFloat.from_2, {'signed': True, 'scale': 0.1}),
+        'abs_pressure' : (7, WSFloat.from_2, {'signed': False, 'scale': 0.1}),
+        'wind_ave'     : (9, WSFloat.wind_ave, {'scale': 0.1}),
+        'wind_gust'    : (10, WSFloat.wind_gust, {'scale': 0.1}),
+        'wind_dir'     : (12, WSInt.wind_dir, {}),
+        'rain'         : (13, WSFloat.from_2, {'signed': False, 'scale': 0.3}),
+        'status'       : (15, WSStatus.from_raw, {}),
         }
     _reading_format['3080'] = {
-        'illuminance' : (16, Illuminance, {}),
-        'uv'          : (19, WSInt1, {'signed': False}),
+        'illuminance' : (16, WSFloat.from_3, {'signed': False, 'scale': 0.1}),
+        'uv'          : (19, WSInt.from_1, {'signed': False}),
         }
     _reading_format['3080'].update(_reading_format['1080'])
     lo_fix_format = {
-        'read_period'   : (16, WSInt1, {'signed': False}),
-        'settings_1'    : (17, WSBits, {'keys': (
+        'read_period'   : (16, WSInt.from_1, {'signed': False}),
+        'settings_1'    : (17, WSBits.from_raw, {'keys': (
             'temp_in_F', 'temp_out_F', 'rain_in', 'bit3', 'bit4',
             'pressure_hPa', 'pressure_inHg', 'pressure_mmHg')}),
-        'settings_2'    : (18, WSBits, {'keys': (
+        'settings_2'    : (18, WSBits.from_raw, {'keys': (
             'wind_mps', 'wind_kmph', 'wind_knot', 'wind_mph', 'wind_bft',
             'bit5', 'bit6', 'bit7')}),
-        'display_1'     : (19, WSBits, {'keys': (
+        'display_1'     : (19, WSBits.from_raw, {'keys': (
             'pressure_rel', 'wind_gust', 'clock_12hr', 'date_mdy',
             'time_scale_24', 'show_year', 'show_day_name', 'alarm_time')}),
-        'display_2'     : (20, WSBits, {'keys': (
+        'display_2'     : (20, WSBits.from_raw, {'keys': (
             'temp_out_temp', 'temp_out_chill', 'temp_out_dew', 'rain_hour',
             'rain_day', 'rain_week', 'rain_month', 'rain_total')}),
-        'alarm_1'       : (21, WSBits, {'keys': (
+        'alarm_1'       : (21, WSBits.from_raw, {'keys': (
             'bit0', 'time', 'wind_dir', 'bit3', 'hum_in_lo', 'hum_in_hi',
             'hum_out_lo', 'hum_out_hi')}),
-        'alarm_2'       : (22, WSBits, {'keys': (
+        'alarm_2'       : (22, WSBits.from_raw, {'keys': (
             'wind_ave', 'wind_gust', 'rain_hour', 'rain_day',
             'pressure_abs_lo', 'pressure_abs_hi',
             'pressure_rel_lo', 'pressure_rel_hi')}),
-        'alarm_3'       : (23, WSBits, {'keys': (
+        'alarm_3'       : (23, WSBits.from_raw, {'keys': (
             'temp_in_lo', 'temp_in_hi', 'temp_out_lo', 'temp_out_hi',
             'wind_chill_lo', 'wind_chill_hi', 'dew_point_lo', 'dew_point_hi')}),
-        'timezone'      : (24, WSInt1, {'signed': True}),
-        'unknown_01'    : (25, WSInt1, {'signed': False}),
-        'data_changed'  : (26, WSInt1, {'signed': False}),
-        'data_count'    : (27, WSInt, {'signed': False}),
-        'display_3'     : (29, WSBits, {'keys': (
+        'timezone'      : (24, WSInt.from_1, {'signed': True}),
+        'unknown_01'    : (25, WSInt.from_1, {'signed': False}),
+        'data_changed'  : (26, WSInt.from_1, {'signed': False}),
+        'data_count'    : (27, WSInt.from_2, {'signed': False}),
+        'display_3'     : (29, WSBits.from_raw, {'keys': (
             'illuminance_fc', 'bit1', 'bit2', 'bit3', 'bit4', 'bit5', 'bit6',
             'bit7')}),
-        'current_pos'   : (30, WSInt, {'signed': False}),
+        'current_pos'   : (30, WSInt.from_2, {'signed': False}),
         }
     fixed_format = {
-        'magic_0'       : (0,  WSInt1, {'signed': False}),
-        'magic_1'       : (1,  WSInt1, {'signed': False}),
-        'rel_pressure'  : (32, WSFloat, {'signed': False, 'scale': 0.1}),
-        'abs_pressure'  : (34, WSFloat, {'signed': False, 'scale': 0.1}),
-        'lux_wm2_coeff' : (36, WSFloat, {'signed': False, 'scale': 0.1}),
-        'date_time'     : (43, WSDateTime, {}),
-        'unknown_18'    : (97, WSInt1, {'signed': False}),
+        'magic_0'       : (0,  WSInt.from_1, {'signed': False}),
+        'magic_1'       : (1,  WSInt.from_1, {'signed': False}),
+        'rel_pressure'  : (32, WSFloat.from_2, {'signed': False, 'scale': 0.1}),
+        'abs_pressure'  : (34, WSFloat.from_2, {'signed': False, 'scale': 0.1}),
+        'lux_wm2_coeff' : (36, WSFloat.from_2, {'signed': False, 'scale': 0.1}),
+        'date_time'     : (43, WSDateTime.from_raw, {}),
+        'unknown_18'    : (97, WSInt.from_1, {'signed': False}),
         'alarm'         : {
-            'hum_in'        : {'hi' : (48, WSInt1, {'signed': False}),
-                               'lo' : (49, WSInt1, {'signed': False})},
-            'temp_in'       : {'hi' : (50, WSFloat, {'signed': True, 'scale': 0.1}),
-                               'lo' : (52, WSFloat, {'signed': True, 'scale': 0.1})},
-            'hum_out'       : {'hi' : (54, WSInt1, {'signed': False}),
-                               'lo' : (55, WSInt1, {'signed': False})},
-            'temp_out'      : {'hi' : (56, WSFloat, {'signed': True, 'scale': 0.1}),
-                               'lo' : (58, WSFloat, {'signed': True, 'scale': 0.1})},
-            'windchill'     : {'hi' : (60, WSFloat, {'signed': True, 'scale': 0.1}),
-                               'lo' : (62, WSFloat, {'signed': True, 'scale': 0.1})},
-            'dewpoint'      : {'hi' : (64, WSFloat, {'signed': True, 'scale': 0.1}),
-                               'lo' : (66, WSFloat, {'signed': True, 'scale': 0.1})},
-            'abs_pressure'  : {'hi' : (68, WSFloat, {'signed': False, 'scale': 0.1}),
-                               'lo' : (70, WSFloat, {'signed': False, 'scale': 0.1})},
-            'rel_pressure'  : {'hi' : (72, WSFloat, {'signed': False, 'scale': 0.1}),
-                               'lo' : (74, WSFloat, {'signed': False, 'scale': 0.1})},
-            'wind_ave'      : {'bft': (76, WSInt1, {'signed': False}),
-                               'ms' : (77, WSFloat1, {'signed': False, 'scale': 0.1})},
-            'wind_gust'     : {'bft': (79, WSInt1, {'signed': False}),
-                               'ms' : (80, WSFloat1, {'signed': False, 'scale': 0.1})},
-            'wind_dir'      : (82, WSWindDir, {}),
-            'rain'          : {'hour' : (83, WSFloat, {'signed': False, 'scale': 0.3}),
-                               'day'  : (85, WSFloat, {'signed': False, 'scale': 0.3})},
-            'time'          : (87, WSTime, {}),
-            'illuminance'   : (89, Illuminance, {}),
-            'uv'            : (92, WSInt1, {'signed': False}),
+            'hum_in'        : {'hi' : (48, WSInt.from_1, {'signed': False}),
+                               'lo' : (49, WSInt.from_1, {'signed': False})},
+            'temp_in'       : {'hi' : (50, WSFloat.from_2, {'signed': True, 'scale': 0.1}),
+                               'lo' : (52, WSFloat.from_2, {'signed': True, 'scale': 0.1})},
+            'hum_out'       : {'hi' : (54, WSInt.from_1, {'signed': False}),
+                               'lo' : (55, WSInt.from_1, {'signed': False})},
+            'temp_out'      : {'hi' : (56, WSFloat.from_2, {'signed': True, 'scale': 0.1}),
+                               'lo' : (58, WSFloat.from_2, {'signed': True, 'scale': 0.1})},
+            'windchill'     : {'hi' : (60, WSFloat.from_2, {'signed': True, 'scale': 0.1}),
+                               'lo' : (62, WSFloat.from_2, {'signed': True, 'scale': 0.1})},
+            'dewpoint'      : {'hi' : (64, WSFloat.from_2, {'signed': True, 'scale': 0.1}),
+                               'lo' : (66, WSFloat.from_2, {'signed': True, 'scale': 0.1})},
+            'abs_pressure'  : {'hi' : (68, WSFloat.from_2, {'signed': False, 'scale': 0.1}),
+                               'lo' : (70, WSFloat.from_2, {'signed': False, 'scale': 0.1})},
+            'rel_pressure'  : {'hi' : (72, WSFloat.from_2, {'signed': False, 'scale': 0.1}),
+                               'lo' : (74, WSFloat.from_2, {'signed': False, 'scale': 0.1})},
+            'wind_ave'      : {'bft': (76, WSInt.from_1, {'signed': False}),
+                               'ms' : (77, WSFloat.from_1, {'signed': False, 'scale': 0.1})},
+            'wind_gust'     : {'bft': (79, WSInt.from_1, {'signed': False}),
+                               'ms' : (80, WSFloat.from_1, {'signed': False, 'scale': 0.1})},
+            'wind_dir'      : (82, WSInt.wind_dir, {}),
+            'rain'          : {'hour' : (83, WSFloat.from_2, {'signed': False, 'scale': 0.3}),
+                               'day'  : (85, WSFloat.from_2, {'signed': False, 'scale': 0.3})},
+            'time'          : (87, WSTime.from_raw, {}),
+            'illuminance'   : (89, WSFloat.from_3, {'signed': False, 'scale': 0.1}),
+            'uv'            : (92, WSInt.from_1, {'signed': False}),
             },
         'max'           : {
-            'uv'            : {'val' : (93, WSInt1, {'signed': False})},
-            'illuminance'   : {'val' : (94, Illuminance, {})},
-            'hum_in'        : {'val' : (98, WSInt1, {'signed': False}),
-                               'date': (141, WSDateTime, {})},
-            'hum_out'       : {'val' : (100, WSInt1, {'signed': False}),
-                               'date': (151, WSDateTime, {})},
-            'temp_in'       : {'val' : (102, WSFloat, {'signed': True, 'scale': 0.1}),
-                               'date': (161, WSDateTime, {})},
-            'temp_out'      : {'val' : (106, WSFloat, {'signed': True, 'scale': 0.1}),
-                               'date': (171, WSDateTime, {})},
-            'windchill'     : {'val' : (110, WSFloat, {'signed': True, 'scale': 0.1}),
-                               'date': (181, WSDateTime, {})},
-            'dewpoint'      : {'val' : (114, WSFloat, {'signed': True, 'scale': 0.1}),
-                               'date': (191, WSDateTime, {})},
-            'abs_pressure'  : {'val' : (118, WSFloat, {'signed': False, 'scale': 0.1}),
-                               'date': (201, WSDateTime, {})},
-            'rel_pressure'  : {'val' : (122, WSFloat, {'signed': False, 'scale': 0.1}),
-                               'date': (211, WSDateTime, {})},
-            'wind_ave'      : {'val' : (126, WSFloat, {'signed': False, 'scale': 0.1}),
-                               'date': (221, WSDateTime, {})},
-            'wind_gust'     : {'val' : (128, WSFloat, {'signed': False, 'scale': 0.1}),
-                               'date': (226, WSDateTime, {})},
+            'uv'            : {'val' : (93, WSInt.from_1, {'signed': False})},
+            'illuminance'   : {'val' : (94, WSFloat.from_3, {'signed': False, 'scale': 0.1})},
+            'hum_in'        : {'val' : (98, WSInt.from_1, {'signed': False}),
+                               'date': (141, WSDateTime.from_raw, {})},
+            'hum_out'       : {'val' : (100, WSInt.from_1, {'signed': False}),
+                               'date': (151, WSDateTime.from_raw, {})},
+            'temp_in'       : {'val' : (102, WSFloat.from_2, {'signed': True, 'scale': 0.1}),
+                               'date': (161, WSDateTime.from_raw, {})},
+            'temp_out'      : {'val' : (106, WSFloat.from_2, {'signed': True, 'scale': 0.1}),
+                               'date': (171, WSDateTime.from_raw, {})},
+            'windchill'     : {'val' : (110, WSFloat.from_2, {'signed': True, 'scale': 0.1}),
+                               'date': (181, WSDateTime.from_raw, {})},
+            'dewpoint'      : {'val' : (114, WSFloat.from_2, {'signed': True, 'scale': 0.1}),
+                               'date': (191, WSDateTime.from_raw, {})},
+            'abs_pressure'  : {'val' : (118, WSFloat.from_2, {'signed': False, 'scale': 0.1}),
+                               'date': (201, WSDateTime.from_raw, {})},
+            'rel_pressure'  : {'val' : (122, WSFloat.from_2, {'signed': False, 'scale': 0.1}),
+                               'date': (211, WSDateTime.from_raw, {})},
+            'wind_ave'      : {'val' : (126, WSFloat.from_2, {'signed': False, 'scale': 0.1}),
+                               'date': (221, WSDateTime.from_raw, {})},
+            'wind_gust'     : {'val' : (128, WSFloat.from_2, {'signed': False, 'scale': 0.1}),
+                               'date': (226, WSDateTime.from_raw, {})},
             'rain'          : {
-                'hour'          : {'val' : (130, WSFloat, {'signed': False, 'scale': 0.3}),
-                                   'date': (231, WSDateTime, {})},
-                'day'           : {'val' : (132, WSFloat, {'signed': False, 'scale': 0.3}),
-                                   'date': (236, WSDateTime, {})},
-                'week'          : {'val' : (134, WSFloat, {'signed': False, 'scale': 0.3}),
-                                   'date': (241, WSDateTime, {})},
-                'month'         : {'val' : (136, WSFloat, {'signed': False, 'scale': 0.3}),
-                                   'date': (246, WSDateTime, {})},
-                'total'         : {'val' : (138, WSFloat, {'signed': False, 'scale': 0.3}),
-                                   'date': (251, WSDateTime, {})},
+                'hour'          : {'val' : (130, WSFloat.from_2, {'signed': False, 'scale': 0.3}),
+                                   'date': (231, WSDateTime.from_raw, {})},
+                'day'           : {'val' : (132, WSFloat.from_2, {'signed': False, 'scale': 0.3}),
+                                   'date': (236, WSDateTime.from_raw, {})},
+                'week'          : {'val' : (134, WSFloat.from_2, {'signed': False, 'scale': 0.3}),
+                                   'date': (241, WSDateTime.from_raw, {})},
+                'month'         : {'val' : (136, WSFloat.from_2, {'signed': False, 'scale': 0.3}),
+                                   'date': (246, WSDateTime.from_raw, {})},
+                'total'         : {'val' : (138, WSFloat.from_2, {'signed': False, 'scale': 0.3}),
+                                   'date': (251, WSDateTime.from_raw, {})},
                 },
             },
         'min'           : {
-            'hum_in'        : {'val' : (99, WSInt1, {'signed': False}),
-                               'date': (146, WSDateTime, {})},
-            'hum_out'       : {'val' : (101, WSInt1, {'signed': False}),
-                               'date': (156, WSDateTime, {})},
-            'temp_in'       : {'val' : (104, WSFloat, {'signed': True, 'scale': 0.1}),
-                               'date': (166, WSDateTime, {})},
-            'temp_out'      : {'val' : (108, WSFloat, {'signed': True, 'scale': 0.1}),
-                               'date': (176, WSDateTime, {})},
-            'windchill'     : {'val' : (112, WSFloat, {'signed': True, 'scale': 0.1}),
-                               'date': (186, WSDateTime, {})},
-            'dewpoint'      : {'val' : (116, WSFloat, {'signed': True, 'scale': 0.1}),
-                               'date': (196, WSDateTime, {})},
-            'abs_pressure'  : {'val' : (120, WSFloat, {'signed': False, 'scale': 0.1}),
-                               'date': (206, WSDateTime, {})},
-            'rel_pressure'  : {'val' : (124, WSFloat, {'signed': False, 'scale': 0.1}),
-                               'date': (216, WSDateTime, {})},
+            'hum_in'        : {'val' : (99, WSInt.from_1, {'signed': False}),
+                               'date': (146, WSDateTime.from_raw, {})},
+            'hum_out'       : {'val' : (101, WSInt.from_1, {'signed': False}),
+                               'date': (156, WSDateTime.from_raw, {})},
+            'temp_in'       : {'val' : (104, WSFloat.from_2, {'signed': True, 'scale': 0.1}),
+                               'date': (166, WSDateTime.from_raw, {})},
+            'temp_out'      : {'val' : (108, WSFloat.from_2, {'signed': True, 'scale': 0.1}),
+                               'date': (176, WSDateTime.from_raw, {})},
+            'windchill'     : {'val' : (112, WSFloat.from_2, {'signed': True, 'scale': 0.1}),
+                               'date': (186, WSDateTime.from_raw, {})},
+            'dewpoint'      : {'val' : (116, WSFloat.from_2, {'signed': True, 'scale': 0.1}),
+                               'date': (196, WSDateTime.from_raw, {})},
+            'abs_pressure'  : {'val' : (120, WSFloat.from_2, {'signed': False, 'scale': 0.1}),
+                               'date': (206, WSDateTime.from_raw, {})},
+            'rel_pressure'  : {'val' : (124, WSFloat.from_2, {'signed': False, 'scale': 0.1}),
+                               'date': (216, WSDateTime.from_raw, {})},
             },
         }
     fixed_format.update(lo_fix_format)
