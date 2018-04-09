@@ -68,6 +68,7 @@ from datetime import datetime, timedelta
 import getopt
 import logging
 import os
+import pprint
 import sys
 import time
 
@@ -121,7 +122,7 @@ class DataLogger(object):
             self.params.set('config', 'pressure offset', '%g' % (
                 fixed_block['rel_pressure'] - fixed_block['abs_pressure']))
         self.params.unset('fixed', 'fixed block')
-        self.status.set('fixed', 'fixed block', str(fixed_block))
+        self.status.set('fixed', 'fixed block', pprint.pformat(fixed_block))
         return fixed_block
 
     def catchup(self, last_date, last_ptr):

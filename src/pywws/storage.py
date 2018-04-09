@@ -464,7 +464,7 @@ class CoreStore(object):
             float     : lambda x: '{:.12g}'.format(x),
             int       : str,
             type(None): lambda x: '',
-            WSDateTime: repr,
+            WSDateTime: WSDateTime.to_csv,
             WSFloat   : str,
             WSInt     : str,
             WSStatus  : WSStatus.to_csv,

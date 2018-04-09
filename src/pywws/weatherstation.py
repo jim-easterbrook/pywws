@@ -258,7 +258,11 @@ class WSTime(str):
 
 
 class WSDateTime(datetime):
+    # only save string representation in 'fixed block' in status.ini
     def __repr__(self):
+        return repr(self.strftime('%Y-%m-%d %H:%M:%S'))
+
+    def to_csv(self):
         return self.strftime('%Y-%m-%d %H:%M:%S')
 
     @staticmethod
