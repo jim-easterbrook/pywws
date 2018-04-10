@@ -688,8 +688,8 @@ class BasePlotter(object):
         title = self.graph.get_value('title', '')
         if title:
             if '%' in title:
-                x_hi = (self.x_hi -
-                        self.utcoffset).replace(tzinfo=utc).astimezone(Local)
+                x_hi = utc.localize(
+                    self.x_hi - self.utcoffset).astimezone(Local)
                 if sys.version_info[0] < 3:
                     title = title.encode(self.encoding[0])
                 title = x_hi.strftime(title)
@@ -786,10 +786,8 @@ set timefmt "%Y-%m-%dT%H:%M:%S"
         pressure_offset = self.pressure_offset
         # label x axis of last plot
         if plot_no == self.plot_count - 1:
-            x_lo = (self.x_lo -
-                    self.utcoffset).replace(tzinfo=utc).astimezone(Local)
-            x_hi = (self.x_hi -
-                    self.utcoffset).replace(tzinfo=utc).astimezone(Local)
+            x_lo = utc.localize(self.x_lo - self.utcoffset).astimezone(Local)
+            x_hi = utc.localize(self.x_hi - self.utcoffset).astimezone(Local)
             if self.duration <= timedelta(hours=24):
                 # TX_NOTE Keep the "(%Z)" formatting string
                 xlabel = _('Time (%Z)')

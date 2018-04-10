@@ -58,7 +58,7 @@ class YoWindow(object):
         self.logger = logging.getLogger('pywws.YoWindow')
         self.data = calib_data
         # compute local midnight
-        self.midnight = datetime.utcnow().replace(tzinfo=utc).astimezone(
+        self.midnight = utc.localize(datetime.utcnow()).astimezone(
             Local).replace(hour=0, minute=0, second=0).astimezone(
                 utc).replace(tzinfo=None)
         self.day = timedelta(hours=24)
