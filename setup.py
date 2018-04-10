@@ -185,7 +185,7 @@ setup(name = 'pywws',
           ],
       license = 'GNU GPL',
       platforms = ['POSIX', 'MacOS', 'Windows'],
-      packages = ['pywws'],
+      packages = ['pywws', 'pywws.service'],
       package_dir = {'' : 'src'},
       package_data = {
           'pywws' : [
