@@ -50,7 +50,7 @@ class WUUploader(pywws.service.BaseUploader):
             url = 'https://weatherstation.wunderground.com/'
         url += 'weatherstation/updateweatherstation.php'
         try:
-            rsp = session.get(url, params=prepared_data, timeout=20)
+            rsp = session.get(url, params=prepared_data, timeout=30)
         except Exception as ex:
             return str(ex)
         if rsp.status_code != 200:

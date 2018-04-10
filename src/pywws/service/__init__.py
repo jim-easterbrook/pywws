@@ -68,7 +68,7 @@ class BaseUploader(threading.Thread):
                                 self.logger.error(response)
                                 old_response = response
                             # upload failed, wait before trying again
-                            pause = 60
+                            pause = 40
                             break
                         count += 1
                         if timestamp:
