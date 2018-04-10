@@ -74,7 +74,7 @@ import csv
 from datetime import date, datetime, timedelta, MAXYEAR
 import os
 import sys
-from threading import Lock
+import threading
 import time
 
 if sys.version_info[0] >= 3:
@@ -88,7 +88,7 @@ from pywws.weatherstation import WSDateTime, WSFloat, WSInt, WSStatus
 
 class ParamStore(object):
     def __init__(self, root_dir, file_name):
-        self._lock = Lock()
+        self._lock = threading.Lock()
         with self._lock:
             if not os.path.isdir(root_dir):
                 raise RuntimeError(
@@ -779,11 +779,20 @@ def pywws_context(data_dir):
     ctx.hourly_data = HourlyStore(data_dir)
     ctx.daily_data = DailyStore(data_dir)
     ctx.monthly_data = MonthlyStore(data_dir)
+    # create an event to shutdown threads
+    ctx.shutdown = threading.Event()
     # return control to main program
     try:
         yield ctx
-    # flush all unsaved data
     finally:
+        # signal threads to terminate
+        ctx.shutdown.set()
+        # wait for threads to terminate
+        for thread in threading.enumerate():
+            if thread == threading.current_thread():
+                continue
+            thread.join()
+        # flush all unsaved data
         ctx.params.flush()
         ctx.status.flush()
         ctx.raw_data.flush()

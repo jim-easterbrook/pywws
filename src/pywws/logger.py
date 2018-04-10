@@ -28,17 +28,31 @@ from pywws import __version__, _release, _commit
 
 logger = logging.getLogger(__name__)
 
+
+class FilterURLLib3(object):
+    def __init__(self, level):
+        self.level = level
+
+    def filter(self, record):
+        if (record.name == 'urllib3.connectionpool' and
+                record.levelno < self.level + 1):
+            return 0
+        return 1
+
 def setup_handler(verbose, logfile=None):
     root_logger = logging.getLogger('')
     if logfile:
-        root_logger.setLevel(max(logging.ERROR - (verbose * 10), 1))
+        level = logging.ERROR - (verbose * 10)
         handler = logging.handlers.RotatingFileHandler(
             logfile, maxBytes=128*1024, backupCount=3)
         datefmt = '%Y-%m-%d %H:%M:%S'
     else:
-        root_logger.setLevel(max(logging.WARNING - (verbose * 10), 1))
+        level = logging.WARNING - (verbose * 10)
         handler = logging.StreamHandler()
         datefmt = '%H:%M:%S'
+    level = max(level, 1)
+    root_logger.setLevel(level)
+    handler.addFilter(FilterURLLib3(level))
     handler.setFormatter(
         logging.Formatter('%(asctime)s:%(name)s:%(message)s', datefmt))
     root_logger.addHandler(handler)

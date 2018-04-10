@@ -22,6 +22,7 @@ from __future__ import absolute_import
 
 from collections import deque
 from datetime import datetime, timedelta
+import importlib
 import logging
 import os
 import shutil
@@ -93,10 +94,16 @@ class RegularTasks(object):
                     self.cron[section].get_next()
         # create service uploader objects
         self.services = {}
+        self.new_services = {}
         for section in list(self.cron.keys()) + [
                        'live', 'logged', 'hourly', '12 hourly', 'daily']:
             for name in eval(self.params.get(section, 'services', '[]')):
-                if name not in self.services:
+                if name in self.services or name in self.new_services:
+                    continue
+                try:
+                    mod = importlib.import_module('pywws.service.' + name)
+                    self.new_services[name] = getattr(mod, 'ToService')(context)
+                except ImportError:
                     self.services[name] = ToService(context, name)
             # check for obsolete entries
             if self.params.get(section, 'twitter') not in (None, '[]'):
@@ -120,6 +127,8 @@ class RegularTasks(object):
             self.thread.start()
 
     def stop_thread(self):
+        for name in self.new_services:
+            self.new_services[name].shutdown()
         if not self.asynch:
             return
         self.shutdown_thread.set()
@@ -350,6 +359,9 @@ class RegularTasks(object):
         self.uploader.disconnect()
 
     def _do_service(self, name, live_data):
+        if name in self.new_services:
+            self.new_services[name].upload(live_data=live_data)
+            return
         service = self.services[name]
         if len(self.service_queue[name]) >= 50:
             return

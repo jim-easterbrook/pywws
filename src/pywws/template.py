@@ -392,9 +392,11 @@ class Template(object):
             tmplt = open(template_file, 'rb')
         # do the text processing
         while True:
-            line = tmplt.readline().decode(file_encoding)
+            line = tmplt.readline()
             if not line:
                 break
+            if isinstance(line, bytes) or sys.version_info[0] < 3:
+                line = line.decode(file_encoding)
             parts = line.split('#')
             for i in range(len(parts)):
                 if i % 2 == 0:
