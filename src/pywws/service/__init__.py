@@ -20,9 +20,7 @@ from __future__ import absolute_import, print_function, unicode_literals
 
 import argparse
 from collections import deque
-from contextlib import contextmanager
 from datetime import datetime, timedelta
-import logging
 import os
 import sys
 import threading
@@ -32,8 +30,6 @@ if sys.version_info[0] >= 3:
     from io import StringIO
 else:
     from StringIO import StringIO
-
-import requests
 
 import pywws
 import pywws.logger
@@ -51,41 +47,42 @@ class BaseUploader(threading.Thread):
     def run(self):
         old_response = ''
         pause = 0
-        count = 0
-        with self.session() as session:
-            while not self.context.shutdown.is_set():
-                if pause:
-                    pause -= 1
-                elif self.queue:
-                    # look at upload without taking it off queue
-                    upload = self.queue[0]
-                    if not upload:
-                        return
-                    timestamp, prepared_data, live = upload
-                    prepared_data.update(self.fixed_data)
-                    response = self.upload(session, prepared_data, live)
-                    if response:
-                        if response == old_response:
-                            self.logger.debug(response)
-                        else:
-                            self.logger.error(response)
-                            old_response = response
-                        # upload failed, wait before trying again
-                        pause = 60
-                    else:
+        while not self.context.shutdown.is_set():
+            if pause:
+                pause -= 1
+            elif self.queue:
+                count = 0
+                with self.session() as session:
+                    while self.queue and not self.context.shutdown.is_set():
+                        # look at upload without taking it off queue
+                        upload = self.queue[0]
+                        if not upload:
+                            break
+                        timestamp, prepared_data, live = upload
+                        prepared_data.update(self.fixed_data)
+                        response = self.upload(session, prepared_data, live)
+                        if response:
+                            if response == old_response:
+                                self.logger.debug(response)
+                            else:
+                                self.logger.error(response)
+                                old_response = response
+                            # upload failed, wait before trying again
+                            pause = 60
+                            break
                         count += 1
                         if timestamp:
                             self.context.status.set(
                                 'last update', self.service_name, str(timestamp))
                         # finally remove upload from queue
                         self.queue.popleft()
-                    if count and (pause or not self.queue):
-                        if count > 1:
-                            self.logger.info('{:d} records sent'.format(count))
-                        else:
-                            self.logger.debug('1 record sent')
-                        count = 0
-                time.sleep(1)
+                if count > 1:
+                    self.logger.info('{:d} records sent'.format(count))
+                elif count:
+                    self.logger.debug('1 record sent')
+                if not upload:
+                    break
+            time.sleep(1)
 
 
 class BaseToService(object):
@@ -115,7 +112,7 @@ class BaseToService(object):
             self.next_update = min(
                 self.next_update, self.context.calib_data.before(datetime.max))
         for data, live in self.next_data(catchup, live_data):
-            if max(count, len(self.upload_thread.queue)) >= 20:
+            if count >= 30 or len(self.upload_thread.queue) >= 60:
                 break
             timestamp = data['idx']
             if test_mode:
@@ -164,7 +161,7 @@ def main(ToService, description, argv=None):
     parser.add_argument('-v', '--verbose', action='count',
                         help='increase amount of reassuring messages')
     parser.add_argument('data_dir', help='root directory of the weather data')
-    args = parser.parse_args(argv)
+    args = parser.parse_args(argv[1:])
     pywws.logger.setup_handler(args.verbose)
     with pywws.storage.pywws_context(args.data_dir) as context:
         uploader = ToService(context)
