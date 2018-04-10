@@ -44,43 +44,49 @@ class BaseUploader(threading.Thread):
         self.queue = deque()
 
     def run(self):
-        old_message = ''
+        self.old_message = ''
         pause = 0
         while not self.context.shutdown.is_set():
             if pause:
                 pause -= 1
             elif self.queue:
-                count = 0
-                with self.session() as session:
-                    while self.queue and not self.context.shutdown.is_set():
-                        # look at upload without taking it off queue
-                        upload = self.queue[0]
-                        if not upload:
-                            break
-                        timestamp, prepared_data, live = upload
-                        OK, message = self.upload(session, prepared_data, live)
-                        if message == old_message:
-                            self.logger.debug(message)
-                        else:
-                            self.logger.error(message)
-                            old_message = message
-                        if not OK:
-                            # upload failed, wait before trying again
-                            pause = 40
-                            break
-                        count += 1
-                        if timestamp:
-                            self.context.status.set(
-                                'last update', self.service_name, str(timestamp))
-                        # finally remove upload from queue
-                        self.queue.popleft()
-                if count > 1:
-                    self.logger.info('{:d} records sent'.format(count))
-                elif count:
-                    self.logger.debug('1 record sent')
-                if not upload:
+                OK = self.upload_batch()
+                if OK < 0:
                     break
+                if not OK:
+                    # upload failed, wait before trying again
+                    pause = 40
             time.sleep(1)
+
+    def upload_batch(self):
+        count = 0
+        with self.session() as session:
+            while self.queue and not self.context.shutdown.is_set():
+                # look at upload without taking it off queue
+                upload = self.queue[0]
+                if not upload:
+                    OK = -1
+                    break
+                timestamp, prepared_data, live = upload
+                OK, message = self.upload(session, prepared_data, live)
+                if message == self.old_message:
+                    self.logger.debug(message)
+                else:
+                    self.logger.error(message)
+                    self.old_message = message
+                if not OK:
+                    break
+                count += 1
+                if timestamp:
+                    self.context.status.set(
+                        'last update', self.service_name, str(timestamp))
+                # finally remove upload from queue
+                self.queue.popleft()
+        if count > 1:
+            self.logger.info('{:d} records sent'.format(count))
+        elif count:
+            self.logger.debug('1 record sent')
+        return OK
 
 
 class BaseToService(object):
