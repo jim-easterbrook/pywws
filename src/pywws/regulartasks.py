@@ -34,7 +34,6 @@ from pywws.timezone import STDOFFSET, local_utc_offset
 from pywws.toservice import ToService
 import pywws.towebsite
 import pywws.windrose
-import pywws.yowindow
 
 logger = logging.getLogger(__name__)
 
@@ -75,8 +74,6 @@ class RegularTasks(object):
             os.mkdir(self.uploads_directory)
         # delay creation of a Twitter object until we know it's needed
         self.twitter = None
-        # create a YoWindow object
-        self.yowindow = pywws.yowindow.YoWindow(self.calib_data)
         # get daytime end hour, in UTC
         self.day_end_hour = eval(self.params.get('config', 'day end hour', '21'))
         self.day_end_hour = (self.day_end_hour - (STDOFFSET.seconds // 3600)) % 24
@@ -101,13 +98,13 @@ class RegularTasks(object):
             for name in eval(self.params.get(section, 'services', '[]')):
                 if name not in self.services:
                     self.services[name] = ToService(context, name)
-            # check for deprecated syntax
+            # check for obsolete entries
             if self.params.get(section, 'twitter') not in (None, '[]'):
-                logger.warning(
-                    'Deprecated twitter entry in [%s]', section)
+                logger.error(
+                    'Deprecated twitter entry in weather.ini [%s]', section)
             if self.params.get(section, 'yowindow'):
-                logger.warning(
-                    'Deprecated yowindow entry in [%s]', section)
+                logger.error(
+                    'Obsolete yowindow entry in weather.ini [%s]', section)
         # create queues for things to upload / send
         self.tweet_queue = deque()
         self.service_queue = {}
@@ -181,9 +178,6 @@ class RegularTasks(object):
     def has_live_tasks(self):
         if self.cron:
             return True
-        yowindow_file = self.params.get('live', 'yowindow')
-        if yowindow_file:
-            return True
         if self.params.get('live', 'twitter') not in (None, '[]'):
             return True
         for name in eval(self.params.get('live', 'services', '[]')):
@@ -204,11 +198,6 @@ class RegularTasks(object):
     def _do_common(self, sections, live_data=None):
         if self.asynch and not self.thread.isAlive():
             raise RuntimeError('Asynchronous thread terminated unexpectedly')
-        for section in sections:
-            yowindow_file = self.params.get(section, 'yowindow')
-            if yowindow_file:
-                self.yowindow.write_file(yowindow_file)
-                break
         for section in sections:
             templates = self.params.get(section, 'twitter')
             if templates not in (None, '[]'):
