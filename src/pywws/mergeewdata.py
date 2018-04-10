@@ -103,7 +103,7 @@ def main(argv=None):
     for line in in_file:
         items = line.split(',')
         local_date = datetime.strptime(items[2].strip(), '%Y-%m-%d %H:%M:%S')
-        local_date = local_date.replace(tzinfo=pywws.timezone.Local)
+        local_date = pywws.timezone.Local.localize(local_date)
         date = local_date.astimezone(pywws.timezone.utc)
         if last_date and date < last_date:
             date = date + timedelta(hours=1)

@@ -167,12 +167,12 @@ def main(argv=None):
         hourly_data = context.hourly_data
         idx = hourly_data.before(datetime.max)
         print('Zambretti (current):', zambretti(params, hourly_data[idx]))
-        idx = idx.replace(tzinfo=utc).astimezone(Local)
+        idx = utc.localize(idx).astimezone(Local)
         if idx.hour < 8 or (idx.hour == 8 and idx.minute < 30):
             idx -= timedelta(hours=24)
         idx = idx.replace(hour=9, minute=0, second=0)
         idx = hourly_data.nearest(idx.astimezone(utc).replace(tzinfo=None))
-        lcl = idx.replace(tzinfo=utc).astimezone(Local)
+        lcl = utc.localize(idx).astimezone(Local)
         print('Zambretti (at %s):' % lcl.strftime('%H:%M %Z'), zambretti(
             params, hourly_data[idx]))
     return 0

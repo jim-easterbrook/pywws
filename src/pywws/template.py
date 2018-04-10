@@ -429,8 +429,7 @@ class Template(object):
                     if isinstance(x, datetime):
                         if round_time:
                             x += round_time
-                        x = x.replace(tzinfo=utc)
-                        x = x.astimezone(time_zone)
+                        x = utc.localize(x).astimezone(time_zone)
                     # convert data
                     if x is not None and len(command) > 3:
                         x = eval(command[3])
@@ -508,10 +507,10 @@ class Template(object):
                     prevdata = data
                     time_str = command[1]
                     if '%' in time_str:
-                        lcl = idx.replace(tzinfo=utc).astimezone(time_zone)
+                        lcl = utc.localize(idx).astimezone(time_zone)
                         time_str = lcl.strftime(time_str)
                     new_idx = pywws.weatherstation.WSDateTime.from_csv(time_str)
-                    new_idx = new_idx.replace(tzinfo=time_zone).astimezone(utc)
+                    new_idx = time_zone.localize(new_idx).astimezone(utc)
                     new_idx = data_set.after(new_idx.replace(tzinfo=None))
                     if new_idx:
                         idx = new_idx
@@ -557,7 +556,7 @@ class Template(object):
 
     def _rain_day(self, data):
         if not self.midnight:
-            self.midnight = datetime.utcnow().replace(tzinfo=utc).astimezone(
+            self.midnight = utc.localize(datetime.utcnow()).astimezone(
                 Local).replace(hour=0, minute=0, second=0).astimezone(
                     utc).replace(tzinfo=None)
         while data['idx'] < self.midnight:
