@@ -1,8 +1,6 @@
-#!/usr/bin/env python
-
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-16  pywws contributors
+# Copyright (C) 2008-18  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -27,11 +25,11 @@ Introduction
 ------------
 
 This module uploads files to (typically) a website *via* ftp/sftp or
-copies files to a local directory (e.g. if you are running pywws on
-the your web server). Details of the upload destination are stored in
-the file ``weather.ini`` in your data directory. The only way to set
-these details is to edit the file. Run :py:mod:`pywws.Upload` once to
-set the default values, which you can then change. Here is what you're
+copies files to a local directory (e.g. if you are running pywws on the
+web server). Details of the upload destination are stored in the file
+``weather.ini`` in your data directory. The only way to set these
+details is to edit the file. Run :py:mod:`pywws.towebsite` once to set
+the default values, which you can then change. Here is what you're
 likely to find when you edit ``weather.ini``::
 
   [ftp]
@@ -62,11 +60,11 @@ Detailed API
 
 """
 
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function
 
 __docformat__ = "restructuredtext en"
 __usage__ = """
- usage: python -m pywws.Upload [options] data_dir file [file...]
+ usage: python -m pywws.towebsite [options] data_dir file [file...]
  options are:
   -h or --help    display this help
  data_dir is the root directory of the weather data
@@ -84,14 +82,16 @@ import os
 import shutil
 import sys
 
-from pywws import DataStore
-from pywws.Logger import ApplicationLogger
+import pywws.logger
+import pywws.storage
+
+logger = logging.getLogger(__name__)
+
 
 class _ftp(object):
-    def __init__(self, logger, site, user, password, directory, port):
+    def __init__(self, site, user, password, directory, port):
         global ftplib
         import ftplib
-        self.logger = logger
         self.site = site
         self.user = user
         self.password = password
@@ -99,33 +99,33 @@ class _ftp(object):
         self.port = port
 
     def connect(self):
-        self.logger.info("Uploading to web site with FTP")
+        logger.info("Uploading to web site with FTP")
         self.ftp = ftplib.FTP()
         self.ftp.connect(self.site, self.port)
         self.ftp.login(self.user, self.password)
-        self.logger.debug(self.ftp.getwelcome())
+        logger.debug(self.ftp.getwelcome())
         self.ftp.cwd(self.directory)
 
     def put(self, src, dest):
         text_file = os.path.splitext(src)[1] in ('.txt', '.xml', '.html')
         if text_file and sys.version_info[0] < 3:
-            f = open(src, 'r')
+            mode = 'r'
         else:
-            f = open(src, 'rb')
-        if text_file:
-            self.ftp.storlines('STOR %s' % (dest), f)
-        else:
-            self.ftp.storbinary('STOR %s' % (dest), f)
-        f.close()
+            mode = 'rb'
+        with open(src, mode) as f:
+            if text_file:
+                self.ftp.storlines('STOR %s' % (dest), f)
+            else:
+                self.ftp.storbinary('STOR %s' % (dest), f)
 
     def close(self):
         self.ftp.close()
 
+
 class _sftp(object):
-    def __init__(self, logger, site, user, password, privkey, directory, port):
+    def __init__(self, site, user, password, privkey, directory, port):
         global paramiko
         import paramiko
-        self.logger = logger
         self.site = site
         self.user = user
         self.password = password
@@ -134,7 +134,7 @@ class _sftp(object):
         self.port = port
 
     def connect(self):
-        self.logger.info("Uploading to web site with SFTP")
+        logger.info("Uploading to web site with SFTP")
         self.transport = paramiko.Transport((self.site, self.port))
         self.transport.start_client()
         if self.privkey:
@@ -145,7 +145,6 @@ class _sftp(object):
         self.ftp = paramiko.SFTPClient.from_transport(self.transport)
         self.ftp.chdir(self.directory)
 
-
     def put(self, src, dest):
         self.ftp.put(src, dest)
 
@@ -154,21 +153,22 @@ class _sftp(object):
         self.transport.close()
 
     def get_private_key(self, privkey):
-        import StringIO
-        f = open(privkey, 'r')
-        s = f.read()
-        keyfile = StringIO.StringIO(s)
+        if sys.version_info[0] >= 3:
+            from io import StringIO
+        else:
+            from StringIO import StringIO
+        with open(privkey, 'r') as f:
+            s = f.read()
+        keyfile = StringIO(s)
         self.pkey = paramiko.RSAKey.from_private_key(keyfile)
-
         
 
 class _copy(object):
-    def __init__(self, logger, directory):
-        self.logger = logger
+    def __init__(self, directory):
         self.directory = directory
 
     def connect(self):
-        self.logger.info("Copying to local directory")
+        logger.info("Copying to local directory")
         if not os.path.isdir(self.directory):
             raise RuntimeError(
                 'Directory "' + self.directory + '" does not exist.')
@@ -179,9 +179,9 @@ class _copy(object):
     def close(self):
         pass
 
-class Upload(object):
+
+class ToWebSite(object):
     def __init__(self, params):
-        self.logger = logging.getLogger('pywws.Upload')
         self.params = params
         self.old_ex = None
         if eval(self.params.get('ftp', 'local site', 'False')):
@@ -189,7 +189,7 @@ class Upload(object):
             directory = self.params.get(
                 'ftp', 'directory',
                 os.path.expanduser('~/public_html/weather/data/'))
-            self.uploader = _copy(self.logger, directory)
+            self.uploader = _copy(directory)
         else:
             # get remote site details
             site = self.params.get('ftp', 'site', 'ftp.username.your_isp.co.uk')
@@ -205,21 +205,21 @@ class Upload(object):
                 port = eval(self.params.get('ftp', 'port', '22'))
                 privkey = self.params.get('ftp', 'privkey')
                 self.uploader = _sftp(
-                    self.logger, site, user, password, privkey, directory, port)
+                    site, user, password, privkey, directory, port)
             else:
                 port = eval(self.params.get('ftp', 'port', '21'))
                 self.uploader = _ftp(
-                    self.logger, site, user, password, directory, port)
+                    site, user, password, directory, port)
 
     def connect(self):
         try:
             self.uploader.connect()
-        except Exception, ex:
+        except Exception as ex:
             e = str(ex)
             if e == self.old_ex:
-                self.logger.debug(e)
+                logger.debug(e)
             else:
-                self.logger.error(e)
+                logger.error(e)
                 self.old_ex = e
             return False
         return True
@@ -229,12 +229,12 @@ class Upload(object):
         try:
             self.uploader.put(file, target)
             return True
-        except Exception, ex:
+        except Exception as ex:
             e = str(ex)
             if e == self.old_ex:
-                self.logger.debug(e)
+                logger.debug(e)
             else:
-                self.logger.error(e)
+                logger.error(e)
                 self.old_ex = e
         return False
 
@@ -252,29 +252,32 @@ class Upload(object):
         self.disconnect()
         return OK
 
+
 def main(argv=None):
     if argv is None:
         argv = sys.argv
     try:
         opts, args = getopt.getopt(argv[1:], "h", ['help'])
-    except getopt.error, msg:
-        print >>sys.stderr, 'Error: %s\n' % msg
-        print >>sys.stderr, __usage__.strip()
+    except getopt.error as msg:
+        print('Error: %s\n' % msg, file=sys.stderr)
+        print(__usage__.strip(), file=sys.stderr)
         return 1
     # process options
     for o, a in opts:
         if o in ('-h', '--help'):
-            print __usage__.strip()
+            print(__usage__.strip())
             return 0
     # check arguments
     if len(args) < 2:
-        print >>sys.stderr, "Error: at least 2 arguments required"
-        print >>sys.stderr, __usage__.strip()
+        print("Error: at least 2 arguments required", file=sys.stderr)
+        print(__usage__.strip(), file=sys.stderr)
         return 2
-    logger = ApplicationLogger(1)
-    if Upload(DataStore.params(args[0])).upload(args[1:]):
-        return 0
+    pywws.logger.setup_handler(1)
+    with pywws.storage.pywws_context(args[0]) as context:
+        if ToWebSite(context.params).upload(args[1:]):
+            return 0
     return 3
+
 
 if __name__ == "__main__":
     sys.exit(main())

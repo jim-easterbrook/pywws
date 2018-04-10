@@ -21,12 +21,13 @@ import logging
 
 from pywws.constants import SECOND
 
+logger = logging.getLogger(__name__)
+
 MINUTEx30 = timedelta(minutes=30)
 
 class Calib(object):
     """Weather station calibration class with temperature spike removal."""
     def __init__(self, params, raw_data):
-        self.logger = logging.getLogger('pywws.Calib')
         self.raw_data = raw_data
         self.pressure_offset = eval(params.get('config', 'pressure offset'))
 
@@ -44,7 +45,7 @@ class Calib(object):
             if len(history) >= 4:
                 median = history[(len(history) - 1) / 2]
                 if abs(result['temp_out'] - median) > 1.5:
-                    self.logger.warning(
+                    logger.warning(
                         'spike? %s %s', str(history), str(result['temp_out']))
                 if abs(result['temp_out'] - median) > 2.0:
                     result['temp_out'] = None

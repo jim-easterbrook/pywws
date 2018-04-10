@@ -1,8 +1,6 @@
-#!/usr/bin/env python
-
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-16  pywws contributors
+# Copyright (C) 2008-18  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -25,11 +23,11 @@ This script can also be run with the ``pywws-setweatherstation`` command. ::
 
 """
 
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function
 
 __docformat__ = "restructuredtext en"
 __usage__ = """
- usage: python -m pywws.SetWeatherStation [options]
+ usage: python -m pywws.setweatherstation [options]
  options are:
   -h   | --help           display this help
   -c   | --clock          set weather station clock to computer time
@@ -48,13 +46,16 @@ import logging
 import sys
 import time
 
-from pywws.Logger import ApplicationLogger
-from pywws import WeatherStation
+import pywws.logger
+import pywws.weatherstation
+
 
 def bcd_encode(value):
     hi = value // 10
     lo = value % 10
     return (hi * 16) + lo
+
+
 def main(argv=None):
     if argv is None:
         argv = sys.argv
@@ -63,9 +64,9 @@ def main(argv=None):
             argv[1:], "hcp:r:vz",
             ['help', 'clock', 'pressure=', 'read_period=',
              'verbose', 'zero_memory'])
-    except getopt.error, msg:
-        print >>sys.stderr, 'Error: %s\n' % msg
-        print >>sys.stderr, __usage__.strip()
+    except getopt.error as msg:
+        print('Error: %s\n' % msg, file=sys.stderr)
+        print(__usage__.strip(), file=sys.stderr)
         return 1
     # process options
     clock = False
@@ -75,7 +76,7 @@ def main(argv=None):
     zero_memory = False
     for o, a in opts:
         if o in ('-h', '--help'):
-            print __usage__.strip()
+            print(__usage__.strip())
             return 0
         elif o in ('-c', '--clock'):
             clock = True
@@ -89,12 +90,12 @@ def main(argv=None):
             zero_memory = True
     # check arguments
     if len(args) != 0:
-        print >>sys.stderr, "Error: No arguments required"
-        print >>sys.stderr, __usage__.strip()
+        print("Error: No arguments required", file=sys.stderr)
+        print(__usage__.strip(), file=sys.stderr)
         return 2
-    logger = ApplicationLogger(verbose)
+    pywws.logger.setup_handler(verbose)
     # open connection to weather station
-    ws = WeatherStation.weather_station()
+    ws = pywws.weatherstation.WeatherStation()
     # set data to be sent to station
     data = []
     # set relative pressure
@@ -112,9 +113,9 @@ def main(argv=None):
         data.append((ptr+1, 0))
     # set clock
     if clock:
-        print "Clock setting is not known to work on any model of weather station."
-        print "If it works for you, please let Jim Easterbrook know."
-        print "waiting for exact minute"
+        print("Clock setting is not known to work on any model of weather station.")
+        print("If it works for you, please let Jim Easterbrook know.")
+        print("waiting for exact minute")
         now = datetime.now()
         if now.second >= 55:
             time.sleep(10)
@@ -130,5 +131,7 @@ def main(argv=None):
     # send it all in one go
     if data:
         ws.write_data(data)
+
+
 if __name__ == "__main__":
     sys.exit(main())

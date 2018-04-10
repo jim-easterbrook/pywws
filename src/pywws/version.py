@@ -1,6 +1,6 @@
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-16  pywws contributors
+# Copyright (C) 2008-18  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -23,7 +23,7 @@ This script can also be run with the ``pywws-version`` command. ::
 
 """
 
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function
 
 __docformat__ = "restructuredtext en"
 __usage__ = """
@@ -47,40 +47,40 @@ def main(argv=None):
     usage = (__usage__ % (argv[0])).strip()
     try:
         opts, args = getopt.getopt(argv[1:], "hv", ['help', 'verbose'])
-    except getopt.error, msg:
-        print >>sys.stderr, 'Error: %s\n' % msg
-        print >>sys.stderr, usage
+    except getopt.error as msg:
+        print('Error: %s\n' % msg, file=sys.stderr)
+        print(usage, file=sys.stderr)
         return 1
     # process options
     verbose = False
     for o, a in opts:
         if o in ('-h', '--help'):
-            print __doc__.split('\n\n')[0]
-            print usage
+            print(__doc__.split('\n\n')[0])
+            print(usage)
             return 0
         elif o in ('-v', '--verbose'):
             verbose = True
     # check arguments
     if len(args) != 0:
-        print >>sys.stderr, 'Error: no arguments permitted\n'
-        print >>sys.stderr, usage
+        print('Error: no arguments permitted\n', file=sys.stderr)
+        print(usage, file=sys.stderr)
         return 2
-    print __version__
+    print(__version__)
     if verbose:
-        print 'build:', _release
-        print 'commit:', _commit
-        print 'Python:', sys.version
+        print('build:', _release)
+        print('commit:', _commit)
+        print('Python:', sys.version)
         try:
-            from pywws.WeatherStation import USBDevice
-            print 'USB:   ', USBDevice.__module__
+            from pywws.weatherstation import USBDevice
+            print('USB:   ', USBDevice.__module__)
         except ImportError:
-            print 'USB:    missing'
+            print('USB:    missing')
         example_dir = resource_filename('pywws', 'examples')
         if os.path.exists(example_dir):
-            print 'examples:'
-            print '  ', example_dir
-        print 'docs:'
-        print '   http://jim-easterbrook.github.com/pywws/'
+            print('examples:')
+            print('  ', example_dir)
+        print('docs:')
+        print('   http://jim-easterbrook.github.com/pywws/')
     return 0
 
 if __name__ == '__main__':

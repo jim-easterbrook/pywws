@@ -21,7 +21,7 @@ Calibrate raw weather station data
 ==================================
 
 This module allows adjustment of raw data from the weather station as
-part of the 'processing' step (see :doc:`pywws.Process`). For example,
+part of the 'processing' step (see :doc:`pywws.process`). For example,
 if you have fitted a funnel to double your rain gauge's collection
 area, you can write a calibration routine to double the rain value.
 
@@ -87,6 +87,8 @@ import logging
 import os
 import sys
 
+logger = logging.getLogger(__name__)
+
 class DefaultCalib(object):
     """Default calibration class.
 
@@ -120,11 +122,10 @@ class Calib(object):
     calibrator = None
     def __init__(self, params, stored_data):
         global usercalib
-        self.logger = logging.getLogger('pywws.Calib')
         if not Calib.calibrator:
             user_module = params.get('paths', 'user_calib', None)
             if user_module:
-                self.logger.info('Using user calibration')
+                logger.info('Using user calibration')
                 path, module = os.path.split(user_module)
                 sys.path.insert(0, path)
                 module = os.path.splitext(module)[0]
@@ -132,6 +133,6 @@ class Calib(object):
                     module, globals(), locals(), ['Calib'])
                 Calib.calibrator = usercalib.Calib(params, stored_data)
             else:
-                self.logger.info('Using default calibration')
+                logger.info('Using default calibration')
                 Calib.calibrator = DefaultCalib(params, stored_data)
         self.calib = Calib.calibrator.calib

@@ -2,7 +2,7 @@
 
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-15  pywws contributors
+# Copyright (C) 2008-18  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -35,6 +35,8 @@ Detailed API
 
 """
 
+from __future__ import print_function
+
 from datetime import datetime
 import sys
 
@@ -50,6 +52,7 @@ _now = datetime.now(tz=Local)
 STDOFFSET = _now.utcoffset() - _now.dst()
 del _now
 
+
 def local_utc_offset(time):
     try:
         result = Local.utcoffset(time)
@@ -59,10 +62,12 @@ def local_utc_offset(time):
         result = Local.utcoffset(time - HOUR)
     return result
 
+
 def main():
-    print datetime.now().strftime('%Y/%m/%d %H:%M %Z')
-    print datetime.now(utc).strftime('%Y/%m/%d %H:%M %Z')
-    print datetime.now(Local).strftime('%Y/%m/%d %H:%M %Z')
+    print(datetime.now().strftime('%Y/%m/%d %H:%M %Z'))
+    print(datetime.now(utc).strftime('%Y/%m/%d %H:%M %Z'))
+    print(datetime.now(Local).strftime('%Y/%m/%d %H:%M %Z'))
+
 
 if __name__ == "__main__":
     sys.exit(main())

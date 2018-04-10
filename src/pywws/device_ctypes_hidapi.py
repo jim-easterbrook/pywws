@@ -32,10 +32,10 @@ details.
 Testing
 =======
 
-Run :py:mod:`pywws.TestWeatherStation` with increased verbosity so it
+Run :py:mod:`pywws.testweatherstation` with increased verbosity so it
 reports which USB device access module is being used::
 
-    python -m pywws.TestWeatherStation -vv
+    python -m pywws.testweatherstation -vv
     18:10:27:pywws.WeatherStation.CUSBDrive:using pywws.device_ctypes_hidapi
     0000 55 aa ff ff ff ff ff ff ff ff ff ff ff ff ff ff 05 20 01 51 11 00 00 00 81 00 00 07 01 00 d0 56
     0020 61 1c 61 1c 00 00 00 00 00 00 00 12 02 14 18 09 41 23 c8 00 32 80 47 2d 2c 01 2c 81 5e 01 1e 80

@@ -1,8 +1,6 @@
-#!/usr/bin/env python
-
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-16  pywws contributors
+# Copyright (C) 2008-18  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -29,7 +27,7 @@ Introduction
 
 This routine plots one or more "wind roses" (see `Wikipedia
 <http://en.wikipedia.org/wiki/Wind_rose>`_ for a description). Like
-:py:mod:`pywws.Plot` almost everything is controlled by an XML
+:py:mod:`pywws.plot` almost everything is controlled by an XML
 "recipe" / template file.
 
 Before writing your own template files, it might be useful to look at
@@ -215,7 +213,7 @@ points
 Sets the text of the compass points. The defaults are 'N', 'S', 'E' &
 'W'. For graphs in another language you can over-ride this, for example:
 ``<points>'No', 'Zu', 'Oo', 'We'</points>``. (The preferred way to do
-this is to create a language file, see :py:mod:`pywws.Localisation`.)
+this is to create a language file, see :py:mod:`pywws.localisation`.)
 
 source
 ^^^^^^
@@ -255,11 +253,11 @@ Detailed API
 
 """
 
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function
 
 __docformat__ = "restructuredtext en"
 __usage__ = """
- usage: python -m pywws.WindRose [options] data_dir temp_dir xml_file output_file
+ usage: python -m pywws.windrose [options] data_dir temp_dir xml_file output_file
  options are:
   -h or --help    display this help
  data_dir is the root directory of the weather data
@@ -279,20 +277,21 @@ import sys
 import xml.dom.minidom
 
 from pywws.conversions import *
-from pywws import DataStore
-from pywws import Localisation
-from pywws.Logger import ApplicationLogger
-from pywws.Plot import BasePlotter
+import pywws.localisation
+import pywws.logger
+from pywws.plot import BasePlotter
+import pywws.storage
+
 
 class RosePlotter(BasePlotter):
     plot_name = 'windrose'
-    def GetDefaultRows(self):
+    def get_default_rows(self):
         return int(math.sqrt(self.plot_count))
 
-    def GetDefaultPlotSize(self):
+    def get_default_plot_size(self):
         return 600 // self.rows, 600 // self.rows
 
-    def GetPreamble(self):
+    def get_preamble(self):
         result = u"""set polar
 set angles degrees
 set zeroaxis
@@ -318,8 +317,8 @@ set rtics format ''
         result += u'set bmargin %g\n' % (lmargin)
         return result
 
-    def PlotData(self, plot_no, plot, source):
-        _ = Localisation.translation.ugettext
+    def plot_data(self, plot_no, plot, source):
+        _ = pywws.localisation.translation.ugettext
         # get statistics
         thresh = eval(plot.get_value(
             'threshold', '0.0, 1.54, 3.09, 5.14, 8.23, 10.8, 15.5'))
@@ -463,34 +462,31 @@ set rtics format ''
             result += u'\n'
         return result
 
+
 def main(argv=None):
     if argv is None:
         argv = sys.argv
     try:
         opts, args = getopt.getopt(argv[1:], "h", ['help'])
-    except getopt.error, msg:
-        print >>sys.stderr, 'Error: %s\n' % msg
-        print >>sys.stderr, __usage__.strip()
+    except getopt.error as msg:
+        print('Error: %s\n' % msg, file=sys.stderr)
+        print(__usage__.strip(), file=sys.stderr)
         return 1
     # process options
     for o, a in opts:
         if o == '-h' or o == '--help':
-            print __usage__.strip()
+            print(__usage__.strip())
             return 0
     # check arguments
     if len(args) != 4:
-        print >>sys.stderr, 'Error: 4 arguments required\n'
-        print >>sys.stderr, __usage__.strip()
+        print('Error: 4 arguments required\n', file=sys.stderr)
+        print(__usage__.strip(), file=sys.stderr)
         return 2
-    logger = ApplicationLogger(2)
-    params = DataStore.params(args[0])
-    Localisation.SetApplicationLanguage(params)
-    return RosePlotter(
-        params, DataStore.status(args[0]),
-        DataStore.calib_store(args[0]), DataStore.hourly_store(args[0]),
-        DataStore.daily_store(args[0]), DataStore.monthly_store(args[0]),
-        args[1]
-        ).DoPlot(args[2], args[3])
+    pywws.logger.setup_handler(2)
+    with pywws.storage.pywws_context(args[0]) as context:
+        pywws.localisation.set_application_language(context.params)
+        return RosePlotter(context, args[1]).do_plot(args[2], args[3])
+
 
 if __name__ == "__main__":
     sys.exit(main())

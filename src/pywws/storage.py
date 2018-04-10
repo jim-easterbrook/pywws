@@ -1,6 +1,6 @@
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-16  pywws contributors
+# Copyright (C) 2008-18  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -16,15 +16,14 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-"""
-DataStore.py - stores readings in easy to access files
+"""Store parameters and weather data in easy to access files
 
 Introduction
 ------------
 
-This module is at the core of pywws. It stores data on disc, but
-without the overhead of a full scale database system. I have designed
-it to run on a small memory machine such as my Asus router. To
+This module is at the core of pywws. It stores data on disc, but without
+the overhead of a full scale database system. I have designed it to run
+on a small memory machine such as a Raspberry Pi or even a router. To
 minimise memory usage it only loads one day's worth of raw data at a
 time into memory.
 
@@ -38,10 +37,10 @@ For example, to access the hourly data for Christmas day 2009, one
 might do the following::
 
   from datetime import datetime
-  from pywws import DataStore
-  hourly = DataStore.hourly_store('weather_data')
+  import pywws.storage
+  hourly = pywws.storage.HourlyStore('weather_data')
   for data in hourly[datetime(2009, 12, 25):datetime(2009, 12, 26)]:
-      print data['idx'], data['temp_out']
+      print(data['idx'], data['temp_out'])
 
 Some more examples of data access::
 
@@ -56,12 +55,12 @@ Note that the :py:class:`datetime.datetime` index is in UTC. You may
 need to apply an offset to convert to local time.
 
 The module provides five classes to store different data.
-:py:class:`data_store` takes "raw" data from the weather station;
-:py:class:`calib_store`, :py:class:`hourly_store`,
-:py:class:`daily_store` and :py:class:`monthly_store` store processed
-data (see :py:mod:`pywws.Process`). All three are derived from the
-same ``core_store`` class, they only differ in the keys and types of
-data stored in each record.
+:py:class:`RawStore` takes "raw" data from the weather station;
+:py:class:`CalibStore`, :py:class:`HourlyStore`, :py:class:`DailyStore`
+and :py:class:`MonthlyStore` store processed data (see
+:py:mod:`pywws.process`). All are derived from the same ``CoreStore``
+class, they only differ in the keys and types of data stored in each
+record.
 
 Detailed API
 ------------
@@ -70,7 +69,7 @@ Detailed API
 
 from __future__ import with_statement
 
-from ConfigParser import RawConfigParser
+from contextlib import contextmanager
 import csv
 from datetime import date, datetime, timedelta, MAXYEAR
 import os
@@ -78,19 +77,14 @@ import sys
 from threading import Lock
 import time
 
-from pywws.constants import DAY
+if sys.version_info[0] >= 3:
+    from configparser import RawConfigParser
+else:
+    from ConfigParser import RawConfigParser
 
-def safestrptime(date_string, format=None):
-    # time.strptime is time consuming (because it's so flexible?) so don't use
-    # it for the fixed format datetime strings in our csv files
-    if format:
-        return datetime(*(time.strptime(date_string, format)[0:6]))
-    return datetime(*map(int, (date_string[0:4],
-                               date_string[5:7],
-                               date_string[8:10],
-                               date_string[11:13],
-                               date_string[14:16],
-                               date_string[17:19])))
+from pywws.constants import DAY
+from pywws.weatherstation import WSDateTime, WSFloat, WSInt, WSStatus
+
 
 class ParamStore(object):
     def __init__(self, root_dir, file_name):
@@ -105,17 +99,13 @@ class ParamStore(object):
             self._config = RawConfigParser()
             self._config.read(self._path)
 
-    def __del__(self):
-        self.flush()
-
     def flush(self):
         if not self._dirty:
             return
         with self._lock:
             self._dirty = False
-            of = open(self._path, 'w')
-            self._config.write(of)
-            of.close()
+            with open(self._path, 'w') as of:
+                self._config.write(of)
 
     def get(self, section, option, default=None):
         """Get a parameter value and return a string.
@@ -135,7 +125,7 @@ class ParamStore(object):
     def get_datetime(self, section, option, default=None):
         result = self.get(section, option, default)
         if result:
-            return safestrptime(result)
+            return WSDateTime.from_csv(result)
         return result
 
     def set(self, section, option, value):
@@ -164,15 +154,6 @@ class ParamStore(object):
                 self._config.remove_section(section)
                 self._dirty = True
 
-class params(ParamStore):
-    def __init__(self, root_dir):
-        """Parameters are stored in a file "weather.ini" in root_dir."""
-        ParamStore.__init__(self, root_dir, 'weather.ini')
-
-class status(ParamStore):
-    def __init__(self, root_dir):
-        """Status is stored in a file "status.ini" in root_dir."""
-        ParamStore.__init__(self, root_dir, 'status.ini')
 
 class _Cache(object):
     def __init__(self):
@@ -213,9 +194,10 @@ class _Cache(object):
                 hi = mid
         self.ptr = hi
 
-class core_store(object):
+
+class CoreStore(object):
     def __init__(self, root_dir):
-        self._root_dir = root_dir
+        self._root_dir = os.path.join(root_dir, self.dir_name)
         if not os.path.isdir(self._root_dir):
             os.mkdir(self._root_dir)
         # initialise caches
@@ -230,7 +212,7 @@ class core_store(object):
                 if file[0] == '.':
                     continue
                 path, self._lo_limit, hi = self._get_cache_path(
-                    safestrptime(file, "%Y-%m-%d.txt").date())
+                    datetime.strptime(file, "%Y-%m-%d.txt").date())
                 break
             else:
                 dirs.sort()
@@ -243,7 +225,7 @@ class core_store(object):
                 if file[0] == '.':
                     continue
                 path, lo, self._hi_limit = self._get_cache_path(
-                    safestrptime(file, "%Y-%m-%d.txt").date())
+                    datetime.strptime(file, "%Y-%m-%d.txt").date())
                 break
             else:
                 dirs.sort()
@@ -254,9 +236,6 @@ class core_store(object):
             self._lo_limit.year, self._lo_limit.month, self._lo_limit.day)
         self._hi_limit_dt = datetime(
             self._hi_limit.year, self._hi_limit.month, self._hi_limit.day)
-
-    def __del__(self):
-        self.flush()
 
     def _slice(self, i):
         if i.step is not None:
@@ -446,19 +425,19 @@ class core_store(object):
         if not os.path.exists(cache.path):
             return
         if sys.version_info[0] >= 3:
-            csvfile = open(cache.path, 'r', newline='')
+            kwds = {'mode': 'r', 'newline': ''}
         else:
-            csvfile = open(cache.path, 'rb')
-        reader = csv.reader(csvfile, quoting=csv.QUOTE_NONE)
-        for row in reader:
-            result = {}
-            for key, value in zip(self.key_list, row):
-                if value == '':
-                    result[key] = None
-                else:
-                    result[key] = self.conv[key](value)
-            cache.data.append(result)
-        csvfile.close()
+            kwds = {'mode': 'rb'}
+        with open(cache.path, **kwds) as csvfile:
+            reader = csv.reader(csvfile, quoting=csv.QUOTE_NONE)
+            for row in reader:
+                result = {}
+                for key, value in zip(self.key_list, row):
+                    if value == '':
+                        result[key] = None
+                    else:
+                        result[key] = self.conv[key](value)
+                cache.data.append(result)
 
     def flush(self):
         self._flush(self._wr_cache)
@@ -477,19 +456,26 @@ class core_store(object):
         if not os.path.isdir(dir):
             os.makedirs(dir)
         if sys.version_info[0] >= 3:
-            csvfile = open(cache.path, 'w', newline='')
+            kwds = {'mode': 'w', 'newline': ''}
         else:
-            csvfile = open(cache.path, 'wb')
-        writer = csv.writer(csvfile, quoting=csv.QUOTE_NONE)
-        for data in cache.data:
-            row = []
-            for key in self.key_list[0:len(data)]:
-                if isinstance(data[key], float):
-                    row.append(str(data[key]))
-                else:
-                    row.append(data[key])
-            writer.writerow(row)
-        csvfile.close()
+            kwds = {'mode': 'wb'}
+        conv = {
+            datetime  : str,
+            float     : lambda x: '{:.12g}'.format(x),
+            int       : str,
+            type(None): lambda x: '',
+            WSDateTime: WSDateTime.to_csv,
+            WSFloat   : str,
+            WSInt     : str,
+            WSStatus  : WSStatus.to_csv,
+            }
+        with open(cache.path, **kwds) as csvfile:
+            for data in cache.data:
+                row = []
+                for key in self.key_list[:len(data)]:
+                    value = data[key]
+                    row.append(conv[type(value)](value))
+                csvfile.write(','.join(row) + '\n')
 
     def _get_cache_path(self, target_date):
         # default implementation - one file per day
@@ -501,18 +487,17 @@ class core_store(object):
         hi = lo + DAY
         return path, lo, hi
 
-class data_store(core_store):
-    """Stores raw weather station data."""
-    def __init__(self, root_dir):
-        core_store.__init__(self, os.path.join(root_dir, 'raw'))
 
+class RawStore(CoreStore):
+    """Stores raw weather station data."""
+    dir_name = 'raw'
     key_list = [
         'idx', 'delay', 'hum_in', 'temp_in', 'hum_out', 'temp_out',
         'abs_pressure', 'wind_ave', 'wind_gust', 'wind_dir', 'rain',
         'status', 'illuminance', 'uv',
         ]
     conv = {
-        'idx'          : safestrptime,
+        'idx'          : WSDateTime.from_csv,
         'delay'        : int,
         'hum_in'       : int,
         'temp_in'      : float,
@@ -523,23 +508,22 @@ class data_store(core_store):
         'wind_gust'    : float,
         'wind_dir'     : int,
         'rain'         : float,
-        'status'       : int,
+        'status'       : WSStatus.from_csv,
         'illuminance'  : float,
         'uv'           : int,
         }
 
-class calib_store(core_store):
-    """Stores 'calibrated' weather station data."""
-    def __init__(self, root_dir):
-        core_store.__init__(self, os.path.join(root_dir, 'calib'))
 
+class CalibStore(CoreStore):
+    """Stores 'calibrated' weather station data."""
+    dir_name = 'calib'
     key_list = [
         'idx', 'delay', 'hum_in', 'temp_in', 'hum_out', 'temp_out',
         'abs_pressure', 'rel_pressure', 'wind_ave', 'wind_gust', 'wind_dir',
         'rain', 'status', 'illuminance', 'uv',
         ]
     conv = {
-        'idx'          : safestrptime,
+        'idx'          : WSDateTime.from_csv,
         'delay'        : int,
         'hum_in'       : int,
         'temp_in'      : float,
@@ -551,23 +535,22 @@ class calib_store(core_store):
         'wind_gust'    : float,
         'wind_dir'     : float,
         'rain'         : float,
-        'status'       : int,
+        'status'       : WSStatus.from_csv,
         'illuminance'  : float,
         'uv'           : int,
         }
 
-class hourly_store(core_store):
-    """Stores hourly summary weather station data."""
-    def __init__(self, root_dir):
-        core_store.__init__(self, os.path.join(root_dir, 'hourly'))
 
+class HourlyStore(CoreStore):
+    """Stores hourly summary weather station data."""
+    dir_name = 'hourly'
     key_list = [
         'idx', 'hum_in', 'temp_in', 'hum_out', 'temp_out',
         'abs_pressure', 'rel_pressure', 'pressure_trend',
         'wind_ave', 'wind_gust', 'wind_dir', 'rain', 'illuminance', 'uv',
         ]
     conv = {
-        'idx'               : safestrptime,
+        'idx'               : WSDateTime.from_csv,
         'hum_in'            : int,
         'temp_in'           : float,
         'hum_out'           : int,
@@ -583,11 +566,10 @@ class hourly_store(core_store):
         'uv'                : int,
         }
 
-class daily_store(core_store):
-    """Stores daily summary weather station data."""
-    def __init__(self, root_dir):
-        core_store.__init__(self, os.path.join(root_dir, 'daily'))
 
+class DailyStore(CoreStore):
+    """Stores daily summary weather station data."""
+    dir_name = 'daily'
     key_list = [
         'idx', 'start',
         'hum_out_ave',
@@ -610,49 +592,49 @@ class daily_store(core_store):
         'uv_ave', 'uv_max', 'uv_max_t',
         ]
     conv = {
-        'idx'                : safestrptime,
-        'start'              : safestrptime,
+        'idx'                : WSDateTime.from_csv,
+        'start'              : WSDateTime.from_csv,
         'hum_out_ave'        : float,
         'hum_out_min'        : int,
-        'hum_out_min_t'      : safestrptime,
+        'hum_out_min_t'      : WSDateTime.from_csv,
         'hum_out_max'        : int,
-        'hum_out_max_t'      : safestrptime,
+        'hum_out_max_t'      : WSDateTime.from_csv,
         'temp_out_ave'       : float,
         'temp_out_min'       : float,
-        'temp_out_min_t'     : safestrptime,
+        'temp_out_min_t'     : WSDateTime.from_csv,
         'temp_out_max'       : float,
-        'temp_out_max_t'     : safestrptime,
+        'temp_out_max_t'     : WSDateTime.from_csv,
         'hum_in_ave'         : float,
         'hum_in_min'         : int,
-        'hum_in_min_t'       : safestrptime,
+        'hum_in_min_t'       : WSDateTime.from_csv,
         'hum_in_max'         : int,
-        'hum_in_max_t'       : safestrptime,
+        'hum_in_max_t'       : WSDateTime.from_csv,
         'temp_in_ave'        : float,
         'temp_in_min'        : float,
-        'temp_in_min_t'      : safestrptime,
+        'temp_in_min_t'      : WSDateTime.from_csv,
         'temp_in_max'        : float,
-        'temp_in_max_t'      : safestrptime,
+        'temp_in_max_t'      : WSDateTime.from_csv,
         'abs_pressure_ave'   : float,
         'abs_pressure_min'   : float,
-        'abs_pressure_min_t' : safestrptime,
+        'abs_pressure_min_t' : WSDateTime.from_csv,
         'abs_pressure_max'   : float,
-        'abs_pressure_max_t' : safestrptime,
+        'abs_pressure_max_t' : WSDateTime.from_csv,
         'rel_pressure_ave'   : float,
         'rel_pressure_min'   : float,
-        'rel_pressure_min_t' : safestrptime,
+        'rel_pressure_min_t' : WSDateTime.from_csv,
         'rel_pressure_max'   : float,
-        'rel_pressure_max_t' : safestrptime,
+        'rel_pressure_max_t' : WSDateTime.from_csv,
         'wind_ave'           : float,
         'wind_gust'          : float,
-        'wind_gust_t'        : safestrptime,
+        'wind_gust_t'        : WSDateTime.from_csv,
         'wind_dir'           : float,
         'rain'               : float,
         'illuminance_ave'    : float,
         'illuminance_max'    : float,
-        'illuminance_max_t'  : safestrptime,
+        'illuminance_max_t'  : WSDateTime.from_csv,
         'uv_ave'             : float,
         'uv_max'             : int,
-        'uv_max_t'           : safestrptime,
+        'uv_max_t'           : WSDateTime.from_csv,
         }
 
     def _get_cache_path(self, target_date):
@@ -670,11 +652,10 @@ class daily_store(core_store):
             lo = hi.replace(month=hi.month-1)
         return path, lo, hi
 
-class monthly_store(core_store):
-    """Stores monthly summary weather station data."""
-    def __init__(self, root_dir):
-        core_store.__init__(self, os.path.join(root_dir, 'monthly'))
 
+class MonthlyStore(CoreStore):
+    """Stores monthly summary weather station data."""
+    dir_name = 'monthly'
     key_list = [
         'idx', 'start',
         'hum_out_ave',
@@ -706,67 +687,67 @@ class monthly_store(core_store):
         'uv_max_lo', 'uv_max_lo_t', 'uv_max_hi', 'uv_max_hi_t', 'uv_max_ave',
         ]
     conv = {
-        'idx'                  : safestrptime,
-        'start'                : safestrptime,
+        'idx'                  : WSDateTime.from_csv,
+        'start'                : WSDateTime.from_csv,
         'hum_out_ave'          : float,
         'hum_out_min'          : int,
-        'hum_out_min_t'        : safestrptime,
+        'hum_out_min_t'        : WSDateTime.from_csv,
         'hum_out_max'          : int,
-        'hum_out_max_t'        : safestrptime,
+        'hum_out_max_t'        : WSDateTime.from_csv,
         'temp_out_ave'         : float,
         'temp_out_min_lo'      : float,
-        'temp_out_min_lo_t'    : safestrptime,
+        'temp_out_min_lo_t'    : WSDateTime.from_csv,
         'temp_out_min_hi'      : float,
-        'temp_out_min_hi_t'    : safestrptime,
+        'temp_out_min_hi_t'    : WSDateTime.from_csv,
         'temp_out_min_ave'     : float,
         'temp_out_max_lo'      : float,
-        'temp_out_max_lo_t'    : safestrptime,
+        'temp_out_max_lo_t'    : WSDateTime.from_csv,
         'temp_out_max_hi'      : float,
-        'temp_out_max_hi_t'    : safestrptime,
+        'temp_out_max_hi_t'    : WSDateTime.from_csv,
         'temp_out_max_ave'     : float,
         'hum_in_ave'           : float,
         'hum_in_min'           : int,
-        'hum_in_min_t'         : safestrptime,
+        'hum_in_min_t'         : WSDateTime.from_csv,
         'hum_in_max'           : int,
-        'hum_in_max_t'         : safestrptime,
+        'hum_in_max_t'         : WSDateTime.from_csv,
         'temp_in_ave'          : float,
         'temp_in_min_lo'       : float,
-        'temp_in_min_lo_t'     : safestrptime,
+        'temp_in_min_lo_t'     : WSDateTime.from_csv,
         'temp_in_min_hi'       : float,
-        'temp_in_min_hi_t'     : safestrptime,
+        'temp_in_min_hi_t'     : WSDateTime.from_csv,
         'temp_in_min_ave'      : float,
         'temp_in_max_lo'       : float,
-        'temp_in_max_lo_t'     : safestrptime,
+        'temp_in_max_lo_t'     : WSDateTime.from_csv,
         'temp_in_max_hi'       : float,
-        'temp_in_max_hi_t'     : safestrptime,
+        'temp_in_max_hi_t'     : WSDateTime.from_csv,
         'temp_in_max_ave'      : float,
         'abs_pressure_ave'     : float,
         'abs_pressure_min'     : float,
-        'abs_pressure_min_t'   : safestrptime,
+        'abs_pressure_min_t'   : WSDateTime.from_csv,
         'abs_pressure_max'     : float,
-        'abs_pressure_max_t'   : safestrptime,
+        'abs_pressure_max_t'   : WSDateTime.from_csv,
         'rel_pressure_ave'     : float,
         'rel_pressure_min'     : float,
-        'rel_pressure_min_t'   : safestrptime,
+        'rel_pressure_min_t'   : WSDateTime.from_csv,
         'rel_pressure_max'     : float,
-        'rel_pressure_max_t'   : safestrptime,
+        'rel_pressure_max_t'   : WSDateTime.from_csv,
         'wind_ave'             : float,
         'wind_gust'            : float,
-        'wind_gust_t'          : safestrptime,
+        'wind_gust_t'          : WSDateTime.from_csv,
         'wind_dir'             : float,
         'rain'                 : float,
         'rain_days'            : int,
         'illuminance_ave'      : float,
         'illuminance_max_lo'   : float,
-        'illuminance_max_lo_t' : safestrptime,
+        'illuminance_max_lo_t' : WSDateTime.from_csv,
         'illuminance_max_hi'   : float,
-        'illuminance_max_hi_t' : safestrptime,
+        'illuminance_max_hi_t' : WSDateTime.from_csv,
         'illuminance_max_ave'  : float,
         'uv_ave'               : float,
         'uv_max_lo'            : int,
-        'uv_max_lo_t'          : safestrptime,
+        'uv_max_lo_t'          : WSDateTime.from_csv,
         'uv_max_hi'            : int,
-        'uv_max_hi_t'          : safestrptime,
+        'uv_max_hi_t'          : WSDateTime.from_csv,
         'uv_max_ave'           : float,
         }
 
@@ -781,3 +762,32 @@ class monthly_store(core_store):
             hi = lo
             lo = hi.replace(year=hi.year-1)
         return path, lo, hi
+
+
+@contextmanager
+def pywws_context(data_dir):
+    class PywwsContext(object):
+        pass
+
+    ctx = PywwsContext()
+    # open params and status files
+    ctx.params = ParamStore(data_dir, 'weather.ini')
+    ctx.status = ParamStore(data_dir, 'status.ini')
+    # open data file stores
+    ctx.raw_data = RawStore(data_dir)
+    ctx.calib_data = CalibStore(data_dir)
+    ctx.hourly_data = HourlyStore(data_dir)
+    ctx.daily_data = DailyStore(data_dir)
+    ctx.monthly_data = MonthlyStore(data_dir)
+    # return control to main program
+    try:
+        yield ctx
+    # flush all unsaved data
+    finally:
+        ctx.params.flush()
+        ctx.status.flush()
+        ctx.raw_data.flush()
+        ctx.calib_data.flush()
+        ctx.hourly_data.flush()
+        ctx.daily_data.flush()
+        ctx.monthly_data.flush()

@@ -3,7 +3,7 @@
 
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-17  pywws contributors
+# Copyright (C) 2008-18  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -282,11 +282,11 @@ Detailed API
 
 """
 
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function
 
 __docformat__ = "restructuredtext en"
 __usage__ = """
- usage: python -m pywws.Template [options] data_dir template_file output_file
+ usage: python -m pywws.template [options] data_dir template_file output_file
  options are:
   --help    display this help
  data_dir is the root directory of the weather data
@@ -308,23 +308,28 @@ import sys
 from pywws.constants import HOUR, SECOND, DAY
 from pywws import conversions
 from pywws.conversions import *
-from pywws import DataStore
-from pywws.Forecast import Zambretti, ZambrettiCode
-from pywws import Localisation
-from pywws.Logger import ApplicationLogger
-from pywws.TimeZone import Local, utc
+from pywws.forecast import zambretti, zambretti_code
+import pywws.localisation
+import pywws.logger
+import pywws.storage
+from pywws.timezone import Local, utc
+import pywws.weatherstation
+
+logger = logging.getLogger(__name__)
+
+# aliases for compatibility with old templates
+Zambretti = zambretti
+ZambrettiCode = zambretti_code
+
 
 class Template(object):
-    def __init__(self, params, status,
-                 calib_data, hourly_data, daily_data, monthly_data,
-                 use_locale=True):
-        self.logger = logging.getLogger('pywws.Template')
-        self.params = params
-        self.status = status
-        self.calib_data = calib_data
-        self.hourly_data = hourly_data
-        self.daily_data = daily_data
-        self.monthly_data = monthly_data
+    def __init__(self, context, use_locale=True):
+        self.params = context.params
+        self.status = context.status
+        self.calib_data = context.calib_data
+        self.hourly_data = context.hourly_data
+        self.daily_data = context.daily_data
+        self.monthly_data = context.monthly_data
         self.use_locale = use_locale
         self.midnight = None
         self.rain_midnight = None
@@ -349,7 +354,7 @@ class Template(object):
         if not live_data:
             idx = self.calib_data.before(datetime.max)
             if not idx:
-                self.logger.error("No calib data - run pywws.Process first")
+                logger.error("No calib data - run pywws.process first")
                 return
             live_data = self.calib_data[idx]
         # get default character encoding of template input & output files
@@ -377,7 +382,7 @@ class Template(object):
         # jump to last item
         idx, valid_data = jump(datetime.max, -1)
         if not valid_data:
-            self.logger.error("No summary data - run pywws.Process first")
+            logger.error("No summary data - run pywws.process first")
             return
         data = data_set[idx]
         # open template file, if not already a file(like) object
@@ -409,7 +414,7 @@ class Template(object):
                 if command == []:
                     # empty command == print a single '#'
                     yield u'#'
-                elif command[0] in data.keys() + ['calc']:
+                elif command[0] in list(data.keys()) + ['calc']:
                     # output a value
                     if not valid_data:
                         continue
@@ -481,7 +486,7 @@ class Template(object):
                     elif command[1] == 'local':
                         time_zone = Local
                     else:
-                        self.logger.error("Unknown time zone: %s", command[1])
+                        logger.error("Unknown time zone: %s", command[1])
                         return
                 elif command[0] == 'locale':
                     use_locale = eval(command[1])
@@ -505,7 +510,7 @@ class Template(object):
                     if '%' in time_str:
                         lcl = idx.replace(tzinfo=utc).astimezone(time_zone)
                         time_str = lcl.strftime(time_str)
-                    new_idx = DataStore.safestrptime(time_str)
+                    new_idx = pywws.weatherstation.WSDateTime.from_csv(time_str)
                     new_idx = new_idx.replace(tzinfo=time_zone).astimezone(utc)
                     new_idx = data_set.after(new_idx.replace(tzinfo=None))
                     if new_idx:
@@ -522,7 +527,7 @@ class Template(object):
                     if valid_data and loop_count > 0:
                         tmplt.seek(loop_start, 0)
                 else:
-                    self.logger.error(
+                    logger.error(
                         "Unknown processing directive: #%s#", parts[i])
                     return
 
@@ -535,12 +540,11 @@ class Template(object):
     def make_file(self, template_file, output_file, live_data=None):
         text = self.make_text(template_file, live_data)
         if self.encoding == 'html':
-            of = codecs.open(output_file, 'w', encoding='ascii',
-                             errors='xmlcharrefreplace')
+            kwds = {'encoding': 'ascii', 'errors': 'xmlcharrefreplace'}
         else:
-            of = codecs.open(output_file, 'w', encoding=self.encoding)
-        of.write(text)
-        of.close()
+            kwds = {'encoding': self.encoding}
+        with codecs.open(output_file, 'w', **kwds) as of:
+            of.write(text)
         return 0
 
     def _hour_diff(self, data, key):
@@ -567,34 +571,31 @@ class Template(object):
                 self.calib_data.nearest(self.midnight)]['rain']
         return max(0.0, data['rain'] - self.rain_midnight)
 
+
 def main(argv=None):
     if argv is None:
         argv = sys.argv
     try:
         opts, args = getopt.getopt(argv[1:], "", ['help'])
-    except getopt.error, msg:
-        print >>sys.stderr, 'Error: %s\n' % msg
-        print >>sys.stderr, __usage__.strip()
+    except getopt.error as msg:
+        print('Error: %s\n' % msg, file=sys.stderr)
+        print(__usage__.strip(), file=sys.stderr)
         return 1
     # check arguments
     if len(args) != 3:
-        print >>sys.stderr, 'Error: 3 arguments required\n'
-        print >>sys.stderr, __usage__.strip()
+        print('Error: 3 arguments required\n', file=sys.stderr)
+        print(__usage__.strip(), file=sys.stderr)
         return 2
     # process options
     for o, a in opts:
         if o == '--help':
-            print __usage__.strip()
+            print(__usage__.strip())
             return 0
-    logger = ApplicationLogger(1)
-    params = DataStore.params(args[0])
-    status = DataStore.status(args[0])
-    Localisation.SetApplicationLanguage(params)
-    return Template(
-        params, status,
-        DataStore.calib_store(args[0]), DataStore.hourly_store(args[0]),
-        DataStore.daily_store(args[0]), DataStore.monthly_store(args[0])
-        ).make_file(args[1], args[2])
+    pywws.logger.setup_handler(1)
+    with pywws.storage.pywws_context(args[0]) as context:
+        pywws.localisation.set_application_language(context.params)
+        return Template(context).make_file(args[1], args[2])
+
 
 if __name__ == "__main__":
     sys.exit(main())

@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+from __future__ import print_function
+
 __usage__ = """
 Remove rain offset from raw data.
  usage: %s [options] data_dir
@@ -14,33 +16,33 @@ import os
 import sys
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '../../..'))
-from pywws import DataStore
+import pywws.storage
 
 def main(argv=None):
     if argv is None:
         argv = sys.argv
     try:
         opts, args = getopt.getopt(argv[1:], "h", ['help'])
-    except getopt.error, msg:
-        print >>sys.stderr, 'Error: %s\n' % msg
-        print >>sys.stderr, __usage__.strip()
+    except getopt.error as msg:
+        print('Error: %s\n' % msg, file=sys.stderr)
+        print(__usage__.strip(), file=sys.stderr)
         return 1
     # process options
     for o, a in opts:
         if o == '-h' or o == '--help':
-            print __usage__.strip()
+            print(__usage__.strip())
             return 0
     # check arguments
     if len(args) != 1:
-        print >>sys.stderr, 'Error: 1 argument required\n'
-        print >>sys.stderr, __usage__.strip()
+        print('Error: 1 argument required\n', file=sys.stderr)
+        print(__usage__.strip(), file=sys.stderr)
         return 2
     data_dir = args[0]
     # date & time range of data to be changed, in UTC!
     start = datetime(2013, 10, 26, 15, 23)
     stop  = datetime(2013, 10, 30, 12, 47)
     # open data store
-    raw_data = DataStore.data_store(data_dir)
+    raw_data = pywws.storage.RawStore(data_dir)
     # change the data
     for data in raw_data[start:stop]:
         data['rain'] -= 263.1
@@ -48,7 +50,7 @@ def main(argv=None):
     # make sure it's saved
     raw_data.flush()
     # clear calibrated data that needs to be regenerated
-    calib_data = DataStore.calib_store(data_dir)
+    calib_data = pywws.storage.CalibStore(data_dir)
     del calib_data[start:]
     calib_data.flush()
     # done

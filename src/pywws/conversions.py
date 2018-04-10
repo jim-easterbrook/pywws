@@ -2,7 +2,7 @@
 
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-16  pywws contributors
+# Copyright (C) 2008-18  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -23,16 +23,14 @@
 
 """
 
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function
 
 __docformat__ = "restructuredtext en"
 
 import math
 
-# rename imports to prevent them being imported when
-# doing 'from pywws.conversions import *'
-from pywws import Localisation as _Localisation
-from pywws.Process import WindFilter as _WindFilter
+import pywws.localisation
+import pywws.process
 
 def illuminance_wm2(lux):
     "Approximate conversion of illuminance in lux to solar radiation in W/m2"
@@ -51,7 +49,7 @@ def pressure_trend_text(trend):
     office.
 
     """
-    _ = _Localisation.translation.ugettext
+    _ = pywws.localisation.translation.ugettext
     if trend > 6.0:
         return _(u'rising very rapidly')
     elif trend > 3.5:
@@ -109,7 +107,7 @@ def winddir_average(data, threshold, min_count, decay=1.0):
 
     :param data: a slice of pywws raw/calib or hourly data.
 
-    :type data: pywws.DataStore.core_store
+    :type data: pywws.storage.CoreStore
 
     :param threshold: minimum average windspeed for there to be a
         valid wind direction.
@@ -128,7 +126,7 @@ def winddir_average(data, threshold, min_count, decay=1.0):
     :rtype: float
     
     """
-    wind_filter = _WindFilter()
+    wind_filter = pywws.process.WindFilter()
     count = 0
     for item in data:
         wind_filter.add(item)
@@ -157,7 +155,7 @@ def winddir_text(pts):
     if not isinstance(pts, int):
         pts = int(pts + 0.5) % 16
     if not _winddir_text_array:
-        _ = _Localisation.translation.ugettext
+        _ = pywws.localisation.translation.ugettext
         _winddir_text_array = (
             _(u'N'), _(u'NNE'), _(u'NE'), _(u'ENE'),
             _(u'E'), _(u'ESE'), _(u'SE'), _(u'SSE'),
@@ -289,25 +287,25 @@ def cloud_ft(m):
 def _main(argv=None):
     global _winddir_text_array
     # run some simple tests
-    print 'Wind speed:'
-    print '%6s %8s %8s %8s %6s' % ('m/s', 'km/h', 'mph', 'knots', 'bft')
+    print('Wind speed:')
+    print('%6s %8s %8s %8s %6s' % ('m/s', 'km/h', 'mph', 'knots', 'bft'))
     for ms in (0, 1, 2, 4, 6, 9, 12, 15, 18, 22, 26, 30, 34):
-        print '%6g %8.3f %8.3f %8.3f %6d' % (
-            ms, wind_kmph(ms), wind_mph(ms), wind_kn(ms), wind_bft(ms))
-    print 'Wind direction:'
+        print('%6g %8.3f %8.3f %8.3f %6d' % (
+            ms, wind_kmph(ms), wind_mph(ms), wind_kn(ms), wind_bft(ms)))
+    print('Wind direction:')
     for pts in range(16):
-        print winddir_text(pts),
-    print
-    print 'Wind direction, in Swedish:'
-    _Localisation.SetTranslation('sv')
+        print(winddir_text(pts), end='')
+    print('')
+    print('Wind direction, in Swedish:')
+    pywws.localisation.set_translation('sv')
     _winddir_text_array = None
     for pts in range(16):
-        print winddir_text(pts),
-    print
-    print 'Cloud base in m and ft:'
+        print(winddir_text(pts), end='')
+    print('')
+    print('Cloud base in m and ft:')
     for hum in range(25, 75, 5):
-        print "%8.3f m / %8.3f ft" % (cloud_base(15.0, hum), cloud_ft(cloud_base(15.0, hum)))
-    print
+        print("%8.3f m / %8.3f ft" % (cloud_base(15.0, hum), cloud_ft(cloud_base(15.0, hum))))
+    print('')
 
 if __name__ == "__main__":
     _main()

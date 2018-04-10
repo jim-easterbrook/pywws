@@ -1,8 +1,6 @@
-#!/usr/bin/env python
-
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-16  pywws contributors
+# Copyright (C) 2008-18  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -41,7 +39,7 @@ found.
 I typically get one or two errors per hour, so the test needs to be
 run for several hours to produce a useful measurement. Note that other
 software that accesses the weather station (such as
-:py:mod:`pywws.Hourly` or :py:mod:`pywws.LiveLog`)
+:py:mod:`pywws.hourly` or :py:mod:`pywws.livelog`)
 must not be run while the test is in progress.
 
 If you run this test and get no errors at all, please let me know.
@@ -50,12 +48,12 @@ is!
 
 """
 
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function
 
 __docformat__ = "restructuredtext en"
 
 __usage__ = """
- usage: python -m pywws.USBQualityTest [options]
+ usage: python -m pywws.usbtest [options]
  options are:
   -h | --help           display this help
   -v | --verbose        increase amount of reassuring messages
@@ -68,37 +66,38 @@ __usage__ = __doc__.split('\n')[0] + __usage__
 import getopt
 import sys
 
-from pywws.Logger import ApplicationLogger
-from pywws import WeatherStation
+import pywws.logger
+import pywws.weatherstation
+
 
 def main(argv=None):
     if argv is None:
         argv = sys.argv
     try:
         opts, args = getopt.getopt(argv[1:], "hv", ('help', 'verbose'))
-    except getopt.error, msg:
-        print >>sys.stderr, 'Error: %s\n' % msg
-        print >>sys.stderr, __usage__.strip()
+    except getopt.error as msg:
+        print('Error: %s\n' % msg, file=sys.stderr)
+        print(__usage__.strip(), file=sys.stderr)
         return 1
     # check arguments
     if len(args) != 0:
-        print >>sys.stderr, 'Error: no arguments allowed\n'
-        print >>sys.stderr, __usage__.strip()
+        print('Error: no arguments allowed\n', file=sys.stderr)
+        print(__usage__.strip(), file=sys.stderr)
         return 2
     # process options
     verbose = 0
     for o, a in opts:
         if o in ('-h', '--help'):
-            print __usage__.strip()
+            print(__usage__.strip())
             return 0
         elif o in ('-v', '--verbose'):
             verbose += 1
     # do it!
-    logger = ApplicationLogger(verbose)
-    ws = WeatherStation.weather_station()
+    pywws.logger.setup_handler(verbose)
+    ws = pywws.weatherstation.WeatherStation()
     fixed_block = ws.get_fixed_block()
     if not fixed_block:
-        print "No valid data block found"
+        print("No valid data block found")
         return 3
     # loop
     ptr = ws.data_start
@@ -121,10 +120,10 @@ def main(argv=None):
             logger.warning('  %s', str(result_2))
             bad_count += 1
         total_count += 1
-        print "\r %d/%d " % (bad_count, total_count),
-        sys.stdout.flush()
-    print ''
+        print("\r %d/%d " % (bad_count, total_count), end='', flush=True)
+    print('')
     return 0
+
 
 if __name__ == "__main__":
     try:

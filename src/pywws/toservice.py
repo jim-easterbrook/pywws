@@ -1,8 +1,6 @@
-#!/usr/bin/env python
-
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-16  pywws contributors
+# Copyright (C) 2008-18  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -107,12 +105,12 @@ section, depending on how often you want to send data. For example::
     services = ['underground']
 
 Note that the ``[live]`` section is only used when running
-:py:mod:`pywws.LiveLog`. It is a good idea to repeat any
+:py:mod:`pywws.livelog`. It is a good idea to repeat any
 service selected in ``[live]`` in the ``[logged]`` or ``[hourly]``
-section in case you switch to running :py:mod:`pywws.Hourly`.
+section in case you switch to running :py:mod:`pywws.hourly`.
 
-Restart your regular pywws program (:py:mod:`pywws.Hourly` or
-:py:mod:`pywws.LiveLog`) and visit the appropriate web site to
+Restart your regular pywws program (:py:mod:`pywws.hourly` or
+:py:mod:`pywws.livelog`) and visit the appropriate web site to
 see regular updates from your weather station.
 
 Using a different template
@@ -130,7 +128,7 @@ API
 
 """
 
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function
 
 __docformat__ = "restructuredtext en"
 __usage__ = """
@@ -146,7 +144,6 @@ __doc__ %= __usage__
 __usage__ = __doc__.split('\n')[0] + __usage__
 
 import base64
-from ConfigParser import SafeConfigParser
 from datetime import datetime, timedelta
 import getopt
 import logging
@@ -154,48 +151,51 @@ import os
 import pkg_resources
 import re
 import socket
-import StringIO
 import sys
-import urllib
-import urllib2
-import urlparse
 
-from pywws import DataStore
-from pywws.Logger import ApplicationLogger
-from pywws import Template
+if sys.version_info[0] >= 3:
+    from configparser import SafeConfigParser
+    from io import StringIO
+    from urllib.error import HTTPError, URLError
+    from urllib.parse import urlencode, urlsplit
+    from urllib.request import Request, urlopen
+else:
+    from ConfigParser import SafeConfigParser
+    from StringIO import StringIO
+    from urllib import urlencode
+    from urllib2 import HTTPError, Request, URLError, urlopen
+    from urlparse import urlsplit
+
+import pywws.logger
+import pywws.storage
+import pywws.template
 from pywws import __version__
 
+logger = logging.getLogger(__name__)
+
 PARENT_MARGIN = timedelta(minutes=2)
+
 
 class ToService(object):
     """Upload weather data to weather services such as Weather
     Underground.
 
     """
-    def __init__(self, params, status, calib_data, service_name):
+    def __init__(self, context, service_name):
         """
 
-        :param params: pywws configuration.
+        :param context: pywws "context".
 
-        :type params: :class:`pywws.DataStore.params`
-
-        :param status: pywws status store.
-
-        :type status: :class:`pywws.DataStore.status`
-
-        :param calib_data: 'calibrated' data.
-
-        :type calib_data: :class:`pywws.DataStore.calib_store`
+        :type context: object
 
         :param service_name: name of service to upload to.
 
         :type service_name: string
 
         """
-        self.logger = logging.getLogger('pywws.ToService(%s)' % service_name)
-        self.params = params
-        self.status = status
-        self.data = calib_data
+        self.params = context.params
+        self.status = context.status
+        self.data = context.calib_data
         self.service_name = service_name
         # 'derived' services such as 'underground_rf' share their
         # parent's config and templates
@@ -219,10 +219,10 @@ class ToService(object):
             'pywws', 'services/%s.ini' % (self.service_name))
         if sys.version_info[0] >= 3:
             param_string = param_string.decode('utf-8')
-        service_params.readfp(StringIO.StringIO(param_string))
+        service_params.readfp(StringIO(param_string))
         # get URL
         self.server = service_params.get('config', 'url')
-        parsed_url = urlparse.urlsplit(self.server)
+        parsed_url = urlsplit(self.server)
         if parsed_url.scheme == 'aprs':
             self.send_data = self.aprs_send_data
             server, port = parsed_url.netloc.split(':')
@@ -239,9 +239,7 @@ class ToService(object):
                 value = self.params.get(config_section, value[1:], 'unknown')
             self.fixed_data[name] = value
         # create templater
-        self.templater = Template.Template(
-            self.params, self.status, self.data, self.data, None, None,
-            use_locale=False)
+        self.templater = pywws.template.Template(context, use_locale=False)
         template_name = self.params.get(config_section, 'template', 'default')
         if template_name != 'default':
             template_dir = self.params.get(
@@ -288,7 +286,7 @@ class ToService(object):
 
         The :obj:`data` parameter contains the data to be encoded. It
         should be a 'calibrated' data record, as stored in
-        :class:`pywws.DataStore.calib_store`. The relevant data items
+        :class:`pywws.storage.CalibStore`. The relevant data items
         are extracted and converted to strings using a template, then
         merged with the station's "fixed" data.
 
@@ -336,17 +334,20 @@ class ToService(object):
 
         mosquitto_client = mosquitto.Client(client_id, protocol=mosquitto.MQTTv31)
         if auth:
-            self.logger.debug("Username and password configured")
+            logger.debug(
+                "%s:Username and password configured", self.service_name)
             if(self.password == "unknown"):
                 mosquitto_client.username_pw_set(self.user)
             else:
                 mosquitto_client.username_pw_set(self.user, self.password)
         else:
-            self.logger.debug("Username and password unconfigured, ignoring")
-        self.logger.debug(
-            "timestamp: %s. publishing on topic [%s] to hostname [%s] and " +
+            logger.debug(
+                "%s:Username and password unconfigured, ignoring", self.service_name)
+        logger.debug(
+            "%s:timestamp: %s. publishing on topic [%s] to hostname [%s] and " +
             "port [%s] with a client_id [%s] and retain is %s",
-            timestamp.isoformat(' '), topic, hostname, port, client_id, retain)
+            self.service_name, timestamp.isoformat(' '), topic, hostname, port,
+            client_id, retain)
 
         mosquitto_client.connect(hostname, int(port))
         mosquitto_client.publish(topic, json.dumps(prepared_data), retain=retain)
@@ -360,7 +361,7 @@ class ToService(object):
             #Need to make sure the messages have been flushed to the server.
             mosquitto_client.loop(timeout=0.5) 
 
-        self.logger.debug("published data: %s", prepared_data)
+        logger.debug("%s:published data: %s", self.service_name, prepared_data)
         mosquitto_client.disconnect()
         return True
 
@@ -400,7 +401,7 @@ class ToService(object):
             prepared_data['rel_pressure'], prepared_data['hum_out'],
             __version__
             )
-        self.logger.debug('packet: "%s"', packet)
+        logger.debug('%s:packet: "%s"', self.service_name, packet)
         login = login.encode('ASCII')
         packet = packet.encode('ASCII')
         sock = socket.socket()
@@ -408,22 +409,24 @@ class ToService(object):
             sock.connect(self.server)
             try:
                 response = sock.recv(4096)
-                self.logger.debug('server software: %s', response.strip())
+                logger.debug('%s:server software: %s',
+                             self.service_name, response.strip())
                 sock.sendall(login)
                 response = sock.recv(4096)
-                self.logger.debug('server login ack: %s', response.strip())
+                logger.debug('%s:server login ack: %s',
+                             self.service_name, response.strip())
                 sock.sendall(packet)
                 sock.shutdown(socket.SHUT_RDWR)
             finally:
                 sock.close()
-        except Exception, ex:
+        except Exception as ex:
             new_ex = str(ex)
             if new_ex == self.old_ex:
-                log = self.logger.debug
+                log = logger.debug
             else:
-                log = self.logger.error
+                log = logger.error
                 self.old_ex = new_ex
-            log('exc: %s', new_ex)
+            log('%s:exc: %s', self.service_name, new_ex)
             return False
         if not ignore_last_update:
             self.set_last_update(timestamp)
@@ -453,31 +456,31 @@ class ToService(object):
         :rtype: bool
 
         """
-        coded_data = urllib.urlencode(prepared_data)
-        self.logger.debug(coded_data)
+        coded_data = urlencode(prepared_data)
+        logger.debug('%s:%s', self.service_name, coded_data)
         new_ex = self.old_ex
         ex_info = []
         success = False
         try:
             if self.use_get:
-                request = urllib2.Request(self.server + '?' + coded_data)
+                request = Request(self.server + '?' + coded_data)
             else:
-                request = urllib2.Request(self.server, coded_data.encode('ASCII'))
+                request = Request(self.server, coded_data.encode('ASCII'))
             if self.auth_type == 'basic':
                 request.add_header('Authorization', self.auth)
             if self.http_headers is not None:
                 for header in self.http_headers:
                     request.add_header(header[0], header[1])
-            rsp = urllib2.urlopen(request)
+            rsp = urlopen(request)
             response = rsp.readlines()
             rsp.close()
             if response == self.old_response:
-                log = self.logger.debug
+                log = logger.debug
             else:
-                log = self.logger.error
+                log = logger.error
                 self.old_response = response
             for line in response:
-                log('rsp: %s', line.strip())
+                log('%s:rsp: %s', self.service_name, line.strip())
             for n, expected in enumerate(self.expected_result):
                 if n < len(response):
                     actual = response[n].decode('utf-8')
@@ -489,7 +492,7 @@ class ToService(object):
                     self.set_last_update(timestamp)
                 return True
             return False
-        except urllib2.HTTPError, ex:
+        except HTTPError as ex:
             if ex.code == 429 and self.service_name == 'metoffice':
                 # UK Met Office server uses 429 to signal duplicate data
                 success = True
@@ -504,16 +507,16 @@ class ToService(object):
                     ex_info.append(re.sub('<.+?>', '', line))
             except Exception:
                 pass
-        except urllib2.URLError, ex:
+        except URLError as ex:
             new_ex = str(ex.reason)
-        except Exception, ex:
+        except Exception as ex:
             new_ex = str(ex)
         if new_ex == self.old_ex:
-            log = self.logger.debug
+            log = logger.debug
         else:
-            log = self.logger.error
+            log = logger.error
             self.old_ex = new_ex
-        log('exc: %s', new_ex)
+        log('%s:exc: %s', self.service_name, new_ex)
         for extra in ex_info:
             extra = extra.strip()
             if extra:
@@ -619,7 +622,7 @@ class ToService(object):
                 return False
             count += 1
         if count > 1:
-            self.logger.info('%d records sent', count)
+            logger.info('%s:%d records sent', self.service_name, count)
         return True
 
 def main(argv=None):
@@ -628,16 +631,16 @@ def main(argv=None):
     try:
         opts, args = getopt.getopt(
             argv[1:], "hcv", ['help', 'catchup', 'verbose'])
-    except getopt.error, msg:
-        print >>sys.stderr, 'Error: %s\n' % msg
-        print >>sys.stderr, __usage__.strip()
+    except getopt.error as msg:
+        print('Error: %s\n' % msg, file=sys.stderr)
+        print(__usage__.strip(), file=sys.stderr)
         return 1
     # process options
     catchup = False
     verbose = 0
     for o, a in opts:
         if o == '-h' or o == '--help':
-            print __usage__.strip()
+            print(__usage__.strip())
             return 0
         elif o == '-c' or o == '--catchup':
             catchup = True
@@ -645,13 +648,12 @@ def main(argv=None):
             verbose += 1
     # check arguments
     if len(args) != 2:
-        print >>sys.stderr, "Error: 2 arguments required"
-        print >>sys.stderr, __usage__.strip()
+        print("Error: 2 arguments required", file=sys.stderr)
+        print(__usage__.strip(), file=sys.stderr)
         return 2
-    logger = ApplicationLogger(verbose)
-    return ToService(
-        DataStore.params(args[0]), DataStore.status(args[0]),
-        DataStore.calib_store(args[0]), args[1]).Upload(
+    pywws.logger.setup_handler(verbose)
+    with pywws.storage.pywws_context(args[0]) as context:
+        return ToService(context, args[1]).Upload(
             catchup=catchup, ignore_last_update=not catchup)
 
 if __name__ == "__main__":

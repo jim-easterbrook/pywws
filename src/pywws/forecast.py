@@ -1,11 +1,6 @@
-#!/usr/bin/env python
-
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-16  pywws contributors
-# Inspired by beteljuice.com Java algorithm, as converted to Python by
-# honeysucklecottage.me.uk, and further information from
-# http://www.meteormetrics.com/zambretti.htm
+# Copyright (C) 2008-18  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -21,11 +16,37 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-from __future__ import absolute_import
+"""Predict future weather using recent data
+::
 
-def _(msg) : return msg
+%s
 
-forecast_text = {
+"""
+
+from __future__ import absolute_import, print_function
+
+__docformat__ = "restructuredtext en"
+__usage__ = """
+ usage: python -m pywws.forecast [options] data_dir
+ options are:
+  -h | --help  display this help
+ data_dir is the root directory of the weather data
+"""
+__doc__ %= __usage__
+__usage__ = __doc__.split('\n')[0] + __usage__
+
+from datetime import datetime, timedelta
+import getopt
+import sys
+
+import pywws.localisation
+import pywws.storage
+from pywws.timezone import Local, utc
+
+def _(msg):
+    return msg
+
+_forecast_text = {
     'A' : _("Settled fine"),
     'B' : _("Fine weather"),
     'C' : _("Becoming fine"),
@@ -56,15 +77,29 @@ forecast_text = {
 
 del _
 
-def ZambrettiCode(pressure, month, wind, trend,
-                  north=True, baro_top=1050.0, baro_bottom=950.0):
+
+def zambretti_code(params, hourly_data):
     """Simple implementation of Zambretti forecaster algorithm.
     Inspired by beteljuice.com Java algorithm, as converted to Python by
     honeysucklecottage.me.uk, and further information
     from http://www.meteormetrics.com/zambretti.htm"""
+    north = eval(params.get('Zambretti', 'north', 'True'))
+    baro_upper = eval(params.get('Zambretti', 'baro upper', '1050.0'))
+    baro_lower = eval(params.get('Zambretti', 'baro lower', '950.0'))
+    if not hourly_data['rel_pressure']:
+        return ''
+    if hourly_data['wind_ave'] is None or hourly_data['wind_ave'] < 0.3:
+        wind = None
+    else:
+        wind = hourly_data['wind_dir']
+    if hourly_data['pressure_trend'] is None:
+        trend = 0.0
+    else:
+        trend = hourly_data['pressure_trend'] / 3.0
     # normalise pressure
-    pressure = 950.0 + ((1050.0 - 950.0) *
-                        (pressure - baro_bottom) / (baro_top - baro_bottom))
+    pressure = 950.0 + (
+        (1050.0 - 950.0) * (hourly_data['rel_pressure'] - baro_lower) /
+        (baro_upper - baro_lower))
     # adjust pressure for wind direction
     if wind is not None:
         if not isinstance(wind, int):
@@ -75,16 +110,18 @@ def ZambrettiCode(pressure, month, wind, trend,
         pressure += (  5.2,  4.2,  3.2,  1.05, -1.1, -3.15, -5.2, -8.35,
                      -11.5, -9.4, -7.3, -5.25, -3.2, -1.15,  0.9,  3.05)[wind]
     # compute base forecast from pressure and trend (hPa / hour)
+    summer = north == (hourly_data['idx'].month >= 4 and
+                       hourly_data['idx'].month <= 9)
     if trend >= 0.1:
         # rising pressure
-        if north == (month >= 4 and month <= 9):
+        if summer:
             pressure += 3.2
         F = 0.1740 * (1031.40 - pressure)
         LUT = ('A', 'B', 'B', 'C', 'F', 'G', 'I', 'J', 'L', 'M', 'M', 'Q', 'T',
                'Y')
     elif trend <= -0.1:
         # falling pressure
-        if north == (month >= 4 and month <= 9):
+        if summer:
             pressure -= 3.2
         F = 0.1553 * (1029.95 - pressure)
         LUT = ('B', 'D', 'H', 'O', 'R', 'U', 'V', 'X', 'X', 'Z')
@@ -98,29 +135,47 @@ def ZambrettiCode(pressure, month, wind, trend,
     # convert to letter code
     return LUT[F]
 
-def ZambrettiText(letter):
-    return forecast_text[letter]
+
+def zambretti(params, hourly_data):
+    code = zambretti_code(params, hourly_data)
+    return pywws.localisation.translation.ugettext(_forecast_text[code])
+
 
 def main(argv=None):
-    from pywws.conversions import winddir_text
-    for pressure in range(1030, 960, -10):
-        for trend_txt in ('S', 'R-S', 'R-W', 'F-W', 'F-S'):
-            trend, month = {
-                'R-W' : ( 0.2, 1),
-                'F-W' : (-0.2, 1),
-                'R-S' : ( 0.2, 7),
-                'F-S' : (-0.2, 7),
-                'S'   : ( 0.0, 7),
-                }[trend_txt]
-            for wind in (0, 2, 14, None, 4, 12, 6, 10, 8):
-                if wind is None:
-                    wind_txt = 'calm'
-                else:
-                    wind_txt = winddir_text(wind)
-                print '%4d %4s %4s  %3s' % (
-                    pressure, trend_txt, wind_txt,
-                    ZambrettiCode(pressure, month, wind, trend))
-        print ''
+    if argv is None:
+        argv = sys.argv
+    try:
+        opts, args = getopt.getopt(argv[1:], "h", ['help'])
+    except getopt.error as msg:
+        print('Error: %s\n' % msg, file=sys.stderr)
+        print(__usage__.strip(), file=sys.stderr)
+        return 1
+    # process options
+    for o, a in opts:
+        if o in ('-h', '--help'):
+            print(__usage__.strip())
+            return 0
+    # check arguments
+    if len(args) != 1:
+        print("Error: 1 argument required", file=sys.stderr)
+        print(__usage__.strip(), file=sys.stderr)
+        return 2
+    data_dir = args[0]
+    with pywws.storage.pywws_context(data_dir) as context:
+        params = context.params
+        pywws.localisation.set_application_language(params)
+        hourly_data = context.hourly_data
+        idx = hourly_data.before(datetime.max)
+        print('Zambretti (current):', zambretti(params, hourly_data[idx]))
+        idx = idx.replace(tzinfo=utc).astimezone(Local)
+        if idx.hour < 8 or (idx.hour == 8 and idx.minute < 30):
+            idx -= timedelta(hours=24)
+        idx = idx.replace(hour=9, minute=0, second=0)
+        idx = hourly_data.nearest(idx.astimezone(utc).replace(tzinfo=None))
+        lcl = idx.replace(tzinfo=utc).astimezone(Local)
+        print('Zambretti (at %s):' % lcl.strftime('%H:%M %Z'), zambretti(
+            params, hourly_data[idx]))
+    return 0
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

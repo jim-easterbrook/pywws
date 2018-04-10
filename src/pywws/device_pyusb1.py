@@ -30,11 +30,11 @@ library<dependencies-usb>` for details.
 Testing
 =======
 
-Run :py:mod:`pywws.TestWeatherStation` with increased verbosity so it
+Run :py:mod:`pywws.testweatherstation` with increased verbosity so it
 reports which USB device access module is being used::
 
-    python -m pywws.TestWeatherStation -vv
-    18:28:09:pywws.WeatherStation.CUSBDrive:using pywws.device_pyusb1
+    python -m pywws.testweatherstation -vv
+    18:28:09:pywws.weatherstation.CUSBDrive:using pywws.device_pyusb1
     0000 55 aa ff ff ff ff ff ff ff ff ff ff ff ff ff ff 05 20 01 41 11 00 00 00 81 00 00 0f 05 00 e0 51
     0020 03 27 ce 27 00 00 00 00 00 00 00 12 02 14 18 27 41 23 c8 00 00 00 46 2d 2c 01 64 80 c8 00 00 00
     0040 64 00 64 80 a0 28 80 25 a0 28 80 25 03 36 00 05 6b 00 00 0a 00 f4 01 12 00 00 00 00 00 00 00 00

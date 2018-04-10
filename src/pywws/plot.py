@@ -1,9 +1,6 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-16  pywws contributors
+# Copyright (C) 2008-18  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -27,11 +24,11 @@
 Introduction
 ------------
 
-Like :py:mod:`pywws.Template` this is one of the more difficult to use
+Like :py:mod:`pywws.template` this is one of the more difficult to use
 modules in the weather station software collection. It plots a graph (or
 set of graphs) of weather data. Almost everything about the graph is
 controlled by an XML file. I refer to these files as templates, but they
-aren't templates in the same sense as :py:mod:`pywws.Template` uses to
+aren't templates in the same sense as :py:mod:`pywws.template` uses to
 create text files.
 
 Before writing your own graph template files, it might be useful to
@@ -501,11 +498,11 @@ Detailed API
 
 """
 
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function
 
 __docformat__ = "restructuredtext en"
 __usage__ = """
- usage: python -m pywws.Plot [options] data_dir temp_dir xml_file output_file
+ usage: python -m pywws.plot [options] data_dir temp_dir xml_file output_file
  options are:
   -h or --help    display this help
  data_dir is the root directory of the weather data
@@ -530,10 +527,13 @@ import pytz
 
 from pywws.constants import HOUR
 from pywws.conversions import *
-from pywws import DataStore
-from pywws import Localisation
-from pywws.Logger import ApplicationLogger
-from pywws.TimeZone import Local, local_utc_offset, utc
+import pywws.localisation
+import pywws.logger
+import pywws.storage
+from pywws.timezone import Local, local_utc_offset, utc
+
+logger = logging.getLogger(__name__)
+
 
 class GraphNode(object):
     def __init__(self, node):
@@ -561,6 +561,7 @@ class GraphNode(object):
                 if child.childNodes:
                     yield child.childNodes[0].data.strip()
 
+
 class GraphFileReader(GraphNode):
     def __init__(self, input_file):
         self.input_file = input_file
@@ -568,25 +569,26 @@ class GraphFileReader(GraphNode):
         graphs = self.doc.get_children('graph')
         if not graphs:
             raise RuntimeError('%s has no graph node' % input_file)
-        GraphNode.__init__(self, graphs[0].node)
+        super(GraphFileReader, self).__init__(graphs[0].node)
 
     def close(self):
         self.doc.node.unlink()
 
+
 class BasePlotter(object):
-    def __init__(self, params, status, raw_data, hourly_data,
-                 daily_data, monthly_data, work_dir):
-        self.logger = logging.getLogger('pywws.%s' % self.__class__.__name__)
-        self.raw_data = raw_data
-        self.hourly_data = hourly_data
-        self.daily_data = daily_data
-        self.monthly_data = monthly_data
+    def __init__(self, context, work_dir):
+        self.calib_data = context.calib_data
+        self.hourly_data = context.hourly_data
+        self.daily_data = context.daily_data
+        self.monthly_data = context.monthly_data
         self.work_dir = work_dir
-        self.pressure_offset = eval(params.get('config', 'pressure offset'))
+        self.pressure_offset = eval(
+            context.params.get('config', 'pressure offset'))
         self.gnuplot_version = eval(
-            params.get('config', 'gnuplot version', '4.2'))
+            context.params.get('config', 'gnuplot version', '4.2'))
         # set language related stuff
-        self.encoding = params.get('config', 'gnuplot encoding', 'iso_8859_1')
+        self.encoding = context.params.get(
+            'config', 'gnuplot encoding', 'iso_8859_1')
         if ' ' in self.encoding:
             self.encoding = self.encoding.split()
         else:
@@ -607,7 +609,7 @@ class BasePlotter(object):
         # apply time string
         return eval('result.replace(%s)' % time_str)
 
-    def DoPlot(self, input_file, output_file):
+    def do_plot(self, input_file, output_file):
         if isinstance(input_file, GraphFileReader):
             self.graph = input_file
         else:
@@ -618,7 +620,7 @@ class BasePlotter(object):
         self.plot_count = len(plot_list)
         if self.plot_count < 1:
             # nothing to plot
-            self.logger.info('%s has no %s nodes', self.graph.input_file, self.plot_name)
+            logger.info('%s has no %s nodes', self.graph.input_file, self.plot_name)
             self.graph.close()
             return 1
         # get start and end datetimes
@@ -664,11 +666,11 @@ class BasePlotter(object):
         lcl = locale.getlocale()
         if lcl[0]:
             of.write('set locale "%s.%s"\n' % lcl)
-        self.rows = self.GetDefaultRows()
+        self.rows = self.get_default_rows()
         self.cols = (self.plot_count + self.rows - 1) // self.rows
         self.rows, self.cols = eval(self.graph.get_value(
             'layout', '%d, %d' % (self.rows, self.cols)))
-        w, h = self.GetDefaultPlotSize()
+        w, h = self.get_default_plot_size()
         w = w * self.cols
         h = h * self.rows
         w, h = eval(self.graph.get_value('size', '(%d, %d)' % (w, h)))
@@ -698,7 +700,7 @@ class BasePlotter(object):
             title = 'title "%s"' % title
         of.write('set multiplot layout %d, %d %s\n' % (self.rows, self.cols, title))
         # do actual plots
-        of.write(self.GetPreamble())
+        of.write(self.get_preamble())
         for plot_no in range(self.plot_count):
             plot = plot_list[plot_no]
             # set key / title location
@@ -724,7 +726,7 @@ class BasePlotter(object):
             # set data source
             source = plot.get_value('source', 'raw')
             if source == 'raw':
-                source = self.raw_data
+                source = self.calib_data
             elif source == 'hourly':
                 source = self.hourly_data
             elif source == 'monthly':
@@ -732,7 +734,7 @@ class BasePlotter(object):
             else:
                 source = self.daily_data
             # do the plot
-            of.write(self.PlotData(plot_no, plot, source))
+            of.write(self.plot_data(plot_no, plot, source))
         of.close()
         self.graph.close()
         # run gnuplot on file
@@ -741,18 +743,16 @@ class BasePlotter(object):
             os.unlink(file)
         return 0
 
-class Record(object):
-    pass
 
 class GraphPlotter(BasePlotter):
     plot_name = 'plot'
-    def GetDefaultRows(self):
+    def get_default_rows(self):
         return self.plot_count
 
-    def GetDefaultPlotSize(self):
+    def get_default_plot_size(self):
         return 200 // self.cols, 600 // self.cols
 
-    def GetPreamble(self):
+    def get_preamble(self):
         result = u"""set style fill solid
 set xdata time
 set timefmt "%Y-%m-%dT%H:%M:%S"
@@ -776,8 +776,11 @@ set timefmt "%Y-%m-%dT%H:%M:%S"
             result += u'set xtics %d\n' % (eval(xtics) * 3600)
         return result
 
-    def PlotData(self, plot_no, plot, source):
-        _ = Localisation.translation.ugettext
+    def plot_data(self, plot_no, plot, source):
+        class Record(object):
+            pass
+
+        _ = pywws.localisation.translation.ugettext
         subplot_list = plot.get_children('subplot')
         subplot_count = len(subplot_list)
         if subplot_count < 1:
@@ -850,7 +853,7 @@ set timefmt "%Y-%m-%dT%H:%M:%S"
         start = self.x_lo - self.utcoffset
         stop = self.x_hi - self.utcoffset
         cumu_start = start
-        if source == self.raw_data:
+        if source == self.calib_data:
             boxwidth = 240      # assume 5 minute data interval
             start = source.before(start)
         elif source == self.hourly_data:
@@ -899,7 +902,7 @@ set timefmt "%Y-%m-%dT%H:%M:%S"
                     idx = data['idx']
                 idx += self.utcoffset
                 if not subplot.cummulative and subplot.last_idx:
-                    if source == self.raw_data:
+                    if source == self.calib_data:
                         interval = timedelta(minutes=((data['delay']*3)+1)//2)
                     if idx - subplot.last_idx > interval:
                         # missing data
@@ -969,35 +972,32 @@ set timefmt "%Y-%m-%dT%H:%M:%S"
             result += u'\n'
         return result
 
+
 def main(argv=None):
     if argv is None:
         argv = sys.argv
     try:
         opts, args = getopt.getopt(argv[1:], "h", ['help'])
-    except getopt.error, msg:
-        print >>sys.stderr, 'Error: %s\n' % msg
-        print >>sys.stderr, __usage__.strip()
+    except getopt.error as msg:
+        print('Error: %s\n' % msg, file=sys.stderr)
+        print(__usage__.strip(), file=sys.stderr)
         return 1
     # process options
     for o, a in opts:
         if o == '-h' or o == '--help':
-            print __usage__.strip()
+            print(__usage__.strip())
             return 0
     # check arguments
     if len(args) != 4:
-        print >>sys.stderr, 'Error: 4 arguments required\n'
-        print >>sys.stderr, __usage__.strip()
+        print('Error: 4 arguments required\n', file=sys.stderr)
+        print(__usage__.strip(), file=sys.stderr)
         return 2
-    logger = ApplicationLogger(2)
-    params = DataStore.params(args[0])
-    status = DataStore.status(args[0])
-    Localisation.SetApplicationLanguage(params)
-    return GraphPlotter(
-        params, status,
-        DataStore.calib_store(args[0]), DataStore.hourly_store(args[0]),
-        DataStore.daily_store(args[0]), DataStore.monthly_store(args[0]),
-        args[1]
-        ).DoPlot(GraphFileReader(args[2]), args[3])
+    pywws.logger.setup_handler(2)
+    with pywws.storage.pywws_context(args[0]) as context:
+        pywws.localisation.set_application_language(context.params)
+        return GraphPlotter(context, args[1]).do_plot(
+            GraphFileReader(args[2]), args[3])
+
 
 if __name__ == "__main__":
     sys.exit(main())

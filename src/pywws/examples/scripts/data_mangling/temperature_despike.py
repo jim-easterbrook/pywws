@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+from __future__ import print_function
+
 __usage__ = """
 Remove temperature spikes from raw data.
  usage: %s [options] data_dir
@@ -15,37 +17,37 @@ import os
 import sys
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '../../..'))
-from pywws import DataStore
 from pywws.constants import SECOND
+import pywws.storage
 
 def main(argv=None):
     if argv is None:
         argv = sys.argv
     try:
         opts, args = getopt.getopt(argv[1:], "hn", ['help', 'noaction'])
-    except getopt.error, msg:
-        print >>sys.stderr, 'Error: %s\n' % msg
-        print >>sys.stderr, __usage__.strip()
+    except getopt.error as msg:
+        print('Error: %s\n' % msg, file=sys.stderr)
+        print(__usage__.strip(), file=sys.stderr)
         return 1
     # process options
     noaction = False
     for o, a in opts:
         if o == '-h' or o == '--help':
-            print __usage__.strip()
+            print(__usage__.strip())
             return 0
         elif o == '-n' or o == '--noaction':
             noaction = True
     # check arguments
     if len(args) != 1:
-        print >>sys.stderr, 'Error: 1 argument required\n'
-        print >>sys.stderr, __usage__.strip()
+        print('Error: 1 argument required\n', file=sys.stderr)
+        print(__usage__.strip(), file=sys.stderr)
         return 2
     data_dir = args[0]
     # date & time range of data to be changed, in UTC!
     start = datetime(2013, 10, 27, 11, 21)
     stop  = datetime(2013, 10, 29, 18, 32)
     # open data store
-    raw_data = DataStore.data_store(data_dir)
+    raw_data = pywws.storage.RawStore(data_dir)
     # process the data
     aperture = timedelta(minutes=14, seconds=30)
     # make list of changes to apply after examining the data
@@ -67,7 +69,7 @@ def main(argv=None):
         median = temp_list[len(temp_list) / 2]
         # remove anything too far from median
         if abs(data['temp_out'] - median) >= 2.5:
-            print str(idx), temp_list, data['temp_out']
+            print(str(idx), temp_list, data['temp_out'])
             changed = dict(data)
             changed['temp_out'] = None
             changes.append(changed)
@@ -78,7 +80,7 @@ def main(argv=None):
         # make sure it's saved
         raw_data.flush()
         # clear calibrated data that needs to be regenerated
-        calib_data = DataStore.calib_store(data_dir)
+        calib_data = pywws.storage.CalibStore(data_dir)
         del calib_data[changes[0]['idx']:]
         calib_data.flush()
     # done

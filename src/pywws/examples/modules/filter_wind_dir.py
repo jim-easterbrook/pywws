@@ -18,7 +18,7 @@
 
 from datetime import timedelta
 
-from pywws.Process import WindFilter
+import pywws.process
 
 class Calib(object):
     """Weather station calibration class with wind direction filter."""
@@ -34,7 +34,7 @@ class Calib(object):
         # filter wind direction
         stop = result['idx']
         start = stop - self.wind_fil_aperture
-        wind_filter = WindFilter(decay=0.8)
+        wind_filter = pywws.process.WindFilter(decay=0.8)
         for data in self.raw_data[start:stop]:
             wind_filter.add(data)
         wind_filter.add(raw)

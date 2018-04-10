@@ -1,8 +1,6 @@
-#!/usr/bin/env python
-
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-17  pywws contributors
+# Copyright (C) 2008-18  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -30,26 +28,25 @@ import shutil
 import threading
 
 from pywws.calib import Calib
-from pywws import Plot
-from pywws import Template
-from pywws.TimeZone import STDOFFSET, local_utc_offset
+import pywws.plot
+import pywws.template
+from pywws.timezone import STDOFFSET, local_utc_offset
 from pywws.toservice import ToService
-from pywws import Upload
-from pywws import WindRose
-from pywws import YoWindow
+import pywws.towebsite
+import pywws.windrose
+
+logger = logging.getLogger(__name__)
+
 
 class RegularTasks(object):
-    def __init__(self, params, status,
-                 raw_data, calib_data, hourly_data, daily_data, monthly_data,
-                 asynch=False):
-        self.logger = logging.getLogger('pywws.Tasks.RegularTasks')
-        self.params = params
-        self.status = status
-        self.raw_data = raw_data
-        self.calib_data = calib_data
-        self.hourly_data = hourly_data
-        self.daily_data = daily_data
-        self.monthly_data = monthly_data
+    def __init__(self, context, asynch=False):
+        self.params = context.params
+        self.status = context.status
+        self.raw_data = context.raw_data
+        self.calib_data = context.calib_data
+        self.hourly_data = context.hourly_data
+        self.daily_data = context.daily_data
+        self.monthly_data = context.monthly_data
         self.asynch = asynch
         self.flush = eval(self.params.get('config', 'frequent writes', 'False'))
         # get directories
@@ -66,27 +63,19 @@ class RegularTasks(object):
         # create calibration object
         self.calibrator = Calib(self.params, self.raw_data)
         # create templater object
-        self.templater = Template.Template(
-            self.params, self.status, self.calib_data, self.hourly_data,
-            self.daily_data, self.monthly_data)
+        self.templater = pywws.template.Template(context)
         # create plotter objects
-        self.plotter = Plot.GraphPlotter(
-            self.params, self.status, self.calib_data, self.hourly_data,
-            self.daily_data, self.monthly_data, self.work_dir)
-        self.roseplotter = WindRose.RosePlotter(
-            self.params, self.status, self.calib_data, self.hourly_data,
-            self.daily_data, self.monthly_data, self.work_dir)
+        self.plotter = pywws.plot.GraphPlotter(context, self.work_dir)
+        self.roseplotter = pywws.windrose.RosePlotter(context, self.work_dir)
         # create FTP uploader object
-        self.uploader = Upload.Upload(self.params)
+        self.uploader = pywws.towebsite.ToWebSite(self.params)
         self.uploads_directory = os.path.join(self.work_dir, 'uploads')
         if not os.path.isdir(self.uploads_directory):
             os.mkdir(self.uploads_directory)
         # delay creation of a Twitter object until we know it's needed
         self.twitter = None
-        # create a YoWindow object
-        self.yowindow = YoWindow.YoWindow(self.calib_data)
         # get daytime end hour, in UTC
-        self.day_end_hour = eval(params.get('config', 'day end hour', '21'))
+        self.day_end_hour = eval(self.params.get('config', 'day end hour', '21'))
         self.day_end_hour = (self.day_end_hour - (STDOFFSET.seconds // 3600)) % 24
         # parse "cron" sections
         self.cron = {}
@@ -104,20 +93,18 @@ class RegularTasks(object):
                     self.cron[section].get_next()
         # create service uploader objects
         self.services = {}
-        for section in self.cron.keys() + [
+        for section in list(self.cron.keys()) + [
                        'live', 'logged', 'hourly', '12 hourly', 'daily']:
             for name in eval(self.params.get(section, 'services', '[]')):
                 if name not in self.services:
-                    self.services[name] = ToService(
-                        self.params, self.status, self.calib_data,
-                        service_name=name)
-            # check for deprecated syntax
+                    self.services[name] = ToService(context, name)
+            # check for obsolete entries
             if self.params.get(section, 'twitter') not in (None, '[]'):
-                self.logger.warning(
-                    'Deprecated twitter entry in [%s]', section)
+                logger.error(
+                    'Deprecated twitter entry in weather.ini [%s]', section)
             if self.params.get(section, 'yowindow'):
-                self.logger.warning(
-                    'Deprecated yowindow entry in [%s]', section)
+                logger.error(
+                    'Obsolete yowindow entry in weather.ini [%s]', section)
         # create queues for things to upload / send
         self.tweet_queue = deque()
         self.service_queue = {}
@@ -126,7 +113,7 @@ class RegularTasks(object):
         self.uploads_queue = deque()
         # start asynchronous thread to do uploads
         if self.asynch:
-            self.logger.info('Starting asynchronous thread')
+            logger.info('Starting asynchronous thread')
             self.shutdown_thread = threading.Event()
             self.wake_thread = threading.Event()
             self.thread = threading.Thread(target=self._asynch_thread)
@@ -138,7 +125,7 @@ class RegularTasks(object):
         self.shutdown_thread.set()
         self.wake_thread.set()
         self.thread.join()
-        self.logger.debug('Asynchronous thread terminated')
+        logger.debug('Asynchronous thread terminated')
 
     def _asynch_thread(self):
         try:
@@ -151,16 +138,16 @@ class RegularTasks(object):
                         break
                     self.wake_thread.clear()
                     timeout = 2
-                self.logger.debug('Doing asynchronous tasks')
+                logger.debug('Doing asynchronous tasks')
                 self._do_queued_tasks()
-        except Exception, ex:
-            self.logger.exception(ex)
+        except Exception as ex:
+            logger.exception(ex)
 
     def _do_queued_tasks(self):
         while self.tweet_queue:
             tweet = self.tweet_queue[0]
-            self.logger.info("Tweeting")
-            if not self.twitter.Upload(tweet):
+            logger.info("Tweeting")
+            if not self.twitter.upload(tweet):
                 break
             self.tweet_queue.popleft()
         for name in self.service_queue:
@@ -177,7 +164,7 @@ class RegularTasks(object):
                     break
                 self.service_queue[name].popleft()
             if count > 0:
-                service.logger.info('%d records sent', count)
+                logger.info('%s:%d records sent', name, count)
         while self.uploads_queue:
             file = self.uploads_queue.popleft()
             if not os.path.exists(file):
@@ -190,9 +177,6 @@ class RegularTasks(object):
 
     def has_live_tasks(self):
         if self.cron:
-            return True
-        yowindow_file = self.params.get('live', 'yowindow')
-        if yowindow_file:
             return True
         if self.params.get('live', 'twitter') not in (None, '[]'):
             return True
@@ -214,11 +198,6 @@ class RegularTasks(object):
     def _do_common(self, sections, live_data=None):
         if self.asynch and not self.thread.isAlive():
             raise RuntimeError('Asynchronous thread terminated unexpectedly')
-        for section in sections:
-            yowindow_file = self.params.get(section, 'yowindow')
-            if yowindow_file:
-                self.yowindow.write_file(yowindow_file)
-                break
         for section in sections:
             templates = self.params.get(section, 'twitter')
             if templates not in (None, '[]'):
@@ -386,9 +365,9 @@ class RegularTasks(object):
 
     def do_twitter(self, template, data=None):
         if not self.twitter:
-            from pywws import ToTwitter
-            self.twitter = ToTwitter.ToTwitter(self.params)
-        self.logger.info("Templating %s", template)
+            import pywws.totwitter
+            self.twitter = pywws.totwitter.ToTwitter(self.params)
+        logger.info("Templating %s", template)
         input_file = os.path.join(self.template_dir, template)
         tweet = self.templater.make_text(input_file, live_data=data)
         self.tweet_queue.append(tweet)
@@ -396,21 +375,21 @@ class RegularTasks(object):
             self.wake_thread.set()
 
     def do_plot(self, template):
-        self.logger.info("Graphing %s", template)
+        logger.info("Graphing %s", template)
         input_file = os.path.join(self.graph_template_dir, template)
         output_file = os.path.join(self.work_dir, os.path.splitext(template)[0])
-        input_xml = Plot.GraphFileReader(input_file)
+        input_xml = pywws.plot.GraphFileReader(input_file)
         if (input_xml.get_children(self.plotter.plot_name) and
-                        self.plotter.DoPlot(input_xml, output_file) == 0):
+                        self.plotter.do_plot(input_xml, output_file) == 0):
             return output_file
         if (input_xml.get_children(self.roseplotter.plot_name) and
-                        self.roseplotter.DoPlot(input_xml, output_file) == 0):
+                        self.roseplotter.do_plot(input_xml, output_file) == 0):
             return output_file
-        self.logger.warning('nothing to graph in %s', input_file)
+        logger.warning('nothing to graph in %s', input_file)
         return None
 
     def do_template(self, template, data=None):
-        self.logger.info("Templating %s", template)
+        logger.info("Templating %s", template)
         input_file = os.path.join(self.template_dir, template)
         output_file = os.path.join(self.work_dir, template)
         self.templater.make_file(input_file, output_file, live_data=data)

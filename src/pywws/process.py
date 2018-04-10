@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
 # Copyright (C) 2008-18  pywws contributors
@@ -46,7 +43,7 @@ the meteorological day.
 
 To adjust the meteorological day to your preference, or that used by
 your local official weather station, edit the "day end hour" line in
-your ``weather.ini`` file, then run Reprocess.py to regenerate the
+your ``weather.ini`` file, then run pywws.reprocess to regenerate the
 summaries.
 
 Monthly summary data is computed from the daily summary data. If the
@@ -62,11 +59,11 @@ a more useful total in the last hour, day or month.
 
 """
 
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function
 
 __docformat__ = "restructuredtext en"
 __usage__ = """
- usage: python -m pywws.Process [options] data_dir
+ usage: python -m pywws.process [options] data_dir
  options are:
   -h or --help     display this help
   -v or --verbose  increase number of informative messages
@@ -85,14 +82,17 @@ import sys
 
 from pywws.calib import Calib
 from pywws.constants import HOUR, DAY, SECOND
-from pywws import DataStore
-from pywws.Logger import ApplicationLogger
-from pywws.TimeZone import STDOFFSET
+import pywws.logger
+import pywws.storage
+from pywws.timezone import STDOFFSET
+
+logger = logging.getLogger(__name__)
 
 TIME_ERR = timedelta(seconds=45)
 MINUTEx5 = timedelta(minutes=5)
 HOURx3 = timedelta(hours=3)
 WEEK = timedelta(days=7)
+
 
 class Average(object):
     """Compute average of multiple data values."""
@@ -111,6 +111,7 @@ class Average(object):
             return None
         return self.acc / float(self.count)
 
+
 class Minimum(object):
     """Compute minimum value and timestamp of multiple data values."""
     def __init__(self):
@@ -126,6 +127,7 @@ class Minimum(object):
         if self.time:
             return self.value, self.time
         return None, None
+
 
 class Maximum(object):
     """Compute maximum value and timestamp of multiple data values."""
@@ -143,10 +145,12 @@ class Maximum(object):
             return self.value, self.time
         return None, None
 
-sin_LUT = map(
-    lambda x: math.sin(math.radians(float(x * 360) / 16.0)), range(16))
-cos_LUT = map(
-    lambda x: math.cos(math.radians(float(x * 360) / 16.0)), range(16))
+
+sin_LUT = list(map(
+    lambda x: math.sin(math.radians(float(x * 360) / 16.0)), range(16)))
+cos_LUT = list(map(
+    lambda x: math.cos(math.radians(float(x * 360) / 16.0)), range(16)))
+
 
 class WindFilter(object):
     """Compute average wind speed and direction.
@@ -225,6 +229,7 @@ class WindFilter(object):
         return (self.total / self.total_weight,
                 (math.degrees(math.atan2(self.Ve, self.Vn)) + 180.0) / 22.5)
 
+
 class HourAcc(object):
     """'Accumulate' raw weather data to produce hourly summary.
 
@@ -233,7 +238,6 @@ class HourAcc(object):
 
     """
     def __init__(self, last_rain):
-        self.logger = logging.getLogger('pywws.Process.HourAcc')
         self.last_rain = last_rain
         self.copy_keys = ['idx', 'hum_in', 'temp_in', 'hum_out', 'temp_out',
                           'abs_pressure', 'rel_pressure']
@@ -256,11 +260,11 @@ class HourAcc(object):
             if self.last_rain is not None:
                 diff = rain - self.last_rain
                 if diff < -0.001:
-                    self.logger.warning(
+                    logger.warning(
                         '%s rain reset %.1f -> %.1f', str(idx), self.last_rain, rain)
                 elif diff > float(data['delay'] * 5):
                     # rain exceeds 5mm / minute, assume corrupt data and ignore it
-                    self.logger.warning(
+                    logger.warning(
                         '%s rain jump %.1f -> %.1f', str(idx), self.last_rain, rain)
                 else:
                     self.rain += max(0.0, diff)
@@ -286,6 +290,7 @@ class HourAcc(object):
         self.retval['rain'] = self.rain
         return self.retval
 
+
 class DayAcc(object):
     """'Accumulate' weather data to produce daily summary.
 
@@ -299,7 +304,6 @@ class DayAcc(object):
 
     """
     def __init__(self):
-        self.logger = logging.getLogger('pywws.Process.DayAcc')
         self.has_illuminance = False
         self.ave = {}
         self.max = {}
@@ -380,6 +384,7 @@ class DayAcc(object):
                 (self.retval['%s_max' % i],
                  self.retval['%s_max_t' % i]) = self.max[i].result()
         return self.retval
+
 
 class MonthAcc(object):
     """'Accumulate' daily weather data to produce monthly summary.
@@ -512,7 +517,8 @@ class MonthAcc(object):
                  result['%s_max_hi_t' % i]) = self.max_hi[i].result()
         return result
 
-def calibrate_data(logger, params, raw_data, calib_data):
+
+def calibrate_data(params, raw_data, calib_data):
     """'Calibrate' raw data, using a user-supplied function."""
     start = calib_data.before(datetime.max)
     if start is None:
@@ -538,7 +544,8 @@ def calibrate_data(logger, params, raw_data, calib_data):
             calib_data[idx] = calibrator.calib(data)
     return start
 
-def generate_hourly(logger, calib_data, hourly_data, process_from):
+
+def generate_hourly(calib_data, hourly_data, process_from):
     """Generate hourly summaries from calibrated data."""
     start = hourly_data.before(datetime.max)
     if start is None:
@@ -608,7 +615,8 @@ def generate_hourly(logger, calib_data, hourly_data, process_from):
         hour_start = hour_end
     return start
 
-def generate_daily(logger, day_end_hour,
+
+def generate_daily(day_end_hour,
                    calib_data, hourly_data, daily_data, process_from):
     """Generate daily summaries from calibrated and hourly data."""
     start = daily_data.before(datetime.max)
@@ -652,7 +660,8 @@ def generate_daily(logger, day_end_hour,
         day_start = day_end
     return start
 
-def generate_monthly(logger, rain_day_threshold, day_end_hour,
+
+def generate_monthly(rain_day_threshold, day_end_hour,
                      daily_data, monthly_data, process_from):
     """Generate monthly summaries from daily data."""
     start = monthly_data.before(datetime.max)
@@ -700,8 +709,8 @@ def generate_monthly(logger, rain_day_threshold, day_end_hour,
         month_start = month_end
     return start
 
-def Process(params,
-            raw_data, calib_data, hourly_data, daily_data, monthly_data):
+
+def process_data(context):
     """Generate summaries from raw weather station data.
 
     The meteorological day end (typically 2100 or 0900 local time) is
@@ -710,58 +719,55 @@ def Process(params,
     weather station readings.
 
     """
-    logger = logging.getLogger('pywws.Process')
     logger.info('Generating summary data')
     # get time of last record
-    last_raw = raw_data.before(datetime.max)
+    last_raw = context.raw_data.before(datetime.max)
     if last_raw is None:
         raise IOError('No data found. Check data directory parameter.')
     # get daytime end hour (in local time)
-    day_end_hour = eval(params.get('config', 'day end hour', '21')) % 24
+    day_end_hour = eval(context.params.get('config', 'day end hour', '21')) % 24
     # get other config
-    rain_day_threshold = eval(params.get('config', 'rain day threshold', '0.2'))
+    rain_day_threshold = eval(context.params.get('config', 'rain day threshold', '0.2'))
     # calibrate raw data
-    start = calibrate_data(logger, params, raw_data, calib_data)
+    start = calibrate_data(context.params, context.raw_data, context.calib_data)
     # generate hourly data
-    start = generate_hourly(logger, calib_data, hourly_data, start)
+    start = generate_hourly(context.calib_data, context.hourly_data, start)
     # generate daily data
-    start = generate_daily(logger, day_end_hour,
-                           calib_data, hourly_data, daily_data, start)
+    start = generate_daily(day_end_hour,
+                           context.calib_data, context.hourly_data, context.daily_data, start)
     # generate monthly data
-    generate_monthly(logger, rain_day_threshold, day_end_hour,
-                     daily_data, monthly_data, start)
+    generate_monthly(rain_day_threshold, day_end_hour,
+                     context.daily_data, context.monthly_data, start)
     return 0
+
 
 def main(argv=None):
     if argv is None:
         argv = sys.argv
     try:
         opts, args = getopt.getopt(argv[1:], "hv", ['help', 'verbose'])
-    except getopt.error, msg:
-        print >>sys.stderr, 'Error: %s\n' % msg
-        print >>sys.stderr, __usage__.strip()
+    except getopt.error as msg:
+        print('Error: %s\n' % msg, file=sys.stderr)
+        print(__usage__.strip(), file=sys.stderr)
         return 1
     # process options
     verbose = 0
     for o, a in opts:
         if o in ('-h', '--help'):
-            print __usage__.strip()
+            print(__usage__.strip())
             return 0
         elif o in ('-v', '--verbose'):
             verbose += 1
     # check arguments
     if len(args) != 1:
-        print >>sys.stderr, 'Error: 1 argument required\n'
-        print >>sys.stderr, __usage__.strip()
+        print('Error: 1 argument required\n', file=sys.stderr)
+        print(__usage__.strip(), file=sys.stderr)
         return 2
-    logger = ApplicationLogger(verbose)
+    pywws.logger.setup_handler(verbose)
     data_dir = args[0]
-    return Process(DataStore.params(data_dir),
-                   DataStore.data_store(data_dir),
-                   DataStore.calib_store(data_dir),
-                   DataStore.hourly_store(data_dir),
-                   DataStore.daily_store(data_dir),
-                   DataStore.monthly_store(data_dir))
+    with pywws.storage.pywws_context(data_dir) as context:
+        return process_data(context)
+
 
 if __name__ == "__main__":
     sys.exit(main())

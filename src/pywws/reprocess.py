@@ -1,8 +1,6 @@
-#!/usr/bin/env python
-
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-16  pywws contributors
+# Copyright (C) 2008-18  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -20,10 +18,10 @@
 
 """Regenerate hourly and daily summary data.
 
-This script can also be run with the ``pywws-reprocess`` command. ::
+This module can also be run with the ``pywws-reprocess`` command. ::
 %s
-This program recreates the calibrated, hourly, daily and monthly
-summary data that is created by the :py:mod:`pywws.Process` module. It
+This module recreates the calibrated, hourly, daily and monthly
+summary data that is created by the :py:mod:`pywws.process` module. It
 should be run whenever you upgrade to a newer version of pywws (if the
 summary data format has changed), change your calibration module or
 alter your pressure offset.
@@ -35,7 +33,7 @@ You are advised to backup your data before using the ``-u`` option.
 
 """
 
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function
 
 __docformat__ = "restructuredtext en"
 __usage__ = """
@@ -46,24 +44,25 @@ __usage__ = """
   -v | --verbose  increase number of informative messages
  data_dir is the root directory of the weather data
 """
-__doc__ %= __usage__ % ('python -m pywws.Reprocess')
+__doc__ %= __usage__ % ('python -m pywws.reprocess')
 
 import getopt
 import logging
 import os
 import sys
 
-from pywws import DataStore
-from pywws.Logger import ApplicationLogger
-from pywws import Process
+import pywws.logger
+import pywws.process
+import pywws.storage
 
-def Reprocess(data_dir, update):
-    logger = logging.getLogger('pywws.Reprocess')
-    raw_data = DataStore.data_store(data_dir)
+logger = logging.getLogger(__name__)
+
+
+def reprocess(data_dir, update):
     if update:
-        # update old data to copy high nibble of wind_dir to status
-        logger.warning("Updating status to include extra bits from wind_dir")
+        logger.warning("Updating status to detect invalid wind_dir")
         count = 0
+        raw_data = pywws.storage.RawStore(data_dir)
         for data in raw_data[:]:
             count += 1
             idx = data['idx']
@@ -71,14 +70,9 @@ def Reprocess(data_dir, update):
                 logger.info("update: %s", idx.isoformat(' '))
             elif count % 500 == 0:
                 logger.debug("update: %s", idx.isoformat(' '))
-            if data['wind_dir'] is not None:
-                if data['wind_dir'] >= 16:
-                    data['status'] |= (data['wind_dir'] & 0xF0) << 4
-                    data['wind_dir'] &= 0x0F
-                    raw_data[idx] = data
-                if data['status'] & 0x800:
-                    data['wind_dir'] = None
-                    raw_data[idx] = data
+            if data['wind_dir'] is not None and (data['wind_dir'] & 0x80):
+                data['wind_dir'] = None
+                raw_data[idx] = data
         raw_data.flush()
     # delete old format summary files
     logger.warning('Deleting old summaries')
@@ -91,15 +85,10 @@ def Reprocess(data_dir, update):
             os.rmdir(root)
     # create data summaries
     logger.warning('Generating hourly and daily summaries')
-    params = DataStore.params(data_dir)
-    calib_data = DataStore.calib_store(data_dir)
-    hourly_data = DataStore.hourly_store(data_dir)
-    daily_data = DataStore.daily_store(data_dir)
-    monthly_data = DataStore.monthly_store(data_dir)
-    Process.Process(
-        params,
-        raw_data, calib_data, hourly_data, daily_data, monthly_data)
+    with pywws.storage.pywws_context(data_dir) as context:
+        pywws.process.process_data(context)
     return 0
+
 
 def main(argv=None):
     if argv is None:
@@ -108,17 +97,17 @@ def main(argv=None):
     try:
         opts, args = getopt.getopt(
             argv[1:], "huv", ['help', 'update', 'verbose'])
-    except getopt.error, msg:
-        print >>sys.stderr, 'Error: %s\n' % msg
-        print >>sys.stderr, usage
+    except getopt.error as msg:
+        print('Error: %s\n' % msg, file=sys.stderr)
+        print(usage, file=sys.stderr)
         return 1
     # process options
     update = False
     verbose = 0
     for o, a in opts:
         if o in ('-h', '--help'):
-            print __doc__.split('\n\n')[0]
-            print usage
+            print(__doc__.split('\n\n')[0])
+            print(usage)
             return 0
         elif o in ('-u', '--update'):
             update = True
@@ -126,12 +115,13 @@ def main(argv=None):
             verbose += 1
     # check arguments
     if len(args) != 1:
-        print >>sys.stderr, 'Error: 1 argument required\n'
-        print >>sys.stderr, usage
+        print('Error: 1 argument required\n', file=sys.stderr)
+        print(usage, file=sys.stderr)
         return 2
-    logger = ApplicationLogger(verbose)
+    pywws.logger.setup_handler(verbose)
     data_dir = args[0]
-    return Reprocess(data_dir, update)
+    return reprocess(data_dir, update)
+
 
 if __name__ == "__main__":
     sys.exit(main())
