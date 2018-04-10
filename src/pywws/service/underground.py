@@ -51,13 +51,11 @@ class WUUploader(pywws.service.BaseUploader):
         try:
             rsp = session.get(url, params=prepared_data, timeout=30)
         except Exception as ex:
-            return str(ex)
+            return False, str(ex)
         if rsp.status_code != 200:
-            return 'http status: {:d}'.format(rsp.status_code)
+            return False, 'http status: {:d}'.format(rsp.status_code)
         text = rsp.text.strip()
-        if text != 'success':
-            return 'server response "{:s}"'.format(text)
-        return ''
+        return text == 'success', 'server response "{:s}"'.format(text)
 
 
 class ToService(pywws.service.BaseToService):

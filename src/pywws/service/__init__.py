@@ -44,7 +44,7 @@ class BaseUploader(threading.Thread):
         self.queue = deque()
 
     def run(self):
-        old_response = ''
+        old_message = ''
         pause = 0
         while not self.context.shutdown.is_set():
             if pause:
@@ -58,13 +58,13 @@ class BaseUploader(threading.Thread):
                         if not upload:
                             break
                         timestamp, prepared_data, live = upload
-                        response = self.upload(session, prepared_data, live)
-                        if response:
-                            if response == old_response:
-                                self.logger.debug(response)
-                            else:
-                                self.logger.error(response)
-                                old_response = response
+                        OK, message = self.upload(session, prepared_data, live)
+                        if message == old_message:
+                            self.logger.debug(message)
+                        else:
+                            self.logger.error(message)
+                            old_message = message
+                        if not OK:
                             # upload failed, wait before trying again
                             pause = 40
                             break

@@ -71,8 +71,8 @@ class APRSUploader(pywws.service.BaseUploader):
             finally:
                 sock.close()
         except Exception as ex:
-            return(str(ex))
-        return ''
+            return False, str(ex)
+        return True, 'OK'
 
 
 class ToService(pywws.service.BaseToService):

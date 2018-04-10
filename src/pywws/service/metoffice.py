@@ -47,17 +47,16 @@ class WOWUploader(pywws.service.BaseUploader):
         try:
             rsp = session.get(self.url, params=prepared_data, timeout=20)
         except Exception as ex:
-            return str(ex)
+            return False, str(ex)
         if rsp.status_code == 429:
             # UK Met Office server uses 429 to signal duplicate data
-            logger.error('repeated data {:s}'.format(prepared_data['dateutc']))
-            return ''
+            return True, 'repeated data {:s}'.format(prepared_data['dateutc'])
         if rsp.status_code != 200:
-            return 'http status: {:d}'.format(rsp.status_code)
+            return False, 'http status: {:d}'.format(rsp.status_code)
         rsp = rsp.json()
         if rsp:
-            return 'server response "{!r}"'.format(rsp)
-        return ''
+            return True, 'server response "{!r}"'.format(rsp)
+        return True, 'OK'
 
 
 class ToService(pywws.service.BaseToService):
