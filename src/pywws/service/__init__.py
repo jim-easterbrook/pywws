@@ -38,11 +38,10 @@ import pywws.template
 
 
 class BaseUploader(threading.Thread):
-    def __init__(self, context, fixed_data):
+    def __init__(self, context):
         super(BaseUploader, self).__init__()
         self.context = context
         self.queue = deque()
-        self.fixed_data.update(fixed_data)
 
     def run(self):
         old_response = ''
@@ -59,7 +58,6 @@ class BaseUploader(threading.Thread):
                         if not upload:
                             break
                         timestamp, prepared_data, live = upload
-                        prepared_data.update(self.fixed_data)
                         response = self.upload(session, prepared_data, live)
                         if response:
                             if response == old_response:
@@ -124,6 +122,7 @@ class BaseToService(object):
             if len(prepared_data) < 2:
                 # need at least idx plus one other item of data
                 continue
+            prepared_data.update(self.fixed_data)
             self.upload_thread.queue.append((timestamp, prepared_data, live))
             count += 1
 

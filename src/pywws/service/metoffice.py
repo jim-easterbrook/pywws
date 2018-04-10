@@ -34,7 +34,6 @@ logger = logging.getLogger(__package__ + '.' + service_name)
 
 
 class WOWUploader(pywws.service.BaseUploader):
-    fixed_data = {'softwaretype': 'pywws v' + pywws.__version__}
     logger = logger
     service_name = service_name
     url = 'http://wow.metoffice.gov.uk/automaticreading'
@@ -63,6 +62,7 @@ class WOWUploader(pywws.service.BaseUploader):
 
 class ToService(pywws.service.BaseToService):
     catchup = 7
+    fixed_data = {'softwaretype': 'pywws v' + pywws.__version__}
     interval = timedelta(seconds=290)
     logger = logger
     service_name = service_name
@@ -82,15 +82,14 @@ class ToService(pywws.service.BaseToService):
 
     def __init__(self, context):
         # get configurable "fixed data"
-        fixed_data = {
+        self.fixed_data.update({
             'siteid'               : context.params.get(
                 service_name, 'site id', 'unknown'),
             'siteAuthenticationKey': context.params.get(
                 service_name, 'aws pin', 'unknown'),
-            }
+            })
         # base class init
-        super(ToService, self).__init__(
-            context, WOWUploader(context, fixed_data))
+        super(ToService, self).__init__(context, WOWUploader(context))
 
 
 if __name__ == "__main__":

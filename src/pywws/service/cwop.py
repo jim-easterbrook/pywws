@@ -33,26 +33,22 @@ logger = logging.getLogger(__package__ + '.' + service_name)
 
 
 class APRSUploader(pywws.service.BaseUploader):
-    fixed_data = {'version': pywws.__version__}
     logger = logger
     service_name = service_name
-
-    def __init__(self, *args):
-        super(APRSUploader, self).__init__(*args)
-        if self.fixed_data['passcode'] == '-1':
-            self.server = 'cwop.aprs.net', 14580
-        else:
-            self.server = 'rotate.aprs.net', 14580
-        login = ('user {designator:s} pass {passcode:s} ' +
-                 'vers pywws {version:s}\n').format(**self.fixed_data)
-        logger.debug('login: "{:s}"'.format(login))
-        self.login = login.encode('ASCII')
 
     @contextmanager
     def session(self):
         yield None
 
     def upload(self, session, prepared_data, live):
+        if prepared_data['passcode'] == '-1':
+            server = 'cwop.aprs.net', 14580
+        else:
+            server = 'rotate.aprs.net', 14580
+        login = ('user {designator:s} pass {passcode:s} ' +
+                 'vers pywws {version:s}\n').format(**prepared_data)
+        logger.debug('login: "{:s}"'.format(login))
+        login = login.encode('ASCII')
         packet = ('{designator:s}>APRS,TCPIP*:@{idx:s}' +
                   'z{latitude:s}/{longitude:s}' +
                   '_{wind_dir:s}/{wind_ave:s}g{wind_gust:s}t{temp_out:s}' +
@@ -63,11 +59,11 @@ class APRSUploader(pywws.service.BaseUploader):
         sock = socket.socket()
         sock.settimeout(20)
         try:
-            sock.connect(self.server)
+            sock.connect(server)
             try:
                 response = sock.recv(4096)
                 logger.debug('server software: %s', response.strip())
-                sock.sendall(self.login)
+                sock.sendall(login)
                 response = sock.recv(4096)
                 logger.debug('server login ack: %s', response.strip())
                 sock.sendall(packet)
@@ -81,6 +77,7 @@ class APRSUploader(pywws.service.BaseUploader):
 
 class ToService(pywws.service.BaseToService):
     catchup = 0
+    fixed_data = {'version': pywws.__version__}
     interval = timedelta(seconds=290)
     logger = logger
     service_name = service_name
@@ -99,7 +96,7 @@ class ToService(pywws.service.BaseToService):
 
     def __init__(self, context):
         # get configurable "fixed data"
-        fixed_data = {
+        self.fixed_data.update({
             'designator': context.params.get(
                 service_name, 'designator', 'unknown'),
             'passcode': context.params.get(
@@ -108,10 +105,9 @@ class ToService(pywws.service.BaseToService):
                 service_name, 'latitude', 'unknown'),
             'longitude': context.params.get(
                 service_name, 'longitude', 'unknown'),
-            }
+            })
         # base class init
-        super(ToService, self).__init__(
-            context, APRSUploader(context, fixed_data))
+        super(ToService, self).__init__(context, APRSUploader(context))
 
 
 if __name__ == "__main__":

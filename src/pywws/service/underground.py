@@ -33,7 +33,6 @@ logger = logging.getLogger(__package__ + '.' + service_name)
 
 
 class WUUploader(pywws.service.BaseUploader):
-    fixed_data = {'action': 'updateraw', 'softwaretype': 'pywws'}
     logger = logger
     service_name = service_name
 
@@ -63,6 +62,7 @@ class WUUploader(pywws.service.BaseUploader):
 
 class ToService(pywws.service.BaseToService):
     catchup = 7
+    fixed_data = {'action': 'updateraw', 'softwaretype': 'pywws'}
     interval = timedelta(seconds=40)
     logger = logger
     service_name = service_name
@@ -93,13 +93,12 @@ class ToService(pywws.service.BaseToService):
 #temp_in      "'indoortempf'   : '%.1f'," "" "temp_f(x)"#
 """
         # get configurable "fixed data"
-        fixed_data = {
+        self.fixed_data.update({
             'ID'      : context.params.get(service_name, 'station', 'unknown'),
             'PASSWORD': context.params.get(service_name, 'password', 'unknown'),
-            }
+            })
         # base class init
-        super(ToService, self).__init__(
-            context, WUUploader(context, fixed_data))
+        super(ToService, self).__init__(context, WUUploader(context))
 
 
 if __name__ == "__main__":
