@@ -53,13 +53,14 @@ if git:
                 _release = str(int(_release) + 1)
                 _commit = last_commit
             if last_release:
-                major, minor, patch = last_release.split('.')
+                major, minor, patch = map(int, last_release.split('.'))
                 today = date.today()
-                if today.strftime('%y%m') == major + minor:
-                    patch = int(patch) + 1
+                year = today.year % 100
+                if year == major and today.month == minor:
+                    patch += 1
                 else:
                     patch = 0
-                __version__ = today.strftime('%y.%m') + '.%d' % patch
+                __version__ = '{:d}.{:d}.{:d}'.format(year, today.month, patch)
             with open('src/pywws/__init__.py', 'r') as vf:
                 old_init_str = vf.read()
             new_init_str = "__version__ = '" + __version__ + "'\n"
@@ -185,7 +186,7 @@ setup(name = 'pywws',
           ],
       license = 'GNU GPL',
       platforms = ['POSIX', 'MacOS', 'Windows'],
-      packages = ['pywws'],
+      packages = ['pywws', 'pywws.service'],
       package_dir = {'' : 'src'},
       package_data = {
           'pywws' : [
