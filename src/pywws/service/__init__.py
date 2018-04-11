@@ -24,7 +24,6 @@ from datetime import datetime, timedelta
 import os
 import sys
 import threading
-import time
 
 if sys.version_info[0] >= 3:
     from io import StringIO
@@ -46,24 +45,25 @@ class UploadThread(threading.Thread):
 
     def run(self):
         self.old_message = ''
-        pause = 0
+        polling_interval = self.parent.interval.total_seconds() / 10
         while not self.context.shutdown.is_set():
-            if pause:
-                pause -= 1
-            elif self.queue:
-                try:
-                    OK = self.upload_batch()
-                except Exception as ex:
-                    self.log(str(ex))
-                    OK = False
-                if OK < 0:
-                    break
-                if not OK:
-                    # upload failed, wait before trying again
-                    pause = 40
-            time.sleep(1)
+            try:
+                OK = self.upload_batch()
+            except Exception as ex:
+                self.log(str(ex))
+                OK = False
+            if OK < 0:
+                break
+            if OK:
+                pause = polling_interval
+            else:
+                # upload failed, wait before trying again
+                pause = polling_interval * 10
+            self.context.shutdown.wait(pause)
 
     def upload_batch(self):
+        if not self.queue:
+            return True
         count = 0
         with self.parent.session() as session:
             while self.queue and not self.context.shutdown.is_set():
@@ -84,10 +84,8 @@ class UploadThread(threading.Thread):
                         'last update', self.parent.service_name, str(timestamp))
                 # finally remove upload from queue
                 self.queue.popleft()
-        if count > 1:
+        if count:
             self.parent.logger.info('{:d} records sent'.format(count))
-        elif count:
-            self.parent.logger.debug('1 record sent')
         return OK
 
     def log(self, message):
