@@ -48,7 +48,7 @@ class ToService(pywws.service.BaseToService):
 'hum_out'      : #hum_out      "'%02d',"   "'..',"    "x % 100"#
 'rel_pressure' : #rel_pressure "'%05.0f'," "'.....'," "x * 10.0"#
 'rain_hour'    : #calc "100.0*rain_inch(rain_hour(data))" "'%03.0f'," "'...',"#
-'rain_day'     : #calc "100.0*rain_inch(rain_day(data))"  "'%03.0f'," "'...',"#
+'rain_24hr'    : #calc "100.0*rain_inch(rain_24hr(data))" "'%03.0f'," "'...',"#
 """
 
     def __init__(self, context):
@@ -85,7 +85,7 @@ class ToService(pywws.service.BaseToService):
         packet = ('{designator:s}>APRS,TCPIP*:@{idx:s}' +
                   'z{latitude:s}/{longitude:s}' +
                   '_{wind_dir:s}/{wind_ave:s}g{wind_gust:s}t{temp_out:s}' +
-                  'r{rain_hour:s}P{rain_day:s}b{rel_pressure:s}h{hum_out:s}' +
+                  'r{rain_hour:s}p{rain_24hr:s}b{rel_pressure:s}h{hum_out:s}' +
                   '.pywws-{version:s}\n').format(**prepared_data)
         logger.debug('packet: "{:s}"'.format(packet))
         packet = packet.encode('ASCII')
