@@ -51,7 +51,11 @@ class UploadThread(threading.Thread):
             if pause:
                 pause -= 1
             elif self.queue:
-                OK = self.upload_batch()
+                try:
+                    OK = self.upload_batch()
+                except Exception as ex:
+                    self.log(str(ex))
+                    OK = False
                 if OK < 0:
                     break
                 if not OK:
@@ -71,11 +75,7 @@ class UploadThread(threading.Thread):
                 timestamp, prepared_data, live = upload
                 OK, message = self.parent.upload_data(
                                                 session, prepared_data, live)
-                if message == self.old_message:
-                    self.parent.logger.debug(message)
-                else:
-                    self.parent.logger.error(message)
-                    self.old_message = message
+                self.log(message)
                 if not OK:
                     break
                 count += 1
@@ -89,6 +89,13 @@ class UploadThread(threading.Thread):
         elif count:
             self.parent.logger.debug('1 record sent')
         return OK
+
+    def log(self, message):
+        if message == self.old_message:
+            self.parent.logger.debug(message)
+        else:
+            self.parent.logger.error(message)
+            self.old_message = message
 
 
 class BaseToService(object):
