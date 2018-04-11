@@ -32,32 +32,6 @@ service_name = os.path.splitext(os.path.basename(__file__))[0]
 logger = logging.getLogger(__package__ + '.' + service_name)
 
 
-class WUUploader(pywws.service.BaseUploader):
-    logger = logger
-    service_name = service_name
-
-    @contextmanager
-    def session(self):
-        with requests.Session() as session:
-            yield session
-
-    def upload(self, session, prepared_data, live):
-        if live:
-            prepared_data.update({'realtime': '1', 'rtfreq': '48'})
-            url = 'https://rtupdate.wunderground.com/'
-        else:
-            url = 'https://weatherstation.wunderground.com/'
-        url += 'weatherstation/updateweatherstation.php'
-        try:
-            rsp = session.get(url, params=prepared_data, timeout=30)
-        except Exception as ex:
-            return False, str(ex)
-        if rsp.status_code != 200:
-            return False, 'http status: {:d}'.format(rsp.status_code)
-        text = rsp.text.strip()
-        return text == 'success', 'server response "{:s}"'.format(text)
-
-
 class ToService(pywws.service.BaseToService):
     catchup = 7
     fixed_data = {'action': 'updateraw', 'softwaretype': 'pywws'}
@@ -96,7 +70,28 @@ class ToService(pywws.service.BaseToService):
             'PASSWORD': context.params.get(service_name, 'password', 'unknown'),
             })
         # base class init
-        super(ToService, self).__init__(context, WUUploader(context))
+        super(ToService, self).__init__(context)
+
+    @contextmanager
+    def session(self):
+        with requests.Session() as session:
+            yield session
+
+    def upload_data(self, session, prepared_data, live):
+        if live:
+            prepared_data.update({'realtime': '1', 'rtfreq': '48'})
+            url = 'https://rtupdate.wunderground.com/'
+        else:
+            url = 'https://weatherstation.wunderground.com/'
+        url += 'weatherstation/updateweatherstation.php'
+        try:
+            rsp = session.get(url, params=prepared_data, timeout=30)
+        except Exception as ex:
+            return False, str(ex)
+        if rsp.status_code != 200:
+            return False, 'http status: {:d}'.format(rsp.status_code)
+        text = rsp.text.strip()
+        return text == 'success', 'server response "{:s}"'.format(text)
 
 
 if __name__ == "__main__":

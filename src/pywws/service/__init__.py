@@ -37,9 +37,10 @@ import pywws.storage
 import pywws.template
 
 
-class BaseUploader(threading.Thread):
-    def __init__(self, context):
-        super(BaseUploader, self).__init__()
+class UploadThread(threading.Thread):
+    def __init__(self, parent, context):
+        super(UploadThread, self).__init__()
+        self.parent = parent
         self.context = context
         self.queue = deque()
 
@@ -60,7 +61,7 @@ class BaseUploader(threading.Thread):
 
     def upload_batch(self):
         count = 0
-        with self.session() as session:
+        with self.parent.session() as session:
             while self.queue and not self.context.shutdown.is_set():
                 # look at upload without taking it off queue
                 upload = self.queue[0]
@@ -68,29 +69,30 @@ class BaseUploader(threading.Thread):
                     OK = -1
                     break
                 timestamp, prepared_data, live = upload
-                OK, message = self.upload(session, prepared_data, live)
+                OK, message = self.parent.upload_data(
+                                                session, prepared_data, live)
                 if message == self.old_message:
-                    self.logger.debug(message)
+                    self.parent.logger.debug(message)
                 else:
-                    self.logger.error(message)
+                    self.parent.logger.error(message)
                     self.old_message = message
                 if not OK:
                     break
                 count += 1
                 if timestamp:
                     self.context.status.set(
-                        'last update', self.service_name, str(timestamp))
+                        'last update', self.parent.service_name, str(timestamp))
                 # finally remove upload from queue
                 self.queue.popleft()
         if count > 1:
-            self.logger.info('{:d} records sent'.format(count))
+            self.parent.logger.info('{:d} records sent'.format(count))
         elif count:
-            self.logger.debug('1 record sent')
+            self.parent.logger.debug('1 record sent')
         return OK
 
 
 class BaseToService(object):
-    def __init__(self, context, uploader):
+    def __init__(self, context):
         self.context = context
         # create templater
         self.templater = pywws.template.Template(context, use_locale=False)
@@ -106,7 +108,7 @@ class BaseToService(object):
         else:
             self.next_update = earliest
         # start upload thread
-        self.upload_thread = uploader
+        self.upload_thread = UploadThread(self, context)
         self.upload_thread.start()
 
     def upload(self, catchup=True, live_data=None, test_mode=False):
@@ -150,7 +152,7 @@ class BaseToService(object):
             self.next_update = live_data['idx'] + self.interval
 
     def shutdown(self):
-        self.logger.debug('stopping upload thread')
+        self.logger.debug('waiting for upload thread')
         # tell upload queue to terminate cleanly
         self.upload_thread.queue.append(None)
         # wait for thread to finish

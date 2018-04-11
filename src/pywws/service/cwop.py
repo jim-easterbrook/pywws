@@ -32,49 +32,6 @@ service_name = os.path.splitext(os.path.basename(__file__))[0]
 logger = logging.getLogger(__package__ + '.' + service_name)
 
 
-class APRSUploader(pywws.service.BaseUploader):
-    logger = logger
-    service_name = service_name
-
-    @contextmanager
-    def session(self):
-        yield None
-
-    def upload(self, session, prepared_data, live):
-        if prepared_data['passcode'] == '-1':
-            server = 'cwop.aprs.net', 14580
-        else:
-            server = 'rotate.aprs.net', 14580
-        login = ('user {designator:s} pass {passcode:s} ' +
-                 'vers pywws {version:s}\n').format(**prepared_data)
-        logger.debug('login: "{:s}"'.format(login))
-        login = login.encode('ASCII')
-        packet = ('{designator:s}>APRS,TCPIP*:@{idx:s}' +
-                  'z{latitude:s}/{longitude:s}' +
-                  '_{wind_dir:s}/{wind_ave:s}g{wind_gust:s}t{temp_out:s}' +
-                  'r{rain_hour:s}P{rain_day:s}b{rel_pressure:s}h{hum_out:s}' +
-                  '.pywws-{version:s}\n').format(**prepared_data)
-        logger.debug('packet: "{:s}"'.format(packet))
-        packet = packet.encode('ASCII')
-        sock = socket.socket()
-        sock.settimeout(20)
-        try:
-            sock.connect(server)
-            try:
-                response = sock.recv(4096)
-                logger.debug('server software: %s', response.strip())
-                sock.sendall(login)
-                response = sock.recv(4096)
-                logger.debug('server login ack: %s', response.strip())
-                sock.sendall(packet)
-                sock.shutdown(socket.SHUT_RDWR)
-            finally:
-                sock.close()
-        except Exception as ex:
-            return False, str(ex)
-        return True, 'OK'
-
-
 class ToService(pywws.service.BaseToService):
     catchup = 0
     fixed_data = {'version': pywws.__version__}
@@ -107,7 +64,45 @@ class ToService(pywws.service.BaseToService):
                 service_name, 'longitude', 'unknown'),
             })
         # base class init
-        super(ToService, self).__init__(context, APRSUploader(context))
+        super(ToService, self).__init__(context)
+
+    @contextmanager
+    def session(self):
+        yield None
+
+    def upload_data(self, session, prepared_data, live):
+        if prepared_data['passcode'] == '-1':
+            server = 'cwop.aprs.net', 14580
+        else:
+            server = 'rotate.aprs.net', 14580
+        login = ('user {designator:s} pass {passcode:s} ' +
+                 'vers pywws {version:s}\n').format(**prepared_data)
+        logger.debug('login: "{:s}"'.format(login))
+        login = login.encode('ASCII')
+        packet = ('{designator:s}>APRS,TCPIP*:@{idx:s}' +
+                  'z{latitude:s}/{longitude:s}' +
+                  '_{wind_dir:s}/{wind_ave:s}g{wind_gust:s}t{temp_out:s}' +
+                  'r{rain_hour:s}P{rain_day:s}b{rel_pressure:s}h{hum_out:s}' +
+                  '.pywws-{version:s}\n').format(**prepared_data)
+        logger.debug('packet: "{:s}"'.format(packet))
+        packet = packet.encode('ASCII')
+        sock = socket.socket()
+        sock.settimeout(20)
+        try:
+            sock.connect(server)
+            try:
+                response = sock.recv(4096)
+                logger.debug('server software: %s', response.strip())
+                sock.sendall(login)
+                response = sock.recv(4096)
+                logger.debug('server login ack: %s', response.strip())
+                sock.sendall(packet)
+                sock.shutdown(socket.SHUT_RDWR)
+            finally:
+                sock.close()
+        except Exception as ex:
+            return False, str(ex)
+        return True, 'OK'
 
 
 if __name__ == "__main__":

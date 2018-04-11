@@ -33,32 +33,6 @@ service_name = os.path.splitext(os.path.basename(__file__))[0]
 logger = logging.getLogger(__package__ + '.' + service_name)
 
 
-class WOWUploader(pywws.service.BaseUploader):
-    logger = logger
-    service_name = service_name
-    url = 'http://wow.metoffice.gov.uk/automaticreading'
-
-    @contextmanager
-    def session(self):
-        with requests.Session() as session:
-            yield session
-
-    def upload(self, session, prepared_data, live):
-        try:
-            rsp = session.get(self.url, params=prepared_data, timeout=30)
-        except Exception as ex:
-            return False, str(ex)
-        if rsp.status_code == 429:
-            # UK Met Office server uses 429 to signal duplicate data
-            return True, 'repeated data {:s}'.format(prepared_data['dateutc'])
-        if rsp.status_code != 200:
-            return False, 'http status: {:d}'.format(rsp.status_code)
-        rsp = rsp.json()
-        if rsp:
-            return True, 'server response "{!r}"'.format(rsp)
-        return True, 'OK'
-
-
 class ToService(pywws.service.BaseToService):
     catchup = 7
     fixed_data = {'softwaretype': 'pywws v' + pywws.__version__}
@@ -88,7 +62,28 @@ class ToService(pywws.service.BaseToService):
                 service_name, 'aws pin', 'unknown'),
             })
         # base class init
-        super(ToService, self).__init__(context, WOWUploader(context))
+        super(ToService, self).__init__(context)
+
+    @contextmanager
+    def session(self):
+        with requests.Session() as session:
+            yield session
+
+    def upload_data(self, session, prepared_data, live):
+        try:
+            rsp = session.get('http://wow.metoffice.gov.uk/automaticreading',
+                              params=prepared_data, timeout=30)
+        except Exception as ex:
+            return False, str(ex)
+        if rsp.status_code == 429:
+            # UK Met Office server uses 429 to signal duplicate data
+            return True, 'repeated data {:s}'.format(prepared_data['dateutc'])
+        if rsp.status_code != 200:
+            return False, 'http status: {:d}'.format(rsp.status_code)
+        rsp = rsp.json()
+        if rsp:
+            return True, 'server response "{!r}"'.format(rsp)
+        return True, 'OK'
 
 
 if __name__ == "__main__":
