@@ -220,9 +220,10 @@ that it is probably more efficient to incorporate any conversion into
 expression.
 
 In addition to the functions in the :py:mod:`pywws.conversions` module
-there are three more useful functions: ``rain_hour(data)`` returns the
+there are four more useful functions: ``rain_hour(data)`` returns the
 amount of rain in the last hour, ``rain_day(data)`` returns the amount
-of rain since midnight (local time) and ``hour_diff(data, key)``
+of rain since midnight (local time), ``rain_24hr(data)`` returns the
+amount of rain in the last 24 hours, and ``hour_diff(data, key)``
 returns the change in data item ``key`` over the last hour.
 
 Example
@@ -312,7 +313,7 @@ from pywws.forecast import zambretti, zambretti_code
 import pywws.localisation
 import pywws.logger
 import pywws.storage
-from pywws.timezone import Local, utc
+from pywws.timezone import local_midnight, Local, utc
 import pywws.weatherstation
 
 logger = logging.getLogger(__name__)
@@ -331,8 +332,6 @@ class Template(object):
         self.daily_data = context.daily_data
         self.monthly_data = context.monthly_data
         self.use_locale = use_locale
-        self.midnight = None
-        self.rain_midnight = None
 
     def process(self, live_data, template_file):
         def jump(idx, count):
@@ -369,6 +368,7 @@ class Template(object):
         hour_diff = self._hour_diff
         rain_hour = self._rain_hour
         rain_day = self._rain_day
+        rain_24hr = self._rain_24hr
         pressure_offset = eval(self.params.get('config', 'pressure offset'))
         fixed_block = eval(self.status.get('fixed', 'fixed block'))
         # start off with no time rounding
@@ -553,24 +553,16 @@ class Template(object):
         return data[key] - hour_ago[key]
 
     def _rain_hour(self, data):
-        rain_hour = self.calib_data[self.calib_data.nearest(data['idx'] - HOUR)]['rain']
-        return max(0.0, data['rain'] - rain_hour)
+        return max(0.0, self._hour_diff(data, 'rain'))
 
     def _rain_day(self, data):
-        if not self.midnight:
-            self.midnight = utc.localize(datetime.utcnow()).astimezone(
-                Local).replace(hour=0, minute=0, second=0).astimezone(
-                    utc).replace(tzinfo=None)
-        while data['idx'] < self.midnight:
-            self.midnight -= DAY
-            self.rain_midnight = None
-        while data['idx'] >= self.midnight + DAY:
-            self.midnight += DAY
-            self.rain_midnight = None
-        if self.rain_midnight is None:
-            self.rain_midnight = self.calib_data[
-                self.calib_data.nearest(self.midnight)]['rain']
-        return max(0.0, data['rain'] - self.rain_midnight)
+        midnight = local_midnight(data['idx'])
+        midnight_data = self.calib_data[self.calib_data.nearest(midnight)]
+        return max(0.0, data['rain'] - midnight_data['rain'])
+
+    def _rain_24hr(self, data):
+        day_ago = self.calib_data[self.calib_data.nearest(data['idx'] - DAY)]
+        return max(0.0, data['rain'] - day_ago['rain'])
 
 
 def main(argv=None):
