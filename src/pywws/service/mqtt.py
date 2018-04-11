@@ -76,11 +76,12 @@ class ToService(pywws.service.BaseToService):
             'password'   : context.params.get(service_name, 'password', ''),
             'multi_topic': eval(context.params.get(
                 service_name, 'multi_topic', 'False')),
-            'template'   : eval(context.params.get(
-                service_name, 'template_txt', pprint.pformat(self.template))),
             }
-        logger.log(logging.DEBUG - 1, 'template:\n' + self.params['template'])
-        self.template = "#live#" + self.params['template']
+        # get template text
+        template = eval(context.params.get(
+            service_name, 'template_txt', pprint.pformat(self.template)))
+        logger.log(logging.DEBUG - 1, 'template:\n' + template)
+        self.template = "#live#" + template
         # base class init
         super(ToService, self).__init__(context)
 
