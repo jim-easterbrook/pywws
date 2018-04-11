@@ -32,7 +32,6 @@ from pywws.calib import Calib
 import pywws.plot
 import pywws.template
 from pywws.timezone import STDOFFSET, local_utc_offset
-from pywws.toservice import ToService
 import pywws.towebsite
 import pywws.windrose
 
@@ -94,17 +93,17 @@ class RegularTasks(object):
                     self.cron[section].get_next()
         # create service uploader objects
         self.services = {}
-        self.new_services = {}
         for section in list(self.cron.keys()) + [
                        'live', 'logged', 'hourly', '12 hourly', 'daily']:
             for name in eval(self.params.get(section, 'services', '[]')):
-                if name in self.services or name in self.new_services:
+                if name in self.services:
                     continue
                 try:
                     mod = importlib.import_module('pywws.service.' + name)
-                    self.new_services[name] = getattr(mod, 'ToService')(context)
+                    self.services[name] = getattr(mod, 'ToService')(context)
                 except ImportError:
-                    self.services[name] = ToService(context, name)
+                    logger.error(
+                        'no uploader found for service "{:s}"'.format(name))
             # check for obsolete entries
             if self.params.get(section, 'twitter') not in (None, '[]'):
                 logger.error(
@@ -114,9 +113,6 @@ class RegularTasks(object):
                     'Obsolete yowindow entry in weather.ini [%s]', section)
         # create queues for things to upload / send
         self.tweet_queue = deque()
-        self.service_queue = {}
-        for name in self.services:
-            self.service_queue[name] = deque()
         self.uploads_queue = deque()
         # start asynchronous thread to do uploads
         if self.asynch:
@@ -157,21 +153,6 @@ class RegularTasks(object):
             if not self.twitter.upload(tweet):
                 break
             self.tweet_queue.popleft()
-        for name in self.service_queue:
-            service = self.services[name]
-            count = 0
-            while self.service_queue[name]:
-                timestamp, prepared_data = self.service_queue[name][0]
-                if len(self.service_queue[name]) > 1 and service.catchup <= 0:
-                    # don't send queued 'catchup' records
-                    pass
-                elif service.send_data(timestamp, prepared_data):
-                    count += 1
-                else:
-                    break
-                self.service_queue[name].popleft()
-            if count > 0:
-                logger.info('%s:%d records sent', name, count)
         while self.uploads_queue:
             file = self.uploads_queue.popleft()
             if not os.path.exists(file):
@@ -216,7 +197,7 @@ class RegularTasks(object):
         for section in sections:
             for name in eval(self.params.get(section, 'services', '[]')):
                 if name not in service_done:
-                    self._do_service(name, live_data)
+                    self.services[name].upload(live_data=live_data)
                     service_done.append(name)
             for template, flags in self._parse_templates(section, 'text'):
                 if 'T' in flags:
@@ -355,24 +336,6 @@ class RegularTasks(object):
             if self.uploader.upload_file(path):
                 os.unlink(path)
         self.uploader.disconnect()
-
-    def _do_service(self, name, live_data):
-        if name in self.new_services:
-            service = self.new_services[name]
-            service.upload(live_data=live_data)
-            return
-        service = self.services[name]
-        if len(self.service_queue[name]) >= 50:
-            return
-        for data in service.next_data(True, live_data):
-            prepared_data = service.prepare_data(data)
-            if not prepared_data:
-                continue
-            self.service_queue[name].append((data['idx'], prepared_data))
-            if len(self.service_queue[name]) >= 50:
-                break
-        if self.asynch:
-            self.wake_thread.set()
 
     def do_twitter(self, template, data=None):
         if not self.twitter:
