@@ -101,6 +101,14 @@ class UploadThread(threading.Thread):
 class BaseToService(object):
     def __init__(self, context):
         self.context = context
+        # check config
+        template = context.params.get(self.service_name, 'template')
+        if template == 'default':
+            context.params.unset(self.service_name, 'template')
+        elif template:
+            self.logger.critical(
+                'obsolete item "template" found in weather.ini '
+                'section [{}]'.format(self.service_name))
         # create templater
         self.templater = pywws.template.Template(context, use_locale=False)
         self.template_file = StringIO(self.template)
