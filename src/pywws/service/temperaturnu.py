@@ -1,0 +1,74 @@
+# pywws - Python software for USB Wireless Weather Stations
+# http://github.com/jim-easterbrook/pywws
+# Copyright (C) 2018  pywws contributors
+
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+from __future__ import absolute_import, unicode_literals
+
+from contextlib import contextmanager
+from datetime import timedelta
+import logging
+import os
+import sys
+
+import requests
+
+import pywws.service
+
+service_name = os.path.splitext(os.path.basename(__file__))[0]
+logger = logging.getLogger(__package__ + '.' + service_name)
+
+
+class ToService(pywws.service.BaseToService):
+    catchup = 0
+    fixed_data = {}
+    interval = timedelta(seconds=40)
+    logger = logger
+    service_name = service_name
+    template = "#live##temp_out \"'t': '%.1f',\"#"
+
+    def __init__(self, context):
+        # get configurable "fixed data"
+        self.fixed_data.update({
+            'hash': context.params.get(service_name, 'hash', 'unknown'),
+            })
+        # base class init
+        super(ToService, self).__init__(context)
+
+    @contextmanager
+    def session(self):
+        with requests.Session() as session:
+            yield session
+
+    def valid_data(self, data):
+        return data['temp_out'] is not None
+
+    def upload_data(self, session, prepared_data, live):
+        try:
+            rsp = session.get('http://www.temperatur.nu/rapportera.php',
+                              params=prepared_data, timeout=30)
+        except Exception as ex:
+            return False, str(ex)
+        if rsp.status_code != 200:
+            return False, 'http status: {:d}'.format(rsp.status_code)
+        text = rsp.text.strip()
+        if text:
+            return True, 'server response "{:s}"'.format(text)
+        return True, 'OK'
+
+
+if __name__ == "__main__":
+    sys.exit(pywws.service.main(ToService, 'Upload data to OpenWeatherMap'))
