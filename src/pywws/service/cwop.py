@@ -70,6 +70,9 @@ class ToService(pywws.service.BaseToService):
     def session(self):
         yield None
 
+    def valid_data(self, data):
+        return True
+
     def upload_data(self, session, prepared_data, live):
         if prepared_data['passcode'] == '-1':
             server = 'cwop.aprs.net', 14580

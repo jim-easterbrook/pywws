@@ -127,9 +127,6 @@ class BaseToService(object):
             data_str = self.templater.make_text(self.template_file, data)
             self.template_file.seek(0)
             prepared_data = eval('{' + data_str + '}')
-            if len(prepared_data) < 2:
-                # need at least idx plus one other item of data
-                continue
             prepared_data.update(self.fixed_data)
             self.upload_thread.queue.append((timestamp, prepared_data, live))
             count += 1
@@ -144,10 +141,11 @@ class BaseToService(object):
         else:
             stop = None
         for data in self.context.calib_data[start:stop]:
-            if data['idx'] >= self.next_update:
+            if data['idx'] >= self.next_update and self.valid_data(data):
                 yield data, False
                 self.next_update = data['idx'] + self.interval
-        if live_data and live_data['idx'] >= self.next_update:
+        if (live_data and live_data['idx'] >= self.next_update and
+                self.valid_data(live_data)):
             yield live_data, True
             self.next_update = live_data['idx'] + self.interval
 

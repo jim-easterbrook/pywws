@@ -77,6 +77,9 @@ class ToService(pywws.service.BaseToService):
         with requests.Session() as session:
             yield session
 
+    def valid_data(self, data):
+        return True
+
     def upload_data(self, session, prepared_data, live):
         if live:
             prepared_data.update({'realtime': '1', 'rtfreq': '48'})

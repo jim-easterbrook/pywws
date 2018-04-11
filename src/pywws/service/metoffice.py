@@ -69,6 +69,11 @@ class ToService(pywws.service.BaseToService):
         with requests.Session() as session:
             yield session
 
+    def valid_data(self, data):
+        return any([data[x] is not None for x in (
+            'wind_dir', 'wind_ave', 'wind_gust', 'hum_out', 'temp_out',
+            'rel_pressure')])
+
     def upload_data(self, session, prepared_data, live):
         try:
             rsp = session.get('http://wow.metoffice.gov.uk/automaticreading',
