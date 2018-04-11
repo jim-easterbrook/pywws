@@ -40,6 +40,7 @@ logger = logging.getLogger(__name__)
 
 class RegularTasks(object):
     def __init__(self, context, asynch=False):
+        self.context = context
         self.params = context.params
         self.status = context.status
         self.raw_data = context.raw_data
@@ -112,7 +113,6 @@ class RegularTasks(object):
                 logger.error(
                     'Obsolete yowindow entry in weather.ini [%s]', section)
         # create queues for things to upload / send
-        self.tweet_queue = deque()
         self.uploads_queue = deque()
         # start asynchronous thread to do uploads
         if self.asynch:
@@ -147,12 +147,6 @@ class RegularTasks(object):
             logger.exception(ex)
 
     def _do_queued_tasks(self):
-        while self.tweet_queue:
-            tweet = self.tweet_queue[0]
-            logger.info("Tweeting")
-            if not self.twitter.upload(tweet):
-                break
-            self.tweet_queue.popleft()
         while self.uploads_queue:
             file = self.uploads_queue.popleft()
             if not os.path.exists(file):
@@ -340,13 +334,12 @@ class RegularTasks(object):
     def do_twitter(self, template, data=None):
         if not self.twitter:
             import pywws.totwitter
-            self.twitter = pywws.totwitter.ToTwitter(self.params)
+            self.twitter = pywws.totwitter.ToTwitter(self.context)
         logger.info("Templating %s", template)
         input_file = os.path.join(self.template_dir, template)
         tweet = self.templater.make_text(input_file, live_data=data)
-        self.tweet_queue.append(tweet)
-        if self.asynch:
-            self.wake_thread.set()
+        logger.info("Tweeting")
+        self.twitter.upload(tweet)
 
     def do_plot(self, template):
         logger.info("Graphing %s", template)

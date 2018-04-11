@@ -43,6 +43,8 @@ __doc__ %= __usage__
 __usage__ = __doc__.split('\n')[0] + __usage__
 
 import codecs
+from contextlib import contextmanager
+from datetime import timedelta
 import getopt
 import logging
 import sys
@@ -61,6 +63,7 @@ except ImportError as ex:
 from pywws.constants import Twitter as pct
 import pywws.localisation
 import pywws.logger
+import pywws.service
 import pywws.storage
 
 logger = logging.getLogger(__name__)
@@ -114,30 +117,33 @@ class PythonTwitterHandler(object):
 
 
 class ToTwitter(object):
-    def __init__(self, params):
-        self.params = params
-        self.old_ex = None
+    interval = timedelta(seconds=150)
+    logger = logger
+    service_name = 'pywws.totwitter'
+
+    def __init__(self, context):
+        self.params = context.params
         # get parameters
-        key = params.get('twitter', 'key')
-        secret = params.get('twitter', 'secret')
+        key = context.params.get('twitter', 'key')
+        secret = context.params.get('twitter', 'secret')
         if (not key) or (not secret):
             raise RuntimeError('Authentication data not found')
-        latitude = params.get('twitter', 'latitude')
-        longitude = params.get('twitter', 'longitude')
+        latitude = context.params.get('twitter', 'latitude')
+        longitude = context.params.get('twitter', 'longitude')
         # open API
         if twitter:
-            if eval(params.get('config', 'asynchronous', 'False')):
-                timeout = 60
-            else:
-                timeout = 20
             self.api = PythonTwitterHandler(
-                key, secret, latitude, longitude, timeout)
+                key, secret, latitude, longitude, 40)
         else:
             self.api = TweepyHandler(key, secret, latitude, longitude)
+        # create upload thread
+        self.upload_thread = pywws.service.UploadThread(self, context)
 
-    def upload(self, tweet):
-        if not tweet:
-            return True
+    @contextmanager
+    def session(self):
+        yield None
+
+    def upload_data(self, session, tweet, live):
         media = []
         while tweet.startswith('media'):
             media_item, tweet = tweet.split('\n', 1)
@@ -145,15 +151,18 @@ class ToTwitter(object):
             media.append(media_item)
         try:
             self.api.post(tweet, media)
-            return True
         except Exception as ex:
-            e = str(ex)
-            if 'is a duplicate' in e:
-                return True
-            if e != self.old_ex:
-                logger.error(e)
-                self.old_ex = e
-        return False
+            message = str(ex)
+            return 'is a duplicate' in message, message
+        return True, 'OK'
+
+    def upload(self, tweet):
+        if not tweet:
+            return
+        self.upload_thread.queue.append((None, tweet, False))
+        # start upload thread
+        if not self.upload_thread.is_alive():
+            self.upload_thread.start()
 
     def upload_file(self, file):
         # get default character encoding of template output
@@ -184,9 +193,8 @@ def main(argv=None):
         return 2
     pywws.logger.setup_handler(1)
     with pywws.storage.pywws_context(args[0]) as context:
-        params = context.params
-        pywws.localisation.set_application_language(params)
-        if ToTwitter(params).upload_file(args[1]):
+        pywws.localisation.set_application_language(context.params)
+        if ToTwitter(context).upload_file(args[1]):
             return 0
     return 3
 
