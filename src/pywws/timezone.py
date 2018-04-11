@@ -63,6 +63,16 @@ def local_utc_offset(time):
     return result
 
 
+def local_midnight(time):
+    """Return pywws timestamp (utc, no tzinfo) for the local time
+    midnight before the supplied pywws timestamp.
+
+    """
+    local_time = utc.localize(time).astimezone(Local)
+    local_time = local_time.replace(hour=0, minute=0, second=0)
+    return local_time.astimezone(utc).replace(tzinfo=None)
+
+
 def main():
     print(datetime.now().strftime('%Y/%m/%d %H:%M %Z'))
     print(datetime.now(utc).strftime('%Y/%m/%d %H:%M %Z'))
