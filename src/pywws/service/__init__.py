@@ -120,9 +120,8 @@ class BaseToService(object):
             self.next_update = max(self.next_update, earliest)
         else:
             self.next_update = earliest
-        # start upload thread
+        # create upload thread
         self.upload_thread = UploadThread(self, context)
-        self.upload_thread.start()
 
     def upload(self, catchup=True, live_data=None, test_mode=False):
         OK = True
@@ -143,6 +142,9 @@ class BaseToService(object):
             prepared_data.update(self.fixed_data)
             self.upload_thread.queue.append((timestamp, prepared_data, live))
             count += 1
+        # start upload thread
+        if not self.upload_thread.is_alive():
+            self.upload_thread.start()
 
     def next_data(self, catchup, live_data):
         if catchup:
