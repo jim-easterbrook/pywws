@@ -86,17 +86,10 @@ class DataLogger(object):
         self.status = context.status
         self.raw_data = context.raw_data
         # connect to weather station
-        ws_type = self.params.get('fixed', 'ws type')
-        if ws_type:
-            self.params.unset('fixed', 'ws type')
-            self.params.set('config', 'ws type', ws_type)
-        ws_type = self.params.get('config', 'ws type', 'Unknown')
-        avoid = eval(self.params.get('config', 'usb activity margin', '3.0'))
-        self.ws = WeatherStation(
-            ws_type=ws_type, status=self.status, avoid=avoid)
+        self.ws = WeatherStation(context=context)
         # check for valid weather station type
         fixed_block = self.check_fixed_block()
-        if ws_type not in ('1080', '3080'):
+        if self.ws.ws_type not in ('1080', '3080'):
             print("Unknown weather station type. Please edit weather.ini")
             print("and set 'ws type' to '1080' or '3080', as appropriate.")
             if fixed_block['lux_wm2_coeff'] == 0.0:

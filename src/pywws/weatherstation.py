@@ -455,13 +455,22 @@ class WeatherStation(object):
     min_pause = 0.5
     # margin of error for various decisions
     margin = (min_pause * 2.0) - 0.1
-    def __init__(self, ws_type='1080', status=None, avoid=3.0):
+
+    def __init__(self, context=None):
         """Connect to weather station and prepare to read data."""
         # create basic IO object
         self.cusb = CUSBDrive()
         # init variables
-        self.status = status
-        self.avoid = max(avoid, 0.0)
+        if context:
+            self.status = context.status
+            self.avoid = eval(
+                context.params.get('config', 'usb activity margin', '3.0'))
+            self.avoid = max(self.avoid, 0.0)
+            self.ws_type = context.params.get('config', 'ws type', 'Unknown')
+        else:
+            self.status = None
+            self.avoid = 3.0
+            self.ws_type = '1080'
         self._fixed_block = None
         self._data_block = None
         self._data_pos = None
@@ -470,7 +479,6 @@ class WeatherStation(object):
             'station', self.status, 60, self.avoid)
         self._sensor_clock = DriftingClock(
             'sensor', self.status, 48, self.avoid)
-        self.ws_type = ws_type
 
     def live_data(self, logged_only=False):
         # There are two things we want to synchronise to - the data is
