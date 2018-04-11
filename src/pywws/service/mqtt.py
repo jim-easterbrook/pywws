@@ -25,7 +25,6 @@ import logging
 import os
 import pprint
 import sys
-import time
 
 import paho.mqtt.client as mosquitto
 
@@ -42,17 +41,17 @@ class ToService(pywws.service.BaseToService):
     logger = logger
     service_name = service_name
     template = """
-#idx          '"idx"        : "%Y-%m-%d %H:%M:%S",'#
-#wind_dir     '"wind_dir"   : "%.0f",' '' 'winddir_degrees(x)'#
-#wind_ave     '"wind_ave"   : "%.2f",' '' 'wind_mph(x)'#
-#wind_gust    '"wind_gust"  : "%.2f",' '' 'wind_mph(x)'#
-#hum_out      '"hum_out"    : "%.d",'#
-#hum_in       '"hum_in"     : "%.d",'#
-#temp_in      '"temp_in_c"  : "%.1f",'#
-#temp_in      '"temp_in_f"  : "%.1f",' '' 'temp_f(x)'#
-#temp_out     '"temp_out_c" : "%.1f",'#
-#temp_out     '"temp_out_f" : "%.1f",' '' 'temp_f(x)'#
-#rel_pressure '"rel_pressue": "%.4f",' '' 'pressure_inhg(x)'#
+#idx          '"idx"         : "%Y-%m-%d %H:%M:%S",'#
+#wind_dir     '"wind_dir"    : "%.0f",' '' 'winddir_degrees(x)'#
+#wind_ave     '"wind_ave"    : "%.2f",' '' 'wind_mph(x)'#
+#wind_gust    '"wind_gust"   : "%.2f",' '' 'wind_mph(x)'#
+#hum_out      '"hum_out"     : "%.d",'#
+#hum_in       '"hum_in"      : "%.d",'#
+#temp_in      '"temp_in_c"   : "%.1f",'#
+#temp_in      '"temp_in_f"   : "%.1f",' '' 'temp_f(x)'#
+#temp_out     '"temp_out_c"  : "%.1f",'#
+#temp_out     '"temp_out_f"  : "%.1f",' '' 'temp_f(x)'#
+#rel_pressure '"rel_pressure": "%.4f",' '' 'pressure_inhg(x)'#
 #calc 'rain_inch(rain_hour(data))' '"rainin": "%g",'#
 #calc 'rain_inch(rain_day(data))' '"dailyrainin": "%g",'#
 #calc 'rain_hour(data)' '"rain": "%g",'#
@@ -78,10 +77,10 @@ class ToService(pywws.service.BaseToService):
             'multi_topic': eval(context.params.get(
                 service_name, 'multi_topic', 'False')),
             'template'   : eval(context.params.get(
-                service_name, 'template', pprint.pformat(self.template))),
+                service_name, 'template_txt', pprint.pformat(self.template))),
             }
-        logger.debug('template:\n' + self.params['template'])
-        self.params['template'] = "#live#" + self.params['template']
+        logger.log(logging.DEBUG - 1, 'template:\n' + self.params['template'])
+        self.template = "#live#" + self.params['template']
         # base class init
         super(ToService, self).__init__(context)
 
@@ -94,6 +93,8 @@ class ToService(pywws.service.BaseToService):
                 self.params['user'], self.params['password'])
         elif self.params['user']:
             session.username_pw_set(self.params['user'])
+        logger.debug(('connecting to host {hostname:s}:{port:d} '
+                      'with client_id "{client_id:s}"').format(**self.params))
         session.connect(self.params['hostname'], self.params['port'])
         try:
             yield session
@@ -104,6 +105,9 @@ class ToService(pywws.service.BaseToService):
         return True
 
     def upload_data(self, session, prepared_data, live):
+        logger.debug((
+            'publishing on topic "{topic:s}" with retain={retain!s},'
+            ' data="{data!r}"').format(data=prepared_data, **self.params))
         try:
             session.publish(self.params['topic'], json.dumps(prepared_data),
                             retain=self.params['retain'])
