@@ -60,9 +60,10 @@ class ToService(pywws.service.BaseToService):
 #uv           "'uv' : '%d',"#
 """
         # set up authorisation
-        user = context.params.get(service_name, 'user', 'unknown')
-        password = context.params.get(service_name, 'password', 'unknown')
-        self.auth = user, password
+        self.params = {
+            'user'    : context.params.get(service_name, 'user', 'unknown'),
+            'password': context.params.get(service_name, 'password', 'unknown'),
+            }
         # get configurable "fixed data"
         self.fixed_data.update({
             'name': context.params.get(service_name, 'id', 'unknown'),
@@ -76,7 +77,7 @@ class ToService(pywws.service.BaseToService):
     @contextmanager
     def session(self):
         with requests.Session() as session:
-            session.auth = self.auth
+            session.auth = self.params['user'], self.params['password']
             yield session
 
     def valid_data(self, data):
