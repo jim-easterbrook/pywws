@@ -45,7 +45,7 @@ class WOWUploader(pywws.service.BaseUploader):
 
     def upload(self, session, prepared_data, live):
         try:
-            rsp = session.get(self.url, params=prepared_data, timeout=20)
+            rsp = session.get(self.url, params=prepared_data, timeout=30)
         except Exception as ex:
             return False, str(ex)
         if rsp.status_code == 429:
