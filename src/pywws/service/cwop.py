@@ -63,21 +63,29 @@ class ToService(pywws.service.BaseToService):
             'longitude': context.params.get(
                 service_name, 'longitude', 'unknown'),
             })
+        # set server
+        self.params = {}
+        if self.fixed_data['passcode'] == '-1':
+            self.params['server'] = 'cwop.aprs.net', 14580
+        else:
+            self.params['server'] = 'rotate.aprs.net', 14580
         # base class init
         super(ToService, self).__init__(context)
 
     @contextmanager
     def session(self):
-        yield None
+        session = socket.socket()
+        session.settimeout(20)
+        session.connect(self.params['server'])
+        try:
+            yield session
+        finally:
+            session.close()
 
     def valid_data(self, data):
         return True
 
     def upload_data(self, session, prepared_data, live):
-        if prepared_data['passcode'] == '-1':
-            server = 'cwop.aprs.net', 14580
-        else:
-            server = 'rotate.aprs.net', 14580
         login = ('user {designator:s} pass {passcode:s} ' +
                  'vers pywws {version:s}\n').format(**prepared_data)
         logger.debug('login: "{:s}"'.format(login))
@@ -89,20 +97,14 @@ class ToService(pywws.service.BaseToService):
                   '.pywws-{version:s}\n').format(**prepared_data)
         logger.debug('packet: "{:s}"'.format(packet))
         packet = packet.encode('ASCII')
-        sock = socket.socket()
-        sock.settimeout(20)
         try:
-            sock.connect(server)
-            try:
-                response = sock.recv(4096)
-                logger.debug('server software: %s', response.strip())
-                sock.sendall(login)
-                response = sock.recv(4096)
-                logger.debug('server login ack: %s', response.strip())
-                sock.sendall(packet)
-                sock.shutdown(socket.SHUT_RDWR)
-            finally:
-                sock.close()
+            response = session.recv(4096)
+            logger.debug('server software: %s', response.strip())
+            session.sendall(login)
+            response = session.recv(4096)
+            logger.debug('server login ack: %s', response.strip())
+            session.sendall(packet)
+            session.shutdown(socket.SHUT_RDWR)
         except Exception as ex:
             return False, str(ex)
         return True, 'OK'
