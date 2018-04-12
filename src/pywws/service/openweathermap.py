@@ -86,7 +86,7 @@ class ToService(pywws.service.BaseToService):
     def upload_data(self, session, prepared_data, live):
         try:
             rsp = session.post('http://openweathermap.org/data/post',
-                               data=prepared_data, timeout=30)
+                               data=prepared_data, timeout=60)
         except Exception as ex:
             return False, str(ex)
         if rsp.status_code != 200:

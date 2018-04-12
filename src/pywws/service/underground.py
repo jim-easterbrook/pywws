@@ -88,7 +88,7 @@ class ToService(pywws.service.BaseToService):
             url = 'https://weatherstation.wunderground.com/'
         url += 'weatherstation/updateweatherstation.php'
         try:
-            rsp = session.get(url, params=prepared_data, timeout=30)
+            rsp = session.get(url, params=prepared_data, timeout=60)
         except Exception as ex:
             return False, str(ex)
         if rsp.status_code != 200:

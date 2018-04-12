@@ -77,7 +77,7 @@ class ToService(pywws.service.BaseToService):
     def upload_data(self, session, prepared_data, live):
         try:
             rsp = session.get('http://wow.metoffice.gov.uk/automaticreading',
-                              params=prepared_data, timeout=30)
+                              params=prepared_data, timeout=60)
         except Exception as ex:
             return False, str(ex)
         if rsp.status_code == 429:
