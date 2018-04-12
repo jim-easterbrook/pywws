@@ -194,9 +194,10 @@ def main(argv=None):
     pywws.logger.setup_handler(1)
     with pywws.storage.pywws_context(args[0]) as context:
         pywws.localisation.set_application_language(context.params)
-        if ToTwitter(context).upload_file(args[1]):
-            return 0
-    return 3
+        uploader = ToTwitter(context)
+        uploader.upload_file(args[1])
+        uploader.shutdown()
+    return 0
 
 
 if __name__ == "__main__":
