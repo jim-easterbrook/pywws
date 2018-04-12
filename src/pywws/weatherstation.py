@@ -479,6 +479,17 @@ class WeatherStation(object):
             'station', self.status, 60, self.avoid)
         self._sensor_clock = DriftingClock(
             'sensor', self.status, 48, self.avoid)
+        # check ws_type
+        if self.ws_type not in ('1080', '3080'):
+            if self.get_fixed_block(['lux_wm2_coeff']) == 0.0:
+                guess = '1080'
+            else:
+                guess = '3080'
+            raise ValueError("""
+Unknown weather station type. Please edit weather.ini and set 'ws type' to
+'1080' or '3080', as appropriate.
+Your station is probably a '{:s}' type.
+""".format(guess))
 
     def live_data(self, logged_only=False):
         # There are two things we want to synchronise to - the data is

@@ -87,16 +87,6 @@ class DataLogger(object):
         self.raw_data = context.raw_data
         # connect to weather station
         self.ws = WeatherStation(context=context)
-        # check for valid weather station type
-        fixed_block = self.check_fixed_block()
-        if self.ws.ws_type not in ('1080', '3080'):
-            print("Unknown weather station type. Please edit weather.ini")
-            print("and set 'ws type' to '1080' or '3080', as appropriate.")
-            if fixed_block['lux_wm2_coeff'] == 0.0:
-                print("Your station is probably a '1080' type.")
-            else:
-                print("Your station is probably a '3080' type.")
-            sys.exit(1)
         # check computer clock isn't earlier than last stored data
         last_stored = self.raw_data.before(datetime.max)
         if last_stored and datetime.utcnow() < last_stored:
