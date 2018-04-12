@@ -80,9 +80,6 @@ class ToService(pywws.service.BaseToService):
             session.auth = self.params['user'], self.params['password']
             yield session
 
-    def valid_data(self, data):
-        return True
-
     def upload_data(self, session, prepared_data, live):
         try:
             rsp = session.post('http://openweathermap.org/data/post',

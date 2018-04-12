@@ -102,9 +102,6 @@ class ToService(pywws.service.BaseToService):
         finally:
             session.disconnect()
 
-    def valid_data(self, data):
-        return True
-
     def upload_data(self, session, prepared_data, live):
         logger.debug((
             'publishing on topic "{topic:s}" with retain={retain!s},'

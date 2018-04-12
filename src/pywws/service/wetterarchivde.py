@@ -70,9 +70,6 @@ class ToService(pywws.service.BaseToService):
         with requests.Session() as session:
             yield session
 
-    def valid_data(self, data):
-        return True
-
     def upload_data(self, session, prepared_data, live):
         try:
             rsp = session.post('http://interface.wetterarchiv.de/weather/',

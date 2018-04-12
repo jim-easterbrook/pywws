@@ -164,6 +164,9 @@ class BaseToService(object):
             yield live_data, True
             self.next_update = live_data['idx'] + self.interval
 
+    def valid_data(self, data):
+        return True
+
     def shutdown(self):
         self.logger.debug('waiting for upload thread')
         # tell upload queue to terminate cleanly
