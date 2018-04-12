@@ -44,13 +44,13 @@ class ToService(pywws.service.BaseToService):
 #idx          "'dateutc'    : '%Y-%m-%d %H:%M:%S',"#
 #wind_dir     "'winddir'    : '%.0f'," "" "winddir_degrees(x)"#
 #wind_ave     "'windspeedms': '%.1f',"#
-#wind_gust    "'windgustms' : '%.f',"#
+#wind_gust    "'windgustms' : '%.1f',"#
 #hum_out      "'humidity'   : '%.d',"#
 #temp_out     "'tempc'      : '%.1f',"#
 #rel_pressure "'mslphpa'    : '%.1f',"#
 #calc "dew_point(data['temp_out'], data['hum_out'])" "'dewptc': '%.1f',"#
-#calc "rain_hour(data)" "'rainmm': '%g',"#
-#calc "rain_day(data)" "'dailyrainmm': '%g',"#
+#calc "rain_hour(data)" "'rainmm': '%.1f',"#
+#calc "rain_day(data)" "'dailyrainmm': '%.1f',"#
 """
 
     def __init__(self, context):
