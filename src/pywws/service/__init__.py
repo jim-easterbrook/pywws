@@ -84,8 +84,10 @@ class UploadThread(threading.Thread):
                         'last update', self.parent.service_name, str(timestamp))
                 # finally remove upload from queue
                 self.queue.popleft()
-        if count:
-            self.parent.logger.info('{:d} records sent'.format(count))
+        if count > 1:
+            self.parent.logger.warning('{:d} records sent'.format(count))
+        elif count:
+            self.parent.logger.info('1 record sent')
         return OK
 
     def log(self, message):
