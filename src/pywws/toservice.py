@@ -270,12 +270,6 @@ class ToService(object):
         self.interval = timedelta(seconds=self.interval)
         if service_params.has_option('config', 'http_headers'):
             self.http_headers = eval(service_params.get('config', 'http_headers'))
-        # move 'last update' from params to status
-        last_update = self.params.get_datetime(self.service_name, 'last update')
-        if last_update:
-            self.params.unset(self.service_name, 'last update')
-            self.status.set(
-                'last update', self.service_name, last_update.isoformat(' '))
         # set timestamp of first data to upload
         self.next_update = datetime.utcnow() - max(
             timedelta(days=self.catchup), self.interval)

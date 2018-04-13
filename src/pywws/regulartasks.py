@@ -211,37 +211,24 @@ class RegularTasks(object):
 
     def do_tasks(self):
         sections = ['logged']
-        self.params.unset('logged', 'last update')
         now = self.calib_data.before(datetime.max)
         if now:
             now += timedelta(minutes=self.calib_data[now]['delay'])
         else:
             now = datetime.utcnow().replace(microsecond=0)
         threshold = (now + STDOFFSET).replace(minute=0, second=0) - STDOFFSET
-        last_update = self.params.get_datetime('hourly', 'last update')
-        if last_update:
-            self.params.unset('hourly', 'last update')
-            self.status.set('last update', 'hourly', last_update.isoformat(' '))
         last_update = self.status.get_datetime('last update', 'hourly')
         if (not last_update) or (last_update < threshold):
             # time to do hourly tasks
             sections.append('hourly')
             # set 12 hourly threshold
             threshold -= timedelta(hours=(threshold.hour - self.day_end_hour) % 12)
-            last_update = self.params.get_datetime('12 hourly', 'last update')
-            if last_update:
-                self.params.unset('12 hourly', 'last update')
-                self.status.set('last update', '12 hourly', last_update.isoformat(' '))
             last_update = self.status.get_datetime('last update', '12 hourly')
             if (not last_update) or (last_update < threshold):
                 # time to do 12 hourly tasks
                 sections.append('12 hourly')
             # set daily threshold
             threshold -= timedelta(hours=(threshold.hour - self.day_end_hour) % 24)
-            last_update = self.params.get_datetime('daily', 'last update')
-            if last_update:
-                self.params.unset('daily', 'last update')
-                self.status.set('last update', 'daily', last_update.isoformat(' '))
             last_update = self.status.get_datetime('last update', 'daily')
             if (not last_update) or (last_update < threshold):
                 # time to do daily tasks

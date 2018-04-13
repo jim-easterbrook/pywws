@@ -100,11 +100,9 @@ class DataLogger(object):
             logger.critical("Unrecognised 'magic number' %02x %02x",
                             fixed_block['magic_0'], fixed_block['magic_1'])
         # store info from fixed block
-        self.status.unset('fixed', 'pressure offset')
         if not self.params.get('config', 'pressure offset'):
             self.params.set('config', 'pressure offset', '%g' % (
                 fixed_block['rel_pressure'] - fixed_block['abs_pressure']))
-        self.params.unset('fixed', 'fixed block')
         self.status.set('fixed', 'fixed block', pprint.pformat(fixed_block))
         return fixed_block
 
