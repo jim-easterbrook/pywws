@@ -177,17 +177,10 @@ class RegularTasks(object):
         # upload other files
         self.uploader.upload(upload_files, delete=True)
 
-    def _do_cron(self, live_data=None):
+    def _cron_due(self, now):
         if not self.cron:
-            return
-        # get timestamp of latest data
-        if live_data:
-            now = live_data['idx']
-        else:
-            now = self.calib_data.before(datetime.max)
-        if not now:
-            now = datetime.utcnow()
-        # convert to local time
+            return []
+        # convert now to local time
         local_now = now + local_utc_offset(now)
         # get list of due sections
         sections = []
@@ -197,25 +190,23 @@ class RegularTasks(object):
             sections.append(section)
             while self.cron[section].get_current(datetime) <= local_now:
                 self.cron[section].get_next()
-        if not sections:
-            return
-        # do it!
-        self._do_common(sections, live_data)
-        for section in sections:
-            self.status.set('last update', section, now.isoformat(' '))
+        return sections
 
     def do_live(self, data):
         calib_data = self.calibrator.calib(data)
-        self._do_common(['live'], calib_data)
-        self._do_cron(calib_data)
+        now = calib_data['idx']
+        sections = ['live'] + self._cron_due(now)
+        self._do_common(sections, calib_data)
+        for section in sections:
+            self.status.set('last update', section, now.isoformat(' '))
 
     def do_tasks(self):
-        sections = ['logged']
         now = self.calib_data.before(datetime.max)
-        if now:
-            now += timedelta(minutes=self.calib_data[now]['delay'])
-        else:
-            now = datetime.utcnow().replace(microsecond=0)
+        if not now:
+            raise RuntimeError('No processed data available')
+        sections = ['logged'] + self._cron_due(now)
+        # do hourly etc if they'll be due by next logging time
+        now += timedelta(minutes=self.calib_data[now]['delay'])
         threshold = (now + STDOFFSET).replace(minute=0, second=0) - STDOFFSET
         last_update = self.status.get_datetime('last update', 'hourly')
         if (not last_update) or (last_update < threshold):
@@ -236,7 +227,6 @@ class RegularTasks(object):
         self._do_common(sections)
         for section in sections:
             self.status.set('last update', section, now.isoformat(' '))
-        self._do_cron()
         if self.flush or 'hourly' in sections:
             # save any unsaved data
             self.params.flush()
