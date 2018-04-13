@@ -143,7 +143,7 @@ class ToTwitter(object):
     def session(self):
         yield None
 
-    def upload_data(self, session, tweet, live):
+    def upload_data(self, session, tweet=''):
         media = []
         while tweet.startswith('media'):
             media_item, tweet = tweet.split('\n', 1)
@@ -159,7 +159,7 @@ class ToTwitter(object):
     def upload(self, tweet):
         if not tweet:
             return
-        self.upload_thread.queue.append((None, tweet, False))
+        self.upload_thread.queue.append((None, {'tweet': tweet}))
         # start upload thread
         if not self.upload_thread.is_alive():
             self.upload_thread.start()

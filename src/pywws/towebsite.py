@@ -225,7 +225,7 @@ class ToWebSite(object):
         finally:
             self.uploader.close()
 
-    def upload_data(self, session, files, delete):
+    def upload_data(self, session, files=[], delete=False):
         for file in files:
             if not os.path.isfile(file):
                 continue
@@ -241,7 +241,8 @@ class ToWebSite(object):
     def upload(self, files, delete=False):
         if not files:
             return
-        self.upload_thread.queue.append((None, files, delete))
+        self.upload_thread.queue.append(
+            (None, {'files': files, 'delete': delete}))
         # start upload thread
         if not self.upload_thread.is_alive():
             self.upload_thread.start()

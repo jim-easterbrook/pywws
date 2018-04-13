@@ -82,7 +82,7 @@ class ToService(pywws.service.BaseToService):
         finally:
             session.close()
 
-    def upload_data(self, session, prepared_data, live):
+    def upload_data(self, session, prepared_data={}, live=False):
         login = ('user {designator:s} pass {passcode:s} ' +
                  'vers pywws {version:s}\n').format(**prepared_data)
         logger.debug('login: "{:s}"'.format(login))

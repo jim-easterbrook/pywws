@@ -72,7 +72,7 @@ class ToService(pywws.service.BaseToService):
         with requests.Session() as session:
             yield session
 
-    def upload_data(self, session, prepared_data, live):
+    def upload_data(self, session, prepared_data={}, live=False):
         try:
             rsp = session.get(
                 'http://www.pwsweather.com/pwsupdate/pwsupdate.php',

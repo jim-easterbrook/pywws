@@ -77,7 +77,7 @@ class ToService(pywws.service.BaseToService):
         with requests.Session() as session:
             yield session
 
-    def upload_data(self, session, prepared_data, live):
+    def upload_data(self, session, prepared_data={}, live=False):
         if live:
             prepared_data.update({'realtime': '1', 'rtfreq': '48'})
             url = 'https://rtupdate.wunderground.com/'

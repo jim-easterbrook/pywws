@@ -72,9 +72,8 @@ class UploadThread(threading.Thread):
                 if not upload:
                     OK = -1
                     break
-                timestamp, prepared_data, live = upload
-                OK, message = self.parent.upload_data(
-                                                session, prepared_data, live)
+                timestamp, kwds = upload
+                OK, message = self.parent.upload_data(session, **kwds)
                 self.log(message)
                 if not OK:
                     break
@@ -142,7 +141,8 @@ class BaseToService(object):
             self.template_file.seek(0)
             prepared_data = eval('{' + data_str + '}')
             prepared_data.update(self.fixed_data)
-            self.upload_thread.queue.append((timestamp, prepared_data, live))
+            self.upload_thread.queue.append(
+                (timestamp, {'prepared_data': prepared_data, 'live': live}))
             count += 1
         # start upload thread
         if not self.upload_thread.is_alive():
