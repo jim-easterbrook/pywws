@@ -139,7 +139,8 @@ class RegularTasks(object):
             else:
                 yield template, ''
 
-    def _do_common(self, sections, live_data=None):
+    def _do_common(self, now, sections, live_data=None):
+        logger.info('doing task sections {!r}'.format(sections))
         # make lists of tasks from all sections, avoiding repeats
         service_tasks = []
         text_tasks = []
@@ -177,13 +178,25 @@ class RegularTasks(object):
                 upload_files.append(text_file)
         # upload non local files
         self.uploader.upload(upload_files, delete=True)
+        # update status
+        for section in sections:
+            self.status.set('last update', section, now.isoformat(' '))
+        # save any unsaved data
+        if self.flush or 'hourly' in sections:
+            self.params.flush()
+            self.status.flush()
+            self.raw_data.flush()
+            self.calib_data.flush()
+            self.hourly_data.flush()
+            self.daily_data.flush()
+            self.monthly_data.flush()
 
     def _cron_due(self, now):
         if not self.cron:
             return []
         # convert now to local time
         local_now = now + local_utc_offset(now)
-        # get list of due sections
+        # make list of due sections
         sections = []
         for section in self.cron:
             if self.cron[section].get_current(datetime) > local_now:
@@ -193,50 +206,47 @@ class RegularTasks(object):
                 self.cron[section].get_next()
         return sections
 
+    def _periodic_due(self, now):
+        # get start of current hour, in local time
+        threshold = (now + STDOFFSET).replace(minute=0, second=0) - STDOFFSET
+        # make list of due sections
+        sections = []
+        last_update = self.status.get_datetime('last update', 'hourly')
+        if last_update and last_update >= threshold:
+            return sections
+        # time to do hourly tasks
+        sections.append('hourly')
+        # set 12 hourly threshold
+        threshold -= timedelta(hours=(threshold.hour - self.day_end_hour) % 12)
+        last_update = self.status.get_datetime('last update', '12 hourly')
+        if last_update and last_update >= threshold:
+            return sections
+        # time to do 12 hourly tasks
+        sections.append('12 hourly')
+        # set daily threshold
+        threshold -= timedelta(hours=(threshold.hour - self.day_end_hour) % 24)
+        last_update = self.status.get_datetime('last update', 'daily')
+        if last_update and last_update >= threshold:
+            return sections
+        # time to do daily tasks
+        sections.append('daily')
+        return sections
+
     def do_live(self, data):
         calib_data = self.calibrator.calib(data)
         now = calib_data['idx']
-        sections = ['live'] + self._cron_due(now)
-        self._do_common(sections, calib_data)
-        for section in sections:
-            self.status.set('last update', section, now.isoformat(' '))
+        sections = ['live'] + self._cron_due(now) + self._periodic_due(now)
+        self._do_common(now, sections, live_data=calib_data)
 
-    def do_tasks(self):
+    def do_tasks(self, live_logging=False):
         now = self.calib_data.before(datetime.max)
         if not now:
             raise RuntimeError('No processed data available')
-        sections = ['logged'] + self._cron_due(now)
-        # do hourly etc if they'll be due by next logging time
-        now += timedelta(minutes=self.calib_data[now]['delay'])
-        threshold = (now + STDOFFSET).replace(minute=0, second=0) - STDOFFSET
-        last_update = self.status.get_datetime('last update', 'hourly')
-        if (not last_update) or (last_update < threshold):
-            # time to do hourly tasks
-            sections.append('hourly')
-            # set 12 hourly threshold
-            threshold -= timedelta(hours=(threshold.hour - self.day_end_hour) % 12)
-            last_update = self.status.get_datetime('last update', '12 hourly')
-            if (not last_update) or (last_update < threshold):
-                # time to do 12 hourly tasks
-                sections.append('12 hourly')
-            # set daily threshold
-            threshold -= timedelta(hours=(threshold.hour - self.day_end_hour) % 24)
-            last_update = self.status.get_datetime('last update', 'daily')
-            if (not last_update) or (last_update < threshold):
-                # time to do daily tasks
-                sections.append('daily')
-        self._do_common(sections)
-        for section in sections:
-            self.status.set('last update', section, now.isoformat(' '))
-        if self.flush or 'hourly' in sections:
-            # save any unsaved data
-            self.params.flush()
-            self.status.flush()
-            self.raw_data.flush()
-            self.calib_data.flush()
-            self.hourly_data.flush()
-            self.daily_data.flush()
-            self.monthly_data.flush()
+        if not live_logging:
+            # do periodic tasks if they would be due by next logging time
+            now += timedelta(minutes=self.calib_data[now]['delay'])
+        sections = ['logged'] + self._cron_due(now) + self._periodic_due(now)
+        self._do_common(now, sections)
 
     def do_twitter(self, template, data=None):
         if not self.twitter:

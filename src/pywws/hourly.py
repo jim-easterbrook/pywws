@@ -65,8 +65,7 @@ def hourly(data_dir):
         # do the processing
         pywws.process.process_data(context)
         # do tasks
-        if not pywws.regulartasks.RegularTasks(context).do_tasks():
-            return 1
+        pywws.regulartasks.RegularTasks(context).do_tasks()
     return 0
 
 

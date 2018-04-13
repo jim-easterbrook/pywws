@@ -75,7 +75,7 @@ def live_log(data_dir):
                     # process new data
                     pywws.process.process_data(context)
                     # do tasks
-                    tasks.do_tasks()
+                    tasks.do_tasks(live_logging=True)
                 else:
                     tasks.do_live(data)
         except KeyboardInterrupt:
