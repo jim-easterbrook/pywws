@@ -24,7 +24,6 @@ from datetime import datetime, timedelta
 import importlib
 import logging
 import os
-import shutil
 
 from pywws.calib import Calib
 import pywws.plot
@@ -106,6 +105,21 @@ class RegularTasks(object):
             if self.params.get(section, 'yowindow'):
                 logger.error(
                     'Obsolete yowindow entry in weather.ini [%s]', section)
+        # check for 'local' template results
+        if os.path.isdir(self.local_dir):
+            return
+        has_local = False
+        for section in list(self.cron.keys()) + [
+                       'live', 'logged', 'hourly', '12 hourly', 'daily']:
+            for template, flags in self._parse_templates(section, 'text'):
+                if 'L' in flags:
+                    has_local = True
+            for template, flags in self._parse_templates(section, 'plot'):
+                if 'L' in flags:
+                    has_local = True
+            if has_local:
+                raise RuntimeError(
+                    'Directory "{:s}" does not exist.'.format(self.local_dir))
 
     def has_live_tasks(self):
         if self.cron:
@@ -144,37 +158,24 @@ class RegularTasks(object):
         for name in service_tasks:
             self.services[name].upload(live_data=live_data)
         # do text templates
-        local_files = []
         upload_files = []
         for template, flags in text_tasks:
             if 'T' in flags:
                 self.do_twitter(template, live_data)
                 continue
-            text_file = self.do_template(template, live_data)
-            if 'L' in flags:
-                local_files.append(text_file)
-            else:
+            local = 'L' in flags
+            text_file = self.do_template(template, data=live_data, local=local)
+            if not local:
                 upload_files.append(text_file)
+        # do plot templates
         for template, flags in plot_tasks:
-            plot_file = self.do_plot(template)
+            local = 'L' in flags
+            plot_file = self.do_plot(template, local=local)
             if not plot_file:
                 continue
-            if 'L' in flags:
-                local_files.append(plot_file)
-            else:
+            if not local:
                 upload_files.append(plot_file)
-        # move local files from self.work_dir to self.local_dir
-        if local_files:
-            if not os.path.isdir(self.local_dir):
-                raise RuntimeError(
-                    'Directory "' + self.local_dir + '" does not exist.')
-            for file in local_files:
-                targ = os.path.join(
-                    self.local_dir, os.path.basename(file))
-                if os.path.exists(targ):
-                    os.unlink(targ)
-                shutil.move(file, self.local_dir)
-        # upload other files
+        # upload non local files
         self.uploader.upload(upload_files, delete=True)
 
     def _cron_due(self, now):
@@ -247,10 +248,14 @@ class RegularTasks(object):
         logger.info("Tweeting")
         self.twitter.upload(tweet)
 
-    def do_plot(self, template):
+    def do_plot(self, template, local=False):
         logger.info("Graphing %s", template)
         input_file = os.path.join(self.graph_template_dir, template)
-        output_file = os.path.join(self.work_dir, os.path.splitext(template)[0])
+        output_file = os.path.splitext(template)[0]
+        if local:
+            output_file = os.path.join(self.local_dir, output_file)
+        else:
+            output_file = os.path.join(self.work_dir, output_file)
         input_xml = pywws.plot.GraphFileReader(input_file)
         if (input_xml.get_children(self.plotter.plot_name) and
                         self.plotter.do_plot(input_xml, output_file) == 0):
@@ -261,9 +266,12 @@ class RegularTasks(object):
         logger.warning('nothing to graph in %s', input_file)
         return None
 
-    def do_template(self, template, data=None):
+    def do_template(self, template, data=None, local=False):
         logger.info("Templating %s", template)
         input_file = os.path.join(self.template_dir, template)
-        output_file = os.path.join(self.work_dir, template)
+        if local:
+            output_file = os.path.join(self.local_dir, template)
+        else:
+            output_file = os.path.join(self.work_dir, template)
         self.templater.make_file(input_file, output_file, live_data=data)
         return output_file
