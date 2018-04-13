@@ -157,8 +157,16 @@ class RegularTasks(object):
         # do service tasks
         for name in service_tasks:
             self.services[name].upload(live_data=live_data)
-        # do text templates
+        # do plot templates
         upload_files = []
+        for template, flags in plot_tasks:
+            local = 'L' in flags
+            plot_file = self.do_plot(template, local=local)
+            if not plot_file:
+                continue
+            if not local:
+                upload_files.append(plot_file)
+        # do text templates
         for template, flags in text_tasks:
             if 'T' in flags:
                 self.do_twitter(template, live_data)
@@ -167,14 +175,6 @@ class RegularTasks(object):
             text_file = self.do_template(template, data=live_data, local=local)
             if not local:
                 upload_files.append(text_file)
-        # do plot templates
-        for template, flags in plot_tasks:
-            local = 'L' in flags
-            plot_file = self.do_plot(template, local=local)
-            if not plot_file:
-                continue
-            if not local:
-                upload_files.append(plot_file)
         # upload non local files
         self.uploader.upload(upload_files, delete=True)
 
