@@ -63,8 +63,7 @@ def live_log(data_dir):
         # create a DataLogger object
         datalogger = pywws.logdata.DataLogger(context)
         # create a RegularTasks object
-        asynch = eval(context.params.get('config', 'asynchronous', 'False'))
-        tasks = pywws.regulartasks.RegularTasks(context, asynch=asynch)
+        tasks = pywws.regulartasks.RegularTasks(context)
         # clear any processing backlog
         if context.raw_data.before(datetime.max):
             pywws.process.process_data(context)
@@ -79,10 +78,10 @@ def live_log(data_dir):
                     tasks.do_tasks()
                 else:
                     tasks.do_live(data)
+        except KeyboardInterrupt:
+            pass
         except Exception as ex:
             logger.exception(ex)
-        finally:
-            tasks.stop_thread()
     return 0
 
 

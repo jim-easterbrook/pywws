@@ -76,13 +76,21 @@ data_dir.
 __doc__ %= __usage__
 __usage__ = __doc__.split('\n')[0] + __usage__
 
+from contextlib import contextmanager
+from datetime import timedelta
 import getopt
 import logging
 import os
 import shutil
 import sys
 
+if sys.version_info[0] >= 3:
+    from io import StringIO
+else:
+    from StringIO import StringIO
+
 import pywws.logger
+import pywws.service
 import pywws.storage
 
 logger = logging.getLogger(__name__)
@@ -153,10 +161,6 @@ class _sftp(object):
         self.transport.close()
 
     def get_private_key(self, privkey):
-        if sys.version_info[0] >= 3:
-            from io import StringIO
-        else:
-            from StringIO import StringIO
         with open(privkey, 'r') as f:
             s = f.read()
         keyfile = StringIO(s)
@@ -181,8 +185,12 @@ class _copy(object):
 
 
 class ToWebSite(object):
-    def __init__(self, params):
-        self.params = params
+    interval = timedelta(seconds=150)
+    logger = logger
+    service_name = 'pywws.towebsite'
+
+    def __init__(self, context):
+        self.params = context.params
         self.old_ex = None
         if eval(self.params.get('ftp', 'local site', 'False')):
             # copy to local directory
@@ -194,11 +202,8 @@ class ToWebSite(object):
             # get remote site details
             site = self.params.get('ftp', 'site', 'ftp.username.your_isp.co.uk')
             user = self.params.get('ftp', 'user', 'username')
-            # we don't set a default password, as we might use a private ssh key 
-            if self.params.get('ftp','password'):
-                password = self.params.get('ftp', 'password')
-            else:
-                password = ''
+            # don't set a default password, as might use a private ssh key
+            password = self.params.get('ftp', 'password', '')
             directory = self.params.get(
                 'ftp', 'directory', 'public_html/weather/data/')
             if eval(self.params.get('ftp', 'secure', 'False')):
@@ -208,49 +213,38 @@ class ToWebSite(object):
                     site, user, password, privkey, directory, port)
             else:
                 port = eval(self.params.get('ftp', 'port', '21'))
-                self.uploader = _ftp(
-                    site, user, password, directory, port)
+                self.uploader = _ftp(site, user, password, directory, port)
+        # create upload thread
+        self.upload_thread = pywws.service.UploadThread(self, context)
 
-    def connect(self):
+    @contextmanager
+    def session(self):
+        self.uploader.connect()
         try:
-            self.uploader.connect()
-        except Exception as ex:
-            e = str(ex)
-            if e == self.old_ex:
-                logger.debug(e)
-            else:
-                logger.error(e)
-                self.old_ex = e
-            return False
-        return True
+            yield None
+        finally:
+            self.uploader.close()
 
-    def upload_file(self, file):
-        target = os.path.basename(file)
-        try:
-            self.uploader.put(file, target)
-            return True
-        except Exception as ex:
-            e = str(ex)
-            if e == self.old_ex:
-                logger.debug(e)
-            else:
-                logger.error(e)
-                self.old_ex = e
-        return False
-
-    def disconnect(self):
-        self.uploader.close()
-
-    def upload(self, files):
-        if not self.connect():
-            return False
-        OK = True
+    def upload_data(self, session, files, delete):
         for file in files:
-            if not self.upload_file(file):
-                OK = False
-                break
-        self.disconnect()
-        return OK
+            if not os.path.isfile(file):
+                continue
+            target = os.path.basename(file)
+            try:
+                self.uploader.put(file, target)
+            except Exception as ex:
+                return False, str(ex)
+            if delete:
+                os.unlink(file)
+        return True, 'OK'
+
+    def upload(self, files, delete=False):
+        if not files:
+            return
+        self.upload_thread.queue.append((None, files, delete))
+        # start upload thread
+        if not self.upload_thread.is_alive():
+            self.upload_thread.start()
 
 
 def main(argv=None):
@@ -274,9 +268,10 @@ def main(argv=None):
         return 2
     pywws.logger.setup_handler(1)
     with pywws.storage.pywws_context(args[0]) as context:
-        if ToWebSite(context.params).upload(args[1:]):
-            return 0
-    return 3
+        uploader = ToWebSite(context)
+        uploader.upload(args[1:])
+        uploader.shutdown()
+    return 0
 
 
 if __name__ == "__main__":

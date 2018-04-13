@@ -20,13 +20,11 @@
 
 from __future__ import absolute_import
 
-from collections import deque
 from datetime import datetime, timedelta
 import importlib
 import logging
 import os
 import shutil
-import threading
 
 from pywws.calib import Calib
 import pywws.plot
@@ -39,7 +37,7 @@ logger = logging.getLogger(__name__)
 
 
 class RegularTasks(object):
-    def __init__(self, context, asynch=False):
+    def __init__(self, context):
         self.context = context
         self.params = context.params
         self.status = context.status
@@ -48,7 +46,6 @@ class RegularTasks(object):
         self.hourly_data = context.hourly_data
         self.daily_data = context.daily_data
         self.monthly_data = context.monthly_data
-        self.asynch = asynch
         self.flush = eval(self.params.get('config', 'frequent writes', 'False'))
         # get directories
         self.work_dir = self.params.get('paths', 'work', '/tmp/weather')
@@ -69,10 +66,7 @@ class RegularTasks(object):
         self.plotter = pywws.plot.GraphPlotter(context, self.work_dir)
         self.roseplotter = pywws.windrose.RosePlotter(context, self.work_dir)
         # create FTP uploader object
-        self.uploader = pywws.towebsite.ToWebSite(self.params)
-        self.uploads_directory = os.path.join(self.work_dir, 'uploads')
-        if not os.path.isdir(self.uploads_directory):
-            os.mkdir(self.uploads_directory)
+        self.uploader = pywws.towebsite.ToWebSite(context)
         # delay creation of a Twitter object until we know it's needed
         self.twitter = None
         # get daytime end hour, in UTC
@@ -106,61 +100,15 @@ class RegularTasks(object):
                     logger.error(
                         'no uploader found for service "{:s}"'.format(name))
             # check for obsolete entries
-            if self.params.get(section, 'twitter') not in (None, '[]'):
+            if self.params.get(section, 'twitter'):
                 logger.error(
-                    'Deprecated twitter entry in weather.ini [%s]', section)
+                    'Obsolete twitter entry in weather.ini [%s]', section)
             if self.params.get(section, 'yowindow'):
                 logger.error(
                     'Obsolete yowindow entry in weather.ini [%s]', section)
-        # create queues for things to upload / send
-        self.uploads_queue = deque()
-        # start asynchronous thread to do uploads
-        if self.asynch:
-            logger.info('Starting asynchronous thread')
-            self.shutdown_thread = threading.Event()
-            self.wake_thread = threading.Event()
-            self.thread = threading.Thread(target=self._asynch_thread)
-            self.thread.start()
-
-    def stop_thread(self):
-        if not self.asynch:
-            return
-        self.shutdown_thread.set()
-        self.wake_thread.set()
-        self.thread.join()
-        logger.debug('Asynchronous thread terminated')
-
-    def _asynch_thread(self):
-        try:
-            while not self.shutdown_thread.isSet():
-                timeout = 600
-                while True:
-                    self.wake_thread.wait(timeout)
-                    if not self.wake_thread.isSet():
-                        # main thread has stopped putting things on the queue
-                        break
-                    self.wake_thread.clear()
-                    timeout = 2
-                logger.debug('Doing asynchronous tasks')
-                self._do_queued_tasks()
-        except Exception as ex:
-            logger.exception(ex)
-
-    def _do_queued_tasks(self):
-        while self.uploads_queue:
-            file = self.uploads_queue.popleft()
-            if not os.path.exists(file):
-                continue
-            targ = os.path.join(self.uploads_directory, os.path.basename(file))
-            if os.path.exists(targ):
-                os.unlink(targ)
-            shutil.move(file, self.uploads_directory)
-        self._do_uploads()
 
     def has_live_tasks(self):
         if self.cron:
-            return True
-        if self.params.get('live', 'twitter') not in (None, '[]'):
             return True
         for name in eval(self.params.get('live', 'services', '[]')):
             return True
@@ -178,40 +126,44 @@ class RegularTasks(object):
                 yield template, ''
 
     def _do_common(self, sections, live_data=None):
-        if self.asynch and not self.thread.isAlive():
-            raise RuntimeError('Asynchronous thread terminated unexpectedly')
-        for section in sections:
-            templates = self.params.get(section, 'twitter')
-            if templates not in (None, '[]'):
-                for template in eval(templates):
-                    self.do_twitter(template)
-        uploads = []
-        local_files = []
-        service_done = []
+        # make lists of tasks from all sections, avoiding repeats
+        service_tasks = []
+        text_tasks = []
+        plot_tasks = []
         for section in sections:
             for name in eval(self.params.get(section, 'services', '[]')):
-                if name not in service_done:
-                    self.services[name].upload(live_data=live_data)
-                    service_done.append(name)
-            for template, flags in self._parse_templates(section, 'text'):
-                if 'T' in flags:
-                    self.do_twitter(template, live_data)
-                    continue
-                upload = self.do_template(template, live_data)
-                if 'L' in flags:
-                    if upload not in local_files:
-                        local_files.append(upload)
-                elif upload not in uploads:
-                    uploads.append(upload)
-            for template, flags in self._parse_templates(section, 'plot'):
-                upload = self.do_plot(template)
-                if not upload:
-                    continue
-                if 'L' in flags:
-                    if upload not in local_files:
-                        local_files.append(upload)
-                elif upload not in uploads:
-                    uploads.append(upload)
+                if name not in service_tasks:
+                    service_tasks.append(name)
+            for task in self._parse_templates(section, 'text'):
+                if task not in text_tasks:
+                    text_tasks.append(task)
+            for task in self._parse_templates(section, 'plot'):
+                if task not in plot_tasks:
+                    plot_tasks.append(task)
+        # do service tasks
+        for name in service_tasks:
+            self.services[name].upload(live_data=live_data)
+        # do text templates
+        local_files = []
+        upload_files = []
+        for template, flags in text_tasks:
+            if 'T' in flags:
+                self.do_twitter(template, live_data)
+                continue
+            text_file = self.do_template(template, live_data)
+            if 'L' in flags:
+                local_files.append(text_file)
+            else:
+                upload_files.append(text_file)
+        for template, flags in plot_tasks:
+            plot_file = self.do_plot(template)
+            if not plot_file:
+                continue
+            if 'L' in flags:
+                local_files.append(plot_file)
+            else:
+                upload_files.append(plot_file)
+        # move local files from self.work_dir to self.local_dir
         if local_files:
             if not os.path.isdir(self.local_dir):
                 raise RuntimeError(
@@ -222,12 +174,8 @@ class RegularTasks(object):
                 if os.path.exists(targ):
                     os.unlink(targ)
                 shutil.move(file, self.local_dir)
-        for file in uploads:
-            self.uploads_queue.append(file)
-        if self.asynch:
-            self.wake_thread.set()
-        else:
-            self._do_queued_tasks()
+        # upload other files
+        self.uploader.upload(upload_files, delete=True)
 
     def _do_cron(self, live_data=None):
         if not self.cron:
@@ -311,25 +259,6 @@ class RegularTasks(object):
             self.hourly_data.flush()
             self.daily_data.flush()
             self.monthly_data.flush()
-
-    def _do_uploads(self):
-        if not os.path.isdir(self.uploads_directory):
-            return True
-        # get list of pending uploads
-        uploads = []
-        for name in os.listdir(self.uploads_directory):
-            path = os.path.join(self.uploads_directory, name)
-            if os.path.isfile(path):
-                uploads.append(path)
-        if not uploads:
-            return True
-        # upload files
-        if not self.uploader.connect():
-            return
-        for path in uploads:
-            if self.uploader.upload_file(path):
-                os.unlink(path)
-        self.uploader.disconnect()
 
     def do_twitter(self, template, data=None):
         if not self.twitter:
