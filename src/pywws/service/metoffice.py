@@ -36,7 +36,7 @@ logger = logging.getLogger(__package__ + '.' + service_name)
 class ToService(pywws.service.BaseToService):
     catchup = 7
     fixed_data = {'softwaretype': 'pywws v' + pywws.__version__}
-    interval = timedelta(seconds=290)
+    interval = timedelta(seconds=300)
     logger = logger
     service_name = service_name
     template = """
