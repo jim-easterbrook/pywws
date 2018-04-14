@@ -313,7 +313,7 @@ from pywws.forecast import zambretti, zambretti_code
 import pywws.localisation
 import pywws.logger
 import pywws.storage
-from pywws.timezone import local_midnight, Local, utc
+from pywws.timezone import timezone
 import pywws.weatherstation
 
 logger = logging.getLogger(__name__)
@@ -376,7 +376,7 @@ class Template(object):
         # start off in hourly data mode
         data_set = self.hourly_data
         # start off in utc
-        time_zone = utc
+        local_time = False
         # start off with default use_locale setting
         use_locale = self.use_locale
         # jump to last item
@@ -431,7 +431,10 @@ class Template(object):
                     if isinstance(x, datetime):
                         if round_time:
                             x += round_time
-                        x = utc.localize(x).astimezone(time_zone)
+                        if local_time:
+                            x = timezone.to_local(x)
+                        else:
+                            x = timezone.to_utc(x)
                     # convert data
                     if x is not None and len(command) > 3:
                         x = eval(command[3])
@@ -483,9 +486,9 @@ class Template(object):
                     data = live_data
                 elif command[0] == 'timezone':
                     if command[1] == 'utc':
-                        time_zone = utc
+                        local_time = False
                     elif command[1] == 'local':
-                        time_zone = Local
+                        local_time = True
                     else:
                         logger.error("Unknown time zone: %s", command[1])
                         return
@@ -509,11 +512,15 @@ class Template(object):
                     prevdata = data
                     time_str = command[1]
                     if '%' in time_str:
-                        lcl = utc.localize(idx).astimezone(time_zone)
+                        if local_time:
+                            lcl = timezone.to_local(idx)
+                        else:
+                            lcl = timezone.to_utc(idx)
                         time_str = lcl.strftime(time_str)
                     new_idx = pywws.weatherstation.WSDateTime.from_csv(time_str)
-                    new_idx = time_zone.localize(new_idx).astimezone(utc)
-                    new_idx = data_set.after(new_idx.replace(tzinfo=None))
+                    if local_time:
+                        new_idx = timezone.to_naive(timezone.localize(new_idx))
+                    new_idx = data_set.after(new_idx)
                     if new_idx:
                         idx = new_idx
                         data = data_set[idx]
@@ -556,7 +563,7 @@ class Template(object):
         return max(0.0, self._hour_diff(data, 'rain'))
 
     def _rain_day(self, data):
-        midnight = local_midnight(data['idx'])
+        midnight = timezone.local_midnight(data['idx'])
         midnight_data = self.calib_data[self.calib_data.nearest(midnight)]
         return max(0.0, data['rain'] - midnight_data['rain'])
 

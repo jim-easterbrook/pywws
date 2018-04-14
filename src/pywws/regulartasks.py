@@ -28,7 +28,7 @@ import os
 from pywws.calib import Calib
 import pywws.plot
 import pywws.template
-from pywws.timezone import STDOFFSET, local_utc_offset
+from pywws.timezone import timezone
 import pywws.towebsite
 import pywws.windrose
 
@@ -68,9 +68,9 @@ class RegularTasks(object):
         self.uploader = pywws.towebsite.ToWebSite(context)
         # delay creation of a Twitter object until we know it's needed
         self.twitter = None
-        # get daytime end hour, in UTC
+        # get daytime end hour
         self.day_end_hour = eval(self.params.get('config', 'day end hour', '21'))
-        self.day_end_hour = (self.day_end_hour - (STDOFFSET.seconds // 3600)) % 24
+        self.day_end_hour = self.day_end_hour % 24
         # parse "cron" sections
         self.cron = {}
         for section in self.params._config.sections():
@@ -82,7 +82,7 @@ class RegularTasks(object):
             self.cron[section].get_prev()
             last_update = self.status.get_datetime('last update', section)
             if last_update:
-                last_update = last_update + local_utc_offset(last_update)
+                last_update += timezone.utcoffset(last_update)
                 while self.cron[section].get_current(datetime) <= last_update:
                     self.cron[section].get_next()
         # create service uploader objects
@@ -195,7 +195,7 @@ class RegularTasks(object):
         if not self.cron:
             return []
         # convert now to local time
-        local_now = now + local_utc_offset(now)
+        local_now = now + timezone.utcoffset(now)
         # make list of due sections
         sections = []
         for section in self.cron:
@@ -207,29 +207,31 @@ class RegularTasks(object):
         return sections
 
     def _periodic_due(self, now):
-        # get start of current hour, in local time
-        threshold = (now + STDOFFSET).replace(minute=0, second=0) - STDOFFSET
+        # get start of current hour, allowing for odd time zones
+        threshold = timezone.local_replace(now, minute=0, second=0)
         # make list of due sections
         sections = []
+        # hourly
         last_update = self.status.get_datetime('last update', 'hourly')
-        if last_update and last_update >= threshold:
-            return sections
-        # time to do hourly tasks
-        sections.append('hourly')
-        # set 12 hourly threshold
-        threshold -= timedelta(hours=(threshold.hour - self.day_end_hour) % 12)
-        last_update = self.status.get_datetime('last update', '12 hourly')
-        if last_update and last_update >= threshold:
-            return sections
-        # time to do 12 hourly tasks
-        sections.append('12 hourly')
-        # set daily threshold
-        threshold -= timedelta(hours=(threshold.hour - self.day_end_hour) % 24)
+        if not last_update or last_update < threshold:
+            sections.append('hourly')
+        # daily
+        threshold = timezone.local_replace(
+            threshold, use_dst=False, hour=self.day_end_hour)
         last_update = self.status.get_datetime('last update', 'daily')
-        if last_update and last_update >= threshold:
+        if not last_update or last_update < threshold:
+            sections.append('daily')
+        # 12 hourly == daily
+        last_update = self.status.get_datetime('last update', '12 hourly')
+        if not last_update or last_update < threshold:
+            sections.append('12 hourly')
             return sections
-        # time to do daily tasks
-        sections.append('daily')
+        # 12 hourly == daily +- 12 hours
+        threshold = timezone.local_replace(
+            now, use_dst=False,
+            hour=((self.day_end_hour + 12) % 24), minute=0, second=0)
+        if last_update < threshold:
+            sections.append('12 hourly')
         return sections
 
     def do_live(self, data):

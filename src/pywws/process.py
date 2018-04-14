@@ -84,7 +84,7 @@ from pywws.calib import Calib
 from pywws.constants import HOUR, DAY, SECOND
 import pywws.logger
 import pywws.storage
-from pywws.timezone import STDOFFSET
+from pywws.timezone import timezone
 
 logger = logging.getLogger(__name__)
 
@@ -326,7 +326,7 @@ class DayAcc(object):
 
     def add_raw(self, data):
         idx = data['idx']
-        local_hour = (idx + STDOFFSET).hour
+        local_hour = (idx + timezone.standard_offset).hour
         wind_gust = data['wind_gust']
         if wind_gust is not None and wind_gust > self.wind_gust[0]:
             self.wind_gust = (wind_gust, idx)
@@ -559,9 +559,9 @@ def generate_hourly(calib_data, hourly_data, process_from):
     if start is None:
         return start
     # set start of hour in local time (not all time offsets are integer hours)
-    start += STDOFFSET
+    start += timezone.standard_offset
     start = start.replace(minute=0, second=0)
-    start -= STDOFFSET
+    start -= timezone.standard_offset
     del hourly_data[start:]
     # preload pressure history, and find last valid rain
     prev = None
@@ -631,11 +631,8 @@ def generate_daily(day_end_hour,
     if start is None:
         return start
     # round to start of this day, in local time
-    start += STDOFFSET
-    if start.hour < day_end_hour:
-        start = start - DAY
-    start = start.replace(hour=day_end_hour, minute=0, second=0)
-    start -= STDOFFSET
+    start = timezone.local_replace(
+        start, use_dst=False, hour=day_end_hour, minute=0, second=0)
     del daily_data[start:]
     stop = calib_data.before(datetime.max)
     day_start = start
@@ -676,12 +673,11 @@ def generate_monthly(rain_day_threshold, day_end_hour,
     if start is None:
         return start
     # set start to start of first day of month (local time)
-    start += STDOFFSET
-    start = start.replace(day=1, hour=day_end_hour, minute=0, second=0)
+    start = timezone.local_replace(
+        start, use_dst=False, day=1, hour=day_end_hour, minute=0, second=0)
     if day_end_hour >= 12:
         # month actually starts on the last day of previous month
         start -= DAY
-    start -= STDOFFSET
     del monthly_data[start:]
     stop = daily_data.before(datetime.max)
     month_start = start

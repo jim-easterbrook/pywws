@@ -37,46 +37,117 @@ Detailed API
 
 from __future__ import print_function
 
-from datetime import datetime
+from datetime import datetime, timedelta
+import logging
 import sys
 
 import pytz
 import tzlocal
 
-from pywws.constants import HOUR
+from pywws.constants import DAY, HOUR
 
-utc = pytz.utc
-Local = tzlocal.get_localzone()
-
-_now = datetime.now(tz=Local)
-STDOFFSET = _now.utcoffset() - _now.dst()
-del _now
+logger = logging.getLogger(__name__)
 
 
-def local_utc_offset(time):
-    try:
-        result = Local.utcoffset(time)
-    except pytz.InvalidTimeError:
-        result = Local.utcoffset(time + HOUR)
-    except pytz.AmbiguousTimeError:
-        result = Local.utcoffset(time - HOUR)
-    return result
+class TimeZone(object):
+    def __init__(self, tz_name=None):
+        if tz_name:
+            self.local = pytz.timezone(tz_name)
+        else:
+            self.local = tzlocal.get_localzone()
+        logger.info('Using timezone "{!s}"'.format(self.local))
+        self.utc = pytz.utc
+        now = datetime.utcnow().replace(day=15, hour=12)
+        while self.dst(now):
+            now -= timedelta(days=30)
+        self.standard_offset = self.utcoffset(now)
+
+    def dst(self, dt):
+        return self.local.dst(dt, is_dst=False)
+
+    def utcoffset(self, dt):
+        return self.local.utcoffset(dt, is_dst=False)
+
+    def localize(self, dt):
+        """Attach local timezone to a naive timestamp with no adjustment."""
+        return self.local.localize(dt)
+
+    def to_local(self, dt):
+        """Convert any timestamp to local time (with tzinfo)."""
+        if dt.tzinfo is None:
+            dt = dt.replace(tzinfo=self.utc)
+        return dt.astimezone(self.local)
+
+    def to_utc(self, dt):
+        """Convert any timestamp to UTC (with tzinfo)."""
+        if dt.tzinfo is None:
+            return dt.replace(tzinfo=self.utc)
+        return dt.astimezone(self.utc)
+
+    def to_naive(self, dt):
+        """Convert any timestamp to pywws (utc, no tzinfo)."""
+        if dt.tzinfo is None:
+            return dt
+        return dt.astimezone(self.utc).replace(tzinfo=None)
+
+    def local_replace(self, dt, use_dst=True, _recurse=False, **kwds):
+        """Return pywws timestamp (utc, no tzinfo) for the most recent
+        local time before the pywws timestamp dt, with datetime replace
+        applied.
+
+        """
+        local_time = dt + self.standard_offset
+        adjusted_time = local_time.replace(**kwds)
+        if use_dst:
+            dst_offset = self.dst(adjusted_time)
+            if dst_offset:
+                adjusted_time += dst_offset
+                adjusted_time = adjusted_time.replace(**kwds)
+                adjusted_time -= dst_offset
+        if adjusted_time > local_time and not _recurse:
+            return self.local_replace(
+                dt - DAY, use_dst=use_dst, _recurse=True, **kwds)
+        return adjusted_time - self.standard_offset
+
+    def local_midnight(self, dt):
+        """Return pywws timestamp (utc, no tzinfo) for the local time
+        midnight before the supplied pywws timestamp.
+
+        """
+        return self.local_replace(dt, hour=0, minute=0, second= 0)
 
 
-def local_midnight(time):
-    """Return pywws timestamp (utc, no tzinfo) for the local time
-    midnight before the supplied pywws timestamp.
-
-    """
-    local_time = utc.localize(time).astimezone(Local)
-    local_time = local_time.replace(hour=0, minute=0, second=0)
-    return local_time.astimezone(utc).replace(tzinfo=None)
+timezone = TimeZone()
 
 
 def main():
-    print(datetime.now().strftime('%Y/%m/%d %H:%M %Z'))
-    print(datetime.now(utc).strftime('%Y/%m/%d %H:%M %Z'))
-    print(datetime.now(Local).strftime('%Y/%m/%d %H:%M %Z'))
+    now = datetime.utcnow().replace(microsecond=0)
+    print('using timezone', timezone.local)
+    print('current time')
+    print(now, 'UTC')
+    lcl = timezone.to_local(now)
+    print(lcl, lcl.strftime('%Z'))
+    now_utc = timezone.to_utc(lcl)
+    print(now_utc, now_utc.strftime('%Z'))
+    print()
+    print('most recent 9am',
+          timezone.local_replace(now, hour=9, minute=0, second=0), 'UTC')
+    print('most recent 9pm',
+          timezone.local_replace(now, hour=21, minute=0, second=0), 'UTC')
+    print()
+    print('DST transitions in "America/St_Johns"')
+    tz = TimeZone('America/St_Johns')
+    for day in range(11, 13):
+        dt = datetime(2018, 3, day, 12)
+        mn = tz.local_midnight(dt)
+        lcl = tz.to_local(mn)
+        print('midnight', mn, 'UTC', lcl, lcl.strftime('%Z'))
+    print()
+    for day in range(4, 6):
+        dt = datetime(2018, 11, day, 12)
+        mn = tz.local_midnight(dt)
+        lcl = tz.to_local(mn)
+        print('midnight', mn, 'UTC', lcl, lcl.strftime('%Z'))
 
 
 if __name__ == "__main__":

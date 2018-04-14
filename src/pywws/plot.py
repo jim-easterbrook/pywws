@@ -523,14 +523,12 @@ import subprocess
 import sys
 import xml.dom.minidom
 
-import pytz
-
 from pywws.constants import HOUR
 from pywws.conversions import *
 import pywws.localisation
 import pywws.logger
 import pywws.storage
-from pywws.timezone import Local, local_utc_offset, utc
+from pywws.timezone import timezone
 
 logger = logging.getLogger(__name__)
 
@@ -603,7 +601,7 @@ class BasePlotter(object):
         result = self.hourly_data.before(datetime.max)
         if not result:
             result = datetime.utcnow()    # only if no hourly data
-        result += local_utc_offset(result)
+        result += timezone.utcoffset(result)
         # set to start of the day
         result = result.replace(hour=0, minute=0, second=0, microsecond=0)
         # apply time string
@@ -645,7 +643,7 @@ class BasePlotter(object):
             self.x_hi = self.hourly_data.before(datetime.max)
             if not self.x_hi:
                 self.x_hi = datetime.utcnow()    # only if no hourly data
-            self.x_hi += local_utc_offset(self.x_hi)
+            self.x_hi += timezone.utcoffset(self.x_hi)
             if self.duration < timedelta(hours=6):
                 # set end of graph to start of the next minute after last item
                 self.x_hi += timedelta(seconds=55)
@@ -655,7 +653,7 @@ class BasePlotter(object):
                 self.x_hi += timedelta(minutes=55)
                 self.x_hi = self.x_hi.replace(minute=0, second=0)
             self.x_lo = self.x_hi - self.duration
-        self.utcoffset = local_utc_offset(self.x_hi)
+        self.utcoffset = timezone.utcoffset(self.x_hi)
         # open gnuplot command file
         self.tmp_files = []
         cmd_file = os.path.join(self.work_dir, 'plot.cmd')
@@ -690,8 +688,7 @@ class BasePlotter(object):
         title = self.graph.get_value('title', '')
         if title:
             if '%' in title:
-                x_hi = utc.localize(
-                    self.x_hi - self.utcoffset).astimezone(Local)
+                x_hi = timezone.localize(self.x_hi)
                 if sys.version_info[0] < 3:
                     title = title.encode(self.encoding[0])
                 title = x_hi.strftime(title)
@@ -789,8 +786,8 @@ set timefmt "%Y-%m-%dT%H:%M:%S"
         pressure_offset = self.pressure_offset
         # label x axis of last plot
         if plot_no == self.plot_count - 1:
-            x_lo = utc.localize(self.x_lo - self.utcoffset).astimezone(Local)
-            x_hi = utc.localize(self.x_hi - self.utcoffset).astimezone(Local)
+            x_lo = timezone.localize(self.x_lo)
+            x_hi = timezone.localize(self.x_hi)
             if self.duration <= timedelta(hours=24):
                 # TX_NOTE Keep the "(%Z)" formatting string
                 xlabel = _('Time (%Z)')
