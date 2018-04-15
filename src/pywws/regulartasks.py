@@ -69,8 +69,8 @@ class RegularTasks(object):
         # delay creation of a Twitter object until we know it's needed
         self.twitter = None
         # get daytime end hour
-        self.day_end_hour = eval(self.params.get('config', 'day end hour', '21'))
-        self.day_end_hour = self.day_end_hour % 24
+        self.day_end_hour, self.use_dst = pywws.process.get_day_end_hour(
+                                                                self.params)
         # parse "cron" sections
         self.cron = {}
         for section in self.params._config.sections():
@@ -217,7 +217,7 @@ class RegularTasks(object):
             sections.append('hourly')
         # daily
         threshold = timezone.local_replace(
-            threshold, use_dst=False, hour=self.day_end_hour)
+            threshold, use_dst=self.use_dst, hour=self.day_end_hour)
         last_update = self.status.get_datetime('last update', 'daily')
         if not last_update or last_update < threshold:
             sections.append('daily')
@@ -228,7 +228,7 @@ class RegularTasks(object):
             return sections
         # 12 hourly == daily +- 12 hours
         threshold = timezone.local_replace(
-            now, use_dst=False,
+            now, use_dst=self.use_dst,
             hour=((self.day_end_hour + 12) % 24), minute=0, second=0)
         if last_update < threshold:
             sections.append('12 hourly')

@@ -616,7 +616,7 @@ def generate_hourly(calib_data, hourly_data, process_from):
     return start
 
 
-def generate_daily(day_end_hour,
+def generate_daily(day_end_hour, use_dst,
                    calib_data, hourly_data, daily_data, process_from):
     """Generate daily summaries from calibrated and hourly data."""
     start = daily_data.before(datetime.max)
@@ -632,7 +632,7 @@ def generate_daily(day_end_hour,
         return start
     # round to start of this day, in local time
     start = timezone.local_replace(
-        start, use_dst=False, hour=day_end_hour, minute=0, second=0)
+        start, use_dst=use_dst, hour=day_end_hour, minute=0, second=0)
     del daily_data[start:]
     stop = calib_data.before(datetime.max)
     day_start = start
@@ -645,6 +645,10 @@ def generate_daily(day_end_hour,
         else:
             logger.debug("daily: %s", day_start.isoformat(' '))
         day_end = day_start + DAY
+        if use_dst:
+            # day might be 23 or 25 hours long
+            day_end = timezone.local_replace(
+                day_end + HOURx3, use_dst=use_dst, hour=day_end_hour)
         acc.reset()
         for data in calib_data[day_start:day_end]:
             acc.add_raw(data)
@@ -658,7 +662,7 @@ def generate_daily(day_end_hour,
     return start
 
 
-def generate_monthly(rain_day_threshold, day_end_hour,
+def generate_monthly(rain_day_threshold, day_end_hour, use_dst,
                      daily_data, monthly_data, process_from):
     """Generate monthly summaries from daily data."""
     start = monthly_data.before(datetime.max)
@@ -674,7 +678,7 @@ def generate_monthly(rain_day_threshold, day_end_hour,
         return start
     # set start to start of first day of month (local time)
     start = timezone.local_replace(
-        start, use_dst=False, day=1, hour=day_end_hour, minute=0, second=0)
+        start, use_dst=use_dst, day=1, hour=day_end_hour, minute=0, second=0)
     if day_end_hour >= 12:
         # month actually starts on the last day of previous month
         start -= DAY
@@ -695,6 +699,10 @@ def generate_monthly(rain_day_threshold, day_end_hour,
         else:
             month_end = month_end.replace(month=1, year=month_end.year+1)
         month_end = month_end - WEEK
+        if use_dst:
+            # month might straddle summer time start or end
+            month_end = timezone.local_replace(
+                month_end + HOURx3, use_dst=use_dst, hour=day_end_hour)
         acc.reset()
         for data in daily_data[month_start:month_end]:
             acc.add_daily(data)
@@ -704,6 +712,17 @@ def generate_monthly(rain_day_threshold, day_end_hour,
             monthly_data[new_data['idx']] = new_data
         month_start = month_end
     return start
+
+
+def get_day_end_hour(params):
+    # get daytime end hour (in local time)
+    day_end_str = params.get('config', 'day end hour', '9, False')
+    if not ',' in day_end_str:
+        day_end_str += ', False'
+        params.set('config', 'day end hour', day_end_str)
+    day_end_hour, use_dst = eval(day_end_str)
+    day_end_hour = day_end_hour % 24
+    return day_end_hour, use_dst
 
 
 def process_data(context):
@@ -721,7 +740,7 @@ def process_data(context):
     if last_raw is None:
         raise IOError('No data found. Check data directory parameter.')
     # get daytime end hour (in local time)
-    day_end_hour = eval(context.params.get('config', 'day end hour', '21')) % 24
+    day_end_hour, use_dst = get_day_end_hour(context.params)
     # get other config
     rain_day_threshold = eval(context.params.get('config', 'rain day threshold', '0.2'))
     # calibrate raw data
@@ -729,10 +748,10 @@ def process_data(context):
     # generate hourly data
     start = generate_hourly(context.calib_data, context.hourly_data, start)
     # generate daily data
-    start = generate_daily(day_end_hour,
+    start = generate_daily(day_end_hour, use_dst,
                            context.calib_data, context.hourly_data, context.daily_data, start)
     # generate monthly data
-    generate_monthly(rain_day_threshold, day_end_hour,
+    generate_monthly(rain_day_threshold, day_end_hour, use_dst,
                      context.daily_data, context.monthly_data, start)
     return 0
 
