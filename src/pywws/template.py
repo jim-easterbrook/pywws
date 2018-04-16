@@ -338,7 +338,6 @@ class Computations(object):
     def rain_day(self, data):
         calib_data = self.context.calib_data
         midnight = timezone.local_midnight(data['idx'])
-        print(data['idx'], midnight)
         midnight_data = calib_data[calib_data.nearest(midnight)]
         return max(0.0, data['rain'] - midnight_data['rain'])
 
