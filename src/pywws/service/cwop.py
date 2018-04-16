@@ -29,7 +29,7 @@ import pywws
 import pywws.service
 
 service_name = os.path.splitext(os.path.basename(__file__))[0]
-logger = logging.getLogger(__package__ + '.' + service_name)
+logger = logging.getLogger(__name__)
 
 
 class ToService(pywws.service.BaseToService):
