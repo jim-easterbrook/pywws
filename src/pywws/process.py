@@ -247,7 +247,7 @@ class HourAcc(object):
         self.wind_fil = WindFilter()
         self.wind_gust = (-2.0, None)
         self.rain = 0.0
-        self.retval = {'idx' : None, 'temp_out' : None}
+        self.retval = {}
 
     def add_raw(self, data):
         idx = data['idx']
@@ -273,14 +273,13 @@ class HourAcc(object):
         if 'illuminance' in data and not 'illuminance' in self.copy_keys:
             self.copy_keys.append('illuminance')
             self.copy_keys.append('uv')
-        # if near the end of the hour, ignore 'lost contact' readings
-        if (data['idx'].minute < 45 or data['temp_out'] is not None or
-                                self.retval['temp_out'] is None):
+        # if already have data to return, ignore 'lost contact' readings
+        if data['temp_out'] is not None or not self.retval:
             for key in self.copy_keys:
                 self.retval[key] = data[key]
 
     def result(self):
-        if not self.retval['idx']:
+        if not self.retval:
             return None
         self.retval['wind_ave'], self.retval['wind_dir'] = self.wind_fil.result()
         if self.wind_gust[1]:
@@ -597,7 +596,7 @@ def generate_hourly(calib_data, hourly_data, process_from):
             acc.add_raw(data)
             prev = data
         new_data = acc.result()
-        if new_data and new_data['idx'].minute >= 9:
+        if new_data and (new_data['idx'] - hour_start) >= timedelta(minutes=9):
             # compute pressure trend
             new_data['pressure_trend'] = None
             if new_data['rel_pressure']:
