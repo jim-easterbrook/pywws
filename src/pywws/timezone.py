@@ -97,13 +97,21 @@ class TimeZone(object):
 
         """
         local_time = dt + self.standard_offset
+        if use_dst:
+            dst_offset = self.dst(local_time)
+            if dst_offset:
+                local_time += dst_offset
+                adjusted_time = local_time.replace(**kwds)
+                if adjusted_time > local_time and not _recurse:
+                    return self.local_replace(
+                        dt - DAY, use_dst=use_dst, _recurse=True, **kwds)
+                adjusted_time -= dst_offset
+                if self.dst(adjusted_time):
+                    return adjusted_time - self.standard_offset
         adjusted_time = local_time.replace(**kwds)
         if use_dst:
             dst_offset = self.dst(adjusted_time)
-            if dst_offset:
-                adjusted_time += dst_offset
-                adjusted_time = adjusted_time.replace(**kwds)
-                adjusted_time -= dst_offset
+            adjusted_time -= dst_offset
         if adjusted_time > local_time and not _recurse:
             return self.local_replace(
                 dt - DAY, use_dst=use_dst, _recurse=True, **kwds)
