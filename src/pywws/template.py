@@ -323,6 +323,31 @@ Zambretti = zambretti
 ZambrettiCode = zambretti_code
 
 
+class Computations(object):
+    def __init__(self, context):
+        self.context = context
+
+    def hour_diff(self, data, key):
+        calib_data = self.context.calib_data
+        hour_ago = calib_data[calib_data.nearest(data['idx'] - HOUR)]
+        return data[key] - hour_ago[key]
+
+    def rain_hour(self, data):
+        return max(0.0, self.hour_diff(data, 'rain'))
+
+    def rain_day(self, data):
+        calib_data = self.context.calib_data
+        midnight = timezone.local_midnight(data['idx'])
+        print(data['idx'], midnight)
+        midnight_data = calib_data[calib_data.nearest(midnight)]
+        return max(0.0, data['rain'] - midnight_data['rain'])
+
+    def rain_24hr(self, data):
+        calib_data = self.context.calib_data
+        day_ago = calib_data[calib_data.nearest(data['idx'] - DAY)]
+        return max(0.0, data['rain'] - day_ago['rain'])
+
+
 class Template(object):
     def __init__(self, context, use_locale=True):
         self.params = context.params
@@ -332,6 +357,7 @@ class Template(object):
         self.daily_data = context.daily_data
         self.monthly_data = context.monthly_data
         self.use_locale = use_locale
+        self.computations = Computations(context)
 
     def process(self, live_data, template_file):
         def jump(idx, count):
@@ -365,10 +391,10 @@ class Template(object):
         # array, then copy it to deprecated wind_dir_text variable
         winddir_text(0)
         wind_dir_text = conversions._winddir_text_array
-        hour_diff = self._hour_diff
-        rain_hour = self._rain_hour
-        rain_day = self._rain_day
-        rain_24hr = self._rain_24hr
+        hour_diff = self.computations.hour_diff
+        rain_hour = self.computations.rain_hour
+        rain_day = self.computations.rain_day
+        rain_24hr = self.computations.rain_24hr
         pressure_offset = eval(self.params.get('config', 'pressure offset'))
         fixed_block = eval(self.status.get('fixed', 'fixed block'))
         # start off with no time rounding
@@ -554,22 +580,6 @@ class Template(object):
         with codecs.open(output_file, 'w', **kwds) as of:
             of.write(text)
         return 0
-
-    def _hour_diff(self, data, key):
-        hour_ago = self.calib_data[self.calib_data.nearest(data['idx'] - HOUR)]
-        return data[key] - hour_ago[key]
-
-    def _rain_hour(self, data):
-        return max(0.0, self._hour_diff(data, 'rain'))
-
-    def _rain_day(self, data):
-        midnight = timezone.local_midnight(data['idx'])
-        midnight_data = self.calib_data[self.calib_data.nearest(midnight)]
-        return max(0.0, data['rain'] - midnight_data['rain'])
-
-    def _rain_24hr(self, data):
-        day_ago = self.calib_data[self.calib_data.nearest(data['idx'] - DAY)]
-        return max(0.0, data['rain'] - day_ago['rain'])
 
 
 def main(argv=None):

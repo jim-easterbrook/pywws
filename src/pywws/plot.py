@@ -436,6 +436,13 @@ data['hum_out'])</ycalc>`` plots the external dew point, and
 ``<ycalc>wind_mph(data['wind_ave'])</ycalc>`` plots the average wind
 speed in miles per hour.
 
+In addition to the functions in the :py:mod:`pywws.conversions` module
+there are four more useful functions: ``rain_hour(data)`` returns the
+amount of rain in the last hour, ``rain_day(data)`` returns the amount
+of rain since midnight (local time), ``rain_24hr(data)`` returns the
+amount of rain in the last 24 hours, and ``hour_diff(data, key)``
+returns the change in data item ``key`` over the last hour.
+
 Cumulative plots are also possible. The result of each ycalc
 computation is stored and made available to the next computation in
 the variable last_ycalc. This can be used with any data, but is most
@@ -528,6 +535,7 @@ from pywws.conversions import *
 import pywws.localisation
 import pywws.logger
 import pywws.storage
+from pywws.template import Computations
 from pywws.timezone import timezone
 
 logger = logging.getLogger(__name__)
@@ -584,6 +592,7 @@ class BasePlotter(object):
             context.params.get('config', 'pressure offset'))
         self.gnuplot_version = eval(
             context.params.get('config', 'gnuplot version', '4.2'))
+        self.computations = Computations(context)
         # set language related stuff
         self.encoding = context.params.get(
             'config', 'gnuplot encoding', 'iso_8859_1')
@@ -784,6 +793,11 @@ set timefmt "%Y-%m-%dT%H:%M:%S"
             return u''
         result = u''
         pressure_offset = self.pressure_offset
+        # add some useful functions
+        hour_diff = self.computations.hour_diff
+        rain_hour = self.computations.rain_hour
+        rain_day = self.computations.rain_day
+        rain_24hr = self.computations.rain_24hr
         # label x axis of last plot
         if plot_no == self.plot_count - 1:
             x_lo = timezone.localize(self.x_lo)
