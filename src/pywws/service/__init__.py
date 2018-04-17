@@ -181,15 +181,21 @@ def main(ToService, description, argv=None):
     if argv is None:
         argv = sys.argv
     parser = argparse.ArgumentParser(description=description)
+    if hasattr(ToService, 'register'):
+        parser.add_argument('-r', '--register', action='store_true',
+                            help='register (or update) with service')
     parser.add_argument('-c', '--catchup', action='store_true',
                         help='upload all data since last upload')
     parser.add_argument('-v', '--verbose', action='count',
                         help='increase amount of reassuring messages')
     parser.add_argument('data_dir', help='root directory of the weather data')
     args = parser.parse_args(argv[1:])
-    pywws.logger.setup_handler(args.verbose)
+    pywws.logger.setup_handler(args.verbose or 0)
     with pywws.storage.pywws_context(args.data_dir) as context:
         uploader = ToService(context)
+        if args.register:
+            uploader.register()
+            return 0
         uploader.upload(catchup=args.catchup, test_mode=not args.catchup)
         uploader.shutdown()
     return 0
