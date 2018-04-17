@@ -70,11 +70,11 @@ config: miscellaneous system configuration
 ``ws type`` is the "class" of weather station. It should be set to ``1080`` for most weather stations, or ``3080`` if your station console displays solar illuminance.
  
 ``day end hour`` is the end of the "`meteorological day <http://en.wikipedia.org/wiki/Meteorological_day>`_", in local time without daylight savings time. Typical values are 21, 9, or 24.
-You must update all your stored data by running :py:mod:`pywws.Reprocess` after you change this value.
+You must update all your stored data by running :py:mod:`pywws.reprocess` after you change this value.
 
 ``pressure offset`` is the difference between absolute and relative (sea level) air pressure.
 The initial value is copied from the weather station, assuming you have set it up to display the correct relative pressure, but you can adjust the value in weather.ini to calibrate your station.
-You must update all your stored data by running :py:mod:`pywws.Reprocess` after you change this value.
+You must update all your stored data by running :py:mod:`pywws.reprocess` after you change this value.
 
 .. versionchanged:: 13.10_r1082
    made ``pressure offset`` a config item.
@@ -88,13 +88,13 @@ If you create templates with a different character set, you should change this v
 
 ``language`` is used to localise pywws. It's optional, as pywws usually uses the computer's default language as set by the LANG environment variable. The available languages are those in the ``translations`` subdirectory of your pywws installation. If you set any other language, pywws will fall back to using English.
 
-``logdata sync`` sets the quality of synchronisation used by :doc:`../api/pywws.LogData`. Set it to 0 for fast & inaccurate or 1 for slower but precise.
+``logdata sync`` sets the quality of synchronisation used by :doc:`../api/pywws.logdata`. Set it to 0 for fast & inaccurate or 1 for slower but precise.
 
 ``rain day threshold`` is the amount of rain (in mm) that has to fall in one day for it to qualify as a rainy day in the monthly summary data.
-You must update all your stored data by running :py:mod:`pywws.Reprocess` after you change this value.
+You must update all your stored data by running :py:mod:`pywws.reprocess` after you change this value.
 
 .. versionadded:: 13.09_r1057
-   ``asynchrouous`` controls the use of a separate upload thread in :py:mod:`pywws.LiveLog`.
+   ``asynchrouous`` controls the use of a separate upload thread in :py:mod:`pywws.livelog`.
 
 .. versionadded:: 13.10_r1094
    ``usb activity margin`` controls the algorithm that avoids the "USB lockup" problem that affects some stations.
@@ -102,11 +102,11 @@ You must update all your stored data by running :py:mod:`pywws.Reprocess` after 
    If your station is not affected by the USB lockup problem you can set ``usb activity margin`` to 0.0.
 
 .. versionadded:: 13.11_r1102
-   ``gnuplot version`` tells :py:mod:`pywws.Plot` and :py:mod:`pywws.WindRose` what version of gnuplot is installed on your computer.
+   ``gnuplot version`` tells :py:mod:`pywws.plot` and :py:mod:`pywws.windrose` what version of gnuplot is installed on your computer.
    This allows them to use version-specific features to give improved plot quality.
 
 .. versionadded:: 14.01_r1133
-   ``frequent writes`` tells :py:mod:`pywws.Tasks` to save weather data and status to file every time there is new logged data.
+   ``frequent writes`` tells :py:mod:`pywws.regulartasks` to save weather data and status to file every time there is new logged data.
    The default is to save the files every hour, to reduce "wear" on solid state memory such as the SD cards used with Raspberry Pi computers.
    If your weather data directory is stored on a conventional disc drive you can set ``frequent writes`` to ``True``.
 
@@ -304,7 +304,7 @@ twitter: configuration of posting to Twitter
  latitude = 51.365
  longitude = -0.251
 
-``secret`` and ``key`` are authentication data provided by Twitter. To set them, run :py:mod:`pywws.TwitterAuth`.
+``secret`` and ``key`` are authentication data provided by Twitter. To set them, run :py:mod:`pywws.twitterauth`.
 
 ``latitude`` and ``longitude`` are optional location data. If you include them then your weather station tweets will have location information so users can see where your weather station is. It might also enable people to find your weather station tweets if they search by location.
 

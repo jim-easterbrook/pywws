@@ -126,7 +126,7 @@ Test the weather station connection
 -----------------------------------
 
 Now you're ready to test your pywws installation.
-Connect the weather station (if not already connected) then run the :py:mod:`pywws.TestWeatherStation` module::
+Connect the weather station (if not already connected) then run the :py:mod:`pywws.testweatherstation` module::
 
    pywws-testweatherstation
 
@@ -177,7 +177,7 @@ Your weather station probably left the factory with a 30 minute logging interval
 This enables the station to store about 11 weeks of data.
 Most pywws users set up their computers to read data from the station every hour, or more often, and only need the station to store enough data to cover computer failures.
 The recommended interval is 5 minutes, which still allows 2 weeks of storage.
-Use :py:mod:`pywws.SetWeatherStation` to set the interval::
+Use :py:mod:`pywws.setweatherstation` to set the interval::
 
    pywws-setweatherstation -r 5
 
@@ -199,15 +199,15 @@ This directory is referred to elsewhere in the pywws documentation as your data 
 Make sure your computer has the right date & time, and time zone, as these are used to label the weather station data.
 If you haven't already done so, it's worth setting up NTP to synchronise your computer to a 'time server'.
 
-The first time you run :py:mod:`pywws.LogData` it will create a configuration file in your data directory called 'weather.ini' and then stop.
+The first time you run :py:mod:`pywws.logdata` it will create a configuration file in your data directory called 'weather.ini' and then stop.
 You need to edit the configuration file and change the line ``ws type = Unknown`` to ``ws type = 1080`` or ``ws type = 3080``.
 (If your weather station console displays solar illuminance you have a 3080 type, all others are 1080.)
-Then run :py:mod:`pywws.LogData` again.
+Then run :py:mod:`pywws.logdata` again.
 This may take several minutes, as it will copy all the data stored in your station's memory.
-The :py:mod:`pywws.LogData` program has a 'verbose' option that increases the amount of messages it displays while running.
+The :py:mod:`pywws.logdata` program has a 'verbose' option that increases the amount of messages it displays while running.
 This is useful when running it manually, for example::
 
-   python -m pywws.LogData -vvv ~/weather/data
+   python -m pywws.logdata -vvv ~/weather/data
 
 (Replace ``~/weather/data`` with your data directory, if it's different.)
 
@@ -224,12 +224,12 @@ Convert old EasyWeather data (optional)
 If you had been running EasyWeather before deciding to use pywws, you can convert the data EasyWeather had logged to the pywws format.
 Find your EasyWeather.dat file and then convert it::
 
-   python -m pywws.EWtoPy EasyWeather.dat ~/weather/data
+   python -m pywws.mergeewdata EasyWeather.dat ~/weather/data
 
 Set some configuration options
 ------------------------------
 
-After running :py:mod:`pywws.LogData` there should be a configuration file in your data directory called 'weather.ini'.
+After running :py:mod:`pywws.logdata` there should be a configuration file in your data directory called 'weather.ini'.
 Open this with a text editor. You should find something like the following::
 
    [config]
@@ -253,7 +253,7 @@ After editing, your weather.ini file should look something like this::
    day end hour = 9
 
 You can also edit the ``pressure offset`` value to adjust how pywws calculates the relative (sea level) air pressure from the absolute value that the station measures.
-If you change the pressure offset or day end hour in future, you must update all your stored data by running :py:mod:`pywws.Reprocess`.
+If you change the pressure offset or day end hour in future, you must update all your stored data by running :py:mod:`pywws.reprocess`.
 
 For more detail on the configuration file options, see :doc:`../guides/weather_ini`.
 
@@ -264,20 +264,20 @@ For more detail on the configuration file options, see :doc:`../guides/weather_i
 Process the raw data
 --------------------
 
-:py:mod:`pywws.LogData` just copies the raw data from the weather station.
+:py:mod:`pywws.logdata` just copies the raw data from the weather station.
 To do something useful with that data you probably need hourly, daily and monthly summaries.
-These are created by :py:mod:`pywws.Process`. For example::
+These are created by :py:mod:`pywws.process`. For example::
 
-   python -m pywws.Process ~/weather/data
+   python -m pywws.process ~/weather/data
 
 You should now have some processed files to look at::
 
    more ~/weather/data/daily/2012/2012-12-16.txt
 
 If you ever change your ``day end hour`` configuration setting, you will need to reprocess all your weather data.
-You can do this by running :py:mod:`pywws.Reprocess`::
+You can do this by running :py:mod:`pywws.reprocess`::
 
-   python -m pywws.Reprocess ~/weather/data
+   python -m pywws.reprocess ~/weather/data
 
 You are now ready to set up regular or continuous logging, as described in :doc:`hourlylogging` or :doc:`livelogging`.
 

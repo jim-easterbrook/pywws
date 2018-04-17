@@ -165,7 +165,7 @@ Rain reset
    2015-08-25 13:40:51:pywws.Process.HourAcc:2015-08-25 12:30:48 rain reset 1048.4 -> 1047.1
 
 The raw rainfall data from the outside sensors is the total number of times the "see saw" has tipped since the external sensors were last reset (by a battery change, unless you do it quickly).
-This number should only ever increase, so the :py:mod:`pywws.Process` module warns of any decrease in the value as it may indicate corrupted data that needs manually correcting.
+This number should only ever increase, so the :py:mod:`pywws.process` module warns of any decrease in the value as it may indicate corrupted data that needs manually correcting.
 The logging message includes the UTC time stamp of the problem data to help you find it.
 
 Live data missed
