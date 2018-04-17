@@ -50,8 +50,9 @@ class Dummy(object):
             return None
         return Dummy
 
-for mod_name in ('hid', 'oauth2', 'twitter', 'usb', 'usb.core', 'usb.util',
-                 'libusb1', 'usb1', 'daemon', 'daemon.daemon', 'daemon.runner'):
+for mod_name in ('hid', 'oauth2', 'twitter', 'paho.mqtt.client',
+                 'usb', 'usb.core', 'usb.util', 'libusb1', 'usb1',
+                 'daemon', 'daemon.daemon', 'daemon.runner'):
     sys.modules[mod_name] = Dummy()
 
 # -- General configuration -----------------------------------------------------
