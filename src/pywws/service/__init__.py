@@ -64,6 +64,7 @@ class UploadThread(threading.Thread):
     def upload_batch(self):
         if not self.queue:
             return True
+        OK = True
         count = 0
         with self.parent.session() as session:
             while self.queue and not self.context.shutdown.is_set():
