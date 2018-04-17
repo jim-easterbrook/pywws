@@ -16,6 +16,38 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
+"""Upload data to Weather Underground.
+
+`Weather Underground`_ may be the oldest and best known site gathering
+data from amateur weather stations.
+
+* Create account: http://www.wunderground.com/members/signup.asp
+* API: `<http://wiki.wunderground.com/index.php/PWS_-_Upload_Protocol>`_
+* Example ``weather.ini`` configuration::
+
+    [underground]
+    station = ABCDEFGH1
+    password = xxxxxxx
+    internal = False
+
+    [logged]
+    services = ['underground', 'metoffice']
+
+    [live]
+    services = ['underground', 'metoffice']
+
+The ``internal`` configuration setting allows you to include indoor
+temperature and humidity in your uploads.
+
+Previous versions of pywws had an extra ``underground_rf`` service to
+use Weather Underground's "rapid fire" server for frequent uploads. Now
+the rapid fire server is used automatically for "live" data and the
+normal server for past data.
+
+.. _Weather Underground: http://www.wunderground.com/
+
+"""
+
 from __future__ import absolute_import, unicode_literals
 
 from contextlib import contextmanager
@@ -28,6 +60,7 @@ import requests
 
 import pywws.service
 
+__docformat__ = "restructuredtext en"
 service_name = os.path.splitext(os.path.basename(__file__))[0]
 logger = logging.getLogger(__name__)
 

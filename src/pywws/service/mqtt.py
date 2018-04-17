@@ -16,6 +16,89 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
+"""Upload weather data to MQTT message broker.
+
+MQTT is a "message broker" system, typically running on ``localhost`` or
+another computer in your home network. Use of MQTT with pywws requires
+an additional library. See :ref:`Dependencies - MQTT
+<dependencies-mqtt>` for details.
+
+* Mosquitto (a lightweight broker): http://mosquitto.org/
+* Example ``weather.ini`` configuration::
+
+    [mqtt]
+    topic = /weather/pywws
+    hostname = localhost
+    port = 1883
+    client_id = pywws
+    retain = False
+    user = 
+    password = 
+    multi_topic = False
+    template_txt = ('\\n'
+            '#idx          \\'"idx"         : "%Y-%m-%d %H:%M:%S",\\'#\\n'
+            '#wind_dir     \\'"wind_dir"    : "%.0f",\\' \\'\\' \\'winddir_degrees(x)\\'#\\n'
+            '#wind_ave     \\'"wind_ave"    : "%.2f",\\' \\'\\' \\'wind_mph(x)\\'#\\n'
+            '#wind_gust    \\'"wind_gust"   : "%.2f",\\' \\'\\' \\'wind_mph(x)\\'#\\n'
+            '#hum_out      \\'"hum_out"     : "%.d",\\'#\\n'
+            '#hum_in       \\'"hum_in"      : "%.d",\\'#\\n'
+            '#temp_in      \\'"temp_in_c"   : "%.1f",\\'#\\n'
+            '#temp_in      \\'"temp_in_f"   : "%.1f",\\' \\'\\' \\'temp_f(x)\\'#\\n'
+            '#temp_out     \\'"temp_out_c"  : "%.1f",\\'#\\n'
+            '#temp_out     \\'"temp_out_f"  : "%.1f",\\' \\'\\' \\'temp_f(x)\\'#\\n'
+            '#rel_pressure \\'"rel_pressure": "%.4f",\\' \\'\\' \\'pressure_inhg(x)\\'#\\n'
+            '#calc \\'rain_inch(rain_hour(data))\\' \\'"rainin": "%g",\\'#\\n'
+            '#calc \\'rain_inch(rain_day(data))\\' \\'"dailyrainin": "%g",\\'#\\n'
+            '#calc \\'rain_hour(data)\\' \\'"rain": "%g",\\'#\\n'
+            '#calc \\'rain_day(data)\\' \\'"dailyrain": "%g",\\'#\\n'
+            '\\n')
+
+    [logged]
+    services = ['mqtt', 'underground']
+
+pywws will publish a JSON string of weather data. This data will be
+published to the broker running on ``hostname``, with the port number
+specified. (An IP address can be used instead of a host name.)
+``client_id`` is a note of who published the data to the topic.
+``topic`` can be any string value, this needs to be the topic that a
+subscriber is aware of.
+
+``retain`` is a boolean and should be set to ``True`` or ``False``. If
+set to ``True`` this will flag the message sent to the broker to be
+retained. Otherwise the broker discards the message if no client is
+subscribing to this topic. This allows clients to get an immediate
+response when they subscribe to a topic, without having to wait until
+the next message is published.
+
+``user`` and ``password`` can be used for MQTT authentication.
+
+``multi_topic`` is a boolean and should be set to ``True`` or ``False``.
+If set to ``True`` pywws will also publish all the data each as separate
+subtopics of the configured ``topic``; e.g., with the ``topic`` set to
+/weather/pywws pywws will also publish the outside temperature to
+``/weather/pywws/temp_out_c`` and the inside temperature to
+``/weather/pywws/temp_in_c``.
+
+``template_txt`` is the template used to generate the data to be
+published. You can edit it to suit your own requirements, e.g. not using
+antiquated units of measurement. Be very careful about the backslash
+escaped quotation marks though.
+
+If these aren't obvious to you it's worth doing a bit of reading around
+MQTT. It's a great lightweight messaging system from IBM, recently made
+more popular when Facebook published information on their use of it.
+
+This has been tested with the Mosquitto Open Source MQTT broker, running
+on a Raspberry Pi (Raspian OS). TLS (mqtt data encryption) is not yet
+implemented.
+
+Thanks to Matt Thompson for writing the MQTT code and to Robin Kearney
+for adding the retain and auth options.
+
+.._ MQTT: http://mqtt.org/
+
+"""
+
 from __future__ import absolute_import, unicode_literals
 
 from contextlib import contextmanager
@@ -30,6 +113,7 @@ import paho.mqtt.client as mosquitto
 
 import pywws.service
 
+__docformat__ = "restructuredtext en"
 service_name = os.path.splitext(os.path.basename(__file__))[0]
 logger = logging.getLogger(__name__)
 

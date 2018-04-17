@@ -16,6 +16,45 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
+"""Upload weather data to Citizen Weather Observer Program.
+
+The `Citizen Weather Observer Program`_ (CWOP) is a north American
+public-private partnership to gather weather data. This module uploads
+data to it from pywws. You can upload "logged" or "live" data (or both).
+The module ensures there is at least 5 minutes between each reading as
+required by the API.
+
+* Create account: http://www.wxqa.com/SIGN-UP.html
+* API: http://www.wxqa.com/faq.html
+* Example ``weather.ini`` configuration::
+
+    [cwop]
+    designator = EW9999
+    latitude = 5130.06N
+    longitude = 00008.52E
+    passcode = -1
+
+    [logged]
+    services = ['cwop', 'underground']
+
+    [live]
+    services = ['cwop', 'underground']
+
+Note that the latitude and longitude must be in "LORAN" format and
+leading zeros are required. See question 3 in the `CWOP FAQ`_ for more
+information.
+
+Licensed radio hams use their callsign as the designator and need a
+passcode. Other users should leave the passcode at its default value of
+``-1``.
+
+The CWOP/APRS uploader is based on code by Marco Trevisan <mail@3v1n0.net>.
+
+.. _Citizen Weather Observer Program: http://www.wxqa.com/
+.. _CWOP FAQ: http://www.wxqa.com/faq.html
+
+"""
+
 from __future__ import absolute_import, print_function, unicode_literals
 
 from contextlib import contextmanager
@@ -28,6 +67,7 @@ import sys
 import pywws
 import pywws.service
 
+__docformat__ = "restructuredtext en"
 service_name = os.path.splitext(os.path.basename(__file__))[0]
 logger = logging.getLogger(__name__)
 

@@ -16,6 +16,30 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
+"""Upload current temperature to temperatur.nu.
+
+temperatur.nu is a Swedish web site that shows the current temperature
+in many places.
+
+* Web site: http://www.temperatur.nu/
+* Example ``weather.ini`` configuration::
+
+    [temperaturnu]
+    hash = longhexnumber
+
+    [live]
+    services = ['temperaturnu', 'underground']
+
+    [logged]
+    services = ['temperaturnu', 'underground']
+
+You receive the hash value from the temperatur.nu admins during sign
+up.  It looks like ``d3b07384d113edec49eaa6238ad5ff00``.
+
+.. _temperatur.nu: http://www.temperatur.nu/
+
+"""
+
 from __future__ import absolute_import, unicode_literals
 
 from contextlib import contextmanager
@@ -28,6 +52,7 @@ import requests
 
 import pywws.service
 
+__docformat__ = "restructuredtext en"
 service_name = os.path.splitext(os.path.basename(__file__))[0]
 logger = logging.getLogger(__name__)
 

@@ -16,6 +16,28 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
+"""Upload weather data to PWS Weather.
+
+`PWS Weather`_ is a site run by AerisWeather_ that "brings together
+personal weather station data worldwide from locales not served by
+primary weather services."
+
+* Create account: http://www.pwsweather.com/register.php
+* API based on WU protocol: `<http://wiki.wunderground.com/index.php/PWS_-_Upload_Protocol>`_
+* Example ``weather.ini`` configuration::
+
+    [pwsweather]
+    station = ABCDEFGH1
+    password = xxxxxxx
+
+    [logged]
+    services = ['pwsweather', 'underground']
+
+.. _PWS Weather: http://www.pwsweather.com/
+.. _AerisWeather: https://www.aerisweather.com/
+
+"""
+
 from __future__ import absolute_import, unicode_literals
 
 from contextlib import contextmanager
@@ -28,6 +50,7 @@ import requests
 
 import pywws.service
 
+__docformat__ = "restructuredtext en"
 service_name = os.path.splitext(os.path.basename(__file__))[0]
 logger = logging.getLogger(__name__)
 

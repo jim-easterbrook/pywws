@@ -16,6 +16,29 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
+"""Upload weather data to wetter.com.
+
+wetter.com_ is a web site gathering data mainly from stations in
+Germany. It's referred to in pywws as wetterarchivde for historical
+reasons.
+
+* Register station: https://www.wetter.com/mein_wetter/login/
+* Example ``weather.ini`` configuration::
+
+    [wetterarchivde]
+    user_id = 12345
+    kennwort = ab1d3456i8
+
+    [logged]
+    services = ['wetterarchivde', 'underground']
+
+    [live]
+    services = ['wetterarchivde', 'underground']
+
+.. _wetter.com: http://netzwerk.wetter.com/
+
+"""
+
 from __future__ import absolute_import, unicode_literals
 
 from contextlib import contextmanager
@@ -28,6 +51,7 @@ import requests
 
 import pywws.service
 
+__docformat__ = "restructuredtext en"
 service_name = os.path.splitext(os.path.basename(__file__))[0]
 logger = logging.getLogger(__name__)
 

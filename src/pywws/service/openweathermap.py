@@ -16,6 +16,41 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
+"""Upload weather data to Open Weather Map.
+
+`Open Weather Map`_ is a Latvian based IT company seeking to provide
+affordable weather data. Note that pywws is using an earlier version of
+their API which is no longer documented.
+
+* Create account: http://home.openweathermap.org/users/sign_up
+* API: http://openweathermap.org/stations
+* Example ``weather.ini`` section::
+
+    [openweathermap]
+    lat = 51.501
+    long = -0.142
+    alt = 10
+    user = ElizabethWindsor
+    password = corgi
+    id = Buck House
+
+    [logged]
+    services = ['openweathermap', 'underground']
+
+When choosing a user name you should avoid spaces (and probably
+non-ascii characters as well). Having a space in your user name causes
+strange "internal server error" responses from the server.
+
+The default behaviour is to use your user name to identify the weather
+station. However, it's possible for a user to have more than one weather
+station, so there is an optional ``name`` parameter in the API that can
+be used to identify the station. This appears as ``id`` in
+``weather.ini``. Make sure you choose a name that is not already in use.
+
+.. _Open Weather Map: http://openweathermap.org/
+
+"""
+
 from __future__ import absolute_import, unicode_literals
 
 from contextlib import contextmanager
@@ -28,6 +63,7 @@ import requests
 
 import pywws.service
 
+__docformat__ = "restructuredtext en"
 service_name = os.path.splitext(os.path.basename(__file__))[0]
 logger = logging.getLogger(__name__)
 

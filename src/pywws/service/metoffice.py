@@ -16,6 +16,35 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
+"""Upload weather data to UK Met Office "WOW".
+
+The UK Met Office runs a `Weather Observations Website`_ (WOW) that
+displays readings from amateur and official weather stations. This
+module uploads data to it from pywws. You can upload "logged" or "live"
+data (or both). The module ensures there is at least 5 minutes between
+each reading as required by the API.
+
+* Create account: https://register.metoffice.gov.uk/WaveRegistrationClient/public/newaccount.do?service=weatherobservations
+* API: http://wow.metoffice.gov.uk/support/dataformats#automatic
+* Example ``weather.ini`` configuration::
+
+    [metoffice]
+    site id = 12345678
+    aws pin = 987654
+
+    [logged]
+    services = ['metoffice', 'underground']
+
+    [live]
+    services = ['metoffice', 'underground']
+
+Note that a ``site id`` allocated since June 2016 will probably look
+like ``6a571450-df53-e611-9401-0003ff5987fd``.
+
+.. _Weather Observations Website: http://wow.metoffice.gov.uk/home
+
+"""
+
 from __future__ import absolute_import, unicode_literals
 
 from contextlib import contextmanager
@@ -29,6 +58,7 @@ import requests
 import pywws
 import pywws.service
 
+__docformat__ = "restructuredtext en"
 service_name = os.path.splitext(os.path.basename(__file__))[0]
 logger = logging.getLogger(__name__)
 

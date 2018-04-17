@@ -1,6 +1,6 @@
 .. pywws - Python software for USB Wireless Weather Stations
    http://github.com/jim-easterbrook/pywws
-   Copyright (C) 2008-15  Jim Easterbrook  jim@jim-easterbrook.me.uk
+   Copyright (C) 2008-18  pywws contributors
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -25,13 +25,13 @@ Set up and configure pywws
 .. autosummary::
    :toctree: api
 
-   pywws.TestWeatherStation
-   pywws.SetWeatherStation
+   pywws.testweatherstation
+   pywws.setweatherstation
    pywws.version
-   pywws.Reprocess
-   pywws.TwitterAuth
-   pywws.USBQualityTest
-   pywws.EWtoPy
+   pywws.reprocess
+   pywws.twitterauth
+   pywws.usbtest
+   pywws.mergeewdata
 
 Get data and process it
 -----------------------
@@ -39,9 +39,24 @@ Get data and process it
 .. autosummary::
    :toctree: api
 
-   pywws.Hourly
-   pywws.LiveLog
+   pywws.hourly
+   pywws.livelog
    pywws.livelogdaemon
+
+Upload data to online "services"
+--------------------------------
+
+.. autosummary::
+   :toctree: api
+
+   pywws.service.cwop
+   pywws.service.metoffice
+   pywws.service.mqtt
+   pywws.service.openweathermap
+   pywws.service.pwsweather
+   pywws.service.temperaturnu
+   pywws.service.underground
+   pywws.service.wetterarchivde
 
 "Internal" modules
 ------------------
@@ -49,28 +64,26 @@ Get data and process it
 .. autosummary::
    :toctree: api
 
-   pywws.Tasks
-   pywws.LogData
-   pywws.Process
+   pywws.regulartasks
+   pywws.logdata
+   pywws.process
    pywws.calib
-   pywws.Plot
-   pywws.WindRose
-   pywws.Template
-   pywws.Forecast
-   pywws.ZambrettiCore
-   pywws.Upload
-   pywws.ToTwitter
+   pywws.plot
+   pywws.windrose
+   pywws.template
+   pywws.forecast
+   pywws.towebsite
+   pywws.totwitter
    pywws.toservice
-   pywws.YoWindow
-   pywws.WeatherStation
+   pywws.weatherstation
    pywws.device_libusb1
    pywws.device_pyusb1
    pywws.device_pyusb
    pywws.device_ctypes_hidapi
    pywws.device_cython_hidapi
-   pywws.DataStore
-   pywws.TimeZone
-   pywws.Localisation
+   pywws.storage
+   pywws.timezone
+   pywws.localisation
    pywws.conversions
-   pywws.Logger
+   pywws.logger
    pywws.constants
