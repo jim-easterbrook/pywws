@@ -44,6 +44,7 @@ class UploadThread(threading.Thread):
         self.queue = deque()
 
     def run(self):
+        self.parent.logger.debug('thread started ' + self.name)
         self.old_message = ''
         polling_interval = self.parent.interval.total_seconds() / 10
         while not self.context.shutdown.is_set():

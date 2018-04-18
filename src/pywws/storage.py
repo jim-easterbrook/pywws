@@ -72,6 +72,7 @@ from __future__ import with_statement
 from contextlib import contextmanager
 import csv
 from datetime import date, datetime, timedelta, MAXYEAR
+import logging
 import os
 import sys
 import threading
@@ -84,6 +85,8 @@ else:
 
 from pywws.constants import DAY
 from pywws.weatherstation import WSDateTime, WSFloat, WSInt, WSStatus
+
+logger = logging.getLogger(__name__)
 
 
 class ParamStore(object):
@@ -764,39 +767,46 @@ class MonthlyStore(CoreStore):
         return path, lo, hi
 
 
-@contextmanager
-def pywws_context(data_dir):
-    class PywwsContext(object):
-        pass
+class PywwsContext(object):
+    def __init__(self, data_dir):
+        # open params and status files
+        self.params = ParamStore(data_dir, 'weather.ini')
+        self.status = ParamStore(data_dir, 'status.ini')
+        # open data file stores
+        self.raw_data = RawStore(data_dir)
+        self.calib_data = CalibStore(data_dir)
+        self.hourly_data = HourlyStore(data_dir)
+        self.daily_data = DailyStore(data_dir)
+        self.monthly_data = MonthlyStore(data_dir)
+        # create an event to shutdown threads
+        self.shutdown = threading.Event()
 
-    ctx = PywwsContext()
-    # open params and status files
-    ctx.params = ParamStore(data_dir, 'weather.ini')
-    ctx.status = ParamStore(data_dir, 'status.ini')
-    # open data file stores
-    ctx.raw_data = RawStore(data_dir)
-    ctx.calib_data = CalibStore(data_dir)
-    ctx.hourly_data = HourlyStore(data_dir)
-    ctx.daily_data = DailyStore(data_dir)
-    ctx.monthly_data = MonthlyStore(data_dir)
-    # create an event to shutdown threads
-    ctx.shutdown = threading.Event()
-    # return control to main program
-    try:
-        yield ctx
-    finally:
+    def terminate(self):
         # signal threads to terminate
-        ctx.shutdown.set()
+        self.shutdown.set()
         # wait for threads to terminate
         for thread in threading.enumerate():
             if thread == threading.current_thread():
                 continue
+            logger.debug('waiting for thread ' + thread.name)
             thread.join()
-        # flush all unsaved data
-        ctx.params.flush()
-        ctx.status.flush()
-        ctx.raw_data.flush()
-        ctx.calib_data.flush()
-        ctx.hourly_data.flush()
-        ctx.daily_data.flush()
-        ctx.monthly_data.flush()
+
+    def flush(self):
+        logger.debug('flushing')
+        self.params.flush()
+        self.status.flush()
+        self.raw_data.flush()
+        self.calib_data.flush()
+        self.hourly_data.flush()
+        self.daily_data.flush()
+        self.monthly_data.flush()
+
+
+@contextmanager
+def pywws_context(data_dir):
+    ctx = PywwsContext(data_dir)
+    try:
+        yield ctx
+    finally:
+        ctx.terminate()
+        ctx.flush()

@@ -182,13 +182,7 @@ class RegularTasks(object):
             self.status.set('last update', section, now.isoformat(' '))
         # save any unsaved data
         if self.flush or 'hourly' in sections:
-            self.params.flush()
-            self.status.flush()
-            self.raw_data.flush()
-            self.calib_data.flush()
-            self.hourly_data.flush()
-            self.daily_data.flush()
-            self.monthly_data.flush()
+            self.context.flush()
 
     def _cron_due(self, now):
         if not self.cron:
