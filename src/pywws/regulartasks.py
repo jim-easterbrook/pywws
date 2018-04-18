@@ -160,7 +160,8 @@ class RegularTasks(object):
                     plot_tasks.append(task)
         # do service tasks
         for name in service_tasks:
-            self.services[name].upload(live_data=live_data)
+            if name in self.services:
+                self.services[name].upload(live_data=live_data)
         # do plot templates
         for template, flags in plot_tasks:
             self.do_plot(template, local='L' in flags)
