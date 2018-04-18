@@ -62,6 +62,15 @@ class UploadThread(threading.Thread):
                 pause = polling_interval * 10
             self.context.shutdown.wait(pause)
 
+    def stop(self):
+        if not self.queue:
+            return
+        self.parent.logger.debug('waiting for upload thread')
+        # tell upload queue to terminate cleanly
+        self.queue.append(None)
+        # wait for thread to finish
+        self.join()
+
     def upload_batch(self):
         if not self.queue:
             return True
@@ -125,6 +134,7 @@ class BaseToService(object):
             self.next_update = earliest
         # create upload thread
         self.upload_thread = UploadThread(self, context)
+        self.stop = self.upload_thread.stop
 
     def upload(self, catchup=True, live_data=None, test_mode=False):
         OK = True
@@ -171,13 +181,6 @@ class BaseToService(object):
     def valid_data(self, data):
         return True
 
-    def shutdown(self):
-        self.logger.debug('waiting for upload thread')
-        # tell upload queue to terminate cleanly
-        self.upload_thread.queue.append(None)
-        # wait for thread to finish
-        self.upload_thread.join()
-
 
 def main(ToService, description, argv=None):
     if argv is None:
@@ -199,5 +202,5 @@ def main(ToService, description, argv=None):
             uploader.register()
             return 0
         uploader.upload(catchup=args.catchup, test_mode=not args.catchup)
-        uploader.shutdown()
+        uploader.stop()
     return 0

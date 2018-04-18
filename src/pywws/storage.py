@@ -781,6 +781,13 @@ class PywwsContext(object):
         # create an event to shutdown threads
         self.shutdown = threading.Event()
 
+    def stop(self):
+        # shutdown threads cleanly
+        for thread in threading.enumerate():
+            if thread == threading.current_thread():
+                continue
+            thread.stop()
+
     def terminate(self):
         # signal threads to terminate
         self.shutdown.set()

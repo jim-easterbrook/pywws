@@ -216,6 +216,7 @@ class ToWebSite(object):
                 self.uploader = _ftp(site, user, password, directory, port)
         # create upload thread
         self.upload_thread = pywws.service.UploadThread(self, context)
+        self.stop = self.upload_thread.stop
 
     @contextmanager
     def session(self):
@@ -247,13 +248,6 @@ class ToWebSite(object):
         if not self.upload_thread.is_alive():
             self.upload_thread.start()
 
-    def shutdown(self):
-        self.logger.debug('waiting for upload thread')
-        # tell upload queue to terminate cleanly
-        self.upload_thread.queue.append(None)
-        # wait for thread to finish
-        self.upload_thread.join()
-
 
 def main(argv=None):
     if argv is None:
@@ -278,7 +272,7 @@ def main(argv=None):
     with pywws.storage.pywws_context(args[0]) as context:
         uploader = ToWebSite(context)
         uploader.upload(args[1:])
-        uploader.shutdown()
+        uploader.stop()
     return 0
 
 

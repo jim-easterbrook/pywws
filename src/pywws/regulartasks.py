@@ -63,11 +63,12 @@ class RegularTasks(object):
         # create plotter objects
         self.plotter = pywws.plot.GraphPlotter(context, self.work_dir)
         self.roseplotter = pywws.windrose.RosePlotter(context, self.work_dir)
-        # create FTP uploader object
-        self.uploader = pywws.towebsite.ToWebSite(context)
+        # create FTP uploads directory
         self.uploads_directory = os.path.join(self.work_dir, 'uploads')
         if not os.path.isdir(self.uploads_directory):
             os.mkdir(self.uploads_directory)
+        # delay creation of uploader object until we know it's needed
+        self.uploader = None
         # delay creation of a Twitter object until we know it's needed
         self.twitter = None
         # get daytime end hour
@@ -176,6 +177,8 @@ class RegularTasks(object):
             if os.path.isfile(path):
                 upload_files.append(path)
         if upload_files:
+            if not self.uploader:
+                self.uploader = pywws.towebsite.ToWebSite(self.context)
             self.uploader.upload(upload_files, delete=True)
         # update status
         for section in sections:
