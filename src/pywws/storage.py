@@ -768,7 +768,8 @@ class MonthlyStore(CoreStore):
 
 
 class PywwsContext(object):
-    def __init__(self, data_dir):
+    def __init__(self, data_dir, live_logging):
+        self.live_logging = live_logging
         # open params and status files
         self.params = ParamStore(data_dir, 'weather.ini')
         self.status = ParamStore(data_dir, 'status.ini')
@@ -781,16 +782,10 @@ class PywwsContext(object):
         # create an event to shutdown threads
         self.shutdown = threading.Event()
 
-    def stop(self):
-        # shutdown threads cleanly
-        for thread in threading.enumerate():
-            if thread == threading.current_thread():
-                continue
-            thread.stop()
-
     def terminate(self):
-        # signal threads to terminate
-        self.shutdown.set()
+        if self.live_logging:
+            # signal threads to terminate
+            self.shutdown.set()
         # wait for threads to terminate
         for thread in threading.enumerate():
             if thread == threading.current_thread():
@@ -810,8 +805,8 @@ class PywwsContext(object):
 
 
 @contextmanager
-def pywws_context(data_dir):
-    ctx = PywwsContext(data_dir)
+def pywws_context(data_dir, live_logging=False):
+    ctx = PywwsContext(data_dir, live_logging)
     try:
         yield ctx
     finally:

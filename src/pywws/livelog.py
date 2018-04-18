@@ -57,7 +57,7 @@ logger = logging.getLogger(__name__)
 
 
 def live_log(data_dir):
-    with pywws.storage.pywws_context(data_dir) as context:
+    with pywws.storage.pywws_context(data_dir, live_logging=True) as context:
         # localise application
         pywws.localisation.set_application_language(context.params)
         # create a DataLogger object

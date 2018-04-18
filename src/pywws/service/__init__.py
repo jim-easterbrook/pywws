@@ -52,7 +52,7 @@ class UploadThread(threading.Thread):
             except Exception as ex:
                 self.log(str(ex))
                 OK = False
-            if OK < 0:
+            if not self.context.live_logging:
                 break
             if OK:
                 pause = polling_interval
@@ -61,15 +61,6 @@ class UploadThread(threading.Thread):
                 pause = polling_interval * 10
             self.context.shutdown.wait(pause)
 
-    def stop(self):
-        if not self.queue:
-            return
-        self.parent.logger.debug('waiting for upload thread')
-        # tell upload queue to terminate cleanly
-        self.queue.append(None)
-        # wait for thread to finish
-        self.join()
-
     def upload_batch(self):
         if not self.queue:
             return True
@@ -77,12 +68,8 @@ class UploadThread(threading.Thread):
         count = 0
         with self.parent.session() as session:
             while self.queue and not self.context.shutdown.is_set():
-                # look at upload without taking it off queue
-                upload = self.queue[0]
-                if not upload:
-                    OK = -1
-                    break
-                timestamp, kwds = upload
+                # send upload without taking it off queue
+                timestamp, kwds = self.queue[0]
                 OK, message = self.parent.upload_data(session, **kwds)
                 self.log(message)
                 if not OK:
@@ -122,7 +109,7 @@ class BaseToService(object):
         self.templater = pywws.template.Template(context, use_locale=False)
         self.template_file = StringIO(self.template)
         # set timestamp of first data to upload
-        earliest = datetime.utcnow() - max(
+        earliest = self.context.calib_data.before(datetime.max) - max(
             timedelta(days=self.catchup), self.interval)
         self.next_update = context.status.get_datetime(
             'last update', self.service_name)
@@ -133,7 +120,6 @@ class BaseToService(object):
             self.next_update = earliest
         # create upload thread
         self.upload_thread = UploadThread(self, context)
-        self.stop = self.upload_thread.stop
 
     def upload(self, catchup=True, live_data=None, test_mode=False):
         OK = True
@@ -156,7 +142,7 @@ class BaseToService(object):
                 (timestamp, {'prepared_data': prepared_data, 'live': live}))
             count += 1
         # start upload thread
-        if not self.upload_thread.is_alive():
+        if self.upload_thread.queue and not self.upload_thread.is_alive():
             self.upload_thread.start()
 
     def next_data(self, catchup, live_data):
@@ -205,5 +191,4 @@ def main(class_, argv=None):
             uploader.register()
             return 0
         uploader.upload(catchup=args.catchup, test_mode=not args.catchup)
-        uploader.stop()
     return 0

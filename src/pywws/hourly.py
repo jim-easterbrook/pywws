@@ -66,8 +66,6 @@ def hourly(data_dir):
         pywws.process.process_data(context)
         # do tasks
         pywws.regulartasks.RegularTasks(context).do_tasks()
-        # shutdown threads cleanly
-        context.stop()
     return 0
 
 
