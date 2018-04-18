@@ -47,10 +47,9 @@ class RegularTasks(object):
         self.monthly_data = context.monthly_data
         self.flush = eval(self.params.get('config', 'frequent writes', 'False'))
         # get directories
-        self.work_dir = self.params.get('paths', 'work', '/tmp/weather')
+        self.work_dir = self.params.get('paths', 'work', '/tmp/pywws')
         if not os.path.isdir(self.work_dir):
-            raise RuntimeError(
-                'Directory "' + self.work_dir + '" does not exist.')
+            os.mkdir(self.work_dir)
         self.template_dir = self.params.get(
             'paths', 'templates', os.path.expanduser('~/weather/templates/'))
         self.graph_template_dir = self.params.get(
@@ -66,6 +65,9 @@ class RegularTasks(object):
         self.roseplotter = pywws.windrose.RosePlotter(context, self.work_dir)
         # create FTP uploader object
         self.uploader = pywws.towebsite.ToWebSite(context)
+        self.uploads_directory = os.path.join(self.work_dir, 'uploads')
+        if not os.path.isdir(self.uploads_directory):
+            os.mkdir(self.uploads_directory)
         # delay creation of a Twitter object until we know it's needed
         self.twitter = None
         # get daytime end hour
@@ -159,25 +161,22 @@ class RegularTasks(object):
         for name in service_tasks:
             self.services[name].upload(live_data=live_data)
         # do plot templates
-        upload_files = []
         for template, flags in plot_tasks:
-            local = 'L' in flags
-            plot_file = self.do_plot(template, local=local)
-            if not plot_file:
-                continue
-            if not local:
-                upload_files.append(plot_file)
+            self.do_plot(template, local='L' in flags)
         # do text templates
         for template, flags in text_tasks:
             if 'T' in flags:
                 self.do_twitter(template, live_data)
                 continue
-            local = 'L' in flags
-            text_file = self.do_template(template, data=live_data, local=local)
-            if not local:
-                upload_files.append(text_file)
+            self.do_template(template, data=live_data, local='L' in flags)
         # upload non local files
-        self.uploader.upload(upload_files, delete=True)
+        upload_files = []
+        for name in os.listdir(self.uploads_directory):
+            path = os.path.join(self.uploads_directory, name)
+            if os.path.isfile(path):
+                upload_files.append(path)
+        if upload_files:
+            self.uploader.upload(upload_files, delete=True)
         # update status
         for section in sections:
             self.status.set('last update', section, now.isoformat(' '))
@@ -267,7 +266,7 @@ class RegularTasks(object):
         if local:
             output_file = os.path.join(self.local_dir, output_file)
         else:
-            output_file = os.path.join(self.work_dir, output_file)
+            output_file = os.path.join(self.uploads_directory, output_file)
         input_xml = pywws.plot.GraphFileReader(input_file)
         if (input_xml.get_children(self.plotter.plot_name) and
                         self.plotter.do_plot(input_xml, output_file) == 0):
@@ -284,6 +283,6 @@ class RegularTasks(object):
         if local:
             output_file = os.path.join(self.local_dir, template)
         else:
-            output_file = os.path.join(self.work_dir, template)
+            output_file = os.path.join(self.uploads_directory, template)
         self.templater.make_file(input_file, output_file, live_data=data)
         return output_file
