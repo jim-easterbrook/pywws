@@ -76,9 +76,10 @@ data_dir.
 __doc__ %= __usage__
 __usage__ = __doc__.split('\n')[0] + __usage__
 
+import argparse
 from contextlib import contextmanager
 from datetime import timedelta
-import getopt
+import inspect
 import logging
 import os
 import shutil
@@ -106,13 +107,18 @@ class _ftp(object):
         self.directory = directory
         self.port = port
 
-    def connect(self):
+    @contextmanager
+    def session(self):
         logger.info("Uploading to web site with FTP")
         self.ftp = ftplib.FTP()
         self.ftp.connect(self.site, self.port)
+        logger.debug('welcome message\n' + self.ftp.getwelcome())
         self.ftp.login(self.user, self.password)
-        logger.debug(self.ftp.getwelcome())
         self.ftp.cwd(self.directory)
+        try:
+            yield None
+        finally:
+            self.ftp.close()
 
     def put(self, src, dest):
         text_file = os.path.splitext(src)[1] in ('.txt', '.xml', '.html')
@@ -126,9 +132,6 @@ class _ftp(object):
             else:
                 self.ftp.storbinary('STOR %s' % (dest), f)
 
-    def close(self):
-        self.ftp.close()
-
 
 class _sftp(object):
     def __init__(self, site, user, password, privkey, directory, port):
@@ -141,7 +144,8 @@ class _sftp(object):
         self.directory = directory
         self.port = port
 
-    def connect(self):
+    @contextmanager
+    def session(self):
         logger.info("Uploading to web site with SFTP")
         self.transport = paramiko.Transport((self.site, self.port))
         self.transport.start_client()
@@ -149,16 +153,18 @@ class _sftp(object):
             self.get_private_key(self.privkey)
             self.transport.auth_publickey(username=self.user, key=self.pkey)
         else:
-            self.transport.auth_password(username=self.user, password=self.password)
+            self.transport.auth_password(
+                username=self.user, password=self.password)
         self.ftp = paramiko.SFTPClient.from_transport(self.transport)
         self.ftp.chdir(self.directory)
+        try:
+            yield None
+        finally:
+            self.ftp.close()
+            self.transport.close()
 
     def put(self, src, dest):
         self.ftp.put(src, dest)
-
-    def close(self):
-        self.ftp.close()
-        self.transport.close()
 
     def get_private_key(self, privkey):
         with open(privkey, 'r') as f:
@@ -171,17 +177,16 @@ class _copy(object):
     def __init__(self, directory):
         self.directory = directory
 
-    def connect(self):
+    @contextmanager
+    def session(self):
         logger.info("Copying to local directory")
         if not os.path.isdir(self.directory):
             raise RuntimeError(
                 'Directory "' + self.directory + '" does not exist.')
+        yield None
 
     def put(self, src, dest):
         shutil.copy2(src, os.path.join(self.directory, dest))
-
-    def close(self):
-        pass
 
 
 class ToWebSite(object):
@@ -190,29 +195,29 @@ class ToWebSite(object):
     service_name = 'pywws.towebsite'
 
     def __init__(self, context):
-        self.params = context.params
+        params = context.params
         self.old_ex = None
-        if eval(self.params.get('ftp', 'local site', 'False')):
+        if eval(params.get('ftp', 'local site', 'False')):
             # copy to local directory
-            directory = self.params.get(
+            directory = params.get(
                 'ftp', 'directory',
                 os.path.expanduser('~/public_html/weather/data/'))
             self.uploader = _copy(directory)
         else:
             # get remote site details
-            site = self.params.get('ftp', 'site', 'ftp.username.your_isp.co.uk')
-            user = self.params.get('ftp', 'user', 'username')
+            site = params.get('ftp', 'site', 'ftp.username.your_isp.co.uk')
+            user = params.get('ftp', 'user', 'username')
             # don't set a default password, as might use a private ssh key
-            password = self.params.get('ftp', 'password', '')
-            directory = self.params.get(
+            password = params.get('ftp', 'password', '')
+            directory = params.get(
                 'ftp', 'directory', 'public_html/weather/data/')
-            if eval(self.params.get('ftp', 'secure', 'False')):
-                port = eval(self.params.get('ftp', 'port', '22'))
-                privkey = self.params.get('ftp', 'privkey')
+            if eval(params.get('ftp', 'secure', 'False')):
+                port = eval(params.get('ftp', 'port', '22'))
+                privkey = params.get('ftp', 'privkey')
                 self.uploader = _sftp(
                     site, user, password, privkey, directory, port)
             else:
-                port = eval(self.params.get('ftp', 'port', '21'))
+                port = eval(params.get('ftp', 'port', '21'))
                 self.uploader = _ftp(site, user, password, directory, port)
         # create upload thread
         self.upload_thread = pywws.service.UploadThread(self, context)
@@ -220,11 +225,8 @@ class ToWebSite(object):
 
     @contextmanager
     def session(self):
-        self.uploader.connect()
-        try:
+        with self.uploader.session():
             yield None
-        finally:
-            self.uploader.close()
 
     def upload_data(self, session, files=[], delete=False):
         for file in files:
@@ -252,26 +254,17 @@ class ToWebSite(object):
 def main(argv=None):
     if argv is None:
         argv = sys.argv
-    try:
-        opts, args = getopt.getopt(argv[1:], "h", ['help'])
-    except getopt.error as msg:
-        print('Error: %s\n' % msg, file=sys.stderr)
-        print(__usage__.strip(), file=sys.stderr)
-        return 1
-    # process options
-    for o, a in opts:
-        if o in ('-h', '--help'):
-            print(__usage__.strip())
-            return 0
-    # check arguments
-    if len(args) < 2:
-        print("Error: at least 2 arguments required", file=sys.stderr)
-        print(__usage__.strip(), file=sys.stderr)
-        return 2
-    pywws.logger.setup_handler(1)
-    with pywws.storage.pywws_context(args[0]) as context:
+    parser = argparse.ArgumentParser(
+        description=inspect.getdoc(sys.modules[__name__]).splitlines()[0])
+    parser.add_argument('-v', '--verbose', action='count',
+                        help='increase amount of reassuring messages')
+    parser.add_argument('data_dir', help='root directory of the weather data')
+    parser.add_argument('file', nargs='+', help='file to be uploaded')
+    args = parser.parse_args(argv[1:])
+    pywws.logger.setup_handler(args.verbose or 0)
+    with pywws.storage.pywws_context(args.data_dir) as context:
         uploader = ToWebSite(context)
-        uploader.upload(args[1:])
+        uploader.upload(args.file)
         uploader.stop()
     return 0
 
