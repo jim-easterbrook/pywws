@@ -139,6 +139,7 @@ class ToService(pywws.service.BaseToService):
         return True, 'OK'
 
     def register(self):
+        import pprint
         url = 'http://api.openweathermap.org/data/3.0/stations'
         data = {
             'external_id': self.params['external_id'],
@@ -147,12 +148,53 @@ class ToService(pywws.service.BaseToService):
             'longitude'  : float(self.params['long']),
             'altitude'   : float(self.params['alt']),
             }
+        station_id = self.fixed_data['station_id']
+        idx = -1
         with self.session() as session:
-            if self.fixed_data['station_id']:
+            # get current stations
+            try:
+                rsp = session.get(url, timeout=60)
+            except Exception as ex:
+                print('exception', str(ex))
+                return
+            stations = rsp.json()
+            if stations:
+                print('The following stations are registered to your account')
+                for i, station in enumerate(stations):
+                    if station['id'] == station_id:
+                        idx = i
+                        print('Number:', i, '\t\t\t\t<- current station')
+                    else:
+                        print('Number:', i)
+                    pprint.pprint(station)
+                if sys.version_info[0] >= 3:
+                    input_ = input
+                else:
+                    input_ = raw_input
+                i = input_('Please enter number of station to use, or N' +
+                           ' to register a new station. ')
+                if i in ('N', 'n'):
+                    idx = -1
+                    station_id = None
+                else:
+                    idx = int(i)
+                    station_id = stations[idx]['id']
+                for i, station in enumerate(stations):
+                    if i == idx:
+                        continue
+                    yn = input_('Would you like to delete station number' +
+                                ' {} and all its data (Y/N)? '.format(i))
+                    if yn in ('Y', 'y'):
+                        try:
+                            session.delete(
+                                url + '/' + station['id'], timeout=60)
+                        except Exception as ex:
+                            print('exception', str(ex))
+                            return
+            if station_id:
                 # update existing station
-                logger.debug(
-                    'Udating station id ' + self.fixed_data['station_id'])
-                url += '/' + self.fixed_data['station_id']
+                logger.debug('Udating station id ' + station_id)
+                url += '/' + station_id
                 try:
                     rsp = session.put(url, json=data, timeout=60)
                 except Exception as ex:
@@ -170,8 +212,10 @@ class ToService(pywws.service.BaseToService):
                     return
                 rsp = rsp.json()
                 logger.debug('response: ' + repr(rsp))
-                self.context.params.set(
-                    self.service_name, 'station id', rsp['ID'])
+            for key in 'id', 'ID':
+                if key in rsp:
+                    self.context.params.set(
+                        self.service_name, 'station id', rsp[key])
 
 
 if __name__ == "__main__":
