@@ -17,12 +17,6 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 """Upload files to a web server by ftp or copy them to a local directory
-::
-
-%s
-
-Introduction
-------------
 
 This module uploads files to (typically) a website *via* ftp/sftp or
 copies files to a local directory (e.g. if you are running pywws on the
@@ -55,31 +49,12 @@ The ``secure`` option lets you switch from normal ftp to sftp (ftp
 over ssh). Some hosting providers offer this as a more secure upload
 mechanism, so you should probably use it if available.
 
-Detailed API
-------------
-
 """
 
 from __future__ import absolute_import, print_function
 
-__docformat__ = "restructuredtext en"
-__usage__ = """
- usage: python -m pywws.towebsite [options] data_dir file [file...]
- options are:
-  -h or --help    display this help
- data_dir is the root directory of the weather data
- file is a file to be uploaded
-
-Login and ftp site details are read from the weather.ini file in
-data_dir.
-"""
-__doc__ %= __usage__
-__usage__ = __doc__.split('\n')[0] + __usage__
-
-import argparse
 from contextlib import contextmanager
 from datetime import timedelta
-import inspect
 import logging
 import os
 import shutil
@@ -94,6 +69,7 @@ import pywws.logger
 import pywws.service
 import pywws.storage
 
+__docformat__ = "restructuredtext en"
 logger = logging.getLogger(__name__)
 
 
@@ -252,10 +228,13 @@ class ToWebSite(object):
 
 
 def main(argv=None):
+    import argparse
+    import inspect
     if argv is None:
         argv = sys.argv
+    docstring = inspect.getdoc(sys.modules[__name__]).split('\n\n')
     parser = argparse.ArgumentParser(
-        description=inspect.getdoc(sys.modules[__name__]).splitlines()[0])
+        description=docstring[0], epilog=docstring[1])
     parser.add_argument('-v', '--verbose', action='count',
                         help='increase amount of reassuring messages')
     parser.add_argument('data_dir', help='root directory of the weather data')

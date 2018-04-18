@@ -18,7 +18,6 @@
 
 from __future__ import absolute_import, print_function, unicode_literals
 
-import argparse
 from collections import deque
 from datetime import datetime, timedelta
 import os
@@ -182,11 +181,15 @@ class BaseToService(object):
         return True
 
 
-def main(ToService, description, argv=None):
+def main(class_, argv=None):
+    import argparse
+    import inspect
     if argv is None:
         argv = sys.argv
-    parser = argparse.ArgumentParser(description=description)
-    if hasattr(ToService, 'register'):
+    docstring = inspect.getdoc(sys.modules[class_.__module__]).split('\n\n')
+    parser = argparse.ArgumentParser(
+        description=docstring[0], epilog=docstring[1])
+    if hasattr(class_, 'register'):
         parser.add_argument('-r', '--register', action='store_true',
                             help='register (or update) with service')
     parser.add_argument('-c', '--catchup', action='store_true',
@@ -197,7 +200,7 @@ def main(ToService, description, argv=None):
     args = parser.parse_args(argv[1:])
     pywws.logger.setup_handler(args.verbose or 0)
     with pywws.storage.pywws_context(args.data_dir) as context:
-        uploader = ToService(context)
+        uploader = class_(context)
         if args.register:
             uploader.register()
             return 0

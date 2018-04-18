@@ -122,4 +122,4 @@ class ToService(pywws.service.BaseToService):
 
 
 if __name__ == "__main__":
-    sys.exit(pywws.service.main(ToService, 'Upload data to UK Met Office'))
+    sys.exit(pywws.service.main(ToService))

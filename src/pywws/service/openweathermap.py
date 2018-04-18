@@ -175,4 +175,4 @@ class ToService(pywws.service.BaseToService):
 
 
 if __name__ == "__main__":
-    sys.exit(pywws.service.main(ToService, 'Upload data to OpenWeatherMap'))
+    sys.exit(pywws.service.main(ToService))
