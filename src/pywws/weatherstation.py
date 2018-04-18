@@ -211,7 +211,7 @@ class WSFloat(float):
     @staticmethod
     def from_3(raw, pos, signed=False, scale=1.0):
         # decode three bytes to an int
-        value = WSInt.from_2(raw, pos, signed=signed)
+        value = WSInt.from_3(raw, pos, signed=signed)
         if value is None:
             return None
         # convert to float
