@@ -189,6 +189,7 @@ def main(class_, argv=None):
         uploader = class_(context)
         if args.register:
             uploader.register()
+            context.flush()
             return 0
         uploader.upload(catchup=args.catchup, test_mode=not args.catchup)
     return 0
