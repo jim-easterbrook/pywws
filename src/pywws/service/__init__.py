@@ -80,10 +80,11 @@ class UploadThread(threading.Thread):
                         'last update', self.parent.service_name, str(timestamp))
                 # finally remove upload from queue
                 self.queue.popleft()
-        if count > 1:
-            self.parent.logger.warning('{:d} records sent'.format(count))
-        elif count:
-            self.parent.logger.info('1 record sent')
+        if self.parent.log_count:
+            if count > 1:
+                self.parent.logger.warning('{:d} records sent'.format(count))
+            elif count:
+                self.parent.logger.info('1 record sent')
         return OK
 
     def log(self, message):
@@ -95,6 +96,8 @@ class UploadThread(threading.Thread):
 
 
 class BaseToService(object):
+    log_count = True
+
     def __init__(self, context):
         self.context = context
         # check config

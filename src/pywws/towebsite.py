@@ -168,6 +168,7 @@ class _copy(object):
 class ToWebSite(object):
     interval = timedelta(seconds=150)
     logger = logger
+    log_count = False
     service_name = 'pywws.towebsite'
 
     def __init__(self, context):
@@ -203,10 +204,8 @@ class ToWebSite(object):
         with self.uploader.session():
             yield None
 
-    def upload_data(self, session, files=[], delete=False):
-        for file in files:
-            if not os.path.isfile(file):
-                continue
+    def upload_data(self, session, file='', delete=False):
+        if os.path.isfile(file):
             target = os.path.basename(file)
             try:
                 self.uploader.put(file, target)
@@ -219,8 +218,9 @@ class ToWebSite(object):
     def upload(self, files, delete=False):
         if not files:
             return
-        self.upload_thread.queue.append(
-            (None, {'files': files, 'delete': delete}))
+        for file in files:
+            self.upload_thread.queue.append(
+                (None, {'file': file, 'delete': delete}))
         # start upload thread
         if not self.upload_thread.is_alive():
             self.upload_thread.start()
