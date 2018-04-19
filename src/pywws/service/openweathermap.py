@@ -27,38 +27,46 @@ affordable weather data.
 
     [openweathermap]
     api key = b1b15e88fa797225412429c1c50c122a1
+    external id = SW1Aweather
+    station name = Buck House
     lat = 51.501
     long = -0.142
     alt = 10
-    external id = SW1Aweather
-    station name = Buck House
     station id = 583436dd9643a9000196b8d6
 
     [logged]
     services = ['openweathermap', 'underground']
 
-After signing up and logging in to OpenWeatherMap visit the `API keys
-page`_ and copy your default key to the ``api key`` entry in
-weather.ini. ``lat`` and ``long`` should be set to the latitude and
-longitude of your station (in degrees) and ``alt`` to its altitude in
-metres.
+Configuring pywws to use Open Weather Map is a bit more complicated than
+with other services. Start by running the module to set some default
+values in weather.ini (with no other pywws software running)::
 
-The ``external id`` field is a single word name to identify your
-station. You could use a name based on your post code, or maybe your id
-from Weather Underground or CWOP. The ``station name`` is a longer,
-human readable, name. I'm not sure what use OpenWeatherMap makes of
-either of these.
+    python -m pywws.service.openweathermap data_dir
+
+After signing up and logging in to Open Weather Map visit the `API keys
+page`_ and copy your default key to the ``api key`` entry in
+weather.ini. The ``external id`` field is a single word name to identify
+your station. You could use a name based on your post code, or maybe
+your id from Weather Underground or CWOP. The ``station name`` is a
+longer, human readable, name. I'm not sure what use Open Weather Map
+makes of either of these. ``lat`` and ``long`` should be set to the
+latitude and longitude of your station (in degrees) and ``alt`` to its
+altitude in metres.
 
 After setting (or changing) the above fields you need to "register" your
-station with OpenWeatherMap. This is done by running the
-pywws.service.openweathermap module with the ``-r`` flag::
+station with Open Weather Map. This is done by running the module with
+the ``-r`` flag::
 
     python -m pywws.service.openweathermap -r -v data_dir
 
-If this succeeds then OpenWeatherMap will have allocated a ``station
+If you already have any stations registered with Open Weather Map this
+will show you their details. You can select one of these existing
+stations or register a new one. pywws then sends the configuration
+values from weather.ini to Open Weather Map.
+
+If this succeeds then Open Weather Map will have allocated a ``station
 id`` value which pywws stores in weather.ini. All this complication is
-to allow you to have more than one station attached to one user's
-account.
+to allow more than one station to be attached to one user's account.
 
 .. _Open Weather Map: http://openweathermap.org/
 .. _API keys page: https://home.openweathermap.org/api_keys
@@ -172,7 +180,7 @@ class ToService(pywws.service.BaseToService):
                 else:
                     input_ = raw_input
                 i = input_('Please enter number of station to use, or N' +
-                           ' to register a new station. ')
+                           ' to register a new station: ')
                 if i in ('N', 'n'):
                     idx = -1
                     station_id = None
