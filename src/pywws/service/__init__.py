@@ -190,7 +190,7 @@ def main(class_, argv=None):
     pywws.logger.setup_handler(args.verbose or 0)
     with pywws.storage.pywws_context(args.data_dir) as context:
         uploader = class_(context)
-        if args.register:
+        if 'register' in args and args.register:
             uploader.register()
             context.flush()
             return 0
