@@ -237,15 +237,23 @@ class RegularTasks(object):
         sections = ['live'] + self._cron_due(now) + self._periodic_due(now)
         self._do_common(now, sections, live_data=calib_data)
 
-    def do_tasks(self, live_logging=False):
+    def do_tasks(self):
         now = self.calib_data.before(datetime.max)
         if not now:
             raise RuntimeError('No processed data available')
-        if not live_logging:
+        if not self.context.live_logging:
             # do periodic tasks if they would be due by next logging time
             now += timedelta(minutes=self.calib_data[now]['delay'])
         sections = ['logged'] + self._cron_due(now) + self._periodic_due(now)
         self._do_common(now, sections)
+        if not self.context.live_logging:
+            # cleanly shut down upload threads
+            for name in self.services:
+                self.services[name].stop()
+            if self.twitter:
+                self.twitter.stop()
+            if self.uploader:
+                self.uploader.stop()
 
     def do_twitter(self, template, data=None):
         if not self.twitter:

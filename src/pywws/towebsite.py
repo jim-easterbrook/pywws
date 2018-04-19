@@ -198,6 +198,7 @@ class ToWebSite(object):
                 self.uploader = _ftp(site, user, password, directory, port)
         # create upload thread
         self.upload_thread = pywws.service.UploadThread(self, context)
+        self.stop = self.upload_thread.stop
 
     @contextmanager
     def session(self):

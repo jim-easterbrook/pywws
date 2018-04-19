@@ -139,6 +139,7 @@ class ToTwitter(object):
             self.api = TweepyHandler(key, secret, latitude, longitude)
         # create upload thread
         self.upload_thread = pywws.service.UploadThread(self, context)
+        self.stop = self.upload_thread.stop
 
     @contextmanager
     def session(self):

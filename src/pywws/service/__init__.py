@@ -45,21 +45,30 @@ class UploadThread(threading.Thread):
     def run(self):
         self.parent.logger.debug('thread started ' + self.name)
         self.old_message = ''
-        polling_interval = self.parent.interval.total_seconds() / 10
+        if self.context.live_logging:
+            polling_interval = self.parent.interval.total_seconds() / 10
+        else:
+            polling_interval = 4.0
         while not self.context.shutdown.is_set():
             try:
                 OK = self.upload_batch()
             except Exception as ex:
                 self.log(str(ex))
                 OK = False
-            if not self.context.live_logging:
-                break
             if OK:
                 pause = polling_interval
-            else:
+            elif self.context.live_logging:
                 # upload failed, wait before trying again
                 pause = polling_interval * 10
+            else:
+                # upload failed or nothing more to do
+                break
             self.context.shutdown.wait(pause)
+
+    def stop(self):
+        if self.is_alive():
+            self.parent.logger.debug('stopping thread ' + self.name)
+            self.queue.append(None)
 
     def upload_batch(self):
         if not self.queue:
@@ -69,7 +78,11 @@ class UploadThread(threading.Thread):
         with self.parent.session() as session:
             while self.queue and not self.context.shutdown.is_set():
                 # send upload without taking it off queue
-                timestamp, kwds = self.queue[0]
+                upload = self.queue[0]
+                if upload is None:
+                    OK = False
+                    break
+                timestamp, kwds = upload
                 OK, message = self.parent.upload_data(session, **kwds)
                 self.log(message)
                 if not OK:
@@ -123,6 +136,7 @@ class BaseToService(object):
             self.next_update = earliest
         # create upload thread
         self.upload_thread = UploadThread(self, context)
+        self.stop = self.upload_thread.stop
 
     def upload(self, catchup=True, live_data=None, test_mode=False):
         OK = True
