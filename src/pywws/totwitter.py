@@ -119,6 +119,7 @@ class PythonTwitterHandler(object):
 class ToTwitter(object):
     interval = timedelta(seconds=150)
     logger = logger
+    log_count = True
     service_name = 'pywws.totwitter'
 
     def __init__(self, context):
