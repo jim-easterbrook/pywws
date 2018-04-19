@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
 # Copyright (C) 2008-18  pywws contributors
@@ -35,25 +33,17 @@ import sys, os
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #sys.path.insert(0, os.path.abspath('.'))
-
-# do not use Python2 source if building with Python3, requires pywws to
-# be installed with Python3 first
-if sys.version_info[0] < 3:
-    sys.path.insert(0, os.path.abspath('..'))
+##sys.path.insert(0, os.path.abspath('..'))
 
 on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 
-# cludge to allow documentation to be compiled without installing dependencies
-class Dummy(object):
-    def __getattr__(self, name):
-        if name in ('__file__',):
-            return None
-        return Dummy
+# allow documentation to be compiled without installing dependencies
+import mock
 
 for mod_name in ('hid', 'oauth2', 'twitter', 'paho.mqtt.client',
                  'usb', 'usb.core', 'usb.util', 'libusb1', 'usb1',
                  'daemon', 'daemon.daemon', 'daemon.runner'):
-    sys.modules[mod_name] = Dummy()
+    sys.modules[mod_name] = mock.Mock()
 
 # -- General configuration -----------------------------------------------------
 
