@@ -40,9 +40,9 @@ on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 # allow documentation to be compiled without installing dependencies
 import mock
 
-for mod_name in ('hid', 'oauth2', 'twitter', 'paho.mqtt.client',
+for mod_name in ('hid', 'oauth2', 'twitter', 'paho', 'paho.mqtt.client',
                  'usb', 'usb.core', 'usb.util', 'libusb1', 'usb1',
-                 'daemon', 'daemon.daemon', 'daemon.runner'):
+                 'daemon.daemon', 'daemon.runner'):
     sys.modules[mod_name] = mock.Mock()
 
 # -- General configuration -----------------------------------------------------
