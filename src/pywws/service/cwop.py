@@ -117,6 +117,8 @@ class ToService(pywws.service.BaseToService):
         session = socket.socket()
         session.settimeout(20)
         session.connect(self.params['server'])
+        response = session.recv(4096)
+        logger.debug('server software: %s', response.strip())
         try:
             yield session
         finally:
@@ -135,8 +137,6 @@ class ToService(pywws.service.BaseToService):
         logger.debug('packet: "{:s}"'.format(packet))
         packet = packet.encode('ASCII')
         try:
-            response = session.recv(4096)
-            logger.debug('server software: %s', response.strip())
             session.sendall(login)
             response = session.recv(4096)
             logger.debug('server login ack: %s', response.strip())
