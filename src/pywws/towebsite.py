@@ -244,6 +244,7 @@ def main(argv=None):
     with pywws.storage.pywws_context(args.data_dir) as context:
         uploader = ToWebSite(context)
         uploader.upload(args.file)
+        uploader.stop()
     return 0
 
 

@@ -198,6 +198,7 @@ def main(argv=None):
         pywws.localisation.set_application_language(context.params)
         uploader = ToTwitter(context)
         uploader.upload_file(args[1])
+        uploader.stop()
     return 0
 
 

@@ -209,4 +209,5 @@ def main(class_, argv=None):
             context.flush()
             return 0
         uploader.upload(catchup=args.catchup, test_mode=not args.catchup)
+        uploader.stop()
     return 0
