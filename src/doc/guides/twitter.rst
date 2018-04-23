@@ -1,6 +1,6 @@
 .. pywws - Python software for USB Wireless Weather Stations
    http://github.com/jim-easterbrook/pywws
-   Copyright (C) 2008-17  pywws contributors
+   Copyright (C) 2008-18  pywws contributors
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -34,19 +34,9 @@ This could be useful to someone who lives in your area, but doesn't want to know
 Authorise pywws to post to your Twitter account
 -----------------------------------------------
 
-If you run pywws on a low power device such as a router, you may find it easier to run this authorisation step on another computer, as long as it has ``python-oauth2`` installed.
-Use an empty 'data' directory -- a ``weather.ini`` file will be created whose contents can be copied into your real ``weather.ini`` file using any text editor.
-
-Make sure no other pywws software is running, then run :py:mod:`~pywws.TwitterAuth`::
-
-   python -m pywws.TwitterAuth ~/weather/data
-
-(Replace ``~/weather/data`` with your data directory.)
-
-This will open a web browser window (or give you a URL to copy to your web browser) where you can log in to your Twitter account and authorise pywws to post.
-Your web browser will then show a 7 digit number which you need to copy to the :py:mod:`~pywws.TwitterAuth` program.
-If successful, your ``weather.ini`` file will now have a ``[twitter]`` section with ``secret`` and ``key`` entries.
-(Don't disclose these to anyone else.)
+.. include:: ../../pywws/totwitter.py
+   :start-after: Post a message to Twitter.
+   :end-before: """
 
 Add location data (optional)
 ----------------------------
@@ -80,7 +70,7 @@ Now everything is prepared for :py:mod:`~pywws.ToTwitter` to be run::
    python -m pywws.ToTwitter ~/weather/data tweet.txt
 
 If this works, your new Twitter account will have posted its first weather report.
-(You should delete the tweet.txt file now.)
+(You can delete the tweet.txt file now.)
 
 Add Twitter updates to your hourly tasks
 ----------------------------------------
@@ -93,14 +83,13 @@ For example::
    plot = ['7days.png.xml', '24hrs.png.xml', 'rose_12hrs.png.xml']
    text = [('tweet.txt', 'T'), '24hrs.txt', '6hrs.txt', '7days.txt']
 
-Note the use of the ``'T'`` flag -- this tells pywws to tweet the template result instead of uploading it to your ftp site.
+Note the use of the ``'T'`` flag -- this tells pywws to tweet the template result instead of uploading it to your web site.
 
-You could change the ``[logged]``, ``[12 hourly]`` or ``[daily]`` sections instead, but I think ``[hourly]`` is most appropriate for Twitter updates.
+You could use the ``[logged]``, ``[12 hourly]`` or ``[daily]`` sections instead, but I think ``[hourly]`` is most appropriate for Twitter updates.
 
 .. versionchanged:: 13.06_r1015
    added the ``'T'`` flag.
    Previously Twitter templates were listed separately in ``twitter`` entries in the ``[hourly]`` and other sections.
-   The older syntax still works, but is deprecated.
 
 Include an image in your tweet
 ------------------------------
@@ -114,16 +103,10 @@ The "tweet_media.txt" example template shows how to do this.
 
 The image could be from a web cam, or for a weather forecast it could be an icon representing the forecast.
 To add a weather graph you need to make sure the graph is drawn before the tweet is sent.
-I do this by using two ``[cron xxx]`` sections in weather.ini::
+The :py:mod:`pywws.regulartasks` module processes graph and text templates before doing Twitter uploads, so you can include the graph drawing in the same section.
+The ``'L'`` flag ensures the plot is stored in your local files directory::
 
-   [cron prehourly]
-   format = 59 * * * *
+   [hourly]
    services = []
-   plot = [('tweet.png.xml', 'L')]
-   text = []
-
-   [cron hourly]
-   format = 0 * * * *
-   services = []
-   plot = ['7days.png.xml', '24hrs.png.xml', 'rose_12hrs.png.xml']
+   plot = [('tweet.png.xml', 'L'), '7days.png.xml', '24hrs.png.xml', 'rose_12hrs.png.xml']
    text = [('tweet_media.txt', 'T'), '24hrs.txt', '6hrs.txt', '7days.txt']

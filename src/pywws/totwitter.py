@@ -18,19 +18,22 @@
 
 """Post a message to Twitter.
 
-Before posting to Twitter you need to set up an account and then
-authorise pywws with the ``-r`` option.
+Before posting to Twitter you need to authorise pywws by running the
+module with the ``-r`` option.
 
 If you run pywws on a low power device such as a Raspberry Pi, you may
 find it easier to run this authorisation step on another computer, as
-long as it has the required dependencies installed. Use an empty 'data'
-directory -- a ``weather.ini`` file will be created whose contents can
-be copied into your real ``weather.ini`` file using any text editor.
+long as it has the required dependencies installed. You can use an empty
+'data' directory -- a ``weather.ini`` file will be created whose
+contents can be copied into your real ``weather.ini`` file using any
+text editor.
 
 Make sure no other pywws software is running, then run the module with
 the ``-r`` option::
 
     python -m pywws.totwitter -r data_dir
+
+(Replace ``data_dir`` with your data directory.)
 
 This will open a web browser window (or give you a URL to copy to your
 web browser) where you can log in to your Twitter account and authorise
@@ -42,6 +45,9 @@ digit number which you then copy to pywws::
     Please enter the PIN shown in your web browser: 9069882
     Success! Authorisation data has been stored in ../data/weather.ini
     jim@brains:~/Documents/projects/pywws/master$
+
+The ``secret`` and ``key`` values stored in ``weather.ini`` give access
+to your Twitter account and should be kept confidential.
 
 .. _Twitter: https://twitter.com/
 
