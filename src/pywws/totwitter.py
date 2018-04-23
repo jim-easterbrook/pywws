@@ -16,36 +16,44 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-"""Post a message to Twitter
-::
+"""Post a message to Twitter.
 
-%s
+Before posting to Twitter you need to set up an account and then
+authorise pywws with the ``-r`` option.
 
-This module posts a brief message to `Twitter
-<https://twitter.com/>`_. Before posting to Twitter you need to set up
-an account and then authorise pywws by running the
-:py:mod:`twitterauth` program. See :doc:`../guides/twitter` for
-detailed instructions.
+If you run pywws on a low power device such as a Raspberry Pi, you may
+find it easier to run this authorisation step on another computer, as
+long as it has the required dependencies installed. Use an empty 'data'
+directory -- a ``weather.ini`` file will be created whose contents can
+be copied into your real ``weather.ini`` file using any text editor.
+
+Make sure no other pywws software is running, then run the module with
+the ``-r`` option::
+
+    python -m pywws.totwitter -r data_dir
+
+This will open a web browser window (or give you a URL to copy to your
+web browser) where you can log in to your Twitter account and authorise
+pywws to post. If the login is successful the browser will display a 7
+digit number which you then copy to pywws::
+
+    jim@brains:~/Documents/projects/pywws/master$ python -m pywws.totwitter -r ../data/ 
+    12:20:08:pywws.logger:pywws version 18.4.2, build 1521 (487c307)
+    Please enter the PIN shown in your web browser: 9069882
+    Success! Authorisation data has been stored in ../data/weather.ini
+    jim@brains:~/Documents/projects/pywws/master$
+
+.. _Twitter: https://twitter.com/
 
 """
 
 from __future__ import absolute_import, print_function
 
 __docformat__ = "restructuredtext en"
-__usage__ = """
- usage: python -m pywws.totwitter [options] data_dir file
- options are:
-  -h | --help  display this help
- data_dir is the root directory of the weather data
- file is the text file to be uploaded
-"""
-__doc__ %= __usage__
-__usage__ = __doc__.split('\n')[0] + __usage__
 
 import codecs
 from contextlib import contextmanager
 from datetime import timedelta
-import getopt
 import logging
 import sys
 
@@ -174,30 +182,80 @@ class ToTwitter(object):
         return self.upload(tweet)
 
 
+def twitter_auth(params):
+    import webbrowser
+    if sys.version_info[0] >= 3:
+        from urllib.parse import parse_qsl
+    else:
+        from urlparse import parse_qsl
+    import oauth2 as oauth
+
+    consumer = oauth.Consumer(pct.consumer_key, pct.consumer_secret)
+    client = oauth.Client(consumer)
+    # step 1 - obtain a request token
+    resp, content = client.request(
+        'https://api.twitter.com/oauth/request_token', 'POST')
+    if resp['status'] != '200':
+        print('Failed to get request token. [%s]' % resp['status'])
+        return 1
+    if isinstance(content, bytes):
+        content = content.decode('utf-8')
+    request_token = dict(parse_qsl(content))
+    # step 2 - redirect the user
+    redirect_url = 'https://api.twitter.com/oauth/authorize?oauth_token=%s' % (
+        request_token['oauth_token'])
+    if not webbrowser.open(redirect_url, new=2, autoraise=0):
+        print('Please use a web browser to open the following URL')
+        print(redirect_url)
+    if sys.version_info[0] >= 3:
+        input_ = input
+    else:
+        input_ = raw_input
+    pin = input_('Please enter the PIN shown in your web browser: ')
+    pin = pin.strip()
+    # step 3 - convert the request token to an access token
+    token = oauth.Token(
+        request_token['oauth_token'], request_token['oauth_token_secret'])
+    token.set_verifier(pin)
+    client = oauth.Client(consumer, token)
+    resp, content = client.request(
+        'https://api.twitter.com/oauth/access_token', 'POST')
+    if resp['status'] != '200':
+        print('Failed to get access token. [%s]' % resp['status'])
+        return 1
+    if isinstance(content, bytes):
+        content = content.decode('utf-8')
+    access_token = dict(parse_qsl(content))
+    params.set('twitter', 'key', access_token['oauth_token'])
+    params.set('twitter', 'secret', access_token['oauth_token_secret'])
+    print('Success! Authorisation data has been stored in %s' % params._path)
+    return 0
+
+
 def main(argv=None):
+    import argparse
+    import inspect
     if argv is None:
         argv = sys.argv
-    try:
-        opts, args = getopt.getopt(argv[1:], "h", ['help'])
-    except getopt.error as msg:
-        print('Error: %s\n' % msg, file=sys.stderr)
-        print(__usage__.strip(), file=sys.stderr)
-        return 1
-    # process options
-    for o, a in opts:
-        if o in ('-h', '--help'):
-            print(__usage__.strip())
+    docstring = inspect.getdoc(sys.modules[__name__]).split('\n\n')
+    parser = argparse.ArgumentParser(
+        description=docstring[0], epilog=docstring[1])
+    parser.add_argument('-r', '--register', action='store_true',
+                        help='authorise pywws to post to your account')
+    parser.add_argument('-v', '--verbose', action='count',
+                        help='increase amount of reassuring messages')
+    parser.add_argument('data_dir', help='root directory of the weather data')
+    parser.add_argument('file', nargs='*', help='file to be uploaded')
+    args = parser.parse_args(argv[1:])
+    pywws.logger.setup_handler(args.verbose or 0)
+    with pywws.storage.pywws_context(args.data_dir) as context:
+        if args.register:
+            twitter_auth(context.params)
+            context.flush()
             return 0
-    # check arguments
-    if len(args) != 2:
-        print("Error: 2 arguments required", file=sys.stderr)
-        print(__usage__.strip(), file=sys.stderr)
-        return 2
-    pywws.logger.setup_handler(1)
-    with pywws.storage.pywws_context(args[0]) as context:
-        pywws.localisation.set_application_language(context.params)
         uploader = ToTwitter(context)
-        uploader.upload_file(args[1])
+        for file in args.file:
+            uploader.upload_file(file)
         uploader.stop()
     return 0
 
