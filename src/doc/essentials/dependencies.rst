@@ -1,6 +1,6 @@
 .. pywws - Python software for USB Wireless Weather Stations
    http://github.com/jim-easterbrook/pywws
-   Copyright (C) 2008-17  pywws contributors
+   Copyright (C) 2008-18  pywws contributors
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -24,7 +24,7 @@ However, many of these packages won't be needed by most users.
 What you need depends on what you want to do with pywws.
 Remember, it's a "kit of parts" rather than a monolithic application.
 
-Some of the requirements are Python packages that can be downloaded from the `Python Package Index (PyPI) <http://pypi.python.org/pypi>`_.
+Some of the requirements are Python packages that can be downloaded from the `Python Package Index (PyPI) <https://pypi.org/>`_.
 I recommend using `pip <http://www.pip-installer.org/>`_ to install these.
 
 You should be able to install the remaining dependencies using your operating system's package manager.
@@ -37,10 +37,10 @@ Follow the links to read more about each library's requirements.
 Essential
 ---------
 
-* `Python <http://python.org/>`_ version 2.5 or higher
+* `Python <http://python.org/>`_ version 2.7 or higher, preferably Python 3
 
-Python 3 is supported, but some things might not work properly.
-If you find a problem with Python 3, please send a message to the `mailing list <http://groups.google.com/group/pywws>`_ or submit a `bug report on GitHub <https://github.com/jim-easterbrook/pywws/issues>`_.
+If you are stuck on Python 2.5 or 2.6 for some reason you can use the older `"legacy" branch <https://github.com/jim-easterbrook/pywws/tree/legacy>`_ of pywws.
+This will not be further developed so you'll be missing out on any improvements made to the main branch.
 
 * `pip <http://www.pip-installer.org/>`_
 
@@ -90,7 +90,7 @@ Other systems use a Python interface to the libusb system library.
 There is a choice of interface and library version - install the latest that is available for your computer.
 
 *  `libusb <http://www.libusb.org/>`_ version 1.x (should be available from the package manager)
-*  `python-libusb1 <https://github.com/vpelletier/python-libusb1>`_ version 1.3
+*  `python-libusb1 <https://github.com/vpelletier/python-libusb1>`_ version 1.3+
 
 ::
 
@@ -99,15 +99,13 @@ There is a choice of interface and library version - install the latest that is 
 **or**
 
 *  `libusb <http://www.libusb.org/>`_ version 1.x or version 0.1 (should be available from the package manager)
-*  `PyUSB <http://walac.github.io/pyusb/>`_ version 1.0
+*  `PyUSB <http://walac.github.io/pyusb/>`_ version 1.0+
 
 ::
 
-  pip install pyusb --pre
+  pip install pyusb
 
-The ``--pre`` flag enables the installation of "pre release" versions, such as the current beta release (1.0.0b2) of pyusb.
-
-If neither of these options works for you then you can use hidapi -- see the Mac OS X instructions above.
+If neither of these options works for you then you may be able to use hidapi -- see the Mac OS X instructions above.
 
 .. versionchanged:: 15.01.0.dev1265
    added ability to use python-libusb1 interface.
@@ -115,7 +113,7 @@ If neither of these options works for you then you can use hidapi -- see the Mac
 Flexible timed tasks
 --------------------
 
-The :py:mod:`pywws.Tasks` module can do tasks at particular times and/or dates.
+The :py:mod:`pywws.regulartasks` module can do tasks at particular times and/or dates.
 This requires the croniter library.
 (Simple hourly, daily or 'live' tasks don't need this library.)
 
@@ -128,7 +126,7 @@ This requires the croniter library.
 Running as a daemon
 -------------------
 
-The :py:mod:`pywws.livelogdaemon` program runs pywws live logging as a proper UNIX daemon process.
+The :py:mod:`pywws.livelogdaemon` module runs pywws live logging as a proper UNIX daemon process.
 It requires the python-daemon library:
 
 *  `python-daemon <https://pypi.python.org/pypi/python-daemon/>`_
@@ -140,7 +138,7 @@ It requires the python-daemon library:
 Graph drawing
 -------------
 
-The :py:mod:`pywws.Plot` module uses gnuplot to draw graphs.
+The :py:mod:`pywws.plot` module uses gnuplot to draw graphs.
 If you want to produce graphs of weather data, e.g. to include in a web page, you need to install the gnuplot application:
 
 *  `gnuplot <http://www.gnuplot.info/>`_ v4.2 or higher (should be available from the package manager)
@@ -153,11 +151,11 @@ Finding out the installed gnuplot version is easy::
 Secure website uploading (sftp)
 -------------------------------
 
-The :py:mod:`pywws.Upload` module can use "ftp over ssh" (sftp) to upload files to your web-site.
+The :py:mod:`pywws.towebsite` module can use "ftp over ssh" (sftp) to upload files to your web-site.
 Normal uploading just uses Python's standard modules, but if you want to use sftp you need to install these two modules:
 
 *  `paramiko <https://github.com/paramiko/paramiko>`_
-*  `pycrypto <http://www.dlitz.net/software/pycrypto/>`_
+*  `pycrypto <https://pypi.org/project/pycrypto/>`_
 
 ::
 
@@ -168,7 +166,7 @@ Normal uploading just uses Python's standard modules, but if you want to use sft
 Twitter updates
 ---------------
 
-The :py:mod:`pywws.ToTwitter` module can be used to send weather status messages to Twitter.
+The :py:mod:`pywws.totwitter` module can be used to send weather status messages to Twitter.
 Posting to Twitter requires these modules:
 
 *  `python-twitter <https://github.com/bear/python-twitter>`_ v3.0 or higher
@@ -192,7 +190,7 @@ If you have problems, e.g. with character encoding, try installing ``python-twit
 
 .. versionchanged:: 13.10_r1086
    reenabled use of ``tweepy`` library as an alternative to ``python-twitter``.
-   ``python-oauth2`` is still required by :py:mod:`pywws.TwitterAuth`.
+   ``python-oauth2`` is still required by :py:mod:`pywws.twitterauth`.
 
 .. versionchanged:: 13.06_r1023
    pywws previously used the ``tweepy`` library instead of ``python-twitter`` and ``python-oauth2``.
@@ -204,7 +202,7 @@ MQTT
 
 .. versionadded:: 14.12.0.dev1260
 
-The :py:mod:`pywws.toservice` module can be used to send weather data to an MQTT broker.
+The :py:mod:`pywws.service.mqtt` module can be used to send weather data to an MQTT broker.
 This requires the paho-mqtt module:
 
 *  `paho-mqtt <https://pypi.python.org/pypi/paho-mqtt>`_
@@ -229,11 +227,11 @@ The Babel package is required to extract the strings to be translated and to com
 
 Copying files to or from Transifex requires the transifex-client package.
 
-*  `transifex-client <http://support.transifex.com/customer/portal/topics/440187-transifex-client>`_
+*  `transifex-client <https://pypi.org/project/transifex/>`_
 
 ::
 
-  sudo pip install transifex-client
+  sudo pip install transifex
 
 Translating the documentation using local files needs the sphinx-intl package.
 
