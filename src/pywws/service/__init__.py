@@ -46,7 +46,8 @@ class UploadThread(threading.Thread):
         self.parent.logger.debug('thread started ' + self.name)
         self.old_message = ''
         if self.context.live_logging:
-            polling_interval = self.parent.interval.total_seconds() / 10
+            polling_interval = self.parent.interval.total_seconds() / 20
+            polling_interval = min(max(polling_interval, 4.0), 40.0)
         else:
             polling_interval = 4.0
         while not self.context.shutdown.is_set():
@@ -59,7 +60,7 @@ class UploadThread(threading.Thread):
                 pause = polling_interval
             elif self.context.live_logging:
                 # upload failed, wait before trying again
-                pause = polling_interval * 10
+                pause = 40.0
             else:
                 # upload failed or nothing more to do
                 break
@@ -79,11 +80,14 @@ class UploadThread(threading.Thread):
             while self.queue and not self.context.shutdown.is_set():
                 if self.parent.catchup == 0:
                     # "live only" service, so ignore old records
-                    pending = len(self.queue)
+                    drop = len(self.queue) - 1
                     if self.queue[-1] is None:
-                        pending -= 1
-                    for i in range(pending - 1):
-                        self.queue.popleft()
+                        drop -= 1
+                    if drop > 0:
+                        for i in range(drop):
+                            self.queue.popleft()
+                        self.parent.logger.warning(
+                            '{:d} record(s) dropped'.format(drop))
                 # send upload without taking it off queue
                 upload = self.queue[0]
                 if upload is None:
