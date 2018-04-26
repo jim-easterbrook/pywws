@@ -77,6 +77,13 @@ class UploadThread(threading.Thread):
         count = 0
         with self.parent.session() as session:
             while self.queue and not self.context.shutdown.is_set():
+                if self.parent.catchup == 0:
+                    # "live only" service, so ignore old records
+                    pending = len(self.queue)
+                    if self.queue[-1] is None:
+                        pending -= 1
+                    for i in range(pending - 1):
+                        self.queue.popleft()
                 # send upload without taking it off queue
                 upload = self.queue[0]
                 if upload is None:
