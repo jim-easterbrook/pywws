@@ -56,7 +56,7 @@ Create a template
 Twitter messages are generated using a template, just like creating files to upload to a website.
 Copy the example template 'tweet.txt' to your template directory, then test it::
 
-   python -m pywws.Template ~/weather/data ~/weather/templates/tweet.txt tweet.txt
+   python -m pywws.template ~/weather/data ~/weather/templates/tweet.txt tweet.txt
    cat tweet.txt
 
 (Replace ``~/weather/data`` and ``~/weather/templates`` with your data and template directories.)
@@ -65,9 +65,10 @@ If you need to change the template (e.g. to change the units or language used) y
 Post your first weather Tweet
 -----------------------------
 
-Now everything is prepared for :py:mod:`~pywws.ToTwitter` to be run::
+Now everything is prepared for :py:mod:`pywws.totwitter` to be run.
+Using high verbosity shows you what's happening as it runs::
 
-   python -m pywws.ToTwitter ~/weather/data tweet.txt
+   python -m pywws.totwitter -vv ~/weather/data tweet.txt
 
 If this works, your new Twitter account will have posted its first weather report.
 (You can delete the tweet.txt file now.)

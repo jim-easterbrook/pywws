@@ -1,6 +1,6 @@
 .. pywws - Python software for USB Wireless Weather Stations
    http://github.com/jim-easterbrook/pywws
-   Copyright (C) 2008-16  pywws contributors
+   Copyright (C) 2008-18  pywws contributors
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -51,24 +51,20 @@ Download and extract
 
 If you prefer not to use pip, or you want easy access to the pywws source files (e.g. to translate the documentation -- see :doc:`language`), you can download and extract the files into your weather directory.
 
-Visit http://pypi.python.org/pypi/pywws/ and download one of the .tar.gz or .zip files. Put it in your weather directory, then extract all the files, for example::
+Visit https://pypi.org/project/pywws/ and download one of the .tar.gz files.
+Put it in your weather directory, then extract all the files, for example::
 
    cd ~/weather
-   tar zxvf pywws-14.03.dev1178.tar.gz
+   tar xf pywws-18.4.1.tar.gz
 
-or::
-
-   cd ~/weather
-   unzip pywws-14.03.dev1178.zip
-
-This should create a directory (called ``pywws-14.03.dev1178`` in this example) containing all the pywws source files.
+This should create a directory (called ``pywws-18.4.1`` in this example) containing all the pywws source files.
 It is convenient to create a soft link to this awkwardly named directory::
 
    cd ~/weather
-   ln -s pywws-14.03.dev1178 pywws
+   ln -s pywws-18.4.1 pywws
 
 Upgrading a downloaded snapshot is the same process as the first installation.
-Download the .tar.gz or .zip file, extract its contents, then delete the soft link pointing to the old download and create one pointing to the new download.
+Download the .tar.gz file, extract its contents, then delete the soft link pointing to the old download and create one pointing to the new download.
 Once you are satisfied the new version is working OK you can delete the old download entirely.
 
 Clone the repository
@@ -99,8 +95,6 @@ If you have downloaded or cloned the pywws source files, you need to use setup.p
 The ``python setup.py compile_catalog`` step is only needed if you want to use pywws in a language other than English.
 See :ref:`test-translation` for more detail.
 
-Note to Python 3 users: this will generate and use Python 3 versions of the pywws software in ``~/weather/pywws/build/lib``.
-
 Compile documentation (optional)
 --------------------------------
 
@@ -108,14 +102,13 @@ If you'd like to have a local copy of the pywws documentation (and have download
 This requires the sphinx package::
 
    cd ~/weather/pywws
-   python setup.py build_sphinx
+   python -B setup.py build_sphinx
 
-Compiling the documentation in another language requires the additional step of compiling the translation files, which requires the sphinx-intl package.
+To compile the documentation in another language you need to set the ``LANG`` environment variable.
 For example, to compile the French documentation::
 
    cd ~/weather/pywws
-   sphinx-intl build --locale-dir src/pywws/lang -l fr
-   LANG=fr python setup.py build_sphinx
+   LANG=fr python -B setup.py build_sphinx
 
 The compiled documentation should then be found at ``~/weather/pywws/doc/html/index.html``.
 See :doc:`language` for more detail.
@@ -159,6 +152,105 @@ This allows any user in the group ``weatherstation`` to access the weather stati
 You need to create this group and add your normal user account to it -- many Linux systems have a GUI for user and group management.
 
 If you have any other problem, please ask for help on the pywws mailing list: http://groups.google.com/group/pywws
+
+Decoding the numbers
+^^^^^^^^^^^^^^^^^^^^
+
+The ``pywws-testweatherstation`` command has options to decode the numbers shown above, or to show you the station's logged data.
+The ``--help`` option prints a usage message::
+
+   jim@firefly ~/weather/pywws $ pywws-testweatherstation --help
+   Test connection to weather station.
+   usage: /usr/bin/pywws-testweatherstation [options]
+    options are:
+            --help       display this help
+     -c   | --change     display any changes in "fixed block" data
+     -d   | --decode     display meaningful values instead of raw data
+     -h n | --history n  display the last "n" readings
+     -l   | --live       display 'live' data
+     -m   | --logged     display 'logged' data
+     -u   | --unknown    display unknown fixed block values
+     -v   | --verbose    increase amount of reassuring messages
+                         (repeat for even more messages e.g. -vvv)
+   jim@firefly ~/weather/pywws $ 
+
+Using the ``--decode`` option shows the decoded "fixed block" data::
+
+   jim@firefly ~/weather/pywws $ pywws-testweatherstation -d
+   10:02:16:pywws.logger:pywws version 18.4.2, build 1523 (092cf26)
+   {'abs_pressure': 1001.6,
+    'alarm': {'abs_pressure': {'hi': 1040, 'lo': 960},
+              'dewpoint': {'hi': 10, 'lo': -10},
+              'hum_in': {'hi': 65, 'lo': 35},
+              'hum_out': {'hi': 70, 'lo': 45},
+              'illuminance': 0,
+              'rain': {'day': 150, 'hour': 3},
+              'rel_pressure': {'hi': 1040, 'lo': 960},
+              'temp_in': {'hi': 20, 'lo': 0},
+              'temp_out': {'hi': 30, 'lo': -10},
+              'time': '12:00',
+              'uv': 0,
+              'wind_ave': {'bft': 0, 'ms': 11.2},
+              'wind_dir': 0,
+              'wind_gust': {'bft': 0, 'ms': 22.3},
+              'windchill': {'hi': 20, 'lo': 0}},
+   ...
+    'read_period': 5,
+    'rel_pressure': 987.2,
+    'settings_1': {'bit3': False,
+                   'bit4': False,
+                   'pressure_hPa': True,
+                   'pressure_inHg': False,
+                   'pressure_mmHg': False,
+                   'rain_in': False,
+                   'temp_in_F': False,
+                   'temp_out_F': False},
+    'settings_2': {'bit5': False,
+                   'bit6': False,
+                   'bit7': False,
+                   'wind_bft': False,
+                   'wind_kmph': False,
+                   'wind_knot': False,
+                   'wind_mph': True,
+                   'wind_mps': False},
+    'timezone': -1,
+    'unknown_01': 0,
+    'unknown_18': 0}
+   jim@firefly ~/weather/pywws $
+
+The ``--history`` option shows recent "logged" data, starting with the current "live" record::
+
+   jim@firefly ~/weather/pywws $ pywws-testweatherstation -d -h 2
+   10:06:28:pywws.logger:pywws version 18.4.2, build 1523 (092cf26)
+   ...
+   Recent history
+   0x30a0 2018-04-27 10:06:00
+   {'abs_pressure': 1001.5,
+    'delay': 2,
+    'hum_in': 48,
+    'hum_out': 88,
+    'rain': 2178.6,
+    'status': {'rain_overflow': False, 'lost_connection': False},
+    'temp_in': 18.4,
+    'temp_out': 8.5,
+    'wind_ave': 0.7,
+    'wind_dir': 5,
+    'wind_gust': 1}
+   0x3090 2018-04-27 10:04:00
+   {'abs_pressure': 1001.6,
+    'delay': 5,
+    'hum_in': 47,
+    'hum_out': 88,
+    'rain': 2178.6,
+    'status': {'rain_overflow': False, 'lost_connection': False},
+    'temp_in': 18.4,
+    'temp_out': 8.5,
+    'wind_ave': 1.7,
+    'wind_dir': 6,
+    'wind_gust': 3.4}
+   jim@firefly ~/weather/pywws $
+
+These options are useful if you ever need to examine the raw data as stored by the station, before pywws does any processing.
 
 Set up your weather station
 ---------------------------
@@ -226,6 +318,8 @@ Find your EasyWeather.dat file and then convert it::
 
    python -m pywws.mergeewdata EasyWeather.dat ~/weather/data
 
+(Recent versions of EasyWeather may use a different file format which :py:mod:`pywws.mergeewdata` cannot handle.)
+
 Set some configuration options
 ------------------------------
 
@@ -233,24 +327,26 @@ After running :py:mod:`pywws.logdata` there should be a configuration file in yo
 Open this with a text editor. You should find something like the following::
 
    [config]
+   usb activity margin = 3.0
    ws type = 1080
+   pressure offset = 9.3
    logdata sync = 1
-   pressure offset = 9.4
 
+(Don't worry about the order of items within each section.
+Re-ordering them has no effect.)
 You need to add a new entry in the ``[config]`` section called ``day end hour``.
 This tells pywws what convention you want to use when calculating daily summary data.
-In the UK, the 'meteorological day' is usually from 09:00 to 09:00 GMT (10:00 to 10:00 BST during summer), so I use a day end hour value of 9.
-In other countries a value of 24 (or 0) might be more suitable.
-Note that the value is set in local winter time.
-You should not need to change it when daylight savings time is in effect.
+In the UK, the 'meteorological day' is usually from 09:00 to 09:00 GMT (10:00 to 10:00 BST during summer), so I use a day end hour value of ``9, False``.
+If you prefer to use midnight, winter or summer, you should use ``0, True``.
 
 After editing, your weather.ini file should look something like this::
 
    [config]
+   usb activity margin = 3.0
    ws type = 1080
+   pressure offset = 9.3
    logdata sync = 1
-   pressure offset = 9.4
-   day end hour = 9
+   day end hour = 9, False
 
 You can also edit the ``pressure offset`` value to adjust how pywws calculates the relative (sea level) air pressure from the absolute value that the station measures.
 If you change the pressure offset or day end hour in future, you must update all your stored data by running :py:mod:`pywws.reprocess`.
@@ -274,7 +370,7 @@ You should now have some processed files to look at::
 
    more ~/weather/data/daily/2012/2012-12-16.txt
 
-If you ever change your ``day end hour`` configuration setting, you will need to reprocess all your weather data.
+If you ever change your ``day end hour`` or ``pressure offset`` configuration settings, you will need to reprocess all your weather data.
 You can do this by running :py:mod:`pywws.reprocess`::
 
    python -m pywws.reprocess ~/weather/data
