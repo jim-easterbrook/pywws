@@ -1,6 +1,6 @@
 .. pywws - Python software for USB Wireless Weather Stations
    http://github.com/jim-easterbrook/pywws
-   Copyright (C) 2008-14  Jim Easterbrook  jim@jim-easterbrook.me.uk
+   Copyright (C) 2008-18  pywws contributors
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -23,9 +23,9 @@ Introduction
 ------------
 
 There are two quite different modes of operation with pywws.
-Traditionally :py:mod:`pywws.Hourly` would be run at regular intervals (usually an hour) from cron.
+Traditionally :py:mod:`pywws.hourly` would be run at regular intervals (usually an hour) from cron.
 This is suitable for fairly static websites, but more frequent updates can be useful for sites such as Weather Underground (http://www.wunderground.com/).
-The newer :py:mod:`pywws.LiveLog` program runs continuously and can upload data every 48 seconds.
+The newer :py:mod:`pywws.livelog` program runs continuously and can upload data every 48 seconds.
 
 Getting started
 ---------------
@@ -33,16 +33,16 @@ Getting started
 First of all, you need to install pywws and make sure it can get data from your weather station.
 See :doc:`getstarted` for details.
 
-If you have previously been using :py:mod:`pywws.Hourly` then disable your 'cron' job (or whatever else you use to run it) so it no longer runs.
-You should not run :py:mod:`pywws.Hourly` and :py:mod:`pywws.LiveLog` at the same time.
+If you have previously been using :py:mod:`pywws.hourly` then disable your 'cron' job (or whatever else you use to run it) so it no longer runs.
+You should never run :py:mod:`pywws.hourly` and :py:mod:`pywws.livelog` at the same time.
 
-Try running :py:mod:`pywws.LiveLog` from the command line, with a high level of verbosity so you can see what's happening.
-Use the ``pywws-livelog`` command to run :py:mod:`pywws.LiveLog`::
+Try running :py:mod:`pywws.livelog` from the command line, with a high level of verbosity so you can see what's happening.
+Use the ``pywws-livelog`` command to run :py:mod:`pywws.livelog`::
 
    pywws-livelog -vvv ~/weather/data
 
 Within five minutes (assuming you have set a 5 minute logging interval) you should see a 'live_data new ptr' message, followed by fetching any new data from the weather station and processing it.
-Let :py:mod:`pywws.LiveLog` run for a minute or two longer, then kill the process by typing '<Ctrl>C'.
+Let :py:mod:`pywws.livelog` run for a minute or two longer, then kill the process by typing '<Ctrl>C'.
 
 .. versionchanged:: 14.04.dev1194
    the ``pywws-livelog`` command replaced ``scripts/pywws-livelog.py``.
@@ -54,13 +54,13 @@ Open your weather.ini file with a text editor.
 You should have a ``[paths]`` section similar to the following (where ``xxx`` is your user name)::
 
   [paths]
-  work = /tmp/weather
+  work = /tmp/pywws
   templates = /home/xxx/weather/templates/
   graph_templates = /home/xxx/weather/graph_templates/
   local_files = /home/xxx/weather/results/
 
 Edit these to suit your installation and preferences.
-``work`` is an existing temporary directory used to store intermediate files, ``templates`` is the directory where you keep your text template files, ``graph_templates`` is the directory where you keep your graph template files and ``local_files`` is a directory where template output that is not uploaded to your web site is put.
+``work`` is an existing temporary directory used to store intermediate files, ``templates`` is the directory where you keep your text template files, ``graph_templates`` is the directory where you keep your graph template files, and ``local_files`` is a directory where template output that is not uploaded to your web site is put.
 Don't use the pywws example directories for your templates, as they will get over-written when you upgrade pywws.
 
 Copy your text and graph templates to the appropriate directories.
@@ -77,20 +77,20 @@ In weather.ini you should have a ``[live]`` section similar to the following::
 
    [live]
    services = []
-   plot = []
    text = []
+   plot = []
 
 This section specifies what pywws should do every time it gets a new reading from the weather station, i.e. every 48 seconds.
-The ``services`` entry is a list of online weather services to upload data to, e.g. ``['underground_rf']``.
+The ``services`` entry is a list of online weather services to upload data to, e.g. ``['underground']``.
 The ``plot`` and ``text`` entries are lists of template files for plots and text files to be processed and, optionally, uploaded to your web site.
 You should probably leave all of these blank except for ``services``.
 
 If you use YoWindow (http://yowindow.com/) you can add an entry to the ``[live]`` section to specify your YoWindow file, e.g.::
 
    [live]
-   services = ['underground_rf']
+   services = ['underground']
    text = [('yowindow.xml', 'L')]
-   ...
+   plot = []
 
 Note the use of the ``'L'`` flag -- this tells pywws to copy the template result to your "local files" directory instead of uploading it to your ftp site.
 
@@ -120,6 +120,10 @@ Add the names of your template files to the appropriate entries, for example::
 
 Note the use of the ``'T'`` flag -- this tells pywws to send the template result to Twitter instead of uploading it to your ftp site.
 
+It's probably best not to add all of these at once.
+You could start by uploading one file to your web site, then when that's working add the remaining web site files.
+You can add Twitter and other services later on.
+
 .. versionadded:: 14.05.dev1211
    ``[cron name]`` sections.
    If you need more flexibility in when tasks are done you can use ``[cron name]`` sections.
@@ -128,30 +132,17 @@ Note the use of the ``'T'`` flag -- this tells pywws to send the template result
 .. versionchanged:: 13.06_r1015
    added the ``'T'`` flag.
    Previously Twitter templates were listed separately in ``twitter`` entries in the ``[hourly]`` and other sections.
-   The older syntax still works, but is deprecated.
 
 .. versionchanged:: 13.05_r1013
    added a ``'yowindow.xml'`` template.
    Previously yowindow files were generated by a separate module, invoked by a ``yowindow`` entry in the ``[live]`` section.
-   This older syntax still works, but is deprecated.
-
-Asynchronous uploads
---------------------
-
-.. versionadded:: 13.09_r1057
-
-Uploading data to web sites or 'services' can sometimes take a long time, particularly if a site has gone off line and the upload times out.
-In normal operation pywws waits until all uploads have been processed before fetching any more data from the weather station.
-This can lead to data sometimes being missed.
-
-The ``asynchronous`` item in the ``[config]`` section of weather.ini can be set to ``True`` to tell :py:mod:`pywws.LiveLog` to do these uploads in a separate thread.
 
 Run in the background
 ---------------------
 
 .. versionadded:: 13.12.dev1118
 
-In order to have :py:mod:`pywws.LiveLog` carry on running after you finish using your computer it needs to be run as a "background job".
+In order to have :py:mod:`pywws.livelog` carry on running after you finish using your computer it needs to be run as a "background job".
 On most Linux / UNIX systems you can do this by putting an ampersand ('&') at the end of the command line.
 Running a job in the background like this doesn't always work as expected: the job may suspend when you log out.
 It's much better to run as a proper UNIX 'daemon' process.
