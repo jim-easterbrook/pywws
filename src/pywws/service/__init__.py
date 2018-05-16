@@ -133,8 +133,9 @@ class BaseToService(object):
                 'obsolete item "template" found in weather.ini '
                 'section [{}]'.format(self.service_name))
         # create templater
-        self.templater = pywws.template.Template(context, use_locale=False)
-        self.template_file = StringIO(self.template)
+        if self.template:
+            self.templater = pywws.template.Template(context, use_locale=False)
+            self.template_file = StringIO(self.template)
         # set timestamp of first data to upload
         earliest = self.context.calib_data.before(datetime.max) - max(
             timedelta(days=self.catchup), self.interval)
@@ -161,10 +162,7 @@ class BaseToService(object):
             timestamp = data['idx']
             if test_mode:
                 timestamp = None
-            # convert data
-            data_str = self.templater.make_text(self.template_file, data)
-            self.template_file.seek(0)
-            prepared_data = eval('{' + data_str + '}')
+            prepared_data = self.prepare_data(data)
             prepared_data.update(self.fixed_data)
             self.upload_thread.queue.append(
                 (timestamp, {'prepared_data': prepared_data, 'live': live}))
@@ -172,6 +170,11 @@ class BaseToService(object):
         # start upload thread
         if self.upload_thread.queue and not self.upload_thread.is_alive():
             self.upload_thread.start()
+
+    def prepare_data(self, data):
+        data_str = self.templater.make_text(self.template_file, data)
+        self.template_file.seek(0)
+        return eval('{' + data_str + '}')
 
     def next_data(self, catchup, live_data):
         if catchup:
