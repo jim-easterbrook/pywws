@@ -71,16 +71,17 @@ class ToService(pywws.service.BaseToService):
     service_name = service_name
     template = """
 #live#
-#idx          "'dateutc'    : '%Y-%m-%d %H:%M:%S',"#
-#wind_dir     "'winddir'    : '%.0f'," "" "winddir_degrees(x)"#
+#idx          "'dateutc'     : '%Y-%m-%d %H:%M:%S',"#
+#wind_dir     "'winddir'     : '%.0f'," "" "winddir_degrees(x)"#
 #wind_ave     "'windspeedmph': '%.2f'," "" "wind_mph(x)"#
 #wind_gust    "'windgustmph' : '%.2f'," "" "wind_mph(x)"#
-#hum_out      "'humidity'   : '%.d',"#
+#hum_out      "'humidity'    : '%.d',"#
 #temp_out     "'tempf'       : '%.1f'," "" "temp_f(x)"#
-#rel_pressure "'baromin'    : '%.4f'," "" "pressure_inhg(x)"#
+#rel_pressure "'baromin'     : '%.4f'," "" "pressure_inhg(x)"#
 #calc "temp_f(dew_point(data['temp_out'], data['hum_out']))" "'dewptf': '%.1f',"#
 #calc "rain_inch(rain_hour(data))" "'rainin': '%g',"#
-#calc "rain_inch(rain_day(data))" "'dailyrainin': '%g',"#
+#daily#
+#rain         "'dailyrainin' : '%g'," "" "rain_inch(x)"#
 """
 
     def __init__(self, context):
