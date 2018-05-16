@@ -73,14 +73,14 @@ class ToService(pywws.service.BaseToService):
 #live#
 #idx          "'dateutc'    : '%Y-%m-%d %H:%M:%S',"#
 #wind_dir     "'winddir'    : '%.0f'," "" "winddir_degrees(x)"#
-#wind_ave     "'windspeedms': '%.1f',"#
-#wind_gust    "'windgustms' : '%.1f',"#
+#wind_ave     "'windspeedmph': '%.2f'," "" "wind_mph(x)"#
+#wind_gust    "'windgustmph' : '%.2f'," "" "wind_mph(x)"#
 #hum_out      "'humidity'   : '%.d',"#
-#temp_out     "'tempc'      : '%.1f',"#
-#rel_pressure "'mslphpa'    : '%.1f',"#
-#calc "dew_point(data['temp_out'], data['hum_out'])" "'dewptc': '%.1f',"#
-#calc "rain_hour(data)" "'rainmm': '%.1f',"#
-#calc "rain_day(data)" "'dailyrainmm': '%.1f',"#
+#temp_out     "'tempf'       : '%.1f'," "" "temp_f(x)"#
+#rel_pressure "'baromin'    : '%.4f'," "" "pressure_inhg(x)"#
+#calc "temp_f(dew_point(data['temp_out'], data['hum_out']))" "'dewptf': '%.1f',"#
+#calc "rain_inch(rain_hour(data))" "'rainin': '%g',"#
+#calc "rain_inch(rain_day(data))" "'dailyrainin': '%g',"#
 """
 
     def __init__(self, context):
