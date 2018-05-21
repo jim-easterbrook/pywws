@@ -148,6 +148,17 @@ Finding out the installed gnuplot version is easy::
 
   gnuplot -V
 
+Weather "service" uploading
+---------------------------
+
+Uploading to HTTP based "services" such as Weather Underground requires the Python requests library:
+
+*  `requests <https://pypi.python.org/pypi/requests/>`_
+
+::
+
+  pip install requests
+
 Secure website uploading (sftp)
 -------------------------------
 
