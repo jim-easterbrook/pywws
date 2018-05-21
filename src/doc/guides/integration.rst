@@ -95,3 +95,28 @@ The service uploaders are all used in a similar fashion:
 
 Many of the services will upload the last seven days of data (referred to as "catchup" mode) when first run.
 This may take an hour or more, but the use of separate threads means this doesn't adversely affect the rest of pywws.
+
+Writing your own uploader
+-------------------------
+
+If you'd like to send data to a service which is not (yet) included in pywws you can write your own uploader module and put it in your ``modules`` directory.
+You should start by copying one of the existing modules from pywws.service.
+Choose one with an API most like the service you want to upload to.
+Give the module a one word lowercase name that will be used as the uploader service name.
+
+Testing the module is a little different from before::
+
+   python ~/weather/modules/myservice.py -vvv ~/weather/data
+
+where ``~/weather/modules/myservice.py`` is the full path of your new module.
+
+Note what sort of response you get from the server.
+Some servers, such as Weather Underground, send a single word ``'success'`` response to indicate success, and a longer string indicating the cause of any failure.
+Other servers use HTTP response codes to indicate failure.
+Your module's ``upload_data`` method must return a ``(bool, str)`` tuple where the ``bool`` value indicates success (if ``True``) and the ``str`` value contains any message from the server.
+(If the server returns no message this string should be set to ``'OK'``.)
+Under normal operation pywws will log this message whenever it changes.
+
+Once your uploader is working OK you could contribute it to pywws if it's likely to be useful to other people.
+Don't forget to document it fully, then either send it to Jim or create a GitHub pull request.
+See :ref:`copyright-contributing` for instructions on doing this.
