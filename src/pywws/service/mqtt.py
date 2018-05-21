@@ -18,9 +18,9 @@
 
 """Upload weather data to MQTT message broker.
 
-MQTT is a "message broker" system, typically running on ``localhost`` or
-another computer in your home network. Use of MQTT with pywws requires
-an additional library. See :ref:`Dependencies - MQTT
+MQTT_ is a "message broker" system, typically running on ``localhost``
+or another computer in your home network. Use of MQTT with pywws
+requires an additional library. See :ref:`Dependencies - MQTT
 <dependencies-mqtt>` for details.
 
 * Mosquitto (a lightweight broker): http://mosquitto.org/
@@ -95,7 +95,7 @@ implemented.
 Thanks to Matt Thompson for writing the MQTT code and to Robin Kearney
 for adding the retain and auth options.
 
-.._ MQTT: http://mqtt.org/
+.. _MQTT: http://mqtt.org/
 
 """
 

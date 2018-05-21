@@ -43,6 +43,8 @@ Get data and process it
    pywws.livelog
    pywws.livelogdaemon
 
+.. _api-index-services:
+
 Upload data to online "services"
 --------------------------------
 
