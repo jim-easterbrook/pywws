@@ -24,6 +24,7 @@ from datetime import datetime, timedelta
 import importlib
 import logging
 import os
+import sys
 
 from pywws.calib import Calib
 import pywws.plot
@@ -56,6 +57,8 @@ class RegularTasks(object):
             'paths', 'graph_templates', os.path.expanduser('~/weather/graph_templates/'))
         self.local_dir = self.params.get(
             'paths', 'local_files', os.path.expanduser('~/weather/results/'))
+        self.module_dir = self.params.get(
+            'paths', 'modules', os.path.expanduser('~/weather/modules/'))
         # create calibration object
         self.calibrator = Calib(self.params, self.raw_data)
         # create templater object
@@ -90,17 +93,22 @@ class RegularTasks(object):
                     self.cron[section].get_next()
         # create service uploader objects
         self.services = {}
+        sys.path.insert(0, self.module_dir)
         for section in list(self.cron.keys()) + [
                        'live', 'logged', 'hourly', '12 hourly', 'daily']:
             for name in eval(self.params.get(section, 'services', '[]')):
                 if name in self.services:
                     continue
+                mod = None
                 try:
                     mod = importlib.import_module('pywws.service.' + name)
-                    self.services[name] = getattr(mod, 'ToService')(context)
                 except ImportError:
-                    logger.error(
-                        'no uploader found for service "{:s}"'.format(name))
+                    try:
+                        mod = importlib.import_module(name)
+                    except ImportError:
+                        logger.error('no uploader found for service "{:s}"'.format(name))
+                if mod:
+                    self.services[name] = mod.ToService(context)
             # check for obsolete entries
             if self.params.get(section, 'twitter'):
                 logger.error(
@@ -108,6 +116,7 @@ class RegularTasks(object):
             if self.params.get(section, 'yowindow'):
                 logger.error(
                     'Obsolete yowindow entry in weather.ini [%s]', section)
+        del sys.path[0]
         # check for 'local' template results
         if os.path.isdir(self.local_dir):
             return
