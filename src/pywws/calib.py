@@ -1,6 +1,6 @@
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-14  Jim Easterbrook  jim@jim-easterbrook.me.uk
+# Copyright (C) 2008-18  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -83,11 +83,13 @@ end of the file name.
 
 __docformat__ = "restructuredtext en"
 
+import importlib
 import logging
 import os
 import sys
 
 logger = logging.getLogger(__name__)
+
 
 class DefaultCalib(object):
     """Default calibration class.
@@ -106,7 +108,9 @@ class DefaultCalib(object):
         result['rel_pressure'] = result['abs_pressure'] + self.pressure_offset
         return result
 
+
 usercalib = None
+
 
 class Calib(object):
     """Calibration class that implements default or user calibration.
@@ -129,8 +133,8 @@ class Calib(object):
                 path, module = os.path.split(user_module)
                 sys.path.insert(0, path)
                 module = os.path.splitext(module)[0]
-                usercalib = __import__(
-                    module, globals(), locals(), ['Calib'])
+                usercalib = importlib.import_module(module)
+                del sys.path[0]
                 Calib.calibrator = usercalib.Calib(params, stored_data)
             else:
                 logger.info('Using default calibration')
