@@ -93,22 +93,18 @@ class RegularTasks(object):
                     self.cron[section].get_next()
         # create service uploader objects
         self.services = {}
-        sys.path.insert(0, self.module_dir)
         for section in list(self.cron.keys()) + [
                        'live', 'logged', 'hourly', '12 hourly', 'daily']:
             for name in eval(self.params.get(section, 'services', '[]')):
                 if name in self.services:
                     continue
-                mod = None
-                try:
+                if os.path.exists(os.path.join(self.module_dir, name + '.py')):
+                    sys.path.insert(0, self.module_dir)
+                    mod = importlib.import_module(name)
+                    del sys.path[0]
+                else:
                     mod = importlib.import_module('pywws.service.' + name)
-                except ImportError:
-                    try:
-                        mod = importlib.import_module(name)
-                    except ImportError:
-                        logger.error('no uploader found for service "{:s}"'.format(name))
-                if mod:
-                    self.services[name] = mod.ToService(context)
+                self.services[name] = mod.ToService(context)
             # check for obsolete entries
             if self.params.get(section, 'twitter'):
                 logger.error(
@@ -116,7 +112,6 @@ class RegularTasks(object):
             if self.params.get(section, 'yowindow'):
                 logger.error(
                     'Obsolete yowindow entry in weather.ini [%s]', section)
-        del sys.path[0]
         # check for 'local' template results
         if os.path.isdir(self.local_dir):
             return
