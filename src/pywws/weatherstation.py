@@ -390,7 +390,7 @@ class DriftingClock(object):
             self.clock = eval(
                 self.status.get('clock', self.name, 'None'))
             self.drift = eval(
-                self.status.get('clock', '%s drift' % self.name, '0.0'))
+                self.status.get('clock', self.name + ' drift', '0.0'))
         else:
             self.clock = None
             self.drift = 0.0
@@ -479,6 +479,11 @@ class WeatherStation(object):
             'station', self.status, 60, self.avoid)
         self._sensor_clock = DriftingClock(
             'sensor', self.status, 48, self.avoid)
+        if self.ws_type == '3080':
+            self._solar_clock = DriftingClock(
+                'solar', self.status, 60, self.avoid)
+        else:
+            self._solar_clock = None
         # check ws_type
         if self.ws_type not in ('1080', '3080'):
             if self.get_fixed_block(['lux_wm2_coeff']) == 0.0:
@@ -529,6 +534,8 @@ Your station is probably a '{:s}' type.
             elif next_log:
                 pause = min(pause, next_log - advance)
             elif old_data['delay'] >= read_period - 1:
+                pause = self.min_pause
+            if self._solar_clock and self._solar_clock.clock is None:
                 pause = self.min_pause
             pause = max(pause, self.min_pause)
             logger.debug(
@@ -588,6 +595,14 @@ Your station is probably a '{:s}' type.
             elif next_live and data_time > next_live + 6.0:
                 logger.info('live_data missed')
                 next_live += live_interval
+            # has solar data changed?
+            elif self._solar_clock and (
+                    new_data['illuminance'] != old_data['illuminance'] or
+                    new_data['uv'] != old_data['uv']):
+                logger.debug('live_data new solar data')
+                if data_time - last_data_time < self.margin:
+                    # data has just changed, so at a solar update time
+                    self._solar_clock.set_clock(data_time)
             old_data = new_data
             # has ptr changed?
             if new_ptr != old_ptr:
@@ -714,9 +729,9 @@ Your station is probably a '{:s}' type.
     def _wait_for_station(self):
         # avoid times when station is writing to memory
         while True:
-            pause = 60.0
-            pause = min(pause, self._station_clock.avoid())
-            pause = min(pause, self._sensor_clock.avoid())
+            pause = min(self._station_clock.avoid(), self._sensor_clock.avoid())
+            if self._solar_clock:
+                pause = min(pause, self._solar_clock.avoid())
             if pause >= self.avoid * 2.0:
                 return
             logger.debug('avoid %s', str(pause))
