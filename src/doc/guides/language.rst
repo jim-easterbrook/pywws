@@ -1,6 +1,6 @@
 .. pywws - Python software for USB Wireless Weather Stations
    http://github.com/jim-easterbrook/pywws
-   Copyright (C) 2008-15  pywws contributors
+   Copyright (C) 2008-18  pywws contributors
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -38,9 +38,9 @@ Program strings
 There may already be a pywws translation for your preferred language.
 First you need to choose the appropriate two-letter code from the list at http://www.w3schools.com/tags/ref_language_codes.asp.
 For example, ``fr`` is the code for French.
-Now use the :py:mod:`pywws.Localisation` module to do a quick test::
+Now use the :py:mod:`pywws.localisation` module to do a quick test::
 
-   python -m pywws.Localisation -t fr
+   python -m pywws.localisation -t fr
 
 This should produce output something like this::
 
@@ -65,7 +65,7 @@ Text encodings
 The pywws default text encoding is ISO-8859-1, also known as Latin-1.
 This is suitable for several western European languages but not for some others.
 If you encounter problems you may need to use a different encoding.
-See the documentation of :py:mod:`pywws.Template` and :py:mod:`pywws.Plot` for more details.
+See the documentation of :py:mod:`pywws.template` and :py:mod:`pywws.plot` for more details.
 
 Documentation
 ^^^^^^^^^^^^^
@@ -77,7 +77,7 @@ First delete the old documentation (if it exists) and then recompile using your 
 
    cd ~/weather/pywws
    rm -rf doc
-   LANG=fr python setup.py build_sphinx
+   LANG=fr python -B setup.py build_sphinx
 
 Note that the ``build_sphinx`` command doesn't have a ``--locale`` (or ``-l``) option, so the language is set by a temporary environment variable.
 
@@ -125,7 +125,7 @@ Program messages are extracted using the ``Babel`` package::
 
    cd ~/weather/pywws
    mkdir -p build/gettext
-   python setup.py extract_messages
+   python -B setup.py extract_messages
 
 This creates the file ``build/gettext/pywws.pot``.
 This is a "portable object template" file that contains the English language strings to be translated.
@@ -133,7 +133,7 @@ This is a "portable object template" file that contains the English language str
 The documentation strings are extracted using the ``Sphinx`` package::
 
    cd ~/weather/pywws
-   python setup.py extract_messages_doc
+   python -B setup.py extract_messages_doc
 
 This creates several ``.pot`` files in the ``build/gettext/`` directory.
 
@@ -155,7 +155,7 @@ Test the pywws translations
 
 The ``Babel`` package is used to compile program strings::
 
-   python setup.py compile_catalog --locale fr
+   python -B setup.py compile_catalog --locale fr
 
 (Replace ``fr`` with the code for the language you are testing.)
 
@@ -169,7 +169,7 @@ After compilation you can test the translation::
 
    cd ~/weather/pywws
    rm -rf doc
-   LANG=fr python setup.py build_sphinx
+   LANG=fr python -B setup.py build_sphinx
 
 You can view the translated documentation by using a web browser to read the file ``~/weather/pywws/doc/html/index.html``.
 
