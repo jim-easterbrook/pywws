@@ -106,6 +106,16 @@ class DataLogger(object):
         self.status.set('fixed', 'fixed block', pprint.pformat(fixed_block))
         return fixed_block
 
+    def catchup_needed(self):
+        # predict time stamp of next logged data
+        next_stored = self.raw_data.before(datetime.max)
+        if not next_stored:
+            return True
+        fixed_block = self.ws.get_fixed_block(unbuffered=True)
+        next_stored += timedelta(minutes=fixed_block['read_period'])
+        # nothing to fetch if it's far enough into the future
+        return (next_stored - datetime.utcnow()).total_seconds() < 48.0
+
     def catchup(self, last_date, last_ptr):
         fixed_block = self.ws.get_fixed_block(unbuffered=True)
         # get time to go back to
@@ -232,25 +242,27 @@ class DataLogger(object):
             self.ws.write_data([(ptr, 1), (ptr+1, 0)])
 
     def live_data(self, logged_only=False):
+        next_ptr = None
         next_hour = datetime.utcnow(
             ).replace(minute=0, second=0, microsecond=0) + HOUR
-        next_ptr = None
+        if self.catchup_needed():
+            for data, ptr, logged in self.ws.live_data(logged_only=True):
+                self.catchup(data['idx'], ptr)
+                next_ptr = self.ws.inc_ptr(ptr)
+                break
         for data, ptr, logged in self.ws.live_data(logged_only=logged_only):
+            now = data['idx']
             if logged:
-                now = data['idx']
-                if ptr == next_ptr:
-                    # data is contiguous with last logged value
-                    self.raw_data[now] = data
-                    if now >= next_hour:
-                        next_hour += HOUR
-                        self.check_fixed_block()
-                    self.status.set(
-                        'data', 'ptr', '%06x,%s' % (ptr, now.isoformat(' ')))
-                else:
-                    # catch up missing data
-                    self.catchup(now, ptr)
+                if next_ptr:
+                    assert(ptr == next_ptr)
+                self.raw_data[now] = data
+                self.status.set(
+                    'data', 'ptr', '%06x,%s' % (ptr, now.isoformat(' ')))
                 next_ptr = self.ws.inc_ptr(ptr)
             yield data, logged
+            if now >= next_hour:
+                next_hour += HOUR
+                self.check_fixed_block()
 
 
 def main(argv=None):
