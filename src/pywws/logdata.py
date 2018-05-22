@@ -88,60 +88,55 @@ class DataLogger(object):
         # connect to weather station
         self.ws = WeatherStation(context=context)
         # check computer clock isn't earlier than last stored data
-        last_stored = self.raw_data.before(datetime.max)
-        if last_stored and datetime.utcnow() < last_stored:
+        self.last_stored_time = self.raw_data.before(datetime.max) or datetime.min
+        if datetime.utcnow() < self.last_stored_time:
             raise ValueError('Computer time is earlier than last stored data')
-
-    def check_fixed_block(self):
-        fixed_block = self.ws.get_fixed_block(unbuffered=True)
-        # check 'magic number'
-        if (fixed_block['magic_0'], fixed_block['magic_1']) not in (
-                (0x55, 0xAA),):
-            logger.critical("Unrecognised 'magic number' %02x %02x",
-                            fixed_block['magic_0'], fixed_block['magic_1'])
-        # store info from fixed block
-        if not self.params.get('config', 'pressure offset'):
-            self.params.set('config', 'pressure offset', '%g' % (
-                fixed_block['rel_pressure'] - fixed_block['abs_pressure']))
-        self.status.set('fixed', 'fixed block', pprint.pformat(fixed_block))
-        return fixed_block
-
-    def catchup_needed(self):
-        # predict time stamp of next logged data
-        next_stored = self.raw_data.before(datetime.max)
-        if not next_stored:
-            return True
-        fixed_block = self.ws.get_fixed_block(unbuffered=True)
-        next_stored += timedelta(minutes=fixed_block['read_period'])
-        # nothing to fetch if it's far enough into the future
-        return (next_stored - datetime.utcnow()).total_seconds() < 48.0
-
-    def catchup(self, last_date, last_ptr):
-        fixed_block = self.ws.get_fixed_block(unbuffered=True)
-        # get time to go back to
-        last_stored = self.raw_data.before(datetime.max)
-        if not last_stored:
-            last_stored = datetime.min
+        # infer pointer of last stored data
         if self.status.get('data', 'ptr'):
             saved_ptr, saved_date = self.status.get('data', 'ptr').split(',')
             saved_ptr = int(saved_ptr, 16)
             saved_date = WSDateTime.from_csv(saved_date)
             saved_date = self.raw_data.nearest(saved_date)
-            while saved_date < last_stored:
+            while saved_date < self.last_stored_time:
                 saved_date = self.raw_data.after(saved_date + SECOND)
                 saved_ptr = self.ws.inc_ptr(saved_ptr)
+            while saved_date > self.last_stored_time:
+                saved_date = self.raw_data.before(saved_date - SECOND)
+                saved_ptr = self.ws.dec_ptr(saved_ptr)
         else:
             saved_ptr = None
-            saved_date = None
-        last_stored += timedelta(seconds=fixed_block['read_period'] * 30)
+        self.last_stored_ptr = saved_ptr
+        self.check_fixed_block()
+
+    def check_fixed_block(self):
+        self.fixed_block = self.ws.get_fixed_block(unbuffered=True)
+        # check 'magic number'
+        if (self.fixed_block['magic_0'], self.fixed_block['magic_1']) not in (
+                (0x55, 0xAA),):
+            logger.critical("Unrecognised 'magic number' %02x %02x",
+                            self.fixed_block['magic_0'],
+                            self.fixed_block['magic_1'])
+        # store info from fixed block
+        if not self.params.get('config', 'pressure offset'):
+            self.params.set('config', 'pressure offset', '%g' % (
+                self.fixed_block['rel_pressure']
+                    - self.fixed_block['abs_pressure']))
+        self.status.set('fixed', 'fixed block', pprint.pformat(self.fixed_block))
+
+    def fetch_logged(self, last_date, last_ptr):
+        # offset last stored time by half logging interval
+        last_stored = self.last_stored_time + timedelta(
+            seconds=self.fixed_block['read_period'] * 30)
         if last_date <= last_stored:
             # nothing to do
             return
-        self.status.set(
-            'data', 'ptr', '%06x,%s' % (last_ptr, last_date.isoformat(' ')))
         # data_count includes record currently being updated every 48 seconds
-        max_count = fixed_block['data_count'] - 1
+        max_count = self.fixed_block['data_count'] - 1
         count = 0
+        # initialise detection of data left after a station reboot
+        saved_date = self.last_stored_time
+        saved_ptr = self.last_stored_ptr
+        self.last_stored_ptr = None
         duplicates = []
         while last_date > last_stored and count < max_count:
             data = self.ws.get_data(last_ptr)
@@ -153,17 +148,16 @@ class DataLogger(object):
                     # pointer matches but data is different, so no duplicates
                     duplicates = None
                     saved_ptr = None
-                    saved_date = None
                 else:
                     # potential duplicate data
                     duplicates.append(last_date)
                     saved_date = self.raw_data.before(saved_date)
                     saved_ptr = self.ws.dec_ptr(saved_ptr)
             if (data['delay'] is None or
-                    data['delay'] > max(fixed_block['read_period'] * 2, 35)):
+                    data['delay'] > max(self.fixed_block['read_period'] * 2, 35)):
                 logger.error('invalid data at %04x, %s',
                              last_ptr, last_date.isoformat(' '))
-                last_date -= timedelta(minutes=fixed_block['read_period'])
+                last_date -= timedelta(minutes=self.fixed_block['read_period'])
             else:
                 self.raw_data[last_date] = data
                 count += 1
@@ -177,16 +171,15 @@ class DataLogger(object):
         next_date = self.raw_data.after(last_date + SECOND)
         if next_date:
             gap = (next_date - last_date).seconds // 60
-            gap -= fixed_block['read_period']
+            gap -= self.fixed_block['read_period']
             if gap > 0:
                 logger.critical("%d minutes gap in data detected", gap)
         logger.info("%d catchup records", count)
 
     def log_data(self, sync=None, clear=False):
-        fixed_block = self.check_fixed_block()
         # get sync config value
         if sync is None:
-            if fixed_block['read_period'] <= 5:
+            if self.fixed_block['read_period'] <= 5:
                 sync = int(self.params.get('config', 'logdata sync', '1'))
             else:
                 sync = int(self.params.get('config', 'logdata sync', '0'))
@@ -235,31 +228,34 @@ class DataLogger(object):
                     break
         # go back through stored data, until we catch up with what we've already got
         logger.info('Fetching data')
-        self.catchup(last_date, last_ptr)
+        self.status.set(
+            'data', 'ptr', '%06x,%s' % (last_ptr, last_date.isoformat(' ')))
+        self.fetch_logged(last_date, last_ptr)
         if clear:
             logger.info('Clearing weather station memory')
             ptr = self.ws.fixed_format['data_count'][0]
             self.ws.write_data([(ptr, 1), (ptr+1, 0)])
 
     def live_data(self, logged_only=False):
-        next_ptr = None
         next_hour = datetime.utcnow(
             ).replace(minute=0, second=0, microsecond=0) + HOUR
-        if self.catchup_needed():
-            for data, ptr, logged in self.ws.live_data(logged_only=True):
-                self.catchup(data['idx'], ptr)
-                next_ptr = self.ws.inc_ptr(ptr)
-                break
+        max_log_interval = timedelta(
+            minutes=self.fixed_block['read_period'], seconds=66)
+        log_overdue = self.last_stored_time + max_log_interval
         for data, ptr, logged in self.ws.live_data(logged_only=logged_only):
             now = data['idx']
             if logged:
-                if next_ptr:
-                    assert(ptr == next_ptr)
                 self.raw_data[now] = data
                 self.status.set(
                     'data', 'ptr', '%06x,%s' % (ptr, now.isoformat(' ')))
-                next_ptr = self.ws.inc_ptr(ptr)
-            yield data, logged
+                if now >= log_overdue:
+                    # fetch missing data
+                    self.fetch_logged(now - timedelta(minutes=data['delay']),
+                                      self.ws.dec_ptr(ptr))
+                log_overdue = now + max_log_interval
+            # don't supply live data if logged is overdue
+            if now < log_overdue:
+                yield data, logged
             if now >= next_hour:
                 next_hour += HOUR
                 self.check_fixed_block()
