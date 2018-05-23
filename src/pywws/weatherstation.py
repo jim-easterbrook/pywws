@@ -607,7 +607,9 @@ Your station is probably a '{:s}' type.
             # has ptr changed?
             if new_ptr != old_ptr:
                 logger.info('live_data new ptr: %06x', new_ptr)
-                not_logging = False
+                if not_logging:
+                    logger.error('station is logging data')
+                    not_logging = False
                 last_log = ptr_time - self.margin
                 if ptr_time - last_ptr_time < self.margin:
                     # pointer has just changed, so definitely at a logging time
