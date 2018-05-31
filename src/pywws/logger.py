@@ -29,6 +29,17 @@ from pywws import __version__, _release, _commit
 logger = logging.getLogger(__name__)
 
 
+class SystemdFormatter(logging.Formatter):
+    def format(self, record):
+        level = min((68 - record.levelno) // 8, 7)
+        return '<{:d}>{:s}'.format(
+            level, super(SystemdFormatter, self).format(record))
+
+    def formatException(self, exc_info):
+        msg = super(SystemdFormatter, self).formatException(exc_info)
+        return msg.replace('\n', '\\n')
+
+
 class FilterURLLib3(object):
     def __init__(self, level):
         self.level = level
@@ -42,20 +53,25 @@ class FilterURLLib3(object):
 
 def setup_handler(verbose, logfile=None):
     root_logger = logging.getLogger('')
-    if logfile:
+    if logfile=='systemd':
+        level = logging.ERROR - (verbose * 10)
+        handler = logging.StreamHandler(stream=sys.stdout)
+        formatter = SystemdFormatter('%(name)s:%(message)s')
+    elif logfile:
         level = logging.ERROR - (verbose * 10)
         handler = logging.handlers.RotatingFileHandler(
             logfile, maxBytes=128*1024, backupCount=3)
-        datefmt = '%Y-%m-%d %H:%M:%S'
+        formatter = logging.Formatter(
+            '%(asctime)s:%(name)s:%(message)s', '%Y-%m-%d %H:%M:%S')
     else:
         level = logging.WARNING - (verbose * 10)
         handler = logging.StreamHandler()
-        datefmt = '%H:%M:%S'
+        formatter = logging.Formatter(
+            '%(asctime)s:%(name)s:%(message)s', '%H:%M:%S')
     level = max(level, 1)
     root_logger.setLevel(level)
     handler.addFilter(FilterURLLib3(level))
-    handler.setFormatter(
-        logging.Formatter('%(asctime)s:%(name)s:%(message)s', datefmt))
+    handler.setFormatter(formatter)
     root_logger.addHandler(handler)
     logger.warning(
         'pywws version %s, build %s (%s)', __version__, _release, _commit)
