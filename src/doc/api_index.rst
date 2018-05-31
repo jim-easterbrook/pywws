@@ -29,7 +29,6 @@ Set up and configure pywws
    pywws.setweatherstation
    pywws.version
    pywws.reprocess
-   pywws.twitterauth
    pywws.usbtest
    pywws.mergeewdata
 
@@ -76,7 +75,6 @@ Upload data to online "services"
    pywws.forecast
    pywws.towebsite
    pywws.totwitter
-   pywws.toservice
    pywws.weatherstation
    pywws.device_libusb1
    pywws.device_pyusb1

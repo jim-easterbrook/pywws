@@ -201,7 +201,6 @@ If you have problems, e.g. with character encoding, try installing ``python-twit
 
 .. versionchanged:: 13.10_r1086
    reenabled use of ``tweepy`` library as an alternative to ``python-twitter``.
-   ``python-oauth2`` is still required by :py:mod:`pywws.twitterauth`.
 
 .. versionchanged:: 13.06_r1023
    pywws previously used the ``tweepy`` library instead of ``python-twitter`` and ``python-oauth2``.
