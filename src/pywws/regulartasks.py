@@ -50,7 +50,7 @@ class RegularTasks(object):
         # get directories
         self.work_dir = self.params.get('paths', 'work', '/tmp/pywws')
         if not os.path.isdir(self.work_dir):
-            os.mkdir(self.work_dir)
+            os.makedirs(self.work_dir)
         self.template_dir = self.params.get(
             'paths', 'templates', os.path.expanduser('~/weather/templates/'))
         self.graph_template_dir = self.params.get(
@@ -69,7 +69,7 @@ class RegularTasks(object):
         # create FTP uploads directory
         self.uploads_directory = os.path.join(self.work_dir, 'uploads')
         if not os.path.isdir(self.uploads_directory):
-            os.mkdir(self.uploads_directory)
+            os.makedirs(self.uploads_directory)
         # delay creation of uploader object until we know it's needed
         self.uploader = None
         # delay creation of a Twitter object until we know it's needed
@@ -125,8 +125,8 @@ class RegularTasks(object):
                 if 'L' in flags:
                     has_local = True
             if has_local:
-                raise RuntimeError(
-                    'Directory "{:s}" does not exist.'.format(self.local_dir))
+                os.makedirs(self.local_dir)
+                break
 
     def has_live_tasks(self):
         if self.cron:
