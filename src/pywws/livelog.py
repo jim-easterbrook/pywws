@@ -43,6 +43,7 @@ from datetime import datetime
 import getopt
 import logging
 import os
+import signal
 import sys
 import time
 
@@ -56,7 +57,17 @@ import pywws.storage
 logger = logging.getLogger(__name__)
 
 
+def signal_handler(signum, frame):
+    if signum == signal.SIGTERM:
+        raise KeyboardInterrupt
+    if signum == signal.SIGHUP:
+        raise NotImplementedError
+
+
 def live_log(data_dir):
+    # set up signal handlers
+    signal.signal(signal.SIGHUP, signal_handler)
+    signal.signal(signal.SIGTERM, signal_handler)
     with pywws.storage.pywws_context(data_dir, live_logging=True) as context:
         # localise application
         pywws.localisation.set_application_language(context.params)
@@ -76,9 +87,12 @@ def live_log(data_dir):
                 else:
                     tasks.do_live(data)
         except KeyboardInterrupt:
-            pass
+            return 0
+        except NotImplementedError:
+            return 3
         except Exception as ex:
             logger.exception(ex)
+            return 1
     return 0
 
 
