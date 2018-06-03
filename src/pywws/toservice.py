@@ -273,7 +273,8 @@ class ToService(object):
         # set timestamp of first data to upload
         self.next_update = datetime.utcnow() - max(
             timedelta(days=self.catchup), self.interval)
-        self.next_update = min(self.next_update, self.data.before(datetime.max))
+        self.next_update = min(
+            self.next_update, self.data.before(datetime.max) or datetime.max)
 
     def prepare_data(self, data):
         """Prepare a weather data record.

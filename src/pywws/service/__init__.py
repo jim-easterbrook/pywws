@@ -137,8 +137,8 @@ class BaseToService(object):
             self.templater = pywws.template.Template(context, use_locale=False)
             self.template_file = StringIO(self.template)
         # set timestamp of first data to upload
-        earliest = self.context.calib_data.before(datetime.max) - max(
-            timedelta(days=self.catchup), self.interval)
+        earliest = self.context.calib_data.before(datetime.max) or datetime.max
+        earliest -= max(timedelta(days=self.catchup), self.interval)
         self.next_update = context.status.get_datetime(
             'last update', self.service_name)
         if self.next_update:
