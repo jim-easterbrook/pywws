@@ -270,11 +270,6 @@ class ToService(object):
         self.interval = timedelta(seconds=self.interval)
         if service_params.has_option('config', 'http_headers'):
             self.http_headers = eval(service_params.get('config', 'http_headers'))
-        # set timestamp of first data to upload
-        self.next_update = datetime.utcnow() - max(
-            timedelta(days=self.catchup), self.interval)
-        self.next_update = min(
-            self.next_update, self.data.before(datetime.max) or datetime.max)
 
     def prepare_data(self, data):
         """Prepare a weather data record.
@@ -546,28 +541,24 @@ class ToService(object):
         :rtype: dict
 
         """
-        if ignore_last_update:
-            last_update = None
-        else:
-            last_update = self.status.get_datetime(
-                'last update', self.service_name)
-        if last_update:
-            self.next_update = max(self.next_update,
-                                   last_update + self.interval)
-        if catchup:
-            start = self.next_update
-        else:
+        last_update = self.status.get_datetime('last update', self.service_name)
+        if not catchup:
             start = self.data.before(datetime.max)
+        elif last_update and not ignore_last_update:
+            start = last_update + self.interval
+        else:
+            start = datetime.utcnow() - max(
+                timedelta(days=self.catchup), self.interval)
         if live_data:
             stop = live_data['idx'] - self.interval
         else:
             stop = None
+        next_update = start or datetime.min
         for data in self.data[start:stop]:
-            if data['idx'] >= self.next_update:
-                self.next_update = data['idx'] + self.interval
+            if data['idx'] >= next_update:
+                next_update = data['idx'] + self.interval
                 yield data
-        if live_data and live_data['idx'] >= self.next_update:
-            self.next_update = live_data['idx'] + self.interval
+        if live_data and live_data['idx'] >= next_update:
             yield live_data
 
     def set_last_update(self, timestamp):

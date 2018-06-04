@@ -136,16 +136,6 @@ class BaseToService(object):
         if self.template:
             self.templater = pywws.template.Template(context, use_locale=False)
             self.template_file = StringIO(self.template)
-        # set timestamp of first data to upload
-        earliest = self.context.calib_data.before(datetime.max) or datetime.max
-        earliest -= max(timedelta(days=self.catchup), self.interval)
-        self.next_update = context.status.get_datetime(
-            'last update', self.service_name)
-        if self.next_update:
-            self.next_update += self.interval
-            self.next_update = max(self.next_update, earliest)
-        else:
-            self.next_update = earliest
         # create upload thread
         self.upload_thread = UploadThread(self, context)
         self.stop = self.upload_thread.stop
@@ -153,10 +143,7 @@ class BaseToService(object):
     def upload(self, catchup=True, live_data=None, test_mode=False):
         OK = True
         count = 0
-        if test_mode:
-            self.next_update = min(
-                self.next_update, self.context.calib_data.before(datetime.max))
-        for data, live in self.next_data(catchup, live_data):
+        for data, live in self.next_data(catchup and not test_mode, live_data):
             if count >= 30 or len(self.upload_thread.queue) >= 60:
                 break
             timestamp = data['idx']
@@ -177,22 +164,27 @@ class BaseToService(object):
         return eval('{' + data_str + '}')
 
     def next_data(self, catchup, live_data):
-        if catchup:
-            start = self.next_update
-        else:
+        last_update = self.context.status.get_datetime(
+            'last update', self.service_name)
+        if not catchup:
             start = self.context.calib_data.before(datetime.max)
+        elif last_update:
+            start = last_update + self.interval
+        else:
+            start = datetime.utcnow() - max(
+                timedelta(days=self.catchup), self.interval)
         if live_data:
             stop = live_data['idx'] - self.interval
         else:
             stop = None
+        next_update = start or datetime.min
         for data in self.context.calib_data[start:stop]:
-            if data['idx'] >= self.next_update and self.valid_data(data):
+            if data['idx'] >= next_update and self.valid_data(data):
                 yield data, False
-                self.next_update = data['idx'] + self.interval
-        if (live_data and live_data['idx'] >= self.next_update and
+                next_update = data['idx'] + self.interval
+        if (live_data and live_data['idx'] >= next_update and
                 self.valid_data(live_data)):
             yield live_data, True
-            self.next_update = live_data['idx'] + self.interval
 
     def valid_data(self, data):
         return True
