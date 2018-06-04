@@ -336,6 +336,7 @@ Open this with a text editor. You should find something like the following::
 Re-ordering them has no effect.)
 You need to add a new entry in the ``[config]`` section called ``day end hour``.
 This tells pywws what convention you want to use when calculating daily summary data.
+The entry should have two values separated by a comma: a number in the range 0 to 23 (the hour of day, in local winter time) and a single word ``True`` or ``False`` to say if the day end should adjust with summer (daylight savings) time.
 In the UK, the 'meteorological day' is usually from 09:00 to 09:00 GMT (10:00 to 10:00 BST during summer), so I use a day end hour value of ``9, False``.
 If you prefer to use midnight, winter or summer, you should use ``0, True``.
 

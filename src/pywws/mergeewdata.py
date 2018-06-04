@@ -24,7 +24,7 @@
 Introduction
 ------------
 
-This modlue converts data from the format used by the EasyWeather
+This module converts data from the format used by the EasyWeather
 program supplied with the weather station to the format used by pywws.
 It is useful if you've been using EasyWeather for a while before
 discovering pywws.

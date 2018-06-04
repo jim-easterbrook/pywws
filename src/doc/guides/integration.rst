@@ -117,6 +117,6 @@ Your module's ``upload_data`` method must return a ``(bool, str)`` tuple where t
 (If the server returns no message this string should be set to ``'OK'``.)
 Under normal operation pywws will log this message whenever it changes.
 
-Once your uploader is working OK you could contribute it to pywws if it's likely to be useful to other people.
+Once your uploader is working you could contribute it to pywws if it's likely to be useful to other people.
 Don't forget to document it fully, then either send it to Jim or create a GitHub pull request.
 See :ref:`copyright-contributing` for instructions on doing this.

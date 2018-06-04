@@ -149,7 +149,7 @@ Clock drift
    2018-05-28 11:59:14:pywws.weatherstation:station clock drift -0.297843 -0.375514
 
 These lines report how the weather station's internal ("station") and external ("sensor") clocks are drifting with respect to the computer's clock.
-These measurements are used to avoid accessing the station's USB port at the same time as it is receiving data or logging data, as this is known to cause some station's USB ports to become inaccessible.
+These measurements are used to avoid accessing the station's USB port at the same time as it is receiving data or logging data, as this is known to cause some stations' USB ports to become inaccessible.
 The two "drift" figures are the current value (only accurate to about 1 second) and the long term average.
 You should ensure that the ``usb activity margin`` value in your :ref:`weather.ini file <weather_ini-config>` is at least 0.5 seconds greater than the absolute value of the long term drift of each clock.
 Note that these drift values change with temperature.
@@ -232,12 +232,10 @@ Live data missed
 ----------------
 
 .. code-block:: none
-   :linenos:
 
    2015-10-30 04:49:56:pywws.weatherstation:live_data missed
 
-Line 3 indicate that pywws failed to capture live data.
-
+Sometimes pywws fails to capture live data.
 This happens if a new data record is identical to the previous one so pywws doesn't detect a change.
 This is unlikely to happen if you are receiving wind data properly.
 

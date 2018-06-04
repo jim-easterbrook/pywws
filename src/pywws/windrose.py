@@ -62,7 +62,7 @@ The complete element hierarchy is shown below.
 |            yrange_
 |            points_
 |            source_
-|            :ref:`title <plot-title>`
+|            :ref:`title <rose-title>`
 |            command_
 |        start_
 |        stop_
@@ -71,7 +71,7 @@ The complete element hierarchy is shown below.
 |        size_
 |        fileformat_
 |        `lmargin, rmargin, tmargin, bmargin`_
-|        :ref:`title <graph-title>`
+|        :ref:`title <roses-title>`
 
 graph
 ^^^^^
@@ -138,7 +138,7 @@ margin. Supply any positive real number, for example
 ``<lmargin>1.3</lmargin>``. Some experimentation may be necessary to
 find the best values.
 
-.. _graph-title:
+.. _roses-title:
 
 title
 ^^^^^
@@ -224,7 +224,7 @@ Select the weather data to be plotted. Permitted values are
 is raw. Note that the different sources have different data
 dictionaries, so this choice affects ycalc.
 
-.. _plot-title:
+.. _rose-title:
 
 title
 ^^^^^

@@ -36,15 +36,15 @@ record in that hour.
 The daily data summarises the weather over a 24 hour period typically
 ending at 2100 or 0900 hours, local (non DST) time, though midnight is
 another popular convention. It is also indexed by the last complete
-record in the period. Daytime and nightime, as used when computing
+record in the period. Daytime and nighttime, as used when computing
 maximum and minimum temperatures, are assumed to start at 0900 and
 2100 local time, or 1000 and 2200 when DST is in effect, regardless of
 the meteorological day.
 
 To adjust the meteorological day to your preference, or that used by
 your local official weather station, edit the "day end hour" line in
-your ``weather.ini`` file, then run pywws.reprocess to regenerate the
-summaries.
+your ``weather.ini`` file, then run :mod:`pywws.reprocess` to regenerate
+the summaries.
 
 Monthly summary data is computed from the daily summary data. If the
 meteorological day does not end at midnight, then each month may begin

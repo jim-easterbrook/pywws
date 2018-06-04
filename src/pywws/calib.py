@@ -18,7 +18,6 @@
 
 """
 Calibrate raw weather station data
-==================================
 
 This module allows adjustment of raw data from the weather station as
 part of the 'processing' step (see :doc:`pywws.process`). For example,
@@ -38,7 +37,9 @@ directory in the same place as your ``templates`` directory.
 
 You could start by copying one of the example calibration modules, or
 you can create a plain text file in your ``modules`` directory, e.g.
-``calib.py`` and copy the following text into it::
+``calib.py`` and copy the following text into it:
+
+.. code-block:: python3
 
     class Calib(object):
         def __init__(self, params, stored_data):
