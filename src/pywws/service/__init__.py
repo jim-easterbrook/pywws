@@ -136,6 +136,9 @@ class BaseToService(object):
         if self.template:
             self.templater = pywws.template.Template(context, use_locale=False)
             self.template_file = StringIO(self.template)
+        # get time stamp of last uploaded data
+        self.last_update = self.context.status.get_datetime(
+            'last update', self.service_name)
         # create upload thread
         self.upload_thread = UploadThread(self, context)
         self.stop = self.upload_thread.stop
@@ -164,12 +167,10 @@ class BaseToService(object):
         return eval('{' + data_str + '}')
 
     def next_data(self, catchup, live_data):
-        last_update = self.context.status.get_datetime(
-            'last update', self.service_name)
         if not catchup:
             start = self.context.calib_data.before(datetime.max)
-        elif last_update:
-            start = last_update + self.interval
+        elif self.last_update:
+            start = self.last_update + self.interval
         else:
             start = datetime.utcnow() - max(
                 timedelta(days=self.catchup), self.interval)
@@ -181,10 +182,12 @@ class BaseToService(object):
         for data in self.context.calib_data[start:stop]:
             if data['idx'] >= next_update and self.valid_data(data):
                 yield data, False
-                next_update = data['idx'] + self.interval
+                self.last_update = data['idx']
+                next_update = self.last_update + self.interval
         if (live_data and live_data['idx'] >= next_update and
                 self.valid_data(live_data)):
             yield live_data, True
+            self.last_update = live_data['idx']
 
     def valid_data(self, data):
         return True
