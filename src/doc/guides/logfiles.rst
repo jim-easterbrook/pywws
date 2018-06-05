@@ -149,6 +149,7 @@ Clock drift
    2018-05-28 11:59:14:pywws.weatherstation:station clock drift -0.297843 -0.375514
 
 These lines report how the weather station's internal ("station") and external ("sensor") clocks are drifting with respect to the computer's clock.
+(The ``3080`` class stations also have a "solar" clock as the sunlight data is sent at 60 second intervals.)
 These measurements are used to avoid accessing the station's USB port at the same time as it is receiving data or logging data, as this is known to cause some stations' USB ports to become inaccessible.
 The two "drift" figures are the current value (only accurate to about 1 second) and the long term average.
 You should ensure that the ``usb activity margin`` value in your :ref:`weather.ini file <weather_ini-config>` is at least 0.5 seconds greater than the absolute value of the long term drift of each clock.
@@ -214,6 +215,12 @@ As the internal and external sensors drift there comes a time when an external r
 To avoid a clash the station delays logging by one minute.
 As the external readings are at 48 second intervals this avoids the problem until 16 minutes later (with the normal 5 minute logging interval) when another one minute delay is needed.
 Eventually the clocks drift apart and normal operation is resumed.
+
+The ``3080`` class stations also receive solar data at 60 second intervals.
+If this clashes with the logging time the station delays logging by one minute.
+Unfortunately this doesn't help, so the station effectively stops logging data until the clocks drift apart again.
+If you are running pywws "live logging" then it will cover the gap by saving live readings at five minute intervals (if your logging interval is set to five minutes) until the station resumes normal operation.
+if you are running "hourly" logging then you will get a large gap in your data.
 
 Rain reset
 ----------
