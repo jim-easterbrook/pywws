@@ -220,7 +220,7 @@ The ``3080`` class stations also receive solar data at 60 second intervals.
 If this clashes with the logging time the station delays logging by one minute.
 Unfortunately this doesn't help, so the station effectively stops logging data until the clocks drift apart again.
 If you are running pywws "live logging" then it will cover the gap by saving live readings at five minute intervals (if your logging interval is set to five minutes) until the station resumes normal operation.
-if you are running "hourly" logging then you will get a large gap in your data.
+If you are running "hourly" logging then you may get a large gap in your data.
 
 Rain reset
 ----------
