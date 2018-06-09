@@ -16,6 +16,9 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
+Changes in v18.6.1:
+    1/ Fix bug in "fixed block" date parsing.
+
 Changes in v18.6.0:
     1/ Substantial rewrite of much of pywws. It is now more "standard" in many
        ways, such as names of modules, and is compatible with Python 2.7 and 3.
