@@ -254,7 +254,10 @@ class WSTime(str):
     def from_raw(raw, pos):
         hour = _bcd_decode(raw[pos])
         minute = _bcd_decode(raw[pos+1])
-        return WSTime('{:02d}:{:02d}'.format(hour, minute))
+        try:
+            return WSTime('{:02d}:{:02d}'.format(hour, minute))
+        except ValueError:
+            return None
 
 
 class WSDateTime(datetime):
@@ -281,7 +284,10 @@ class WSDateTime(datetime):
         day = _bcd_decode(raw[pos+2])
         hour = _bcd_decode(raw[pos+3])
         minute = _bcd_decode(raw[pos+4])
-        return WSDateTime(year + 2000, month, day, hour, minute)
+        try:
+            return WSDateTime(year + 2000, month, day, hour, minute)
+        except ValueError:
+            return None
 
 
 def _decode(raw, format_):
