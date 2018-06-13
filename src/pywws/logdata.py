@@ -241,20 +241,19 @@ class DataLogger(object):
             ).replace(minute=0, second=0, microsecond=0) + HOUR
         max_log_interval = timedelta(
             minutes=self.fixed_block['read_period'], seconds=66)
-        log_overdue = self.last_stored_time + max_log_interval
         for data, ptr, logged in self.ws.live_data(logged_only=logged_only):
             now = data['idx']
             if logged:
                 self.raw_data[now] = data
                 self.status.set(
                     'data', 'ptr', '%06x,%s' % (ptr, now.isoformat(' ')))
-                if now >= log_overdue:
+                if now >= self.last_stored_time + max_log_interval:
                     # fetch missing data
                     self.fetch_logged(now - timedelta(minutes=data['delay']),
                                       self.ws.dec_ptr(ptr))
-                log_overdue = now + max_log_interval
+                self.last_stored_time = now
             # don't supply live data if logged is overdue
-            if now < log_overdue:
+            if now < self.last_stored_time + max_log_interval:
                 yield data, logged
             if now >= next_hour:
                 next_hour += HOUR
