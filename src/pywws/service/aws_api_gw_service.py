@@ -16,32 +16,22 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-"""Upload weather data to UK Met Office "WOW".
+"""Upload weather data to an AWS Gateway API (or other) service.
 
-The UK Met Office runs a `Weather Observations Website`_ (WOW) that
-displays readings from amateur and official weather stations. This
-module uploads data to it from pywws. You can upload "logged" or "live"
-data (or both). The module ensures there is at least 5 minutes between
-each reading as required by the API.
+This is for any service that accepts key value data via a GET method. This
+supports optional extra headers.
 
-* Create account: https://register.metoffice.gov.uk/WaveRegistrationClient/public/newaccount.do?service=weatherobservations
-* API: http://wow.metoffice.gov.uk/support/dataformats#automatic
 * Example ``weather.ini`` configuration::
 
-    [metoffice]
-    site id = 12345678
-    aws pin = 987654
+    [aws_api_gw_service]
+    api url	= https://my-aws-api-gw.execute-api.eu-west-1.amazonaws.com/weather
+    http headers	= [('x-api-key', 'my-api-key')]
 
     [logged]
-    services = ['metoffice', 'underground']
+    services = ['aws_api_gw_service', 'metoffice']
 
     [live]
-    services = ['metoffice', 'underground']
-
-Note that a ``site id`` allocated since June 2016 will probably look
-like ``6a571450-df53-e611-9401-0003ff5987fd``.
-
-.. _Weather Observations Website: http://wow.metoffice.gov.uk/home
+    services = ['aws_api_gw_service', 'metoffice']
 
 """
 
@@ -99,6 +89,11 @@ class ToService(pywws.service.BaseToService):
             self.last_rain = context.calib_data[last_update]['rain']
         else:
             self.last_rain = None
+        # get service params (headers are optional)
+        self.params = {
+            'headers' : context.params.get(service_name, 'http headers', None),
+            'api_url' : context.params.get(service_name, 'api url', ''),
+            }
         # base class init
         super(ToService, self).__init__(context)
 
@@ -107,39 +102,15 @@ class ToService(pywws.service.BaseToService):
         with requests.Session() as session:
             yield session
 
-    def prepare_data(self, data):
-        prepared_data = super(ToService, self).prepare_data(data)
-        # compute rain since last upload
-        if self.last_rain is not None:
-            rain = data['rain'] - self.last_rain
-            if rain >= -0.001:
-                prepared_data['rain_day'] = '{:.1f}'.format(rain)
-        self.last_rain = data['rain']
-        # compute rain since day start
-        day_start = self.context.daily_data.nearest(data['idx'])
-        day_start = self.context.daily_data[day_start]['start']
-        day_start = self.context.calib_data.after(day_start)
-        rain = data['rain'] - self.context.calib_data[day_start]['rain']
-        if rain >= -0.001:
-            prepared_data['rain_day'] = '{:.1f}'.format(rain)
-        return prepared_data
-
-    def valid_data(self, data):
-        return any([data[x] is not None for x in (
-            'wind_dir', 'wind_ave', 'wind_gust', 'hum_out', 'temp_out',
-            'rel_pressure')])
-
     def upload_data(self, session, prepared_data={}, live=False):
         try:
-            sec = {'x-api-key': 'KEY'}
-	    session.headers.update(sec)
-            rsp = session.get('URL',
-                              params=prepared_data, timeout=60)
+            if self.params['headers'] is not None:
+                for header in self.params['headers']:
+                    session.headers.update(header[0], header[1])
+            rsp = session.get(self.params['api_url'], params=prepared_data,
+                timeout=60)
         except Exception as ex:
             return False, str(ex)
-        if rsp.status_code == 429:
-            # UK Met Office server uses 429 to signal duplicate data
-            return True, 'repeated data {:s}'.format(prepared_data['dateutc'])
         if rsp.status_code != 200:
             return False, 'http status: {:d}'.format(rsp.status_code)
         rsp = rsp.json()
