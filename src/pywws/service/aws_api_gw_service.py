@@ -91,8 +91,7 @@ class ToService(pywws.service.BaseToService):
             self.last_rain = None
         # get service params (headers are optional)
         self.params = {
-            'headers' : eval(context.params.get(service_name, 'http headers',
-                None)),
+            'headers' : context.params.get(service_name, 'http headers', None),
             'api_url' : context.params.get(service_name, 'api url', ''),
             }
         # base class init
@@ -106,7 +105,7 @@ class ToService(pywws.service.BaseToService):
     def upload_data(self, session, prepared_data={}, live=False):
         try:
             if self.params['headers'] is not None:
-                for header in self.params['headers']:
+                for header in eval(self.params['headers']):
                     session.headers.update({header[0]: header[1]})
             rsp = session.get(self.params['api_url'], params=prepared_data,
                 timeout=60)
