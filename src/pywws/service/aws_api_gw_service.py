@@ -91,7 +91,8 @@ class ToService(pywws.service.BaseToService):
             self.last_rain = None
         # get service params (headers are optional)
         self.params = {
-            'headers' : context.params.get(service_name, 'http headers', None),
+            'headers' : eval(context.params.get(service_name, 'http headers',
+                None)),
             'api_url' : context.params.get(service_name, 'api url', ''),
             }
         # base class init
@@ -106,7 +107,7 @@ class ToService(pywws.service.BaseToService):
         try:
             if self.params['headers'] is not None:
                 for header in self.params['headers']:
-                    session.headers.update(header[0], header[1])
+                    session.headers.update({header[0]: header[1]})
             rsp = session.get(self.params['api_url'], params=prepared_data,
                 timeout=60)
         except Exception as ex:
@@ -121,4 +122,3 @@ class ToService(pywws.service.BaseToService):
 
 if __name__ == "__main__":
     sys.exit(pywws.service.main(ToService))
-
