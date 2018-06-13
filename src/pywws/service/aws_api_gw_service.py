@@ -25,7 +25,7 @@ supports optional extra headers.
 
     [aws_api_gw_service]
     api url	= https://my-aws-api-gw.execute-api.eu-west-1.amazonaws.com/weather
-    http headers	= [('x-api-key', 'my-api-key')]
+    http headers	= [('x-api-key', 'my-api-key'), ('another-one', 'spam-val')]
 
     [logged]
     services = ['aws_api_gw_service', 'metoffice']
