@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
 # Copyright (C) 2008-18  pywws contributors
