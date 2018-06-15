@@ -16,6 +16,11 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
+Changes in v18.6.3:
+    1/ Restore Python source text encoding comments needed by some Python 2
+       versions.
+    2/ Add example AWS uploader module from Chris Ramsay.
+
 Changes in v18.6.2:
     1/ Fix duplicate data bug in live logging.
 
