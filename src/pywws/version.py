@@ -41,6 +41,7 @@ import sys
 
 from pywws import __version__, _release, _commit
 
+
 def main(argv=None):
     if argv is None:
         argv = sys.argv
@@ -80,8 +81,9 @@ def main(argv=None):
             print('examples:')
             print('  ', example_dir)
         print('docs:')
-        print('   http://jim-easterbrook.github.com/pywws/')
+        print('   http://pywws.readthedocs.io/')
     return 0
+
 
 if __name__ == '__main__':
     sys.exit(main())
