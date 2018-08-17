@@ -21,8 +21,8 @@
 `Open Weather Map`_ is a Latvian based IT company seeking to provide
 affordable weather data.
 
-* Create account: http://home.openweathermap.org/users/sign_up
-* API: http://openweathermap.org/stations
+* Create account: https://home.openweathermap.org/users/sign_up
+* API: https://openweathermap.org/stations
 * Example ``weather.ini`` configuration::
 
     [openweathermap]
@@ -68,7 +68,7 @@ If this succeeds then Open Weather Map will have allocated a ``station
 id`` value which pywws stores in weather.ini. All this complication is
 to allow more than one station to be attached to one user's account.
 
-.. _Open Weather Map: http://openweathermap.org/
+.. _Open Weather Map: https://openweathermap.org/
 .. _API keys page: https://home.openweathermap.org/api_keys
 
 """
@@ -136,7 +136,7 @@ class ToService(pywws.service.BaseToService):
             yield session
 
     def upload_data(self, session, prepared_data={}, live=False):
-        url = 'http://api.openweathermap.org/data/3.0/measurements'
+        url = 'https://api.openweathermap.org/data/3.0/measurements'
         try:
             rsp = session.post(url, json=[prepared_data], timeout=60)
         except Exception as ex:
@@ -148,7 +148,7 @@ class ToService(pywws.service.BaseToService):
 
     def register(self):
         import pprint
-        url = 'http://api.openweathermap.org/data/3.0/stations'
+        url = 'https://api.openweathermap.org/data/3.0/stations'
         data = {
             'external_id': self.params['external_id'],
             'name'       : self.params['station_name'],
