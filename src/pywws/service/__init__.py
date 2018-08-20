@@ -119,7 +119,7 @@ class UploadThread(threading.Thread):
             self.old_message = message
 
 
-class BaseToService(object):
+class DataService(object):
     log_count = True
 
     def __init__(self, context):
