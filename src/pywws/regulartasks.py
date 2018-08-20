@@ -95,7 +95,7 @@ class RegularTasks(object):
         self.services = {}
         for section in list(self.cron.keys()) + [
                        'live', 'logged', 'hourly', '12 hourly', 'daily']:
-            for name in eval(self.params.get(section, 'services', '[]')):
+            for name, option in self._parse_templates(section, 'services'):
                 if name in self.services:
                     continue
                 if os.path.exists(os.path.join(self.module_dir, name + '.py')):
