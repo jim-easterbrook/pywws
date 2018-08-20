@@ -143,7 +143,7 @@ class BaseToService(object):
         self.upload_thread = UploadThread(self, context)
         self.stop = self.upload_thread.stop
 
-    def upload(self, catchup=True, live_data=None, test_mode=False):
+    def upload(self, catchup=True, live_data=None, test_mode=False, option=''):
         OK = True
         count = 0
         for data, live in self.next_data(catchup and not test_mode, live_data):

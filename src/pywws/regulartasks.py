@@ -153,19 +153,15 @@ class RegularTasks(object):
         text_tasks = []
         plot_tasks = []
         for section in sections:
-            for name in eval(self.params.get(section, 'services', '[]')):
-                if name not in service_tasks:
-                    service_tasks.append(name)
+            for task in self._parse_templates(section, 'services'):
+                if task not in service_tasks:
+                    service_tasks.append(task)
             for task in self._parse_templates(section, 'text'):
                 if task not in text_tasks:
                     text_tasks.append(task)
             for task in self._parse_templates(section, 'plot'):
                 if task not in plot_tasks:
                     plot_tasks.append(task)
-        # do service tasks
-        for name in service_tasks:
-            if name in self.services:
-                self.services[name].upload(live_data=live_data)
         # do plot templates
         for template, flags in plot_tasks:
             self.do_plot(template, local='L' in flags)
@@ -175,6 +171,10 @@ class RegularTasks(object):
                 self.do_twitter(template, live_data)
                 continue
             self.do_template(template, data=live_data, local='L' in flags)
+        # do service tasks
+        for name, option in service_tasks:
+            if name in self.services:
+                self.services[name].upload(live_data=live_data, option=option)
         # upload non local files
         upload_files = []
         for name in os.listdir(self.uploads_directory):
