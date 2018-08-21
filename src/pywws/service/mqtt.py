@@ -81,6 +81,8 @@ the next message is published.
  generate certificates.  Only copy the ca.crt to your pywws client.
  See http://www.steves-internet-guide.com/mosquitto-tls/ for a step-by-step guide
  to securing your MQTT server.
+ Note that secure MQTTS usually uses port 8883, so you will need to also
+ change the port number.
 
 ``multi_topic`` is a boolean and should be set to ``True`` or ``False``.
 If set to ``True`` pywws will also publish all the data each as separate
