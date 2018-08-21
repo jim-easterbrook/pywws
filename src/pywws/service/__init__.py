@@ -20,8 +20,6 @@ from __future__ import absolute_import, print_function, unicode_literals
 
 from collections import deque
 from datetime import datetime, timedelta
-import os
-import shutil
 import sys
 import threading
 
@@ -188,6 +186,9 @@ class DataService(ServiceBase):
         self.last_update = self.context.status.get_datetime(
             'last update', self.service_name)
 
+    def do_catchup(self):
+        pass
+
     def upload(self, catchup=True, live_data=None, test_mode=False, option=''):
         OK = True
         count = 0
@@ -276,50 +277,50 @@ class DataService(ServiceBase):
 
 
 class FileService(ServiceBase):
-    def __init__(self, context):
-        super(FileService, self).__init__(context)
-        # create directory for files to upload
-        work_dir = context.params.get('paths', 'work', '/tmp/pywws')
-        self.uploads_directory = os.path.join(work_dir, self.service_name)
-        if not os.path.isdir(self.uploads_directory):
-            os.makedirs(self.uploads_directory)
-        # queue any pending files
-        for name in os.listdir(self.uploads_directory):
-            path = os.path.join(self.uploads_directory, name)
-            self.upload(option=path, delete=True)
+    def do_catchup(self):
+        pending = eval(self.context.status.get(
+            'pending', self.service_name, '[]'))
+        if pending:
+            self.upload(option='CATCHUP')
 
-    def upload(self, live_data=None, option='', delete=True):
-        self.queue.append((option, delete))
+    def upload(self, live_data=None, option=''):
+        self.queue.append(option)
         # start upload thread
         if self.queue and not self.is_alive():
             self.start()
 
     def upload_batch(self):
+        # make list of files to upload
+        pending = eval(self.context.status.get(
+            'pending', self.service_name, '[]'))
+        files = []
+        while self.queue and not self.context.shutdown.is_set():
+            upload = self.queue[0]
+            if upload is None:
+                break
+            if upload == 'CATCHUP':
+                for path in pending:
+                    if path not in files:
+                        files.append(path)
+            else:
+                if upload not in files:
+                    files.append(upload)
+                if upload not in pending:
+                    pending.append(upload)
+            self.queue.popleft()
+        # upload files
         OK = True
         with self.session() as session:
-            while self.queue and not self.context.shutdown.is_set():
-                # send upload without taking it off queue
-                upload = self.queue[0]
-                if upload is None:
-                    OK = False
-                    break
-                path, delete = upload
-                if delete:
-                    src_dir, base_name = os.path.split(path)
-                    if src_dir != self.uploads_directory:
-                        target = os.path.join(self.uploads_directory, base_name)
-                        if os.path.exists(target):
-                            os.unlink(target)
-                        shutil.move(path, target)
-                        path = target
+            for path in files:
                 OK, message = self.upload_file(session, path)
                 self.log(message)
-                if not OK:
+                if OK:
+                    pending.remove(path)
+                else:
                     break
-                if delete:
-                    os.unlink(path)
-                # finally remove upload from queue
-                self.queue.popleft()
+        self.context.status.set('pending', self.service_name, repr(pending))
+        if self.queue and self.queue[0] is None:
+            OK = False
         return OK
 
 
@@ -353,7 +354,7 @@ def main(class_, argv=None):
             return 0
         if issubclass(class_, FileService):
             for file in args.file:
-                uploader.upload(option=file, delete=False)
+                uploader.upload(option=file)
         else:
             uploader.upload(catchup=args.catchup, test_mode=not args.catchup)
         uploader.stop()

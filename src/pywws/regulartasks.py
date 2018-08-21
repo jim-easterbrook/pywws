@@ -172,9 +172,10 @@ class RegularTasks(object):
                 continue
             self.do_template(template, data=live_data, local='L' in flags)
         # do service tasks
+        for name in self.services:
+            self.services[name].do_catchup()
         for name, option in service_tasks:
-            if name in self.services:
-                self.services[name].upload(live_data=live_data, option=option)
+            self.services[name].upload(live_data=live_data, option=option)
         # upload non local files
         upload_files = []
         for name in os.listdir(self.uploads_directory):
