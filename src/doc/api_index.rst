@@ -57,6 +57,7 @@ Upload data to online "services"
    pywws.service.openweathermap
    pywws.service.pwsweather
    pywws.service.temperaturnu
+   pywws.service.twitter
    pywws.service.underground
    pywws.service.wetterarchivde
 

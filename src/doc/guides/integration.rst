@@ -64,6 +64,7 @@ The remaining weather service uploads are handled by modules in the :ref:`pywws.
    pywws.service.openweathermap
    pywws.service.pwsweather
    pywws.service.temperaturnu
+   pywws.service.twitter
    pywws.service.underground
    pywws.service.wetterarchivde
 
