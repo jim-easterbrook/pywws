@@ -166,11 +166,9 @@ class ServiceBase(threading.Thread):
             self.old_message = message
 
 
-class DataService(ServiceBase):
-    catchup = 7
-
+class DataServiceBase(ServiceBase):
     def __init__(self, context):
-        super(DataService, self).__init__(context)
+        super(DataServiceBase, self).__init__(context)
         # check config
         template = context.params.get(self.service_name, 'template')
         if template == 'default':
@@ -190,6 +188,18 @@ class DataService(ServiceBase):
     def do_catchup(self):
         pass
 
+    def prepare_data(self, data):
+        data_str = self.templater.make_text(self.template_file, data)
+        self.template_file.seek(0)
+        return eval('{' + data_str + '}')
+
+    def valid_data(self, data):
+        return True
+
+
+class DataService(DataServiceBase):
+    catchup = 7
+
     def upload(self, catchup=True, live_data=None, test_mode=False, option=''):
         OK = True
         count = 0
@@ -207,11 +217,6 @@ class DataService(ServiceBase):
         # start upload thread
         if self.queue and not self.is_alive():
             self.start()
-
-    def prepare_data(self, data):
-        data_str = self.templater.make_text(self.template_file, data)
-        self.template_file.seek(0)
-        return eval('{' + data_str + '}')
 
     def next_data(self, catchup, live_data):
         if not catchup:
@@ -235,9 +240,6 @@ class DataService(ServiceBase):
                 self.valid_data(live_data)):
             yield live_data, True
             self.last_update = live_data['idx']
-
-    def valid_data(self, data):
-        return True
 
     def upload_batch(self):
         OK = True
@@ -274,6 +276,57 @@ class DataService(ServiceBase):
             self.logger.warning('{:d} records sent'.format(count))
         elif count:
             self.logger.info('1 record sent')
+        return OK
+
+
+class LiveDataService(DataServiceBase):
+    def upload(self, live_data=None, test_mode=False, option=''):
+        if live_data:
+            data = live_data
+        else:
+            idx = self.context.calib_data.before(datetime.max)
+            if not idx:
+                return
+            data = self.context.calib_data[idx]
+        timestamp = data['idx']
+        if test_mode:
+            timestamp = None
+        elif self.last_update and timestamp < self.last_update + self.interval:
+            return
+        if not self.valid_data(data):
+            return
+        self.last_update = data['idx']
+        prepared_data = self.prepare_data(data)
+        prepared_data.update(self.fixed_data)
+        self.queue.append((timestamp, {'prepared_data': prepared_data,
+                                       'live': bool(live_data)}))
+        # start upload thread
+        if self.queue and not self.is_alive():
+            self.start()
+
+    def upload_batch(self):
+        # remove stale uploads from queue
+        drop = len(self.queue) - 1
+        if self.queue[-1] is None:
+            drop -= 1
+        if drop > 0:
+            for i in range(drop):
+                self.queue.popleft()
+            self.logger.warning('{:d} record(s) dropped'.format(drop))
+        # send upload without taking it off queue
+        upload = self.queue[0]
+        if upload is None:
+            return False
+        timestamp, kwds = upload
+        with self.session() as session:
+            OK, message = self.upload_data(session, **kwds)
+        self.log(message)
+        if OK:
+            if timestamp:
+                self.context.status.set(
+                    'last update', self.service_name, str(timestamp))
+            # finally remove upload from queue
+            self.queue.popleft()
         return OK
 
 
@@ -363,6 +416,8 @@ def main(class_, argv=None):
         if issubclass(class_, FileService):
             for file in args.file:
                 uploader.upload(option=os.path.abspath(file))
+        elif issubclass(class_, LiveDataService):
+            uploader.upload(test_mode=True)
         else:
             uploader.upload(catchup=args.catchup, test_mode=not args.catchup)
         uploader.stop()
