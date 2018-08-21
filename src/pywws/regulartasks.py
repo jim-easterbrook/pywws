@@ -91,6 +91,26 @@ class RegularTasks(object):
                 last_update += timezone.utcoffset(last_update)
                 while self.cron[section].get_current(datetime) <= last_update:
                     self.cron[section].get_next()
+        # convert old Twitter flags
+        for section in list(self.cron.keys()) + [
+                       'live', 'logged', 'hourly', '12 hourly', 'daily']:
+            templates = eval(self.params.get(section, 'text', '[]'))
+            services = eval(self.params.get(section, 'services', '[]'))
+            changed = False
+            for n, template in enumerate(templates):
+                if not isinstance(template, (list, tuple)):
+                    continue
+                template, flags = template
+                if 'T' not in flags:
+                    continue
+                templates[n] = (template, 'L')
+                task = ('twitter', template)
+                if task not in services:
+                    services.append(task)
+                changed = True
+            if changed:
+                self.params.set(section, 'text', repr(templates))
+                self.params.set(section, 'services', repr(services))
         # create service uploader objects
         self.services = {}
         for section in list(self.cron.keys()) + [
