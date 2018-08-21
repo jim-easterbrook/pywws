@@ -1,4 +1,4 @@
-media /home/jim/weather/results/tweet.png
+media tweet.png
 #hourly#
 #timezone local#
 #roundtime True#

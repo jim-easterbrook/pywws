@@ -20,6 +20,7 @@ from __future__ import absolute_import, print_function, unicode_literals
 
 from collections import deque
 from datetime import datetime, timedelta
+import os
 import sys
 import threading
 
@@ -277,6 +278,11 @@ class DataService(ServiceBase):
 
 
 class FileService(ServiceBase):
+    def __init__(self, context):
+        super(FileService, self).__init__(context)
+        self.local_dir = context.params.get(
+            'paths', 'local_files', os.path.expanduser('~/weather/results/'))
+
     def do_catchup(self):
         pending = eval(self.context.status.get(
             'pending', self.service_name, '[]'))
@@ -303,6 +309,8 @@ class FileService(ServiceBase):
                     if path not in files:
                         files.append(path)
             else:
+                if not os.path.isabs(upload):
+                    upload = os.path.join(self.local_dir, upload)
                 if upload not in files:
                     files.append(upload)
                 if upload not in pending:
@@ -354,7 +362,7 @@ def main(class_, argv=None):
             return 0
         if issubclass(class_, FileService):
             for file in args.file:
-                uploader.upload(option=file)
+                uploader.upload(option=os.path.abspath(file))
         else:
             uploader.upload(catchup=args.catchup, test_mode=not args.catchup)
         uploader.stop()

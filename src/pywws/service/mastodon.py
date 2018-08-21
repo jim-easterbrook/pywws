@@ -36,7 +36,7 @@ conditions every hour.
     [hourly]
     text = [('toot.txt', 'L')]
     plot = [('tweet.png.xml', 'L')]
-    services = [('mastodon', '/tmp/pywws/results/toot.txt')]
+    services = [('mastodon', 'toot.txt')]
 
 Create an account
 -----------------
@@ -99,8 +99,7 @@ location.) You should also check it uses the same text encoding as your
 other templates. The example template includes a ``media`` line to send
 a graph. Either remove this or copy the example graph template
 ``tweet.png.xml`` to your graph templates directory, if you don't
-already have one there, and edit the ``media`` line to use your
-``local_files`` directory.
+already have one there.
 
 Now generate a toot file from your template, for example::
 
@@ -127,12 +126,12 @@ directory. Note that if you reuse your Twitter graph you only need to
 generate it once. Add your toot template to the ``text`` list, again
 with an ``L`` flag to store the result locally. Finally, add
 ``mastodon`` to the ``services`` list, with an option specifying the
-full path of the template processing result. For example::
+template processing result. For example::
 
     [hourly]
     text = [('toot.txt', 'L')]
     plot = [('tweet.png.xml', 'L')]
-    services = [('mastodon', '/tmp/pywws/results/toot.txt')]
+    services = [('mastodon', 'toot.txt')]
 
 You could use the ``[logged]``, ``[12 hourly]`` or ``[daily]`` sections
 instead, but I think ``[hourly]`` is most appropriate for Mastodon
@@ -143,8 +142,8 @@ Add more images
 
 Mastodon allows up to four images per "toot", so you could add more
 graphs, or a webcam image, or a weather forecast icon. Use one ``media``
-line per image at the start of your toot template and specify the full
-path for each one.
+line per image at the start of your toot template. You need to give the
+full path of any files that are not in your ``local_files`` directory.
 
 .. _botsin.space: https://botsin.space/
 .. _Mastodon: https://joinmastodon.org/
@@ -156,6 +155,7 @@ from __future__ import absolute_import, print_function
 import codecs
 from contextlib import contextmanager
 import logging
+import os
 import sys
 
 from mastodon import Mastodon
@@ -197,6 +197,8 @@ class ToService(pywws.service.FileService):
         while toot.startswith('media'):
             media_item, toot = toot.split('\n', 1)
             media_item = media_item.split()[1]
+            if not os.path.isabs(media_item):
+                media_item = os.path.join(self.local_dir, media_item)
             media.append(media_item)
         media_ids = []
         try:

@@ -1,4 +1,4 @@
-media /tmp/pywws/results/tweet.png
+media tweet.png
 #live#
 #timezone local#
 #roundtime True#

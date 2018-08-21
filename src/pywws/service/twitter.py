@@ -138,12 +138,12 @@ Add Twitter posts to your hourly tasks
 Edit the ``[hourly]`` section in ``weather.ini``. Add your tweet
 template to the ``text`` list, with an ``L`` flag to store the result in
 your ``local_files`` directory. Then add ``twitter`` to the ``services``
-list, with an option specifying the full path of the template processing
-result. For example::
+list, with an option specifying the template processing result. For
+example::
 
     [hourly]
     text = [('tweet.txt', 'L')]
-    services = [('twitter', '/tmp/pywws/results/tweet.txt')]
+    services = [('twitter', 'tweet.txt')]
 
 You could use the ``[logged]``, ``[12 hourly]`` or ``[daily]`` sections
 instead, but I think ``[hourly]`` is most appropriate for Twitter
@@ -154,9 +154,10 @@ Include images in your tweet
 
 You can add up to four images to your tweets by specifying the image
 file locations in the tweet template. Make the first line of the tweet
-``media path`` where ``path`` is the absolute location of the file.
-Repeat for any additional image files. The "tweet_media.txt" example
-template shows how to do this.
+``media path`` where ``path`` is the file name, or full path for files
+that are not in your ``local_files`` directory. Repeat for any
+additional image files. The "tweet_media.txt" example template shows how
+to do this.
 
 The image could be from a web cam, or for a weather forecast it could be
 an icon representing the forecast. To add a weather graph you need to
@@ -169,7 +170,7 @@ local files directory. For example::
     [hourly]
     plot = [('tweet.png.xml', 'L')]
     text = [('tweet_media.txt', 'L')]
-    services = [('twitter', '/tmp/pywws/results/tweet_media.txt')]
+    services = [('twitter', 'tweet_media.txt')]
 
 .. _Twitter: https://twitter.com/
 
@@ -179,8 +180,8 @@ from __future__ import absolute_import, print_function
 
 import codecs
 from contextlib import contextmanager
-from datetime import timedelta
 import logging
+import os
 import sys
 
 twitter = None
@@ -195,10 +196,7 @@ except ImportError as ex:
         raise ex
 
 from pywws.constants import Twitter as pct
-import pywws.localisation
-import pywws.logger
 import pywws.service
-import pywws.storage
 
 __docformat__ = "restructuredtext en"
 logger = logging.getLogger(__name__)
@@ -284,6 +282,8 @@ class ToService(pywws.service.FileService):
         while tweet.startswith('media'):
             media_item, tweet = tweet.split('\n', 1)
             media_item = media_item.split()[1]
+            if not os.path.isabs(media_item):
+                media_item = os.path.join(self.local_dir, media_item)
             media.append(media_item)
         try:
             session.post(tweet, media)
