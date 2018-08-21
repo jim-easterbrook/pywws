@@ -58,6 +58,7 @@ The remaining weather service uploads are handled by modules in the :ref:`pywws.
 .. autosummary::
 
    pywws.service.cwop
+   pywws.service.mastodon
    pywws.service.metoffice
    pywws.service.mqtt
    pywws.service.openweathermap

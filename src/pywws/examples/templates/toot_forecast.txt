@@ -1,0 +1,7 @@
+#live#
+#timezone local#
+#idx "%H:%M %Z: "#
+#hourly#
+Unreliable forecast for the next 12 hours: #calc "Zambretti(params, data)"#
+
+##pywws ##weather ##epsom ##ewell

@@ -51,6 +51,7 @@ Upload data to online "services"
    :toctree: api
 
    pywws.service.cwop
+   pywws.service.mastodon
    pywws.service.metoffice
    pywws.service.mqtt
    pywws.service.openweathermap

@@ -1,0 +1,17 @@
+media /tmp/pywws/results/tweet.png
+#live#
+#timezone local#
+#roundtime True#
+#idx "%H:%M %Z: "#
+temperature #temp_out "%.1f°C" "-"#
+, humidity #hum_out "%d%%" "-"#
+#hourly#
+, wind #wind_dir "%s" "-" "winddir_text(x)"# #wind_ave "%.1f" "-" "wind_mph(x)"#
+ mph ave, #wind_gust "%.1f" "-" "wind_mph(x)"#
+ mph gust, rain #rain "%.1f mm/hr"#
+#live#
+, pressure #rel_pressure "%.1f hPa "#
+#hourly#
+#pressure_trend "%s" "" "pressure_trend_text(x)"#
+
+##pywws ##weather ##epsom ##ewell
