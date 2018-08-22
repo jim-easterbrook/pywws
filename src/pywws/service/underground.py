@@ -67,6 +67,7 @@ logger = logging.getLogger(__name__)
 
 class ToService(pywws.service.CatchupDataService):
     fixed_data = {'action': 'updateraw', 'softwaretype': 'pywws'}
+    interval = timedelta(seconds=47)
     logger = logger
     service_name = service_name
     template = """
