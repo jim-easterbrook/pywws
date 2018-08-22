@@ -32,8 +32,10 @@ requires an additional library. See :ref:`Dependencies - MQTT
     port = 1883
     client_id = pywws
     retain = False
-    user = 
-    password = 
+    user =
+    password =
+    tls_cert = /home/pi/pywws/ca_cert/mqtt_ca.crt
+    tls_ver = 2
     multi_topic = False
     template_txt = ('\\n'
             '#idx          \\'"idx"         : "%Y-%m-%d %H:%M:%S",\\'#\\n'
@@ -71,6 +73,16 @@ response when they subscribe to a topic, without having to wait until
 the next message is published.
 
 ``user`` and ``password`` can be used for MQTT authentication.
+
+``tls_cert`` and ``tls_ver`` are used for MQTT TLS security.  Set tls_cert
+ as the path to a CA certificate (e.g. tls_cert = /home/pi/pywws/ca_cert/mqtt_ca.crt)
+ and tls_ver to the TLS version (e.g. tls_ver = 2) (TLS1.2 recommended).
+ See https://mosquitto.org/man/mosquitto-tls-7.html for information on how to
+ generate certificates.  Only copy the ca.crt to your pywws client.
+ See http://www.steves-internet-guide.com/mosquitto-tls/ for a step-by-step guide
+ to securing your MQTT server.
+ Note that secure MQTTS usually uses port 8883, so you will need to also
+ change the port number.
 
 ``multi_topic`` is a boolean and should be set to ``True`` or ``False``.
 If set to ``True`` pywws will also publish all the data each as separate
@@ -157,6 +169,8 @@ class ToService(pywws.service.LiveDataService):
                 service_name, 'retain', 'False')),
             'user'       : context.params.get(service_name, 'user', ''),
             'password'   : context.params.get(service_name, 'password', ''),
+            'tls_cert'   : context.params.get(service_name, 'tls_cert', ''),
+            'tls_ver'    : eval(context.params.get(service_name, 'tls_ver', '1')),
             'multi_topic': eval(context.params.get(
                 service_name, 'multi_topic', 'False')),
             }
@@ -179,6 +193,10 @@ class ToService(pywws.service.LiveDataService):
             session.username_pw_set(self.params['user'])
         logger.debug(('connecting to host {hostname:s}:{port:d} '
                       'with client_id "{client_id:s}"').format(**self.params))
+
+        if self.params['tls_cert']:
+            session.tls_set(self.params['tls_cert'], tls_version=self.params['tls_ver'])
+
         session.connect(self.params['hostname'], self.params['port'])
         try:
             yield session
@@ -207,7 +225,7 @@ class ToService(pywws.service.LiveDataService):
                     return False, str(ex)
             # Need to make sure the messages have been flushed to the
             # server.
-            session.loop(timeout=0.5) 
+            session.loop(timeout=0.5)
         return True, 'OK'
 
 
