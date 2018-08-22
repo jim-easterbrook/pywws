@@ -91,8 +91,7 @@ service_name = os.path.splitext(os.path.basename(__file__))[0]
 logger = logging.getLogger(__name__)
 
 
-class ToService(pywws.service.DataService):
-    catchup = 7
+class ToService(pywws.service.CatchupDataService):
     fixed_data = {}
     interval = timedelta(seconds=40)
     logger = logger
