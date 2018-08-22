@@ -44,7 +44,6 @@ The following sections are currently in use:
   * 12 hourly: tasks to be done every 12 hours.
   * daily: tasks to be done every day.
   * ftp: configuration of uploading to a website.
-  * twitter: configuration of posting to Twitter.
   * underground, metoffice, temperaturnu etc: configuration of posting to 'services'.
 
 .. _weather_ini-config:
@@ -171,8 +170,8 @@ cron: tasks to be done at a particular time or date
  [cron daily 9]
  format = 0 9 * * *
  plot = ['28days.png.xml']
- text = [('forecast.txt', 'T'), 'forecast_9am.txt', 'forecast_week.txt']
- services = []
+ text = [('forecast.txt', 'L'), 'forecast_9am.txt', 'forecast_week.txt']
+ services = [('twitter', 'forecast.txt')]
 
  [cron daily 21]
  format = 0 21 * * *
@@ -202,8 +201,8 @@ hourly: tasks to be done every hour
 ::
 
  [hourly]
- services = []
- text = [('tweet.txt', 'T'), '24hrs.txt', '6hrs.txt', '7days.txt', 'feed_hourly.xml']
+ services = [('twitter', 'tweet.txt')]
+ text = [('tweet.txt', 'L'), '24hrs.txt', '6hrs.txt', '7days.txt', 'feed_hourly.xml']
  plot = ['7days.png.xml', '24hrs.png.xml', 'rose_12hrs.png.xml']
 
 This section specifies tasks that are to be carried out every hour when 'live logging' or running an hourly cron job.
@@ -213,10 +212,6 @@ Each one listed must have a module in ``pywws.service`` or your modules director
 See :ref:`integration - other services<guides-integration-other>` for more detail.
 
 ``text`` and ``plot`` are lists of text and plot templates to be processed and, optionally, uploaded to your website.
-
-.. versionchanged:: 13.06_r1015
-   added the ``'T'`` flag.
-   Previously Twitter templates were listed separately in ``twitter`` entries in the ``[hourly]`` and other sections.
 
 12 hourly: tasks to be done every 12 hours
 ------------------------------------------
@@ -288,21 +283,6 @@ Note that you may need to change the ``port`` value when you change to or from s
    ``port`` specifies the port number to use.
    Default value is 21 for FTP, 22 for SFTP.
    Your web site provider may tell you to use a different port number.
-
-twitter: configuration of posting to Twitter
---------------------------------------------
-::
-
- [twitter]
- secret = longstringofrandomcharacters
- key = evenlongerstringofrandomcharacters
- latitude = 51.365
- longitude = -0.251
-
-``secret`` and ``key`` are authentication data provided by Twitter.
-See :doc:`twitter` for more information.
-
-``latitude`` and ``longitude`` are optional location data. If you include them then your weather station tweets will have location information so users can see where your weather station is. It might also enable people to find your weather station tweets if they search by location.
 
 underground, metoffice, temperaturnu etc: configuration of posting to 'services'
 --------------------------------------------------------------------------------

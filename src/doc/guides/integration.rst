@@ -43,11 +43,6 @@ You can check the file is being updated every 48 seconds by using ``more`` or ``
 Finally configure yowindow to use this file.
 See `<http://yowindow.com/pws_setup.php>`_ for instructions on how to do this.
 
-Twitter
--------
-
-See :doc:`twitter` for full instructions.
-
 .. _guides-integration-other:
 
 Other "services"
@@ -94,6 +89,10 @@ The service uploaders are all used in a similar fashion:
      [live]
      services = ['underground']
 #. Restart pywws live logging.
+
+Some of the services are more complicated to configure.
+More detailed instructions are given in the module's documentation.
+Follow the links in the table above.
 
 Many of the services will upload the last seven days of data (referred to as "catchup" mode) when first run.
 This may take an hour or more, but the use of separate threads means this doesn't adversely affect the rest of pywws.

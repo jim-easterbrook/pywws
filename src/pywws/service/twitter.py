@@ -38,9 +38,9 @@ hour.
     longitude = -0.142
 
     [hourly]
-    plot = [('tweet.png.xml', 'L')]
-    text = [('tweet_media.txt', 'L')]
-    services = [('twitter', '/tmp/pywws/results/tweet_media.txt')]
+    plot = [('tweet.png.xml', 'L'), '24hrs.png.xml', 'rose_12hrs.png.xml']
+    text = [('tweet_media.txt', 'L'), '24hrs.txt']
+    services = [('twitter', 'tweet_media.txt')]
 
 Create an account
 -----------------

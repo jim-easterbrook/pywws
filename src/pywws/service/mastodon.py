@@ -34,9 +34,9 @@ conditions every hour.
     access_token = xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
     [hourly]
-    text = [('toot.txt', 'L')]
-    plot = [('tweet.png.xml', 'L')]
-    services = [('mastodon', 'toot.txt')]
+    text = [('toot.txt', 'L'), ('tweet_media.txt', 'L'), '24hrs.txt']
+    plot = [('tweet.png.xml', 'L'), '24hrs.png.xml', 'rose_12hrs.png.xml']
+    services = [('mastodon', 'toot.txt'), ('twitter', 'tweet_media.txt')]
 
 Create an account
 -----------------
