@@ -199,8 +199,7 @@ class DataServiceBase(ServiceBase):
         self.template_file.seek(0)
         prepared_data = eval('{' + data_str + '}')
         prepared_data.update(self.fixed_data)
-        self.queue.append(
-            (timestamp, {'prepared_data': prepared_data, 'live': live}))
+        self.queue.append((timestamp, prepared_data, live))
         if timestamp:
             self.last_update = timestamp
 
@@ -217,8 +216,9 @@ class DataServiceBase(ServiceBase):
                 if upload is None:
                     OK = False
                     break
-                timestamp, kwds = upload
-                OK, message = self.upload_data(session, **kwds)
+                timestamp, prepared_data, live = upload
+                OK, message = self.upload_data(
+                    session, prepared_data=prepared_data, live=live)
                 self.log(message)
                 if not OK:
                     break
