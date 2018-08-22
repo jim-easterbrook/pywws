@@ -365,7 +365,7 @@ def main(class_, argv=None):
     if hasattr(class_, 'register'):
         parser.add_argument('-r', '--register', action='store_true',
                             help='register (or update) with service')
-    if not issubclass(class_, CatchupDataService):
+    if issubclass(class_, CatchupDataService):
         parser.add_argument('-c', '--catchup', action='store_true',
                             help='upload all data since last upload')
     parser.add_argument('-v', '--verbose', action='count',
