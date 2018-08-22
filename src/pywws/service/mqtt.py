@@ -74,15 +74,15 @@ the next message is published.
 
 ``user`` and ``password`` can be used for MQTT authentication.
 
-``tls_cert`` and ``tls_ver`` are used for MQTT TLS security.  Set tls_cert
- as the path to a CA certificate (e.g. tls_cert = /home/pi/pywws/ca_cert/mqtt_ca.crt)
- and tls_ver to the TLS version (e.g. tls_ver = 2) (TLS1.2 recommended).
- See https://mosquitto.org/man/mosquitto-tls-7.html for information on how to
- generate certificates.  Only copy the ca.crt to your pywws client.
- See http://www.steves-internet-guide.com/mosquitto-tls/ for a step-by-step guide
- to securing your MQTT server.
- Note that secure MQTTS usually uses port 8883, so you will need to also
- change the port number.
+``tls_cert`` and ``tls_ver`` are used for MQTT TLS security. Set
+tls_cert as the path to a CA certificate (e.g. tls_cert =
+/home/pi/pywws/ca_cert/mqtt_ca.crt) and tls_ver to the TLS version (e.g.
+tls_ver = 2) (TLS1.2 recommended). See
+https://mosquitto.org/man/mosquitto-tls-7.html for information on how to
+generate certificates. Only copy the ca.crt to your pywws client. See
+http://www.steves-internet-guide.com/mosquitto-tls/ for a step-by-step
+guide to securing your MQTT server. Note that secure MQTTS usually uses
+port 8883, so you will need to also change the port number.
 
 ``multi_topic`` is a boolean and should be set to ``True`` or ``False``.
 If set to ``True`` pywws will also publish all the data each as separate
