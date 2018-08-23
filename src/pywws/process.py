@@ -683,6 +683,8 @@ def generate_monthly(rain_day_threshold, day_end_hour, use_dst,
         start -= DAY
     del monthly_data[start:]
     stop = daily_data.before(datetime.max)
+    if stop is None:
+        return None
     month_start = start
     acc = MonthAcc(rain_day_threshold)
     count = 0
