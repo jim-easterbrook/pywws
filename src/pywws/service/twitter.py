@@ -127,7 +127,7 @@ Post your first tweet
 Now you are ready to run :py:mod:`pywws.service.twitter`. Using high
 verbosity shows you what's happening as it runs::
 
-    python -m pywws.totwitter -vv ~/weather/data tweet.txt
+    python -m pywws.service.twitter -vv ~/weather/data tweet.txt
 
 If this works, your new Twitter account will have posted its first
 weather report. (You can delete the tweet.txt file now.)

@@ -177,7 +177,7 @@ Normal uploading just uses Python's standard modules, but if you want to use sft
 Twitter updates
 ---------------
 
-The :py:mod:`pywws.totwitter` module can be used to send weather status messages to Twitter.
+The :py:mod:`pywws.service.twitter` module can be used to send weather status messages to Twitter.
 Posting to Twitter requires these modules:
 
 *  `python-twitter <https://github.com/bear/python-twitter>`_ v3.0 or higher
@@ -198,12 +198,6 @@ Posting to Twitter requires these modules:
 
 Note that ``tweepy`` appears to be the less reliable of the two.
 If you have problems, e.g. with character encoding, try installing ``python-twitter`` instead.
-
-.. versionchanged:: 13.10_r1086
-   reenabled use of ``tweepy`` library as an alternative to ``python-twitter``.
-
-.. versionchanged:: 13.06_r1023
-   pywws previously used the ``tweepy`` library instead of ``python-twitter`` and ``python-oauth2``.
 
 .. _dependencies-mqtt:
 
