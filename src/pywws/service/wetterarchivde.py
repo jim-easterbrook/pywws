@@ -58,7 +58,7 @@ logger = logging.getLogger(__name__)
 
 class ToService(pywws.service.CatchupDataService):
     fixed_data = {'sid': 'pywws'}
-    interval = timedelta(seconds=290)
+    interval = timedelta(seconds=300)
     logger = logger
     service_name = service_name
     template = """
