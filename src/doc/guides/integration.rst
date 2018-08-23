@@ -54,6 +54,7 @@ The remaining weather service uploads are handled by modules in the :ref:`pywws.
 
    pywws.service.ftp
    pywws.service.sftp
+   pywws.service.copy
    pywws.service.cwop
    pywws.service.metoffice
    pywws.service.mqtt

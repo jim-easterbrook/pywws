@@ -52,6 +52,7 @@ Upload data to online "services"
 
    pywws.service.ftp
    pywws.service.sftp
+   pywws.service.copy
    pywws.service.cwop
    pywws.service.metoffice
    pywws.service.mqtt
@@ -77,8 +78,6 @@ Upload data to online "services"
    pywws.windrose
    pywws.template
    pywws.forecast
-   pywws.towebsite
-   pywws.totwitter
    pywws.weatherstation
    pywws.device_libusb1
    pywws.device_pyusb1

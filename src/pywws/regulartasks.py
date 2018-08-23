@@ -30,7 +30,6 @@ from pywws.calib import Calib
 import pywws.plot
 import pywws.template
 from pywws.timezone import timezone
-import pywws.towebsite
 import pywws.windrose
 
 logger = logging.getLogger(__name__)
@@ -70,8 +69,6 @@ class RegularTasks(object):
         self.uploads_directory = os.path.join(self.work_dir, 'uploads')
         if not os.path.isdir(self.uploads_directory):
             os.makedirs(self.uploads_directory)
-        # delay creation of uploader object until we know it's needed
-        self.uploader = None
         # get daytime end hour
         self.day_end_hour, self.use_dst = pywws.process.get_day_end_hour(
                                                                 self.params)
@@ -107,17 +104,26 @@ class RegularTasks(object):
                     services.append(task)
                 changed = True
             if changed:
+                logger.error('updating Twitter in [%s]', section)
                 self.params.set(section, 'text', repr(templates))
                 self.params.set(section, 'services', repr(services))
-        # convert to use pywws.service.{ftp,sftp}
-        if not eval(self.params.get('ftp', 'local site', 'False')):
-            if eval(self.params.get('ftp', 'secure', 'False')):
-                for key in ('site', 'user', 'directory', 'port',
-                            'password', 'privkey'):
-                    self.params.set('sftp', key, self.params.get('ftp', key, ''))
-                mod = 'sftp'
-            else:
-                mod = 'ftp'
+        # convert to use pywws.service.{copy,ftp,sftp}
+        if self.params.get('ftp', 'local site') == 'True':
+            self.params.set(
+                'copy', 'directory', self.params.get('ftp', 'directory', ''))
+            mod = 'copy'
+        elif self.params.get('ftp', 'secure') == 'True':
+            for key in ('site', 'user', 'directory', 'port',
+                        'password', 'privkey'):
+                self.params.set('sftp', key, self.params.get('ftp', key, ''))
+            mod = 'sftp'
+        elif self.params.get('ftp', 'secure') == 'False':
+            mod = 'ftp'
+        else:
+            mod = None
+        for key in ('local site', 'secure', 'privkey'):
+            self.params.unset('ftp', key)
+        if mod:
             for section in list(self.cron.keys()) + [
                            'live', 'logged', 'hourly', '12 hourly', 'daily']:
                 for t_p in ('text', 'plot'):
@@ -135,6 +141,7 @@ class RegularTasks(object):
                             services.append(task)
                         changed = True
                     if changed:
+                        logger.error('updating %s in [%s]', t_p, section)
                         self.params.set(section, t_p, repr(templates))
                         self.params.set(section, 'services', repr(services))
         # create service uploader objects
@@ -219,16 +226,6 @@ class RegularTasks(object):
             self.services[name].do_catchup()
         for name, option in service_tasks:
             self.services[name].upload(live_data=live_data, option=option)
-        # upload non local files
-        upload_files = []
-        for name in os.listdir(self.uploads_directory):
-            path = os.path.join(self.uploads_directory, name)
-            if os.path.isfile(path):
-                upload_files.append(path)
-        if upload_files:
-            if not self.uploader:
-                self.uploader = pywws.towebsite.ToWebSite(self.context)
-            self.uploader.upload(upload_files, delete=True)
         # update status
         for section in sections:
             self.status.set('last update', section, now.isoformat(' '))
@@ -298,8 +295,6 @@ class RegularTasks(object):
             # cleanly shut down upload threads
             for name in self.services:
                 self.services[name].stop()
-            if self.uploader:
-                self.uploader.stop()
 
     def do_plot(self, template, local=False):
         logger.info("Graphing %s", template)
