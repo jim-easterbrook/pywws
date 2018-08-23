@@ -50,16 +50,18 @@ Upload data to online "services"
 .. autosummary::
    :toctree: api
 
+   pywws.service.ftp
+   pywws.service.sftp
    pywws.service.cwop
-   pywws.service.mastodon
    pywws.service.metoffice
    pywws.service.mqtt
    pywws.service.openweathermap
    pywws.service.pwsweather
    pywws.service.temperaturnu
-   pywws.service.twitter
    pywws.service.underground
    pywws.service.wetterarchivde
+   pywws.service.twitter
+   pywws.service.mastodon
 
 "Internal" modules
 ------------------

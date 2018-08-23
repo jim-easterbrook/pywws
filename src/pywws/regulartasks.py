@@ -109,6 +109,34 @@ class RegularTasks(object):
             if changed:
                 self.params.set(section, 'text', repr(templates))
                 self.params.set(section, 'services', repr(services))
+        # convert to use pywws.service.{ftp,sftp}
+        if not eval(self.params.get('ftp', 'local site', 'False')):
+            if eval(self.params.get('ftp', 'secure', 'False')):
+                for key in ('site', 'user', 'directory', 'port',
+                            'password', 'privkey'):
+                    self.params.set('sftp', key, self.params.get('ftp', key, ''))
+                mod = 'sftp'
+            else:
+                mod = 'ftp'
+            for section in list(self.cron.keys()) + [
+                           'live', 'logged', 'hourly', '12 hourly', 'daily']:
+                for t_p in ('text', 'plot'):
+                    templates = eval(self.params.get(section, t_p, '[]'))
+                    services = eval(self.params.get(section, 'services', '[]'))
+                    changed = False
+                    for n, template in enumerate(templates):
+                        if isinstance(template, (list, tuple)):
+                            continue
+                        templates[n] = (template, 'L')
+                        if t_p == 'plot':
+                            template = os.path.splitext(template)[0]
+                        task = (mod, template)
+                        if task not in services:
+                            services.append(task)
+                        changed = True
+                    if changed:
+                        self.params.set(section, t_p, repr(templates))
+                        self.params.set(section, 'services', repr(services))
         # create service uploader objects
         self.services = {}
         for section in list(self.cron.keys()) + [

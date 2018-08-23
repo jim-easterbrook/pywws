@@ -52,16 +52,18 @@ The remaining weather service uploads are handled by modules in the :ref:`pywws.
 
 .. autosummary::
 
+   pywws.service.ftp
+   pywws.service.sftp
    pywws.service.cwop
-   pywws.service.mastodon
    pywws.service.metoffice
    pywws.service.mqtt
    pywws.service.openweathermap
    pywws.service.pwsweather
    pywws.service.temperaturnu
-   pywws.service.twitter
    pywws.service.underground
    pywws.service.wetterarchivde
+   pywws.service.twitter
+   pywws.service.mastodon
 
 These each use a separate thread to upload the data so that a slow or not responding service doesn't delay other processing or uploads.
 
