@@ -22,6 +22,7 @@ temperatur.nu is a Swedish web site that shows the current temperature
 in many places.
 
 * Web site: http://www.temperatur.nu/
+* Additional dependency: http://docs.python-requests.org/
 * Example ``weather.ini`` configuration::
 
     [temperaturnu]

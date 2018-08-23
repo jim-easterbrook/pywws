@@ -24,6 +24,7 @@ primary weather services."
 
 * Create account: http://www.pwsweather.com/register.php
 * API based on WU protocol: `<http://wiki.wunderground.com/index.php/PWS_-_Upload_Protocol>`_
+* Additional dependency: http://docs.python-requests.org/
 * Example ``weather.ini`` configuration::
 
     [pwsweather]

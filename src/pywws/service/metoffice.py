@@ -26,6 +26,7 @@ each reading as required by the API.
 
 * Create account: https://register.metoffice.gov.uk/WaveRegistrationClient/public/newaccount.do?service=weatherobservations
 * API: http://wow.metoffice.gov.uk/support/dataformats#automatic
+* Additional dependency: http://docs.python-requests.org/
 * Example ``weather.ini`` configuration::
 
     [metoffice]

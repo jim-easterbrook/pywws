@@ -23,6 +23,7 @@ Germany. It's referred to in pywws as wetterarchivde for historical
 reasons.
 
 * Register station: https://www.wetter.com/mein_wetter/login/
+* Additional dependency: http://docs.python-requests.org/
 * Example ``weather.ini`` configuration::
 
     [wetterarchivde]

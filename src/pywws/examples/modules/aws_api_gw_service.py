@@ -21,6 +21,7 @@
 This is for any service that accepts key value data via a GET method. This
 supports optional extra headers.
 
+* Additional dependency: http://docs.python-requests.org/
 * Example ``weather.ini`` configuration::
 
     [aws_api_gw_service]

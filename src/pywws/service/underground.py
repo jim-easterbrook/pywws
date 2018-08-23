@@ -23,6 +23,7 @@ data from amateur weather stations.
 
 * Create account: http://www.wunderground.com/members/signup.asp
 * API: `<http://wiki.wunderground.com/index.php/PWS_-_Upload_Protocol>`_
+* Additional dependency: http://docs.python-requests.org/
 * Example ``weather.ini`` configuration::
 
     [underground]

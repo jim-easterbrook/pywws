@@ -23,6 +23,7 @@ affordable weather data.
 
 * Create account: https://home.openweathermap.org/users/sign_up
 * API: https://openweathermap.org/stations
+* Additional dependency: http://docs.python-requests.org/
 * Example ``weather.ini`` configuration::
 
     [openweathermap]
