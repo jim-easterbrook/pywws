@@ -199,6 +199,7 @@ class DataServiceBase(ServiceBase):
         self.template_file.seek(0)
         prepared_data = eval('{' + data_str + '}')
         prepared_data.update(self.fixed_data)
+        self.logger.debug('data: %s', str(prepared_data))
         self.queue.append((timestamp, prepared_data, live))
         if timestamp:
             self.last_update = timestamp
