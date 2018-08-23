@@ -72,8 +72,6 @@ class RegularTasks(object):
             os.makedirs(self.uploads_directory)
         # delay creation of uploader object until we know it's needed
         self.uploader = None
-        # delay creation of a Twitter object until we know it's needed
-        self.twitter = None
         # get daytime end hour
         self.day_end_hour, self.use_dst = pywws.process.get_day_end_hour(
                                                                 self.params)
@@ -187,9 +185,6 @@ class RegularTasks(object):
             self.do_plot(template, local='L' in flags)
         # do text templates
         for template, flags in text_tasks:
-            if 'T' in flags:
-                self.do_twitter(template, live_data)
-                continue
             self.do_template(template, data=live_data, local='L' in flags)
         # do service tasks
         for name in self.services:
@@ -275,20 +270,8 @@ class RegularTasks(object):
             # cleanly shut down upload threads
             for name in self.services:
                 self.services[name].stop()
-            if self.twitter:
-                self.twitter.stop()
             if self.uploader:
                 self.uploader.stop()
-
-    def do_twitter(self, template, data=None):
-        if not self.twitter:
-            import pywws.totwitter
-            self.twitter = pywws.totwitter.ToTwitter(self.context)
-        logger.info("Templating %s", template)
-        input_file = os.path.join(self.template_dir, template)
-        tweet = self.templater.make_text(input_file, live_data=data)
-        logger.info("Tweeting")
-        self.twitter.upload(tweet)
 
     def do_plot(self, template, local=False):
         logger.info("Graphing %s", template)
