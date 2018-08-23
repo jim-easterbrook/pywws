@@ -342,6 +342,7 @@ class FileService(ServiceBase):
         OK = True
         with self.session() as session:
             for path in files:
+                self.logger.debug('file: %s', path)
                 OK, message = self.upload_file(session, path)
                 self.log(message)
                 if OK:
