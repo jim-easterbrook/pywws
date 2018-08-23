@@ -326,6 +326,9 @@ Set some configuration options
 After running :py:mod:`pywws.logdata` there should be a configuration file in your data directory called 'weather.ini'.
 Open this with a text editor. You should find something like the following::
 
+   [paths]
+   work = /tmp/pywws
+
    [config]
    usb activity margin = 3.0
    ws type = 1080
@@ -341,6 +344,9 @@ In the UK, the 'meteorological day' is usually from 09:00 to 09:00 GMT (10:00 to
 If you prefer to use midnight, winter or summer, you should use ``0, True``.
 
 After editing, your weather.ini file should look something like this::
+
+   [paths]
+   work = /tmp/pywws
 
    [config]
    usb activity margin = 3.0
