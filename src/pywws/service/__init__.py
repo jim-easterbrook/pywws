@@ -216,11 +216,6 @@ class LiveDataService(DataServiceBase):
 
 
 class FileService(ServiceBase):
-    def __init__(self, context):
-        super(FileService, self).__init__(context)
-        self.local_dir = context.params.get(
-            'paths', 'local_files', os.path.expanduser('~/weather/results/'))
-
     def do_catchup(self):
         pending = eval(self.context.status.get(
             'pending', self.service_name, '[]'))
@@ -248,7 +243,7 @@ class FileService(ServiceBase):
                         files.append(path)
             else:
                 if not os.path.isabs(upload):
-                    upload = os.path.join(self.local_dir, upload)
+                    upload = os.path.join(self.context.output_dir, upload)
                 if upload not in files:
                     files.append(upload)
                 if upload not in pending:

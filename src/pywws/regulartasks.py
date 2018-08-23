@@ -47,15 +47,10 @@ class RegularTasks(object):
         self.monthly_data = context.monthly_data
         self.flush = eval(self.params.get('config', 'frequent writes', 'False'))
         # get directories
-        self.work_dir = self.params.get('paths', 'work', '/tmp/pywws')
-        if not os.path.isdir(self.work_dir):
-            os.makedirs(self.work_dir)
         self.template_dir = self.params.get(
             'paths', 'templates', os.path.expanduser('~/weather/templates/'))
         self.graph_template_dir = self.params.get(
             'paths', 'graph_templates', os.path.expanduser('~/weather/graph_templates/'))
-        self.local_dir = self.params.get(
-            'paths', 'local_files', os.path.expanduser('~/weather/results/'))
         self.module_dir = self.params.get(
             'paths', 'modules', os.path.expanduser('~/weather/modules/'))
         # create calibration object
@@ -63,12 +58,9 @@ class RegularTasks(object):
         # create templater object
         self.templater = pywws.template.Template(context)
         # create plotter objects
-        self.plotter = pywws.plot.GraphPlotter(context, self.work_dir)
-        self.roseplotter = pywws.windrose.RosePlotter(context, self.work_dir)
-        # create FTP uploads directory
-        self.uploads_directory = os.path.join(self.work_dir, 'uploads')
-        if not os.path.isdir(self.uploads_directory):
-            os.makedirs(self.uploads_directory)
+        self.plotter = pywws.plot.GraphPlotter(context, self.context.work_dir)
+        self.roseplotter = pywws.windrose.RosePlotter(
+            context, self.context.work_dir)
         # get daytime end hour
         self.day_end_hour, self.use_dst = pywws.process.get_day_end_hour(
                                                                 self.params)
@@ -122,7 +114,7 @@ class RegularTasks(object):
                         task = None
                     elif 'T' in flags:
                         task = ('twitter', result)
-                    elif any([x[1] == template for x in services]):
+                    elif any([x[1] == result for x in services]):
                         task = None
                     else:
                         task = (mod, result)
@@ -154,21 +146,6 @@ class RegularTasks(object):
             if self.params.get(section, 'yowindow'):
                 logger.error(
                     'Obsolete yowindow entry in weather.ini [%s]', section)
-        # check for 'local' template results
-        if os.path.isdir(self.local_dir):
-            return
-        has_local = False
-        for section in list(self.cron.keys()) + [
-                       'live', 'logged', 'hourly', '12 hourly', 'daily']:
-            for template, flags in self._parse_templates(section, 'text'):
-                if 'L' in flags:
-                    has_local = True
-            for template, flags in self._parse_templates(section, 'plot'):
-                if 'L' in flags:
-                    has_local = True
-            if has_local:
-                os.makedirs(self.local_dir)
-                break
 
     def has_live_tasks(self):
         if self.cron:
@@ -206,10 +183,10 @@ class RegularTasks(object):
                     plot_tasks.append(task)
         # do plot templates
         for template, flags in plot_tasks:
-            self.do_plot(template, local='L' in flags)
+            self.do_plot(template)
         # do text templates
         for template, flags in text_tasks:
-            self.do_template(template, data=live_data, local='L' in flags)
+            self.do_template(template, data=live_data)
         # do service tasks
         for name in self.services:
             self.services[name].do_catchup()
@@ -285,14 +262,11 @@ class RegularTasks(object):
             for name in self.services:
                 self.services[name].stop()
 
-    def do_plot(self, template, local=False):
+    def do_plot(self, template):
         logger.info("Graphing %s", template)
         input_file = os.path.join(self.graph_template_dir, template)
-        output_file = os.path.splitext(template)[0]
-        if local:
-            output_file = os.path.join(self.local_dir, output_file)
-        else:
-            output_file = os.path.join(self.uploads_directory, output_file)
+        output_file = os.path.join(
+            self.context.output_dir, os.path.splitext(template)[0])
         input_xml = pywws.plot.GraphFileReader(input_file)
         if (input_xml.get_children(self.plotter.plot_name) and
                         self.plotter.do_plot(input_xml, output_file) == 0):
@@ -303,12 +277,9 @@ class RegularTasks(object):
         logger.warning('nothing to graph in %s', input_file)
         return None
 
-    def do_template(self, template, data=None, local=False):
+    def do_template(self, template, data=None):
         logger.info("Templating %s", template)
         input_file = os.path.join(self.template_dir, template)
-        if local:
-            output_file = os.path.join(self.local_dir, template)
-        else:
-            output_file = os.path.join(self.uploads_directory, template)
+        output_file = os.path.join(self.context.output_dir, template)
         self.templater.make_file(input_file, output_file, live_data=data)
         return output_file

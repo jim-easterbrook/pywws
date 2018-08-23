@@ -121,15 +121,13 @@ Add Mastodon posts to your hourly tasks
 
 Edit the ``[hourly]`` section in ``weather.ini``. If your toots include
 one or more graphs you need to add the graph templates to the ``plot``
-list, with an ``L`` flag to store the result in your ``local_files``
-directory. Note that if you reuse your Twitter graph you only need to
-generate it once. Add your toot template to the ``text`` list, again
-with an ``L`` flag to store the result locally. Finally, add
-``mastodon`` to the ``services`` list, with an option specifying the
+list. Note that if you reuse your Twitter graph you only need to
+generate it once. Add your toot template to the ``text`` list. Finally,
+add ``mastodon`` to the ``services`` list, with an option specifying the
 template processing result. For example::
 
     [hourly]
-    text = [('toot.txt', 'L')]
+    text = ['toot.txt']
     plot = [('tweet.png.xml', 'L')]
     services = [('mastodon', 'toot.txt')]
 
@@ -143,7 +141,8 @@ Add more images
 Mastodon allows up to four images per "toot", so you could add more
 graphs, or a webcam image, or a weather forecast icon. Use one ``media``
 line per image at the start of your toot template. You need to give the
-full path of any files that are not in your ``local_files`` directory.
+full path of any files that are not in your "output" directory (a
+subdirectory of your work directory called ``output``).
 
 .. _botsin.space: https://botsin.space/
 .. _Mastodon: https://joinmastodon.org/
@@ -199,7 +198,7 @@ class ToService(pywws.service.FileService):
             media_item, toot = toot.split('\n', 1)
             media_item = media_item.split()[1]
             if not os.path.isabs(media_item):
-                media_item = os.path.join(self.local_dir, media_item)
+                media_item = os.path.join(self.context.output_dir, media_item)
             media.append(media_item)
         media_ids = []
         try:

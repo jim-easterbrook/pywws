@@ -773,6 +773,11 @@ class PywwsContext(object):
         # open params and status files
         self.params = ParamStore(data_dir, 'weather.ini')
         self.status = ParamStore(data_dir, 'status.ini')
+        # create working directories
+        self.work_dir = self.params.get('paths', 'work', '/tmp/pywws')
+        self.output_dir = os.path.join(self.work_dir, 'output')
+        if not os.path.isdir(self.output_dir):
+            os.makedirs(self.output_dir)
         # open data file stores
         self.raw_data = RawStore(data_dir)
         self.calib_data = CalibStore(data_dir)

@@ -136,13 +136,12 @@ Add Twitter posts to your hourly tasks
 --------------------------------------
 
 Edit the ``[hourly]`` section in ``weather.ini``. Add your tweet
-template to the ``text`` list, with an ``L`` flag to store the result in
-your ``local_files`` directory. Then add ``twitter`` to the ``services``
+template to the ``text`` list. Then add ``twitter`` to the ``services``
 list, with an option specifying the template processing result. For
 example::
 
     [hourly]
-    text = [('tweet.txt', 'L')]
+    text = ['tweet.txt']
     services = [('twitter', 'tweet.txt')]
 
 You could use the ``[logged]``, ``[12 hourly]`` or ``[daily]`` sections
@@ -155,21 +154,21 @@ Include images in your tweet
 You can add up to four images to your tweets by specifying the image
 file locations in the tweet template. Make the first line of the tweet
 ``media path`` where ``path`` is the file name, or full path for files
-that are not in your ``local_files`` directory. Repeat for any
-additional image files. The "tweet_media.txt" example template shows how
-to do this.
+that are not in your "output" directory (a subdirectory of your work
+directory called ``output``). Repeat for any additional image files. The
+"tweet_media.txt" example template shows how to do this.
 
 The image could be from a web cam, or for a weather forecast it could be
 an icon representing the forecast. To add a weather graph you need to
 make sure the graph is drawn before the tweet is sent. The
 :py:mod:`pywws.regulartasks` module processes graph and text templates
 before doing service uploads, so you can include the graph drawing in
-the same section. The ``L`` flag ensures the plot is stored in your
-local files directory. For example::
+the same section. (The ``L`` flag stops auto-editing of weather.ini
+adding the file as an ftp task). For example::
 
     [hourly]
     plot = [('tweet.png.xml', 'L')]
-    text = [('tweet_media.txt', 'L')]
+    text = ['tweet_media.txt']
     services = [('twitter', 'tweet_media.txt')]
 
 .. _Twitter: https://twitter.com/
@@ -284,7 +283,7 @@ class ToService(pywws.service.FileService):
             media_item, tweet = tweet.split('\n', 1)
             media_item = media_item.split()[1]
             if not os.path.isabs(media_item):
-                media_item = os.path.join(self.local_dir, media_item)
+                media_item = os.path.join(self.context.output_dir, media_item)
             media.append(media_item)
         try:
             session.post(tweet, media)
