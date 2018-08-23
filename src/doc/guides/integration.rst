@@ -31,12 +31,24 @@ This is easy to do:
 
 #. Stop all pywws software
 #. Copy the ``yowindow.xml`` example template to your text template directory.
-#. If you haven't already done so, edit ``weather.ini`` and set the ``local_files`` entry in the ``[paths]`` section to a suitable directory for your yowindow file.
-#. Add the yowindow template to the ``[live]`` tasks in ``weather.ini``. Set its flags to ``'L'`` so the result is copied to your local directory instead of being uploaded to an ftp site::
+#. Add the yowindow template to the ``[live]`` tasks in ``weather.ini``.
+   Set its flags to ``'L'`` so that pywws doesn't try to upload it to an ftp site::
 
      [live]
      text = [('yowindow.xml', 'L')]
 #. Restart pywws live logging.
+
+This will write the file to the ``output`` subdirectory of the ``work`` directory set in :ref:`weather.ini <weather_ini-paths>`.
+If you prefer to store the file somewhere else you can use the :py:mod:`pywws.service.copy` service to copy it there. For example::
+
+    [copy]
+    directory = /home/heavyweather/
+
+    [live]
+    text = ['yowindow.xml']
+    services = [('copy', 'yowindow.xml')]
+
+In this case a ``'L'`` flag is not required as there is a service using the template output.
 
 You can check the file is being updated every 48 seconds by using ``more`` or ``cat`` to dump it to the screen.
 

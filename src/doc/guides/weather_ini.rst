@@ -107,6 +107,8 @@ You must update all your stored data by running :py:mod:`pywws.reprocess` after 
    The default is to save the files every hour, to reduce "wear" on solid state memory such as the SD cards used with Raspberry Pi computers.
    If your weather data directory is stored on a conventional disc drive you can set ``frequent writes`` to ``True``.
 
+.. _weather_ini-paths:
+
 paths: directories in which templates etc. are stored
 -----------------------------------------------------
 ::
@@ -115,7 +117,6 @@ paths: directories in which templates etc. are stored
  templates = /home/$USER/weather/templates/
  graph_templates = /home/$USER/weather/graph_templates/
  work = /tmp/weather
- local_files = /home/$USER/weather/results/
  user_calib = /home/$USER/weather/modules/usercalib
  modules = /home/$USER/weather/modules/
 
