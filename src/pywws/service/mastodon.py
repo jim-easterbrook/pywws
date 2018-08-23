@@ -163,16 +163,17 @@ from mastodon import Mastodon
 import pywws.service
 
 __docformat__ = "restructuredtext en"
+service_name = os.path.splitext(os.path.basename(__file__))[0]
 logger = logging.getLogger(__name__)
 
 
 class ToService(pywws.service.FileService):
     logger = logger
-    service_name = 'mastodon'
+    service_name = service_name
 
     def __init__(self, context):
         # check config
-        handle = context.params.get(self.service_name, 'handle', '')
+        handle = context.params.get(service_name, 'handle', '')
         if not handle:
             raise RuntimeError('No user handle specified in weather.ini')
         # get default character encoding of template output
@@ -183,9 +184,9 @@ class ToService(pywws.service.FileService):
 
     @contextmanager
     def session(self):
-        handle = self.context.params.get(self.service_name, 'handle')
+        handle = self.context.params.get(service_name, 'handle')
         api_base_url = handle.split('@')[-1]
-        access_token = self.context.params.get(self.service_name, 'access_token')
+        access_token = self.context.params.get(service_name, 'access_token')
         if not access_token:
             raise RuntimeError('Authentication data not found')
         yield Mastodon(access_token=access_token, api_base_url=api_base_url)
@@ -214,16 +215,16 @@ class ToService(pywws.service.FileService):
         import webbrowser
 
         # get user handle
-        handle = self.context.params.get(self.service_name, 'handle')
+        handle = self.context.params.get(service_name, 'handle')
         api_base_url = handle.split('@')[-1]
         # get client data
-        client_id = self.context.params.get(self.service_name, 'client_id')
-        client_secret = self.context.params.get(self.service_name, 'client_secret')
+        client_id = self.context.params.get(service_name, 'client_id')
+        client_secret = self.context.params.get(service_name, 'client_secret')
         if (not client_id) or (not client_secret):
             client_id, client_secret = Mastodon.create_app(
                 'pywws', scopes=['write'], api_base_url=api_base_url)
-            self.context.params.set(self.service_name, 'client_id', client_id)
-            self.context.params.set(self.service_name, 'client_secret', client_secret)
+            self.context.params.set(service_name, 'client_id', client_id)
+            self.context.params.set(service_name, 'client_secret', client_secret)
         # create api
         api = Mastodon(client_id=client_id, client_secret=client_secret,
                        api_base_url=api_base_url)
@@ -240,7 +241,7 @@ class ToService(pywws.service.FileService):
         code = code.strip()
         # log in
         access_token = api.log_in(code=code, scopes=['write'])
-        self.context.params.set(self.service_name, 'access_token', access_token)
+        self.context.params.set(service_name, 'access_token', access_token)
 
 
 if __name__ == "__main__":

@@ -222,7 +222,7 @@ class ToService(pywws.service.CatchupDataService):
             for key in 'id', 'ID':
                 if key in rsp:
                     self.context.params.set(
-                        self.service_name, 'station id', rsp[key])
+                        service_name, 'station id', rsp[key])
 
 
 if __name__ == "__main__":

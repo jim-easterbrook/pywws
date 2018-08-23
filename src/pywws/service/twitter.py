@@ -199,6 +199,7 @@ from pywws.constants import Twitter as pct
 import pywws.service
 
 __docformat__ = "restructuredtext en"
+service_name = os.path.splitext(os.path.basename(__file__))[0]
 logger = logging.getLogger(__name__)
 
 
@@ -251,7 +252,7 @@ class PythonTwitterHandler(object):
 
 class ToService(pywws.service.FileService):
     logger = logger
-    service_name = 'twitter'
+    service_name = service_name
 
     def __init__(self, context):
         # get default character encoding of template output
@@ -263,12 +264,12 @@ class ToService(pywws.service.FileService):
     @contextmanager
     def session(self):
         # get parameters
-        key = self.context.params.get(self.service_name, 'key')
-        secret = self.context.params.get(self.service_name, 'secret')
+        key = self.context.params.get(service_name, 'key')
+        secret = self.context.params.get(service_name, 'secret')
         if (not key) or (not secret):
             raise RuntimeError('Authentication data not found')
-        latitude = self.context.params.get(self.service_name, 'latitude')
-        longitude = self.context.params.get(self.service_name, 'longitude')
+        latitude = self.context.params.get(service_name, 'latitude')
+        longitude = self.context.params.get(service_name, 'longitude')
         # open API
         if twitter:
             yield PythonTwitterHandler(key, secret, latitude, longitude, 40)
@@ -337,9 +338,9 @@ class ToService(pywws.service.FileService):
             content = content.decode('utf-8')
         access_token = dict(parse_qsl(content))
         self.context.params.set(
-            self.service_name, 'key', access_token['oauth_token'])
+            service_name, 'key', access_token['oauth_token'])
         self.context.params.set(
-            self.service_name, 'secret', access_token['oauth_token_secret'])
+            service_name, 'secret', access_token['oauth_token_secret'])
 
 
 if __name__ == "__main__":
