@@ -86,28 +86,7 @@ class RegularTasks(object):
                 last_update += timezone.utcoffset(last_update)
                 while self.cron[section].get_current(datetime) <= last_update:
                     self.cron[section].get_next()
-        # convert old Twitter flags
-        for section in list(self.cron.keys()) + [
-                       'live', 'logged', 'hourly', '12 hourly', 'daily']:
-            templates = eval(self.params.get(section, 'text', '[]'))
-            services = eval(self.params.get(section, 'services', '[]'))
-            changed = False
-            for n, template in enumerate(templates):
-                if not isinstance(template, (list, tuple)):
-                    continue
-                template, flags = template
-                if 'T' not in flags:
-                    continue
-                templates[n] = (template, 'L')
-                task = ('twitter', template)
-                if task not in services:
-                    services.append(task)
-                changed = True
-            if changed:
-                logger.error('updating Twitter in [%s]', section)
-                self.params.set(section, 'text', repr(templates))
-                self.params.set(section, 'services', repr(services))
-        # convert to use pywws.service.{copy,ftp,sftp}
+        # convert to use pywws.service.{copy,ftp,sftp,twitter}
         if self.params.get('ftp', 'local site') == 'True':
             self.params.set(
                 'copy', 'directory', self.params.get('ftp', 'directory', ''))
@@ -117,33 +96,43 @@ class RegularTasks(object):
                         'password', 'privkey'):
                 self.params.set('sftp', key, self.params.get('ftp', key, ''))
             mod = 'sftp'
-        elif self.params.get('ftp', 'secure') == 'False':
-            mod = 'ftp'
         else:
-            mod = None
+            mod = 'ftp'
         for key in ('local site', 'secure', 'privkey'):
             self.params.unset('ftp', key)
-        if mod:
-            for section in list(self.cron.keys()) + [
-                           'live', 'logged', 'hourly', '12 hourly', 'daily']:
-                for t_p in ('text', 'plot'):
-                    templates = eval(self.params.get(section, t_p, '[]'))
-                    services = eval(self.params.get(section, 'services', '[]'))
-                    changed = False
-                    for n, template in enumerate(templates):
-                        if isinstance(template, (list, tuple)):
-                            continue
-                        templates[n] = (template, 'L')
-                        if t_p == 'plot':
-                            template = os.path.splitext(template)[0]
-                        task = (mod, template)
-                        if task not in services:
-                            services.append(task)
+        for section in list(self.cron.keys()) + [
+                       'live', 'logged', 'hourly', '12 hourly', 'daily']:
+            for t_p in ('text', 'plot'):
+                templates = eval(self.params.get(section, t_p, '[]'))
+                services = eval(self.params.get(section, 'services', '[]'))
+                changed = False
+                for n, template in enumerate(templates):
+                    if isinstance(template, (list, tuple)):
+                        template, flags = template
+                    else:
+                        flags = ''
+                    if 'T' in flags:
+                        templates[n] = template
                         changed = True
-                    if changed:
-                        logger.error('updating %s in [%s]', t_p, section)
-                        self.params.set(section, t_p, repr(templates))
-                        self.params.set(section, 'services', repr(services))
+                    if t_p == 'plot':
+                        result = os.path.splitext(template)[0]
+                    else:
+                        result = template
+                    if 'L' in flags:
+                        task = None
+                    elif 'T' in flags:
+                        task = ('twitter', result)
+                    elif any([x[1] == template for x in services]):
+                        task = None
+                    else:
+                        task = (mod, result)
+                    if task and task not in services:
+                        services.append(task)
+                        changed = True
+                if changed:
+                    logger.error('updating %s in [%s]', t_p, section)
+                    self.params.set(section, t_p, repr(templates))
+                    self.params.set(section, 'services', repr(services))
         # create service uploader objects
         self.services = {}
         for section in list(self.cron.keys()) + [
