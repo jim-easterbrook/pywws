@@ -182,6 +182,8 @@ class CatchupDataService(DataServiceBase):
             self.queue_data(data['idx'], data, False)
 
     def upload(self, live_data=None, test_mode=False, option=''):
+        if self.queue.full():
+            return
         if test_mode:
             idx = self.context.calib_data.before(datetime.max)
         else:
@@ -202,6 +204,8 @@ class LiveDataService(DataServiceBase):
         pass
 
     def upload(self, live_data=None, test_mode=False, option=''):
+        if self.queue.full():
+            return
         if live_data:
             data = live_data
         else:
@@ -235,6 +239,8 @@ class FileService(ServiceBase):
             self.upload(option='CATCHUP')
 
     def upload(self, live_data=None, option=''):
+        if self.queue.full():
+            return
         self.queue.append(option)
 
     def upload_batch(self):
