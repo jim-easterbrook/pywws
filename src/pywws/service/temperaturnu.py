@@ -59,19 +59,10 @@ logger = logging.getLogger(__name__)
 
 
 class ToService(pywws.service.LiveDataService):
-    fixed_data = {}
-    interval = timedelta(seconds=40)
+    config = {'hash': ('', True, 'hash')}
     logger = logger
     service_name = service_name
     template = "#live##temp_out \"'t': '%.1f',\"#"
-
-    def __init__(self, context):
-        # get configurable "fixed data"
-        self.fixed_data.update({
-            'hash': context.params.get(service_name, 'hash', ''),
-            })
-        # base class init
-        super(ToService, self).__init__(context)
 
     @contextmanager
     def session(self):

@@ -89,22 +89,20 @@ logger = logging.getLogger(__name__)
 
 
 class ToService(pywws.service.FileService):
+    config = {
+        'site'       : ('',   True,  None),
+        'user'       : ('',   True,  None),
+        'password'   : ('',   False, None),
+        'directory'  : ('',   True,  None),
+        'port'       : ('22', True,  None),
+        'privkey'    : ('',   False, None),
+        }
     logger = logger
     service_name = service_name
 
-    def __init__(self, context):
-        # base class init
-        super(ToService, self).__init__(context)
-        # get config
-        self.params = {}
-        for key in ('site', 'user', 'directory'):
-            self.params[key] = context.params.get(service_name, key, '')
-        self.params['port'] = eval(context.params.get(service_name, 'port', '22'))
-        for key in self.params:
-            if not self.params[key]:
-                raise RuntimeError('No {} specified in weather.ini'.format(key))
-        self.params['password'] = context.params.get(service_name, 'password', '')
-        self.params['privkey'] = context.params.get(service_name, 'privkey', '')
+    def __init__(self, context, check_params=True):
+        super(ToService, self).__init__(context, check_params)
+        self.params['port'] = eval(self.params['port'])
 
     @contextmanager
     def session(self):

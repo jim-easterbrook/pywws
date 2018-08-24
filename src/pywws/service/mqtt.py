@@ -131,8 +131,18 @@ logger = logging.getLogger(__name__)
 
 
 class ToService(pywws.service.LiveDataService):
-    fixed_data = {}
-    interval = timedelta(seconds=40)
+    config = {
+        'topic'      : ('/weather/pywws', True,  None),
+        'hostname'   : ('localhost',      True,  None),
+        'port'       : ('1883',           True,  None),
+        'client_id'  : ('pywws',          True,  None),
+        'retain'     : ('False',          True,  None),
+        'user'       : ('',               False, None),
+        'password'   : ('',               False, None),
+        'tls_cert'   : ('',               False, None),
+        'tls_ver'    : ('1',              True,  None),
+        'multi_topic': ('False',          True,  None),
+        }
     logger = logger
     service_name = service_name
     template = """
@@ -154,33 +164,16 @@ class ToService(pywws.service.LiveDataService):
 
 """
 
-    def __init__(self, context):
-        # get configurable data
-        self.params = {
-            'topic'      : context.params.get(
-                service_name, 'topic', '/weather/pywws'),
-            'hostname'   : context.params.get(
-                service_name, 'hostname', 'localhost'),
-            'port'       : eval(context.params.get(
-                service_name, 'port', '1883')),
-            'client_id'  : context.params.get(
-                service_name, 'client_id', 'pywws'),
-            'retain'     : eval(context.params.get(
-                service_name, 'retain', 'False')),
-            'user'       : context.params.get(service_name, 'user', ''),
-            'password'   : context.params.get(service_name, 'password', ''),
-            'tls_cert'   : context.params.get(service_name, 'tls_cert', ''),
-            'tls_ver'    : eval(context.params.get(service_name, 'tls_ver', '1')),
-            'multi_topic': eval(context.params.get(
-                service_name, 'multi_topic', 'False')),
-            }
+    def __init__(self, context, check_params=True):
+        super(ToService, self).__init__(context, check_params)
         # get template text
         template = eval(context.params.get(
             service_name, 'template_txt', pprint.pformat(self.template)))
         logger.log(logging.DEBUG - 1, 'template:\n' + template)
         self.template = "#live#" + template
-        # base class init
-        super(ToService, self).__init__(context)
+        # convert some params from string
+        for key in ('port', 'retain', 'tls_ver', 'multi_topic'):
+            self.params[key] = eval(self.params[key])
 
     @contextmanager
     def session(self):
@@ -193,10 +186,8 @@ class ToService(pywws.service.LiveDataService):
             session.username_pw_set(self.params['user'])
         logger.debug(('connecting to host {hostname:s}:{port:d} '
                       'with client_id "{client_id:s}"').format(**self.params))
-
         if self.params['tls_cert']:
             session.tls_set(self.params['tls_cert'], tls_version=self.params['tls_ver'])
-
         session.connect(self.params['hostname'], self.params['port'])
         try:
             yield session

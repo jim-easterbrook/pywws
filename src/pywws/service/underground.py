@@ -67,6 +67,11 @@ logger = logging.getLogger(__name__)
 
 
 class ToService(pywws.service.CatchupDataService):
+    config = {
+        'station' : ('',      True, 'ID'),
+        'password': ('',      True, 'PASSWORD'),
+        'internal': ('False', True, None),
+        }
     fixed_data = {'action': 'updateraw', 'softwaretype': 'pywws'}
     interval = timedelta(seconds=47)
     logger = logger
@@ -85,25 +90,19 @@ class ToService(pywws.service.CatchupDataService):
 #calc "rain_inch(rain_day(data))" "'dailyrainin': '%g',"#
 """
 
-    def __init__(self, context):
+    def __init__(self, context, check_params=True):
+        super(ToService, self).__init__(context, check_params)
         # extend template
         if context.params.get('config', 'ws type') == '3080':
             self.template += """
 #illuminance  "'solarradiation': '%.2f'," "" "illuminance_wm2(x)"#
 #uv           "'UV'            : '%d',"#
 """
-        if eval(context.params.get(service_name, 'internal', 'False')):
+        if eval(self.params['internal']):
             self.template += """
 #hum_in       "'indoorhumidity': '%.d',"#
 #temp_in      "'indoortempf'   : '%.1f'," "" "temp_f(x)"#
 """
-        # get configurable "fixed data"
-        self.fixed_data.update({
-            'ID'      : context.params.get(service_name, 'station', ''),
-            'PASSWORD': context.params.get(service_name, 'password', ''),
-            })
-        # base class init
-        super(ToService, self).__init__(context)
 
     @contextmanager
     def session(self):

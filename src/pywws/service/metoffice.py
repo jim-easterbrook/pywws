@@ -66,6 +66,10 @@ logger = logging.getLogger(__name__)
 
 
 class ToService(pywws.service.CatchupDataService):
+    config = {
+        'site id': ('', True, 'siteid'),
+        'aws pin': ('', True, 'siteAuthenticationKey'),
+        }
     fixed_data = {'softwaretype': 'pywws-' + pywws.__version__}
     interval = timedelta(seconds=300)
     logger = logger
@@ -82,7 +86,8 @@ class ToService(pywws.service.CatchupDataService):
 #calc "temp_f(dew_point(data['temp_out'], data['hum_out']))" "'dewptf': '%.1f',"#
 """
 
-    def __init__(self, context):
+    def __init__(self, context, check_params=True):
+        super(ToService, self).__init__(context, check_params)
         # initialise rain history
         last_update = context.status.get_datetime('last update', service_name)
         if last_update:
@@ -90,15 +95,6 @@ class ToService(pywws.service.CatchupDataService):
             self.last_rain = context.calib_data[last_update]['rain']
         else:
             self.last_rain = None
-        # get configurable "fixed data"
-        self.fixed_data.update({
-            'siteid'               : context.params.get(
-                service_name, 'site id', ''),
-            'siteAuthenticationKey': context.params.get(
-                service_name, 'aws pin', ''),
-            })
-        # base class init
-        super(ToService, self).__init__(context)
 
     @contextmanager
     def session(self):

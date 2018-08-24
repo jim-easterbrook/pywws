@@ -93,8 +93,15 @@ logger = logging.getLogger(__name__)
 
 
 class ToService(pywws.service.CatchupDataService):
-    fixed_data = {}
-    interval = timedelta(seconds=40)
+    config = {
+        'api key'     : ('', True,  None),
+        'station id'  : ('', True,  'station_id'),
+        'external id' : ('', False, None),
+        'station name': ('', False, None),
+        'lat'         : ('', False, None),
+        'long'        : ('', False, None),
+        'alt'         : ('', False, None),
+        }
     logger = logger
     service_name = service_name
     template = """
@@ -111,28 +118,11 @@ class ToService(pywws.service.CatchupDataService):
 #calc "dew_point(data['temp_out'], data['hum_out'])" "'dew_point': %.1f,"#
 """
 
-    def __init__(self, context):
-        # get station params
-        self.params = {
-            'api_key'     : context.params.get(service_name, 'api key', ''),
-            'external_id' : context.params.get(service_name, 'external id', ''),
-            'station_name': context.params.get(service_name, 'station name', ''),
-            'lat'         : context.params.get(service_name, 'lat', ''),
-            'long'        : context.params.get(service_name, 'long', ''),
-            'alt'         : context.params.get(service_name, 'alt', ''),
-            }
-        # get configurable "fixed data"
-        self.fixed_data.update({
-            'station_id': context.params.get(service_name, 'station id'),
-            })
-        # base class init
-        super(ToService, self).__init__(context)
-
     @contextmanager
     def session(self):
         with requests.Session() as session:
             session.headers.update({'Content-Type': 'application/json'})
-            session.params.update({'appid': self.params['api_key']})
+            session.params.update({'appid': self.params['api key']})
             yield session
 
     def upload_data(self, session, prepared_data={}, live=False):
@@ -148,15 +138,17 @@ class ToService(pywws.service.CatchupDataService):
 
     def register(self):
         import pprint
+
+        self.check_params('external id', 'station name', 'lat', 'long', 'alt')
         url = 'https://api.openweathermap.org/data/3.0/stations'
         data = {
-            'external_id': self.params['external_id'],
-            'name'       : self.params['station_name'],
+            'external_id': self.params['external id'],
+            'name'       : self.params['station name'],
             'latitude'   : float(self.params['lat']),
             'longitude'  : float(self.params['long']),
             'altitude'   : float(self.params['alt']),
             }
-        station_id = self.fixed_data['station_id']
+        station_id = self.params['station id']
         idx = -1
         with self.session() as session:
             # get current stations

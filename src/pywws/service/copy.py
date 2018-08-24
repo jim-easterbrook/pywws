@@ -62,16 +62,9 @@ logger = logging.getLogger(__name__)
 
 
 class ToService(pywws.service.FileService):
+    config = {'directory'  : ('', True,  None)}
     logger = logger
     service_name = service_name
-
-    def __init__(self, context):
-        # base class init
-        super(ToService, self).__init__(context)
-        # get config
-        self.directory = context.params.get(service_name, 'directory', '')
-        if not self.directory:
-            raise RuntimeError('No directory specified in weather.ini')
 
     @contextmanager
     def session(self):
@@ -79,9 +72,9 @@ class ToService(pywws.service.FileService):
 
     def upload_file(self, session, path):
         try:
-            if not os.path.isdir(self.directory):
-                os.makedirs(self.directory)
-            shutil.copy(path, self.directory)
+            if not os.path.isdir(self.params['directory']):
+                os.makedirs(self.params['directory'])
+            shutil.copy(path, self.params['directory'])
         except Exception as ex:
             return False, str(ex)
         return True, 'OK'

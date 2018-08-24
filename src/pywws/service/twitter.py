@@ -250,30 +250,31 @@ class PythonTwitterHandler(object):
 
 
 class ToService(pywws.service.FileService):
+    config = {
+        'secret'   : (None, True,  None),
+        'key'      : (None, True,  None),
+        'latitude' : (None, False, None),
+        'longitude': (None, False, None),
+        }
     logger = logger
     service_name = service_name
 
-    def __init__(self, context):
+    def __init__(self, context, check_params=True):
+        super(ToService, self).__init__(context, check_params)
         # get default character encoding of template output
         self.encoding = context.params.get(
             'config', 'template encoding', 'iso-8859-1')
-        # base class init
-        super(ToService, self).__init__(context)
 
     @contextmanager
     def session(self):
-        # get parameters
-        key = self.context.params.get(service_name, 'key')
-        secret = self.context.params.get(service_name, 'secret')
-        if (not key) or (not secret):
-            raise RuntimeError('Authentication data not found')
-        latitude = self.context.params.get(service_name, 'latitude')
-        longitude = self.context.params.get(service_name, 'longitude')
-        # open API
         if twitter:
-            yield PythonTwitterHandler(key, secret, latitude, longitude, 40)
+            yield PythonTwitterHandler(
+                self.params['key'], self.params['secret'],
+                self.params['latitude'], self.params['longitude'], 40)
         else:
-            yield TweepyHandler(key, secret, latitude, longitude)
+            yield TweepyHandler(
+                self.params['key'], self.params['secret'],
+                self.params['latitude'], self.params['longitude'])
 
     def upload_file(self, session, filename):
         with codecs.open(filename, 'r', encoding=self.encoding) as tweet_file:

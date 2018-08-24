@@ -57,7 +57,10 @@ logger = logging.getLogger(__name__)
 
 class ToService(pywws.service.CatchupDataService):
     catchup = 100
-    fixed_data = {}
+    config = {
+        'http headers': (None, False, None),
+        'api url'     : ('',   True,  None),
+        }
     interval = timedelta(seconds=300)
     logger = logger
     service_name = service_name
@@ -82,7 +85,8 @@ class ToService(pywws.service.CatchupDataService):
 
 """
 
-    def __init__(self, context):
+    def __init__(self, context, check_params=True):
+        super(ToService, self).__init__(context, check_params)
         # initialise rain history
         last_update = context.status.get_datetime('last update', service_name)
         if last_update:
@@ -90,13 +94,6 @@ class ToService(pywws.service.CatchupDataService):
             self.last_rain = context.calib_data[last_update]['rain']
         else:
             self.last_rain = None
-        # get service params (headers are optional)
-        self.params = {
-            'headers' : context.params.get(service_name, 'http headers', None),
-            'api_url' : context.params.get(service_name, 'api url', ''),
-            }
-        # base class init
-        super(ToService, self).__init__(context)
 
     @contextmanager
     def session(self):
@@ -105,10 +102,10 @@ class ToService(pywws.service.CatchupDataService):
 
     def upload_data(self, session, prepared_data={}, live=False):
         try:
-            if self.params['headers'] is not None:
-                for header in eval(self.params['headers']):
+            if self.params['http headers']:
+                for header in eval(self.params['http headers']):
                     session.headers.update({header[0]: header[1]})
-            rsp = session.get(self.params['api_url'], params=prepared_data,
+            rsp = session.get(self.params['api url'], params=prepared_data,
                 timeout=60)
         except Exception as ex:
             return False, str(ex)

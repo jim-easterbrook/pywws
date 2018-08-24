@@ -167,28 +167,23 @@ logger = logging.getLogger(__name__)
 
 
 class ToService(pywws.service.FileService):
+    config = {
+        'handle'      : ('',   True, None),
+        'access_token': (None, True, None),
+        }
     logger = logger
     service_name = service_name
 
-    def __init__(self, context):
-        # check config
-        handle = context.params.get(service_name, 'handle', '')
-        if not handle:
-            raise RuntimeError('No user handle specified in weather.ini')
+    def __init__(self, context, check_params=True):
+        super(ToService, self).__init__(context, check_params)
         # get default character encoding of template output
         self.encoding = context.params.get(
             'config', 'template encoding', 'iso-8859-1')
-        # base class init
-        super(ToService, self).__init__(context)
 
     @contextmanager
     def session(self):
-        handle = self.context.params.get(service_name, 'handle')
-        api_base_url = handle.split('@')[-1]
-        access_token = self.context.params.get(service_name, 'access_token')
-        if not access_token:
-            raise RuntimeError('Authentication data not found')
-        yield Mastodon(access_token=access_token, api_base_url=api_base_url)
+        yield Mastodon(access_token=self.params['access_token'],
+                       api_base_url=self.params['handle'].split('@')[-1])
 
     def upload_file(self, session, filename):
         with codecs.open(filename, 'r', encoding=self.encoding) as toot_file:
@@ -213,9 +208,8 @@ class ToService(pywws.service.FileService):
     def register(self):
         import webbrowser
 
-        # get user handle
-        handle = self.context.params.get(service_name, 'handle')
-        api_base_url = handle.split('@')[-1]
+        self.check_params('handle')
+        api_base_url = self.params['handle'].split('@')[-1]
         # get client data
         client_id = self.context.params.get(service_name, 'client_id')
         client_secret = self.context.params.get(service_name, 'client_secret')

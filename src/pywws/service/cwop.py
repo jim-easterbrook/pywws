@@ -73,6 +73,12 @@ logger = logging.getLogger(__name__)
 
 
 class ToService(pywws.service.LiveDataService):
+    config = {
+        'designator': ('',   True, 'designator'),
+        'passcode'  : ('-1', True, 'passcode'),
+        'latitude'  : ('',   True, 'latitude'),
+        'longitude' : ('',   True, 'longitude'),
+        }
     fixed_data = {'version': pywws.__version__}
     interval = timedelta(seconds=290)
     logger = logger
@@ -90,32 +96,13 @@ class ToService(pywws.service.LiveDataService):
 'rain_24hr'    : #calc "100.0*rain_inch(rain_24hr(data))" "'%03.0f'," "'...',"#
 """
 
-    def __init__(self, context):
-        # get configurable "fixed data"
-        self.fixed_data.update({
-            'designator': context.params.get(
-                service_name, 'designator', ''),
-            'passcode': context.params.get(
-                service_name, 'passcode', '-1'),
-            'latitude': context.params.get(
-                service_name, 'latitude', ''),
-            'longitude': context.params.get(
-                service_name, 'longitude', ''),
-            })
-        # set server
-        self.params = {}
-        if self.fixed_data['passcode'] == '-1':
-            self.params['server'] = 'cwop.aprs.net', 14580
-        else:
-            self.params['server'] = 'rotate.aprs.net', 14580
-        # base class init
-        super(ToService, self).__init__(context)
-
     @contextmanager
     def session(self):
         session = socket.socket()
         session.settimeout(20)
-        session.connect(self.params['server'])
+        server = ('rotate.aprs.net',
+                  'cwop.aprs.net')[self.fixed_data['passcode'] == '-1']
+        session.connect((server, 14580))
         response = session.recv(4096)
         logger.debug('server software: %s', response.strip())
         try:

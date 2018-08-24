@@ -53,12 +53,31 @@ class Queue(deque):
 
 
 class ServiceBase(threading.Thread):
+    config = {}
     interval = timedelta(seconds=40)
 
-    def __init__(self, context):
+    def __init__(self, context, check_params=True):
         super(ServiceBase, self).__init__()
         self.context = context
         self.queue = Queue(self.start)
+        # get user configuration
+        self.params = {}
+        check = []
+        for key, (default, required, fixed_key) in self.config.items():
+            self.params[key] = context.params.get(
+                self.service_name, key, default)
+            if required:
+                check.append(key)
+            if fixed_key and self.params[key]:
+                self.fixed_data[fixed_key] = self.params[key]
+        # check values
+        if check_params:
+            self.check_params(*check)
+
+    def check_params(self, *keys):
+        for key in keys:
+            if not self.params[key]:
+                raise RuntimeError('"{}" not set in weather.ini'.format(key))
 
     def run(self):
         self.logger.debug('thread started ' + self.name)
@@ -101,9 +120,10 @@ class ServiceBase(threading.Thread):
 
 class DataServiceBase(ServiceBase):
     catchup = 7
+    fixed_data = {}
 
-    def __init__(self, context):
-        super(DataServiceBase, self).__init__(context)
+    def __init__(self, context, check_params=True):
+        super(DataServiceBase, self).__init__(context, check_params)
         # check config
         template = context.params.get(self.service_name, 'template')
         if template == 'default':
@@ -117,7 +137,7 @@ class DataServiceBase(ServiceBase):
             self.templater = pywws.template.Template(context, use_locale=False)
             self.template_file = StringIO(self.template)
         # get time stamp of last uploaded data
-        self.last_update = self.context.status.get_datetime(
+        self.last_update = context.status.get_datetime(
             'last update', self.service_name)
         if not self.last_update:
             self.last_update = datetime.utcnow() - timedelta(days=self.catchup)
@@ -304,11 +324,12 @@ def main(class_, argv=None):
     args = parser.parse_args(argv[1:])
     pywws.logger.setup_handler(args.verbose or 0)
     with pywws.storage.pywws_context(args.data_dir) as context:
-        uploader = class_(context)
         if 'register' in args and args.register:
+            uploader = class_(context, check_params=False)
             uploader.register()
             context.flush()
             return 0
+        uploader = class_(context)
         if issubclass(class_, FileService):
             for file in args.file:
                 uploader.upload(option=os.path.abspath(file))

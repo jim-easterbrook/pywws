@@ -58,6 +58,10 @@ logger = logging.getLogger(__name__)
 
 
 class ToService(pywws.service.CatchupDataService):
+    config = {
+        'user_id' : ('', True, 'id'),
+        'kennwort': ('', True, 'pwd'),
+        }
     fixed_data = {'sid': 'pywws'}
     interval = timedelta(seconds=300)
     logger = logger
@@ -77,17 +81,11 @@ class ToService(pywws.service.CatchupDataService):
 #calc "rain_hour(data)" "'pa': '%.1f',"#
 """
 
-    def __init__(self, context):
+    def __init__(self, context, check_params=True):
+        super(ToService, self).__init__(context, check_params)
         # extend template
         if context.params.get('config', 'ws type') == '3080':
             self.template += """#uv "'uv': '%d',"#"""
-        # get configurable "fixed data"
-        self.fixed_data.update({
-            'id' : context.params.get(service_name, 'user_id', ''),
-            'pwd': context.params.get(service_name, 'kennwort', ''),
-            })
-        # base class init
-        super(ToService, self).__init__(context)
 
     @contextmanager
     def session(self):
