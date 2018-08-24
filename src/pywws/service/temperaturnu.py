@@ -68,7 +68,7 @@ class ToService(pywws.service.LiveDataService):
     def __init__(self, context):
         # get configurable "fixed data"
         self.fixed_data.update({
-            'hash': context.params.get(service_name, 'hash', 'unknown'),
+            'hash': context.params.get(service_name, 'hash', ''),
             })
         # base class init
         super(ToService, self).__init__(context)

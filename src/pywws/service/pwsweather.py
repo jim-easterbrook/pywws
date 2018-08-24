@@ -84,8 +84,8 @@ class ToService(pywws.service.CatchupDataService):
 """
         # get configurable "fixed data"
         self.fixed_data.update({
-            'ID'      : context.params.get(service_name, 'station', 'unknown'),
-            'PASSWORD': context.params.get(service_name, 'password', 'unknown'),
+            'ID'      : context.params.get(service_name, 'station', ''),
+            'PASSWORD': context.params.get(service_name, 'password', ''),
             })
         # base class init
         super(ToService, self).__init__(context)

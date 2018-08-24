@@ -94,13 +94,13 @@ class ToService(pywws.service.LiveDataService):
         # get configurable "fixed data"
         self.fixed_data.update({
             'designator': context.params.get(
-                service_name, 'designator', 'unknown'),
+                service_name, 'designator', ''),
             'passcode': context.params.get(
                 service_name, 'passcode', '-1'),
             'latitude': context.params.get(
-                service_name, 'latitude', 'unknown'),
+                service_name, 'latitude', ''),
             'longitude': context.params.get(
-                service_name, 'longitude', 'unknown'),
+                service_name, 'longitude', ''),
             })
         # set server
         self.params = {}
