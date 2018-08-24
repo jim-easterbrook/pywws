@@ -48,6 +48,9 @@ class Queue(deque):
         self.append = super(Queue, self).append
         self._start()
 
+    def full(self):
+        return len(self) >= 50
+
 
 class ServiceBase(threading.Thread):
     interval = timedelta(seconds=40)
@@ -166,11 +169,16 @@ class DataServiceBase(ServiceBase):
 
 
 class CatchupDataService(DataServiceBase):
-    def do_catchup(self):
+    def do_catchup(self, do_all=False):
         start = self.last_update + self.interval
         for data in self.context.calib_data[start:]:
-            if len(self.queue) >= 60:
-                break
+            if do_all:
+                while self.queue.full():
+                    self.context.shutdown.wait(4.0)
+                    if self.context.shutdown.is_set():
+                        return
+            elif self.queue.full() or self.context.shutdown.is_set():
+                return
             self.queue_data(data['idx'], data, False)
 
     def upload(self, live_data=None, test_mode=False, option=''):
@@ -190,7 +198,7 @@ class CatchupDataService(DataServiceBase):
 
 
 class LiveDataService(DataServiceBase):
-    def do_catchup(self):
+    def do_catchup(self, do_all=False):
         pass
 
     def upload(self, live_data=None, test_mode=False, option=''):
@@ -220,7 +228,7 @@ class LiveDataService(DataServiceBase):
 
 
 class FileService(ServiceBase):
-    def do_catchup(self):
+    def do_catchup(self, do_all=False):
         pending = eval(self.context.status.get(
             'pending', self.service_name, '[]'))
         if pending:
@@ -299,7 +307,7 @@ def main(class_, argv=None):
             for file in args.file:
                 uploader.upload(option=os.path.abspath(file))
         elif issubclass(class_, CatchupDataService) and args.catchup:
-            uploader.do_catchup()
+            uploader.do_catchup(do_all=True)
         else:
             uploader.upload(test_mode=True)
         uploader.stop()
