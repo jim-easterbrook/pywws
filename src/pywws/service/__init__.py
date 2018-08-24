@@ -36,13 +36,26 @@ import pywws.storage
 import pywws.template
 
 
+class Queue(deque):
+    def __init__(self, start, *arg, **kw):
+        super(Queue, self).__init__(*arg, **kw)
+        self._start = start
+
+    def append(self, x):
+        super(Queue, self).append(x)
+        if x is None:
+            return
+        self.append = super(Queue, self).append
+        self._start()
+
+
 class ServiceBase(threading.Thread):
     interval = timedelta(seconds=40)
 
     def __init__(self, context):
         super(ServiceBase, self).__init__()
         self.context = context
-        self.queue = deque()
+        self.queue = Queue(self.start)
 
     def run(self):
         self.logger.debug('thread started ' + self.name)
@@ -159,9 +172,6 @@ class CatchupDataService(DataServiceBase):
             if len(self.queue) >= 60:
                 break
             self.queue_data(data['idx'], data, False)
-        # start upload thread
-        if self.queue and not self.is_alive():
-            self.start()
 
     def upload(self, live_data=None, test_mode=False, option=''):
         if test_mode:
@@ -177,9 +187,6 @@ class CatchupDataService(DataServiceBase):
             idx = self.context.calib_data.after(data['idx'] + SECOND)
         if live_data and not idx:
             self.queue_data(live_data['idx'], live_data, True)
-        # start upload thread
-        if self.queue and not self.is_alive():
-            self.start()
 
 
 class LiveDataService(DataServiceBase):
@@ -198,9 +205,6 @@ class LiveDataService(DataServiceBase):
         if test_mode:
             timestamp = None
         self.queue_data(timestamp, data, bool(live_data))
-        # start upload thread
-        if self.queue and not self.is_alive():
-            self.start()
 
     def upload_batch(self):
         # remove stale uploads from queue
@@ -224,9 +228,6 @@ class FileService(ServiceBase):
 
     def upload(self, live_data=None, option=''):
         self.queue.append(option)
-        # start upload thread
-        if self.queue and not self.is_alive():
-            self.start()
 
     def upload_batch(self):
         # make list of files to upload
