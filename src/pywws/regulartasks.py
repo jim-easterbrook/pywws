@@ -25,6 +25,7 @@ import importlib
 import logging
 import os
 import sys
+import time
 
 from pywws.calib import Calib
 import pywws.plot
@@ -188,10 +189,15 @@ class RegularTasks(object):
         for template, flags in text_tasks:
             self.do_template(template, data=live_data)
         # do service tasks
-        for name in self.services:
-            self.services[name].do_catchup()
         for name, option in service_tasks:
             self.services[name].upload(live_data=live_data, option=option)
+        # allow all services to sent some catchup records
+        catchup = list(self.services.keys())
+        stop = time.time() + 20.0
+        while catchup and time.time() < stop:
+            for name in list(catchup):
+                if self.services[name].do_catchup():
+                    catchup.remove(name)
         # update status
         for section in sections:
             self.status.set('last update', section, now.isoformat(' '))

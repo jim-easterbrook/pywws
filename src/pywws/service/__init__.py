@@ -144,9 +144,9 @@ class DataServiceBase(ServiceBase):
 
     def queue_data(self, timestamp, data, live):
         if timestamp and timestamp < self.last_update + self.interval:
-            return
+            return False
         if not self.valid_data(data):
-            return
+            return False
         data_str = self.templater.make_text(self.template_file, data)
         self.template_file.seek(0)
         prepared_data = eval('{' + data_str + '}')
@@ -155,6 +155,7 @@ class DataServiceBase(ServiceBase):
         self.queue.append((timestamp, prepared_data, live))
         if timestamp:
             self.last_update = timestamp
+        return True
 
     def valid_data(self, data):
         return True
@@ -191,15 +192,20 @@ class DataServiceBase(ServiceBase):
 class CatchupDataService(DataServiceBase):
     def do_catchup(self, do_all=False):
         start = self.last_update + self.interval
-        for data in self.context.calib_data[start:]:
-            if do_all:
+        if do_all:
+            for data in self.context.calib_data[start:]:
                 while self.queue.full():
                     self.context.shutdown.wait(4.0)
                     if self.context.shutdown.is_set():
-                        return
-            elif self.queue.full() or self.context.shutdown.is_set():
-                return
-            self.queue_data(data['idx'], data, False)
+                        return True
+                self.queue_data(data['idx'], data, False)
+            return True
+        for data in self.context.calib_data[start:]:
+            if self.queue.full():
+                return True
+            if self.queue_data(data['idx'], data, False):
+                return False
+        return True
 
     def upload(self, live_data=None, test_mode=False, option=''):
         if self.queue.full():
@@ -208,20 +214,21 @@ class CatchupDataService(DataServiceBase):
             idx = self.context.calib_data.before(datetime.max)
         else:
             idx = self.context.calib_data.after(self.last_update + self.interval)
-        if idx:
+        while idx:
             data = self.context.calib_data[idx]
             timestamp = data['idx']
+            idx = self.context.calib_data.after(timestamp + SECOND)
             if test_mode:
                 timestamp = None
-            self.queue_data(timestamp, data, False)
-            idx = self.context.calib_data.after(data['idx'] + SECOND)
+            if self.queue_data(timestamp, data, False):
+                break
         if live_data and not idx:
             self.queue_data(live_data['idx'], live_data, True)
 
 
 class LiveDataService(DataServiceBase):
     def do_catchup(self, do_all=False):
-        pass
+        return True
 
     def upload(self, live_data=None, test_mode=False, option=''):
         if self.queue.full():
@@ -257,6 +264,7 @@ class FileService(ServiceBase):
             'pending', self.service_name, '[]'))
         if pending:
             self.upload(option='CATCHUP')
+        return True
 
     def upload(self, live_data=None, option=''):
         if self.queue.full():
