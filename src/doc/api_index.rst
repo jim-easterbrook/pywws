@@ -50,6 +50,7 @@ Upload data to online "services"
 .. autosummary::
    :toctree: api
 
+   pywws.service
    pywws.service.ftp
    pywws.service.sftp
    pywws.service.copy

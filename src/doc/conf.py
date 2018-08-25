@@ -40,7 +40,8 @@ on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 # allow documentation to be compiled without installing dependencies
 import mock
 
-for mod_name in ('hid', 'oauth2', 'twitter', 'paho', 'paho.mqtt.client',
+for mod_name in ('hid', 'oauth2', 'mastodon', 'twitter',
+                 'paho', 'paho.mqtt.client', 'paramiko',
                  'usb', 'usb.core', 'usb.util', 'libusb1', 'usb1',
                  'daemon.daemon', 'daemon.runner'):
     sys.modules[mod_name] = mock.Mock()
@@ -58,7 +59,7 @@ extensions = ['sphinx.ext.autodoc', 'sphinx.ext.autosummary',
 autosummary_generate = True
 autoclass_content = 'both'
 autodoc_member_order = 'bysource'
-autodoc_default_flags = ['members', 'undoc-members']
+autodoc_default_flags = ['members', 'undoc-members', 'show-inheritance']
 
 intersphinx_mapping = {
     'python': ('https://docs.python.org/2', None),
