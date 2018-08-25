@@ -504,7 +504,7 @@ class Template(object):
                     data = data_set[idx]
                 elif command[0] == 'live':
                     data_set = self.calib_data
-                    idx = datetime.max
+                    idx = live_data['idx']
                     valid_data = True
                     data = live_data
                 elif command[0] == 'timezone':
