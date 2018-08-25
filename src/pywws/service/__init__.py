@@ -260,52 +260,42 @@ class LiveDataService(DataServiceBase):
 
 class FileService(ServiceBase):
     def do_catchup(self, do_all=False):
-        pending = eval(self.context.status.get(
-            'pending', self.service_name, '[]'))
-        if pending:
-            self.upload(option='CATCHUP')
+        for upload in eval(
+                self.context.status.get('pending', self.service_name, '[]')):
+            self.upload(option=upload)
         return True
 
     def upload(self, live_data=None, option=''):
-        if self.queue.full():
+        if self.queue.full() or (option in self.queue):
             return
         self.queue.append(option)
 
     def upload_batch(self):
-        # make list of files to upload
-        pending = eval(self.context.status.get(
-            'pending', self.service_name, '[]'))
-        files = []
-        while self.queue and not self.context.shutdown.is_set():
-            upload = self.queue[0]
-            if upload is None:
-                break
-            if upload == 'CATCHUP':
-                for path in pending:
-                    if path not in files:
-                        files.append(path)
-            else:
-                if not os.path.isabs(upload):
-                    upload = os.path.join(self.context.output_dir, upload)
-                if upload not in files:
-                    files.append(upload)
-                if upload not in pending:
-                    pending.append(upload)
-            self.queue.popleft()
-        # upload files
+        pending = eval(
+            self.context.status.get('pending', self.service_name, '[]'))
         OK = True
         with self.session() as session:
-            for path in files:
-                self.logger.debug('file: %s', path)
+            while self.queue and not self.context.shutdown.is_set():
+                upload = self.queue[0]
+                if upload is None:
+                    OK = False
+                    break
+                if os.path.isabs(upload):
+                    path = upload
+                else:
+                    path = os.path.join(self.context.output_dir, upload)
+                self.logger.warning('file: %s', path)
                 OK, message = self.upload_file(session, path)
                 self.log(message)
                 if OK:
-                    pending.remove(path)
+                    if upload in pending:
+                        pending.remove(upload)
                 else:
+                    if upload not in pending:
+                        pending.append(upload)
                     break
+                self.queue.popleft()
         self.context.status.set('pending', self.service_name, repr(pending))
-        if self.queue and self.queue[0] is None:
-            OK = False
         return OK
 
 
