@@ -55,8 +55,36 @@ class Queue(deque):
 
 
 class ServiceBase(threading.Thread):
+    """Base class for all service uploaders.
+
+    Uploaders use a separate thread to allow the main program thread to
+    continue even if a service is slow to respond. Items to upload are
+    passed to the thread via a thread safe queue. The thread is started
+    when the first item is put on the queue. To shut down the thread put
+    :py:obj:`None` on the queue, e.g. by calling :py:meth:`stop`.
+
+    There are two types of uploader derived from this class.
+    :py:class:`DataServiceBase` is used by uploaders that send defined
+    sets of data, typically as an HTML "post" or "get" operation.
+    :py:class:`FileService` is used to upload files, including free form
+    text such as a Twitter message.
+    """
+
     config = {}
+    """Defines the user configuration of the uploader. Each item must be
+    of the form ``name: (default (str), required (bool), fixed_key (str
+    or None))``. ``name`` is the ``weather.ini`` value name, ``default``
+    is a default value, ``required`` defines whether a value must be
+    supplied at run time, and ``fixed_key`` defines if and to where in
+    :py:attr:`~DataServiceBase.fixed_data` the value should be copied.
+    """
+
     interval = timedelta(seconds=40)
+    """Sets the minimum period between the timestamps of uploaded data.
+    For some services this can be less than the weather station's "live"
+    data period (48 seconds) whereas others may require 5 or 15 minutes
+    between readings.
+    """
 
     def __init__(self, context, check_params=True):
         super(ServiceBase, self).__init__()
@@ -77,11 +105,22 @@ class ServiceBase(threading.Thread):
             self.check_params(*check)
 
     def check_params(self, *keys):
+        """Ensure user has set required values in weather.ini.
+
+        Normally the :py:data:`~ServiceBase.config` names with
+        ``required`` set are checked, but if your uploader has a
+        ``register`` method you may need to check for other data.
+
+        :param str keys: the :py:data:`~ServiceBase.config` names to
+            verify.
+        """
+
         for key in keys:
             if not self.params[key]:
                 raise RuntimeError('"{}" not set in weather.ini'.format(key))
 
     def run(self):
+        """ """
         self.logger.debug('thread started ' + self.name)
         self.old_message = ''
         if self.context.live_logging:
@@ -121,8 +160,24 @@ class ServiceBase(threading.Thread):
 
 
 class DataServiceBase(ServiceBase):
+    """Base class for "data" services.
+
+    A "data" service uploader sends defined sets of data, typically as
+    an HTML "post" or "get" operation.
+    """
+
     catchup = 7
+    """Sets the number of days of past data that can be uploaded when a
+    service is first used, if the service supports uploading of past
+    data.
+    """
+
     fixed_data = {}
+    """Defines a set of ``key: value`` pairs that are the same for every
+    data upload. This might include the station's location or the
+    software name & version. Values set by the user should be included
+    in the weather.ini config defined in :py:data:`~ServiceBase.config`.
+    """
 
     def __init__(self, context, check_params=True):
         super(DataServiceBase, self).__init__(context, check_params)
@@ -261,6 +316,9 @@ class LiveDataService(DataServiceBase):
 
 
 class FileService(ServiceBase):
+    """Base class for "file" services.
+
+    """
     def do_catchup(self, do_all=False):
         for upload in eval(
                 self.context.status.get('pending', self.service_name, '[]')):
