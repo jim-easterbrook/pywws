@@ -192,7 +192,7 @@ class DataServiceBase(ServiceBase):
         # create templater
         if self.template:
             self.templater = pywws.template.Template(context, use_locale=False)
-            self.template_file = StringIO(self.template)
+            self.template_file = None
         # get time stamp of last uploaded data
         self.last_update = context.status.get_datetime(
             'last update', self.service_name)
@@ -204,6 +204,8 @@ class DataServiceBase(ServiceBase):
             return False
         if not self.valid_data(data):
             return False
+        if not self.template_file:
+            self.template_file = StringIO(self.template)
         data_str = self.templater.make_text(self.template_file, data)
         self.template_file.seek(0)
         prepared_data = eval('{' + data_str + '}')
