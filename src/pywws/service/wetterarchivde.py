@@ -82,10 +82,10 @@ class ToService(pywws.service.CatchupDataService):
 """
 
     def __init__(self, context, check_params=True):
-        super(ToService, self).__init__(context, check_params)
         # extend template
         if context.params.get('config', 'ws type') == '3080':
             self.template += """#uv "'uv': '%d',"#"""
+        super(ToService, self).__init__(context, check_params)
 
     @contextmanager
     def session(self):
