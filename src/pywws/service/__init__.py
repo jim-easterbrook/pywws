@@ -68,6 +68,10 @@ class ServiceBase(threading.Thread):
     sets of data, typically as an HTML "post" or "get" operation.
     :py:class:`FileService` is used to upload files, including free form
     text such as a Twitter message.
+
+    All service classes must provide a :py:attr:`logger` object so that
+    logging messages carry the right module name, and define a
+    :py:attr:`service_name` string.
     """
 
     config = {}
@@ -84,6 +88,21 @@ class ServiceBase(threading.Thread):
     For some services this can be less than the weather station's "live"
     data period (48 seconds) whereas others may require 5 or 15 minutes
     between readings.
+    """
+
+    logger = None
+    """A :py:class:`logging.Logger` object created with the module name.
+    This is typically done as follows::
+
+        logger = logging.getLogger(__name__)
+    """
+
+    service_name = ''
+    """A short name used to refer to the service in weather.ini. It
+    should be all lower case. The best name to use is the last part of
+    the module's file name, as follows::
+
+        service_name = os.path.splitext(os.path.basename(__file__))[0]
     """
 
     def __init__(self, context, check_params=True):
@@ -163,13 +182,27 @@ class DataServiceBase(ServiceBase):
     """Base class for "data" services.
 
     A "data" service uploader sends defined sets of data, typically as
-    an HTML "post" or "get" operation.
+    an HTML "post" or "get" operation. Service classes should be based
+    on :py:class:`CatchupDataService` or :py:class:`LiveDataService`,
+    depending on whether the service allows uploading of past data, for
+    example to fill in gaps if the server (or pywws client) goes down
+    for a few hours or days.
+
+    Data service classes must provide a :py:attr:`template` string to
+    define how to convert pywws data before uploading. Required methods
+    are :py:meth:`session` and :py:meth:`upload_data`. If the service
+    has a separate authorisation or registration process this can be
+    done in a :py:meth:`~pywws.service.mastodon.register` method. See
+    :py:mod:`pywws.service.mastodon` for an example.
     """
 
-    catchup = 7
-    """Sets the number of days of past data that can be uploaded when a
-    service is first used, if the service supports uploading of past
-    data.
+    template = ''
+    """Defines the conversion of pywws data to key, value pairs required
+    by the service. The template string is passed to
+    :py:mod:`pywws.template`, then the result is passed to
+    :py:func:`eval` to create a :py:obj:`dict`. This rather complex
+    process allows great flexibility, but you do have to be careful with
+    use of quotation marks.
     """
 
     fixed_data = {}
@@ -197,7 +230,11 @@ class DataServiceBase(ServiceBase):
         self.last_update = context.status.get_datetime(
             'last update', self.service_name)
         if not self.last_update:
-            self.last_update = datetime.utcnow() - timedelta(days=self.catchup)
+            if self.catchup:
+                self.last_update = datetime.utcnow() - timedelta(
+                    days=self.catchup)
+            else:
+                self.last_update = datetime.min
 
     def queue_data(self, timestamp, data, live):
         if timestamp and timestamp < self.last_update + self.interval:
@@ -249,6 +286,11 @@ class DataServiceBase(ServiceBase):
 
 
 class CatchupDataService(DataServiceBase):
+    catchup = 7
+    """Sets the number of days of past data that can be uploaded when a
+    service is first used.
+    """
+
     def do_catchup(self, do_all=False):
         start = self.last_update + self.interval
         if do_all:
@@ -286,6 +328,8 @@ class CatchupDataService(DataServiceBase):
 
 
 class LiveDataService(DataServiceBase):
+    catchup = None
+
     def do_catchup(self, do_all=False):
         return True
 
