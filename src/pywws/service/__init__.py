@@ -263,17 +263,20 @@ class DataServiceBase(ServiceBase):
             return False
         if not self.valid_data(data):
             return False
-        if not self.template_file:
-            self.template_file = StringIO(self.template)
-        data_str = self.templater.make_text(self.template_file, data)
-        self.template_file.seek(0)
-        prepared_data = eval('{' + data_str + '}')
+        prepared_data = self.prepare_data(data)
         prepared_data.update(self.fixed_data)
         self.logger.debug('data: %s', str(prepared_data))
         self.queue.append((timestamp, prepared_data, live))
         if timestamp:
             self.last_update = timestamp
         return True
+
+    def prepare_data(self, data):
+        if not self.template_file:
+            self.template_file = StringIO(self.template)
+        data_str = self.templater.make_text(self.template_file, data)
+        self.template_file.seek(0)
+        return eval('{' + data_str + '}')
 
     def valid_data(self, data):
         return True
