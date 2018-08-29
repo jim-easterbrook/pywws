@@ -16,7 +16,12 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-"""Base classes for "service" uploaders."""
+"""Base classes for "service" uploaders.
+
+.. inheritance-diagram:: CatchupDataService FileService LiveDataService
+    :top-classes: pywws.service.ServiceBase
+
+"""
 
 from __future__ import absolute_import, print_function, unicode_literals
 
@@ -71,7 +76,8 @@ class ServiceBase(threading.Thread):
 
     All service classes must provide a :py:attr:`logger` object so that
     logging messages carry the right module name, and define a
-    :py:attr:`service_name` string.
+    :py:attr:`service_name` string. They must also define a
+    :py:meth:`session` method.
     """
 
     config = {}
@@ -137,6 +143,22 @@ class ServiceBase(threading.Thread):
         for key in keys:
             if not self.params[key]:
                 raise RuntimeError('"{}" not set in weather.ini'.format(key))
+
+    def session(self):
+        """Context manager factory function for a batch of one or more
+        uploads.
+
+        This makes it easy to ensure any resources such as an internet
+        connection are properly closed after a batch of uploads. Use the
+        :py:func:`contextlib.contextmanager` decorator when you
+        implement this method.
+
+        For a typical example, see the source code of the
+        :py:mod:`pywws.service.openweathermap` module. If your upload
+        can't benefit from a session object yield :py:obj:`None`, as in
+        :py:mod:`pywws.service.copy`.
+        """
+        raise NotImplementedError()
 
     def run(self):
         """ """

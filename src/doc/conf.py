@@ -54,7 +54,8 @@ for mod_name in ('hid', 'oauth2', 'mastodon', 'twitter',
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 extensions = ['sphinx.ext.autodoc', 'sphinx.ext.autosummary',
-              'sphinx.ext.viewcode', 'sphinx.ext.intersphinx']
+              'sphinx.ext.viewcode', 'sphinx.ext.intersphinx',
+              'sphinx.ext.inheritance_diagram']
 
 autosummary_generate = True
 autoclass_content = 'both'
