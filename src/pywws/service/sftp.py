@@ -108,23 +108,20 @@ class ToService(pywws.service.FileService):
     def session(self):
         logger.info("Uploading to web site with SFTP")
         address = (self.params['site'], self.params['port'])
-        try:
-            with paramiko.Transport(address) as transport:
-                transport.start_client(timeout=30)
-                if self.params['privkey']:
-                    transport.auth_publickey(
-                        username=self.params['user'],
-                        key=paramiko.RSAKey.from_private_key_file(
-                            self.params['privkey']))
-                else:
-                    transport.auth_password(
-                        username=self.params['user'],
-                        password=self.params['password'])
-                with paramiko.SFTPClient.from_transport(transport) as session:
-                    session.chdir(self.params['directory'])
-                    yield session
-        except Exception as ex:
-            logger.exception(ex)
+        with paramiko.Transport(address) as transport:
+            transport.start_client(timeout=30)
+            if self.params['privkey']:
+                transport.auth_publickey(
+                    username=self.params['user'],
+                    key=paramiko.RSAKey.from_private_key_file(
+                        self.params['privkey']))
+            else:
+                transport.auth_password(
+                    username=self.params['user'],
+                    password=self.params['password'])
+            with paramiko.SFTPClient.from_transport(transport) as session:
+                session.chdir(self.params['directory'])
+                yield session
 
     def upload_file(self, session, path):
         target = os.path.basename(path)
