@@ -57,7 +57,7 @@ The CWOP/APRS uploader is based on code by Marco Trevisan <mail@3v1n0.net>.
 
 from __future__ import absolute_import, print_function, unicode_literals
 
-from contextlib import contextmanager
+from contextlib import closing, contextmanager
 from datetime import timedelta
 import logging
 import os
@@ -98,17 +98,14 @@ class ToService(pywws.service.LiveDataService):
 
     @contextmanager
     def session(self):
-        session = socket.socket()
-        session.settimeout(20)
-        server = ('rotate.aprs.net',
-                  'cwop.aprs.net')[self.fixed_data['passcode'] == '-1']
-        session.connect((server, 14580))
-        response = session.recv(4096)
-        logger.debug('server software: %s', response.strip())
-        try:
+        with closing(socket.socket()) as session:
+            session.settimeout(20)
+            server = ('rotate.aprs.net',
+                      'cwop.aprs.net')[self.fixed_data['passcode'] == '-1']
+            session.connect((server, 14580))
+            response = session.recv(4096)
+            logger.debug('server software: %s', response.strip())
             yield session
-        finally:
-            session.close()
 
     def upload_data(self, session, prepared_data={}, live=False):
         login = ('user {designator:s} pass {passcode:s} ' +
