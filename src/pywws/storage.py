@@ -83,6 +83,7 @@ if sys.version_info[0] >= 3:
 else:
     from ConfigParser import RawConfigParser
 
+from pywws import _release
 from pywws.constants import DAY
 from pywws.weatherstation import WSDateTime, WSFloat, WSInt, WSStatus
 
@@ -773,6 +774,8 @@ class PywwsContext(object):
         # open params and status files
         self.params = ParamStore(data_dir, 'weather.ini')
         self.status = ParamStore(data_dir, 'status.ini')
+        # update weather.ini
+        self.update_params()
         # create working directories
         self.work_dir = self.params.get('paths', 'work', '/tmp/pywws')
         self.output_dir = os.path.join(self.work_dir, 'output')
@@ -786,6 +789,66 @@ class PywwsContext(object):
         self.monthly_data = MonthlyStore(data_dir)
         # create an event to shutdown threads
         self.shutdown = threading.Event()
+
+    def update_params(self):
+        current_version = int(_release)
+        file_version = int(self.params.get('config', 'config version', '0'))
+        if file_version < 1488:
+            # convert day end hour
+            day_end_str = self.params.get('config', 'day end hour')
+            if day_end_str and not ',' in day_end_str:
+                logger.error('updating "day end hour" in weather.ini')
+                day_end_str += ', False'
+                self.params.set('config', 'day end hour', day_end_str)
+        if file_version < 1582:
+            # convert uploads to use pywws.service.{copy,ftp,sftp,twitter}
+            if self.params.get('ftp', 'local site') == 'True':
+                self.params.set(
+                    'copy', 'directory', self.params.get('ftp', 'directory', ''))
+                mod = 'copy'
+            elif self.params.get('ftp', 'secure') == 'True':
+                for key in ('site', 'user', 'directory', 'port',
+                            'password', 'privkey'):
+                    self.params.set('sftp', key, self.params.get('ftp', key, ''))
+                mod = 'sftp'
+            else:
+                mod = 'ftp'
+            for key in ('local site', 'secure', 'privkey'):
+                self.params.unset('ftp', key)
+            for section in self.params._config.sections():
+                if section.split()[0] != 'cron' and section not in [
+                        'live', 'logged', 'hourly', '12 hourly', 'daily']:
+                    continue
+                for t_p in ('text', 'plot'):
+                    templates = eval(self.params.get(section, t_p, '[]'))
+                    services = eval(self.params.get(section, 'services', '[]'))
+                    changed = False
+                    for n, template in enumerate(templates):
+                        if isinstance(template, (list, tuple)):
+                            template, flags = template
+                            templates[n] = template
+                            changed = True
+                        else:
+                            flags = ''
+                        if t_p == 'plot':
+                            result = os.path.splitext(template)[0]
+                        else:
+                            result = template
+                        if 'L' in flags:
+                            task = None
+                        elif 'T' in flags:
+                            task = ('twitter', result)
+                        else:
+                            task = (mod, result)
+                        if task and task not in services:
+                            services.append(task)
+                            changed = True
+                    if changed:
+                        logger.error('updating %s in [%s]', t_p, section)
+                        self.params.set(section, t_p, repr(templates))
+                        self.params.set(section, 'services', repr(services))
+        if file_version < current_version:
+            self.params.set('config', 'config version', str(current_version))
 
     def terminate(self):
         if self.live_logging:

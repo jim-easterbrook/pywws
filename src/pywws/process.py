@@ -717,11 +717,8 @@ def generate_monthly(rain_day_threshold, day_end_hour, use_dst,
 
 def get_day_end_hour(params):
     # get daytime end hour (in local time)
-    day_end_str = params.get('config', 'day end hour', '9, False')
-    if not ',' in day_end_str:
-        day_end_str += ', False'
-        params.set('config', 'day end hour', day_end_str)
-    day_end_hour, use_dst = eval(day_end_str)
+    day_end_hour, use_dst = eval(
+        params.get('config', 'day end hour', '9, False'))
     day_end_hour = day_end_hour % 24
     return day_end_hour, use_dst
 
