@@ -402,6 +402,7 @@ class FileService(ServiceBase):
         pending = eval(
             self.context.status.get('pending', self.service_name, '[]'))
         OK = True
+        count = 0
         with self.session() as session:
             while self.queue and not self.context.shutdown.is_set():
                 upload = self.queue[0]
@@ -418,12 +419,17 @@ class FileService(ServiceBase):
                 if OK:
                     if upload in pending:
                         pending.remove(upload)
+                    count += 1
                 else:
                     if upload not in pending:
                         pending.append(upload)
                     break
                 self.queue.popleft()
         self.context.status.set('pending', self.service_name, repr(pending))
+        if count > 1:
+            self.logger.warning('{:d} uploads'.format(count))
+        elif count:
+            self.logger.info('1 upload')
         return OK
 
 
