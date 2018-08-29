@@ -103,7 +103,7 @@ class ToService(pywws.service.LiveDataService):
             server = ('rotate.aprs.net',
                       'cwop.aprs.net')[self.fixed_data['passcode'] == '-1']
             session.connect((server, 14580))
-            response = session.recv(4096)
+            response = session.recv(4096).decode('ASCII')
             logger.debug('server software: %s', response.strip())
             yield session
 
@@ -121,7 +121,7 @@ class ToService(pywws.service.LiveDataService):
         packet = packet.encode('ASCII')
         try:
             session.sendall(login)
-            response = session.recv(4096)
+            response = session.recv(4096).decode('ASCII')
             logger.debug('server login ack: %s', response.strip())
             session.sendall(packet)
             session.shutdown(socket.SHUT_RDWR)
