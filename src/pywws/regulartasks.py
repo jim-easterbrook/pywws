@@ -83,7 +83,7 @@ class RegularTasks(object):
         self.services = {}
         for section in list(self.cron.keys()) + [
                        'live', 'logged', 'hourly', '12 hourly', 'daily']:
-            for name, option in self._parse_templates(section, 'services'):
+            for name, options in self._parse_templates(section, 'services'):
                 if name in self.services:
                     continue
                 if os.path.exists(os.path.join(self.module_dir, name + '.py')):
@@ -115,9 +115,9 @@ class RegularTasks(object):
     def _parse_templates(self, section, option):
         for template in eval(self.params.get(section, option, '[]')):
             if isinstance(template, (list, tuple)):
-                yield template
+                yield template[0], template[1:]
             else:
-                yield template, ''
+                yield template, ()
 
     def _do_common(self, now, sections, live_data=None):
         logger.info('doing task sections {!r}'.format(sections))
@@ -142,8 +142,8 @@ class RegularTasks(object):
         for template, flags in text_tasks:
             self.do_template(template, data=live_data)
         # do service tasks
-        for name, option in service_tasks:
-            self.services[name].upload(live_data=live_data, option=option)
+        for name, options in service_tasks:
+            self.services[name].upload(live_data=live_data, options=options)
         # allow all services to sent some catchup records
         catchup = list(self.services.keys())
         stop = time.time() + 20.0

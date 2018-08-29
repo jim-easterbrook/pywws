@@ -330,7 +330,7 @@ class CatchupDataService(DataServiceBase):
                 return False
         return True
 
-    def upload(self, live_data=None, test_mode=False, option=''):
+    def upload(self, live_data=None, test_mode=False, options=()):
         if self.queue.full():
             return
         if test_mode:
@@ -355,7 +355,7 @@ class LiveDataService(DataServiceBase):
     def do_catchup(self, do_all=False):
         return True
 
-    def upload(self, live_data=None, test_mode=False, option=''):
+    def upload(self, live_data=None, test_mode=False, options=()):
         if self.queue.full():
             return
         if live_data:
@@ -388,15 +388,15 @@ class FileService(ServiceBase):
 
     """
     def do_catchup(self, do_all=False):
-        for upload in eval(
-                self.context.status.get('pending', self.service_name, '[]')):
-            self.upload(option=upload)
+        self.upload(options=eval(
+            self.context.status.get('pending', self.service_name, '[]')))
         return True
 
-    def upload(self, live_data=None, option=''):
-        if self.queue.full() or (option in self.queue):
-            return
-        self.queue.append(option)
+    def upload(self, live_data=None, options=()):
+        for item in options:
+            if self.queue.full() or (item in self.queue):
+                continue
+            self.queue.append(item)
 
     def upload_batch(self):
         pending = eval(
@@ -463,8 +463,7 @@ def main(class_, argv=None):
             return 0
         uploader = class_(context)
         if issubclass(class_, FileService):
-            for file in args.file:
-                uploader.upload(option=os.path.abspath(file))
+            uploader.upload(options=map(os.path.abspath, args.file))
         elif issubclass(class_, CatchupDataService) and args.catchup:
             uploader.do_catchup(do_all=True)
         else:
