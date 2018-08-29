@@ -56,7 +56,7 @@ path.
 
 from __future__ import absolute_import
 
-from contextlib import contextmanager
+from contextlib import closing, contextmanager
 from datetime import timedelta
 import ftplib
 import logging
@@ -87,16 +87,12 @@ class ToService(pywws.service.FileService):
 
     @contextmanager
     def session(self):
-        logger.info("Uploading to web site with FTP")
-        session = ftplib.FTP()
-        session.connect(self.params['site'], self.params['port'])
-        logger.debug('welcome message\n' + session.getwelcome())
-        session.login(self.params['user'], self.params['password'])
-        session.cwd(self.params['directory'])
-        try:
+        with closing(ftplib.FTP()) as session:
+            session.connect(self.params['site'], self.params['port'])
+            logger.debug('welcome message\n' + session.getwelcome())
+            session.login(self.params['user'], self.params['password'])
+            session.cwd(self.params['directory'])
             yield session
-        finally:
-            session.close()
 
     def upload_file(self, session, path):
         target = os.path.basename(path)
