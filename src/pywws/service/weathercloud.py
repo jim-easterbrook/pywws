@@ -66,8 +66,8 @@ class ToService(pywws.service.LiveDataService):
 #temp_out                                                   "'temp'     : '%.1f',"#
 #calc "wind_chill(data['temp_out'], data['wind_ave'])"      "'chill'    : '%.1f',"#
 #calc "dew_point(data['temp_out'], data['hum_out'])"        "'dew'      : '%.1f',"#
-#calc "usaheatindex(data['temp_out'], data['hum_out'], dew_point(data['temp_out'], data['hum_out']))" "'heat' : '%.1f',"#
-#calc "(usaheatindex(data['temp_out'], data['hum_out'], dew_point(data['temp_out'], data['hum_out'])) - (1.072 * wind_mph(data['wind_ave']))) " "'thw' : '%.1f',"#
+#calc "usaheatindex(data['temp_out'], data['hum_out'])" "'heat' : '%.1f',"#
+#calc "(usaheatindex(data['temp_out'], data['hum_out']) - (1.072 * wind_mph(data['wind_ave'])))" "'thw' : '%.1f',"#
 #hum_out                                                    "'hum'      : '%.d',"#
 #wind_ave                                                   "'wspdavg'  : '%.1f',"#
 #wind_gust                                                  "'wspdhi'   : '%.1f',"#
@@ -91,7 +91,7 @@ class ToService(pywws.service.LiveDataService):
 #temp_in  "'tempin': '%.1f',"#
 #hum_in   "'humin' : '%.d',"#
 #calc "dew_point(data['temp_in'], data['hum_in'])"          "'dewin'    : '%.1f',"#
-#calc "usaheatindex(data['temp_in'], data['hum_in'], dew_point(data['temp_in'], data['hum_in']))" "'heatin' : '%.1f',"#
+#calc "usaheatindex(data['temp_in'], data['hum_in'])" "'heatin' : '%.1f',"#
 """
 
     @contextmanager

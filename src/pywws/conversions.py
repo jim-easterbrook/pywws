@@ -209,7 +209,7 @@ def cadhumidex(temp, humidity):
                            float(humidity) / 100.0)
     return temp + (0.555 * (saturation_pressure - 10.0))
 
-def usaheatindex(temp, humidity, dew):
+def usaheatindex(temp, humidity, dew=None):
     """Calculate Heat Index as per USA National Weather Service Standards
 
     See http://en.wikipedia.org/wiki/Heat_index, formula 1. The
@@ -218,6 +218,8 @@ def usaheatindex(temp, humidity, dew):
     """
     if temp is None or humidity is None:
         return None
+    if dew is None:
+        dew = dew_point(temp, humidity)
     if temp < 26.7 or humidity < 40 or dew < 12.0:
         return temp
     T = (temp * 1.8) + 32.0
