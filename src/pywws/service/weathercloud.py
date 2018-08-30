@@ -25,6 +25,7 @@
     [weathercloud]
     deviceid = XXXXXXXXXXXX
     devicekey = XXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+    internal = True
 
     [logged]
     services = ['weathercloud', 'metoffice']
@@ -52,8 +53,9 @@ logger = logging.getLogger(__name__)
 
 class ToService(pywws.service.LiveDataService):
     config = {
-        'deviceid' : ('', True, 'wid'),
-        'devicekey': ('', True, 'key'),
+        'deviceid' : ('',      True, 'wid'),
+        'devicekey': ('',      True, 'key'),
+        'internal' : ('False', True, None),
         }
     fixed_data = {'ver': pywws.__version__, 'type': '481'}
     interval = timedelta(seconds=600)
@@ -61,15 +63,11 @@ class ToService(pywws.service.LiveDataService):
     service_name = service_name
     template = """
 #live#
-#temp_in                                                    "'tempin'   : '%.1f',"#
 #temp_out                                                   "'temp'     : '%.1f',"#
 #calc "wind_chill(data['temp_out'], data['wind_ave'])"      "'chill'    : '%.1f',"#
-#calc "dew_point(data['temp_in'], data['hum_in'])"          "'dewin'    : '%.1f',"#
 #calc "dew_point(data['temp_out'], data['hum_out'])"        "'dew'      : '%.1f',"#
-#calc "usaheatindex(data['temp_in'], data['hum_in'], dew_point(data['temp_in'], data['hum_in']))" "'heatin' : '%.1f',"#
 #calc "usaheatindex(data['temp_out'], data['hum_out'], dew_point(data['temp_out'], data['hum_out']))" "'heat' : '%.1f',"#
 #calc "(usaheatindex(data['temp_out'], data['hum_out'], dew_point(data['temp_out'], data['hum_out'])) - (1.072 * wind_mph(data['wind_ave']))) " "'thw' : '%.1f',"#
-#hum_in                                                     "'humin'    : '%.d',"#
 #hum_out                                                    "'hum'      : '%.d',"#
 #wind_ave                                                   "'wspdavg'  : '%.1f',"#
 #wind_gust                                                  "'wspdhi'   : '%.1f',"#
@@ -87,6 +85,13 @@ class ToService(pywws.service.LiveDataService):
             self.template += """
 #calc "data['illuminance']"                                 "'solarrad' : '%.1f'," "" "illuminance_wm2(x)"#
 #calc "data['uv']"                                          "'uvi'      : '%.1f',"#
+"""
+        if eval(self.params['internal']):
+            self.template += """
+#temp_in  "'tempin': '%.1f',"#
+#hum_in   "'humin' : '%.d',"#
+#calc "dew_point(data['temp_in'], data['hum_in'])"          "'dewin'    : '%.1f',"#
+#calc "usaheatindex(data['temp_in'], data['hum_in'], dew_point(data['temp_in'], data['hum_in']))" "'heatin' : '%.1f',"#
 """
 
     @contextmanager
