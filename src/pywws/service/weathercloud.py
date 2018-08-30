@@ -63,19 +63,33 @@ class ToService(pywws.service.LiveDataService):
     service_name = service_name
     template = """
 #live#
-#temp_out                                                   "'temp'     : '%.1f',"#
-#calc "wind_chill(data['temp_out'], data['wind_ave'])"      "'chill'    : '%.1f',"#
-#calc "dew_point(data['temp_out'], data['hum_out'])"        "'dew'      : '%.1f',"#
-#calc "usaheatindex(data['temp_out'], data['hum_out'])" "'heat' : '%.1f',"#
-#calc "usaheatindex(data['temp_out'], data['hum_out']) - scale(wind_mph(data['wind_ave']), 1.072)" "'thw': '%.1f',"#
-#hum_out                                                    "'hum'      : '%.d',"#
-#wind_ave                                                   "'wspdavg'  : '%.1f',"#
-#wind_gust                                                  "'wspdhi'   : '%.1f',"#
-#wind_dir                                                   "'wdiravg'  : '%.1f'," "" "winddir_degrees(x)"#
-#rel_pressure                                               "'bar'      : '%.1f',"#
-#calc "rain_day(data)"                                      "'rain'     : '%.1f',"#
-#calc "rain_hour(data)"                                     "'rainrate' : '%.1f',"#
-#idx                                                        "'time'     : '%Y%m%d %H%M%S',"#
+#temp_out
+    "'temp'     : '%.1f',"#
+#calc "wind_chill(data['temp_out'], data['wind_ave'])"
+    "'chill'    : '%.1f',"#
+#calc "dew_point(data['temp_out'], data['hum_out'])"
+    "'dew'      : '%.1f',"#
+#calc "usaheatindex(data['temp_out'], data['hum_out'])"
+    "'heat'     : '%.1f',"#
+#calc "usaheatindex(data['temp_out'], data['hum_out']) -
+       scale(wind_mph(data['wind_ave']), 1.072)"
+    "'thw'      : '%.1f',"#
+#hum_out
+    "'hum'      : '%.d',"#
+#wind_ave
+    "'wspdavg'  : '%.1f',"#
+#wind_gust
+    "'wspdhi'   : '%.1f',"#
+#wind_dir
+    "'wdiravg'  : '%.1f'," "" "winddir_degrees(x)"#
+#rel_pressure
+    "'bar'      : '%.1f',"#
+#calc "rain_day(data)"
+    "'rain'     : '%.1f',"#
+#calc "rain_hour(data)"
+    "'rainrate' : '%.1f',"#
+#idx
+    "'time'     : '%Y%m%d %H%M%S',"#
 """
 
     def __init__(self, context, check_params=True):
@@ -83,16 +97,23 @@ class ToService(pywws.service.LiveDataService):
         # extend template
         if context.params.get('config', 'ws type') == '3080':
             self.template += """
-#calc "data['illuminance']"                                 "'solarrad' : '%.1f'," "" "illuminance_wm2(x)"#
-#calc "data['uv']"                                          "'uvi'      : '%.1f',"#
+#calc "data['illuminance']"
+    "'solarrad': '%.1f'," "" "illuminance_wm2(x)"#
+#calc "data['uv']"
+    "'uvi'     : '%.1f',"#
 """
         if eval(self.params['internal']):
             self.template += """
-#temp_in  "'tempin': '%.1f',"#
-#hum_in   "'humin' : '%.d',"#
-#calc "dew_point(data['temp_in'], data['hum_in'])"          "'dewin'    : '%.1f',"#
-#calc "usaheatindex(data['temp_in'], data['hum_in'])" "'heatin' : '%.1f',"#
+#temp_in
+    "'tempin'  : '%.1f',"#
+#hum_in
+    "'humin'   : '%.d',"#
+#calc "dew_point(data['temp_in'], data['hum_in'])"
+    "'dewin'   : '%.1f',"#
+#calc "usaheatindex(data['temp_in'], data['hum_in'])"
+    "'heatin'  : '%.1f',"#
 """
+        logger.debug('template: %s', self.template)
 
     @contextmanager
     def session(self):
