@@ -98,7 +98,7 @@ class ToService(pywws.service.LiveDataService):
     def session(self):
         with requests.Session() as session:
             yield session
-	
+
     def prepare_data(self, data):
         prepared_data = super(ToService, self).prepare_data(data)
         for key in ('tempin', 'temp', 'chill', 'dewin', 'dew',
@@ -112,7 +112,13 @@ class ToService(pywws.service.LiveDataService):
         return any([data[x] is not None for x in (
             'wind_dir', 'wind_ave', 'wind_gust', 'hum_out', 'temp_out',
             'temp_in', 'hum_in', 'rel_pressure')])
-	
+
+    errors = {
+        '400': 'bad request',
+        '401': 'invalid wid or key',
+        '429': 'too frequent data',
+        }
+
     def upload_data(self, session, prepared_data={}, live=False):
         url = 'http://api.weathercloud.net/v01/set'
         try:
@@ -120,19 +126,10 @@ class ToService(pywws.service.LiveDataService):
         except Exception as ex:
             return False, str(ex)
         text = rsp.text.strip()
-        if rsp.text.strip() == '400':
-            # WeatherCloud server uses 400 to signal bad request
-            return False, 'bad request: "{:s}"'.format(rsp.text.strip())
-        if rsp.text.strip() == '401':
-            # WeatherCloud server uses 401 to signal invalid wid or key
-            return False, 'invalid wid or key: "{:s}"'.format(rsp.text.strip())
-        if rsp.text.strip() == '429':
-            # WeatherCloud server uses 429 to signal too frequent data upload
-            return False, 'too frequent data: "{:s}"'.format(rsp.text.strip())
-        if rsp.text.strip() != '200':
-            return False, 'unknown error: "{:s}"'.format(rsp.text.strip())
-        if rsp.text.strip() == '200':
-            return True, 'upload successful: "{:s}"'.format(rsp.text.strip())
+        if text in self.errors:
+            return False, '{} ({})'.format(self.errors[text], text)
+        if text != '200':
+            return False, 'unknown error ({})'.format(text)
         return True, 'OK'
 
 
