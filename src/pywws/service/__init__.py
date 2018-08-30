@@ -56,6 +56,7 @@ class Queue(deque):
         self._start()
 
     def full(self):
+        """Are there already too many uploads on the queue."""
         return len(self) >= 50
 
 
@@ -212,10 +213,10 @@ class DataServiceBase(ServiceBase):
 
     Data service classes must provide a :py:attr:`template` string to
     define how to convert pywws data before uploading. Required methods
-    are :py:meth:`session` and :py:meth:`upload_data`. If the service
-    has a separate authorisation or registration process this can be
-    done in a :py:meth:`~pywws.service.mastodon.register` method. See
-    :py:mod:`pywws.service.mastodon` for an example.
+    are :py:meth:`~ServiceBase.session` and :py:meth:`upload_data`. If
+    the service has a separate authorisation or registration process
+    this can be done in a :py:meth:`~pywws.service.mastodon.register`
+    method. See :py:mod:`pywws.service.mastodon` for an example.
     """
 
     template = ''
@@ -257,6 +258,23 @@ class DataServiceBase(ServiceBase):
                     days=self.catchup)
             else:
                 self.last_update = datetime.min
+
+    def upload_data(self, session, prepared_data={}, live=False):
+        """Upload one data set to the service.
+
+        Every data service class must implement this method.
+
+        :param object session: the object created by
+            :py:meth:`~ServiceBase.session`. This is typically used to
+            communicate with the server and is automatically closed when
+            a batch of uplaods has finished.
+        :param dict prepared_data: a set of key: value pairs to upload.
+            The keys and values must all be text strings.
+        :param bool live: is this set of data "live" or "logged". This
+            is used by :py:mod:`pywws.service.underground` to select the
+            server to use.
+        """
+        raise NotImplementedError()
 
     def queue_data(self, timestamp, data, live):
         if timestamp and timestamp < self.last_update + self.interval:
