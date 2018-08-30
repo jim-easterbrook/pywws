@@ -81,7 +81,7 @@ class ToService(pywws.service.LiveDataService):
 #wind_gust
     "'wspdhi'   : '%.0f'," "" "scale(x, 10.0)"#
 #wind_dir
-    "'wdiravg'  : '%.1f'," "" "winddir_degrees(x)"#
+    "'wdiravg'  : '%.0f'," "" "winddir_degrees(x)"#
 #rel_pressure
     "'bar'      : '%.0f'," "" "scale(x, 10.0)"#
 #calc "rain_day(data)"
