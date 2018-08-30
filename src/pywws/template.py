@@ -70,6 +70,10 @@ for each processing instruction and still produce output with no line
 breaks. If you want to output a line break after a processing
 instruction, put a blank line immediately after it.
 
+Processing instructions can be split across lines to improve
+readability. Split lines are joined together before processing, after
+removing any trailing newline characters.
+
 ``##``
 ^^^^^^
 
@@ -414,26 +418,29 @@ class Template(object):
         else:
             tmplt = open(template_file, 'rb')
         # do the text processing
-        while True:
-            line = tmplt.readline()
-            if not line:
-                break
-            if isinstance(line, bytes) or sys.version_info[0] < 3:
-                line = line.decode(file_encoding)
+        line = ''
+        for new_line in tmplt:
+            if isinstance(new_line, bytes) or sys.version_info[0] < 3:
+                new_line = new_line.decode(file_encoding)
+            line += new_line
             parts = line.split('#')
-            for i in range(len(parts)):
+            if len(parts) % 2 == 0:
+                # odd number of '#'
+                line = line.rstrip('\r\n')
+                continue
+            for i, part in enumerate(parts):
                 if i % 2 == 0:
                     # not a processing directive
-                    if i == 0 or parts[i] != '\n':
-                        yield parts[i]
+                    if i == 0 or part != '\n':
+                        yield part
                     continue
-                if parts[i] and parts[i][0] == '!':
+                if part and part[0] == '!':
                     # comment
                     continue
                 # Python 2 shlex can't handle unicode
                 if sys.version_info[0] < 3:
-                    parts[i] = parts[i].encode(file_encoding)
-                command = shlex.split(parts[i])
+                    part = part.encode(file_encoding)
+                command = shlex.split(part)
                 if sys.version_info[0] < 3:
                     command = map(lambda x: x.decode(file_encoding), command)
                 if command == []:
@@ -558,9 +565,9 @@ class Template(object):
                     if valid_data and loop_count > 0:
                         tmplt.seek(loop_start, 0)
                 else:
-                    logger.error(
-                        "Unknown processing directive: #%s#", parts[i])
+                    logger.error("Unknown processing directive: #%s#", part)
                     return
+            line = ''
 
     def make_text(self, template_file, live_data=None):
         result = u''
