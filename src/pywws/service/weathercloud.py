@@ -25,6 +25,7 @@
     [weathercloud]
     deviceid = XXXXXXXXXXXX
     devicekey = XXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+    internal = True
 
     [logged]
     services = ['weathercloud', 'metoffice']
@@ -52,8 +53,9 @@ logger = logging.getLogger(__name__)
 
 class ToService(pywws.service.LiveDataService):
     config = {
-        'deviceid' : ('', True, 'wid'),
-        'devicekey': ('', True, 'key'),
+        'deviceid' : ('',      True, 'wid'),
+        'devicekey': ('',      True, 'key'),
+        'internal' : ('False', True, None),
         }
     fixed_data = {'ver': pywws.__version__, 'type': '481'}
     interval = timedelta(seconds=600)
@@ -61,15 +63,11 @@ class ToService(pywws.service.LiveDataService):
     service_name = service_name
     template = """
 #live#
-#temp_in                                                    "'tempin'   : '%.1f',"#
 #temp_out                                                   "'temp'     : '%.1f',"#
 #calc "wind_chill(data['temp_out'], data['wind_ave'])"      "'chill'    : '%.1f',"#
-#calc "dew_point(data['temp_in'], data['hum_in'])"          "'dewin'    : '%.1f',"#
 #calc "dew_point(data['temp_out'], data['hum_out'])"        "'dew'      : '%.1f',"#
-#calc "usaheatindex(data['temp_in'], data['hum_in'], dew_point(data['temp_in'], data['hum_in']))" "'heatin' : '%.1f',"#
 #calc "usaheatindex(data['temp_out'], data['hum_out'], dew_point(data['temp_out'], data['hum_out']))" "'heat' : '%.1f',"#
 #calc "(usaheatindex(data['temp_out'], data['hum_out'], dew_point(data['temp_out'], data['hum_out'])) - (1.072 * wind_mph(data['wind_ave']))) " "'thw' : '%.1f',"#
-#hum_in                                                     "'humin'    : '%.d',"#
 #hum_out                                                    "'hum'      : '%.d',"#
 #wind_ave                                                   "'wspdavg'  : '%.1f',"#
 #wind_gust                                                  "'wspdhi'   : '%.1f',"#
@@ -88,43 +86,50 @@ class ToService(pywws.service.LiveDataService):
 #calc "data['illuminance']"                                 "'solarrad' : '%.1f'," "" "illuminance_wm2(x)"#
 #calc "data['uv']"                                          "'uvi'      : '%.1f',"#
 """
+        if eval(self.params['internal']):
+            self.template += """
+#temp_in  "'tempin': '%.1f',"#
+#hum_in   "'humin' : '%.d',"#
+#calc "dew_point(data['temp_in'], data['hum_in'])"          "'dewin'    : '%.1f',"#
+#calc "usaheatindex(data['temp_in'], data['hum_in'], dew_point(data['temp_in'], data['hum_in']))" "'heatin' : '%.1f',"#
+"""
 
     @contextmanager
     def session(self):
         with requests.Session() as session:
             yield session
-	
+
+    def prepare_data(self, data):
+        prepared_data = super(ToService, self).prepare_data(data)
+        for key in ('tempin', 'temp', 'chill', 'dewin', 'dew',
+                    'heatin', 'heat', 'thw', 'wspdavg', 'wspdhi',
+                    'bar', 'rain', 'rainrate', 'solarrad', 'uvi'):
+            if key in prepared_data:
+                prepared_data[key] = prepared_data[key].replace('.', '')
+        return prepared_data
+
     def valid_data(self, data):
         return any([data[x] is not None for x in (
             'wind_dir', 'wind_ave', 'wind_gust', 'hum_out', 'temp_out',
             'temp_in', 'hum_in', 'rel_pressure')])
-	
+
+    errors = {
+        '400': 'bad request',
+        '401': 'invalid wid or key',
+        '429': 'too frequent data',
+        }
+
     def upload_data(self, session, prepared_data={}, live=False):
-        
         url = 'http://api.weathercloud.net/v01/set'
-        for key in ('tempin', 'temp', 'chill', 'dewin', 'dew', 
-                    'heatin', 'heat', 'thw', 'wspdavg', 'wspdhi', 
-                    'bar', 'rain', 'rainrate', 'solarrad', 'uvi'): 
-            if key in prepared_data: 
-                prepared_data[key] = prepared_data[key].replace('.', '')
         try:
             rsp = session.get(url, params=prepared_data, timeout=60)
         except Exception as ex:
             return False, str(ex)
         text = rsp.text.strip()
-        if rsp.text.strip() == '400':
-            # WeatherCloud server uses 400 to signal bad request
-            return False, 'bad request: "{:s}"'.format(rsp.text.strip())
-        if rsp.text.strip() == '401':
-            # WeatherCloud server uses 401 to signal invalid wid or key
-            return False, 'invalid wid or key: "{:s}"'.format(rsp.text.strip())
-        if rsp.text.strip() == '429':
-            # WeatherCloud server uses 429 to signal too frequent data upload
-            return False, 'too frequent data: "{:s}"'.format(rsp.text.strip())
-        if rsp.text.strip() != '200':
-            return False, 'unknown error: "{:s}"'.format(rsp.text.strip())
-        if rsp.text.strip() == '200':
-            return True, 'upload successful: "{:s}"'.format(rsp.text.strip())
+        if text in self.errors:
+            return False, '{} ({})'.format(self.errors[text], text)
+        if text != '200':
+            return False, 'unknown error ({})'.format(text)
         return True, 'OK'
 
 

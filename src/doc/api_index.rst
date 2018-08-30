@@ -61,6 +61,7 @@ Upload data to online "services"
    pywws.service.pwsweather
    pywws.service.temperaturnu
    pywws.service.underground
+   pywws.service.weathercloud
    pywws.service.wetterarchivde
    pywws.service.twitter
    pywws.service.mastodon

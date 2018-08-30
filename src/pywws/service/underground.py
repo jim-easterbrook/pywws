@@ -52,7 +52,7 @@ normal server for past data.
 from __future__ import absolute_import, unicode_literals
 
 from contextlib import contextmanager
-from datetime import timedelta
+from datetime import datetime, timedelta
 import logging
 import os
 import sys
@@ -64,6 +64,7 @@ import pywws.service
 __docformat__ = "restructuredtext en"
 service_name = os.path.splitext(os.path.basename(__file__))[0]
 logger = logging.getLogger(__name__)
+RTFREQ = timedelta(seconds=48)
 
 
 class ToService(pywws.service.CatchupDataService):
@@ -109,8 +110,18 @@ class ToService(pywws.service.CatchupDataService):
         with requests.Session() as session:
             yield session
 
+    def prepare_data(self, data):
+        prepared_data = super(ToService, self).prepare_data(data)
+        # merge timestamp into prepared_data
+        prepared_data['idx'] = data['idx']
+        return prepared_data
+
     def upload_data(self, session, prepared_data={}, live=False):
-        if live:
+        # extract timestamp from prepared_data
+        idx = prepared_data['idx']
+        del prepared_data['idx']
+        # use "rapid fire" server if data is current
+        if datetime.utcnow() - idx < RTFREQ:
             prepared_data.update({'realtime': '1', 'rtfreq': '48'})
             url = 'https://rtupdate.wunderground.com/'
         else:

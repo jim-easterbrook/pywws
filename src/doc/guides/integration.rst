@@ -74,10 +74,10 @@ The remaining weather service uploads are handled by modules in the :ref:`pywws.
    pywws.service.pwsweather
    pywws.service.temperaturnu
    pywws.service.underground
+   pywws.service.weathercloud
    pywws.service.wetterarchivde
    pywws.service.twitter
    pywws.service.mastodon
-   pywws.service.weathercloud
 
 These each use a separate thread to upload the data so that a slow or not responding service doesn't delay other processing or uploads.
 
