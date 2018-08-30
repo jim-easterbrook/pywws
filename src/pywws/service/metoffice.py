@@ -123,7 +123,7 @@ class ToService(pywws.service.CatchupDataService):
             'wind_dir', 'wind_ave', 'wind_gust', 'hum_out', 'temp_out',
             'rel_pressure')])
 
-    def upload_data(self, session, prepared_data={}, live=False):
+    def upload_data(self, session, prepared_data={}):
         try:
             rsp = session.get('http://wow.metoffice.gov.uk/automaticreading',
                               params=prepared_data, timeout=60)

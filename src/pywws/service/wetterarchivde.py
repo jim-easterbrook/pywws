@@ -92,7 +92,7 @@ class ToService(pywws.service.CatchupDataService):
         with requests.Session() as session:
             yield session
 
-    def upload_data(self, session, prepared_data={}, live=False):
+    def upload_data(self, session, prepared_data={}):
         try:
             rsp = session.post('http://interface.wetterarchiv.de/weather/',
                                data=prepared_data, timeout=60)

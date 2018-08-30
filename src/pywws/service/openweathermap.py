@@ -125,7 +125,7 @@ class ToService(pywws.service.CatchupDataService):
             session.params.update({'appid': self.params['api key']})
             yield session
 
-    def upload_data(self, session, prepared_data={}, live=False):
+    def upload_data(self, session, prepared_data={}):
         url = 'https://api.openweathermap.org/data/3.0/measurements'
         try:
             rsp = session.post(url, json=[prepared_data], timeout=60)

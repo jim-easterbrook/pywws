@@ -119,7 +119,7 @@ class ToService(pywws.service.LiveDataService):
         '429': 'too frequent data',
         }
 
-    def upload_data(self, session, prepared_data={}, live=False):
+    def upload_data(self, session, prepared_data={}):
         url = 'http://api.weathercloud.net/v01/set'
         try:
             rsp = session.get(url, params=prepared_data, timeout=60)

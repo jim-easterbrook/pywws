@@ -72,7 +72,7 @@ class ToService(pywws.service.LiveDataService):
     def valid_data(self, data):
         return data['temp_out'] is not None
 
-    def upload_data(self, session, prepared_data={}, live=False):
+    def upload_data(self, session, prepared_data={}):
         try:
             rsp = session.get('http://www.temperatur.nu/rapportera.php',
                               params=prepared_data, timeout=60)
