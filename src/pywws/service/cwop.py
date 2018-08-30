@@ -107,7 +107,7 @@ class ToService(pywws.service.LiveDataService):
             logger.debug('server software: %s', response.strip())
             yield session
 
-    def upload_data(self, session, prepared_data={}, live=False):
+    def upload_data(self, session, prepared_data={}):
         login = ('user {designator:s} pass {passcode:s} ' +
                  'vers pywws {version:s}\n').format(**prepared_data)
         logger.debug('login: "{:s}"'.format(login))

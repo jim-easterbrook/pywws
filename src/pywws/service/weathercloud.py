@@ -63,19 +63,33 @@ class ToService(pywws.service.LiveDataService):
     service_name = service_name
     template = """
 #live#
-#temp_out                                                   "'temp'     : '%.1f',"#
-#calc "wind_chill(data['temp_out'], data['wind_ave'])"      "'chill'    : '%.1f',"#
-#calc "dew_point(data['temp_out'], data['hum_out'])"        "'dew'      : '%.1f',"#
-#calc "usaheatindex(data['temp_out'], data['hum_out'], dew_point(data['temp_out'], data['hum_out']))" "'heat' : '%.1f',"#
-#calc "(usaheatindex(data['temp_out'], data['hum_out'], dew_point(data['temp_out'], data['hum_out'])) - (1.072 * wind_mph(data['wind_ave']))) " "'thw' : '%.1f',"#
-#hum_out                                                    "'hum'      : '%.d',"#
-#wind_ave                                                   "'wspdavg'  : '%.1f',"#
-#wind_gust                                                  "'wspdhi'   : '%.1f',"#
-#wind_dir                                                   "'wdiravg'  : '%.1f'," "" "winddir_degrees(x)"#
-#rel_pressure                                               "'bar'      : '%.1f',"#
-#calc "rain_day(data)"                                      "'rain'     : '%.1f',"#
-#calc "rain_hour(data)"                                     "'rainrate' : '%.1f',"#
-#idx                                                        "'time'     : '%Y%m%d %H%M%S',"#
+#temp_out
+    "'temp'     : '%.0f'," "" "scale(x, 10.0)"#
+#calc "wind_chill(data['temp_out'], data['wind_ave'])"
+    "'chill'    : '%.0f'," "" "scale(x, 10.0)"#
+#calc "dew_point(data['temp_out'], data['hum_out'])"
+    "'dew'      : '%.0f'," "" "scale(x, 10.0)"#
+#calc "usaheatindex(data['temp_out'], data['hum_out'])"
+    "'heat'     : '%.0f'," "" "scale(x, 10.0)"#
+#calc "usaheatindex(data['temp_out'], data['hum_out']) -
+       scale(wind_mph(data['wind_ave']), 1.072)"
+    "'thw'      : '%.0f'," "" "scale(x, 10.0)"#
+#hum_out
+    "'hum'      : '%.d',"#
+#wind_ave
+    "'wspdavg'  : '%.0f'," "" "scale(x, 10.0)"#
+#wind_gust
+    "'wspdhi'   : '%.0f'," "" "scale(x, 10.0)"#
+#wind_dir
+    "'wdiravg'  : '%.1f'," "" "winddir_degrees(x)"#
+#rel_pressure
+    "'bar'      : '%.0f'," "" "scale(x, 10.0)"#
+#calc "rain_day(data)"
+    "'rain'     : '%.0f'," "" "scale(x, 10.0)"#
+#calc "rain_hour(data)"
+    "'rainrate' : '%.0f'," "" "scale(x, 10.0)"#
+#idx
+    "'time'     : '%Y%m%d %H%M%S',"#
 """
 
     def __init__(self, context, check_params=True):
@@ -83,30 +97,28 @@ class ToService(pywws.service.LiveDataService):
         # extend template
         if context.params.get('config', 'ws type') == '3080':
             self.template += """
-#calc "data['illuminance']"                                 "'solarrad' : '%.1f'," "" "illuminance_wm2(x)"#
-#calc "data['uv']"                                          "'uvi'      : '%.1f',"#
+#illuminance
+    "'solarrad': '%.0f'," "" "scale(illuminance_wm2(x), 10.0)"#
+#uv
+    "'uvi'     : '%.0f'," "" "scale(x, 10.0)"#
 """
         if eval(self.params['internal']):
             self.template += """
-#temp_in  "'tempin': '%.1f',"#
-#hum_in   "'humin' : '%.d',"#
-#calc "dew_point(data['temp_in'], data['hum_in'])"          "'dewin'    : '%.1f',"#
-#calc "usaheatindex(data['temp_in'], data['hum_in'], dew_point(data['temp_in'], data['hum_in']))" "'heatin' : '%.1f',"#
+#temp_in
+    "'tempin'  : '%.0f'," "" "scale(x, 10.0)"#
+#hum_in
+    "'humin'   : '%.d',"#
+#calc "dew_point(data['temp_in'], data['hum_in'])"
+    "'dewin'   : '%.0f'," "" "scale(x, 10.0)"#
+#calc "usaheatindex(data['temp_in'], data['hum_in'])"
+    "'heatin'  : '%.0f'," "" "scale(x, 10.0)"#
 """
+        logger.debug('template: %s', self.template)
 
     @contextmanager
     def session(self):
         with requests.Session() as session:
             yield session
-
-    def prepare_data(self, data):
-        prepared_data = super(ToService, self).prepare_data(data)
-        for key in ('tempin', 'temp', 'chill', 'dewin', 'dew',
-                    'heatin', 'heat', 'thw', 'wspdavg', 'wspdhi',
-                    'bar', 'rain', 'rainrate', 'solarrad', 'uvi'):
-            if key in prepared_data:
-                prepared_data[key] = prepared_data[key].replace('.', '')
-        return prepared_data
 
     def valid_data(self, data):
         return any([data[x] is not None for x in (
@@ -119,7 +131,7 @@ class ToService(pywws.service.LiveDataService):
         '429': 'too frequent data',
         }
 
-    def upload_data(self, session, prepared_data={}, live=False):
+    def upload_data(self, session, prepared_data={}):
         url = 'http://api.weathercloud.net/v01/set'
         try:
             rsp = session.get(url, params=prepared_data, timeout=60)

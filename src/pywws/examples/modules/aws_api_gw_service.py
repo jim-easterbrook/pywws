@@ -100,7 +100,7 @@ class ToService(pywws.service.CatchupDataService):
         with requests.Session() as session:
             yield session
 
-    def upload_data(self, session, prepared_data={}, live=False):
+    def upload_data(self, session, prepared_data={}):
         try:
             if self.params['http headers']:
                 for header in eval(self.params['http headers']):

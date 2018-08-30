@@ -259,7 +259,7 @@ class DataServiceBase(ServiceBase):
             else:
                 self.last_update = datetime.min
 
-    def upload_data(self, session, prepared_data={}, live=False):
+    def upload_data(self, session, prepared_data={}):
         """Upload one data set to the service.
 
         Every data service class must implement this method.
@@ -270,13 +270,10 @@ class DataServiceBase(ServiceBase):
             a batch of uplaods has finished.
         :param dict prepared_data: a set of key: value pairs to upload.
             The keys and values must all be text strings.
-        :param bool live: is this set of data "live" or "logged". This
-            is used by :py:mod:`pywws.service.underground` to select the
-            server to use.
         """
         raise NotImplementedError()
 
-    def queue_data(self, timestamp, data, live):
+    def queue_data(self, timestamp, data):
         if timestamp and timestamp < self.last_update + self.interval:
             return False
         if not self.valid_data(data):
@@ -284,7 +281,7 @@ class DataServiceBase(ServiceBase):
         prepared_data = self.prepare_data(data)
         prepared_data.update(self.fixed_data)
         self.logger.debug('data: %s', str(prepared_data))
-        self.queue.append((timestamp, prepared_data, live))
+        self.queue.append((timestamp, prepared_data))
         if timestamp:
             self.last_update = timestamp
         return True
@@ -309,9 +306,9 @@ class DataServiceBase(ServiceBase):
                 if upload is None:
                     OK = False
                     break
-                timestamp, prepared_data, live = upload
+                timestamp, prepared_data = upload
                 OK, message = self.upload_data(
-                    session, prepared_data=prepared_data, live=live)
+                    session, prepared_data=prepared_data)
                 self.log(message)
                 if not OK:
                     break
@@ -342,12 +339,12 @@ class CatchupDataService(DataServiceBase):
                     self.context.shutdown.wait(4.0)
                     if self.context.shutdown.is_set():
                         return True
-                self.queue_data(data['idx'], data, False)
+                self.queue_data(data['idx'], data)
             return True
         for data in self.context.calib_data[start:]:
             if self.queue.full():
                 return True
-            if self.queue_data(data['idx'], data, False):
+            if self.queue_data(data['idx'], data):
                 return False
         return True
 
@@ -364,10 +361,10 @@ class CatchupDataService(DataServiceBase):
             idx = self.context.calib_data.after(timestamp + SECOND)
             if test_mode:
                 timestamp = None
-            if self.queue_data(timestamp, data, False):
+            if self.queue_data(timestamp, data):
                 break
         if live_data and not idx:
-            self.queue_data(live_data['idx'], live_data, True)
+            self.queue_data(live_data['idx'], live_data)
 
 
 class LiveDataService(DataServiceBase):
@@ -389,7 +386,7 @@ class LiveDataService(DataServiceBase):
         timestamp = data['idx']
         if test_mode:
             timestamp = None
-        self.queue_data(timestamp, data, bool(live_data))
+        self.queue_data(timestamp, data)
 
     def upload_batch(self):
         # remove stale uploads from queue

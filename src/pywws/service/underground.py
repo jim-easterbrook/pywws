@@ -116,7 +116,7 @@ class ToService(pywws.service.CatchupDataService):
         prepared_data['idx'] = data['idx']
         return prepared_data
 
-    def upload_data(self, session, prepared_data={}, live=False):
+    def upload_data(self, session, prepared_data={}):
         # extract timestamp from prepared_data
         idx = prepared_data['idx']
         del prepared_data['idx']

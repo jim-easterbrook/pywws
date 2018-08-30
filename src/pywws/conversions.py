@@ -32,17 +32,20 @@ import math
 import pywws.localisation
 import pywws.process
 
+
+def scale(value, factor):
+    """Multiply value by factor, allowing for None values."""
+    if value is None:
+        return None
+    return value * factor
+
 def illuminance_wm2(lux):
     "Approximate conversion of illuminance in lux to solar radiation in W/m2"
-    if lux is None:
-        return None
-    return lux * 0.005
+    return scale(lux, 0.005)
 
 def pressure_inhg(hPa):
     "Convert pressure from hectopascals/millibar to inches of mercury"
-    if hPa is None:
-        return None
-    return hPa / 33.86389
+    return scale(hPa, 1 / 33.86389)
 
 def pressure_trend_text(trend):
     """Convert pressure trend to a string, as used by the UK met
@@ -70,9 +73,7 @@ def pressure_trend_text(trend):
 
 def rain_inch(mm):
     "Convert rainfall from millimetres to inches"
-    if mm is None:
-        return None
-    return mm / 25.4
+    return scale(mm, 1 / 25.4)
 
 def temp_f(c):
     "Convert temperature from Celsius to Fahrenheit"
@@ -141,9 +142,7 @@ def winddir_average(data, threshold, min_count, decay=1.0):
     
 def winddir_degrees(pts):
     "Convert wind direction from 0..15 to degrees"
-    if pts is None:
-        return None
-    return pts * 22.5
+    return scale(pts, 22.5)
 
 _winddir_text_array = None
 
@@ -166,21 +165,15 @@ def winddir_text(pts):
 
 def wind_kmph(ms):
     "Convert wind from metres per second to kilometres per hour"
-    if ms is None:
-        return None
-    return ms * 3.6
+    return scale(ms, 3.6)
 
 def wind_mph(ms):
     "Convert wind from metres per second to miles per hour"
-    if ms is None:
-        return None
-    return ms * 3.6 / 1.609344
+    return scale(ms, 3.6 / 1.609344)
 
 def wind_kn(ms):
     "Convert wind from metres per second to knots"
-    if ms is None:
-        return None
-    return ms * 3.6 / 1.852
+    return scale(ms, 3.6 / 1.852)
 
 _bft_threshold = (
     0.3, 1.5, 3.4, 5.4, 7.9, 10.7, 13.8, 17.1, 20.7, 24.4, 28.4, 32.6)
@@ -216,7 +209,7 @@ def cadhumidex(temp, humidity):
                            float(humidity) / 100.0)
     return temp + (0.555 * (saturation_pressure - 10.0))
 
-def usaheatindex(temp, humidity, dew):
+def usaheatindex(temp, humidity, dew=None):
     """Calculate Heat Index as per USA National Weather Service Standards
 
     See http://en.wikipedia.org/wiki/Heat_index, formula 1. The
@@ -225,6 +218,8 @@ def usaheatindex(temp, humidity, dew):
     """
     if temp is None or humidity is None:
         return None
+    if dew is None:
+        dew = dew_point(temp, humidity)
     if temp < 26.7 or humidity < 40 or dew < 12.0:
         return temp
     T = (temp * 1.8) + 32.0
@@ -280,9 +275,8 @@ def cloud_base(temp, hum):
 
 def cloud_ft(m):
     "Convert cloud base from metres to feet."
-    if m is None:
-        return None
-    return float(m) * 3.28084
+    return scale(m, 3.28084)
+
 
 def _main(argv=None):
     global _winddir_text_array
@@ -294,18 +288,19 @@ def _main(argv=None):
             ms, wind_kmph(ms), wind_mph(ms), wind_kn(ms), wind_bft(ms)))
     print('Wind direction:')
     for pts in range(16):
-        print(winddir_text(pts), end='')
+        print(' ' + winddir_text(pts), end='')
     print('')
     print('Wind direction, in Swedish:')
     pywws.localisation.set_translation('sv')
     _winddir_text_array = None
     for pts in range(16):
-        print(winddir_text(pts), end='')
+        print(' ' + winddir_text(pts), end='')
     print('')
     print('Cloud base in m and ft:')
     for hum in range(25, 75, 5):
         print("%8.3f m / %8.3f ft" % (cloud_base(15.0, hum), cloud_ft(cloud_base(15.0, hum))))
     print('')
+
 
 if __name__ == "__main__":
     _main()
