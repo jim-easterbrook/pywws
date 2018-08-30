@@ -67,7 +67,7 @@ class ToService(pywws.service.LiveDataService):
 #calc "wind_chill(data['temp_out'], data['wind_ave'])"      "'chill'    : '%.1f',"#
 #calc "dew_point(data['temp_out'], data['hum_out'])"        "'dew'      : '%.1f',"#
 #calc "usaheatindex(data['temp_out'], data['hum_out'])" "'heat' : '%.1f',"#
-#calc "(usaheatindex(data['temp_out'], data['hum_out']) - (1.072 * wind_mph(data['wind_ave'])))" "'thw' : '%.1f',"#
+#calc "usaheatindex(data['temp_out'], data['hum_out']) - scale(wind_mph(data['wind_ave']), 1.072)" "'thw': '%.1f',"#
 #hum_out                                                    "'hum'      : '%.d',"#
 #wind_ave                                                   "'wspdavg'  : '%.1f',"#
 #wind_gust                                                  "'wspdhi'   : '%.1f',"#
