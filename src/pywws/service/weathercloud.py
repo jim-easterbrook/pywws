@@ -99,19 +99,22 @@ class ToService(pywws.service.LiveDataService):
         with requests.Session() as session:
             yield session
 	
+    def prepare_data(self, data):
+        prepared_data = super(ToService, self).prepare_data(data)
+        for key in ('tempin', 'temp', 'chill', 'dewin', 'dew',
+                    'heatin', 'heat', 'thw', 'wspdavg', 'wspdhi',
+                    'bar', 'rain', 'rainrate', 'solarrad', 'uvi'):
+            if key in prepared_data:
+                prepared_data[key] = prepared_data[key].replace('.', '')
+        return prepared_data
+
     def valid_data(self, data):
         return any([data[x] is not None for x in (
             'wind_dir', 'wind_ave', 'wind_gust', 'hum_out', 'temp_out',
             'temp_in', 'hum_in', 'rel_pressure')])
 	
     def upload_data(self, session, prepared_data={}, live=False):
-        
         url = 'http://api.weathercloud.net/v01/set'
-        for key in ('tempin', 'temp', 'chill', 'dewin', 'dew', 
-                    'heatin', 'heat', 'thw', 'wspdavg', 'wspdhi', 
-                    'bar', 'rain', 'rainrate', 'solarrad', 'uvi'): 
-            if key in prepared_data: 
-                prepared_data[key] = prepared_data[key].replace('.', '')
         try:
             rsp = session.get(url, params=prepared_data, timeout=60)
         except Exception as ex:
