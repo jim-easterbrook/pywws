@@ -445,7 +445,7 @@ class FileService(ServiceBase):
                 self.queue.popleft()
         self.context.status.set('pending', self.service_name, repr(pending))
         if count > 1:
-            self.logger.warning('{:d} uploads'.format(count))
+            self.logger.info('{:d} uploads'.format(count))
         elif count:
             self.logger.info('1 upload')
         return OK

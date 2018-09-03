@@ -122,7 +122,6 @@ class ToService(pywws.service.LiveDataService):
 #calc "usaheatindex(data['temp_in'], data['hum_in'])"
     "'heatin'  : '%.0f'," "" "scale(x, 10.0)"#
 """
-        logger.debug('template: %s', self.template)
         # add thw function to templater
         self.templater.thw = thw
 
