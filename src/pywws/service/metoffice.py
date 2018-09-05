@@ -83,40 +83,43 @@ class ToService(pywws.service.CatchupDataService):
 #hum_out      "'humidity'    : '%.d',"#
 #temp_out     "'tempf'       : '%.1f'," "" "temp_f(x)"#
 #rel_pressure "'baromin'     : '%.4f'," "" "pressure_inhg(x)"#
-#calc "temp_f(dew_point(data['temp_out'], data['hum_out']))" "'dewptf': '%.1f',"#
+#calc "rain_inch(self.rain_rate(data))"
+              "'rainin'      : '%.4f',"#
+#calc "rain_inch(self.rain_day_local(data))"
+              "'dailyrainin' : '%.4f',"#
+#calc "temp_f(dew_point(data['temp_out'], data['hum_out']))"
+              "'dewptf'      : '%.1f',"#
 """
 
     def __init__(self, context, check_params=True):
         super(ToService, self).__init__(context, check_params)
         # initialise rain history
-        last_update = context.status.get_datetime('last update', service_name)
-        if last_update:
-            last_update = context.calib_data.nearest(last_update)
-            self.last_rain = context.calib_data[last_update]['rain']
-        else:
-            self.last_rain = None
+        last_update = context.calib_data.nearest(self.last_update)
+        self.last_rain = context.calib_data[last_update]['rain']
+        # add rain functions to templater
+        self.templater.rain_rate = self.rain_rate
+        self.templater.rain_day_local = self.rain_day_local
 
     @contextmanager
     def session(self):
         with requests.Session() as session:
             yield session
 
-    def prepare_data(self, data):
-        prepared_data = super(ToService, self).prepare_data(data)
+    def rain_rate(self, data):
         # compute rain since last upload
-        if self.last_rain is not None:
-            rain = data['rain'] - self.last_rain
-            if rain >= -0.001:
-                prepared_data['rainin'] = '{:.4f}'.format(rain_inch(rain))
+        result = max(data['rain'] - self.last_rain, 0.0)
         self.last_rain = data['rain']
+        return result
+
+    def rain_day_local(self, data):
         # compute rain since day start
-        day_start = self.context.daily_data.nearest(data['idx'])
+        day_start = self.context.daily_data.after(data['idx'])
+        if not day_start:
+            day_start = self.context.daily_data.before(data['idx'])
         day_start = self.context.daily_data[day_start]['start']
-        day_start = self.context.calib_data.after(day_start)
-        rain = data['rain'] - self.context.calib_data[day_start]['rain']
-        if rain >= -0.001:
-            prepared_data['dailyrainin'] = '{:.4f}'.format(rain_inch(rain))
-        return prepared_data
+        day_start = self.context.calib_data.nearest(day_start)
+        return max(
+            data['rain'] - self.context.calib_data[day_start]['rain'], 0.0)
 
     def valid_data(self, data):
         return any([data[x] is not None for x in (
