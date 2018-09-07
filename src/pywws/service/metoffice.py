@@ -58,7 +58,9 @@ import requests
 
 import pywws
 from pywws.conversions import rain_inch
+from pywws.process import get_day_end_hour
 import pywws.service
+from pywws.timezone import timezone
 
 __docformat__ = "restructuredtext en"
 service_name = os.path.splitext(os.path.basename(__file__))[0]
@@ -113,10 +115,9 @@ class ToService(pywws.service.CatchupDataService):
 
     def rain_day_local(self, data):
         # compute rain since day start
-        day_start = self.context.daily_data.after(data['idx'])
-        if not day_start:
-            day_start = self.context.daily_data.before(data['idx'])
-        day_start = self.context.daily_data[day_start]['start']
+        day_end_hour, use_dst = get_day_end_hour(self.context.params)
+        day_start = timezone.local_replace(
+            data['idx'], use_dst=use_dst, hour=day_end_hour, minute=0, second=0)
         day_start = self.context.calib_data.nearest(day_start)
         return max(
             data['rain'] - self.context.calib_data[day_start]['rain'], 0.0)
