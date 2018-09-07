@@ -83,7 +83,6 @@ if sys.version_info[0] >= 3:
 else:
     from ConfigParser import RawConfigParser
 
-from pywws import _release
 from pywws.constants import DAY
 from pywws.weatherstation import WSDateTime, WSFloat, WSInt, WSStatus
 
@@ -791,22 +790,22 @@ class PywwsContext(object):
         self.shutdown = threading.Event()
 
     def update_params(self):
-        current_version = int(_release)
-        file_version = int(self.params.get('config', 'config version', '0'))
-        if file_version < 1488:
-            # convert day end hour
-            day_end_str = self.params.get('config', 'day end hour')
-            if day_end_str and not ',' in day_end_str:
-                logger.error('updating "day end hour" in weather.ini')
-                day_end_str += ', False'
-                self.params.set('config', 'day end hour', day_end_str)
-        if file_version < 1582:
-            # convert uploads to use pywws.service.{copy,ftp,sftp,twitter}
-            if self.params.get('ftp', 'local site') == 'True':
+        # convert day end hour
+        day_end_str = self.params.get('config', 'day end hour')
+        if day_end_str and not ',' in day_end_str:
+            logger.error('updating "day end hour" in weather.ini')
+            day_end_str += ', False'
+            self.params.set('config', 'day end hour', day_end_str)
+        # convert uploads to use pywws.service.{copy,ftp,sftp,twitter}
+        local_site = self.params.get('ftp', 'local site')
+        secure = self.params.get('ftp', 'secure')
+        privkey = self.params.get('ftp', 'privkey')
+        if local_site or secure or privkey:
+            if local_site == 'True':
                 self.params.set(
                     'copy', 'directory', self.params.get('ftp', 'directory', ''))
                 mod = 'copy'
-            elif self.params.get('ftp', 'secure') == 'True':
+            elif secure == 'True':
                 for key in ('site', 'user', 'directory', 'port',
                             'password', 'privkey'):
                     self.params.set('sftp', key, self.params.get('ftp', key, ''))
@@ -847,8 +846,7 @@ class PywwsContext(object):
                         logger.error('updating %s in [%s]', t_p, section)
                         self.params.set(section, t_p, repr(templates))
                         self.params.set(section, 'services', repr(services))
-        if file_version < current_version:
-            self.params.set('config', 'config version', str(current_version))
+        self.params.unset('config', 'config version')
 
     def terminate(self):
         if self.live_logging:
