@@ -626,17 +626,21 @@ Your station is probably a '{:s}' type.
                             'live_data lost log sync %g', ptr_time - next_log)
                         self._station_clock.invalidate()
                 else:
-                    logger.warning('missed ptr change time')
+                    logger.info('missed ptr change time')
                 if read_period > new_data['delay']:
                     read_period = new_data['delay']
                     logger.warning('reset read period %d', read_period)
                     log_interval = float(read_period * 60)
+                result = dict(new_data)
                 next_log = self._station_clock.before(ptr_time + self.margin)
                 if next_log:
-                    result = dict(new_data)
                     result['idx'] = datetime.utcfromtimestamp(int(next_log))
-                    yield result, old_ptr, True
                     next_log += log_interval
+                else:
+                    # use best guess of logging time
+                    result['idx'] = datetime.utcfromtimestamp(
+                        int(ptr_time - (self.avoid / 2)))
+                yield result, old_ptr, True
                 old_ptr = new_ptr
                 old_data['delay'] = 0
                 data_time = 0
