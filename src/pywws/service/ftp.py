@@ -34,10 +34,9 @@ your web space provider. If your provider allows SFTP then you could use
     port = 21
 
     [hourly]
-    plot = [('24hrs.png.xml', 'L'), ('rose_12hrs.png.xml', 'L')]
-    text = [('24hrs.txt', 'L')]
-    services = [('ftp', '24hrs.txt'), ('ftp', '24hrs.png'),
-                ('ftp', 'rose_12hrs.png')]
+    plot = ['24hrs.png.xml', 'rose_12hrs.png.xml']
+    text = ['24hrs.txt']
+    services = [('ftp', '24hrs.txt', '24hrs.png', 'rose_12hrs.png')]
 
 Run :py:mod:`pywws.service.ftp` once to set the default configuration,
 which you can then change. ``directory`` is the name of a directory in
@@ -48,9 +47,9 @@ may require a different port.
 
 You can upload any files you like, as often as you like, but typical
 usage is to update a website once an hour. Each file to be uploaded
-needs a service entry like ``('ftp', 'filename')``. If the file is not
-in your ``local files`` directory then ``filename`` should be the full
-path.
+needs to be listed in a service entry like ``('ftp', 'filename')``. If
+the file is not in your ``work`` directory's ``output`` directory then
+``filename`` should be the full path.
 
 """
 

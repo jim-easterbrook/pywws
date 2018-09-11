@@ -36,10 +36,9 @@ your web space provider. If your provider doesn't allow SFTP then use
     privkey = /home/pywws/.ssh/webhost_rsa
 
     [hourly]
-    plot = [('24hrs.png.xml', 'L'), ('rose_12hrs.png.xml', 'L')]
-    text = [('24hrs.txt', 'L')]
-    services = [('sftp', '24hrs.txt'), ('sftp', '24hrs.png'),
-                ('sftp', 'rose_12hrs.png')]
+    plot = ['24hrs.png.xml', 'rose_12hrs.png.xml']
+    text = ['24hrs.txt']
+    services = [('sftp', '24hrs.txt', '24hrs.png', 'rose_12hrs.png')]
 
 Paramiko can be installed with ``pip``::
 
@@ -65,9 +64,9 @@ private key.
 
 You can upload any files you like, as often as you like, but typical
 usage is to update a website once an hour. Each file to be uploaded
-needs a service entry like ``('sftp', 'filename')``. If the file is not
-in your ``local files`` directory then ``filename`` should be the full
-path.
+needs to be listed in a service entry like ``('sftp', 'filename')``. If
+the file is not in your ``work`` directory's ``output`` directory then
+``filename`` should be the full path.
 
 """
 

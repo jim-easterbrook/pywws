@@ -38,9 +38,10 @@ hour.
     longitude = -0.142
 
     [hourly]
-    plot = [('tweet.png.xml', 'L'), '24hrs.png.xml', 'rose_12hrs.png.xml']
-    text = [('tweet_media.txt', 'L'), '24hrs.txt']
-    services = [('twitter', 'tweet_media.txt')]
+    plot = ['tweet.png.xml', '24hrs.png.xml', 'rose_12hrs.png.xml']
+    text = ['tweet_media.txt', '24hrs.txt']
+    services = [('twitter', 'tweet_media.txt'),
+                ('ftp', '24hrs.png', 'rose_12hrs.png', '24hrs.txt')]
 
 Create an account
 -----------------
@@ -163,11 +164,10 @@ an icon representing the forecast. To add a weather graph you need to
 make sure the graph is drawn before the tweet is sent. The
 :py:mod:`pywws.regulartasks` module processes graph and text templates
 before doing service uploads, so you can include the graph drawing in
-the same section. (The ``L`` flag stops auto-editing of weather.ini
-adding the file as an ftp task). For example::
+the same section. For example::
 
     [hourly]
-    plot = [('tweet.png.xml', 'L')]
+    plot = ['tweet.png.xml']
     text = ['tweet_media.txt']
     services = [('twitter', 'tweet_media.txt')]
 

@@ -34,9 +34,10 @@ conditions every hour.
     access_token = xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
     [hourly]
-    text = [('toot.txt', 'L'), ('tweet_media.txt', 'L'), '24hrs.txt']
-    plot = [('tweet.png.xml', 'L'), '24hrs.png.xml', 'rose_12hrs.png.xml']
-    services = [('mastodon', 'toot.txt'), ('twitter', 'tweet_media.txt')]
+    text = ['toot.txt', 'tweet_media.txt', '24hrs.txt']
+    plot = ['tweet.png.xml', '24hrs.png.xml', 'rose_12hrs.png.xml']
+    services = [('mastodon', 'toot.txt'), ('twitter', 'tweet_media.txt'),
+                ('ftp', '24hrs.png', 'rose_12hrs.png', '24hrs.txt')]
 
 Create an account
 -----------------
@@ -128,7 +129,7 @@ template processing result. For example::
 
     [hourly]
     text = ['toot.txt']
-    plot = [('tweet.png.xml', 'L')]
+    plot = ['tweet.png.xml']
     services = [('mastodon', 'toot.txt')]
 
 You could use the ``[logged]``, ``[12 hourly]`` or ``[daily]`` sections

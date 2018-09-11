@@ -26,22 +26,28 @@ accessible as a network share).
 * Example ``weather.ini`` configuration::
 
     [copy]
-    directory = public_html/weather/data/
+    directory = /home/www/public_html/weather/data/
 
     [hourly]
-    plot = [('24hrs.png.xml', 'L'), ('rose_12hrs.png.xml', 'L')]
-    text = [('24hrs.txt', 'L')]
-    services = [('copy', '24hrs.txt'), ('copy', '24hrs.png'),
-                ('copy', 'rose_12hrs.png')]
+    plot = ['24hrs.png.xml', 'rose_12hrs.png.xml']
+    text = ['24hrs.txt']
+    services = [('copy', '24hrs.txt', '24hrs.png', 'rose_12hrs.png')]
 
 Run :py:mod:`pywws.service.copy` once to set the default configuration,
-which you can then change. ``directory`` is the name of a directory in
-which all the copied files will be put.
+which you can then change. ``directory`` is the full path of a directory
+in which all the copied files will be put.
 
 You can copy any files you like, as often as you like, but typical usage
-is to update a website once an hour. Each file to be copied needs a
-service entry like ``('copy', 'filename')``. If the file is not in your
-``local files`` directory then ``filename`` should be the full path.
+is to update a website once an hour. Each file to be uploaded needs to
+be listed in a service entry like ``('copy', 'filename')``. If the file
+is not in your ``work`` directory's ``output`` directory then
+``filename`` should be the full path.
+
+If you need to copy some files to a different directory you can copy the
+:py:mod:`pywws.service.copy` module to your ``modules`` directory,
+making sure that you rename it, for example to ``copy2.py``. This
+creates a ``copy2`` service that you can use in the same way, but with a
+different ``directory``.
 
 """
 

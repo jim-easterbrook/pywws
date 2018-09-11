@@ -31,11 +31,10 @@ This is easy to do:
 
 #. Stop all pywws software
 #. Copy the ``yowindow.xml`` example template to your text template directory.
-#. Add the yowindow template to the ``[live]`` tasks in ``weather.ini``.
-   Set its flags to ``'L'`` so that pywws doesn't try to upload it to an ftp site::
+#. Add the yowindow template to the ``[live]`` tasks in ``weather.ini``::
 
      [live]
-     text = [('yowindow.xml', 'L')]
+     text = ['yowindow.xml']
 #. Restart pywws live logging.
 
 This will write the file to the ``output`` subdirectory of the ``work`` directory set in :ref:`weather.ini <weather_ini-paths>`.
@@ -47,8 +46,6 @@ If you prefer to store the file somewhere else you can use the :py:mod:`pywws.se
     [live]
     text = ['yowindow.xml']
     services = [('copy', 'yowindow.xml')]
-
-In this case a ``'L'`` flag is not required as there is a service using the template output.
 
 You can check the file is being updated every 48 seconds by using ``more`` or ``cat`` to dump it to the screen.
 
@@ -117,7 +114,7 @@ Writing your own uploader
 -------------------------
 
 If you'd like to send data to a service which is not (yet) included in pywws you can write your own uploader module and put it in your ``modules`` directory.
-You should start by copying one of the existing modules from pywws.service.
+You should start by copying one of the existing modules from ``pywws.service``.
 Choose one with an API most like the service you want to upload to.
 Give the module a one word lowercase name that will be used as the uploader service name.
 
