@@ -134,6 +134,7 @@ live: tasks to be done every 48 seconds
 This section specifies tasks that are to be carried out for every data sample during 'live logging', i.e. every 48 seconds.
 
 ``services`` is a list of 'services' to upload data to.
+Some are just a single word, others have one or more parameters and need to be enclosed in brackets.
 Each one listed must have a module in ``pywws.service`` or your modules directory.
 See :ref:`integration - other services<guides-integration-other>` for more detail.
 pywws will automatically limit the frequency of service uploads according to each service's requirements.
@@ -152,6 +153,7 @@ logged: tasks to be done every time the station logs a data record
 This section specifies tasks that are to be carried out every time a data record is logged when 'live logging' or every time an hourly cron job is run.
 
 ``services`` is a list of 'services' to upload data to.
+Some are just a single word, others have one or more parameters and need to be enclosed in brackets.
 Each one listed must have a module in ``pywws.service`` or your modules directory.
 See :ref:`integration - other services<guides-integration-other>` for more detail.
 
@@ -209,6 +211,7 @@ hourly: tasks to be done every hour
 This section specifies tasks that are to be carried out every hour when 'live logging' or running an hourly cron job.
 
 ``services`` is a list of 'services' to upload data to.
+Some are just a single word, others have one or more parameters and need to be enclosed in brackets.
 Each one listed must have a module in ``pywws.service`` or your modules directory.
 See :ref:`integration - other services<guides-integration-other>` for more detail.
 
@@ -227,6 +230,7 @@ This section specifies tasks that are to be carried out every 12 hours when 'liv
 The tasks are done at your day end hour, and 12 hours later.
 
 ``services`` is a list of 'services' to upload data to.
+Some are just a single word, others have one or more parameters and need to be enclosed in brackets.
 Each one listed must have a module in ``pywws.service`` or your modules directory.
 See :ref:`integration - other services<guides-integration-other>` for more detail.
 
@@ -245,6 +249,7 @@ This section specifies tasks that are to be carried out every day when 'live log
 The tasks are done at your day end hour.
 
 ``services`` is a list of 'services' to upload data to.
+Some are just a single word, others have one or more parameters and need to be enclosed in brackets.
 Each one listed must have a module in ``pywws.service`` or your modules directory.
 See :ref:`integration - other services<guides-integration-other>` for more detail.
 

@@ -20,7 +20,7 @@ How to integrate pywws with various weather services
 ====================================================
 
 This guide gives brief instructions on how to use pywws with some other weather services and software.
-It is not comprehensive, and most services (such as Twitter) are covered in more detail elsewhere.
+It is not comprehensive, and most services are covered in more detail elsewhere.
 
 YoWindow
 --------
@@ -101,6 +101,10 @@ The service uploaders are all used in a similar fashion:
 
      [live]
      services = ['underground']
+
+   Note that some services, such as :py:mod:`pywws.service.copy`, need one or more parameters.
+   Instead of a single word entry, such as ``underground``, these use a bracketed list, for example ``('copy', 'yowindow.xml')``.
+
 #. Restart pywws live logging.
 
 Some of the services are more complicated to configure.

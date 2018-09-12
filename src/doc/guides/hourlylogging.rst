@@ -89,7 +89,7 @@ These specify what :py:mod:`pywws.hourly` should do when it is run.
 Tasks in the ``[live]`` and ``[logged]`` sections are done when there is new logged data, tasks in the ``[hourly]`` section are done every hour, tasks in the ``[12 hourly]`` section are done twice daily and tasks in the ``[daily]`` section are done once per day.
 
 The ``plot`` and ``text`` entries are lists of template files for plots and text files to be processed.
-The ``services`` entry is a list of online weather services to upload data and files to.
+The ``services`` entry is a list of online weather services to upload data and files to, e.g. ``'underground'`` or ``('ftp', '24hrs.txt')``.
 Add the names of your template files and weather services to the appropriate entries, for example::
 
    [logged]
@@ -98,9 +98,9 @@ Add the names of your template files and weather services to the appropriate ent
    text = []
 
    [hourly]
-   services = [('twitter', 'tweet.txt'), ('ftp', '7days.png'),
-               ('ftp', '24hrs.png'), ('ftp', 'rose_24hrs.png'),
-               ('ftp', '24hrs.txt'), ('ftp', '6hrs.txt'), ('ftp', '7days.txt')]
+   services = [('twitter', 'tweet.txt'),
+               ('ftp', '7days.png', '24hrs.png', 'rose_24hrs.png',
+                       '24hrs.txt', '6hrs.txt', '7days.txt')]
    plot = ['7days.png.xml', '24hrs.png.xml', 'rose_24hrs.png.xml']
    text = ['tweet.txt', '24hrs.txt', '6hrs.txt', '7days.txt']
 
@@ -110,8 +110,7 @@ Add the names of your template files and weather services to the appropriate ent
    text = []
 
    [daily]
-   services = [('twitter', 'forecast.txt'), ('ftp', '28days.png'),
-               ('ftp', 'allmonths.txt')]
+   services = [('twitter', 'forecast.txt'), ('ftp', '28days.png', 'allmonths.txt')]
    plot = ['28days.png.xml']
    text = ['forecast.txt', 'allmonths.txt']
 
