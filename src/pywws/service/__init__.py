@@ -352,18 +352,16 @@ class CatchupDataService(DataServiceBase):
         if self.queue.full():
             return
         if test_mode:
-            idx = self.context.calib_data.before(datetime.max)
+            start = self.context.calib_data.before(datetime.max)
         else:
-            idx = self.context.calib_data.after(self.last_update + self.interval)
-        while idx:
-            data = self.context.calib_data[idx]
+            start = self.last_update + self.interval
+        for data in self.context.calib_data[start:]:
             timestamp = data['idx']
-            idx = self.context.calib_data.after(timestamp + SECOND)
             if test_mode:
                 timestamp = None
             if self.queue_data(timestamp, data):
-                break
-        if live_data and not idx:
+                return
+        if live_data:
             self.queue_data(live_data['idx'], live_data)
 
 
