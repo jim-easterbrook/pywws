@@ -267,23 +267,19 @@ class DataServiceBase(ServiceBase):
         :param object session: the object created by
             :py:meth:`~ServiceBase.session`. This is typically used to
             communicate with the server and is automatically closed when
-            a batch of uplaods has finished.
+            a batch of uploads has finished.
         :param dict prepared_data: a set of key: value pairs to upload.
             The keys and values must all be text strings.
         """
         raise NotImplementedError()
 
     def queue_data(self, timestamp, data):
-        if timestamp and timestamp < self.last_update + self.interval:
-            return False
         if not self.valid_data(data):
             return False
         prepared_data = self.prepare_data(data)
         prepared_data.update(self.fixed_data)
         self.logger.debug('data: %s', str(prepared_data))
         self.queue.append((timestamp, prepared_data))
-        if timestamp:
-            self.last_update = timestamp
         return True
 
     def prepare_data(self, data):
@@ -296,40 +292,20 @@ class DataServiceBase(ServiceBase):
     def valid_data(self, data):
         return True
 
-    def upload_batch(self):
-        OK = True
-        count = 0
-        with self.session() as session:
-            while self.queue and not self.context.shutdown.is_set():
-                # send upload without taking it off queue
-                upload = self.queue[0]
-                if upload is None:
-                    OK = False
-                    break
-                timestamp, prepared_data = upload
-                OK, message = self.upload_data(
-                    session, prepared_data=prepared_data)
-                self.log(message)
-                if not OK:
-                    break
-                count += 1
-                if timestamp:
-                    self.context.status.set(
-                        'last update', self.service_name, str(timestamp))
-                # finally remove upload from queue
-                self.queue.popleft()
-        if count > 1:
-            self.logger.warning('{:d} records sent'.format(count))
-        elif count:
-            self.logger.info('1 record sent')
-        return OK
-
 
 class CatchupDataService(DataServiceBase):
     catchup = 7
     """Sets the number of days of past data that can be uploaded when a
     service is first used.
     """
+
+    def queue_data(self, timestamp, data):
+        if timestamp and timestamp < self.last_update + self.interval:
+            return False
+        OK = super(CatchupDataService, self).queue_data(timestamp, data)
+        if OK and timestamp:
+            self.last_update = timestamp
+        return OK
 
     def do_catchup(self, do_all=False):
         start = self.last_update + self.interval
@@ -364,6 +340,34 @@ class CatchupDataService(DataServiceBase):
         if live_data:
             self.queue_data(live_data['idx'], live_data)
 
+    def upload_batch(self):
+        OK = True
+        count = 0
+        with self.session() as session:
+            while self.queue and not self.context.shutdown.is_set():
+                # send upload without taking it off queue
+                upload = self.queue[0]
+                if upload is None:
+                    OK = False
+                    break
+                timestamp, prepared_data = upload
+                OK, message = self.upload_data(
+                    session, prepared_data=prepared_data)
+                self.log(message)
+                if not OK:
+                    break
+                count += 1
+                if timestamp:
+                    self.context.status.set(
+                        'last update', self.service_name, str(timestamp))
+                # finally remove upload from queue
+                self.queue.popleft()
+        if count > 1:
+            self.logger.warning('{:d} records sent'.format(count))
+        elif count:
+            self.logger.info('1 record sent')
+        return OK
+
 
 class LiveDataService(DataServiceBase):
     catchup = None
@@ -387,16 +391,23 @@ class LiveDataService(DataServiceBase):
         self.queue_data(timestamp, data)
 
     def upload_batch(self):
-        # remove stale uploads from queue
-        drop = len(self.queue) - 1
-        if self.queue[-1] is None:
-            drop -= 1
-        if drop > 0:
-            for i in range(drop):
-                self.queue.popleft()
-            self.logger.warning('{:d} record(s) dropped'.format(drop))
-        # send most recent data
-        return super(LiveDataService, self).upload_batch()
+        # get most recent upload on queue
+        while self.queue:
+            upload = self.queue.popleft()
+            if upload is None:
+                return False
+        timestamp, prepared_data = upload
+        # check time since last upload
+        if timestamp and timestamp < self.last_update + self.interval:
+            return True
+        with self.session() as session:
+            OK, message = self.upload_data(session, prepared_data=prepared_data)
+        self.log(message)
+        if OK and timestamp:
+            self.last_update = timestamp
+            self.context.status.set(
+                'last update', self.service_name, str(timestamp))
+        return OK
 
 
 class FileService(ServiceBase):
