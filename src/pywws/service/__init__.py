@@ -403,10 +403,12 @@ class LiveDataService(DataServiceBase):
         with self.session() as session:
             OK, message = self.upload_data(session, prepared_data=prepared_data)
         self.log(message)
-        if OK and timestamp:
-            self.last_update = timestamp
-            self.context.status.set(
-                'last update', self.service_name, str(timestamp))
+        if OK:
+            self.logger.info('1 record sent')
+            if timestamp:
+                self.last_update = timestamp
+                self.context.status.set(
+                    'last update', self.service_name, str(timestamp))
         return OK
 
 
