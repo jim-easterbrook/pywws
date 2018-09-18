@@ -108,7 +108,7 @@ class ToService(pywws.service.CatchupDataService):
             rsp = session.get(self.params['api url'], params=prepared_data,
                 timeout=60)
         except Exception as ex:
-            return False, str(ex)
+            return False, repr(ex)
         if rsp.status_code != 200:
             return False, 'http status: {:d}'.format(rsp.status_code)
         rsp = rsp.json()

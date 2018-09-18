@@ -146,7 +146,7 @@ class ToService(pywws.service.LiveDataService):
         try:
             rsp = session.get(url, params=prepared_data, timeout=60)
         except Exception as ex:
-            return False, str(ex)
+            return False, repr(ex)
         text = rsp.text.strip()
         if text in self.errors:
             return False, '{} ({})'.format(self.errors[text], text)

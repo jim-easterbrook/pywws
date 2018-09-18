@@ -176,7 +176,7 @@ class ServiceBase(threading.Thread):
                 try:
                     OK = self.upload_batch()
                 except Exception as ex:
-                    self.log(str(ex))
+                    self.logger.exception(ex)
                     OK = False
             if OK:
                 pause = polling_interval

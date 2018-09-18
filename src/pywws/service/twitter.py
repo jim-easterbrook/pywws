@@ -289,7 +289,7 @@ class ToService(pywws.service.FileService):
         try:
             session.post(tweet, media)
         except Exception as ex:
-            message = str(ex)
+            message = repr(ex)
             return 'is a duplicate' in message, message
         return True, 'OK'
 

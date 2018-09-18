@@ -126,7 +126,7 @@ class ToService(pywws.service.LiveDataService):
             session.sendall(packet)
             session.shutdown(socket.SHUT_RDWR)
         except Exception as ex:
-            return False, str(ex)
+            return False, repr(ex)
         return True, 'OK'
 
 

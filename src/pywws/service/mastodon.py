@@ -203,7 +203,7 @@ class ToService(pywws.service.FileService):
                 media_ids.append(rsp['id'])
             rsp = session.status_post(status=toot, media_ids=media_ids)
         except Exception as ex:
-            return False, str(ex)
+            return False, repr(ex)
         return True, 'OK'
 
     def register(self):

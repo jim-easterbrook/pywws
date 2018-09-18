@@ -130,7 +130,7 @@ class ToService(pywws.service.CatchupDataService):
         try:
             rsp = session.post(url, json=[prepared_data], timeout=60)
         except Exception as ex:
-            return False, str(ex)
+            return False, repr(ex)
         if rsp.status_code != 204:
             return False, 'http status: {:d} {:s}'.format(
                 rsp.status_code, rsp.text)
@@ -155,7 +155,7 @@ class ToService(pywws.service.CatchupDataService):
             try:
                 rsp = session.get(url, timeout=60)
             except Exception as ex:
-                print('exception', str(ex))
+                print('exception', repr(ex))
                 return
             stations = rsp.json()
             if stations:
@@ -189,7 +189,7 @@ class ToService(pywws.service.CatchupDataService):
                             session.delete(
                                 url + '/' + station['id'], timeout=60)
                         except Exception as ex:
-                            print('exception', str(ex))
+                            print('exception', repr(ex))
                             return
             if station_id:
                 # update existing station
@@ -198,7 +198,7 @@ class ToService(pywws.service.CatchupDataService):
                 try:
                     rsp = session.put(url, json=data, timeout=60)
                 except Exception as ex:
-                    print('exception', str(ex))
+                    print('exception', repr(ex))
                     return
                 rsp = rsp.json()
                 logger.debug('response: ' + repr(rsp))
@@ -208,7 +208,7 @@ class ToService(pywws.service.CatchupDataService):
                 try:
                     rsp = session.post(url, json=data, timeout=60)
                 except Exception as ex:
-                    print('exception', str(ex))
+                    print('exception', repr(ex))
                     return
                 rsp = rsp.json()
                 logger.debug('response: ' + repr(rsp))

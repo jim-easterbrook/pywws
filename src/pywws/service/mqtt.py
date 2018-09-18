@@ -202,7 +202,7 @@ class ToService(pywws.service.LiveDataService):
             session.publish(self.params['topic'], json.dumps(prepared_data),
                             retain=self.params['retain'])
         except Exception as ex:
-            return False, str(ex)
+            return False, repr(ex)
         if self.params['multi_topic']:
             # Publish messages, one for each item in prepared_data to
             # separate Subtopics.
@@ -213,7 +213,7 @@ class ToService(pywws.service.LiveDataService):
                     session.publish(self.params['topic'] + "/" + key, value,
                                     retain=self.params['retain'])
                 except Exception as ex:
-                    return False, str(ex)
+                    return False, repr(ex)
             # Need to make sure the messages have been flushed to the
             # server.
             session.loop(timeout=0.5)

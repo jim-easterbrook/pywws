@@ -82,7 +82,7 @@ class ToService(pywws.service.FileService):
                 os.makedirs(self.params['directory'])
             shutil.copy(path, self.params['directory'])
         except Exception as ex:
-            return False, str(ex)
+            return False, repr(ex)
         return True, 'OK'
 
 

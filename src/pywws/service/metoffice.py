@@ -132,7 +132,7 @@ class ToService(pywws.service.CatchupDataService):
             rsp = session.get('http://wow.metoffice.gov.uk/automaticreading',
                               params=prepared_data, timeout=60)
         except Exception as ex:
-            return False, str(ex)
+            return False, repr(ex)
         if rsp.status_code == 429:
             # UK Met Office server uses 429 to signal duplicate data
             return True, 'repeated data {:s}'.format(prepared_data['dateutc'])

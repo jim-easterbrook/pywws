@@ -107,7 +107,7 @@ class ToService(pywws.service.FileService):
                 else:
                     session.storbinary('STOR %s' % (target), f)
         except Exception as ex:
-            return False, str(ex)
+            return False, repr(ex)
         return True, 'OK'
 
 
