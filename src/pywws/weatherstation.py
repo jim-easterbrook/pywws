@@ -490,6 +490,7 @@ class WeatherStation(object):
                 'solar', self.status, 60, self.avoid)
         else:
             self._solar_clock = None
+        self.last_status = {}
         # check ws_type
         if self.ws_type not in ('1080', '3080'):
             if self.get_fixed_block(['lux_wm2_coeff']) == 0.0:
@@ -525,7 +526,6 @@ Your station is probably a '{:s}' type.
         next_log = self._station_clock.before(last_log + log_interval)
         ptr_time = 0
         data_time = 0
-        last_status = {}
         not_logging = False
         while True:
             # sleep until just before next reading is due
@@ -560,9 +560,9 @@ Your station is probably a '{:s}' type.
                 for key in ('hum_in', 'temp_in', 'abs_pressure'):
                     old_data[key] = new_data[key]
             # log any change of status
-            if new_data['status'] != last_status:
+            if new_data['status'] != self.last_status:
                 logger.warning('status %s', str(new_data['status']))
-            last_status = new_data['status']
+            self.last_status = new_data['status']
             if (new_data['status']['lost_connection'] and not
                     old_data['status']['lost_connection']):
                 # 'lost connection' decision can happen at any time

@@ -75,8 +75,11 @@ def live_log(data_dir):
         datalogger = pywws.logdata.DataLogger(context)
         # create a RegularTasks object
         tasks = pywws.regulartasks.RegularTasks(context)
-        # get live data
         try:
+            # fetch and process any new logged data
+            datalogger.log_data()
+            pywws.process.process_data(context)
+            # get live data
             for data, logged in datalogger.live_data(
                                     logged_only=(not tasks.has_live_tasks())):
                 if logged:
