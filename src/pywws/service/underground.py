@@ -110,16 +110,9 @@ class ToService(pywws.service.CatchupDataService):
         with requests.Session() as session:
             yield session
 
-    def prepare_data(self, data):
-        prepared_data = super(ToService, self).prepare_data(data)
-        # merge timestamp into prepared_data
-        prepared_data['idx'] = data['idx']
-        return prepared_data
-
     def upload_data(self, session, prepared_data={}):
         # extract timestamp from prepared_data
-        idx = prepared_data['idx']
-        del prepared_data['idx']
+        idx = datetime.strptime(prepared_data['dateutc'], '%Y-%m-%d %H:%M:%S')
         # use "rapid fire" server if data is current
         if datetime.utcnow() - idx < RTFREQ:
             prepared_data.update({'realtime': '1', 'rtfreq': '48'})
