@@ -102,6 +102,9 @@ class ToService(pywws.service.FileService):
     def __init__(self, context, check_params=True):
         super(ToService, self).__init__(context, check_params)
         self.params['port'] = eval(self.params['port'])
+        if self.params['privkey']:
+            self.params['privkey'] = paramiko.RSAKey.from_private_key_file(
+                self.params['privkey'])
 
     @contextmanager
     def session(self):
@@ -110,15 +113,13 @@ class ToService(pywws.service.FileService):
         with paramiko.Transport(address) as transport:
             transport.start_client(timeout=30)
             if self.params['privkey']:
-                transport.auth_publickey(
-                    username=self.params['user'],
-                    key=paramiko.RSAKey.from_private_key_file(
-                        self.params['privkey']))
+                transport.auth_publickey(username=self.params['user'],
+                                         key=self.params['privkey'])
             else:
-                transport.auth_password(
-                    username=self.params['user'],
-                    password=self.params['password'])
+                transport.auth_password(username=self.params['user'],
+                                        password=self.params['password'])
             with paramiko.SFTPClient.from_transport(transport) as session:
+                session.get_channel().settimeout(20)
                 session.chdir(self.params['directory'])
                 yield session
 
