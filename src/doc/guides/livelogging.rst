@@ -193,6 +193,25 @@ After starting ``sudo service pywws status`` shows if it's running OK, and the l
    Aug 23 18:00:26 gordon pywws-livelog[30946]: pywws.service.sftp:OK
    jim@gordon:~ $
 
+If you'd prefer to use a normal pywws log file the ``pywws.service`` file might look like this::
+
+   [Unit]
+   Description=pywws weather station live logging
+   After=time-sync.target
+
+   [Service]
+   Type=simple
+   User=pywws
+   Restart=on-failure
+   PermissionsStartOnly=true
+   ExecStartPre=/bin/mkdir -p /var/log/pywws
+   ExecStartPre=/bin/chown -R pywws:nogroup /var/log/pywws/
+   ExecStart=/usr/local/bin/pywws-livelog -v -l /var/log/pywws/pywws.log /home/pywws/data/
+
+In this example the log file is ``/var/log/pywws/pywws.log``.
+The directory ``/var/log/pywws/`` might not exist after a reboot (e.g. if ``/var/log/`` has been moved to RAM disk to reduce SD card wear) so ``ExecStartPre`` is used to create it and transfer its ownership to the ``pywws`` user.
+``PermissionsStartOnly=true`` ensures the ``ExecStartPre`` commands are run as root.
+
 The udev_ system can be used to start the pywws service when the computer boots or the weather station is plugged into the USB port.
 (It also stops pywws if the weather station is unplugged.)
 Create a file ``/etc/udev/rules.d/39-weather-station.rules`` as follows::
