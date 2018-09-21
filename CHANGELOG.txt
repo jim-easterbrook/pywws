@@ -16,6 +16,15 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
+Changes in v18.9.0:
+    1/ Major changes to ftp uploads. New ftp/sftp/copy services do the
+       uploading. pywws should make the required changes to weather.ini
+       automatically, but users should check after running v18.9.0 for the
+       first time.
+    2/ New services to post to Mastodon and WeatherCloud.
+    3/ MQTT service can now use TLS.
+    4/ Various bug fixes and minor improvements.
+
 Changes in v18.6.3:
     1/ Restore Python source text encoding comments needed by some Python 2
        versions.
