@@ -46,7 +46,7 @@ class RegularTasks(object):
         self.hourly_data = context.hourly_data
         self.daily_data = context.daily_data
         self.monthly_data = context.monthly_data
-        self.flush = bool(self.params.get('config', 'frequent writes', 'False'))
+        self.flush = literal_eval(self.params.get('config', 'frequent writes', 'False'))
         # get directories
         self.template_dir = self.params.get(
             'paths', 'templates', os.path.expanduser('~/weather/templates/'))
