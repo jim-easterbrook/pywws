@@ -35,7 +35,7 @@
 """
 
 from __future__ import absolute_import, unicode_literals
-
+from ast import literal_eval
 from contextlib import contextmanager
 from datetime import timedelta
 import logging
@@ -111,7 +111,7 @@ class ToService(pywws.service.LiveDataService):
 #uv
     "'uvi'     : '%.0f'," "" "scale(x, 10.0)"#
 """
-        if eval(self.params['internal']):
+        if literal_eval(self.params['internal']):
             self.template += """
 #temp_in
     "'tempin'  : '%.0f'," "" "scale(x, 10.0)"#

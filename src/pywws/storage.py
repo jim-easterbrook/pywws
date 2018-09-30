@@ -68,7 +68,7 @@ Detailed API
 """
 
 from __future__ import with_statement
-
+from ast import literal_eval
 from contextlib import contextmanager
 import csv
 from datetime import date, datetime, timedelta, MAXYEAR
@@ -819,8 +819,8 @@ class PywwsContext(object):
                         'live', 'logged', 'hourly', '12 hourly', 'daily']:
                     continue
                 for t_p in ('text', 'plot'):
-                    templates = eval(self.params.get(section, t_p, '[]'))
-                    services = eval(self.params.get(section, 'services', '[]'))
+                    templates = literal_eval(self.params.get(section, t_p, '[]'))
+                    services = literal_eval(self.params.get(section, 'services', '[]'))
                     changed = False
                     for n, template in enumerate(templates):
                         if isinstance(template, (list, tuple)):

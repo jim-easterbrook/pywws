@@ -26,7 +26,7 @@ import logging
 import os
 import sys
 import time
-
+from ast import literal_eval
 from pywws.calib import Calib
 import pywws.plot
 import pywws.template
@@ -46,7 +46,7 @@ class RegularTasks(object):
         self.hourly_data = context.hourly_data
         self.daily_data = context.daily_data
         self.monthly_data = context.monthly_data
-        self.flush = eval(self.params.get('config', 'frequent writes', 'False'))
+        self.flush = bool(self.params.get('config', 'frequent writes', 'False'))
         # get directories
         self.template_dir = self.params.get(
             'paths', 'templates', os.path.expanduser('~/weather/templates/'))
@@ -104,16 +104,16 @@ class RegularTasks(object):
     def has_live_tasks(self):
         if self.cron:
             return True
-        for name in eval(self.params.get('live', 'services', '[]')):
+        for name in literal_eval(self.params.get('live', 'services', '[]')):
             return True
-        for template in eval(self.params.get('live', 'plot', '[]')):
+        for template in literal_eval(self.params.get('live', 'plot', '[]')):
             return True
-        for template in eval(self.params.get('live', 'text', '[]')):
+        for template in literal_eval(self.params.get('live', 'text', '[]')):
             return True
         return False
 
     def _parse_templates(self, section, option):
-        for template in eval(self.params.get(section, option, '[]')):
+        for template in literal_eval(self.params.get(section, option, '[]')):
             if isinstance(template, (list, tuple)):
                 yield template[0], template[1:]
             else:

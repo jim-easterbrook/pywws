@@ -74,6 +74,7 @@ __usage__ = __doc__.split('\n')[0] + __usage__
 
 from collections import deque
 from datetime import date, datetime, timedelta
+from ast import literal_eval
 import getopt
 import logging
 import math
@@ -717,7 +718,7 @@ def generate_monthly(rain_day_threshold, day_end_hour, use_dst,
 
 def get_day_end_hour(params):
     # get daytime end hour (in local time)
-    day_end_hour, use_dst = eval(
+    day_end_hour, use_dst = literal_eval(
         params.get('config', 'day end hour', '9, False'))
     day_end_hour = day_end_hour % 24
     return day_end_hour, use_dst
@@ -740,7 +741,7 @@ def process_data(context):
     # get daytime end hour (in local time)
     day_end_hour, use_dst = get_day_end_hour(context.params)
     # get other config
-    rain_day_threshold = eval(context.params.get('config', 'rain day threshold', '0.2'))
+    rain_day_threshold = float(context.params.get('config', 'rain day threshold', '0.2'))
     # calibrate raw data
     start = calibrate_data(context.params, context.raw_data, context.calib_data)
     # generate hourly data
