@@ -35,10 +35,11 @@ __usage__ = """
 __doc__ %= __usage__
 __usage__ = __doc__.split('\n')[0] + __usage__
 
+from ast import literal_eval
 from datetime import datetime, timedelta
 import getopt
 import sys
-from ast import literal_eval
+
 import pywws.localisation
 import pywws.storage
 from pywws.timezone import timezone

@@ -299,9 +299,9 @@ __usage__ = """
 __doc__ %= __usage__
 __usage__ = __doc__.split('\n')[0] + __usage__
 
+from ast import literal_eval
 import codecs
 from datetime import datetime, timedelta
-from ast import literal_eval
 import getopt
 import locale
 import logging

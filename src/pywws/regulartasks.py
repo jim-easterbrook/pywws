@@ -20,13 +20,14 @@
 
 from __future__ import absolute_import
 
+from ast import literal_eval
 from datetime import datetime, timedelta
 import importlib
 import logging
 import os
 import sys
 import time
-from ast import literal_eval
+
 from pywws.calib import Calib
 import pywws.plot
 import pywws.template
@@ -46,12 +47,14 @@ class RegularTasks(object):
         self.hourly_data = context.hourly_data
         self.daily_data = context.daily_data
         self.monthly_data = context.monthly_data
-        self.flush = literal_eval(self.params.get('config', 'frequent writes', 'False'))
+        self.flush = literal_eval(
+            self.params.get('config', 'frequent writes', 'False'))
         # get directories
         self.template_dir = self.params.get(
             'paths', 'templates', os.path.expanduser('~/weather/templates/'))
         self.graph_template_dir = self.params.get(
-            'paths', 'graph_templates', os.path.expanduser('~/weather/graph_templates/'))
+            'paths', 'graph_templates',
+            os.path.expanduser('~/weather/graph_templates/'))
         self.module_dir = self.params.get(
             'paths', 'modules', os.path.expanduser('~/weather/modules/'))
         # create calibration object

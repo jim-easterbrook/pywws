@@ -589,8 +589,10 @@ class BasePlotter(object):
         self.daily_data = context.daily_data
         self.monthly_data = context.monthly_data
         self.work_dir = work_dir
-        self.pressure_offset = float(context.params.get('config', 'pressure offset'))
-        self.gnuplot_version = float(context.params.get('config', 'gnuplot version', '4.2'))
+        self.pressure_offset = float(
+            context.params.get('config', 'pressure offset'))
+        self.gnuplot_version = float(
+            context.params.get('config', 'gnuplot version', '4.2'))
         self.computations = Computations(context)
         # set language related stuff
         self.encoding = context.params.get(

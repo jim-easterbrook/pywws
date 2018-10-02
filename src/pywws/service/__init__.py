@@ -24,6 +24,7 @@
 """
 
 from __future__ import absolute_import, print_function, unicode_literals
+
 from ast import literal_eval
 from collections import deque
 from datetime import datetime, timedelta
@@ -223,10 +224,9 @@ class DataServiceBase(ServiceBase):
     """Defines the conversion of pywws data to key, value pairs required
     by the service. The template string is passed to
     :py:mod:`pywws.template`, then the result is passed to
-    :py:func:`literal_eval` to create a :py:obj:`dict`. This rather complex
-    process allows great flexibility, but you do have to be careful with
-    use of quotation marks.
-    """
+    :py:func:`~ast.literal_eval` to create a :py:obj:`dict`. This rather
+    complex process allows great flexibility, but you do have to be
+    careful with use of quotation marks. """
 
     fixed_data = {}
     """Defines a set of ``key: value`` pairs that are the same for every
