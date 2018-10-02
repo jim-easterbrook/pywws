@@ -101,7 +101,7 @@ class ToService(pywws.service.FileService):
 
     def __init__(self, context, check_params=True):
         super(ToService, self).__init__(context, check_params)
-        self.params['port'] = eval(self.params['port'])
+        self.params['port'] = int(self.params['port'])
         if self.params['privkey']:
             self.params['privkey'] = paramiko.RSAKey.from_private_key_file(
                 self.params['privkey'])

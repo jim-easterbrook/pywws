@@ -79,6 +79,7 @@ from __future__ import absolute_import
 __docformat__ = "restructuredtext en"
 
 from datetime import datetime
+from ast import literal_eval
 import logging
 import sys
 import time
@@ -393,9 +394,9 @@ class DriftingClock(object):
         self.period = period
         self.margin = margin
         if self.status:
-            self.clock = eval(
+            self.clock = literal_eval(
                 self.status.get('clock', self.name, 'None'))
-            self.drift = eval(
+            self.drift = literal_eval(
                 self.status.get('clock', self.name + ' drift', '0.0'))
         else:
             self.clock = None
@@ -469,8 +470,7 @@ class WeatherStation(object):
         # init variables
         if context:
             self.status = context.status
-            self.avoid = eval(
-                context.params.get('config', 'usb activity margin', '3.0'))
+            self.avoid = float(context.params.get('config', 'usb activity margin', '3.0'))
             self.avoid = max(self.avoid, 0.0)
             self.ws_type = context.params.get('config', 'ws type', 'Unknown')
         else:

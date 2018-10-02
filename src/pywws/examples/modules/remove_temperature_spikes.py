@@ -29,7 +29,7 @@ class Calib(object):
     """Weather station calibration class with temperature spike removal."""
     def __init__(self, params, raw_data):
         self.raw_data = raw_data
-        self.pressure_offset = eval(params.get('config', 'pressure offset'))
+        self.pressure_offset = float(params.get('config', 'pressure offset'))
 
     def calib(self, raw):
         result = dict(raw)

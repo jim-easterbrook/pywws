@@ -50,7 +50,7 @@ normal server for past data.
 """
 
 from __future__ import absolute_import, unicode_literals
-
+from ast import literal_eval
 from contextlib import contextmanager
 from datetime import datetime, timedelta
 import logging
@@ -99,7 +99,7 @@ class ToService(pywws.service.CatchupDataService):
 #illuminance  "'solarradiation': '%.2f'," "" "illuminance_wm2(x)"#
 #uv           "'UV'            : '%d',"#
 """
-        if eval(self.params['internal']):
+        if literal_eval(self.params['internal']):
             self.template += """
 #hum_in       "'indoorhumidity': '%.d',"#
 #temp_in      "'indoortempf'   : '%.1f'," "" "temp_f(x)"#

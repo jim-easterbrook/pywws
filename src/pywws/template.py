@@ -301,6 +301,7 @@ __usage__ = __doc__.split('\n')[0] + __usage__
 
 import codecs
 from datetime import datetime, timedelta
+from ast import literal_eval
 import getopt
 import locale
 import logging
@@ -396,8 +397,8 @@ class Template(object):
         rain_hour = self.computations.rain_hour
         rain_day = self.computations.rain_day
         rain_24hr = self.computations.rain_24hr
-        pressure_offset = eval(self.params.get('config', 'pressure offset'))
-        fixed_block = eval(self.status.get('fixed', 'fixed block'))
+        pressure_offset = float(self.params.get('config', 'pressure offset'))
+        fixed_block = literal_eval(self.status.get('fixed', 'fixed block'))
         # start off with no time rounding
         round_time = None
         # start off in hourly data mode

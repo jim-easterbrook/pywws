@@ -112,7 +112,7 @@ for adding the retain and auth options.
 """
 
 from __future__ import absolute_import, unicode_literals
-
+from ast import literal_eval
 from contextlib import contextmanager
 from datetime import timedelta
 import json
@@ -167,13 +167,13 @@ class ToService(pywws.service.LiveDataService):
     def __init__(self, context, check_params=True):
         super(ToService, self).__init__(context, check_params)
         # get template text
-        template = eval(context.params.get(
+        template = literal_eval(context.params.get(
             service_name, 'template_txt', pprint.pformat(self.template)))
         logger.log(logging.DEBUG - 1, 'template:\n' + template)
         self.template = "#live#" + template
         # convert some params from string
         for key in ('port', 'retain', 'tls_ver', 'multi_topic'):
-            self.params[key] = eval(self.params[key])
+            self.params[key] = literal_eval(self.params[key])
 
     @contextmanager
     def session(self):

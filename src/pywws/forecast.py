@@ -38,7 +38,7 @@ __usage__ = __doc__.split('\n')[0] + __usage__
 from datetime import datetime, timedelta
 import getopt
 import sys
-
+from ast import literal_eval
 import pywws.localisation
 import pywws.storage
 from pywws.timezone import timezone
@@ -83,9 +83,9 @@ def zambretti_code(params, hourly_data):
     Inspired by beteljuice.com Java algorithm, as converted to Python by
     honeysucklecottage.me.uk, and further information
     from http://www.meteormetrics.com/zambretti.htm"""
-    north = eval(params.get('Zambretti', 'north', 'True'))
-    baro_upper = eval(params.get('Zambretti', 'baro upper', '1050.0'))
-    baro_lower = eval(params.get('Zambretti', 'baro lower', '950.0'))
+    north = literal_eval(params.get('Zambretti', 'north', 'True'))
+    baro_upper = float(params.get('Zambretti', 'baro upper', '1050.0'))
+    baro_lower = float(params.get('Zambretti', 'baro lower', '950.0'))
     if not hourly_data['rel_pressure']:
         return ''
     if hourly_data['wind_ave'] is None or hourly_data['wind_ave'] < 0.3:

@@ -43,7 +43,7 @@ you can create a plain text file in your ``modules`` directory, e.g.
 
     class Calib(object):
         def __init__(self, params, stored_data):
-            self.pressure_offset = eval(params.get('config', 'pressure offset'))
+            self.pressure_offset = float(params.get('config', 'pressure offset'))
 
         def calib(self, raw):
             result = dict(raw)
@@ -101,7 +101,7 @@ class DefaultCalib(object):
 
     """
     def __init__(self, params, stored_data):
-        self.pressure_offset = eval(params.get('config', 'pressure offset'))
+        self.pressure_offset = float(params.get('config', 'pressure offset'))
 
     def calib(self, raw):
         result = dict(raw)

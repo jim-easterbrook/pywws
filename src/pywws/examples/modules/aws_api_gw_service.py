@@ -37,7 +37,7 @@ supports optional extra headers.
 """
 
 from __future__ import absolute_import, unicode_literals
-
+from ast import literal_eval
 from contextlib import contextmanager
 from datetime import timedelta
 import logging
@@ -103,7 +103,7 @@ class ToService(pywws.service.CatchupDataService):
     def upload_data(self, session, prepared_data={}):
         try:
             if self.params['http headers']:
-                for header in eval(self.params['http headers']):
+                for header in literal_eval(self.params['http headers']):
                     session.headers.update({header[0]: header[1]})
             rsp = session.get(self.params['api url'], params=prepared_data,
                 timeout=60)

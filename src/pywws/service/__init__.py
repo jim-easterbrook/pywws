@@ -24,7 +24,7 @@
 """
 
 from __future__ import absolute_import, print_function, unicode_literals
-
+from ast import literal_eval
 from collections import deque
 from datetime import datetime, timedelta
 import os
@@ -223,7 +223,7 @@ class DataServiceBase(ServiceBase):
     """Defines the conversion of pywws data to key, value pairs required
     by the service. The template string is passed to
     :py:mod:`pywws.template`, then the result is passed to
-    :py:func:`eval` to create a :py:obj:`dict`. This rather complex
+    :py:func:`literal_eval` to create a :py:obj:`dict`. This rather complex
     process allows great flexibility, but you do have to be careful with
     use of quotation marks.
     """
@@ -287,7 +287,7 @@ class DataServiceBase(ServiceBase):
             self.template_file = StringIO(self.template)
         data_str = self.templater.make_text(self.template_file, data)
         self.template_file.seek(0)
-        return eval('{' + data_str + '}')
+        return literal_eval('{' + data_str + '}')
 
     def valid_data(self, data):
         return True
@@ -417,7 +417,7 @@ class FileService(ServiceBase):
 
     """
     def do_catchup(self, do_all=False):
-        self.upload(options=eval(
+        self.upload(options=literal_eval(
             self.context.status.get('pending', self.service_name, '[]')))
         return True
 
@@ -428,7 +428,7 @@ class FileService(ServiceBase):
             self.queue.append(item)
 
     def upload_batch(self):
-        pending = eval(
+        pending = literal_eval(
             self.context.status.get('pending', self.service_name, '[]'))
         OK = True
         count = 0

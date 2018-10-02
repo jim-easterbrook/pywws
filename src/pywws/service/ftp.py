@@ -82,7 +82,7 @@ class ToService(pywws.service.FileService):
 
     def __init__(self, context, check_params=True):
         super(ToService, self).__init__(context, check_params)
-        self.params['port'] = eval(self.params['port'])
+        self.params['port'] = int(self.params['port'])
 
     @contextmanager
     def session(self):

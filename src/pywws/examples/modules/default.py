@@ -19,7 +19,7 @@
 class Calib(object):
     """Minimum weather station calibration class."""
     def __init__(self, params, raw_data):
-        self.pressure_offset = eval(params.get('config', 'pressure offset'))
+        self.pressure_offset = float(params.get('config', 'pressure offset'))
 
     def calib(self, raw):
         result = dict(raw)
