@@ -411,23 +411,28 @@ class CoreStore(object):
         return path, lo, hi
 
     def __iter__(self):
-        '''Return an iterator which yields all items in the data store sequntially. Equivalent: for item in dataset[:]: yield item'''
+        """Return an iterator which yields all items in the data store
+        sequntially. Equivalent to: for item in dataset[:]: yield item"""
         for item in self[:]: yield item
 
     def update(self, E):
-        '''D.update(E) -> None.  Update D from list-like iterable E containing dicts. Pre-existing items being overwritten.
-        dicts are assumed to contain all appropriate keys and values, and therefore: for k in E: D[ k["idx"] ] = k'''
+        """D.update(E) -> None. Equivelent to: for k in E: D[ k['idx'] ] = k"
+
+        Update D from list-like iterable E containing dicts.
+        Pre-existing items being overwritten.
+        Dicts are assumed to contain all appropriate keys and values."""
         for k in E:
             self[ k['idx'] ] = k
 
     def clear(self):
-        '''Clears all data from the data store permanently'''
+        """Clears all data from the data store permanently"""
         for root, dirs, files in os.walk(self._root_dir, topdown=False):
             for file in files:
                 os.unlink(os.path.join(root, file))
             os.rmdir(root)
         # Get the root dir back and re-initialise to start again
-        root_dir = os.path.abspath(os.path.join(self._root_dir, os.pardir))
+        root_dir = os.path.abspath(
+            os.path.join(self._root_dir, os.pardir))
         self.__init__(root_dir)
 
 class RawStore(CoreStore):

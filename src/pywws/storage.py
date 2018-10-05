@@ -162,9 +162,11 @@ class PywwsContext(object):
         self.output_dir = os.path.join(self.work_dir, 'output')
         if not os.path.isdir(self.output_dir):
             os.makedirs(self.output_dir)
-        # Load whichever data store module was specified, defaulting to the original file store
+        # Load whichever data store module was specified,
+        # Defaults to the original file store
         datastoretype = self.params.get('paths', 'datastoretype', 'filedata')
-        DataStoreModule = importlib.import_module('.'+datastoretype, package='pywws')
+        DataStoreModule = importlib.import_module(
+            '.'+datastoretype, package='pywws')
         # open data file stores
         self.raw_data = DataStoreModule.RawStore(data_dir)
         self.calib_data = DataStoreModule.CalibStore(data_dir)
