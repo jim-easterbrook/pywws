@@ -46,8 +46,9 @@ def main(argv=None):
     # date & time range of data to be changed, in UTC!
     start = datetime(2013, 10, 27, 11, 21)
     stop  = datetime(2013, 10, 29, 18, 32)
-    # open data store
-    raw_data = pywws.storage.RawStore(data_dir)
+    # open data store via PywwsContext
+    context = pywws.storage.PywwsContext(data_dir,False)
+    raw_data = context.raw_data
     # process the data
     aperture = timedelta(minutes=14, seconds=30)
     # make list of changes to apply after examining the data
@@ -80,7 +81,7 @@ def main(argv=None):
         # make sure it's saved
         raw_data.flush()
         # clear calibrated data that needs to be regenerated
-        calib_data = pywws.storage.CalibStore(data_dir)
+        calib_data = context.calib_data
         del calib_data[changes[0]['idx']:]
         calib_data.flush()
     # done

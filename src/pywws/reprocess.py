@@ -59,33 +59,30 @@ logger = logging.getLogger(__name__)
 
 
 def reprocess(data_dir, update):
-    if update:
-        logger.warning("Updating status to detect invalid wind_dir")
-        count = 0
-        raw_data = pywws.storage.RawStore(data_dir)
-        for data in raw_data[:]:
-            count += 1
-            idx = data['idx']
-            if count % 10000 == 0:
-                logger.info("update: %s", idx.isoformat(' '))
-            elif count % 500 == 0:
-                logger.debug("update: %s", idx.isoformat(' '))
-            if data['wind_dir'] is not None and (data['wind_dir'] & 0x80):
-                data['wind_dir'] = None
-                raw_data[idx] = data
-        raw_data.flush()
-    # delete old format summary files
-    logger.warning('Deleting old summaries')
-    for summary in ['calib', 'hourly', 'daily', 'monthly']:
-        for root, dirs, files in os.walk(
-                os.path.join(data_dir, summary), topdown=False):
-            logger.info(root)
-            for file in files:
-                os.unlink(os.path.join(root, file))
-            os.rmdir(root)
-    # create data summaries
-    logger.warning('Generating hourly and daily summaries')
     with pywws.storage.pywws_context(data_dir) as context:
+        if update:
+            logger.warning("Updating status to detect invalid wind_dir")
+            count = 0
+            raw_data = context.raw_data
+            for data in raw_data[:]:
+                count += 1
+                idx = data['idx']
+                if count % 10000 == 0:
+                    logger.info("update: %s", idx.isoformat(' '))
+                elif count % 500 == 0:
+                    logger.debug("update: %s", idx.isoformat(' '))
+                if data['wind_dir'] is not None and (data['wind_dir'] & 0x80):
+                    data['wind_dir'] = None
+                    raw_data[idx] = data
+            raw_data.flush()
+        # delete old format summary files
+        logger.warning('Deleting old summaries')
+        context.calib_data.clear()
+        context.hourly_data.clear()
+        context.daily_data.clear()
+        context.monthly_data.clear()
+        # create data summaries
+        logger.warning('Generating hourly and daily summaries')
         pywws.process.process_data(context)
     return 0
 
