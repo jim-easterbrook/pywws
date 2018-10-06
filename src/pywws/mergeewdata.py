@@ -91,8 +91,8 @@ def main(argv=None):
     out_name = args[1]
     # open input
     in_file = open(in_name, 'r')
-    # open data file store
-    ds = pywws.storage.RawStore(out_name)
+    # open data store via PywwsContext
+    ds = pywws.storage.PywwsContext(out_name,False).raw_data
     # get time to go forward to
     first_stored = ds.after(datetime.min)
     if first_stored == None:

@@ -41,8 +41,9 @@ def main(argv=None):
     # date & time range of data to be changed, in UTC!
     start = datetime(2013, 10, 26, 15, 23)
     stop  = datetime(2013, 10, 30, 12, 47)
-    # open data store
-    raw_data = pywws.storage.RawStore(data_dir)
+    # open data store via PywwsContext
+    context = pywws.storage.PywwsContext(data_dir,False)
+    raw_data = context.raw_data
     # change the data
     for data in raw_data[start:stop]:
         data['rain'] -= 263.1
@@ -50,7 +51,7 @@ def main(argv=None):
     # make sure it's saved
     raw_data.flush()
     # clear calibrated data that needs to be regenerated
-    calib_data = pywws.storage.CalibStore(data_dir)
+    calib_data = context.calib_data
     del calib_data[start:]
     calib_data.flush()
     # done
