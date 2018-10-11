@@ -420,7 +420,10 @@ class Template(object):
             tmplt = open(template_file, 'rb')
         # do the text processing
         line = ''
-        for new_line in tmplt:
+        while True:
+            new_line = tmplt.readline()
+            if not new_line:
+                break
             if isinstance(new_line, bytes) or sys.version_info[0] < 3:
                 new_line = new_line.decode(file_encoding)
             line += new_line
