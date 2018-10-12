@@ -223,18 +223,14 @@ class CoreStore(object):
 		if not isinstance(i, datetime): raise TypeError(f'"{i}" is not {datetime}')
 		elif not isinstance(x, dict): raise TypeError(f'Values not {dict}')
 		x[self._keycol] = i
-		with self._connection as con:
-			if con.execute(f'INSERT OR REPLACE INTO {self.table} ({", ".join(x)}) VALUES (:{", :".join(x)});', x).rowcount == 0:
-				raise ValueError(x)
+		with self._connection as con: con.execute(f'INSERT OR REPLACE INTO {self.table} ({", ".join(x)}) VALUES (:{", :".join(x)});', x)
 
 	def update(self, i):
 		''' D.update(E) -> None.  Update D from iterable E with pre-existing items being overwritten.
 			Elements in E are assumed to be dicts containing the primary key to allow the equivelent of: for k in E: D[k.primary_key] = k'''
 		key_list = self.key_list
 		datagen = ( {**datum, **{k:None for k in key_list - datum.keys()}} for datum in i )	# Generator which fills in any missing data from the original iterator as it's consumed
-		with self._connection as con:
-			if con.executemany(f'INSERT OR REPLACE INTO {self.table} ({", ".join(self.key_list)}) VALUES (:{", :".join(self.key_list)});', datagen).rowcount == 0:
-				raise ValueError
+		with self._connection as con: con.executemany(f'INSERT OR REPLACE INTO {self.table} ({", ".join(self.key_list)}) VALUES (:{", :".join(self.key_list)});', datagen)
 
 	def __delitem__(self, i):
 		'''Delete the data item or items with index i. i must be a datetime object or a slice.
