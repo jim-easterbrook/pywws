@@ -468,7 +468,10 @@ def main(class_, argv=None):
 
     if argv is None:
         argv = sys.argv
-    docstring = inspect.getdoc(sys.modules[class_.__module__]).split('\n\n')
+    docstring = inspect.getdoc(sys.modules[class_.__module__])
+    if sys.version_info[0] < 3:
+        docstring = docstring.decode('utf-8')
+    docstring = docstring.split('\n\n')
     parser = argparse.ArgumentParser(
         description=docstring[0], epilog=docstring[1])
     if hasattr(class_, 'register'):
