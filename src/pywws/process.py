@@ -528,20 +528,23 @@ def calibrate_data(params, raw_data, calib_data):
         return start
     del calib_data[start:]
     calibrator = Calib(params, raw_data)
-    count = 0
-    for data in raw_data[start:]:
-        idx = data['idx']
-        count += 1
-        if count % 10000 == 0:
-            logger.info("calib: %s", idx.isoformat(' '))
-        elif count % 500 == 0:
-            logger.debug("calib: %s", idx.isoformat(' '))
-        for key in ('rain', 'abs_pressure', 'temp_in'):
-            if data[key] is None:
-                logger.error('Ignoring invalid data at %s', idx.isoformat(' '))
-                break
-        else:
-            calib_data[idx] = calibrator.calib(data)
+    def calibgen(inputdata):
+        """Internal generator function"""
+        count = 0
+        for data in inputdata:
+            idx = data['idx']
+            count += 1
+            if count % 10000 == 0:
+                logger.info("calib: %s", idx.isoformat(' '))
+            elif count % 500 == 0:
+                logger.debug("calib: %s", idx.isoformat(' '))
+            for key in ('rain', 'abs_pressure', 'temp_in'):
+                if data[key] is None:
+                    logger.error('Ignoring invalid data at %s', idx.isoformat(' '))
+                    break
+            else:
+                yield calibrator.calib(data)
+    calib_data.update(calibgen(raw_data[start:]))
     return start
 
 
@@ -575,44 +578,47 @@ def generate_hourly(calib_data, hourly_data, process_from):
         prev = data
     # iterate over data in one hour chunks
     stop = calib_data.before(datetime.max)
-    hour_start = start
     acc = HourAcc(last_rain)
-    count = 0
-    while hour_start <= stop:
-        count += 1
-        if count % 1008 == 0:
-            logger.info("hourly: %s", hour_start.isoformat(' '))
-        elif count % 24 == 0:
-            logger.debug("hourly: %s", hour_start.isoformat(' '))
-        hour_end = hour_start + HOUR
-        acc.reset()
-        for data in calib_data[hour_start:hour_end]:
-            if data['rel_pressure']:
-                pressure_history.append((data['idx'], data['rel_pressure']))
-            if prev:
-                err = data['idx'] - prev['idx']
-                if abs(err - timedelta(minutes=data['delay'])) > TIME_ERR:
-                    logger.info('unexpected data interval %s %s',
-                                data['idx'].isoformat(' '), str(err))
-            acc.add_raw(data)
-            prev = data
-        new_data = acc.result()
-        if new_data and (new_data['idx'] - hour_start) >= timedelta(minutes=9):
-            # compute pressure trend
-            new_data['pressure_trend'] = None
-            if new_data['rel_pressure']:
-                target = new_data['idx'] - HOURx3
-                while (len(pressure_history) >= 2 and
-                       abs(pressure_history[0][0] - target) >
-                       abs(pressure_history[1][0] - target)):
-                    pressure_history.popleft()
-                if (pressure_history and
-                        abs(pressure_history[0][0] - target) < HOUR):
-                    new_data['pressure_trend'] = (
-                        new_data['rel_pressure'] - pressure_history[0][1])
-            # store new hourly data
-            hourly_data[new_data['idx']] = new_data
-        hour_start = hour_end
+    def hourlygen(inputdata, prev):
+        """Internal generator function"""
+        hour_start = start
+        count = 0
+        while hour_start <= stop:
+            count += 1
+            if count % 1008 == 0:
+                logger.info("hourly: %s", hour_start.isoformat(' '))
+            elif count % 24 == 0:
+                logger.debug("hourly: %s", hour_start.isoformat(' '))
+            hour_end = hour_start + HOUR
+            acc.reset()
+            for data in inputdata[hour_start:hour_end]:
+                if data['rel_pressure']:
+                    pressure_history.append((data['idx'], data['rel_pressure']))
+                if prev:
+                    err = data['idx'] - prev['idx']
+                    if abs(err - timedelta(minutes=data['delay'])) > TIME_ERR:
+                        logger.info('unexpected data interval %s %s',
+                                    data['idx'].isoformat(' '), str(err))
+                acc.add_raw(data)
+                prev = data
+            new_data = acc.result()
+            if new_data and (new_data['idx'] - hour_start) >= timedelta(minutes=9):
+                # compute pressure trend
+                new_data['pressure_trend'] = None
+                if new_data['rel_pressure']:
+                    target = new_data['idx'] - HOURx3
+                    while (len(pressure_history) >= 2 and
+                           abs(pressure_history[0][0] - target) >
+                           abs(pressure_history[1][0] - target)):
+                        pressure_history.popleft()
+                    if (pressure_history and
+                            abs(pressure_history[0][0] - target) < HOUR):
+                        new_data['pressure_trend'] = (
+                            new_data['rel_pressure'] - pressure_history[0][1])
+                # store new hourly data
+                yield new_data
+            hour_start = hour_end
+    hourly_data.update(hourlygen(calib_data, prev))
     return start
 
 
@@ -635,30 +641,33 @@ def generate_daily(day_end_hour, use_dst,
         start, use_dst=use_dst, hour=day_end_hour, minute=0, second=0)
     del daily_data[start:]
     stop = calib_data.before(datetime.max)
-    day_start = start
     acc = DayAcc()
-    count = 0
-    while day_start <= stop:
-        count += 1
-        if count % 30 == 0:
-            logger.info("daily: %s", day_start.isoformat(' '))
-        else:
-            logger.debug("daily: %s", day_start.isoformat(' '))
-        day_end = day_start + DAY
-        if use_dst:
-            # day might be 23 or 25 hours long
-            day_end = timezone.local_replace(
-                day_end + HOURx3, use_dst=use_dst, hour=day_end_hour)
-        acc.reset()
-        for data in calib_data[day_start:day_end]:
-            acc.add_raw(data)
-        for data in hourly_data[day_start:day_end]:
-            acc.add_hourly(data)
-        new_data = acc.result()
-        if new_data:
-            new_data['start'] = day_start
-            daily_data[new_data['idx']] = new_data
-        day_start = day_end
+    def dailygen(inputdata):
+        """Internal generator function"""
+        day_start = start
+        count = 0
+        while day_start <= stop:
+            count += 1
+            if count % 30 == 0:
+                logger.info("daily: %s", day_start.isoformat(' '))
+            else:
+                logger.debug("daily: %s", day_start.isoformat(' '))
+            day_end = day_start + DAY
+            if use_dst:
+                # day might be 23 or 25 hours long
+                day_end = timezone.local_replace(
+                    day_end + HOURx3, use_dst=use_dst, hour=day_end_hour)
+            acc.reset()
+            for data in inputdata[day_start:day_end]:
+                acc.add_raw(data)
+            for data in hourly_data[day_start:day_end]:
+                acc.add_hourly(data)
+            new_data = acc.result()
+            if new_data:
+                new_data['start'] = day_start
+                yield new_data
+            day_start = day_end
+    daily_data.update(dailygen(calib_data))
     return start
 
 
@@ -686,33 +695,36 @@ def generate_monthly(rain_day_threshold, day_end_hour, use_dst,
     stop = daily_data.before(datetime.max)
     if stop is None:
         return None
-    month_start = start
     acc = MonthAcc(rain_day_threshold)
-    count = 0
-    while month_start <= stop:
-        count += 1
-        if count % 12 == 0:
-            logger.info("monthly: %s", month_start.isoformat(' '))
-        else:
-            logger.debug("monthly: %s", month_start.isoformat(' '))
-        month_end = month_start + WEEK
-        if month_end.month < 12:
-            month_end = month_end.replace(month=month_end.month+1)
-        else:
-            month_end = month_end.replace(month=1, year=month_end.year+1)
-        month_end = month_end - WEEK
-        if use_dst:
-            # month might straddle summer time start or end
-            month_end = timezone.local_replace(
-                month_end + HOURx3, use_dst=use_dst, hour=day_end_hour)
-        acc.reset()
-        for data in daily_data[month_start:month_end]:
-            acc.add_daily(data)
-        new_data = acc.result()
-        if new_data:
-            new_data['start'] = month_start
-            monthly_data[new_data['idx']] = new_data
-        month_start = month_end
+    def monthlygen(inputdata):
+        """Internal generator function"""
+        month_start = start
+        count = 0
+        while month_start <= stop:
+            count += 1
+            if count % 12 == 0:
+                logger.info("monthly: %s", month_start.isoformat(' '))
+            else:
+                logger.debug("monthly: %s", month_start.isoformat(' '))
+            month_end = month_start + WEEK
+            if month_end.month < 12:
+                month_end = month_end.replace(month=month_end.month+1)
+            else:
+                month_end = month_end.replace(month=1, year=month_end.year+1)
+            month_end = month_end - WEEK
+            if use_dst:
+                # month might straddle summer time start or end
+                month_end = timezone.local_replace(
+                    month_end + HOURx3, use_dst=use_dst, hour=day_end_hour)
+            acc.reset()
+            for data in inputdata[month_start:month_end]:
+                acc.add_daily(data)
+            new_data = acc.result()
+            if new_data:
+                new_data['start'] = month_start
+                yield new_data
+            month_start = month_end
+    monthly_data.update(monthlygen(daily_data))
     return start
 
 
