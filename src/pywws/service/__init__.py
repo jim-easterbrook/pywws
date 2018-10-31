@@ -392,10 +392,11 @@ class LiveDataService(DataServiceBase):
 
     def upload_batch(self):
         # get most recent upload on queue
-        while self.queue:
+        upload = self.queue.popleft()
+        while self.queue and self.queue[0] is not None:
             upload = self.queue.popleft()
-            if upload is None:
-                return False
+        if upload is None:
+            return False
         timestamp, prepared_data = upload
         # check time since last upload
         if timestamp and timestamp < self.last_update + self.interval:
