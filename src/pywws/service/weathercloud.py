@@ -53,15 +53,6 @@ service_name = os.path.splitext(os.path.basename(__file__))[0]
 logger = logging.getLogger(__name__)
 
 
-def thw(data):
-    if data['wind_ave'] is None:
-        return None
-    heat = usaheatindex(data['temp_out'], data['hum_out'])
-    if heat is None:
-        return None
-    return heat - (1.072 * wind_mph(data['wind_ave']))
-
-
 class ToService(pywws.service.LiveDataService):
     config = {
         'deviceid' : ('',      True, 'wid'),
@@ -82,8 +73,6 @@ class ToService(pywws.service.LiveDataService):
     "'dew'      : '%.0f'," "" "scale(x, 10.0)"#
 #calc "usaheatindex(data['temp_out'], data['hum_out'])"
     "'heat'     : '%.0f'," "" "scale(x, 10.0)"#
-#calc "self.thw(data)"
-    "'thw'      : '%.0f'," "" "scale(x, 10.0)"#
 #hum_out
     "'hum'      : '%.d',"#
 #wind_ave
@@ -123,8 +112,6 @@ class ToService(pywws.service.LiveDataService):
 #calc "usaheatindex(data['temp_in'], data['hum_in'])"
     "'heatin'  : '%.0f'," "" "scale(x, 10.0)"#
 """
-        # add thw function to templater
-        self.templater.thw = thw
 
     @contextmanager
     def session(self):
