@@ -72,8 +72,8 @@ Typical values are ``9, False`` (UK Met Office standard) or ``0, True`` (midnigh
 Note that using daylight savings time will mean that one day a year is 25 hours long and one is 23 hours long.
 You must update all your stored data by running :py:mod:`pywws.reprocess` after you change this value.
 
-``pressure offset`` is the difference between absolute and relative (sea level) air pressure.
-The initial value is copied from the weather station, assuming you have set it up to display the correct relative pressure, but you can adjust the value in weather.ini to calibrate your station.
+``pressure offset`` is added to the absolute air pressure to get the relative (sea level) air pressure, unit: hPa.
+The initial value is copied from the weather station, assuming you have set it up to display the correct relative pressure, but you can adjust the value in weather.ini to calibrate your station. You can calculate this value or use the difference to a trusted weatherstation or weather service nearby.
 You must update all your stored data by running :py:mod:`pywws.reprocess` after you change this value.
 
 .. versionchanged:: 13.10_r1082
