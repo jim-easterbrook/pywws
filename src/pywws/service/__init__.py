@@ -443,6 +443,10 @@ class FileService(ServiceBase):
                     path = upload
                 else:
                     path = os.path.join(self.context.output_dir, upload)
+                if not os.path.isfile(path):
+                    if upload in pending:
+                        pending.remove(upload)
+                    continue
                 self.logger.debug('file: %s', path)
                 OK, message = self.upload_file(session, path)
                 self.log(message)
