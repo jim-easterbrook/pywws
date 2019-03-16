@@ -127,6 +127,7 @@ class ToService(pywws.service.LiveDataService):
         '400': 'bad request',
         '401': 'invalid wid or key',
         '429': 'too frequent data',
+        '500': 'server error',
         }
 
     def upload_data(self, session, prepared_data={}):
