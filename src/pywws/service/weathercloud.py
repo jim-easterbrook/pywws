@@ -1,6 +1,6 @@
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2018  pywws contributors
+# Copyright (C) 2018-19  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -42,6 +42,10 @@ from datetime import timedelta
 import logging
 import os
 import sys
+if sys.version_info[0] < 3:
+    from httplib import responses
+else:
+    from http.client import responses
 
 import requests
 
@@ -123,25 +127,18 @@ class ToService(pywws.service.LiveDataService):
             'wind_dir', 'wind_ave', 'wind_gust', 'hum_out', 'temp_out',
             'temp_in', 'hum_in', 'rel_pressure')])
 
-    errors = {
-        '400': 'bad request',
-        '401': 'invalid wid or key',
-        '429': 'too frequent data',
-        '500': 'server error',
-        }
-
     def upload_data(self, session, prepared_data={}):
         url = 'http://api.weathercloud.net/v01/set'
         try:
             rsp = session.get(url, params=prepared_data, timeout=60)
         except Exception as ex:
             return False, repr(ex)
-        text = rsp.text.strip()
-        if text in self.errors:
-            return False, '{} ({})'.format(self.errors[text], text)
-        if text != '200':
-            return False, 'unknown error ({})'.format(text)
-        return True, 'OK'
+        text = int(rsp.text)
+        if text == 200:
+            return True, 'OK'
+        if text in responses:
+            return False, '{} ({})'.format(responses[text], text)
+        return False, 'unknown error ({})'.format(text)
 
 
 if __name__ == "__main__":
