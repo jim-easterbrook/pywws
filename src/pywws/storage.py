@@ -1,6 +1,6 @@
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-18  pywws contributors
+# Copyright (C) 2008-19  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -22,10 +22,11 @@ Introduction
 ------------
 
 This module is at the core of pywws. By default it stores data on disc,
-using a backend module which uses text files (see filedata.py) but
-other plugin backend modules can be used to use alternative means.
-These modules must adopt the same API (Class names and methods) as
-filedata.py so as to be transparent to the rest of pywws.
+using a backend module which uses text files (see
+:py:mod:`pywws.filedata`) but other plugin backend modules can be used
+to use alternative means. These modules must adopt the same API (Class
+names and methods) as :py:mod:`pywws.filedata` so as to be transparent
+to the rest of pywws.
 
 From a "user" point of view, the data is accessed as a cross between a
 list and a dictionary. Each data record is indexed by a
@@ -55,7 +56,8 @@ Some more examples of data access::
 Note that the :py:class:`datetime.datetime` index is in UTC. You may
 need to apply an offset to convert to local time.
 
-See filedata.py for more details on the underlying data store API
+See :py:mod:`pywws.filedata` for more details on the underlying data
+store API.
 
 Detailed API
 ------------
