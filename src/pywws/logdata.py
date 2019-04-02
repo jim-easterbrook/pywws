@@ -1,6 +1,6 @@
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-18  pywws contributors
+# Copyright (C) 2008-19  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -188,6 +188,9 @@ class DataLogger(object):
         range_hi = datetime.max
         range_lo = datetime.min
         last_delay = self.ws.get_data(self.ws.current_pos())['delay']
+        if last_delay > self.fixed_block['read_period'] + 1:
+            # station is not logging correctly
+            sync = 0
         if last_delay == 0:
             prev_date = datetime.min
         else:
