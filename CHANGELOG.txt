@@ -1,6 +1,6 @@
 pywws - Python software for USB Wireless Weather Stations
 http://github.com/jim-easterbrook/pywws
-Copyright (C) 2008-18  pywws contributors
+Copyright (C) 2008-19  pywws contributors
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -15,6 +15,11 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+Changes in v19.4.0:
+    1/ Can optionally use SQLite3 data store instead of CSV files.
+    2/ Improve weathercloud service uploader.
+    3/ Cope slightly better with stations that aren't logging data.
 
 Changes in v18.10.1:
     1/ Fix bug when running a service directly (in Python 2 only) introduced
