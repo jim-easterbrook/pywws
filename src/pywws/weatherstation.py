@@ -542,8 +542,8 @@ Your station is probably a '{:s}' type.
                 pause = min(pause, next_log - advance)
             elif old_data['delay'] >= read_period - 1:
                 pause = self.min_pause
-            if self._solar_clock and (self._solar_clock.clock is None and
-                                      old_data['illuminance'] is not None):
+            if (self._solar_clock and self._solar_clock.clock is None
+                    and old_data['illuminance'] is not None):
                 pause = self.min_pause
             pause = max(pause, self.min_pause)
             logger.debug(
