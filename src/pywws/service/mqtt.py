@@ -39,20 +39,39 @@ requires an additional library. See :ref:`Dependencies - MQTT
     multi_topic = False
     template_txt = ('\\n'
             '#idx          \\'"idx"         : "%Y-%m-%d %H:%M:%S",\\'#\\n'
-            '#wind_dir     \\'"wind_dir"    : "%.0f",\\' \\'\\' \\'winddir_degrees(x)\\'#\\n'
-            '#wind_ave     \\'"wind_ave"    : "%.2f",\\' \\'\\' \\'wind_mph(x)\\'#\\n'
-            '#wind_gust    \\'"wind_gust"   : "%.2f",\\' \\'\\' \\'wind_mph(x)\\'#\\n'
+            '#wind_dir     \\'"wind_dir_degrees"    : "%.d",\\' \\'\\' \\'winddir_degrees(x)\\'#\\n'
+            '#wind_dir     \\'"wind_dir_text"       : "%s",\\' \\'\\' \\'winddir_text(x)\\'#\\n'
+            '#wind_ave     \\'"wind_ave_mps"    : "%.2f",\\'#\\n'
+            '#wind_ave     \\'"wind_ave_mph"    : "%.2f",\\' \\'\\' \\'wind_mph(x)\\'#\\n'
+            '#wind_gust    \\'"wind_gust_mps"   : "%.2f",\\'#\\n'
+            '#wind_gust    \\'"wind_gust_mph"   : "%.2f",\\' \\'\\' \\'wind_mph(x)\\'#\\n'
+            '#calc \\'wind_chill(data["temp_out"],data["wind_ave"])\\' \\'"wind_chill_c" : "%.1f",\\'#\\n'
+            '#calc \\'temp_f(wind_chill(data["temp_out"],data["wind_ave"]))\\' \\'"wind_chill_f" : "%.1f",\\'#\\n'
+            '#calc \\'dew_point(data["temp_out"],data["hum_out"])\\' \\'"dew_point_c" : "%.1f",\\'#\\n'
+            '#calc \\'temp_f(dew_point(data["temp_out"],data["hum_out"]))\\' \\'"dew_point_f" : "%.1f",\\'#\\n'
             '#hum_out      \\'"hum_out"     : "%.d",\\'#\\n'
             '#hum_in       \\'"hum_in"      : "%.d",\\'#\\n'
             '#temp_in      \\'"temp_in_c"   : "%.1f",\\'#\\n'
             '#temp_in      \\'"temp_in_f"   : "%.1f",\\' \\'\\' \\'temp_f(x)\\'#\\n'
             '#temp_out     \\'"temp_out_c"  : "%.1f",\\'#\\n'
             '#temp_out     \\'"temp_out_f"  : "%.1f",\\' \\'\\' \\'temp_f(x)\\'#\\n'
-            '#rel_pressure \\'"rel_pressure": "%.4f",\\' \\'\\' \\'pressure_inhg(x)\\'#\\n'
-            '#calc \\'rain_inch(rain_hour(data))\\' \\'"rainin": "%g",\\'#\\n'
-            '#calc \\'rain_inch(rain_day(data))\\' \\'"dailyrainin": "%g",\\'#\\n'
-            '#calc \\'rain_hour(data)\\' \\'"rain": "%g",\\'#\\n'
-            '#calc \\'rain_day(data)\\' \\'"dailyrain": "%g",\\'#\\n'
+            '#calc \\'apparent_temp(data["temp_out"],data["hum_out"],data["wind_ave"])\\' \\'"temp_out_realfeel_c" : "%.1f",\\'#\\n'
+            '#calc \\'temp_f(apparent_temp(data["temp_out"],data["hum_out"],data["wind_ave"]))\\' \\'"temp_out_realfeel_f" : "%.1f",\\'#\\n'
+            '#rel_pressure \\'"pressure_rel_hpa": "%.1f",\\'#\\n'
+            '#rel_pressure \\'"pressure_rel_inhg": "%.4f",\\' \\'\\' \\'pressure_inhg(x)\\'#\\n'
+            '#abs_pressure \\'"pressure_abs_hpa": "%.1f",\\'#\\n'
+            '#abs_pressure \\'"pressure_abs_inhg": "%.4f",\\' \\'\\' \\'pressure_inhg(x)\\'#\\n'
+            '#rain         \\'"rain_mm"     : "%.1f",\\'#\\n'
+            '#rain         \\'"rain_in"     : "%.2f",\\' \\'\\' \\'rain_inch(x)\\'#\\n'
+            '#calc \\'rain_hour(data)\\' \\'"rain_last_hour_mm": "%.1f",\\'#\\n'
+            '#calc \\'rain_inch(rain_hour(data))\\' \\'"rain_last_hour_in": "%.2f",\\'#\\n'
+            '#calc \\'rain_24hr(data)\\' \\'"rain_last_24hours_mm": "%.1f",\\'#\\n'
+            '#calc \\'rain_inch(rain_24hr(data))\\' \\'"rain_last_24hours_in": "%.2f",\\'#\\n'
+            '#calc \\'rain_day(data)\\' \\'"rain_day_mm": "%.1f",\\'#\\n'
+            '#calc \\'rain_inch(rain_day(data))\\' \\'"rain_day_in": "%.2f",\\'#\\n'
+            '#illuminance  \\'"illuminance_lux" : "%.1f",\\'#\\n'
+            '#illuminance  \\'"illuminance_wm2" : "%.2f",\\' \\'\\' \\'illuminance_wm2(x)\\'#\\n'
+            '#uv           \\'"uv"          : "%.d",\\'#\\n'
             '\\n')
 
     [logged]
@@ -92,9 +111,10 @@ subtopics of the configured ``topic``; e.g., with the ``topic`` set to
 ``/weather/pywws/temp_in_c``.
 
 ``template_txt`` is the template used to generate the data to be
-published. You can edit it to suit your own requirements, e.g. not using
-antiquated units of measurement. Be very careful about the backslash
-escaped quotation marks though.
+published. You can edit it to suit your own requirements. Be very careful
+about the backslash escaped quotation marks though. If not specified
+default will be used, which sends a lot of values in metric and imperial
+units.
 
 If these aren't obvious to you it's worth doing a bit of reading around
 MQTT. It's a great lightweight messaging system from IBM, recently made
@@ -147,22 +167,40 @@ class ToService(pywws.service.LiveDataService):
     logger = logger
     service_name = service_name
     template = """
-#idx          '"idx"         : "%Y-%m-%d %H:%M:%S",'#
-#wind_dir     '"wind_dir"    : "%.0f",' '' 'winddir_degrees(x)'#
-#wind_ave     '"wind_ave"    : "%.2f",' '' 'wind_mph(x)'#
-#wind_gust    '"wind_gust"   : "%.2f",' '' 'wind_mph(x)'#
+#idx          '"idx"             : "%Y-%m-%d %H:%M:%S",'#
+#wind_dir     '"wind_dir_degrees": "%.d",' '' 'winddir_degrees(x)'#
+#wind_dir     '"wind_dir_text"   : "%s",' '' 'winddir_text(x)'#
+#wind_ave     '"wind_ave_mps"    : "%.2f",'#
+#wind_ave     '"wind_ave_mph"    : "%.2f",' '' 'wind_mph(x)'#
+#wind_gust    '"wind_gust_mps"   : "%.2f",'#
+#wind_gust    '"wind_gust_mph"   : "%.2f",' '' 'wind_mph(x)'#
+#calc 'wind_chill(data["temp_out"],data["wind_ave"])'         '"wind_chill_c" : "%.1f",'#
+#calc 'temp_f(wind_chill(data["temp_out"],data["wind_ave"]))' '"wind_chill_f" : "%.1f",'#
+#calc 'dew_point(data["temp_out"],data["hum_out"])'           '"dew_point_c" : "%.1f",'#
+#calc 'temp_f(dew_point(data["temp_out"],data["hum_out"]))'   '"dew_point_f" : "%.1f",'#
 #hum_out      '"hum_out"     : "%.d",'#
 #hum_in       '"hum_in"      : "%.d",'#
 #temp_in      '"temp_in_c"   : "%.1f",'#
 #temp_in      '"temp_in_f"   : "%.1f",' '' 'temp_f(x)'#
 #temp_out     '"temp_out_c"  : "%.1f",'#
 #temp_out     '"temp_out_f"  : "%.1f",' '' 'temp_f(x)'#
-#rel_pressure '"rel_pressure": "%.4f",' '' 'pressure_inhg(x)'#
-#calc 'rain_inch(rain_hour(data))' '"rainin": "%g",'#
-#calc 'rain_inch(rain_day(data))' '"dailyrainin": "%g",'#
-#calc 'rain_hour(data)' '"rain": "%g",'#
-#calc 'rain_day(data)' '"dailyrain": "%g",'#
-
+#calc 'apparent_temp(data["temp_out"],data["hum_out"],data["wind_ave"])'         '"temp_out_realfeel_c" : "%.1f",'#
+#calc 'temp_f(apparent_temp(data["temp_out"],data["hum_out"],data["wind_ave"]))' '"temp_out_realfeel_f" : "%.1f",'#
+#rel_pressure '"pressure_rel_hpa" : "%.1f",'#
+#rel_pressure '"pressure_rel_inhg": "%.4f",' '' 'pressure_inhg(x)'#
+#abs_pressure '"pressure_abs_hpa" : "%.1f",'#
+#abs_pressure '"pressure_abs_inhg": "%.4f",' '' 'pressure_inhg(x)'#
+#rain         '"rain_mm"     : "%.1f",'#
+#rain         '"rain_in"     : "%.2f",' '' 'rain_inch(x)'#
+#calc 'rain_hour(data)'            '"rain_last_hour_mm": "%.1f",'#
+#calc 'rain_inch(rain_hour(data))' '"rain_last_hour_in": "%.2f",'#
+#calc 'rain_24hr(data)'            '"rain_last_24hours_mm": "%.1f",'#
+#calc 'rain_inch(rain_24hr(data))' '"rain_last_24hours_in": "%.2f",'#
+#calc 'rain_day(data)'             '"rain_day_mm": "%.1f",'#
+#calc 'rain_inch(rain_day(data))'  '"rain_day_in": "%.2f",'#
+#illuminance  '"illuminance_lux" : "%.1f",'#
+#illuminance  '"illuminance_wm2" : "%.2f",' '' 'illuminance_wm2(x)'#
+#uv           '"uv"          : "%.d",'#
 """
 
     def __init__(self, context, check_params=True):
