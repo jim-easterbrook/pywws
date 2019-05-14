@@ -16,6 +16,11 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
+Changes in v:
+    1/ Update default template_txt for service.MQTT to provide wider range of values
+       out of the box. The publushed format is not backwards compatible,
+       but will only affects new users.
+
 Changes in v19.4.0:
     1/ Can optionally use SQLite3 data store instead of CSV files.
     2/ Improve weathercloud service uploader.
