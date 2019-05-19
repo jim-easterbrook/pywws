@@ -24,7 +24,7 @@ requires an additional library. See :ref:`Dependencies - MQTT
 <dependencies-mqtt>` for details.
 
 * Mosquitto (a lightweight broker): http://mosquitto.org/
-* Example ``weather.ini`` configuration (remove illuminance and uv if your model does not support it)::
+* Example ``weather.ini`` configuration::
 
     [mqtt]
     topic = /weather/pywws
@@ -37,6 +37,14 @@ requires an additional library. See :ref:`Dependencies - MQTT
     tls_cert = /home/pi/pywws/ca_cert/mqtt_ca.crt
     tls_ver = 2
     multi_topic = False
+
+    [logged]
+    services = ['mqtt', 'underground']
+
+* To customize the MQTT message use template_txt (remove illuminace and uv if weather station does not support them)::
+
+    [mqtt]
+    ... (as above)
     template_txt = ('\\n'
             '#idx          \\'"idx"         : "%Y-%m-%d %H:%M:%S",\\'#\\n'
             '#wind_dir     \\'"wind_dir_degrees"    : "%.d",\\' \\'\\' \\'winddir_degrees(x)\\'#\\n'
@@ -73,9 +81,6 @@ requires an additional library. See :ref:`Dependencies - MQTT
             '#illuminance  \\'"illuminance_wm2" : "%.2f",\\' \\'\\' \\'illuminance_wm2(x)\\'#\\n'
             '#uv           \\'"uv"          : "%.d",\\'#\\n'
             '\\n')
-
-    [logged]
-    services = ['mqtt', 'underground']
 
 pywws will publish a JSON string of weather data. This data will be
 published to the broker running on ``hostname``, with the port number
@@ -115,6 +120,13 @@ published. You can edit it to suit your own requirements. Be very careful
 about the backslash escaped quotation marks though. If not specified
 default will be used, which sends a lot of values in metric and imperial
 units.
+
+.. versionchanged:: NN.N
+   Default for ``template_txt`` was updated. This change is not backwards
+   compatible, the original values are still present, just under new names.
+   New default tries to send most of the values pywws collects in both
+   metric and imperial units. This is to make it easier for new users
+   to get going.
 
 If these aren't obvious to you it's worth doing a bit of reading around
 MQTT. It's a great lightweight messaging system from IBM, recently made
