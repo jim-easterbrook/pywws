@@ -24,7 +24,7 @@ requires an additional library. See :ref:`Dependencies - MQTT
 <dependencies-mqtt>` for details.
 
 * Mosquitto (a lightweight broker): http://mosquitto.org/
-* Example ``weather.ini`` configuration::
+* Example ``weather.ini`` configuration (remove illuminance and uv if your model does not support it)::
 
     [mqtt]
     topic = /weather/pywws
@@ -198,6 +198,8 @@ class ToService(pywws.service.LiveDataService):
 #calc 'rain_inch(rain_24hr(data))' '"rain_last_24hours_in": "%.2f",'#
 #calc 'rain_day(data)'             '"rain_day_mm": "%.1f",'#
 #calc 'rain_inch(rain_day(data))'  '"rain_day_in": "%.2f",'#
+"""
+    template_3080_add = """
 #illuminance  '"illuminance_lux" : "%.1f",'#
 #illuminance  '"illuminance_wm2" : "%.2f",' '' 'illuminance_wm2(x)'#
 #uv           '"uv"          : "%.d",'#
@@ -205,6 +207,9 @@ class ToService(pywws.service.LiveDataService):
 
     def __init__(self, context, check_params=True):
         super(ToService, self).__init__(context, check_params)
+        # extend template
+        if context.params.get('config', 'ws type') == '3080':
+            self.template += self.template_3080_add
         # get template text
         template = literal_eval(context.params.get(
             service_name, 'template_txt', pprint.pformat(self.template)))
