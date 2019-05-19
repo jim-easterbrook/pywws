@@ -224,12 +224,19 @@ class ToService(pywws.service.LiveDataService):
             self.template += self.template_3080_add
         # get template text
         template = literal_eval(context.params.get(
-            service_name, 'template_txt', pprint.pformat(self.template)))
+            service_name, 'template_txt', self.template_format(self.template)))
         logger.log(logging.DEBUG - 1, 'template:\n' + template)
         self.template = "#live#" + template
         # convert some params from string
         for key in ('port', 'retain', 'tls_ver', 'multi_topic'):
             self.params[key] = literal_eval(self.params[key])
+
+    def template_format(self, template):
+        result = []
+        for i in template.split('\n'):
+                if len(i) != 0:
+                    result.append(pprint.pformat(i+'\n'))
+        return '('+'\n'.join(result)+'\n)'
 
     @contextmanager
     def session(self):
