@@ -1,6 +1,6 @@
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2018  pywws contributors
+# Copyright (C) 2018-19  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -233,10 +233,10 @@ class ToService(pywws.service.LiveDataService):
 
     def template_format(self, template):
         result = []
-        for i in template.split('\n'):
-                if len(i) != 0:
-                    result.append(pprint.pformat(i+'\n'))
-        return '('+'\n'.join(result)+'\n)'
+        for line in template.splitlines():
+            if line:
+                result.append(pprint.pformat(line))
+        return '(\n' + '\n'.join(result) + '\n)'
 
     @contextmanager
     def session(self):
