@@ -1,6 +1,6 @@
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-18  pywws contributors
+# Copyright (C) 2008-19  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -69,6 +69,7 @@ Detailed API
 
 import csv
 from datetime import date, datetime, timedelta, MAXYEAR
+import logging
 import os
 import sys
 import time
@@ -76,6 +77,7 @@ import time
 from pywws.constants import DAY
 from pywws.weatherstation import WSDateTime, WSFloat, WSInt, WSStatus
 
+logger = logging.getLogger(__name__)
 
 
 class _Cache(object):
@@ -354,6 +356,9 @@ class CoreStore(object):
         with open(cache.path, **kwds) as csvfile:
             reader = csv.reader(csvfile, quoting=csv.QUOTE_NONE)
             for row in reader:
+                if len(self.key_list) - len(row) not in (0, self.solar_items):
+                    logger.error('Invalid %s data at %s', self.dir_name, row[0])
+                    continue
                 result = {}
                 for key, value in zip(self.key_list, row):
                     if value == '':
@@ -443,6 +448,7 @@ class RawStore(CoreStore):
         'abs_pressure', 'wind_ave', 'wind_gust', 'wind_dir', 'rain',
         'status', 'illuminance', 'uv',
         ]
+    solar_items = 2
     conv = {
         'idx'          : WSDateTime.from_csv,
         'delay'        : int,
@@ -469,6 +475,7 @@ class CalibStore(CoreStore):
         'abs_pressure', 'rel_pressure', 'wind_ave', 'wind_gust', 'wind_dir',
         'rain', 'status', 'illuminance', 'uv',
         ]
+    solar_items = 2
     conv = {
         'idx'          : WSDateTime.from_csv,
         'delay'        : int,
@@ -496,6 +503,7 @@ class HourlyStore(CoreStore):
         'abs_pressure', 'rel_pressure', 'pressure_trend',
         'wind_ave', 'wind_gust', 'wind_dir', 'rain', 'illuminance', 'uv',
         ]
+    solar_items = 2
     conv = {
         'idx'               : WSDateTime.from_csv,
         'hum_in'            : int,
@@ -538,6 +546,7 @@ class DailyStore(CoreStore):
         'illuminance_ave', 'illuminance_max', 'illuminance_max_t',
         'uv_ave', 'uv_max', 'uv_max_t',
         ]
+    solar_items = 6
     conv = {
         'idx'                : WSDateTime.from_csv,
         'start'              : WSDateTime.from_csv,
@@ -633,6 +642,7 @@ class MonthlyStore(CoreStore):
         'uv_ave',
         'uv_max_lo', 'uv_max_lo_t', 'uv_max_hi', 'uv_max_hi_t', 'uv_max_ave',
         ]
+    solar_items = 12
     conv = {
         'idx'                  : WSDateTime.from_csv,
         'start'                : WSDateTime.from_csv,
