@@ -83,7 +83,6 @@ logger = logging.getLogger(__name__)
 class _Cache(object):
     def __init__(self):
         self.data = []
-        self.ptr = 0
         self.path = ''
         self.lo = date.max
         self.hi = date.min
@@ -91,33 +90,34 @@ class _Cache(object):
 
     def copy(self, other):
         self.data = other.data
-        self.ptr = other.ptr
         self.path = other.path
         self.lo = other.lo
         self.hi = other.hi
         self.dirty = False
 
-    def set_ptr(self, idx):
+    def get_ptr(self, idx):
+        """Return index at which to insert a record with timestamp idx
+        and boolean indicating if there is already data with that
+        timestamp.
+
+        """
         hi = len(self.data) - 1
-        if hi < 0 or self.data[0]['idx'] >= idx:
-            self.ptr = 0
-            return
+        if hi < 0 or self.data[0]['idx'] > idx:
+            return 0, False
+        if self.data[0]['idx'] == idx:
+            return 0, True
         if self.data[hi]['idx'] < idx:
-            self.ptr = hi + 1
-            return
+            return hi + 1, False
         lo = 0
-        start = min(self.ptr, hi)
-        if self.data[start]['idx'] < idx:
-            lo = start
-        else:
-            hi = start
-        while hi > lo + 1:
+        while hi - lo > 1:
             mid = (lo + hi) // 2
             if self.data[mid]['idx'] < idx:
                 lo = mid
+            elif self.data[mid]['idx'] == idx:
+                return mid, True
             else:
                 hi = mid
-        self.ptr = hi
+        return hi, self.data[hi]['idx'] == idx
 
 
 class CoreStore(object):
@@ -186,22 +186,18 @@ class CoreStore(object):
         if a > b:
             return
         # go to start of slice
-        self._set_cache_ptr(self._rd_cache, a)
-        cache = self._rd_cache.data
-        cache_hi = self._rd_cache.hi
-        cache_ptr = self._rd_cache.ptr
+        cache = self._rd_cache
+        start, exact = self._get_cache_ptr(cache, a)
         # iterate over complete caches
-        while cache_hi <= b.date():
-            for data in cache[cache_ptr:]:
+        while cache.hi <= b.date():
+            for data in cache.data[start:]:
                 yield data
-            if cache_hi >= self._hi_limit:
+            if cache.hi >= self._hi_limit:
                 return
-            self._load(self._rd_cache, cache_hi)
-            cache = self._rd_cache.data
-            cache_hi = self._rd_cache.hi
-            cache_ptr = 0
+            self._load(cache, cache.hi)
+            start = 0
         # iterate over part of cache
-        for data in cache[cache_ptr:]:
+        for data in cache.data[start:]:
             if data['idx'] >= b:
                 return
             yield data
@@ -215,11 +211,11 @@ class CoreStore(object):
             return self._get_slice(i)
         if not isinstance(i, datetime):
             raise TypeError("list indices must be %s" % (datetime))
-        self._set_cache_ptr(self._rd_cache, i)
-        if (self._rd_cache.ptr >= len(self._rd_cache.data) or
-            self._rd_cache.data[self._rd_cache.ptr]['idx'] != i):
+        cache = self._rd_cache
+        ptr, exact = self._get_cache_ptr(cache, i)
+        if not exact:
             raise KeyError(i)
-        return self._rd_cache.data[self._rd_cache.ptr]
+        return cache.data[ptr]
 
     def __setitem__(self, i, x):
         """Store a value x with index i.
@@ -230,40 +226,33 @@ class CoreStore(object):
         if not isinstance(i, datetime):
             raise TypeError("index '%s' is not %s" % (i, datetime))
         x['idx'] = i
-        self._set_cache_ptr(self._wr_cache, i)
-        if len(self._wr_cache.data) == 0:
-            self._lo_limit = min(self._lo_limit, self._wr_cache.lo)
-            self._hi_limit = max(self._hi_limit, self._wr_cache.hi)
-            self._lo_limit_dt = datetime(
-                self._lo_limit.year, self._lo_limit.month, self._lo_limit.day)
-            self._hi_limit_dt = datetime(
-                self._hi_limit.year, self._hi_limit.month, self._hi_limit.day)
-        if (self._wr_cache.ptr < len(self._wr_cache.data) and
-            self._wr_cache.data[self._wr_cache.ptr]['idx'] == i):
-            self._wr_cache.data[self._wr_cache.ptr] = x
+        cache = self._wr_cache
+        ptr, exact = self._get_cache_ptr(cache, i)
+        if exact:
+            cache.data[ptr] = x
         else:
-            self._wr_cache.data.insert(self._wr_cache.ptr, x)
-        self._wr_cache.dirty = True
+            cache.data.insert(ptr, x)
+        cache.dirty = True
 
     def _del_slice(self, i):
         a, b = self._slice(i)
         if a > b:
             return
         # go to start of slice
-        self._set_cache_ptr(self._wr_cache, a)
+        cache = self._wr_cache
+        start, exact = self._get_cache_ptr(cache, a)
         # delete to end of cache
-        while self._wr_cache.hi <= b.date():
-            del self._wr_cache.data[self._wr_cache.ptr:]
-            self._wr_cache.dirty = True
-            if self._wr_cache.hi >= self._hi_limit:
+        while cache.hi <= b.date():
+            del cache.data[start:]
+            cache.dirty = True
+            if cache.hi >= self._hi_limit:
                 return
-            self._load(self._wr_cache, self._wr_cache.hi)
-            self._wr_cache.ptr = 0
+            self._load(cache, cache.hi)
+            start = 0
         # delete part of cache
-        ptr = self._wr_cache.ptr
-        self._wr_cache.set_ptr(b)
-        del self._wr_cache.data[ptr:self._wr_cache.ptr]
-        self._wr_cache.dirty = True
+        stop, exact = cache.get_ptr(b)
+        del cache.data[start:stop]
+        cache.dirty = True
 
     def __delitem__(self, i):
         """Delete the data item or items with index i.
@@ -274,12 +263,12 @@ class CoreStore(object):
             return self._del_slice(i)
         if not isinstance(i, datetime):
             raise TypeError("list indices must be %s" % (datetime))
-        self._set_cache_ptr(self._wr_cache, i)
-        if (self._wr_cache.ptr >= len(self._wr_cache.data) or
-            self._wr_cache.data[self._wr_cache.ptr]['idx'] != i):
+        cache = self._wr_cache
+        ptr, exact = self._get_cache_ptr(cache, i)
+        if not exact:
             raise KeyError(i)
-        del self._wr_cache.data[self._wr_cache.ptr]
-        self._wr_cache.dirty = True
+        del cache.data[ptr]
+        cache.dirty = True
 
     def before(self, idx):
         """Return datetime of newest existing data record whose
@@ -290,13 +279,14 @@ class CoreStore(object):
         if not isinstance(idx, datetime):
             raise TypeError("'%s' is not %s" % (idx, datetime))
         day = min(idx.date(), self._hi_limit - DAY)
+        cache = self._rd_cache
         while day >= self._lo_limit:
-            if day < self._rd_cache.lo or day >= self._rd_cache.hi:
-                self._load(self._rd_cache, day)
-            self._rd_cache.set_ptr(idx)
-            if self._rd_cache.ptr > 0:
-                return self._rd_cache.data[self._rd_cache.ptr - 1]['idx']
-            day = self._rd_cache.lo - DAY
+            if day < cache.lo or day >= cache.hi:
+                self._load(cache, day)
+            ptr, exact = cache.get_ptr(idx)
+            if ptr > 0:
+                return cache.data[ptr - 1]['idx']
+            day = cache.lo - DAY
         return None
 
     def after(self, idx):
@@ -308,32 +298,41 @@ class CoreStore(object):
         if not isinstance(idx, datetime):
             raise TypeError("'%s' is not %s" % (idx, datetime))
         day = max(idx.date(), self._lo_limit)
+        cache = self._rd_cache
         while day < self._hi_limit:
-            if day < self._rd_cache.lo or day >= self._rd_cache.hi:
-                self._load(self._rd_cache, day)
-            self._rd_cache.set_ptr(idx)
-            if self._rd_cache.ptr < len(self._rd_cache.data):
-                return self._rd_cache.data[self._rd_cache.ptr]['idx']
-            day = self._rd_cache.hi
+            if day < cache.lo or day >= cache.hi:
+                self._load(cache, day)
+            ptr, exact = cache.get_ptr(idx)
+            if ptr < len(cache.data):
+                return cache.data[ptr]['idx']
+            day = cache.hi
         return None
 
     def nearest(self, idx):
         """Return datetime of record whose datetime is nearest idx."""
         hi = self.after(idx)
+        if hi == idx:
+            return hi
         lo = self.before(idx)
         if hi is None:
             return lo
         if lo is None:
             return hi
-        if abs(hi - idx) < abs(lo - idx):
+        if (hi - idx) < (idx - lo):
             return hi
         return lo
 
-    def _set_cache_ptr(self, cache, i):
+    def _get_cache_ptr(self, cache, i):
         day = i.date()
         if day < cache.lo or day >= cache.hi:
             self._load(cache, day)
-        cache.set_ptr(i)
+            if day < self._lo_limit:
+                self._lo_limit = day
+                self._lo_limit_dt = datetime(day.year, day.month, day.day)
+            if day > self._hi_limit:
+                self._hi_limit = day
+                self._hi_limit_dt = datetime(day.year, day.month, day.day)
+        return cache.get_ptr(i)
 
     def _load(self, cache, target_date):
         self._flush(cache)
@@ -345,7 +344,6 @@ class CoreStore(object):
             cache.copy(self._rd_cache)
             return
         cache.data = []
-        cache.ptr = 0
         cache.path, cache.lo, cache.hi = new_path, new_lo, new_hi
         if not os.path.exists(cache.path):
             return
