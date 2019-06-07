@@ -326,12 +326,14 @@ class CoreStore(object):
         day = i.date()
         if day < cache.lo or day >= cache.hi:
             self._load(cache, day)
-            if day < self._lo_limit:
-                self._lo_limit = day
-                self._lo_limit_dt = datetime(day.year, day.month, day.day)
-            if day > self._hi_limit:
-                self._hi_limit = day
-                self._hi_limit_dt = datetime(day.year, day.month, day.day)
+            if cache.lo < self._lo_limit:
+                self._lo_limit = cache.lo
+                self._lo_limit_dt = datetime(
+                    cache.lo.year, cache.lo.month, cache.lo.day)
+            if cache.hi > self._hi_limit:
+                self._hi_limit = cache.hi
+                self._hi_limit_dt = datetime(
+                    cache.hi.year, cache.hi.month, cache.hi.day)
         return cache.get_ptr(i)
 
     def _load(self, cache, target_date):
