@@ -190,22 +190,35 @@ class WSInt(int):
         return WSInt(value)
 
 
+def nibble_value(raw, base_shift, nibble_pos=None, nibble_high=False):
+    if nibble_pos is None:
+        return 0
+    mask = 0x0F
+    shift = base_shift
+    if nibble_high:
+        mask = 0xF0
+        shift = base_shift-4
+    return ((raw[nibble_pos] & mask) << shift)
+
+
 class WSFloat(float):
     @staticmethod
-    def from_1(raw, pos, signed=False, scale=1.0):
+    def from_1(raw, pos, signed=False, scale=1.0, nibble_pos=None, nibble_high=False):
         # decode one byte to an int
         value = WSInt.from_1(raw, pos, signed=signed)
         if value is None:
             return None
+        value += nibble_value(raw, 8, nibble_pos=nibble_pos, nibble_high=nibble_high)
         # convert to float
         return WSFloat(float(value) * scale)
 
     @staticmethod
-    def from_2(raw, pos, signed=False, scale=1.0):
+    def from_2(raw, pos, signed=False, scale=1.0, nibble_pos=None, nibble_high=False):
         # decode two bytes to an int
         value = WSInt.from_2(raw, pos, signed=signed)
         if value is None:
             return None
+        value += nibble_value(raw, 16, nibble_pos=nibble_pos, nibble_high=nibble_high)
         # convert to float
         return WSFloat(float(value) * scale)
 
@@ -214,24 +227,6 @@ class WSFloat(float):
         # decode three bytes to an int
         value = WSInt.from_3(raw, pos, signed=signed)
         if value is None:
-            return None
-        # convert to float
-        return WSFloat(float(value) * scale)
-
-    @staticmethod
-    def wind_ave(raw, pos, scale=1.0):
-        # wind average - 12 bits split across a byte and a nibble
-        value = raw[pos] + ((raw[pos+2] & 0x0F) << 8)
-        if value == 0xFFF:
-            return None
-        # convert to float
-        return WSFloat(float(value) * scale)
-
-    @staticmethod
-    def wind_gust(raw, pos, scale=1.0):
-        # wind gust - 12 bits split across a byte and a nibble
-        value = raw[pos] + ((raw[pos+1] & 0xF0) << 4)
-        if value == 0xFFF:
             return None
         # convert to float
         return WSFloat(float(value) * scale)
@@ -806,8 +801,8 @@ Your station is probably a '{:s}' type.
         'hum_out'      : (4, WSInt.from_1, {'signed': False}),
         'temp_out'     : (5, WSFloat.from_2, {'signed': True, 'scale': 0.1}),
         'abs_pressure' : (7, WSFloat.from_2, {'signed': False, 'scale': 0.1}),
-        'wind_ave'     : (9, WSFloat.wind_ave, {'scale': 0.1}),
-        'wind_gust'    : (10, WSFloat.wind_gust, {'scale': 0.1}),
+        'wind_ave'     : (9, WSFloat.from_1, {'scale': 0.1, 'nibble_pos':11, 'nibble_high':False}),
+        'wind_gust'    : (10, WSFloat.from_1, {'scale': 0.1, 'nibble_pos':11, 'nibble_high':True}),
         'wind_dir'     : (12, WSInt.wind_dir, {}),
         'rain'         : (13, WSFloat.from_2, {'signed': False, 'scale': 0.3}),
         'status'       : (15, WSStatus.from_raw, {}),
@@ -846,13 +841,15 @@ Your station is probably a '{:s}' type.
         'data_changed'  : (26, WSInt.from_1, {'signed': False}),
         'data_count'    : (27, WSInt.from_2, {'signed': False}),
         'display_3'     : (29, WSBits.from_raw, {'keys': (
-            'illuminance_fc', 'bit1', 'bit2', 'bit3', 'bit4', 'bit5', 'bit6',
+            'illuminance_fc', 'alarm_illuminance_hi', 'alarm_uv_hi', 'bit3', 'bit4', 'illuminance_wm2', 'bit6',
             'bit7')}),
         'current_pos'   : (30, WSInt.from_2, {'signed': False}),
         }
     fixed_format = {
         'magic_0'       : (0,  WSInt.from_1, {'signed': False}),
         'magic_1'       : (1,  WSInt.from_1, {'signed': False}),
+        'rain_factor_raw': (2,  WSFloat.from_2, {'signed': False}),
+        'wind_factor_raw': (4,  WSFloat.from_2, {'signed': False}),
         'rel_pressure'  : (32, WSFloat.from_2, {'signed': False, 'scale': 0.1}),
         'abs_pressure'  : (34, WSFloat.from_2, {'signed': False, 'scale': 0.1}),
         'lux_wm2_coeff' : (36, WSFloat.from_2, {'signed': False, 'scale': 0.1}),
@@ -887,8 +884,10 @@ Your station is probably a '{:s}' type.
             'uv'            : (92, WSInt.from_1, {'signed': False}),
             },
         'max'           : {
-            'uv'            : {'val' : (93, WSInt.from_1, {'signed': False})},
-            'illuminance'   : {'val' : (94, WSFloat.from_3, {'signed': False, 'scale': 0.1})},
+            'uv'            : {'val' : (93, WSInt.from_1, {'signed': False}),
+                               'date': (6, WSDateTime.from_raw, {})},
+            'illuminance'   : {'val' : (94, WSFloat.from_3, {'signed': False, 'scale': 0.1}),
+                               'date': (11, WSDateTime.from_raw, {})},
             'hum_in'        : {'val' : (98, WSInt.from_1, {'signed': False}),
                                'date': (141, WSDateTime.from_raw, {})},
             'hum_out'       : {'val' : (100, WSInt.from_1, {'signed': False}),
@@ -916,9 +915,9 @@ Your station is probably a '{:s}' type.
                                    'date': (236, WSDateTime.from_raw, {})},
                 'week'          : {'val' : (134, WSFloat.from_2, {'signed': False, 'scale': 0.3}),
                                    'date': (241, WSDateTime.from_raw, {})},
-                'month'         : {'val' : (136, WSFloat.from_2, {'signed': False, 'scale': 0.3}),
+                'month'         : {'val' : (136, WSFloat.from_2, {'signed': False, 'scale': 0.3, 'nibble_pos':140, 'nibble_high':True}),
                                    'date': (246, WSDateTime.from_raw, {})},
-                'total'         : {'val' : (138, WSFloat.from_2, {'signed': False, 'scale': 0.3}),
+                'total'         : {'val' : (138, WSFloat.from_2, {'signed': False, 'scale': 0.3, 'nibble_pos':140, 'nibble_high':False}),
                                    'date': (251, WSDateTime.from_raw, {})},
                 },
             },
