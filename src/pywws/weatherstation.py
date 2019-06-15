@@ -190,7 +190,7 @@ class WSInt(int):
         return WSInt(value)
 
 
-def nibble_value(raw, base_shift, nibble_pos=None, nibble_high=False):
+def _nibble_value(raw, base_shift, nibble_pos=None, nibble_high=False):
     if nibble_pos is None:
         return 0
     mask = 0x0F
@@ -208,7 +208,7 @@ class WSFloat(float):
         value = WSInt.from_1(raw, pos, signed=signed)
         if value is None:
             return None
-        value += nibble_value(raw, 8, nibble_pos=nibble_pos, nibble_high=nibble_high)
+        value += _nibble_value(raw, 8, nibble_pos=nibble_pos, nibble_high=nibble_high)
         # convert to float
         return WSFloat(float(value) * scale)
 
@@ -218,7 +218,7 @@ class WSFloat(float):
         value = WSInt.from_2(raw, pos, signed=signed)
         if value is None:
             return None
-        value += nibble_value(raw, 16, nibble_pos=nibble_pos, nibble_high=nibble_high)
+        value += _nibble_value(raw, 16, nibble_pos=nibble_pos, nibble_high=nibble_high)
         # convert to float
         return WSFloat(float(value) * scale)
 
