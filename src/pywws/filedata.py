@@ -353,10 +353,12 @@ class CoreStore(object):
             kwds = {'mode': 'r', 'newline': ''}
         else:
             kwds = {'mode': 'rb'}
+        row_lengths = (len(self.key_list),
+                       len(self.key_list) - self.solar_items)
         with open(cache.path, **kwds) as csvfile:
             reader = csv.reader(csvfile, quoting=csv.QUOTE_NONE)
             for row in reader:
-                if len(self.key_list) - len(row) not in (0, self.solar_items):
+                if len(row) not in row_lengths:
                     logger.error('Invalid %s data at %s', self.dir_name, row[0])
                     continue
                 result = {}
