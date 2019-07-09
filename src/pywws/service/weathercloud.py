@@ -79,10 +79,14 @@ class ToService(pywws.service.LiveDataService):
     "'heat'     : '%.0f'," "" "scale(x, 10.0)"#
 #hum_out
     "'hum'      : '%.d',"#
-#wind_ave
+#wind_speed_ave
+    "'wspdavg'  : '%.0f'," "" "scale(x, 10.0)"#
+#wind_speed
     "'wspd'     : '%.0f'," "" "scale(x, 10.0)"#
 #wind_gust
     "'wspdhi'   : '%.0f'," "" "scale(x, 10.0)"#
+#wind_dir_avg
+    "'wdiravg'  : '%.0f'," "" "winddir_degrees(x)"#
 #wind_dir
     "'wdir'     : '%.0f'," "" "winddir_degrees(x)"#
 #rel_pressure
@@ -124,7 +128,7 @@ class ToService(pywws.service.LiveDataService):
 
     def valid_data(self, data):
         return any([data[x] is not None for x in (
-            'wind_dir', 'wind_ave', 'wind_gust', 'hum_out', 'temp_out',
+            'wind_dir', 'wind_dir_ave', 'wind_speed', 'wind_speed_ave', 'wind_gust', 'hum_out', 'temp_out',
             'temp_in', 'hum_in', 'rel_pressure')])
 
     def upload_data(self, session, prepared_data={}):
