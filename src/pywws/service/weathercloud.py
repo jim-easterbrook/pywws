@@ -128,7 +128,7 @@ class ToService(pywws.service.LiveDataService):
 
     def valid_data(self, data):
         return any([data[x] is not None for x in (
-            'wind_dir', 'wind_dir_ave', 'wind_speed', 'wind_speed_ave', 'wind_gust', 'hum_out', 'temp_out',
+            'wind_dir', 'wind_ave', 'wind_gust', 'hum_out', 'temp_out',
             'temp_in', 'hum_in', 'rel_pressure')])
 
     def upload_data(self, session, prepared_data={}):
