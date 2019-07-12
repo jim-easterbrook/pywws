@@ -185,8 +185,10 @@ class CoreStore(object):
         a, b = self._slice(i)
         if a > b:
             return
+        # use separate cache as something might change self._rd_cache
+        # during yield
+        cache = _Cache()
         # go to start of slice
-        cache = self._rd_cache
         start, exact = self._get_cache_ptr(cache, a)
         # iterate over complete caches
         while cache.hi <= b.date():
