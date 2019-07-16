@@ -1,6 +1,6 @@
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-18  pywws contributors
+# Copyright (C) 2008-19  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -24,7 +24,7 @@ data directory. You should be able to get the required information from
 your web space provider. If your provider doesn't allow SFTP then use
 :py:mod:`pywws.service.ftp` instead.
 
-* Additional dependency: https://www.paramiko.org/
+* Additional dependency: https://www.paramiko.org/ v2.1.0 or later
 * Example ``weather.ini`` configuration::
 
     [sftp]
