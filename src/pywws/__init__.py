@@ -1,3 +1,3 @@
-__version__ = '19.7.2'
-_release = '1663'
-_commit = 'ab55781'
+__version__ = '19.8.0'
+_release = '1664'
+_commit = '0964762'

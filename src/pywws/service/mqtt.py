@@ -235,7 +235,7 @@ class ToService(pywws.service.LiveDataService):
         result = []
         for line in template.splitlines():
             if line:
-                result.append(pprint.pformat(line))
+                result.append(pprint.pformat(line, width=256))
         return '(\n' + '\n'.join(result) + '\n)'
 
     @contextmanager
