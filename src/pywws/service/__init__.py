@@ -446,6 +446,7 @@ class FileService(ServiceBase):
                 if not os.path.isfile(path):
                     if upload in pending:
                         pending.remove(upload)
+                    self.queue.popleft()
                     continue
                 self.logger.debug('file: %s', path)
                 OK, message = self.upload_file(session, path)
