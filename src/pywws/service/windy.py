@@ -66,7 +66,7 @@ class ToService(pywws.service.CatchupDataService):
         'api_key'     : ('', True,  None),
         'station_id'  : ('', False, 'station'),
         }
-
+    fixed_data = {}
     interval = timedelta(seconds=290)
     logger = logger
     service_name = service_name

@@ -1,6 +1,6 @@
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2018  pywws contributors
+# Copyright (C) 2018-20  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -60,6 +60,7 @@ logger = logging.getLogger(__name__)
 
 class ToService(pywws.service.LiveDataService):
     config = {'hash': ('', True, 'hash')}
+    fixed_data = {}
     logger = logger
     service_name = service_name
     template = "#live##temp_out \"'t': '%.1f',\"#"

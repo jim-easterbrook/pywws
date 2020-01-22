@@ -1,6 +1,6 @@
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2018  pywws contributors
+# Copyright (C) 2018-20  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -102,6 +102,7 @@ class ToService(pywws.service.CatchupDataService):
         'long'        : ('', False, None),
         'alt'         : ('', False, None),
         }
+    fixed_data = {}
     logger = logger
     service_name = service_name
     template = """
