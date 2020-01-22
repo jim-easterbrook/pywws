@@ -1,6 +1,6 @@
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2019  pywws contributors
+# Copyright (C) 2019-20  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -22,20 +22,25 @@
 weather forecasting services worldwide.
 
 * Create account: https://stations.windy.com/
-* API: `<https://community.windy.com/topic/8168/report-your-weather-station-data-to-windy>`_
+* API: https://community.windy.com/topic/8168/report-your-weather-station-data-to-windy
 * Additional dependency: http://docs.python-requests.org/
 * Example ``weather.ini`` configuration::
 
     [windy]
-    api_key = xxxxxxx
-    latitude = 43.7
-    longitude = 11.7
+    api_key = very.long.string.indeed
+    station_id =
 
     [logged]
     services = ['windy', 'underground']
 
     [live]
     services = ['windy', 'underground']
+
+Note that you only need to specify your station ID if you have more than
+one station defined for your API. Windy allows other data, such as the
+latitude and longitude, to be included in the upload but it's better to
+set these by editing your station at
+https://stations.windy.com/stations.
 
 .. _Windy: http://www.windy.com
 
@@ -58,39 +63,28 @@ logger = logging.getLogger(__name__)
 
 class ToService(pywws.service.CatchupDataService):
     config = {
-        'latitude'    : ('', True, None),
-        'longitude'   : ('', True, None),
-        'name'        : (None, False, None),
-        'station_id'  : ('0', False, 'station'),
-        'share_option': (None, False, 'shareOption'),
-        'elevation'   : (None, False, None),
-        'temp_height' : (None, False, 'tempheight'),
-        'wind_height' : (None, False, 'windheight'),
+        'api_key'     : ('', True,  None),
+        'station_id'  : ('', False, 'station'),
         }
 
-    interval = timedelta(minutes=4)
+    interval = timedelta(seconds=290)
     logger = logger
     service_name = service_name
     template = """
 #live#
-#idx          "'ts'          : '%s',"#
-#wind_ave     "'wind'        : '%.2f',"#
+#idx          "'dateutc'     : '%Y-%m-%d %H:%M:%S',"#
+#wind_ave     "'wind'        : '%.1f',"#
 #wind_dir     "'winddir'     : '%.0f'," "" "winddir_degrees(x)"#
 #wind_gust    "'gust'        : '%.2f',"#
-#hum_out      "'humidity'    : '%.1f',"#
-#temp_out     "'temp'        : '%.2f',"#
-#rel_pressure "'mbar'        : '%.2f',"#
-#calc "dew_point(data['temp_out'], data['hum_out'])" "'dewpoint': '%.2f',"#
+#hum_out      "'humidity'    : '%.d',"#
+#temp_out     "'temp'        : '%.1f',"#
+#rel_pressure "'mbar'        : '%.1f',"#
+#calc "dew_point(data['temp_out'], data['hum_out'])" "'dewpoint': '%.1f',"#
 #calc "rain_hour(data)" "'precip': '%.2f',"#
 """
 
     def __init__(self, context, check_params=True):
-        self.API_KEY = context.params.get(self.service_name, 'api_key')
-        if not self.API_KEY:
-            raise RuntimeError('"api_key" not set in weather.ini')
-
         super(ToService, self).__init__(context, check_params)
-
         # extend template
         if context.params.get('config', 'ws type') == '3080':
             self.template += """
@@ -103,7 +97,7 @@ class ToService(pywws.service.CatchupDataService):
             yield session
 
     def upload_data(self, session, prepared_data={}):
-        url = 'https://stations.windy.com/pws/update/{:s}'.format(self.API_KEY)
+        url = 'https://stations.windy.com/pws/update/' + self.params['api_key']
         try:
             rsp = session.get(url, params=prepared_data, timeout=60)
         except Exception as ex:
@@ -111,8 +105,7 @@ class ToService(pywws.service.CatchupDataService):
         if rsp.status_code != 200:
             return False, 'http status: {:d}'.format(rsp.status_code)
         text = rsp.text.strip()
-        lines = text.replace(' ', '\n').replace('\t', '\n').split('\n')
-        return 'SUCCESS' in lines, 'server response "{:s}"'.format(text)
+        return text.startswith('SUCCESS'), 'server response "{:s}"'.format(text)
 
 
 if __name__ == "__main__":

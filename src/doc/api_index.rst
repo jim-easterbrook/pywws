@@ -1,6 +1,6 @@
 .. pywws - Python software for USB Wireless Weather Stations
    http://github.com/jim-easterbrook/pywws
-   Copyright (C) 2008-19  pywws contributors
+   Copyright (C) 2008-20  pywws contributors
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -63,6 +63,7 @@ Upload data to online "services"
    pywws.service.underground
    pywws.service.weathercloud
    pywws.service.wetterarchivde
+   pywws.service.windy
    pywws.service.twitter
    pywws.service.mastodon
 
