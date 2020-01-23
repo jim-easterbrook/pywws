@@ -102,7 +102,6 @@ class ToService(pywws.service.CatchupDataService):
         'long'        : ('', False, None),
         'alt'         : ('', False, None),
         }
-    fixed_data = {}
     logger = logger
     service_name = service_name
     template = """

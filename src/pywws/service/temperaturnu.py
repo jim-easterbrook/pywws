@@ -60,7 +60,6 @@ logger = logging.getLogger(__name__)
 
 class ToService(pywws.service.LiveDataService):
     config = {'hash': ('', True, 'hash')}
-    fixed_data = {}
     logger = logger
     service_name = service_name
     template = "#live##temp_out \"'t': '%.1f',\"#"

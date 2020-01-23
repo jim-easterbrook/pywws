@@ -1,6 +1,6 @@
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2018  pywws contributors
+# Copyright (C) 2018-20  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -126,6 +126,8 @@ class ServiceBase(threading.Thread):
             if required:
                 check.append(key)
             if fixed_key and self.params[key]:
+                # copy fixed_data to avoid changing class definition
+                self.fixed_data = dict(self.fixed_data)
                 self.fixed_data[fixed_key] = self.params[key]
         # check values
         if check_params:
