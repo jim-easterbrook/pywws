@@ -1,6 +1,6 @@
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-15  Jim Easterbrook  jim@jim-easterbrook.me.uk
+# Copyright (C) 2008-20  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -56,18 +56,19 @@ import usb.core
 import usb.util
 
 class USBDevice(object):
+    """Low level USB device access via PyUSB 1.0 library.
+
+    :param idVendor: the USB "vendor ID" number, for example 0x1941.
+
+    :type idVendor: int
+
+    :param idProduct: the USB "product ID" number, for example 0x8021.
+
+    :type idProduct: int
+
+    """
+
     def __init__(self, idVendor, idProduct):
-        """Low level USB device access via PyUSB 1.0 library.
-
-        :param idVendor: the USB "vendor ID" number, for example 0x1941.
-
-        :type idVendor: int
-
-        :param idProduct: the USB "product ID" number, for example 0x8021.
-
-        :type idProduct: int
-
-        """
         self.dev = usb.core.find(idVendor=idVendor, idProduct=idProduct)
         if not self.dev:
             raise IOError("Weather station device not found")

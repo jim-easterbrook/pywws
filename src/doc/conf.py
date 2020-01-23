@@ -1,6 +1,6 @@
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-18  pywws contributors
+# Copyright (C) 2008-20  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -58,7 +58,7 @@ extensions = ['sphinx.ext.autodoc', 'sphinx.ext.autosummary',
               'sphinx.ext.inheritance_diagram']
 
 autosummary_generate = True
-autoclass_content = 'both'
+autoclass_content = 'class'
 autodoc_member_order = 'bysource'
 autodoc_default_flags = ['members', 'undoc-members', 'show-inheritance']
 
