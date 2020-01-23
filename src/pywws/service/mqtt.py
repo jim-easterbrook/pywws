@@ -1,6 +1,6 @@
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2018-19  pywws contributors
+# Copyright (C) 2018-20  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -121,7 +121,7 @@ about the backslash escaped quotation marks though. If not specified
 default will be used, which sends a lot of values in metric and imperial
 units.
 
-.. versionchanged:: NN.N
+.. versionchanged:: 19.5.0
    Default for ``template_txt`` was updated. This change is not backwards
    compatible, the original values are still present, just under new names.
    New default tries to send most of the values pywws collects in both
