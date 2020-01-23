@@ -18,11 +18,12 @@
 
 """Upload data to Windy.
 
-`Windy`_  is a Czech company providing interactive
-weather forecasting services worldwide.
+Windy_  is a Czech company providing interactive weather forecasting
+services worldwide.
 
 * Create account: https://stations.windy.com/
 * API: https://community.windy.com/topic/8168/report-your-weather-station-data-to-windy
+* Forum discussion: https://community.windy.com/topic/11014/pywws-great-python-software-app-to-send-data-to-windy
 * Additional dependency: http://docs.python-requests.org/
 * Example ``weather.ini`` configuration::
 
