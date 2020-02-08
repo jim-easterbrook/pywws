@@ -1,6 +1,6 @@
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-19  pywws contributors
+# Copyright (C) 2008-20  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -92,19 +92,21 @@ class DataLogger(object):
         if datetime.utcnow() < self.last_stored_time:
             raise ValueError('Computer time is earlier than last stored data')
         # infer pointer of last stored data
-        if self.status.get('data', 'ptr'):
-            saved_ptr, saved_date = self.status.get('data', 'ptr').split(',')
-            saved_ptr = int(saved_ptr, 16)
-            saved_date = WSDateTime.from_csv(saved_date)
-            saved_date = self.raw_data.nearest(saved_date)
-            while saved_date < self.last_stored_time:
-                saved_date = self.raw_data.after(saved_date + SECOND)
-                saved_ptr = self.ws.inc_ptr(saved_ptr)
-            while saved_date > self.last_stored_time:
-                saved_date = self.raw_data.before(saved_date - SECOND)
-                saved_ptr = self.ws.dec_ptr(saved_ptr)
-        else:
-            saved_ptr = None
+        saved_ptr = self.status.get('data', 'ptr')
+        if saved_ptr:
+            saved_ptr, sep, saved_date = saved_ptr.partition(',')
+            if saved_ptr and saved_date:
+                saved_ptr = int(saved_ptr, 16)
+                saved_date = WSDateTime.from_csv(saved_date)
+                saved_date = self.raw_data.nearest(saved_date)
+                while saved_date < self.last_stored_time:
+                    saved_date = self.raw_data.after(saved_date + SECOND)
+                    saved_ptr = self.ws.inc_ptr(saved_ptr)
+                while saved_date > self.last_stored_time:
+                    saved_date = self.raw_data.before(saved_date - SECOND)
+                    saved_ptr = self.ws.dec_ptr(saved_ptr)
+            else:
+                saved_ptr = None
         self.last_stored_ptr = saved_ptr
         self.check_fixed_block()
 
