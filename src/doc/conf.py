@@ -89,7 +89,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'pywws'
-copyright = u'2008-18, pywws contributors'
+copyright = u'2008-20, pywws contributors'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the

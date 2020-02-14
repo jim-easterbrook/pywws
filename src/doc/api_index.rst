@@ -89,6 +89,7 @@ Upload data to online "services"
    pywws.device_cython_hidapi
    pywws.storage
    pywws.filedata
+   pywws.sqlite3data
    pywws.timezone
    pywws.localisation
    pywws.conversions
