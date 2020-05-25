@@ -105,7 +105,7 @@ class ToService(pywws.service.CatchupDataService):
         if rsp.status_code != 200:
             return False, 'http status: {:d}'.format(rsp.status_code)
         text = rsp.text.strip()
-        return text.startswith('SUCCESS'), 'server response "{:s}"'.format(text)
+        return 'SUCCESS' in text, 'server response "{:s}"'.format(text)
 
 
 if __name__ == "__main__":
