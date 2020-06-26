@@ -1,6 +1,6 @@
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-18  pywws contributors
+# Copyright (C) 2008-20  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -32,6 +32,7 @@ __usage__ = """
   -h   | --help           display this help
   -c   | --clock          set weather station clock to computer time
                           (unlikely to work)
+  -d   | --default        set sensible default values for some settings
   -p f | --pressure f     set relative pressure to f hPa
   -r n | --read_period n  set logging interval to n minutes
   -v   | --verbose        increase error message verbosity
@@ -39,6 +40,7 @@ __usage__ = """
 """
 __doc__ %= __usage__
 __usage__ = __doc__.split('\n')[0] + __usage__
+
 
 from datetime import datetime, timedelta
 import getopt
@@ -61,8 +63,8 @@ def main(argv=None):
         argv = sys.argv
     try:
         opts, args = getopt.getopt(
-            argv[1:], "hcp:r:vz",
-            ['help', 'clock', 'pressure=', 'read_period=',
+            argv[1:], "hcdp:r:vz",
+            ['help', 'clock', 'default', 'pressure=', 'read_period=',
              'verbose', 'zero_memory'])
     except getopt.error as msg:
         print('Error: %s\n' % msg, file=sys.stderr)
@@ -70,6 +72,7 @@ def main(argv=None):
         return 1
     # process options
     clock = False
+    default = False
     pressure = None
     read_period = None
     verbose = 0
@@ -80,6 +83,8 @@ def main(argv=None):
             return 0
         elif o in ('-c', '--clock'):
             clock = True
+        elif o in ('-d', '--default'):
+            default = True
         elif o in ('-p', '--pressure'):
             pressure = int((float(a) * 10.0) + 0.5)
         elif o in ('-r', '--read_period'):
@@ -98,6 +103,22 @@ def main(argv=None):
     ws = pywws.weatherstation.WeatherStation()
     # set data to be sent to station
     data = []
+    # set default values
+    if default:
+        ptr = ws.fixed_format['settings_1'][0]
+        data.append((ptr, 0b00100000))
+        ptr = ws.fixed_format['settings_2'][0]
+        data.append((ptr, 0b00001000))
+        ptr = ws.fixed_format['display_1'][0]
+        data.append((ptr, 0b01000001))
+        ptr = ws.fixed_format['display_2'][0]
+        data.append((ptr, 0b00001001))
+        ptr = ws.fixed_format['alarm_1'][0]
+        data.append((ptr, 0b00000000))
+        ptr = ws.fixed_format['alarm_2'][0]
+        data.append((ptr, 0b00000000))
+        ptr = ws.fixed_format['alarm_3'][0]
+        data.append((ptr, 0b00000000))
     # set relative pressure
     if pressure:
         ptr = ws.fixed_format['rel_pressure'][0]
