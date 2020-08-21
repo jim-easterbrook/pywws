@@ -1,6 +1,6 @@
 .. pywws - Python software for USB Wireless Weather Stations
    http://github.com/jim-easterbrook/pywws
-   Copyright (C) 2008-18  pywws contributors
+   Copyright (C) 2008-20  pywws contributors
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -89,7 +89,7 @@ Other systems
 Other systems use a Python interface to the libusb system library.
 There is a choice of interface and library version - install the latest that is available for your computer.
 
-*  `libusb <http://www.libusb.org/>`_ version 1.x (should be available from the package manager)
+*  `libusb <https://libusb.info/>`_ version 1.x (should be available from the package manager)
 *  `python-libusb1 <https://github.com/vpelletier/python-libusb1>`_ version 1.3+
 
 ::
@@ -98,7 +98,7 @@ There is a choice of interface and library version - install the latest that is 
 
 **or**
 
-*  `libusb <http://www.libusb.org/>`_ version 1.x or version 0.1 (should be available from the package manager)
+*  `libusb <https://libusb.info/>`_ version 1.x or version 0.1 (should be available from the package manager)
 *  `PyUSB <http://walac.github.io/pyusb/>`_ version 1.0+
 
 ::
