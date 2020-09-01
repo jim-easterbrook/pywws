@@ -1,6 +1,6 @@
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-19  pywws contributors
+# Copyright (C) 2008-20  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -83,17 +83,6 @@ from datetime import datetime
 import logging
 import sys
 import time
-
-for module_name in ('device_libusb1', 'device_pyusb1', 'device_pyusb',
-                    'device_ctypes_hidapi', 'device_cython_hidapi'):
-    try:
-        module = __import__(module_name, globals(), locals(), level=1)
-        USBDevice = getattr(module, 'USBDevice')
-        break
-    except ImportError:
-        pass
-else:
-    raise ImportError('No USB library found')
 
 logger = logging.getLogger(__name__)
 
@@ -314,7 +303,18 @@ class CUSBDrive(object):
     WriteCommandWord = 0xA2
 
     def __init__(self):
-        logger.info('using %s', USBDevice.__module__)
+        for module_name in ('device_libusb1', 'device_pyusb1', 'device_pyusb',
+                            'device_ctypes_hidapi', 'device_cython_hidapi'):
+            logger.debug('trying USB module %s', module_name)
+            try:
+                module = __import__(module_name, globals(), locals(), level=1)
+                USBDevice = getattr(module, 'USBDevice')
+                break
+            except ImportError:
+                pass
+        else:
+            raise ImportError('No USB library found')
+        logger.info('using %s', module.__name__)
         self.dev = USBDevice(0x1941, 0x8021)
 
     def read_block(self, address):
