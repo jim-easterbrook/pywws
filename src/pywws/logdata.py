@@ -169,7 +169,7 @@ class DataLogger(object):
             for d in duplicates:
                 del self.raw_data[d]
             count -= len(duplicates)
-        last_date = self.raw_data.nearest(last_date)
+        last_date = self.raw_data.nearest(last_date) or datetime.max
         next_date = self.raw_data.after(last_date + SECOND)
         if next_date:
             gap = (next_date - last_date).seconds // 60
