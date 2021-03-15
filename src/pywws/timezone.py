@@ -63,10 +63,14 @@ class TimeZone(object):
         self.standard_offset = self.utcoffset(now)
 
     def dst(self, dt):
-        return self.local.dst(dt, is_dst=False)
+        if sys.version_info < (3, 6):
+            return self.local.dst(dt, is_dst=False)
+        return self.local.dst(dt)
 
     def utcoffset(self, dt):
-        return self.local.utcoffset(dt, is_dst=False)
+        if sys.version_info < (3, 6):
+            return self.local.utcoffset(dt, is_dst=False)
+        return self.local.utcoffset(dt)
 
     def localize(self, dt):
         """Attach local timezone to a naive timestamp with no adjustment."""
