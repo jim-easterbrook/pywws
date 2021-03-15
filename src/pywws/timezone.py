@@ -2,7 +2,7 @@
 
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-18  pywws contributors
+# Copyright (C) 2008-21  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -74,7 +74,9 @@ class TimeZone(object):
 
     def localize(self, dt):
         """Attach local timezone to a naive timestamp with no adjustment."""
-        return self.local.localize(dt)
+        if sys.version_info < (3, 6):
+            return self.local.localize(dt)
+        return dt.replace(tzinfo=self.local)
 
     def to_local(self, dt):
         """Convert any timestamp to local time (with tzinfo)."""
