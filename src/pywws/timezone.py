@@ -143,6 +143,20 @@ def main():
     print('most recent 9pm',
           timezone.local_replace(now, hour=21, minute=0, second=0), 'UTC')
     print()
+    print('Ambiguous / missing times in "Europe/London"')
+    tz = TimeZone('Europe/London')
+    dt = datetime(2020, 3, 28, 23, 15)
+    for hour in range(4):
+        lcl = tz.to_local(dt)
+        print(dt, 'UTC =', lcl, lcl.strftime('%Z'))
+        dt += HOUR
+    print()
+    dt = datetime(2020, 10, 24, 23, 15)
+    for hour in range(4):
+        lcl = tz.to_local(dt)
+        print(dt, 'UTC =', lcl, lcl.strftime('%Z'))
+        dt += HOUR
+    print()
     print('DST transitions in "America/St_Johns"')
     tz = TimeZone('America/St_Johns')
     for day in range(11, 13):
