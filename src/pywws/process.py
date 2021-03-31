@@ -1,6 +1,6 @@
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-18  pywws contributors
+# Copyright (C) 2008-21  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -85,7 +85,7 @@ from pywws.calib import Calib
 from pywws.constants import HOUR, DAY, SECOND
 import pywws.logger
 import pywws.storage
-from pywws.timezone import timezone
+from pywws.timezone import time_zone
 
 logger = logging.getLogger(__name__)
 
@@ -326,7 +326,7 @@ class DayAcc(object):
 
     def add_raw(self, data):
         idx = data['idx']
-        local_hour = (idx + timezone.standard_offset).hour
+        local_hour = time_zone.utc_to_nodst(idx).hour
         wind_gust = data['wind_gust']
         if wind_gust is not None and wind_gust > self.wind_gust[0]:
             self.wind_gust = (wind_gust, idx)
@@ -562,9 +562,7 @@ def generate_hourly(calib_data, hourly_data, process_from):
     if start is None:
         return start
     # set start of hour in local time (not all time offsets are integer hours)
-    start += timezone.standard_offset
-    start = start.replace(minute=0, second=0)
-    start -= timezone.standard_offset
+    start = time_zone.hour_start(start)
     del hourly_data[start:]
     # preload pressure history, and find last valid rain
     prev = None
@@ -637,8 +635,7 @@ def generate_daily(day_end_hour, use_dst,
     if start is None:
         return start
     # round to start of this day, in local time
-    start = timezone.local_replace(
-        start, use_dst=use_dst, hour=day_end_hour, minute=0, second=0)
+    start = time_zone.day_start(start, day_end_hour, use_dst=use_dst)
     del daily_data[start:]
     stop = calib_data.before(datetime.max)
     acc = DayAcc()
@@ -655,8 +652,8 @@ def generate_daily(day_end_hour, use_dst,
             day_end = day_start + DAY
             if use_dst:
                 # day might be 23 or 25 hours long
-                day_end = timezone.local_replace(
-                    day_end + HOURx3, use_dst=use_dst, hour=day_end_hour)
+                day_end = time_zone.day_start(
+                    day_end + HOURx3, day_end_hour, use_dst=use_dst)
             acc.reset()
             for data in inputdata[day_start:day_end]:
                 acc.add_raw(data)
@@ -685,19 +682,19 @@ def generate_monthly(rain_day_threshold, day_end_hour, use_dst,
             start = process_from
     if start is None:
         return start
-    # set start to start of first day of month (local time)
-    start = timezone.local_replace(
-        start, use_dst=use_dst, day=1, hour=day_end_hour, minute=0, second=0)
-    if day_end_hour >= 12:
-        # month actually starts on the last day of previous month
-        start -= DAY
+    # set start to noon on start of first day of month (local time)
+    local_start = time_zone.utc_to_local(start).replace(tzinfo=None)
+    local_start = local_start.replace(day=1, hour=12, minute=0, second=0)
+    # go back to UTC and get start of day (which might be previous day)
+    start = time_zone.local_to_utc(local_start)
+    start = time_zone.day_start(start, day_end_hour, use_dst=use_dst)
     del monthly_data[start:]
     stop = daily_data.before(datetime.max)
     if stop is None:
         return None
-    acc = MonthAcc(rain_day_threshold)
-    def monthlygen(inputdata):
+    def monthlygen(inputdata, start, local_start):
         """Internal generator function"""
+        acc = MonthAcc(rain_day_threshold)
         month_start = start
         count = 0
         while month_start <= stop:
@@ -706,16 +703,14 @@ def generate_monthly(rain_day_threshold, day_end_hour, use_dst,
                 logger.info("monthly: %s", month_start.isoformat(' '))
             else:
                 logger.debug("monthly: %s", month_start.isoformat(' '))
-            month_end = month_start + WEEK
-            if month_end.month < 12:
-                month_end = month_end.replace(month=month_end.month+1)
+            if local_start.month < 12:
+                local_start = local_start.replace(month=local_start.month+1)
             else:
-                month_end = month_end.replace(month=1, year=month_end.year+1)
-            month_end = month_end - WEEK
-            if use_dst:
-                # month might straddle summer time start or end
-                month_end = timezone.local_replace(
-                    month_end + HOURx3, use_dst=use_dst, hour=day_end_hour)
+                local_start = local_start.replace(
+                    month=1, year=local_start.year+1)
+            month_end = time_zone.local_to_utc(local_start)
+            month_end = time_zone.day_start(
+                month_end, day_end_hour, use_dst=use_dst)
             acc.reset()
             for data in inputdata[month_start:month_end]:
                 acc.add_daily(data)
@@ -724,7 +719,7 @@ def generate_monthly(rain_day_threshold, day_end_hour, use_dst,
                 new_data['start'] = month_start
                 yield new_data
             month_start = month_end
-    monthly_data.update(monthlygen(daily_data))
+    monthly_data.update(monthlygen(daily_data, start, local_start))
     return start
 
 

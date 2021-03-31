@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-18  pywws contributors
+# Copyright (C) 2008-21  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -531,13 +531,13 @@ import subprocess
 import sys
 import xml.dom.minidom
 
-from pywws.constants import HOUR
+from pywws.constants import DAY, HOUR
 from pywws.conversions import *
 import pywws.localisation
 import pywws.logger
 import pywws.storage
 from pywws.template import Computations
-from pywws.timezone import timezone
+from pywws.timezone import time_zone
 
 logger = logging.getLogger(__name__)
 
@@ -611,11 +611,14 @@ class BasePlotter(object):
         result = self.hourly_data.before(datetime.max)
         if not result:
             result = datetime.utcnow()    # only if no hourly data
-        result += timezone.utcoffset(result)
+        # convert to local time
+        result = time_zone.utc_to_local(result)
         # set to start of the day
         result = result.replace(hour=0, minute=0, second=0, microsecond=0)
         # apply time string
-        return eval('result.replace(%s)' % time_str)
+        result = eval('result.replace(%s)' % time_str)
+        # convert back to UTC
+        return time_zone.local_to_utc(result)
 
     def do_plot(self, input_file, output_file):
         if isinstance(input_file, GraphFileReader):
@@ -638,7 +641,7 @@ class BasePlotter(object):
         if self.duration:
             self.duration = eval('timedelta(%s)' % self.duration)
         else:
-            self.duration = timedelta(hours=24)
+            self.duration = DAY
         if self.x_lo:
             self.x_lo = self._eval_time(self.x_lo)
             if self.x_hi:
@@ -653,8 +656,7 @@ class BasePlotter(object):
             self.x_hi = self.hourly_data.before(datetime.max)
             if not self.x_hi:
                 self.x_hi = datetime.utcnow()    # only if no hourly data
-            self.x_hi += timezone.utcoffset(self.x_hi)
-            if self.duration < timedelta(hours=6):
+            if self.duration < HOUR * 6:
                 # set end of graph to start of the next minute after last item
                 self.x_hi += timedelta(seconds=55)
                 self.x_hi = self.x_hi.replace(second=0)
@@ -663,7 +665,9 @@ class BasePlotter(object):
                 self.x_hi += timedelta(minutes=55)
                 self.x_hi = self.x_hi.replace(minute=0, second=0)
             self.x_lo = self.x_hi - self.duration
-        self.utcoffset = timezone.utcoffset(self.x_hi)
+        # use a fixed offset to convert UTC to X axis values
+        self.utcoffset = time_zone.utc_to_local(self.x_hi).replace(
+            tzinfo=None) - self.x_hi
         # open gnuplot command file
         self.tmp_files = []
         cmd_file = os.path.join(self.work_dir, 'plot.cmd')
@@ -698,7 +702,7 @@ class BasePlotter(object):
         title = self.graph.get_value('title', '')
         if title:
             if '%' in title:
-                x_hi = timezone.localize(self.x_hi)
+                x_hi = time_zone.utc_to_local(self.x_hi)
                 if sys.version_info[0] < 3:
                     title = title.encode(self.encoding[0])
                 title = x_hi.strftime(title)
@@ -765,12 +769,13 @@ set xdata time
 set timefmt "%Y-%m-%dT%H:%M:%S"
 """
         result += u'set xrange ["%s":"%s"]\n' % (
-            self.x_lo.isoformat(), self.x_hi.isoformat())
+            (self.x_lo + self.utcoffset).isoformat(),
+            (self.x_hi + self.utcoffset).isoformat())
         lmargin = eval(self.graph.get_value('lmargin', '5'))
         result += u'set lmargin %g\n' % (lmargin)
         rmargin = eval(self.graph.get_value('rmargin', '-1'))
         result += u'set rmargin %g\n' % (rmargin)
-        if self.duration <= timedelta(hours=24):
+        if self.duration <= DAY:
             xformat = '%H%M'
         elif self.duration <= timedelta(days=7):
             xformat = '%a %d'
@@ -801,9 +806,9 @@ set timefmt "%Y-%m-%dT%H:%M:%S"
         rain_24hr = self.computations.rain_24hr
         # label x axis of last plot
         if plot_no == self.plot_count - 1:
-            x_lo = timezone.localize(self.x_lo)
-            x_hi = timezone.localize(self.x_hi)
-            if self.duration <= timedelta(hours=24):
+            x_lo = time_zone.utc_to_local(self.x_lo)
+            x_hi = time_zone.utc_to_local(self.x_hi)
+            if self.duration <= DAY:
                 # TX_NOTE Keep the "(%Z)" formatting string
                 xlabel = _('Time (%Z)')
             elif self.duration <= timedelta(days=7):
@@ -828,10 +833,10 @@ set timefmt "%Y-%m-%dT%H:%M:%S"
                 rdat = rdat.decode(self.encoding[0])
             if ldat:
                 result += u'set label "%s" at "%s", graph -0.3 left\n' % (
-                    ldat, self.x_lo.isoformat())
+                    ldat, (self.x_lo + self.utcoffset).isoformat())
             if rdat != ldat:
                 result += u'set label "%s" at "%s", graph -0.3 right\n' % (
-                    rdat, self.x_hi.isoformat())
+                    rdat, (self.x_hi + self.utcoffset).isoformat())
         # set bottom margin
         bmargin = eval(plot.get_value('bmargin', '-1'))
         result += u'set bmargin %g\n' % (bmargin)
@@ -859,9 +864,8 @@ set timefmt "%Y-%m-%dT%H:%M:%S"
         grid = plot.get_value('grid', None)
         if grid is not None:
             result += u'set grid %s\n' % grid
-        # x_lo & x_hi are in local time, data is indexed in UTC
-        start = self.x_lo - self.utcoffset
-        stop = self.x_hi - self.utcoffset
+        start = self.x_lo
+        stop = self.x_hi
         cumu_start = start
         if source == self.calib_data:
             boxwidth = 240      # assume 5 minute data interval

@@ -1,6 +1,6 @@
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-18  pywws contributors
+# Copyright (C) 2008-21  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -64,7 +64,7 @@ import os
 import sys
 
 import pywws.storage
-import pywws.timezone
+from pywws.timezone import time_zone
 
 
 def main(argv=None):
@@ -103,14 +103,11 @@ def main(argv=None):
     for line in in_file:
         items = line.split(',')
         local_date = datetime.strptime(items[2].strip(), '%Y-%m-%d %H:%M:%S')
-        local_date = pywws.timezone.Local.localize(local_date)
-        date = local_date.astimezone(pywws.timezone.utc)
+        date = time_zone.local_to_utc(local_date)
         if last_date and date < last_date:
             date = date + timedelta(hours=1)
-            print("Corrected DST ambiguity %s %s -> %s" % (
-                local_date, local_date.tzname(), date))
+            print("Corrected DST ambiguity %s -> %s" % (local_date, date))
         last_date = date
-        date = date.replace(tzinfo=None)
         # get data
         data = {}
         data['delay'] = int(items[3])

@@ -1,6 +1,6 @@
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-18  pywws contributors
+# Copyright (C) 2008-21  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -29,9 +29,10 @@ import sys
 import time
 
 from pywws.calib import Calib
+from pywws.constants import DAY, HOUR
 import pywws.plot
 import pywws.template
-from pywws.timezone import timezone
+from pywws.timezone import time_zone
 import pywws.windrose
 
 logger = logging.getLogger(__name__)
@@ -74,14 +75,12 @@ class RegularTasks(object):
             if section.split()[0] != 'cron':
                 continue
             import croniter
-            self.cron[section] = croniter.croniter(
-                self.params.get(section, 'format', ''))
-            self.cron[section].get_prev()
             last_update = self.status.get_datetime('last update', section)
-            if last_update:
-                last_update += timezone.utcoffset(last_update)
-                while self.cron[section].get_current(datetime) <= last_update:
-                    self.cron[section].get_next()
+            last_update = last_update or datetime.utcnow()
+            self.cron[section] = croniter.croniter(
+                self.params.get(section, 'format', ''),
+                start_time=time_zone.utc_to_local(last_update))
+            self.cron[section].get_next()
         # create service uploader objects
         self.services = {}
         for section in list(self.cron.keys()) + [
@@ -164,44 +163,47 @@ class RegularTasks(object):
     def _cron_due(self, now):
         if not self.cron:
             return []
-        # convert now to local time
-        local_now = now + timezone.utcoffset(now)
         # make list of due sections
         sections = []
         for section in self.cron:
-            if self.cron[section].get_current(datetime) > local_now:
+            if time_zone.local_to_utc(
+                    self.cron[section].get_current(datetime)) > now:
                 continue
             sections.append(section)
-            while self.cron[section].get_current(datetime) <= local_now:
+            while time_zone.local_to_utc(
+                    self.cron[section].get_current(datetime)) <= now:
                 self.cron[section].get_next()
         return sections
 
     def _periodic_due(self, now):
-        # get start of current hour, allowing for odd time zones
-        threshold = timezone.local_replace(now, minute=0, second=0)
+        # get start of current hour in local time
+        threshold = time_zone.utc_to_local(now)
+        threshold = threshold.replace(minute=0, second=0, microsecond=0)
         # make list of due sections
         sections = []
         # hourly
         last_update = self.status.get_datetime('last update', 'hourly')
-        if not last_update or last_update < threshold:
+        utc_threshold = time_zone.local_to_utc(threshold)
+        if not last_update or last_update < utc_threshold:
             sections.append('hourly')
-        # daily
-        threshold = timezone.local_replace(
-            threshold, use_dst=self.use_dst, hour=self.day_end_hour)
-        last_update = self.status.get_datetime('last update', 'daily')
-        if not last_update or last_update < threshold:
-            sections.append('daily')
-        # 12 hourly == daily
+        # 12 hourly
+        while (threshold.hour % 12) != (self.day_end_hour % 12):
+            threshold -= HOUR
+        utc_threshold = time_zone.local_to_utc(threshold)
+        if not self.use_dst:
+            utc_threshold += threshold.dst()
         last_update = self.status.get_datetime('last update', '12 hourly')
-        if not last_update or last_update < threshold:
+        if not last_update or last_update < utc_threshold:
             sections.append('12 hourly')
-            return sections
-        # 12 hourly == daily +- 12 hours
-        threshold = timezone.local_replace(
-            now, use_dst=self.use_dst,
-            hour=((self.day_end_hour + 12) % 24), minute=0, second=0)
-        if last_update < threshold:
-            sections.append('12 hourly')
+        # daily
+        while threshold.hour != self.day_end_hour:
+            threshold -= HOUR
+        utc_threshold = time_zone.local_to_utc(threshold)
+        if not self.use_dst:
+            utc_threshold += threshold.dst()
+        last_update = self.status.get_datetime('last update', 'daily')
+        if not last_update or last_update < utc_threshold:
+            sections.append('daily')
         return sections
 
     def do_live(self, data):

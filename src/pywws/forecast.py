@@ -1,6 +1,6 @@
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-18  pywws contributors
+# Copyright (C) 2008-21  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -42,7 +42,6 @@ import sys
 
 import pywws.localisation
 import pywws.storage
-from pywws.timezone import timezone
 
 def _(msg):
     return msg
@@ -143,6 +142,7 @@ def zambretti(params, hourly_data):
 
 
 def main(argv=None):
+    from pywws.timezone import time_zone
     if argv is None:
         argv = sys.argv
     try:
@@ -168,13 +168,13 @@ def main(argv=None):
         hourly_data = context.hourly_data
         idx = hourly_data.before(datetime.max)
         print('Zambretti (current):', zambretti(params, hourly_data[idx]))
-        idx = timezone.to_local(idx)
+        idx = time_zone.utc_to_local(idx)
         if idx.hour < 8 or (idx.hour == 8 and idx.minute < 30):
             idx -= timedelta(hours=24)
         idx = idx.replace(hour=9, minute=0, second=0)
-        idx = timezone.to_naive(idx)
+        idx = time_zone.local_to_utc(idx)
         idx = hourly_data.nearest(idx)
-        lcl = timezone.to_local(idx)
+        lcl = time_zone.utc_to_local(idx)
         print('Zambretti (at %s):' % lcl.strftime('%H:%M %Z'), zambretti(
             params, hourly_data[idx]))
     return 0

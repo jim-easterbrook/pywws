@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-18  pywws contributors
+# Copyright (C) 2008-21  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -316,7 +316,7 @@ from pywws.forecast import zambretti, zambretti_code
 import pywws.localisation
 import pywws.logger
 import pywws.storage
-from pywws.timezone import timezone
+from pywws.timezone import time_zone
 import pywws.weatherstation
 
 logger = logging.getLogger(__name__)
@@ -340,7 +340,9 @@ class Computations(object):
 
     def rain_day(self, data):
         calib_data = self.context.calib_data
-        midnight = timezone.local_midnight(data['idx'])
+        midnight = time_zone.utc_to_local(data['idx'])
+        midnight = midnight.replace(hour=0, minute=0, second=0)
+        midnight = time_zone.local_to_utc(midnight)
         midnight_data = calib_data[calib_data.nearest(midnight)]
         return max(0.0, data['rain'] - midnight_data['rain'])
 
@@ -466,9 +468,9 @@ class Template(object):
                         if round_time:
                             x += round_time
                         if local_time:
-                            x = timezone.to_local(x)
+                            x = time_zone.utc_to_local(x)
                         else:
-                            x = timezone.to_utc(x)
+                            x = x.replace(tzinfo=time_zone.utc)
                     # convert data
                     if x is not None and len(command) > 3:
                         x = eval(command[3])
@@ -547,13 +549,13 @@ class Template(object):
                     time_str = command[1]
                     if '%' in time_str:
                         if local_time:
-                            lcl = timezone.to_local(idx)
+                            lcl = time_zone.utc_to_local(idx)
                         else:
-                            lcl = timezone.to_utc(idx)
+                            lcl = idx.replace(tzinfo=time_zone.utc)
                         time_str = lcl.strftime(time_str)
                     new_idx = pywws.weatherstation.WSDateTime.from_csv(time_str)
                     if local_time:
-                        new_idx = timezone.to_naive(timezone.localize(new_idx))
+                        new_idx = time_zone.local_to_utc(new_idx)
                     new_idx = data_set.after(new_idx)
                     if new_idx:
                         idx = new_idx

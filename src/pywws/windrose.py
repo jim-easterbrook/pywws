@@ -1,6 +1,6 @@
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-18  pywws contributors
+# Copyright (C) 2008-21  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -334,9 +334,8 @@ set rtics format ''
             for n in range(16):
                 hist.append(0)
             histograms.append(hist)
-        # x_lo & x_hi are in local time, data is indexed in UTC
-        start = self.x_lo - self.utcoffset
-        stop = self.x_hi - self.utcoffset
+        start = self.x_lo
+        stop = self.x_hi
         stop = stop + timedelta(minutes=1)
         for data in source[start:stop]:
             wind_dir = data['wind_dir']
