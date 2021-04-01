@@ -1,6 +1,6 @@
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-20  pywws contributors
+# Copyright (C) 2008-21  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -88,7 +88,8 @@ class DataLogger(object):
         # connect to weather station
         self.ws = WeatherStation(context=context)
         # check computer clock isn't earlier than last stored data
-        self.last_stored_time = self.raw_data.before(datetime.max) or datetime.min
+        self.last_stored_time = self.raw_data.before(
+            datetime.max) or datetime.min
         if datetime.utcnow() < self.last_stored_time:
             raise ValueError('Computer time is earlier than last stored data')
         # infer pointer of last stored data
@@ -100,10 +101,12 @@ class DataLogger(object):
                 saved_date = WSDateTime.from_csv(saved_date)
                 saved_date = self.raw_data.nearest(saved_date)
                 while saved_date < self.last_stored_time:
-                    saved_date = self.raw_data.after(saved_date + SECOND)
+                    saved_date = self.raw_data.after(
+                        saved_date + SECOND) or datetime.max
                     saved_ptr = self.ws.inc_ptr(saved_ptr)
                 while saved_date > self.last_stored_time:
-                    saved_date = self.raw_data.before(saved_date - SECOND)
+                    saved_date = self.raw_data.before(
+                        saved_date - SECOND) or datetime.min
                     saved_ptr = self.ws.dec_ptr(saved_ptr)
             else:
                 saved_ptr = None
