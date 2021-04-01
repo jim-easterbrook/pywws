@@ -29,7 +29,6 @@ import sys
 import time
 
 from pywws.calib import Calib
-from pywws.constants import DAY, HOUR
 import pywws.plot
 import pywws.template
 from pywws.timezone import time_zone
@@ -171,39 +170,30 @@ class RegularTasks(object):
                 continue
             sections.append(section)
             while time_zone.local_to_utc(
-                    self.cron[section].get_current(datetime)) <= now:
-                self.cron[section].get_next()
+                    self.cron[section].get_next(datetime)) <= now:
+                pass
         return sections
 
     def _periodic_due(self, now):
-        # get start of current hour in local time
-        threshold = time_zone.utc_to_local(now)
-        threshold = threshold.replace(minute=0, second=0, microsecond=0)
         # make list of due sections
         sections = []
         # hourly
+        threshold = time_zone.hour_start(now)
         last_update = self.status.get_datetime('last update', 'hourly')
-        utc_threshold = time_zone.local_to_utc(threshold)
-        if not last_update or last_update < utc_threshold:
+        if not last_update or last_update < threshold:
             sections.append('hourly')
-        # 12 hourly
-        while (threshold.hour % 12) != (self.day_end_hour % 12):
-            threshold -= HOUR
-        utc_threshold = time_zone.local_to_utc(threshold)
-        if not self.use_dst:
-            utc_threshold += threshold.dst()
-        last_update = self.status.get_datetime('last update', '12 hourly')
-        if not last_update or last_update < utc_threshold:
-            sections.append('12 hourly')
         # daily
-        while threshold.hour != self.day_end_hour:
-            threshold -= HOUR
-        utc_threshold = time_zone.local_to_utc(threshold)
-        if not self.use_dst:
-            utc_threshold += threshold.dst()
+        threshold = time_zone.day_start(
+            now, self.day_end_hour, use_dst=self.use_dst)
         last_update = self.status.get_datetime('last update', 'daily')
-        if not last_update or last_update < utc_threshold:
+        if not last_update or last_update < threshold:
             sections.append('daily')
+        # 12 hourly
+        threshold = max(threshold, time_zone.day_start(
+            now, (self.day_end_hour + 12) % 24, use_dst=self.use_dst))
+        last_update = self.status.get_datetime('last update', '12 hourly')
+        if not last_update or last_update < threshold:
+            sections.append('12 hourly')
         return sections
 
     def do_live(self, data):
