@@ -16,6 +16,10 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
+Changes in v21.4.0:
+    1/ Fixed problems with timezones ready for next release of tzlocal.
+    2/ Fixed rare problem with 'saved_date' being 'None'.
+
 Changes in v21.3.0:
     1/ Added -d option to pywws-setweatherstation. This is useful if your
        station sets loads of alarms after a reset.
