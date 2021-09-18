@@ -109,7 +109,7 @@ def _adapt_WSDateTime(dt):
     return ts
 
 def _adapt_WSStatus(status):
-    """Return integer represending WSStatus dictionary input"""
+    """Return integer representing WSStatus dictionary input"""
     return int(WSStatus.to_csv(status))
 
 # Data type convert SQLite3 ==> Python
@@ -156,11 +156,11 @@ class CoreStore(object):
     table = ""
     _keycol = "idx"
     if len(conv) == 0:
-        raise KeyError("No coloumns are defined.")
+        raise KeyError("No columns are defined.")
     if _keycol not in key_list:
-        # Check that the key coloumn is present
+        # Check that the key column is present
         raise KeyError(
-            "Key coloumn '{}' is not in the key list".format(keycol)
+            "Key column '{}' is not in the key list".format(keycol)
         )
 
     def __init__(self, dir_name):
@@ -185,7 +185,7 @@ class CoreStore(object):
         # as it will choose the smallest integer representation between 8-64bit,
         # while floats are always 64bit. Set idx as a unique integer primary
         # key so searches are faster, storage requirements smaller,
-        # the rowid coloumn is eliminated so there is no need for secondary
+        # the rowid column is eliminated so there is no need for secondary
         # indices. Suitable converters/adapters are then applied.
         if con.execute(
             """SELECT COUNT(*) FROM sqlite_master
@@ -194,10 +194,10 @@ class CoreStore(object):
         ).fetchone()[0] == 0:
             con.executescript(
                 """CREATE TABLE IF NOT EXISTS {table} (
-                {keycol} INTEGER PRIMARY KEY, {coloumns} );""".format(
+                {keycol} INTEGER PRIMARY KEY, {columns} );""".format(
                     table=table,
                     keycol=keycol,
-                    coloumns=", ".join(
+                    columns=", ".join(
                         "{} NUM".format(key)
                         for key in conv
                         if key != keycol
@@ -205,7 +205,7 @@ class CoreStore(object):
                 )
             )
 
-        # Get all coloumns from the database
+        # Get all columns from the database
         sql_key_list = tuple(
             (row["name"],row["pk"])
             for row in con.execute(
@@ -223,13 +223,13 @@ class CoreStore(object):
 
         # Convert this to just a set of keys
         sql_key_list = set(key[0] for key in sql_key_list)
-        # Check that no coloumns are missing
+        # Check that no columns are missing
         if not set(conv.keys()) <= sql_key_list:
             raise KeyError(
-                "Mismatch between database coloumns and what was expected"
+                "Mismatch between database columns and what was expected"
             )
 
-        # SQL snippet which casts all coloumns to the correct data types
+        # SQL snippet which casts all columns to the correct data types
         # for SELECT * type queries
         self.selallcols = ", ".join(
             '{col} AS "{col} [{conv}]"'.format(
@@ -237,7 +237,7 @@ class CoreStore(object):
                 conv=conv[col]
             ) for col in key_list
         )
-        # SQL snippet which casts the key coloum to the correct data type
+        # SQL snippet which casts the key column to the correct data type
         # for SELECT {keycol} type queries
         self.selkeycol = '{keycol} AS "{keycol} [{conv}]"'.format(
             keycol=keycol,
@@ -268,7 +268,7 @@ class CoreStore(object):
         """
         # Assuming the database has been analyzed before, the stat1 table
         # should contain the total row count for the table as the first number
-        # in the stat coloumn from when it was last analyzed. Very fast but may
+        # in the stat column from when it was last analyzed. Very fast but may
         # not be up to date
         try:
             return int(self._connection.execute(
@@ -299,7 +299,7 @@ class CoreStore(object):
                         "Start index is greater than the End index"
                     )
                 else:
-                    # Substitution of the key coloumn, but the
+                    # Substitution of the key column, but the
                     # parameters themselves will be substituted by sqlite3
                     predicate = "WHERE {} BETWEEN :start AND :stop".format(
                         self._keycol
@@ -311,12 +311,12 @@ class CoreStore(object):
                 # i.start will also be None
                 predicate = "WHERE {} <= :stop".format(self._keycol)
             else:
-                # both are None, so equivelent to wanting everything
+                # both are None, so equivalent to wanting everything
                 predicate = ""
             multi = True
             pred = {"start": i.start, "stop": i.stop}
         elif isinstance(i, datetime):
-            # Substitution of the key coloumn, but the
+            # Substitution of the key column, but the
             # parameters themselves will be substituted by sqlite3
             predicate = "WHERE {} = :key".format(self._keycol)
             multi = False
@@ -387,7 +387,7 @@ class CoreStore(object):
         items being overwritten.
         
         Elements in E are assumed to be dicts containing the primary key to
-        allow the equivelent of:
+        allow the equivalent of:
         for k in E: D[k.primary_key] = k
         """
         key_list = self.key_list
@@ -487,7 +487,7 @@ class CoreStore(object):
         )
 
     def __iter__(self):
-        """Iterates over all rows in ascending order of key coloumn"""
+        """Iterates over all rows in ascending order of key column"""
         for row in self._connection.execute(
             """SELECT {} FROM {} ORDER BY {} ASC;""".format(
                 self.selallcols,
@@ -498,7 +498,7 @@ class CoreStore(object):
             yield dict(row)
 
     def __reversed__(self):
-        """Iterates over all rows in decending order of key coloumn"""
+        """Iterates over all rows in decending order of key column"""
         for row in self._connection.execute(
             """SELECT {} FROM {} ORDER BY {} DESC;""".format(
                 self.selallcols,

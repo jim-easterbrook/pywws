@@ -9,13 +9,13 @@ Example:
 python -m pywws.datastoretransfer filedata c:\weather_data sqlite3data d:\weather
 
 This can be used to convert from the default file base storage system to an
-SQL based sorage system, or back. The tranfer will overwrite existing data
+SQL based sorage system, or back. The transfer will overwrite existing data
 in place which may leave existing data in the destination if the incoming data
 does not overlap (i.e. source data is newer than the destination). This is a
 risky way to merge datastores together. Otherwise, its recommended to use the
 optional -c argument to ensure the destination is cleared first.
 You may choose the same storage module for both source and destination
-with different directories, and this is the equivelent of simply copying the
+with different directories, and this is the equivalent of simply copying the
 data but will build the underlying files from scratch. However, copying the
 files by hand is likely to be faster.
 
