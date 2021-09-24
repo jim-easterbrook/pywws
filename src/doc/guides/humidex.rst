@@ -43,7 +43,7 @@ Humidex is a tool to determine how an individuals body will react to the combina
 Assumptions
 -----------
 
-There are a number of assumptions that have been made to make this work which will directly affect its useability. These assumptions however have not been made available from Environment Canada, who are the original developers of the Humidex used in the PYWWS function cadhumidex. It is safe enough however to say that the following would have been some assumptions:
+There are a number of assumptions that have been made to make this work which will directly affect its usability. These assumptions however have not been made available from Environment Canada, who are the original developers of the Humidex used in the PYWWS function cadhumidex. It is safe enough however to say that the following would have been some assumptions:
 
 * Clothing type, thickness
 * Skin area exposed to free air

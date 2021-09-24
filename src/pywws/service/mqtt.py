@@ -41,7 +41,7 @@ requires an additional library. See :ref:`Dependencies - MQTT
     [logged]
     services = ['mqtt', 'underground']
 
-* To customize the MQTT message use template_txt (remove illuminace and uv if weather station does not support them)::
+* To customize the MQTT message use template_txt (remove illuminance and uv if weather station does not support them)::
 
     [mqtt]
     ... (as above)

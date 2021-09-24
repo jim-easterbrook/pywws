@@ -16,7 +16,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-"""Routines to perform common tasks such as plotting gaphs or uploading files."""
+"""Routines to perform common tasks such as plotting graphs or uploading files."""
 
 from __future__ import absolute_import
 
