@@ -51,6 +51,8 @@ API
 
 __docformat__ = "restructuredtext en"
 
+from contextlib import contextmanager
+
 import hid
 
 class USBDevice(object):
@@ -69,7 +71,17 @@ class USBDevice(object):
     def __init__(self, idVendor, idProduct):
         if not hid.enumerate(idVendor, idProduct):
             raise IOError("No weather station connected")
+        self.idVendor = idVendor
+        self.idProduct = idProduct
         self.hid = hid.device(idVendor, idProduct)
+
+    @contextmanager
+    def open(self):
+        try:
+            self.hid.open(self.idVendor, self.idProduct)
+            yield
+        finally:
+            self.hid.close()
 
     def read_data(self, size):
         """Receive data from the device.
@@ -87,14 +99,15 @@ class USBDevice(object):
 
         """
         result = list()
-        while size > 0:
-            count = min(size, 8)
-            buf = self.hid.read(count)
-            if len(buf) < count:
-                raise IOError(
-                    'pywws.device_cython_hidapi.USBDevice.read_data failed')
-            result += buf
-            size -= count
+        with self.open():
+            while size > 0:
+                count = min(size, 8)
+                buf = self.hid.read(count)
+                if len(buf) < count:
+                    raise IOError(
+                        'pywws.device_cython_hidapi.USBDevice.read_data failed')
+                result += buf
+                size -= count
         return result
 
     def write_data(self, buf):
@@ -109,7 +122,8 @@ class USBDevice(object):
         :rtype: bool
 
         """
-        if self.hid.write(buf) != len(buf):
-            raise IOError(
-                'pywws.device_cython_hidapi.USBDevice.write_data failed')
+        with self.open():
+            if self.hid.write(buf) != len(buf):
+                raise IOError(
+                    'pywws.device_cython_hidapi.USBDevice.write_data failed')
         return True

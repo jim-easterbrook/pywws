@@ -141,7 +141,7 @@ class USBDevice(object):
         :rtype: bool
 
         """
-        data = ''.join(map(chr, buf))
+        data = bytes(buf)
         size = len(data)
         if hidapi.hid_write(self.device, ctypes.c_char_p(data), size) != size:
             raise IOError(
