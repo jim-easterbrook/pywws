@@ -2,7 +2,7 @@
 
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-21  pywws contributors
+# Copyright (C) 2008-22  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -41,7 +41,7 @@ import datetime
 import logging
 import sys
 
-import tzlocal
+import dateutil.tz
 
 from pywws.constants import DAY, HOUR
 
@@ -49,41 +49,16 @@ logger = logging.getLogger(__name__)
 
 
 class _TimeZone(object):
-    class _UTC(datetime.tzinfo):
-        _offset = datetime.timedelta(0)
-
-        def utcoffset(self, dt):
-            return self._offset
-
-        def dst(self, dt):
-            return self._offset
-
-        def tzname(self, dt):
-            return 'UTC'
-
-
     def __init__(self, tz_name=None):
-        if tz_name:
-            # use a named time zone instead of system default, for testing
-            import pytz
-            self.local = pytz.timezone(tz_name)
-        else:
-            self.local = tzlocal.get_localzone()
+        self.local = dateutil.tz.gettz(tz_name)
         logger.info('Using timezone "{!s}"'.format(self.local))
-        self._using_pytz = hasattr(self.local, 'localize')
-        if sys.version_info >= (3, 2):
-            self.utc = datetime.timezone.utc
-        else:
-            self.utc = self._UTC()
+        self.utc = dateutil.tz.UTC
 
     def local_to_utc(self, dt):
         """Convert a local time (with or without tzinfo) to UTC without
         tzinfo, as used for pywws timestamps."""
         if dt.tzinfo is None:
-            if self._using_pytz:
-                dt = self.local.localize(dt)
-            else:
-                dt = dt.replace(tzinfo=self.local)
+            dt = dt.replace(tzinfo=self.local)
         return dt.astimezone(self.utc).replace(tzinfo=None)
 
     def utc_to_local(self, dt):
@@ -141,15 +116,11 @@ class _TimeZone(object):
         dst = day.dst()
         for d in range(365):
             day -= DAY
-            if self._using_pytz:
-                day = self.local.normalize(day)
             if day.dst() == dst:
                 continue
             hour = day
             for h in range(25):
                 hour += HOUR
-                if self._using_pytz:
-                    hour = self.local.normalize(hour)
                 if hour.dst() == dst:
                     yield hour
                     break

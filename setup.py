@@ -1,6 +1,6 @@
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-18  pywws contributors
+# Copyright (C) 2008-22  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -208,7 +208,7 @@ setup(name = 'pywws',
               'pywws-version            = pywws.version:main',
               ],
           },
-      install_requires = ['tzlocal'],
+      install_requires = ['python-dateutil'],
       extras_require = {
           'daemon'  : ['python-daemon == 2.1.2'],
           'sftp'    : ['paramiko', 'pycrypto'],
