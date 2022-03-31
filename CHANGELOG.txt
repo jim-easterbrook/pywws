@@ -1,6 +1,6 @@
 pywws - Python software for USB Wireless Weather Stations
 http://github.com/jim-easterbrook/pywws
-Copyright (C) 2008-21  pywws contributors
+Copyright (C) 2008-22  pywws contributors
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -15,6 +15,11 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+Changes in v22.3.0:
+    1/ Replace pytz with dateutil.tz.
+    2/ Fix some hidapi USB problems.
+    3/ Correct some typos in documentation.
 
 Changes in v21.4.0:
     1/ Fixed problems with timezones ready for next release of tzlocal.
