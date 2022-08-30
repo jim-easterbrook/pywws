@@ -1,6 +1,6 @@
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-20  pywws contributors
+# Copyright (C) 2008-22  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -711,6 +711,10 @@ Your station is probably a '{:s}' type.
             self._read_fixed_block(0x0020), self.lo_fix_format['current_pos'])
         if new_ptr == self._current_ptr:
             return self._current_ptr
+        if (new_ptr - self.data_start) % self.reading_len[self.ws_type]:
+            logger.error('invalid ptr value %06x', new_ptr)
+            if self._current_ptr:
+                return self._current_ptr
         if self._current_ptr and new_ptr != self.inc_ptr(self._current_ptr):
             logger.error(
                 'unexpected ptr change %06x -> %06x', self._current_ptr, new_ptr)
