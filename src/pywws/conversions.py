@@ -194,6 +194,8 @@ def dew_point(temp, hum):
     """
     if temp is None or hum is None:
         return None
+    if hum <= 0:
+        return None
     a = 17.27
     b = 237.7
     gamma = ((a * temp) / (b + temp)) + math.log(float(hum) / 100.0)
