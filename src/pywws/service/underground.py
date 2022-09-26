@@ -1,6 +1,6 @@
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2018  pywws contributors
+# Copyright (C) 2018-22  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -21,8 +21,8 @@
 `Weather Underground`_ may be the oldest and best known site gathering
 data from amateur weather stations.
 
-* Create account: http://www.wunderground.com/members/signup.asp
-* API: `<http://wiki.wunderground.com/index.php/PWS_-_Upload_Protocol>`_
+* Create account: https://www.wunderground.com/signup
+* API: `<https://support.weather.com/s/article/PWS-Upload-Protocol>`_
 * Additional dependency: http://docs.python-requests.org/
 * Example ``weather.ini`` configuration::
 
@@ -39,6 +39,10 @@ data from amateur weather stations.
 
 The ``internal`` configuration setting allows you to include indoor
 temperature and humidity in your uploads.
+
+Note that ``password`` is not the password you use to log in to Weather
+Underground, it's the ``Key`` value shown on your list of devices:
+https://www.wunderground.com/member/devices
 
 Previous versions of pywws had an extra ``underground_rf`` service to
 use Weather Underground's "rapid fire" server for frequent uploads. Now
