@@ -99,7 +99,7 @@ class ToService(pywws.service.LiveDataService):
     @contextmanager
     def session(self):
         with closing(socket.socket()) as session:
-            session.settimeout(20)
+            session.settimeout(60)
             server = ('rotate.aprs.net',
                       'cwop.aprs.net')[self.fixed_data['passcode'] == '-1']
             try:
