@@ -102,8 +102,12 @@ class ToService(pywws.service.LiveDataService):
             session.settimeout(20)
             server = ('rotate.aprs.net',
                       'cwop.aprs.net')[self.fixed_data['passcode'] == '-1']
-            session.connect((server, 14580))
-            response = session.recv(4096).decode('ASCII')
+            try:
+                session.connect((server, 14580))
+                response = session.recv(4096).decode('ASCII')
+            except Exception as ex:
+                yield None, repr(ex)
+                return
             logger.debug('server software: %s', response.strip())
             yield session, 'OK'
 
