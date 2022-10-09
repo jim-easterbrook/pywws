@@ -1,6 +1,6 @@
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2018-20  pywws contributors
+# Copyright (C) 2018-22  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -345,8 +345,10 @@ class CatchupDataService(DataServiceBase):
     def upload_batch(self):
         OK = True
         count = 0
-        with self.session() as session:
-            while self.queue and not self.context.shutdown.is_set():
+        with self.session() as (session, message):
+            if not session:
+                self.log(message)
+            while session and self.queue and not self.context.shutdown.is_set():
                 # send upload without taking it off queue
                 upload = self.queue[0]
                 if upload is None:
@@ -403,9 +405,12 @@ class LiveDataService(DataServiceBase):
         # check time since last upload
         if timestamp and timestamp < self.last_update + self.interval:
             return True
-        with self.session() as session:
-            OK, message = self.upload_data(session, prepared_data=prepared_data)
-        self.log(message)
+        OK = False
+        with self.session() as (session, message):
+            if session:
+                OK, message = self.upload_data(
+                    session, prepared_data=prepared_data)
+            self.log(message)
         if OK:
             self.logger.info('1 record sent')
             if timestamp:
@@ -435,8 +440,10 @@ class FileService(ServiceBase):
             self.context.status.get('pending', self.service_name, '[]'))
         OK = True
         count = 0
-        with self.session() as session:
-            while self.queue and not self.context.shutdown.is_set():
+        with self.session() as (session, message):
+            if not session:
+                self.log(message)
+            while session and self.queue and not self.context.shutdown.is_set():
                 upload = self.queue[0]
                 if upload is None:
                     OK = False

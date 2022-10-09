@@ -1,6 +1,6 @@
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2018-19  pywws contributors
+# Copyright (C) 2018-22  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -124,7 +124,7 @@ class ToService(pywws.service.LiveDataService):
     @contextmanager
     def session(self):
         with requests.Session() as session:
-            yield session
+            yield session, 'OK'
 
     def valid_data(self, data):
         return any([data[x] is not None for x in (

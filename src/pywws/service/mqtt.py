@@ -1,6 +1,6 @@
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2018-20  pywws contributors
+# Copyright (C) 2018-22  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -253,7 +253,7 @@ class ToService(pywws.service.LiveDataService):
             session.tls_set(self.params['tls_cert'], tls_version=self.params['tls_ver'])
         session.connect(self.params['hostname'], self.params['port'])
         try:
-            yield session
+            yield session, 'OK'
         finally:
             session.disconnect()
 

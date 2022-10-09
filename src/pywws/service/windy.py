@@ -1,6 +1,6 @@
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2019-20  pywws contributors
+# Copyright (C) 2019-22  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -94,7 +94,7 @@ class ToService(pywws.service.CatchupDataService):
     @contextmanager
     def session(self):
         with requests.Session() as session:
-            yield session
+            yield session, 'OK'
 
     def upload_data(self, session, prepared_data={}):
         url = 'https://stations.windy.com/pws/update/' + self.params['api_key']

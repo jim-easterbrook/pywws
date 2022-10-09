@@ -1,6 +1,6 @@
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-18  pywws contributors
+# Copyright (C) 2008-22  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -270,11 +270,11 @@ class ToService(pywws.service.FileService):
         if twitter:
             yield PythonTwitterHandler(
                 self.params['key'], self.params['secret'],
-                self.params['latitude'], self.params['longitude'], 40)
+                self.params['latitude'], self.params['longitude'], 40), 'OK'
         else:
             yield TweepyHandler(
                 self.params['key'], self.params['secret'],
-                self.params['latitude'], self.params['longitude'])
+                self.params['latitude'], self.params['longitude']), 'OK'
 
     def upload_file(self, session, filename):
         with codecs.open(filename, 'r', encoding=self.encoding) as tweet_file:

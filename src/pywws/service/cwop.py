@@ -1,6 +1,6 @@
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2018  pywws contributors
+# Copyright (C) 2018-22  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -105,7 +105,7 @@ class ToService(pywws.service.LiveDataService):
             session.connect((server, 14580))
             response = session.recv(4096).decode('ASCII')
             logger.debug('server software: %s', response.strip())
-            yield session
+            yield session, 'OK'
 
     def upload_data(self, session, prepared_data={}):
         login = ('user {designator:s} pass {passcode:s} ' +

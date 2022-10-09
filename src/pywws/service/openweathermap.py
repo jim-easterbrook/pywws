@@ -1,6 +1,6 @@
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2018-20  pywws contributors
+# Copyright (C) 2018-22  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -123,7 +123,7 @@ class ToService(pywws.service.CatchupDataService):
         with requests.Session() as session:
             session.headers.update({'Content-Type': 'application/json'})
             session.params.update({'appid': self.params['api key']})
-            yield session
+            yield session, 'OK'
 
     def upload_data(self, session, prepared_data={}):
         url = 'https://api.openweathermap.org/data/3.0/measurements'

@@ -113,7 +113,7 @@ class ToService(pywws.service.CatchupDataService):
     @contextmanager
     def session(self):
         with requests.Session() as session:
-            yield session
+            yield session, 'OK'
 
     def upload_data(self, session, prepared_data={}):
         # extract timestamp from prepared_data

@@ -1,6 +1,6 @@
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-19  pywws contributors
+# Copyright (C) 2008-22  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -121,7 +121,7 @@ class ToService(pywws.service.FileService):
             with paramiko.SFTPClient.from_transport(transport) as session:
                 session.get_channel().settimeout(20)
                 session.chdir(self.params['directory'])
-                yield session
+                yield session, 'OK'
 
     def upload_file(self, session, path):
         target = os.path.basename(path)
