@@ -57,12 +57,13 @@ The CWOP/APRS uploader is based on code by Marco Trevisan <mail@3v1n0.net>.
 
 from __future__ import absolute_import, print_function, unicode_literals
 
-from contextlib import closing, contextmanager
+from contextlib import contextmanager
 from datetime import timedelta
 import logging
 import os
 import socket
 import sys
+import time
 
 import pywws
 import pywws.service
@@ -80,7 +81,7 @@ class ToService(pywws.service.LiveDataService):
         'longitude' : ('',   True, 'longitude'),
         }
     fixed_data = {'version': pywws.__version__}
-    interval = timedelta(seconds=290)
+    interval = timedelta(seconds=300)
     logger = logger
     service_name = service_name
     template = """
@@ -97,19 +98,38 @@ class ToService(pywws.service.LiveDataService):
 """
 
     @contextmanager
+    def connect(self, server):
+        try:
+            session = socket.socket()
+            # use 5 second timeout for initial connection attempts
+            session.settimeout(5)
+            session.connect((server, 14580))
+            # use 30 second timeout for rest of transaction
+            session.settimeout(30)
+            yield session
+        finally:
+            session.close()
+
+    @contextmanager
     def session(self):
-        with closing(socket.socket()) as session:
-            session.settimeout(60)
-            server = ('rotate.aprs.net',
-                      'cwop.aprs.net')[self.fixed_data['passcode'] == '-1']
-            try:
-                session.connect((server, 14580))
-                response = session.recv(4096).decode('ASCII')
-            except Exception as ex:
-                yield None, repr(ex)
-                return
-            logger.debug('server software: %s', response.strip())
-            yield session, 'OK'
+        server = ('rotate.aprs.net',
+                  'cwop.aprs.net')[self.fixed_data['passcode'] == '-1']
+        # give up after 50 seconds as there'll be new data to send instead
+        timeout = time.time() + 50
+        try:
+            while True:
+                try:
+                    with self.connect(server) as session:
+                        response = session.recv(4096).decode('ASCII')
+                        logger.debug('server software: %s', response.strip())
+                        yield session, 'OK'
+                        break
+                except socket.timeout:
+                    if time.time() > timeout:
+                        raise
+        except Exception as ex:
+            logger.error(str(ex))
+            yield None, repr(ex)
 
     def upload_data(self, session, prepared_data={}):
         login = ('user {designator:s} pass {passcode:s} ' +
