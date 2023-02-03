@@ -1,39 +1,38 @@
 [main]
 host = https://www.transifex.com
-type = PO
 
-[pywws.pywws]
-file_filter = src/pywws/lang/<lang>/LC_MESSAGES/pywws.po
-source_file = build/gettext/pywws.pot
-source_lang = en
-
-[pywws.api]
+[o:jim-easterbrook:p:pywws:r:api]
 file_filter = src/pywws/lang/<lang>/LC_MESSAGES/api.po
 source_file = build/gettext/api.pot
 source_lang = en
 
-[pywws.api_index]
+[o:jim-easterbrook:p:pywws:r:api_index]
 file_filter = src/pywws/lang/<lang>/LC_MESSAGES/api_index.po
 source_file = build/gettext/api_index.pot
 source_lang = en
 
-[pywws.copyright]
+[o:jim-easterbrook:p:pywws:r:copyright]
 file_filter = src/pywws/lang/<lang>/LC_MESSAGES/copyright.po
 source_file = build/gettext/copyright.pot
 source_lang = en
 
-[pywws.essentials]
+[o:jim-easterbrook:p:pywws:r:essentials]
 file_filter = src/pywws/lang/<lang>/LC_MESSAGES/essentials.po
 source_file = build/gettext/essentials.pot
 source_lang = en
 
-[pywws.guides]
+[o:jim-easterbrook:p:pywws:r:guides]
 file_filter = src/pywws/lang/<lang>/LC_MESSAGES/guides.po
 source_file = build/gettext/guides.pot
 source_lang = en
 
-[pywws.index]
+[o:jim-easterbrook:p:pywws:r:index]
 file_filter = src/pywws/lang/<lang>/LC_MESSAGES/index.po
 source_file = build/gettext/index.pot
+source_lang = en
+
+[o:jim-easterbrook:p:pywws:r:pywws]
+file_filter = src/pywws/lang/<lang>/LC_MESSAGES/pywws.po
+source_file = build/gettext/pywws.pot
 source_lang = en
 
