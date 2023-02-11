@@ -1,6 +1,6 @@
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-22  pywws contributors
+# Copyright (C) 2008-23  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -74,7 +74,7 @@ class ToService(pywws.service.FileService):
 
     @contextmanager
     def session(self):
-        yield None, 'OK'
+        yield True, 'OK'
 
     def upload_file(self, session, path):
         try:

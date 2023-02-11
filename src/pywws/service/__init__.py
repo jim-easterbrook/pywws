@@ -1,6 +1,6 @@
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2018-22  pywws contributors
+# Copyright (C) 2018-23  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -159,7 +159,7 @@ class ServiceBase(threading.Thread):
 
         For a typical example, see the source code of the
         :py:mod:`pywws.service.openweathermap` module. If your upload
-        can't benefit from a session object yield :py:obj:`None`, as in
+        can't benefit from a session object yield :py:obj:`True`, as in
         :py:mod:`pywws.service.copy`.
         """
         raise NotImplementedError()
