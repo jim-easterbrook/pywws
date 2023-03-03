@@ -1,22 +1,24 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) 2008-16, pywws contributors
 # This file is distributed under the same license as the pywws package.
-# 
+#
 # Translators:
 # Jacques Desroches <jacques.desroches@weatherbyyou.com>, 2015
 msgid ""
 msgstr ""
-"Project-Id-Version: pywws\n"
+"Project-Id-Version:  pywws\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-02-25 10:44+0000\n"
-"PO-Revision-Date: 2015-06-07 20:42+0000\n"
-"Last-Translator: Jacques Desroches <jacques.desroches@weatherbyyou.com>\n"
-"Language-Team: French (http://www.transifex.com/jim-easterbrook/pywws/language/fr/)\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2023-03-03 08:28+0000\n"
+"PO-Revision-Date: 2023-02-23 12:05-0500\n"
+"Last-Translator: Jacques Desroches <meteosto@gmail.com>\n"
 "Language: fr\n"
+"Language-Team: French (http://www.transifex.com/jim-"
+"easterbrook/pywws/language/fr/)\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.11.0\n"
 
 #: ../../src/doc/api_index.rst:20
 msgid "Python programs and modules"
@@ -26,298 +28,522 @@ msgstr "Programmes et modules Python"
 msgid "Set up and configure pywws"
 msgstr "Installer et configurer pywws"
 
-#: ../../<autosummary>:1
-msgid ":obj:`pywws.TestWeatherStation <pywws.TestWeatherStation>`\\"
+#: ../../src/doc/api_index.rst:34:<autosummary>:1
+#, fuzzy
+msgid ":py:obj:`pywws.testweatherstation <pywws.testweatherstation>`\\"
 msgstr ":obj:`pywws.TestWeatherStation <pywws.TestWeatherStation>`\\"
 
-#: ../../<autosummary>:1
+#: ../../src/doc/api_index.rst:34:<autosummary>:1
 msgid "Test connection to weather station."
 msgstr "Teste la connexion à la station météo."
 
-#: ../../<autosummary>:1
-msgid ":obj:`pywws.SetWeatherStation <pywws.SetWeatherStation>`\\"
+#: ../../src/doc/api_index.rst:34:<autosummary>:1
+#, fuzzy
+msgid ":py:obj:`pywws.setweatherstation <pywws.setweatherstation>`\\"
 msgstr ":obj:`pywws.SetWeatherStation <pywws.SetWeatherStation>`\\"
 
-#: ../../<autosummary>:1
+#: ../../src/doc/api_index.rst:34:<autosummary>:1
 msgid "Set some weather station parameters."
 msgstr "Régler certains paramètres de la station météo."
 
-#: ../../<autosummary>:1
-msgid ":obj:`pywws.version <pywws.version>`\\"
+#: ../../src/doc/api_index.rst:34:<autosummary>:1
+#, fuzzy
+msgid ":py:obj:`pywws.version <pywws.version>`\\"
 msgstr ":obj:`pywws.version <pywws.version>`\\"
 
-#: ../../<autosummary>:1
+#: ../../src/doc/api_index.rst:34:<autosummary>:1
 msgid "Display pywws version information."
 msgstr "Afficher les informations de version pywws."
 
-#: ../../<autosummary>:1
-msgid ":obj:`pywws.Reprocess <pywws.Reprocess>`\\"
+#: ../../src/doc/api_index.rst:34:<autosummary>:1
+#, fuzzy
+msgid ":py:obj:`pywws.reprocess <pywws.reprocess>`\\"
 msgstr ":obj:`pywws.Reprocess <pywws.Reprocess>`\\"
 
-#: ../../<autosummary>:1
+#: ../../src/doc/api_index.rst:34:<autosummary>:1
 msgid "Regenerate hourly and daily summary data."
 msgstr "Régénérer les données sommaires horaires et quotidiennes."
 
-#: ../../<autosummary>:1
-msgid ":obj:`pywws.TwitterAuth <pywws.TwitterAuth>`\\"
-msgstr ":obj:`pywws.TwitterAuth <pywws.TwitterAuth>`\\"
+#: ../../src/doc/api_index.rst:34:<autosummary>:1
+#, fuzzy
+msgid ":py:obj:`pywws.usbtest <pywws.usbtest>`\\"
+msgstr ":obj:`pywws.Tasks <pywws.Tasks>`\\"
 
-#: ../../<autosummary>:1
-msgid "Authorise pywws to post to your Twitter account"
-msgstr "Autoriser pywws à poster sur votre compte Twitter."
-
-#: ../../<autosummary>:1
-msgid ":obj:`pywws.USBQualityTest <pywws.USBQualityTest>`\\"
-msgstr ":obj:`pywws.USBQualityTest <pywws.USBQualityTest>`\\"
-
-#: ../../<autosummary>:1
+#: ../../src/doc/api_index.rst:34:<autosummary>:1
 msgid "Test quality of USB connection to weather station"
 msgstr "Teste la qualité de la connexion USB avec votre station météo"
 
-#: ../../<autosummary>:1
-msgid ":obj:`pywws.EWtoPy <pywws.EWtoPy>`\\"
-msgstr ":obj:`pywws.EWtoPy <pywws.EWtoPy>`\\"
+#: ../../src/doc/api_index.rst:34:<autosummary>:1
+#, fuzzy
+msgid ":py:obj:`pywws.mergeewdata <pywws.mergeewdata>`\\"
+msgstr ":obj:`pywws.LogData <pywws.LogData>`\\"
 
-#: ../../<autosummary>:1
+#: ../../src/doc/api_index.rst:34:<autosummary>:1
 msgid "Convert EasyWeather.dat data to pywws format"
 msgstr "Convertir les données de EasyWeather.dat au format pywws"
 
-#: ../../src/doc/api_index.rst:37
+#: ../../src/doc/api_index.rst:36
 msgid "Get data and process it"
 msgstr "Obtenir des données et les traiter"
 
-#: ../../<autosummary>:1
-msgid ":obj:`pywws.Hourly <pywws.Hourly>`\\"
+#: ../../src/doc/api_index.rst:44:<autosummary>:1
+#, fuzzy
+msgid ":py:obj:`pywws.hourly <pywws.hourly>`\\"
 msgstr ":obj:`pywws.Hourly <pywws.Hourly>`\\"
 
-#: ../../<autosummary>:1
+#: ../../src/doc/api_index.rst:44:<autosummary>:1
 msgid ""
-"Get weather data, process it, prepare graphs & text files and upload to a "
-"web site."
-msgstr "Obtient les données météorologiques, les traite, prépare les fichiers de graphes & textes et les téléverse sur un site web."
+"Get weather data, process it, prepare graphs & text files and upload to a"
+" web site."
+msgstr ""
+"Obtient les données météorologiques, les traite, prépare les fichiers de "
+"graphes & textes et les téléverse sur un site web."
 
-#: ../../<autosummary>:1
-msgid ":obj:`pywws.LiveLog <pywws.LiveLog>`\\"
+#: ../../src/doc/api_index.rst:44:<autosummary>:1
+#, fuzzy
+msgid ":py:obj:`pywws.livelog <pywws.livelog>`\\"
 msgstr ":obj:`pywws.LiveLog <pywws.LiveLog>`\\"
 
-#: ../../<autosummary>:1
+#: ../../src/doc/api_index.rst:44:<autosummary>:1
 msgid "Get weather data, store it, and process it."
 msgstr "Obtient les données météo, les stocke et les traite."
 
-#: ../../<autosummary>:1
-msgid ":obj:`pywws.livelogdaemon <pywws.livelogdaemon>`\\"
+#: ../../src/doc/api_index.rst:44:<autosummary>:1
+#, fuzzy
+msgid ":py:obj:`pywws.livelogdaemon <pywws.livelogdaemon>`\\"
 msgstr ":obj:`pywws.livelogdaemon <pywws.livelogdaemon>`\\"
 
-#: ../../<autosummary>:1
+#: ../../src/doc/api_index.rst:44:<autosummary>:1
 msgid "Run 'live logging' as a UNIX daemon."
 msgstr "Exécutez 'live logging' comme un démon sous UNIX."
 
-#: ../../src/doc/api_index.rst:47
+#: ../../src/doc/api_index.rst:48
+msgid "Upload data to online \"services\""
+msgstr ""
+
+#: ../../src/doc/api_index.rst:69:<autosummary>:1
+#, fuzzy
+msgid ":py:obj:`pywws.service <pywws.service>`\\"
+msgstr ":obj:`pywws.toservice <pywws.toservice>`\\"
+
+#: ../../src/doc/api_index.rst:69:<autosummary>:1
+msgid "Base classes for \"service\" uploaders."
+msgstr ""
+
+#: ../../src/doc/api_index.rst:69:<autosummary>:1
+#, fuzzy
+msgid ":py:obj:`pywws.service.ftp <pywws.service.ftp>`\\"
+msgstr ":obj:`pywws.toservice <pywws.toservice>`\\"
+
+#: ../../src/doc/api_index.rst:69:<autosummary>:1
+#, fuzzy
+msgid "Upload files to a web server by FTP."
+msgstr ""
+"Téléverser des fichiers sur un serveur web par ftp ou les copier sur un "
+"répertoire local"
+
+#: ../../src/doc/api_index.rst:69:<autosummary>:1
+#, fuzzy
+msgid ":py:obj:`pywws.service.sftp <pywws.service.sftp>`\\"
+msgstr ":obj:`pywws.toservice <pywws.toservice>`\\"
+
+#: ../../src/doc/api_index.rst:69:<autosummary>:1
+#, fuzzy
+msgid "Upload files to a web server by SFTP."
+msgstr ""
+"Téléverser des fichiers sur un serveur web par ftp ou les copier sur un "
+"répertoire local"
+
+#: ../../src/doc/api_index.rst:69:<autosummary>:1
+#, fuzzy
+msgid ":py:obj:`pywws.service.copy <pywws.service.copy>`\\"
+msgstr ":obj:`pywws.toservice <pywws.toservice>`\\"
+
+#: ../../src/doc/api_index.rst:69:<autosummary>:1
+msgid "Copy files to another directory."
+msgstr ""
+
+#: ../../src/doc/api_index.rst:69:<autosummary>:1
+#, fuzzy
+msgid ":py:obj:`pywws.service.cwop <pywws.service.cwop>`\\"
+msgstr ":obj:`pywws.toservice <pywws.toservice>`\\"
+
+#: ../../src/doc/api_index.rst:69:<autosummary>:1
+msgid "Upload weather data to Citizen Weather Observer Program."
+msgstr ""
+
+#: ../../src/doc/api_index.rst:69:<autosummary>:1
+#, fuzzy
+msgid ":py:obj:`pywws.service.metoffice <pywws.service.metoffice>`\\"
+msgstr ":obj:`pywws.toservice <pywws.toservice>`\\"
+
+#: ../../src/doc/api_index.rst:69:<autosummary>:1
+msgid "Upload weather data to UK Met Office \"WOW\"."
+msgstr ""
+
+#: ../../src/doc/api_index.rst:69:<autosummary>:1
+#, fuzzy
+msgid ":py:obj:`pywws.service.mqtt <pywws.service.mqtt>`\\"
+msgstr ":obj:`pywws.toservice <pywws.toservice>`\\"
+
+#: ../../src/doc/api_index.rst:69:<autosummary>:1
+msgid "Upload weather data to MQTT message broker."
+msgstr ""
+
+#: ../../src/doc/api_index.rst:69:<autosummary>:1
+#, fuzzy
+msgid ":py:obj:`pywws.service.openweathermap <pywws.service.openweathermap>`\\"
+msgstr ":obj:`pywws.toservice <pywws.toservice>`\\"
+
+#: ../../src/doc/api_index.rst:69:<autosummary>:1
+msgid "Upload weather data to Open Weather Map."
+msgstr ""
+
+#: ../../src/doc/api_index.rst:69:<autosummary>:1
+#, fuzzy
+msgid ":py:obj:`pywws.service.pwsweather <pywws.service.pwsweather>`\\"
+msgstr ":obj:`pywws.toservice <pywws.toservice>`\\"
+
+#: ../../src/doc/api_index.rst:69:<autosummary>:1
+msgid "Upload weather data to PWS Weather."
+msgstr ""
+
+#: ../../src/doc/api_index.rst:69:<autosummary>:1
+#, fuzzy
+msgid ":py:obj:`pywws.service.temperaturnu <pywws.service.temperaturnu>`\\"
+msgstr ":obj:`pywws.toservice <pywws.toservice>`\\"
+
+#: ../../src/doc/api_index.rst:69:<autosummary>:1
+msgid "Upload current temperature to temperatur.nu."
+msgstr ""
+
+#: ../../src/doc/api_index.rst:69:<autosummary>:1
+#, fuzzy
+msgid ":py:obj:`pywws.service.underground <pywws.service.underground>`\\"
+msgstr ":obj:`pywws.toservice <pywws.toservice>`\\"
+
+#: ../../src/doc/api_index.rst:69:<autosummary>:1
+msgid "Upload data to Weather Underground."
+msgstr ""
+
+#: ../../src/doc/api_index.rst:69:<autosummary>:1
+#, fuzzy
+msgid ":py:obj:`pywws.service.weathercloud <pywws.service.weathercloud>`\\"
+msgstr ":obj:`pywws.toservice <pywws.toservice>`\\"
+
+#: ../../src/doc/api_index.rst:69:<autosummary>:1
+msgid "Upload data to WeatherCloud."
+msgstr ""
+
+#: ../../src/doc/api_index.rst:69:<autosummary>:1
+#, fuzzy
+msgid ":py:obj:`pywws.service.wetterarchivde <pywws.service.wetterarchivde>`\\"
+msgstr ":obj:`pywws.toservice <pywws.toservice>`\\"
+
+#: ../../src/doc/api_index.rst:69:<autosummary>:1
+msgid "Upload weather data to wetter.com."
+msgstr ""
+
+#: ../../src/doc/api_index.rst:69:<autosummary>:1
+#, fuzzy
+msgid ":py:obj:`pywws.service.windy <pywws.service.windy>`\\"
+msgstr ":obj:`pywws.toservice <pywws.toservice>`\\"
+
+#: ../../src/doc/api_index.rst:69:<autosummary>:1
+msgid "Upload data to Windy."
+msgstr ""
+
+#: ../../src/doc/api_index.rst:69:<autosummary>:1
+#, fuzzy
+msgid ":py:obj:`pywws.service.twitter <pywws.service.twitter>`\\"
+msgstr ":obj:`pywws.toservice <pywws.toservice>`\\"
+
+#: ../../src/doc/api_index.rst:69:<autosummary>:1
+#, fuzzy
+msgid "Post messages to Twitter."
+msgstr "Poste un message sur Twitter"
+
+#: ../../src/doc/api_index.rst:69:<autosummary>:1
+#, fuzzy
+msgid ":py:obj:`pywws.service.mastodon <pywws.service.mastodon>`\\"
+msgstr ":obj:`pywws.toservice <pywws.toservice>`\\"
+
+#: ../../src/doc/api_index.rst:69:<autosummary>:1
+#, fuzzy
+msgid "Post messages to Mastodon."
+msgstr "Poste un message sur Twitter"
+
+#: ../../src/doc/api_index.rst:71
 msgid "\"Internal\" modules"
 msgstr "modules \"Interne\""
 
-#: ../../<autosummary>:1
-msgid ":obj:`pywws.Tasks <pywws.Tasks>`\\"
+#: ../../<rst_epilog>:1:<autosummary>:1
+#, fuzzy
+msgid ":py:obj:`pywws.regulartasks <pywws.regulartasks>`\\"
 msgstr ":obj:`pywws.Tasks <pywws.Tasks>`\\"
 
-#: ../../<autosummary>:1
+#: ../../<rst_epilog>:1:<autosummary>:1
+#, fuzzy
 msgid ""
-"Routines to perform common tasks such as plotting gaphs or uploading files."
-msgstr "Routines pour effectuer des tâches courantes telles que tracer les gaphes ou téléverser des fichiers."
+"Routines to perform common tasks such as plotting graphs or uploading "
+"files."
+msgstr ""
+"Routines pour effectuer des tâches courantes telles que tracer les gaphes"
+" ou téléverser des fichiers."
 
-#: ../../<autosummary>:1
-msgid ":obj:`pywws.LogData <pywws.LogData>`\\"
+#: ../../<rst_epilog>:1:<autosummary>:1
+#, fuzzy
+msgid ":py:obj:`pywws.logdata <pywws.logdata>`\\"
 msgstr ":obj:`pywws.LogData <pywws.LogData>`\\"
 
-#: ../../<autosummary>:1
+#: ../../<rst_epilog>:1:<autosummary>:1
 msgid "Save weather station history to file"
 msgstr "Enregistrer l'historique de station météorologique dans un fichier"
 
-#: ../../<autosummary>:1
-msgid ":obj:`pywws.Process <pywws.Process>`\\"
-msgstr ":obj:`pywws.Process <pywws.Process>`\\"
+#: ../../<rst_epilog>:1:<autosummary>:1
+#, fuzzy
+msgid ":py:obj:`pywws.process <pywws.process>`\\"
+msgstr ":obj:`pywws.Reprocess <pywws.Reprocess>`\\"
 
-#: ../../<autosummary>:1
-msgid "Generate hourly, daily & monthly summaries of raw weather station"
-msgstr "Générer les résumés horaires, quotidiens & mensuels des données brutes de la station météo"
+#: ../../<rst_epilog>:1:<autosummary>:1
+#, fuzzy
+msgid "Generate hourly, daily & monthly summaries of raw weather station data ."
+msgstr ""
+"Générer les résumés horaires, quotidiens & mensuels des données brutes de"
+" la station météo"
 
-#: ../../<autosummary>:1
-msgid ":obj:`pywws.calib <pywws.calib>`\\"
+#: ../../<rst_epilog>:1:<autosummary>:1
+#, fuzzy
+msgid ":py:obj:`pywws.calib <pywws.calib>`\\"
 msgstr ":obj:`pywws.calib <pywws.calib>`\\"
 
-#: ../../<autosummary>:1
+#: ../../<rst_epilog>:1:<autosummary>:1
 msgid "Calibrate raw weather station data"
 msgstr "Calibre les données brutes de la station météo"
 
-#: ../../<autosummary>:1
-msgid ":obj:`pywws.Plot <pywws.Plot>`\\"
+#: ../../<rst_epilog>:1:<autosummary>:1
+#, fuzzy
+msgid ":py:obj:`pywws.plot <pywws.plot>`\\"
 msgstr ":obj:`pywws.Plot <pywws.Plot>`\\"
 
-#: ../../<autosummary>:1
+#: ../../<rst_epilog>:1:<autosummary>:1
 msgid "Plot graphs of weather data according to an XML recipe"
 msgstr "Tracer des graphiques de données météorologiques selon une recette XML"
 
-#: ../../<autosummary>:1
-msgid ":obj:`pywws.WindRose <pywws.WindRose>`\\"
+#: ../../<rst_epilog>:1:<autosummary>:1
+#, fuzzy
+msgid ":py:obj:`pywws.windrose <pywws.windrose>`\\"
 msgstr ":obj:`pywws.WindRose <pywws.WindRose>`\\"
 
-#: ../../<autosummary>:1
+#: ../../<rst_epilog>:1:<autosummary>:1
 msgid "Plot a \"wind rose\""
 msgstr "Tracer une  \"rose des vents\"."
 
-#: ../../<autosummary>:1
-msgid ":obj:`pywws.Template <pywws.Template>`\\"
+#: ../../<rst_epilog>:1:<autosummary>:1
+#, fuzzy
+msgid ":py:obj:`pywws.template <pywws.template>`\\"
 msgstr ":obj:`pywws.Template <pywws.Template>`\\"
 
-#: ../../<autosummary>:1
+#: ../../<rst_epilog>:1:<autosummary>:1
 msgid "Create text data file based on a template"
 msgstr "Créer le fichier de données texte basé sur un modèle"
 
-#: ../../<autosummary>:1
-msgid ":obj:`pywws.Forecast <pywws.Forecast>`\\"
+#: ../../<rst_epilog>:1:<autosummary>:1
+#, fuzzy
+msgid ":py:obj:`pywws.forecast <pywws.forecast>`\\"
 msgstr ":obj:`pywws.Forecast <pywws.Forecast>`\\"
 
-#: ../../<autosummary>:1
+#: ../../<rst_epilog>:1:<autosummary>:1
 msgid "Predict future weather using recent data"
 msgstr "Prévoir des temps futurs à l'aide des données récentes"
 
-#: ../../<autosummary>:1
-msgid ":obj:`pywws.ZambrettiCore <pywws.ZambrettiCore>`\\"
-msgstr ":obj:`pywws.ZambrettiCore <pywws.ZambrettiCore>`\\"
-
-#: ../../<autosummary>:1
-msgid ":obj:`pywws.Upload <pywws.Upload>`\\"
-msgstr ":obj:`pywws.Upload <pywws.Upload>`\\"
-
-#: ../../<autosummary>:1
-msgid "Upload files to a web server by ftp or copy them to a local directory"
-msgstr "Téléverser des fichiers sur un serveur web par ftp ou les copier sur un répertoire local"
-
-#: ../../<autosummary>:1
-msgid ":obj:`pywws.ToTwitter <pywws.ToTwitter>`\\"
-msgstr ":obj:`pywws.ToTwitter <pywws.ToTwitter>`\\"
-
-#: ../../<autosummary>:1
-msgid "Post a message to Twitter"
-msgstr "Poste un message sur Twitter"
-
-#: ../../<autosummary>:1
-msgid ":obj:`pywws.toservice <pywws.toservice>`\\"
-msgstr ":obj:`pywws.toservice <pywws.toservice>`\\"
-
-#: ../../<autosummary>:1
-msgid "Post weather update to services such as Weather Underground"
-msgstr "Poster des mises à jour météo aux services tels que Weather Underground"
-
-#: ../../<autosummary>:1
-msgid ":obj:`pywws.YoWindow <pywws.YoWindow>`\\"
-msgstr ":obj:`pywws.YoWindow <pywws.YoWindow>`\\"
-
-#: ../../<autosummary>:1
-msgid "Generate YoWindow XML file"
-msgstr "Génèrer un fichier YoWindow XML"
-
-#: ../../<autosummary>:1
-msgid ":obj:`pywws.WeatherStation <pywws.WeatherStation>`\\"
+#: ../../<rst_epilog>:1:<autosummary>:1
+#, fuzzy
+msgid ":py:obj:`pywws.weatherstation <pywws.weatherstation>`\\"
 msgstr ":obj:`pywws.WeatherStation <pywws.WeatherStation>`\\"
 
-#: ../../<autosummary>:1
+#: ../../<rst_epilog>:1:<autosummary>:1
 msgid "Get data from WH1080/WH3080 compatible weather stations."
-msgstr "Obtient les données des stations météorologiques WH1080/WH3080 et compatibles."
+msgstr ""
+"Obtient les données des stations météorologiques WH1080/WH3080 et "
+"compatibles."
 
-#: ../../<autosummary>:1
-msgid ":obj:`pywws.device_libusb1 <pywws.device_libusb1>`\\"
+#: ../../<rst_epilog>:1:<autosummary>:1
+#, fuzzy
+msgid ":py:obj:`pywws.device_libusb1 <pywws.device_libusb1>`\\"
 msgstr ":obj:`pywws.device_libusb1 <pywws.device_libusb1>`\\"
 
-#: ../../<autosummary>:1
+#: ../../<rst_epilog>:1:<autosummary>:1
 msgid "Low level USB interface to weather station, using python-libusb1."
-msgstr "Interface USB de bas niveau de la station météo, à l'aide de python-libusb1.  "
+msgstr ""
+"Interface USB de bas niveau de la station météo, à l'aide de python-"
+"libusb1."
 
-#: ../../<autosummary>:1
-msgid ":obj:`pywws.device_pyusb1 <pywws.device_pyusb1>`\\"
+#: ../../<rst_epilog>:1:<autosummary>:1
+#, fuzzy
+msgid ":py:obj:`pywws.device_pyusb1 <pywws.device_pyusb1>`\\"
 msgstr ":obj:`pywws.device_pyusb1 <pywws.device_pyusb1>`\\"
 
-#: ../../<autosummary>:1
+#: ../../<rst_epilog>:1:<autosummary>:1
 msgid "Low level USB interface to weather station, using PyUSB v1.0."
 msgstr "Interface USB de bas niveau de la station météo, à l'aide de PyUSB v1.0."
 
-#: ../../<autosummary>:1
-msgid ":obj:`pywws.device_pyusb <pywws.device_pyusb>`\\"
+#: ../../<rst_epilog>:1:<autosummary>:1
+#, fuzzy
+msgid ":py:obj:`pywws.device_pyusb <pywws.device_pyusb>`\\"
 msgstr ":obj:`pywws.device_pyusb <pywws.device_pyusb>`\\"
 
-#: ../../<autosummary>:1
+#: ../../<rst_epilog>:1:<autosummary>:1
 msgid "Low level USB interface to weather station, using PyUSB v0.4."
 msgstr "Interface USB de bas niveau de la station météo, à l'aide de PyUSB v0.4."
 
-#: ../../<autosummary>:1
-msgid ":obj:`pywws.device_ctypes_hidapi <pywws.device_ctypes_hidapi>`\\"
+#: ../../<rst_epilog>:1:<autosummary>:1
+#, fuzzy
+msgid ":py:obj:`pywws.device_ctypes_hidapi <pywws.device_ctypes_hidapi>`\\"
 msgstr ":obj:`pywws.device_ctypes_hidapi <pywws.device_ctypes_hidapi>`\\"
 
-#: ../../<autosummary>:1
-msgid ""
-"Low level USB interface to weather station, using ctypes to access hidapi."
-msgstr "Interface USB de bas niveau de la station météo, utilisant ctype pour accéder hidapi."
+#: ../../<rst_epilog>:1:<autosummary>:1
+msgid "Low level USB interface to weather station, using ctypes to access hidapi."
+msgstr ""
+"Interface USB de bas niveau de la station météo, utilisant ctype pour "
+"accéder hidapi."
 
-#: ../../<autosummary>:1
-msgid ":obj:`pywws.device_cython_hidapi <pywws.device_cython_hidapi>`\\"
+#: ../../<rst_epilog>:1:<autosummary>:1
+#, fuzzy
+msgid ":py:obj:`pywws.device_cython_hidapi <pywws.device_cython_hidapi>`\\"
 msgstr ":obj:`pywws.device_cython_hidapi <pywws.device_cython_hidapi>`\\"
 
-#: ../../<autosummary>:1
+#: ../../<rst_epilog>:1:<autosummary>:1
 msgid "Low level USB interface to weather station, using cython-hidapi."
 msgstr "Interface USB de bas niveau de la station météo, utilisant cython-hidapi."
 
-#: ../../<autosummary>:1
-msgid ":obj:`pywws.DataStore <pywws.DataStore>`\\"
-msgstr ":obj:`pywws.DataStore <pywws.DataStore>`\\"
+#: ../../<rst_epilog>:1:<autosummary>:1
+#, fuzzy
+msgid ":py:obj:`pywws.storage <pywws.storage>`\\"
+msgstr ":obj:`pywws.Logger <pywws.Logger>`\\"
 
-#: ../../<autosummary>:1
-msgid "DataStore.py - stores readings in easy to access files"
-msgstr "DataStore.py - enregistre les lectures dans des fichiers facilement accessibles"
+#: ../../<rst_epilog>:1:<autosummary>:1
+msgid "Store parameters in easy to access files, and access backend data"
+msgstr ""
 
-#: ../../<autosummary>:1
-msgid ":obj:`pywws.TimeZone <pywws.TimeZone>`\\"
+#: ../../<rst_epilog>:1:<autosummary>:1
+#, fuzzy
+msgid ":py:obj:`pywws.filedata <pywws.filedata>`\\"
+msgstr ":obj:`pywws.Plot <pywws.Plot>`\\"
+
+#: ../../<rst_epilog>:1:<autosummary>:1
+#, fuzzy
+msgid "Store weather data in easy to access files"
+msgstr ""
+"DataStore.py - enregistre les lectures dans des fichiers facilement "
+"accessibles"
+
+#: ../../<rst_epilog>:1:<autosummary>:1
+#, fuzzy
+msgid ":py:obj:`pywws.sqlite3data <pywws.sqlite3data>`\\"
+msgstr ":obj:`pywws.Plot <pywws.Plot>`\\"
+
+#: ../../<rst_epilog>:1:<autosummary>:1
+msgid "Store weather data in an SQLite3 database file."
+msgstr ""
+
+#: ../../<rst_epilog>:1:<autosummary>:1
+#, fuzzy
+msgid ":py:obj:`pywws.timezone <pywws.timezone>`\\"
 msgstr ":obj:`pywws.TimeZone <pywws.TimeZone>`\\"
 
-#: ../../<autosummary>:1
+#: ../../<rst_epilog>:1:<autosummary>:1
 msgid ""
 "Provide a couple of :py:class:`datetime.tzinfo` compatible objects "
 "representing local time and UTC."
-msgstr "Fournir un couple d'objets :py:class:`datetime.tzinfo` compatibles représentant l'heure locale et l'heure UTC. "
+msgstr ""
+"Fournir un couple d'objets :py:class:`datetime.tzinfo` compatibles "
+"représentant l'heure locale et l'heure UTC."
 
-#: ../../<autosummary>:1
-msgid ":obj:`pywws.Localisation <pywws.Localisation>`\\"
+#: ../../<rst_epilog>:1:<autosummary>:1
+#, fuzzy
+msgid ":py:obj:`pywws.localisation <pywws.localisation>`\\"
 msgstr ":obj:`pywws.Localisation <pywws.Localisation>`\\"
 
-#: ../../<autosummary>:1
-msgid "Localisation.py - provide translations of strings into local"
+#: ../../<rst_epilog>:1:<autosummary>:1
+#, fuzzy
+msgid "Provide translations of strings into local language"
 msgstr "Localisation.py - fournir des traductions des phrases en local"
 
-#: ../../<autosummary>:1
-msgid ":obj:`pywws.conversions <pywws.conversions>`\\"
+#: ../../<rst_epilog>:1:<autosummary>:1
+#, fuzzy
+msgid ":py:obj:`pywws.conversions <pywws.conversions>`\\"
 msgstr ":obj:`pywws.conversions <pywws.conversions>`\\"
 
-#: ../../<autosummary>:1
-msgid "conversions.py - a set of functions to convert pywws native units"
-msgstr "Un ensemble de fonctions pour convertir les unités en format natif pywws "
+#: ../../<rst_epilog>:1:<autosummary>:1
+#, fuzzy
+msgid ""
+"conversions.py - a set of functions to convert pywws native units "
+"(Centigrade, mm, m/s, hPa) to other popular units"
+msgstr "un ensemble de fonctions pour convertir les unités en format natif pywws"
 
-#: ../../<autosummary>:1
-msgid ":obj:`pywws.Logger <pywws.Logger>`\\"
+#: ../../<rst_epilog>:1:<autosummary>:1
+#, fuzzy
+msgid ":py:obj:`pywws.logger <pywws.logger>`\\"
 msgstr ":obj:`pywws.Logger <pywws.Logger>`\\"
 
-#: ../../<autosummary>:1
-msgid "Common code for logging info and errors."
-msgstr "Code commun pour l'enregistrement d'informations et d'erreurs."
+#: ../../<rst_epilog>:1:<autosummary>:1
+msgid "Configure Python logging system"
+msgstr ""
 
-#: ../../<autosummary>:1
-msgid ":obj:`pywws.constants <pywws.constants>`\\"
+#: ../../<rst_epilog>:1:<autosummary>:1
+#, fuzzy
+msgid ":py:obj:`pywws.constants <pywws.constants>`\\"
 msgstr ":obj:`pywws.constants <pywws.constants>`\\"
 
-#: ../../<autosummary>:1
+#: ../../<rst_epilog>:1:<autosummary>:1
 msgid "Bits of data used in several places."
 msgstr "Bits de données utilisées dans plusieurs endroits."
 
-#: ../../src/doc/api_index.rst:81
+#: ../../<rst_epilog>:4
 msgid ""
 "Comments or questions? Please subscribe to the pywws mailing list "
 "http://groups.google.com/group/pywws and let us know."
-msgstr "Commentaires et questions? SVP, abonnez-vous à la liste pywws  http://groups.google.com/group/pywws et faites-vous entendre."
+msgstr ""
+"Commentaires et questions? SVP, abonnez-vous à la liste pywws  "
+"http://groups.google.com/group/pywws et faites-vous entendre."
+
+#~ msgid ":obj:`pywws.TwitterAuth <pywws.TwitterAuth>`\\"
+#~ msgstr ":obj:`pywws.TwitterAuth <pywws.TwitterAuth>`\\"
+
+#~ msgid "Authorise pywws to post to your Twitter account"
+#~ msgstr "Autoriser pywws à poster sur votre compte Twitter"
+
+#~ msgid ":obj:`pywws.USBQualityTest <pywws.USBQualityTest>`\\"
+#~ msgstr ":obj:`pywws.USBQualityTest <pywws.USBQualityTest>`\\"
+
+#~ msgid ":obj:`pywws.EWtoPy <pywws.EWtoPy>`\\"
+#~ msgstr ":obj:`pywws.EWtoPy <pywws.EWtoPy>`\\"
+
+#~ msgid ":obj:`pywws.Process <pywws.Process>`\\"
+#~ msgstr ":obj:`pywws.Process <pywws.Process>`\\"
+
+#~ msgid ":obj:`pywws.ZambrettiCore <pywws.ZambrettiCore>`\\"
+#~ msgstr ":obj:`pywws.ZambrettiCore <pywws.ZambrettiCore>`\\"
+
+#~ msgid ":obj:`pywws.Upload <pywws.Upload>`\\"
+#~ msgstr ":obj:`pywws.Upload <pywws.Upload>`\\"
+
+#~ msgid ":obj:`pywws.ToTwitter <pywws.ToTwitter>`\\"
+#~ msgstr ":obj:`pywws.ToTwitter <pywws.ToTwitter>`\\"
+
+#~ msgid "Post weather update to services such as Weather Underground"
+#~ msgstr "Poster des mises à jour météo aux services tels que Weather Underground"
+
+#~ msgid ":obj:`pywws.YoWindow <pywws.YoWindow>`\\"
+#~ msgstr ":obj:`pywws.YoWindow <pywws.YoWindow>`\\"
+
+#~ msgid "Generate YoWindow XML file"
+#~ msgstr "Génèrer un fichier YoWindow XML"
+
+#~ msgid ":obj:`pywws.DataStore <pywws.DataStore>`\\"
+#~ msgstr ":obj:`pywws.DataStore <pywws.DataStore>`\\"
+
+#~ msgid "Common code for logging info and errors."
+#~ msgstr "Code commun pour l'enregistrement d'informations et d'erreurs."
+
