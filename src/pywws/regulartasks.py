@@ -1,6 +1,6 @@
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-21  pywws contributors
+# Copyright (C) 2008-23  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -166,12 +166,10 @@ class RegularTasks(object):
         sections = []
         for section in self.cron:
             if time_zone.local_to_utc(
-                    self.cron[section].get_current(datetime)) > now:
-                continue
-            sections.append(section)
-            while time_zone.local_to_utc(
-                    self.cron[section].get_next(datetime)) <= now:
-                pass
+                    self.cron[section].get_current(ret_type=datetime)) <= now:
+                sections.append(section)
+                self.cron[section].get_next(
+                    start_time=time_zone.utc_to_local(now))
         return sections
 
     def _periodic_due(self, now):
