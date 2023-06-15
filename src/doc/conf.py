@@ -99,7 +99,9 @@ copyright = u'2008-20, pywws contributors'
 #version = 
 # The full version, including alpha/beta/rc tags.
 #release =
-from pywws import __version__, _release
+# read current version info without importing package
+with open('src/pywws/__init__.py') as f:
+    exec(f.read())
 version = __version__
 release = __version__ + '.dev' + _release
 
