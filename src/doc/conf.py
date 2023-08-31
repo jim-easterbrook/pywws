@@ -27,7 +27,9 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
-import sys, os
+import os
+import sys
+from unittest.mock import Mock
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -38,13 +40,11 @@ import sys, os
 on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 
 # allow documentation to be compiled without installing dependencies
-import mock
-
-for mod_name in ('hid', 'oauth2', 'mastodon', 'twitter',
+for mod_name in ('hid', 'oauth2', 'mastodon', 'twitter', 'pytz',
                  'paho', 'paho.mqtt.client', 'paramiko',
                  'usb', 'usb.core', 'usb.util', 'libusb1', 'usb1',
                  'daemon.daemon', 'daemon.runner'):
-    sys.modules[mod_name] = mock.Mock()
+    sys.modules[mod_name] = Mock()
 
 # -- General configuration -----------------------------------------------------
 

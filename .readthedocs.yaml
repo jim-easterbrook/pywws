@@ -14,3 +14,10 @@ build:
 sphinx:
   builder: html
   configuration: src/doc/conf.py
+
+
+python:
+  install:
+    - method: pip
+      path: .
+    - requirements: src/doc/requirements.txt
