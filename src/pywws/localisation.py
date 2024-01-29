@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-18  pywws contributors
+# Copyright (C) 2008-24  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -197,8 +197,11 @@ def set_translation(lang):
     if codeset == 'ASCII':
         codeset = 'UTF-8'
     try:
-        translation = gettext.translation(
-            'pywws', path, languages=langs, codeset=codeset)
+        if sys.version_info < (3, 11):
+            translation = gettext.translation(
+                'pywws', path, languages=langs, codeset=codeset)
+        else:
+            translation = gettext.translation('pywws', path, languages=langs)
         # Python 3 translations don't have a ugettext method
         if not hasattr(translation, 'ugettext'):
             translation.ugettext = translation.gettext
