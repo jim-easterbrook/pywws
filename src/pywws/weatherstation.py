@@ -1,6 +1,6 @@
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-22  pywws contributors
+# Copyright (C) 2008-24  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -573,7 +573,8 @@ Your station is probably a '{:s}' type.
                 if data_time - last_data_time < self.margin:
                     # data has just changed, so definitely at a 48s update time
                     self._sensor_clock.set_clock(data_time)
-                elif next_live and data_time < next_live - self.margin:
+                elif (new_ptr == old_ptr
+                      and next_live and data_time < next_live - self.margin):
                     logger.warning(
                         'live_data lost sync %g', data_time - next_live)
                     logger.warning('old data %s', str(old_data))
