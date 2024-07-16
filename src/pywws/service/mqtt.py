@@ -36,6 +36,7 @@ requires an additional library. See :ref:`Dependencies - MQTT
     password =
     tls_cert = /home/pi/pywws/ca_cert/mqtt_ca.crt
     tls_ver = 2
+    selfcert = True
     multi_topic = False
 
     [logged]
@@ -98,11 +99,13 @@ the next message is published.
 
 ``user`` and ``password`` can be used for MQTT authentication.
 
-``tls_cert`` and ``tls_ver`` are used for MQTT TLS security. Set
-tls_cert as the path to a CA certificate (e.g. tls_cert =
+``tls_cert``, ``tls_ver`` and ``selfcert`` are used for MQTT TLS security.
+Set tls_cert as the path to a CA certificate (e.g. tls_cert =
 /home/pi/pywws/ca_cert/mqtt_ca.crt) and tls_ver to the TLS version (e.g.
-tls_ver = 2) (TLS1.2 recommended). See
-https://mosquitto.org/man/mosquitto-tls-7.html for information on how to
+tls_ver = 2) (TLS1.2 recommended). If you have generated the certificate
+yourself (i.e. it has not been issued by a certificate authority), you should
+set selfcert = True, otherwise you will receive a certificate error.
+See https://mosquitto.org/man/mosquitto-tls-7.html for information on how to
 generate certificates. Only copy the ca.crt to your pywws client. See
 http://www.steves-internet-guide.com/mosquitto-tls/ for a step-by-step
 guide to securing your MQTT server. Note that secure MQTTS usually uses
@@ -117,8 +120,8 @@ subtopics of the configured ``topic``; e.g., with the ``topic`` set to
 
 ``template_txt`` is the template used to generate the data to be
 published. You can edit it to suit your own requirements. Be very careful
-about the backslash escaped quotation marks though. If not specified
-default will be used, which sends a lot of values in metric and imperial
+about the backslash escaped quotation marks though. If not specified,
+the default will be used, which sends a lot of values in metric and imperial
 units.
 
 .. versionchanged:: 19.5.0
@@ -128,16 +131,16 @@ units.
    metric and imperial units. This is to make it easier for new users
    to get going.
 
-If these aren't obvious to you it's worth doing a bit of reading around
+If these aren't obvious to you, it's worth doing a bit of reading around
 MQTT. It's a great lightweight messaging system from IBM, recently made
 more popular when Facebook published information on their use of it.
 
 This has been tested with the Mosquitto Open Source MQTT broker, running
-on a Raspberry Pi (Raspian OS). TLS (mqtt data encryption) is not yet
-implemented.
+on a Raspberry Pi (Raspberry Pi OS).
 
 Thanks to Matt Thompson for writing the MQTT code and to Robin Kearney
-for adding the retain and auth options.
+for adding the retain and auth options. Tim Richardson has updated the
+code for paho MQTT library v2.
 
 .. _MQTT: http://mqtt.org/
 
@@ -147,11 +150,11 @@ from __future__ import absolute_import, unicode_literals
 
 from ast import literal_eval
 from contextlib import contextmanager
-from datetime import timedelta
 import json
 import logging
 import os
 import pprint
+import ssl
 import sys
 
 import paho.mqtt.client as mosquitto
@@ -174,6 +177,7 @@ class ToService(pywws.service.LiveDataService):
         'password'   : ('',               False, None),
         'tls_cert'   : ('',               False, None),
         'tls_ver'    : ('1',              True,  None),
+        'selfcert'   : ('False',          False, None),
         'multi_topic': ('False',          True,  None),
         }
     logger = logger
@@ -228,7 +232,7 @@ class ToService(pywws.service.LiveDataService):
         logger.log(logging.DEBUG - 1, 'template:\n' + template)
         self.template = "#live#" + template
         # convert some params from string
-        for key in ('port', 'retain', 'tls_ver', 'multi_topic'):
+        for key in ('port', 'retain', 'tls_ver', 'multi_topic', 'selfcert'):
             self.params[key] = literal_eval(self.params[key])
 
     def template_format(self, template):
@@ -250,8 +254,17 @@ class ToService(pywws.service.LiveDataService):
         logger.debug(('connecting to host {hostname:s}:{port:d} '
                       'with client_id "{client_id:s}"').format(**self.params))
         if self.params['tls_cert']:
-            session.tls_set(self.params['tls_cert'], tls_version=self.params['tls_ver'])
+            selfcert = False
+            if self.params['selfcert']:
+                selfcert = self.params['selfcert']
+
+            if selfcert:
+                session.tls_set(self.params['tls_cert'], tls_version=self.params['tls_ver'], cert_reqs=ssl.CERT_NONE)
+            else:
+                session.tls_set(self.params['tls_cert'], tls_version=self.params['tls_ver'])
+
         session.connect(self.params['hostname'], self.params['port'])
+
         try:
             yield session, 'OK'
         finally:
@@ -266,6 +279,7 @@ class ToService(pywws.service.LiveDataService):
                             retain=self.params['retain'])
         except Exception as ex:
             return False, repr(ex)
+
         if self.params['multi_topic']:
             # Publish messages, one for each item in prepared_data to
             # separate Subtopics.
