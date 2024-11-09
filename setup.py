@@ -19,7 +19,10 @@
 from __future__ import with_statement
 
 from datetime import date
-from distutils.command.upload import upload
+try:
+    from distutils.command.upload import upload
+except ImportError:
+    class upload: pass
 import os
 from setuptools import setup
 import sys
