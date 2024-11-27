@@ -21,6 +21,7 @@ from __future__ import with_statement
 from datetime import date
 import os
 from setuptools import setup
+from setuptools import __version__ as setuptools_version
 import sys
 
 # read current version info without importing pywws package
@@ -141,55 +142,45 @@ command_options['sdist'] = {
     'formats'        : ('setup.py', 'gztar'),
     }
 
-with open('README.rst') as ldf:
-    long_description = ldf.read()
 
-setup(name = 'pywws',
-      version = __version__,
-      description = 'Python software for wireless weather stations',
-      author = 'Jim Easterbrook',
-      author_email = 'jim@jim-easterbrook.me.uk',
-      url = 'https://github.com/jim-easterbrook/pywws/',
-      download_url = 'https://pypi.python.org/pypi/pywws/' + __version__,
-      long_description = long_description,
-      classifiers = [
-          'Development Status :: 6 - Mature',
-          'Intended Audience :: End Users/Desktop',
-          'License :: OSI Approved :: GNU General Public License v2 (GPLv2)',
-          'Operating System :: OS Independent',
-          'Programming Language :: Python',
-          'Programming Language :: Python :: 2.7',
-          'Programming Language :: Python :: 3',
-          ],
-      license = 'GNU GPL',
-      platforms = ['POSIX', 'MacOS', 'Windows'],
-      packages = ['pywws', 'pywws.service'],
-      package_dir = {'' : 'src'},
-      package_data = {
-          'pywws' : [
-              'services/*',
-              'lang/*/LC_MESSAGES/pywws.mo',
-              'examples/*/*.*', 'examples/*/*/*.*',
-              ],
-          },
-      cmdclass = cmdclass,
-      command_options = command_options,
-      entry_points = {
-          'console_scripts' : [
-              'pywws-hourly             = pywws.hourly:main',
-              'pywws-livelog            = pywws.livelog:main',
-              'pywws-livelog-daemon     = pywws.livelogdaemon:main',
-              'pywws-reprocess          = pywws.reprocess:main',
-              'pywws-setweatherstation  = pywws.setweatherstation:main',
-              'pywws-testweatherstation = pywws.testweatherstation:main',
-              'pywws-version            = pywws.version:main',
-              ],
-          },
-      install_requires = ['python-dateutil'],
-      extras_require = {
-          'daemon'  : ['python-daemon == 2.1.2'],
-          'sftp'    : ['paramiko', 'pycrypto'],
-          'twitter' : ['python-twitter >= 3.0', 'oauth2'],
-          },
-      zip_safe = False,
-      )
+setup_kwds = {
+    'cmdclass': cmdclass,
+    'command_options': command_options,
+    }
+
+
+if tuple(map(int, setuptools_version.split('.')[:2])) < (61, 0):
+    from setuptools import find_packages
+    # get metadata from pyproject.toml
+    import toml
+    metadata = toml.load('pyproject.toml')
+    with open(metadata['project']['readme']) as ldf:
+        long_description = ldf.read()
+    find_args = metadata['tool']['setuptools']['packages']['find']
+    find_args['where'] = find_args['where'][0]
+    packages = find_packages(**find_args)
+    # add to setup arguments
+    setup_kwds.update(
+        version = __version__,
+        name = metadata['project']['name'],
+        author = metadata['project']['authors'][0]['name'],
+        author_email = metadata['project']['authors'][0]['email'],
+        url = metadata['project']['urls']['Homepage'],
+        description = metadata['project']['description'],
+        long_description = long_description,
+        classifiers = metadata['project']['classifiers'],
+        license = metadata['project']['license']['text'],
+        packages = packages,
+        package_dir = {'' : 'src'},
+        package_data = metadata['tool']['setuptools']['package-data'],
+        entry_points = {
+            'console_scripts' : [
+                '{} = {}'.format(k, v)
+                for k, v in metadata['project']['scripts'].items()],
+            },
+        install_requires = metadata['project']['dependencies'],
+        extras_require = metadata['project']['optional-dependencies'],
+        zip_safe = metadata['tool']['setuptools']['zip-safe'],
+        )
+
+setup(**setup_kwds)
