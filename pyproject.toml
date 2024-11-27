@@ -1,0 +1,77 @@
+# pywws - Python software for USB Wireless Weather Stations
+# http://github.com/jim-easterbrook/pywws
+# Copyright (C) 2024  pywws contributors
+
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+[build-system]
+requires = ["setuptools >= 59.6", "toml"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pywws"
+description = "Python software for wireless weather stations"
+readme = "README.rst"
+license = {text = "GPLv2+"}
+authors = [
+    {name = "Jim Easterbrook", email = "jim@jim-easterbrook.me.uk"},
+    {name = "pywws contributors"},
+]
+classifiers = [
+    "Development Status :: 6 - Mature",
+    "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: GNU General Public License v2 (GPLv2)",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 2.7",
+    "Programming Language :: Python :: 3",
+]
+dependencies = [
+    "python-dateutil",
+]
+dynamic = ["version"]
+
+[project.optional-dependencies]
+daemon = ["python-daemon == 2.1.2"]
+sftp = ["paramiko", "pycrypto"]
+twitter = ["python-twitter >= 3.0", "oauth2"]
+
+[project.urls]
+Homepage = "https://github.com/jim-easterbrook/pywws/"
+
+[project.scripts]
+pywws-hourly = "pywws.hourly:main"
+pywws-livelog = "pywws.livelog:main"
+pywws-livelog-daemon = "pywws.livelogdaemon:main"
+pywws-reprocess = "pywws.reprocess:main"
+pywws-setweatherstation = "pywws.setweatherstation:main"
+pywws-testweatherstation = "pywws.testweatherstation:main"
+pywws-version = "pywws.version:main"
+
+[tool.setuptools]
+include-package-data = false
+zip-safe = false
+
+[tool.setuptools.dynamic]
+version = {attr = "pywws.__version__"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+exclude = ["doc*", "contributors*", "pywws.examples*", "pywws.lang*"]
+
+[tool.setuptools.package-data]
+pywws = [
+    "lang/*/LC_MESSAGES/pywws.mo", "examples/*/*.*", "examples/*/*/*.*",
+]
