@@ -40,7 +40,7 @@ from unittest.mock import Mock
 on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 
 # allow documentation to be compiled without installing dependencies
-for mod_name in ('hid', 'oauth2', 'mastodon', 'twitter', 'pytz',
+for mod_name in ('hid', 'oauth2', 'mastodon', 'twitter',
                  'paho', 'paho.mqtt.client', 'paramiko', 'atprototools',
                  'usb', 'usb.core', 'usb.util', 'libusb1', 'usb1',
                  'daemon.daemon', 'daemon.runner'):
