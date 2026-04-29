@@ -1,6 +1,6 @@
 # pywws - Python software for USB Wireless Weather Stations
 # http://github.com/jim-easterbrook/pywws
-# Copyright (C) 2008-24  pywws contributors
+# Copyright (C) 2008-26  pywws contributors
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -156,6 +156,9 @@ if tuple(map(int, setuptools_version.split('.')[:2])) < (61, 0):
     metadata = toml.load('pyproject.toml')
     with open(metadata['project']['readme']) as ldf:
         long_description = ldf.read()
+    classifiers = metadata['project']['classifiers']
+    classifiers.append(
+        'License :: OSI Approved :: GNU General Public License v2 (GPLv2)')
     find_args = metadata['tool']['setuptools']['packages']['find']
     find_args['where'] = find_args['where'][0]
     packages = find_packages(**find_args)
@@ -168,8 +171,8 @@ if tuple(map(int, setuptools_version.split('.')[:2])) < (61, 0):
         url = metadata['project']['urls']['Homepage'],
         description = metadata['project']['description'],
         long_description = long_description,
-        classifiers = metadata['project']['classifiers'],
-        license = metadata['project']['license']['text'],
+        classifiers = classifiers,
+        license = 'GPLv2+',
         packages = packages,
         package_dir = {'' : 'src'},
         package_data = metadata['tool']['setuptools']['package-data'],
