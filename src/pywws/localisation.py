@@ -126,7 +126,6 @@ import getopt
 import gettext
 import locale
 import os
-import pkg_resources
 import sys
 import time
 
@@ -192,7 +191,7 @@ def set_translation(lang):
             lang = lang.split('.')[0]
         langs += [lang, lang[:2]]
     # get translation object
-    path = pkg_resources.resource_filename('pywws', 'lang')
+    path = os.path.join(os.path.dirname(__file__), 'lang')
     codeset = locale.getpreferredencoding()
     if codeset == 'ASCII':
         codeset = 'UTF-8'
