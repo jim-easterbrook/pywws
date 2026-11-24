@@ -175,7 +175,8 @@ class ToService(pywws.service.FileService):
 
     @contextmanager
     def session(self):
-        yield atprototools.Session(self.params['handle'], self.params['password'])
+        yield atprototools.Session(
+            self.params['handle'], self.params['password']), 'OK'
 
     def upload_file(self, session, filename):
         media=None
